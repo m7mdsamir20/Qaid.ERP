@@ -2,7 +2,7 @@
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { navSections } from '@/constants/navigation';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
@@ -30,6 +30,20 @@ import DatabaseTab from './_tabs/DatabaseTab';
    MAIN PAGE
 ══════════════════════════════════════════ */
 export default function SettingsPage() {
+    return (
+        <Suspense fallback={
+            <DashboardLayout>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
+                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> جاري تحميل الإعدادات...
+                </div>
+            </DashboardLayout>
+        }>
+            <SettingsContent />
+        </Suspense>
+    );
+}
+
+function SettingsContent() {
     const [company, setCompany] = useState<any>(null);
     const [users, setUsers] = useState<any[]>([]);
     const [branches, setBranches] = useState<any[]>([]);
