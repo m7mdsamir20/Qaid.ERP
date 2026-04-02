@@ -1,0 +1,210 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
+import ReportHeader from '@/components/ReportHeader';
+import { Package, AlertTriangle, Search, Activity, ShoppingCart, Loader2, Box } from 'lucide-react';
+import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
+import { useSession } from 'next-auth/react';
+
+const getCurrencyName = (code: string) => {
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    return map[code] || code;
+};
+
+interface LowStockItem {
+    id: string;
+    code: string;
+    name: string;
+    totalStock: number;
+    minLimit: number;
+    unit: string;
+    category: string;
+    averageCost: number;
+    value: number;
+}
+
+export default function LowStockReportPage() {
+    const { data: session } = useSession();
+    const currency = (session?.user as any)?.currency || 'EGP';
+
+    const [data, setData] = useState<LowStockItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [q, setQ] = useState('');
+
+    useEffect(() => {
+        fetch('/api/reports/low-stock-items')
+            .then(res => res.json())
+            .then(d => { if (!d.error) setData(d); })
+            .catch(() => { })
+            .finally(() => setLoading(false));
+    }, []);
+
+    const filtered = data.filter(i => 
+        (i.name || '').toLowerCase().includes(q.toLowerCase()) || 
+        (i.code || '').toLowerCase().includes(q.toLowerCase()) || 
+        (i.category || '').toLowerCase().includes(q.toLowerCase())
+    );
+    const totalValue = filtered.reduce((s, i) => s + i.value, 0);
+
+    return (
+        <DashboardLayout>
+            <div dir="rtl" style={PAGE_BASE}>
+                <ReportHeader
+                    title="أصناف تحت الحد الأدنى"
+                    subtitle="قائمة المنتجات التي أوشكت على النفاذ أو وصلت لمستوى إعادة الطلب."
+                    backTab="inventory"
+                    onExportPdf={() => window.print()}
+                />
+
+                {/* Header للطباعة فقط */}
+                <div className="print-only">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
+                        <div style={{ textAlign: 'right' }}>
+                            <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
+                            {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>}
+                            {(session?.user as any)?.commercialRegister && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>}
+                            {(session?.user as any)?.phone && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الهاتف: {(session?.user as any)?.phone}</div>}
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>تقرير أصناف تحت الحد الأدنى</h3>
+                        </div>
+                        <div style={{ maxWidth: '150px', textAlign: 'left' }}>
+                            {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
+                            <div style={{ position: 'relative', flex: 1 }}>
+                                <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                                <input
+                                    placeholder="ابحث بالاسم، الكود، أو التصنيف..."
+                                    value={q} onChange={e => setQ(e.target.value)}
+                                    style={{ 
+                                        ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
+                                        borderRadius: '12px', border: `1px solid ${C.border}`, 
+                                        background: C.card, color: C.textPrimary, fontSize: '13.5px', 
+                                        outline: 'none', fontFamily: CAIRO, fontWeight: 500 
+                                    }}
+                                />
+                            </div>
+                            <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>
+                                عدد النتائج: <span style={{ color: '#ef4444', fontWeight: 900, fontFamily: INTER }}>{filtered.length}</span> صنف
+                            </div>
+                        </div>
+
+                        {loading ? (
+                            <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                                <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
+                                <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري فحص النواقص...</span>
+                            </div>
+                        ) : filtered.length === 0 ? (
+                            <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                                <Box size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
+                                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد نواقص</h3>
+                                <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً.</p>
+                            </div>
+                        ) : (
+                            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                                            {['الصنف', 'التصنيف', 'الرصيد الحالي', 'الحد الأدنى', 'قيمة النقص'].map((h, i) => (
+                                                <th key={i} style={{ 
+                                                    padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
+                                                    textAlign: i === 4 ? 'left' : (i >= 2 ? 'center' : 'right'), 
+                                                    fontWeight: 800, fontFamily: CAIRO 
+                                                }}>{h}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filtered.map((item, idx) => (
+                                            <tr key={item.id} 
+                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
+                                                <td style={{ padding: '14px 20px' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: INTER, fontWeight: 700 }}>{item.code}</div>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{item.category}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                    <span style={{ 
+                                                        background: item.totalStock === 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)', 
+                                                        color: item.totalStock === 0 ? '#ef4444' : '#f59e0b', 
+                                                        padding: '4px 12px', borderRadius: '10px', fontWeight: 1000, fontSize: '12px', fontFamily: INTER
+                                                    }}>
+                                                        {item.totalStock.toLocaleString('en-US')} {item.unit}
+                                                    </span>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
+                                                    {item.minLimit.toLocaleString('en-US')}
+                                                </td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'left', fontWeight: 900, color: '#10b981', fontSize: '13.5px', fontFamily: INTER }}>
+                                                    {item.value.toLocaleString('en-US')} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
+                                            <td colSpan={4} style={{ padding: '18px 24px', textAlign: 'right', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>إجماليات النقص للفترة المختارة</td>
+                                            <td style={{ padding: '18px 20px', textAlign: 'left', fontWeight: 1000, color: '#10b981', fontSize: '16px', fontFamily: INTER }}>
+                                                {totalValue.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: '#10b981', fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        )}
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div style={{ background: 'linear-gradient(145deg, rgba(239,68,68,0.15), rgba(239,68,68,0.05))', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 25px -10px rgba(239,68,68,0.2)' }}>
+                            <div style={{ width: '48px', height: '48px', borderRadius: '14px', background: 'rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444', marginBottom: '16px' }}>
+                                <AlertTriangle size={24} />
+                            </div>
+                            <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>إجمالي عدد النواقص</div>
+                            <div style={{ fontSize: '32px', fontWeight: 1000, color: '#ef4444', fontFamily: INTER }}>
+                                {filtered.length.toLocaleString('en-US')}
+                                <span style={{ fontSize: '14px', marginRight: '6px', fontWeight: 700, fontFamily: CAIRO }}>صنف</span>
+                            </div>
+                        </div>
+
+                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px' }}>
+                            <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
+                                <Activity size={18} color={C.primary} /> دليل الإحصائيات
+                            </div>
+                            <ul style={{ margin: 0, paddingRight: '22px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {[
+                                    'الأصناف التي وصل رصيدها للحد الأدنى.',
+                                    'الأصناف التي نفد رصيدها تماماً (0).',
+                                    'تتأثر القائمة بعمليات الصرف والمبيعات.',
+                                    'يجب إعادة طلب هذه الكميات لسير العمل.'
+                                ].map((text, i) => (
+                                    <li key={i} style={{ fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.6 }}>{text}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+                .animate-spin { animation: spin 1s linear infinite; }
+                .print-only { display: none; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div, span, h2, h3, p { color: #000 !important; }
+                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
+                }
+            `}</style>
+        </DashboardLayout>
+    );
+}

@@ -1,0 +1,326 @@
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import DashboardLayout from '@/components/DashboardLayout';
+import CustomSelect from '@/components/CustomSelect';
+import {
+    Briefcase, Plus, ArrowRight, TrendingDown,
+    Building2, AlertTriangle, Loader2, Save
+} from 'lucide-react';
+import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, SC, STitle, BTN_PRIMARY } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+
+interface Account {
+    id: string; code: string; name: string;
+    type: string; accountCategory: string; isParent: boolean;
+}
+
+const CATEGORIES = [
+    'مركبات', 'أجهزة وحاسبات', 'أراضي ومباني',
+    'أثاث ومفروشات', 'معدات وآلات', 'أخرى',
+];
+
+const DEP_METHODS = [
+    { value: 'straight', label: 'قسط ثابت', sub: 'التكلفة ÷ العمر الإنتاجي' },
+    { value: 'declining', label: 'قسط متناقص', sub: 'الصافي × المعدل' },
+];
+
+
+export default function NewFixedAssetPage() {
+    const router = useRouter();
+    const [accounts, setAccounts] = useState<Account[]>([]);
+    const [saving, setSaving] = useState(false);
+    const [error, setError] = useState('');
+    const [generatedCode, setGeneratedCode] = useState('FA-001');
+
+    const [form, setForm] = useState({
+        name: '',
+        category: '',
+        purchaseDate: '',
+        purchaseCost: '',
+        salvageValue: '0',
+        depreciationRate: '',
+        depreciationMethod: 'straight' as 'straight' | 'declining',
+        usefulLife: '',
+        assetAccountId: '',
+        depAccountId: '',
+        accumAccountId: '',
+        notes: '',
+    });
+
+    /* ── Load accounts + generate code ── */
+    useEffect(() => {
+        // Generate next code
+        fetch('/api/fixed-assets')
+            .then(r => r.json())
+            .then((data: any[]) => {
+                if (!Array.isArray(data) || data.length === 0) {
+                    setGeneratedCode('FA-001');
+                    return;
+                }
+                const nums = data.map(a => {
+                    const m = a.code?.match(/FA-(\d+)/);
+                    return m ? parseInt(m[1]) : 0;
+                });
+                const next = Math.max(...nums, 0) + 1;
+                setGeneratedCode(`FA-${String(next).padStart(3, '0')}`);
+            })
+            .catch(() => setGeneratedCode('FA-001'));
+
+        // Load accounts
+        fetch('/api/accounts')
+            .then(r => r.json())
+            .then((data: Account[]) => {
+                setAccounts(
+                    Array.isArray(data)
+                        ? data.filter(a => !a.isParent && a.accountCategory !== 'summary')
+                        : []
+                );
+            })
+            .catch(() => setAccounts([]));
+    }, []);
+
+    const set = (k: string) => (v: string) =>
+        setForm(f => ({ ...f, [k]: v }));
+
+    /* ── Submit ── */
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+
+        // Validation
+        if (!form.name || !form.category || !form.purchaseDate ||
+            !form.purchaseCost || !form.depreciationRate) {
+            setError('يرجى تعبئة جميع الحقول المطلوبة'); return;
+        }
+        if (!form.assetAccountId || !form.depAccountId || !form.accumAccountId) {
+            setError('يرجى تحديد الحسابات المحاسبية الثلاثة'); return;
+        }
+
+        setSaving(true);
+        try {
+            const res = await fetch('/api/fixed-assets', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    code: generatedCode,
+                    name: form.name,
+                    category: form.category,
+                    purchaseDate: form.purchaseDate,
+                    purchaseCost: parseFloat(form.purchaseCost),
+                    salvageValue: parseFloat(form.salvageValue) || 0,
+                    depreciationRate: parseFloat(form.depreciationRate),
+                    depreciationMethod: form.depreciationMethod,
+                    usefulLife: form.usefulLife
+                        ? parseInt(form.usefulLife)
+                        : Math.round(100 / parseFloat(form.depreciationRate)),
+                    assetAccountId: form.assetAccountId,
+                    depAccountId: form.depAccountId,
+                    accumAccountId: form.accumAccountId,
+                    notes: form.notes,
+                }),
+            });
+
+            if (res.ok) {
+                router.push('/fixed-assets');
+            } else {
+                const d = await res.json();
+                setError(d.error || 'فشل الحفظ');
+            }
+        } catch {
+            setError('خطأ في الاتصال بالخادم');
+        }
+        setSaving(false);
+    };
+
+    // Account dropdowns
+    const assetAccounts = accounts.filter(a => a.type === 'asset');
+    const expenseAccounts = accounts.filter(a => a.type === 'expense');
+    const toOpts = (list: Account[]) =>
+        list.map(a => ({ value: a.id, label: `${a.code} — ${a.name}` }));
+
+    return (
+        <DashboardLayout>
+            <div dir="rtl" style={{ width: '100%', paddingBottom: '60px', background: C.bg, fontFamily: CAIRO }}>
+
+                <PageHeader
+                    title="إضافة أصل ثابت جديد"
+                    subtitle="تسجيل بيانات الأصل الثابت وربطه بالحسابات المحاسبية والمعدلات المناسبة"
+                    icon={Briefcase}
+                    backUrl="/fixed-assets"
+                />
+
+                {/* ── Error ── */}
+                {error && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 16px', borderRadius: '10px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', marginBottom: '16px', fontSize: '13px', color: '#f87171', fontWeight: 600 }}>
+                        <AlertTriangle size={15} /> {error}
+                    </div>
+                )}
+
+                <form onSubmit={handleSubmit}>
+
+                    {/* ══ القسم الأول: البيانات الأساسية ══ */}
+                    <div style={{ ...SC, marginBottom: '20px' }}>
+                        <div style={STitle}>
+                            <Briefcase size={16} /> البيانات الأساسية
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                            <div>
+                                <label style={LS}>كود الأصل</label>
+                                <input readOnly value={generatedCode}
+                                    style={{ ...IS, background: 'rgba(255,255,255,0.01)', cursor: 'default', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 800 }}
+                                    onFocus={focusIn} onBlur={focusOut} />
+                            </div>
+                            <div>
+                                <label style={LS}>اسم الأصل <span style={{ color: C.danger }}>*</span></label>
+                                <input required value={form.name}
+                                    onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
+                                    placeholder="مثال: سيارة نيسان 2024"
+                                    style={IS} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                            </div>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <div>
+                                <label style={LS}>الفئة <span style={{ color: C.danger }}>*</span></label>
+                                <CustomSelect value={form.category} onChange={set('category')}
+                                    icon={Building2} placeholder="اختر الفئة..."
+                                    options={CATEGORIES.map(c => ({ value: c, label: c }))} />
+                            </div>
+                            <div>
+                                <label style={LS}>تاريخ الشراء <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="date" value={form.purchaseDate}
+                                    onChange={e => setForm(f => ({ ...f, purchaseDate: e.target.value }))}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'left' }}
+                                    onFocus={focusIn} onBlur={focusOut} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ══ القسم الثاني: التكلفة والإهلاك ══ */}
+                    <div style={{ ...SC, marginBottom: '20px' }}>
+                        <div style={STitle}>
+                            <TrendingDown size={16} /> التكلفة والإهلاك
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                            <div>
+                                <label style={LS}>تكلفة الشراء (ج.م) <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="number" step="0.01" min="0"
+                                    value={form.purchaseCost}
+                                    onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))}
+                                    placeholder="0.00" style={IS} onFocus={focusIn} onBlur={focusOut} />
+                            </div>
+                            <div>
+                                <label style={LS}>قيمة الخردة (ج.م)</label>
+                                <input type="number" step="0.01" min="0"
+                                    value={form.salvageValue}
+                                    onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))}
+                                    placeholder="0.00" style={IS} onFocus={focusIn} onBlur={focusOut} />
+                            </div>
+                            <div>
+                                <label style={LS}>معدل الإهلاك % <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="number" step="0.01" min="0" max="100"
+                                    value={form.depreciationRate}
+                                    onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))}
+                                    placeholder="مثال: 20" style={IS} onFocus={focusIn} onBlur={focusOut} />
+                            </div>
+                        </div>
+
+                        {/* طريقة الإهلاك */}
+                        <div>
+                            <label style={LS}>طريقة الإهلاك <span style={{ color: '#f87171' }}>*</span></label>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                {DEP_METHODS.map(m => (
+                                    <button key={m.value} type="button"
+                                        onClick={() => setForm(f => ({ ...f, depreciationMethod: m.value as any }))}
+                                        style={{
+                                            padding: '12px 16px', borderRadius: '12px',
+                                            border: '1px solid', textAlign: 'right',
+                                            cursor: 'pointer', transition: 'all 0.15s',
+                                            borderColor: form.depreciationMethod === m.value
+                                                ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.07)',
+                                            background: form.depreciationMethod === m.value
+                                                ? 'rgba(251,191,36,0.08)' : 'rgba(255,255,255,0.02)',
+                                        }}>
+                                        <div style={{ fontSize: '14px', fontWeight: 800, color: form.depreciationMethod === m.value ? '#fbbf24' : '#64748b' }}>
+                                            {m.label}
+                                        </div>
+                                        <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>
+                                            {m.sub}
+                                        </div>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ══ القسم الثالث: الحسابات المحاسبية ══ */}
+                    <div style={{ ...SC, marginBottom: '20px' }}>
+                        <div style={STitle}>
+                            <Building2 size={16} /> الحسابات المحاسبية
+                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginRight: 'auto' }}>
+                                مطلوبة لإنشاء القيود تلقائياً
+                            </span>
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
+                            <div>
+                                <label style={LS}>حساب الأصل الثابت <span style={{ color: '#f87171' }}>*</span></label>
+                                <CustomSelect value={form.assetAccountId} onChange={set('assetAccountId')}
+                                    icon={Building2}
+                                    placeholder="اختر حساب الأصل (1xxx)..."
+                                    options={toOpts(assetAccounts)} />
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
+                                    من حسابات الأصول الثابتة
+                                </p>
+                            </div>
+                            <div>
+                                <label style={LS}>حساب مصروف الإهلاك <span style={{ color: '#f87171' }}>*</span></label>
+                                <CustomSelect value={form.depAccountId} onChange={set('depAccountId')}
+                                    icon={TrendingDown}
+                                    placeholder="اختر حساب المصروف (5xxx)..."
+                                    options={toOpts(expenseAccounts)} />
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
+                                    مدين عند تسجيل الإهلاك
+                                </p>
+                            </div>
+                            <div>
+                                <label style={LS}>حساب مجمع الإهلاك <span style={{ color: '#f87171' }}>*</span></label>
+                                <CustomSelect value={form.accumAccountId} onChange={set('accumAccountId')}
+                                    icon={TrendingDown}
+                                    placeholder="اختر حساب مجمع الإهلاك..."
+                                    options={toOpts(assetAccounts)} />
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
+                                    دائن عند تسجيل الإهلاك — حساب مقابل للأصل
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* ══ القسم الرابع: ملاحظات ══ */}
+                    <div style={{ ...SC, marginBottom: '20px' }}>
+                        <label style={LS}>ملاحظات</label>
+                        <textarea value={form.notes}
+                            onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                            rows={3} placeholder="أي ملاحظات إضافية عن الأصل..."
+                            style={{ ...IS, height: 'auto', padding: '10px 14px', resize: 'vertical' } as any}
+                            onFocus={focusIn} onBlur={focusOut} />
+                    </div>
+
+                    {/* ══ Buttons ══ */}
+                    <div style={{ display: 'flex', gap: '16px', marginTop: '20px' }}>
+                        <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), width: 'auto', flex: 3 }}>
+                            {saving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
+                            {saving ? 'جاري الحفظ...' : 'إضافة الأصل للسجل'}
+                        </button>
+                        <button type="button" onClick={() => router.push('/fixed-assets')}
+                            style={{ flex: 1, height: '52px', borderRadius: '14px', border: `1px solid ${C.border}`, fontFamily: CAIRO, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '15px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
+                            إلغاء
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </DashboardLayout>
+    );
+}

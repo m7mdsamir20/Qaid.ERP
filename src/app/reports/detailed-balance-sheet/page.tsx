@@ -1,0 +1,249 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
+import ReportHeader from '@/components/ReportHeader';
+import { useSession } from 'next-auth/react';
+import { Landmark, Scale, Sigma, TrendingUp, CheckCircle2, AlertCircle, Loader2, Info } from 'lucide-react';
+import { C, CAIRO, INTER, PAGE_BASE } from '@/constants/theme';
+
+const getCurrencyName = (code: string) => {
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    return map[code] || code;
+};
+
+const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+export default function DetailedBalanceSheetPage() {
+    const { data: session } = useSession();
+    const currency = (session?.user as any)?.currency || 'EGP';
+
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/reports/balance-sheet');
+            if (res.ok) {
+                const d = await res.json();
+                if (!d.error) setData(d);
+            }
+        } catch {
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => { fetchData(); }, []);
+
+    const exportToPDF = () => window.print();
+
+    const isBalanced = data ? Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities) < 0.01 : false;
+
+    if (loading) return (
+        <DashboardLayout>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '80vh', flexDirection: 'column', gap: '16px' }}>
+                <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
+                <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>جاري توليد التقارير التفصيلية...</span>
+            </div>
+        </DashboardLayout>
+    );
+
+    if (!data) return (
+        <DashboardLayout>
+            <div dir="rtl" style={PAGE_BASE}>
+                <ReportHeader 
+                    title="الميزانية العمومية التفصيلية" 
+                    subtitle="حدث خطأ أثناء محاولة جلب بيانات التقرير."
+                    backTab="financial" 
+                />
+                <div style={{ padding: '60px', textAlign: 'center', background: C.card, borderRadius: '24px', border: `1px solid ${C.border}` }}>
+                    <AlertCircle size={60} style={{ opacity: 0.2, marginBottom: '20px' }} />
+                    <h3 style={{ fontFamily: CAIRO }}>خطأ في تحميل البيانات</h3>
+                </div>
+            </div>
+        </DashboardLayout>
+    );
+
+    return (
+        <DashboardLayout>
+            <div dir="rtl" style={PAGE_BASE}>
+                <ReportHeader
+                    title="الميزانية العمومية التفصيلية"
+                    subtitle="عرض شامل لموجودات الشركة (الأصول) والتزاماتها (الخصوم) وحقوق المساهمين."
+                    backTab="financial"
+                    onExportPdf={exportToPDF}
+                />
+
+                <div className="no-print" style={{ 
+                    padding: '12px 20px', 
+                    background: isBalanced ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
+                    border: `1px solid ${isBalanced ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
+                    borderRadius: '12px',
+                    marginBottom: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        {isBalanced ? <CheckCircle2 size={18} color={C.success} /> : <AlertCircle size={18} color={C.danger} />}
+                        <span style={{ fontSize: '13px', fontWeight: 800, color: isBalanced ? C.success : C.danger, fontFamily: CAIRO }}>
+                           المركز المالي التفصيلي متزن
+                        </span>
+                    </div>
+                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>
+                        الأصول = الخصوم + حقوق الملكية
+                    </div>
+                </div>
+
+                {/* Header للطباعة فقط */}
+                <div className="print-only">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
+                        <div style={{ textAlign: 'right' }}>
+                            <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>
+                                {(session?.user as any)?.companyName || ''}
+                            </h2>
+                            {(session?.user as any)?.taxNumber && (
+                                <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>
+                            )}
+                            {(session?.user as any)?.commercialRegister && (
+                                <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>
+                            )}
+                            {(session?.user as any)?.phone && (
+                                <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الهاتف: {(session?.user as any)?.phone}</div>
+                            )}
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <h3 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>الميزانية التفصيلية (Detailed Balance Sheet)</h3>
+                            <div style={{ fontSize: '12px', color: '#000', fontWeight: 700, fontFamily: INTER }}>
+                                التاريخ: {new Date().toLocaleDateString('en-GB')}
+                            </div>
+                        </div>
+                        <div style={{ maxWidth: '150px', textAlign: 'left' }}>
+                            {(session?.user as any)?.companyLogo && (
+                                <img src={(session?.user as any)?.companyLogo} alt="logo"
+                                    style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="print-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
+                    {/* ASSETS SIDE */}
+                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                        <div style={{ padding: '16px 24px', background: 'rgba(16, 185, 129, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#10b981' }}>
+                            <Landmark size={20} />
+                            <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, fontFamily: CAIRO }}>الأصول (Assets)</h3>
+                        </div>
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <tbody>
+                                {data.assets.map((a: any) => (
+                                    <tr key={a.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }}>
+                                        <td style={{ padding: '12px 16px', borderLeft: `1px solid ${C.border}` }}><span style={{ fontSize: '11px', fontFamily: INTER, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span></td>
+                                        <td style={{ padding: '12px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderLeft: `1px solid ${C.border}` }}>{a.name}</td>
+                                        <td dir="ltr" style={{ padding: '12px 16px', textAlign: 'right', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}>{fmt(a.balance)}</td>
+                                    </tr>
+                                ))}
+                                <tr style={{ background: 'rgba(16, 185, 129, 0.08)', borderTop: `2px solid #10b98133` }}>
+                                    <td colSpan={2} style={{ padding: '16px 24px', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO, borderLeft: `1px solid ${C.border}` }}>إجمالي الأصول</td>
+                                    <td dir="ltr" style={{ padding: '16px 24px', textAlign: 'right', fontWeight: 950, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>{fmt(data.totalAssets)}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {/* LIABILITIES & EQUITY SIDE */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        {/* Liabilities Table */}
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                            <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#fb7185' }}>
+                                <Scale size={18} />
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>الخصوم (Liabilities)</h3>
+                            </div>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <tbody>
+                                    {data.liabilities.map((l: any) => (
+                                        <tr key={l.code} style={{ borderBottom: `1px solid ${C.border}` }}>
+                                            <td style={{ padding: '10px 16px', borderLeft: `1px solid ${C.border}` }}><span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted }}>{l.code}</span></td>
+                                            <td style={{ padding: '10px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderLeft: `1px solid ${C.border}` }}>{l.name}</td>
+                                            <td dir="ltr" style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}>{fmt(l.balance)}</td>
+                                        </tr>
+                                    ))}
+                                    {data.liabilities.length === 0 && <tr><td colSpan={3} style={{ padding: '16px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>لا توجد التزامات جارية</td></tr>}
+                                    <tr style={{ background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533` }}>
+                                        <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, borderLeft: `1px solid ${C.border}` }}>إجمالي الخصوم</td>
+                                        <td dir="ltr" style={{ padding: '12px 20px', textAlign: 'right', fontWeight: 900, color: '#fb7185', fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalLiabilities)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Equity Table */}
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                            <div style={{ padding: '14px 20px', background: 'rgba(59, 130, 246, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#3b82f6' }}>
+                                <Sigma size={18} />
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>حقوق الملكية (Equity)</h3>
+                            </div>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <tbody>
+                                    {data.equities.map((e: any) => (
+                                        <tr key={e.code} style={{ borderBottom: `1px solid ${C.border}` }}>
+                                            <td style={{ padding: '10px 16px', borderLeft: `1px solid ${C.border}` }}><span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted }}>{e.code}</span></td>
+                                            <td style={{ padding: '10px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderLeft: `1px solid ${C.border}` }}>{e.name}</td>
+                                            <td dir="ltr" style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}>{fmt(e.balance)}</td>
+                                        </tr>
+                                    ))}
+                                    <tr style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(59, 130, 246, 0.02)' }}>
+                                        <td style={{ padding: '10px 16px', borderLeft: `1px solid ${C.border}` }}>—</td>
+                                        <td style={{ padding: '10px 16px', fontSize: '12px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO, borderLeft: `1px solid ${C.border}` }}>صافي الربح / الخسارة</td>
+                                        <td dir="ltr" style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: INTER }}>{fmt(data.netIncome)}</td>
+                                    </tr>
+                                    <tr style={{ background: 'rgba(59, 130, 246, 0.08)', borderTop: `1px solid #3b82f633` }}>
+                                        <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, borderLeft: `1px solid ${C.border}` }}>إجمالي حقوق الملكية</td>
+                                        <td dir="ltr" style={{ padding: '12px 20px', textAlign: 'right', fontWeight: 950, color: '#3b82f6', fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalEquities)}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Grand Total Row */}
+                        <div style={{
+                            padding: '16px 24px',
+                            background: isBalanced ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                            borderRadius: '16px',
+                            border: `1.5px solid ${isBalanced ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)'}`,
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                             <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>إجمالي الخصوم وحقوق الملكية</span>
+                             <span dir="ltr" style={{ fontSize: '18px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <small style={{fontSize: '11px'}}>{getCurrencyName(currency)}</small></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '24px', padding: '14px 18px', background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '12px' }}>
+                    <Info size={16} style={{ color: C.primary }} />
+                    <p style={{ margin: 0, fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>
+                        الميزانية متزنة تفصيلياً: <span style={{ color: C.success, fontWeight: 800 }}>الأصول ({fmt(data.totalAssets)})</span> = <span style={{ color: C.primary, fontWeight: 800 }}>الخصوم وحقوق الملكية ({fmt(data.totalLiabilitiesAndEquities)})</span>
+                    </p>
+                </div>
+            </div>
+
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg) } }
+                .print-only { display: none; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    .print-main-grid { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 20px !important; }
+                    .print-table-container { background: white !important; border: 1px solid #e2e8f0 !important; border-radius: 0 !important; }
+                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div, span, h2, h3, p, small { color: #000 !important; }
+                    th, td { font-size: 10px !important; padding: 6px 10px !important; }
+                }
+            `}</style>
+        </DashboardLayout>
+    );
+}

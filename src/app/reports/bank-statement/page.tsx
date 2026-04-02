@@ -1,0 +1,301 @@
+'use client';
+
+import React, { useState, useEffect, useCallback } from 'react';
+import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
+import { useSession } from 'next-auth/react';
+import DashboardLayout from '@/components/DashboardLayout';
+import CustomSelect from '@/components/CustomSelect';
+import ReportHeader from '@/components/ReportHeader';
+import {
+    Calendar, Search, Printer, Landmark,
+    ArrowUpRight, ArrowDownRight, Loader2, FileText, FileDown,
+    History, TrendingUp, TrendingDown, UserCircle
+} from 'lucide-react';
+import * as XLSX from 'xlsx';
+
+const getCurrencyName = (code: string) => {
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    return map[code] || code;
+};
+
+const SC = '#10b981';
+const DC = '#ef4444';
+
+export default function BankStatementPage() {
+    const { data: session } = useSession();
+    const currency = (session?.user as any)?.currency || 'EGP';
+
+    const [from, setFrom] = useState('');
+    const [to, setTo] = useState('');
+    const [selectedId, setSelectedId] = useState('');
+    const [treasuries, setTreasuries] = useState<any[]>([]);
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    useEffect(() => {
+        const fetchTreasuries = async () => {
+            try {
+                const res = await fetch('/api/treasuries');
+                if (res.ok) {
+                    const all = await res.json();
+                    setTreasuries(all.filter((t: any) => t.type === 'bank'));
+                }
+            } catch { }
+        };
+        fetchTreasuries();
+    }, []);
+
+    const fetchReport = useCallback(async (id: string = selectedId) => {
+        if (!id) { setData(null); return; }
+        setLoading(true);
+        try {
+            const params = new URLSearchParams({ treasuryId: id });
+            if (from) params.set('from', from);
+            if (to) params.set('to', to);
+            const res = await fetch(`/api/reports/treasury-bank-report?${params.toString()}`);
+            if (res.ok) {
+                const result = await res.json();
+                setData(result);
+                setError('');
+            } else {
+                setError('فشل جلب البيانات');
+            }
+        } catch { 
+            setError('خطأ في الاتصال بالخادم');
+        } finally { 
+            setLoading(false); 
+        }
+    }, [selectedId, from, to]);
+
+    const movements = data ? (() => {
+        let running = data.openingBalance;
+        return data.movements.map((m: any) => {
+            const before = running;
+            if (m.type === 'receipt') running += m.amount;
+            else running -= m.amount;
+            return { ...m, balanceBefore: before, balanceAfter: running };
+        });
+    })() : [];
+
+    const exportToExcel = () => {
+        if (!data || !movements.length) return;
+        const excelData = [
+            {
+                'التاريخ': '—',
+                'البيان / الجهة': 'رصيد بنكي منقول (قبل الفترة)',
+                'الرصيد قبل': '—',
+                'إيداع (+)': '—',
+                'سحب (-)': '—',
+                'الرصيد بعد': data.openingBalance
+            },
+            ...movements.map((m: any) => ({
+                'التاريخ': new Date(m.date).toLocaleDateString('en-GB'),
+                'البيان / الجهة': `${m.party} - ${m.description}`,
+                'الرصيد قبل': m.balanceBefore,
+                'إيداع (+)': m.type === 'receipt' ? m.amount : 0,
+                'سحب (-)': m.type === 'payment' ? m.amount : 0,
+                'الرصيد بعد': m.balanceAfter
+            }))
+        ];
+        const ws = XLSX.utils.json_to_sheet(excelData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'كشف حساب بنكي');
+        XLSX.writeFile(wb, `كشف_حساب_بنكي_${data.treasury.name}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+    };
+
+    return (
+        <DashboardLayout>
+            <div dir="rtl" style={PAGE_BASE}>
+                <ReportHeader 
+                    title="كشف حساب بنكي" 
+                    subtitle="متابعة دقيقة لكافة العمليات البنكية، السحوبات، الإيداعات، والتحويلات المصرفية." 
+                    backTab="treasury-bank"
+                    onExportPdf={() => window.print()}
+                    onExportExcel={exportToExcel}
+                />
+
+                {/* Header للطباعة فقط */}
+                <div className="print-only">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
+                        <div style={{ textAlign: 'right' }}>
+                            <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
+                            {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>}
+                        </div>
+                        <div style={{ textAlign: 'center' }}>
+                            <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>كشف حساب بنكي</h3>
+                            {data && <div style={{ fontSize: '12px', color: '#000', fontWeight: 800, fontFamily: CAIRO }}>{data.treasury.name}</div>}
+                        </div>
+                        <div style={{ maxWidth: '150px', textAlign: 'left' }}>
+                            {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0 }}>
+                    <div style={{ flex: 1, position: 'relative' }}>
+                        <CustomSelect
+                            value={selectedId}
+                            onChange={val => { setSelectedId(val); fetchReport(val); }}
+                            placeholder="اختر الحساب البنكي لمتابعة حركته..."
+                            options={[
+                                { value: '', label: '-- اختر الحساب البنكي من القائمة --' },
+                                ...treasuries.map(t => ({ value: t.id, label: t.name }))
+                            ]}
+                            style={{ 
+                                width: '100%', height: '42.5px', padding: '0 15px', 
+                                borderRadius: '12px', border: `1px solid ${C.border}`, 
+                                background: C.card, color: C.textPrimary, fontSize: '13.5px', 
+                                fontFamily: CAIRO, fontWeight: 500 
+                            }}
+                        />
+                    </div>
+                    
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
+                        <div style={{ width: '160px' }}>
+                            <input type="date" value={from} onChange={e => setFrom(e.target.value)}
+                                style={{ 
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    fontWeight: 600, outline: 'none', fontFamily: INTER
+                                }}
+                            />
+                        </div>
+                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
+                        <div style={{ width: '160px' }}>
+                            <input type="date" value={to} onChange={e => setTo(e.target.value)}
+                                style={{ 
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    borderRadius: '12px', border: `1px solid ${C.border}`,
+                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                    fontWeight: 600, outline: 'none', fontFamily: INTER
+                                }}
+                            />
+                        </div>
+                        <button onClick={() => fetchReport()} disabled={loading} style={{ 
+                            height: '42px', padding: '0 24px', borderRadius: '12px', 
+                            background: C.primary, color: '#fff', border: 'none',
+                            fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
+                            display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
+                            boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
+                        }}>
+                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
+                            تحديث التقرير
+                        </button>
+                    </div>
+                </div>
+
+                {loading ? (
+                    <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري سحب كشف الحساب البنكي...</span>
+                    </div>
+                ) : !data ? (
+                    <div style={{ padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <Landmark size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>بانتظار اختيار الحساب البنكي</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>يرجى اختيار الحساب البنكي وتحديد الفترة الزمنية لعرض كشف الحركة التفصيلي.</p>
+                    </div>
+                ) : (
+                    <>
+                        {/* Summary Stats Cards */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            {[
+                                { label: 'رصيد مرحل (قبل)', value: data.openingBalance, color: '#3b82f6', icon: <History size={20} />, sign: 'الرصيد في بداية الفترة' },
+                                { label: 'إجمالي الإيداعات', value: data.movements.reduce((s: number, m: any) => m.type === 'receipt' ? s + m.amount : s, 0), color: SC, icon: <TrendingUp size={20} />, sign: 'وارد للحساب (+)' },
+                                { label: 'إجمالي السحوبات', value: data.movements.reduce((s: number, m: any) => m.type === 'payment' ? s + m.amount : s, 0), color: DC, icon: <TrendingDown size={20} />, sign: 'صادر من الحساب (-)' },
+                                { label: 'صافي الرصيد البنكي', value: data.currentBalance, color: data.currentBalance >= 0 ? SC : DC, icon: <FileText size={20} />, sign: 'الرصيد الدفتري الحالي' },
+                            ].map((s: any, i: number) => (
+                                <div key={i} style={{
+                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
+                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                    transition: 'all 0.2s', boxShadow: '0 2px 8px -4px rgba(0,0,0,0.1)'
+                                }}>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value.toLocaleString('en-US')}</span>
+                                            <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                        </div>
+                                        <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
+                                    </div>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                        {s.icon}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                                            {['التاريخ', 'بيان العملية / التحويل', 'الرصيد قبل', 'إيداع (+)', 'سحب (-)', 'الرصيد بعد'].map((h, i) => (
+                                                <th key={i} style={{ 
+                                                    padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
+                                                    textAlign: 'center', 
+                                                    fontWeight: 800, fontFamily: CAIRO 
+                                                }}>{h}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
+                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'right', fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>رصيد منقول (قبل الفترة المستعرضة)</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: data.openingBalance >= 0 ? SC : DC, fontSize: '15px', fontFamily: INTER }}>{data.openingBalance.toLocaleString('en-US')}</td>
+                                        </tr>
+                                        {movements.map((m: any, i: number) => (
+                                            <tr key={m.id + i} 
+                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted, fontSize: '11.5px', fontFamily: INTER }}>
+                                                    {new Date(m.date).toLocaleDateString('en-GB')}
+                                                </td>
+                                                <td style={{ padding: '14px 20px' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{m.party}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, textAlign: 'center', fontFamily: CAIRO, marginTop: '2px' }}>{m.description}</div>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted, fontSize: '13.5px', fontFamily: INTER }}>{m.balanceBefore.toLocaleString('en-US')}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 900, fontSize: '14.5px', fontFamily: INTER }}>{m.type === 'receipt' ? m.amount.toLocaleString('en-US') : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 900, fontSize: '14.5px', fontFamily: INTER }}>{m.type === 'payment' ? m.amount.toLocaleString('en-US') : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '15px', fontFamily: INTER, background: 'rgba(255,255,255,0.01)' }}>{m.balanceAfter.toLocaleString('en-US')}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                    <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+                                        <tr>
+                                            <td colSpan={3} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>تحليل الحركة البنكية الكلية</td>
+                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>+{data.movements.reduce((s: number, m: any) => m.type === 'receipt' ? s + m.amount : s, 0).toLocaleString('en-US')}</td>
+                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>-{data.movements.reduce((s: number, m: any) => m.type === 'payment' ? s + m.amount : s, 0).toLocaleString('en-US')}</td>
+                                            <td style={{ padding: '20px 24px', textAlign: 'center', color: C.textPrimary, fontSize: '16px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>{data.currentBalance.toLocaleString('en-US')}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </>
+                )}
+            </div>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+                .animate-spin { animation: spin 1s linear infinite; }
+                .print-only { display: none; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div, span, h2, h3, p { color: #000 !important; }
+                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
+                }
+                input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; cursor: pointer; }
+            `}</style>
+        </DashboardLayout>
+    );
+}

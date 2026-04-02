@@ -1,0 +1,248 @@
+'use client';
+
+import React, { useState, useEffect, useCallback, use } from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
+import { useRouter } from 'next/navigation';
+import { 
+    Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart, 
+    Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet
+} from 'lucide-react';
+import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
+import { THEME, C, CAIRO, INTER, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+import { useCurrency } from '@/hooks/useCurrency';
+import { useSession } from 'next-auth/react';
+
+interface PurchaseInvoice {
+    id: string;
+    invoiceNumber: number;
+    date: string;
+    supplier: { name: string; phone?: string; balance: number } | null;
+    customer: { name: string; phone?: string; balance: number } | null;
+    warehouse: { name: string } | null;
+    subtotal: number;
+    discount: number;
+    total: number;
+    paidAmount: number;
+    remaining: number;
+    paymentMethod: 'cash' | 'bank' | 'credit';
+    notes?: string;
+    lines: {
+        id: string;
+        item: { name: string; code: string; unit?: { name: string } };
+        quantity: number;
+        price: number;
+        total: number;
+    }[];
+}
+
+export default function PurchaseDetailPage(props: { params: Promise<{ id: string }> }) {
+    const params = use(props.params);
+    const router = useRouter();
+    const { symbol: cSymbol } = useCurrency();
+    const { data: session } = useSession();
+    const [invoice, setInvoice] = useState<PurchaseInvoice | null>(null);
+    const [company, setCompany] = useState<CompanyInfo>({});
+    const [loading, setLoading] = useState(true);
+
+    const fetchDetail = useCallback(async () => {
+        try {
+            const [invR, coR] = await Promise.all([
+                fetch(`/api/purchases?id=${params.id}`),
+                fetch('/api/company')
+            ]);
+            if (invR.ok) setInvoice(await invR.json());
+            if (coR.ok) setCompany(await coR.json());
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
+    }, [params.id]);
+
+    useEffect(() => { fetchDetail(); }, [fetchDetail]);
+
+    if (loading) return (
+        <DashboardLayout>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textSecondary }}>
+                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
+            </div>
+        </DashboardLayout>
+    );
+
+    if (!invoice) return (
+        <DashboardLayout>
+            <div style={{ textAlign: 'center', padding: '100px', color: C.danger }}>الفاتورة غير موجودة أو تم حذفها</div>
+        </DashboardLayout>
+    );
+
+    const fmt = (v: number) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const getStatus = () => {
+        if (invoice.paidAmount >= invoice.total) return { label: 'مدفوعة بالكامل', color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
+        if (invoice.paidAmount > 0) return { label: 'دفع جزئي', color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
+        return { label: 'غير مدفوعة (آجل)', color: C.danger, icon: AlertCircle, bg: 'rgba(239,68,68,0.1)' };
+    };
+
+    const status = getStatus();
+
+    return (
+        <DashboardLayout>
+            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+                
+                <PageHeader 
+                    title={`تفاصيل فاتورة مشتريات #${invoice.invoiceNumber}`}
+                    subtitle={`تاريخ الفاتورة: ${new Date(invoice.date).toLocaleDateString('en-GB')} — سجل الحالة المالية والتوريد`}
+                    icon={Receipt}
+                    backUrl="/purchases"
+                    primaryButton={{
+                        label: 'طباعة الفاتورة',
+                        onClick: () => {
+                            const branches = (session?.user as any)?.branches || [];
+                            const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
+                            printA4Invoice(invoice, 'purchase', { ...company, branchName }, { partyBalance: invoice.supplier?.balance || invoice.customer?.balance });
+                        },
+                        icon: Printer
+                    }}
+                />
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '20px' }}>
+                    
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        
+                        {/* ── Invoice Metadata Overview ── */}
+                        <div style={{ ...SC, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <User size={20} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>المورد / الشريك</p>
+                                    <p style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.supplier?.name || invoice.customer?.name || '—'}</p>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Building2 size={20} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>مخزن الاستلام</p>
+                                    <p style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: status.bg, color: status.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <status.icon size={20} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>حالة السداد</p>
+                                    <p style={{ fontSize: '14px', fontWeight: 800, color: status.color, margin: 0 }}>{status.label}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── Items Table ── */}
+                        <div style={TABLE_STYLE.container}>
+                            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={STitle}><Package size={14} /> الأصناف المدرجة</div>
+                                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} عناصر</div>
+                            </div>
+                            <table style={TABLE_STYLE.table}>
+                                <thead>
+                                    <tr style={TABLE_STYLE.thead}>
+                                        <th style={TABLE_STYLE.th(true)}>الصنف</th>
+                                        <th style={TABLE_STYLE.th(false)}>الوحدة</th>
+                                        <th style={TABLE_STYLE.th(false)}>الكمية</th>
+                                        <th style={TABLE_STYLE.th(false)}>التكلفة</th>
+                                        <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {invoice.lines.map((l, idx) => (
+                                        <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
+                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'right' }}>
+                                                <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
+                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
+                                            </td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || 'حبة'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {invoice.notes && (
+                            <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
+                                <div style={{ ...STitle, fontSize: '11px', color: C.textMuted }}><Info size={12} /> ملاحظات إضافية</div>
+                                <p style={{ fontSize: '13px', color: C.textSecondary, margin: '8px 0 0', lineHeight: 1.6 }}>{invoice.notes}</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ── Financial Summary (Left Corner) ── */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        <div style={SC}>
+                            <div style={STitle}><Wallet size={14} /> ملخص الحساب</div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>إجمالي الأصناف</span>
+                                    <span style={{ fontWeight: 700, fontFamily: INTER }}>{fmt(invoice.subtotal)} {cSymbol}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>إجمالي الخصم</span>
+                                    <span style={{ fontWeight: 700, fontFamily: INTER, color: C.danger }}>- {fmt(invoice.discount)} {cSymbol}</span>
+                                </div>
+                                <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
+                                    <span style={{ fontWeight: 800, fontSize: '12px' }}>صافي المبلغ</span>
+                                    <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: INTER }}>{fmt(invoice.total)} {cSymbol}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={SC}>
+                            <div style={STitle}><CreditCard size={14} /> تفاصيل السداد</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>نوع الدفع</span>
+                                    <span style={{ fontWeight: 800, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
+                                        {invoice.paymentMethod === 'cash' ? 'نقدي (كاش)' : invoice.paymentMethod === 'bank' ? 'بنكي' : 'آجل'}
+                                    </span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>المبلغ المدفوع</span>
+                                    <span style={{ fontWeight: 800, color: C.success, fontFamily: INTER }}>{fmt(invoice.paidAmount)} {cSymbol}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>المتبقي (آجل)</span>
+                                    <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: INTER }}>{fmt(invoice.remaining)} {cSymbol}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button 
+                            onClick={() => router.push('/purchases')}
+                            style={{ 
+                                height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`,
+                                background: 'transparent', color: C.textSecondary, fontWeight: 700,
+                                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
+                                transition: 'all 0.2s', marginTop: '10px'
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                        >
+                            <ArrowRight size={16} /> العودة للقائمة
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } `}</style>
+        </DashboardLayout>
+    );
+}

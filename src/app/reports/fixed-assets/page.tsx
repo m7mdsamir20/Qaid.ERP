@@ -1,0 +1,333 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
+import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
+import { useSession } from 'next-auth/react';
+import {
+    FileBarChart2, TrendingDown, DollarSign,
+    Building2, Loader2, Search, CheckCircle2
+} from 'lucide-react';
+import { C, CAIRO, INTER, PAGE_BASE, IS, focusIn, focusOut } from '@/constants/theme';
+
+/* ── Types ── */
+interface FixedAsset {
+    id: string;
+    code: string;
+    name: string;
+    category: string;
+    purchaseDate: string;
+    purchaseCost: number;
+    accumulatedDepreciation: number;
+    netBookValue: number;
+    depreciationRate: number;
+    depreciationMethod: 'straight' | 'declining';
+    status: 'active' | 'disposed' | 'fully_dep';
+    salvageValue: number;
+}
+
+const getCurrencyName = (code: string) => {
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    return map[code] || code;
+};
+
+const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
+    active:    { label: 'نشط',           color: '#10b981', bg: 'rgba(16,185,129,0.1)'  },
+    disposed:  { label: 'مُستبعد',        color: '#fb7185', bg: 'rgba(251,113,133,0.1)'   },
+    fully_dep: { label: 'مستهلك كلياً',  color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' },
+};
+
+const METHOD_MAP: Record<string, string> = {
+    straight: 'قسط ثابت', declining: 'قسط متناقص',
+};
+
+const CATEGORIES = ['الكل', 'مركبات', 'أجهزة وحاسبات', 'أراضي ومباني', 'أثاث ومفروشات', 'معدات وآلات', 'أخرى'];
+
+const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+export default function FixedAssetsReportPage() {
+    const { data: session } = useSession();
+    const currency = (session?.user as any)?.currency || 'EGP';
+
+    const [assets, setAssets]       = useState<FixedAsset[]>([]);
+    const [loading, setLoading]     = useState(true);
+    const [search, setSearch]       = useState('');
+    const [catFilter, setCatFilter] = useState('الكل');
+    const [statusFilter, setStatusFilter] = useState('all');
+
+    /* ── Fetch from API ── */
+    useEffect(() => {
+        fetch('/api/fixed-assets')
+            .then(r => r.json())
+            .then(d => setAssets(Array.isArray(d) ? d : []))
+            .catch(() => setAssets([]))
+            .finally(() => setLoading(false));
+    }, []);
+
+    /* ── Filter ── */
+    const filtered = assets.filter(a => {
+        const matchSearch = (a.name || '').toLowerCase().includes(search.toLowerCase()) || 
+                          (a.code || '').toLowerCase().includes(search.toLowerCase());
+        const matchCat    = catFilter === 'الكل' || a.category === catFilter;
+        const matchStatus = statusFilter === 'all' || a.status === statusFilter;
+        return matchSearch && matchCat && matchStatus;
+    });
+
+    /* ── Totals ── */
+    const totalCost  = filtered.reduce((s, a) => s + (a.purchaseCost || 0), 0);
+    const totalAccum = filtered.reduce((s, a) => s + (a.accumulatedDepreciation || 0), 0);
+    const totalNet   = filtered.reduce((s, a) => s + (a.netBookValue || 0), 0);
+
+    /* ── Dep % of cost ── */
+    const depPct = totalCost > 0 ? (totalAccum / totalCost * 100).toFixed(1) : '0.0';
+
+    const exportToPDF = () => window.print();
+
+    return (
+        <DashboardLayout>
+            <div dir="rtl" style={PAGE_BASE}>
+
+                {/* ── Header ── */}
+                <ReportHeader
+                    title="تقرير الأصول الثابتة"
+                    subtitle="كشف تفصيلي بالأصول — التكلفة التاريخية ومجمع الإهلاك والقيمة الدفترية"
+                    backTab="financial"
+                    onExportPdf={exportToPDF}
+                />
+
+                {loading ? (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: '16px' }}>
+                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
+                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>جاري تحميل بيانات الأصول...</span>
+                    </div>
+                ) : (
+                    <>
+                        {/* Header للطباعة فقط */}
+                        <div className="print-only">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
+                                <div style={{ textAlign: 'right' }}>
+                                    <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>
+                                        {(session?.user as any)?.companyName || ''}
+                                    </h2>
+                                    {(session?.user as any)?.taxNumber && (
+                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>
+                                    )}
+                                    {(session?.user as any)?.commercialRegister && (
+                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>
+                                    )}
+                                    {(session?.user as any)?.phone && (
+                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الهاتف: {(session?.user as any)?.phone}</div>
+                                    )}
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <h3 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>كشف الأصول الثابتة والإهلاكات</h3>
+                                    <div style={{ fontSize: '12px', color: '#000', fontWeight: 700, fontFamily: INTER }}>
+                                        التاريخ: {new Date().toLocaleDateString('en-GB')}
+                                    </div>
+                                </div>
+                                <div style={{ maxWidth: '150px', textAlign: 'left' }}>
+                                    {(session?.user as any)?.companyLogo && (
+                                        <img src={(session?.user as any)?.companyLogo} alt="logo"
+                                            style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* ── KPI Cards ── */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
+                            {[
+                                { label: 'إجمالي التكلفة', value: fmt(totalCost), color: '#3b82f6', icon: <DollarSign size={18} /> },
+                                { label: 'مجمع الإهلاك', value: fmt(totalAccum), color: '#fb7185', icon: <TrendingDown size={18} /> },
+                                { label: 'الصافي الدفتري', value: fmt(totalNet), color: '#10b981', icon: <Building2 size={18} /> },
+                                { label: 'نسبة الاستهلاك', value: `${depPct}%`, color: '#f59e0b', icon: <FileBarChart2 size={18} /> },
+                            ].map((s, i) => (
+                                <div key={i} style={{
+                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
+                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                                }}>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <span className="stat-value" style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            {i < 3 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                        </div>
+                                    </div>
+                                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                        {s.icon}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* ── Filters (Standardized & Expanded) ── */}
+                {/* ── Filters (Unified Premium Design) ── */}
+                <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
+                    {/* Search Field */}
+                    <div style={{ flex: 1, position: 'relative' }}>
+                        <Search size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
+                        <input 
+                            value={search} 
+                            onChange={e => setSearch(e.target.value)}
+                            onFocus={(e) => {
+                                focusIn(e);
+                                e.currentTarget.style.background = 'rgba(15, 23, 42, 0.9)';
+                            }}
+                            onBlur={(e) => {
+                                focusOut(e);
+                                e.currentTarget.style.background = C.card;
+                            }}
+                            placeholder="بحث شامل بالأصول (الاسم أو الكود)..."
+                            style={{ 
+                                ...IS, 
+                                width: '100%', 
+                                height: '42px', 
+                                paddingRight: '44px', 
+                                borderRadius: '12px', 
+                                background: C.card,
+                                border: `1px solid ${C.border}`,
+                                transition: 'all 0.2s ease-in-out',
+                                fontSize: '13.5px',
+                                fontFamily: CAIRO
+                            }} 
+                        />
+                    </div>
+
+                    {/* Category Filter */}
+                    <div style={{ width: '180px' }}>
+                        <CustomSelect 
+                            value={catFilter} 
+                            onChange={setCatFilter}
+                            icon={Building2} 
+                            placeholder="الفئة"
+                            options={CATEGORIES.map(c => ({ value: c, label: c }))}
+                            style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
+                        />
+                    </div>
+
+                    {/* Status Filters (Unified Background) */}
+                    <div style={{ 
+                        display: 'flex', 
+                        gap: '6px', 
+                        background: C.card, 
+                        padding: '4px', 
+                        borderRadius: '12px', 
+                        border: `1px solid ${C.border}`,
+                        height: '42px',
+                        alignItems: 'center'
+                    }}>
+                        {[
+                            { key: 'all',      label: 'الكل',          color: '#3b82f6' },
+                            { key: 'active',   label: 'نشط',           color: '#10b981' },
+                            { key: 'fully_dep',label: 'مستهلك كلياً',  color: '#94a3b8' },
+                            { key: 'disposed', label: 'مُستبعد',        color: '#fb7185' },
+                        ].map(btn => (
+                            <button key={btn.key} onClick={() => setStatusFilter(btn.key)} style={{
+                                height: '34px', 
+                                padding: '0 16px', 
+                                borderRadius: '8px', 
+                                border: 'none',
+                                fontSize: '11.5px', 
+                                fontWeight: 800, 
+                                cursor: 'pointer', 
+                                transition: 'all 0.2s', 
+                                fontFamily: CAIRO,
+                                background:  statusFilter === btn.key ? `${btn.color}20`  : 'transparent',
+                                color:       statusFilter === btn.key ? btn.color          : C.textMuted,
+                            }}>{btn.label}</button>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingLeft: '4px' }}>
+                    <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
+                        عدد الأصول المفلترة: <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
+                    </div>
+                </div>
+
+                        {/* ── Table (Unified Premium Design) ── */}
+                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                                        {['الكود', 'اسم الأصل', 'الفئة', 'تاريخ الشراء', 'التكلفة', 'مجمع الإهلاك', 'الصافي الدفتري', 'المعدل', 'الحالة'].map((h, i) => (
+                                            <th key={i} style={{ 
+                                                padding: '16px 20px', 
+                                                fontSize: '12px', 
+                                                fontWeight: 800, 
+                                                color: C.textSecondary, 
+                                                textAlign: 'right', 
+                                                fontFamily: CAIRO,
+                                                borderBottom: `1px solid ${C.border}` 
+                                            }}>{h}</th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {filtered.length === 0 ? (
+                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>لا توجد بيانات تطابق البحث حالياً</td></tr>
+                                    ) : filtered.map((a, i) => {
+                                        const st = STATUS_MAP[a.status];
+                                        const depPctRow = a.purchaseCost > 0
+                                            ? (a.accumulatedDepreciation / a.purchaseCost * 100).toFixed(0)
+                                            : '0';
+                                        return (
+                                            <tr key={a.id} 
+                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
+                                                onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
+                                                <td style={{ padding: '14px 20px' }}>
+                                                    <span style={{ fontFamily: INTER, fontSize: '11px', color: '#a78bfa', fontWeight: 900 }}>{a.code}</span>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{a.name}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '11.5px', color: C.textMuted, fontFamily: INTER }}>{a.purchaseDate?.split('T')[0]}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 750, fontFamily: INTER, textAlign: 'right' }}>{fmt(a.purchaseCost)}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'right' }}>
+                                                    <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 800, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)}</div>
+                                                    <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% مستهلك</div>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13.5px', color: '#10b981', fontWeight: 950, fontFamily: INTER, textAlign: 'right' }}>{fmt(a.netBookValue)}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12.5px', color: '#f59e0b', fontWeight: 800, fontFamily: INTER }}>{a.depreciationRate}%</td>
+                                                <td style={{ padding: '14px 20px' }}>
+                                                    <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
+                                                        {st.label}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                </tbody>
+                                <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
+                                    <tr>
+                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '12.5px', fontWeight: 850, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>إجمالي الأصول المفلترة ({filtered.length})</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: C.textPrimary, textAlign: 'right', fontFamily: INTER }}>{fmt(totalCost)}</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: '#fb7185', textAlign: 'right', fontFamily: INTER }}>{fmt(totalAccum)}</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '15px', fontWeight: 1000, color: '#10b981', textAlign: 'right', fontFamily: INTER }}>{fmt(totalNet)}</td>
+                                        <td colSpan={2} />
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </>
+                )}
+            </div>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg) } }
+                .print-only { display: none; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    .stat-value { font-size: 11px !important; color: #000 !important; }
+                    .stat-label { font-size: 9px !important; color: #666 !important; }
+                    .print-table-container { background: white !important; border: 1px solid #e2e8f0 !important; border-radius: 0 !important; }
+                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div, span, h2, h3, p, small { color: #000 !important; }
+                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
+                    tfoot td { background: #f8fafc !important; }
+                }
+            `}</style>
+        </DashboardLayout>
+    );
+}

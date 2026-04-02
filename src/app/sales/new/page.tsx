@@ -1,0 +1,1195 @@
+'use client';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import DashboardLayout from '@/components/DashboardLayout';
+import CustomSelect from '@/components/CustomSelect';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { Receipt, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus } from 'lucide-react';
+import { printSaleInvoice, CompanyInfo } from '@/lib/printInvoices';
+import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+import AppModal from '@/components/AppModal';
+import { useCurrency } from '@/hooks/useCurrency';
+import { getCurrencySymbol } from '@/lib/currency';
+
+interface Customer { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
+interface Warehouse { id: string; name: string; }
+interface Treasury { id: string; name: string; type: string; balance: number; }
+interface Item { id: string; code: string; name: string; sellPrice: number; description?: string; unit: any; stocks?: any[]; }
+interface InvoiceLine { itemId: string; itemCode: string; itemName: string; unit: string; quantity: number; price: number; total: number; stock: number; description?: string; taxRate?: number; taxAmount?: number; }
+
+// Using global theme constants instead of local variables
+
+const getUnitName = (u: any) => !u ? '' : typeof u === 'string' ? u : (u.name || u.nameEn || '');
+const fmt = (v: any) => {
+    if (v === '' || v === undefined || v === null) return '';
+    const s = v.toString().replace(/,/g, '');
+    const parts = s.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join('.');
+};
+
+
+
+export default function NewSalePage() {
+    const router = useRouter();
+    const { data: session } = useSession();
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isServices = businessType === 'SERVICES';
+    const activeBranchId = (session?.user as any)?.activeBranchId;
+    const allBranches: any[] = (session?.user as any)?.branches || [];
+    const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
+    const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
+    const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
+    const { symbol: cSymbol } = useCurrency();
+    const [customers,  setCustomers]  = useState<Customer[]>([]);
+    const [suppliers,  setSuppliers]  = useState<any[]>([]);
+    const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
+    const [treasuries, setTreasuries] = useState<Treasury[]>([]);
+    const [items,      setItems]      = useState<Item[]>([]);
+    const [company,    setCompany]    = useState<CompanyInfo>({});
+    const [nextNum,    setNextNum]    = useState(1);
+    const [loading,    setLoading]    = useState(true);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [showAddCust,setShowAddCust]= useState(false);
+    const [newPartnerType, setNewPartnerType] = useState<'customer' | 'supplier'>('customer');
+
+    const itemSelectRef = useRef<any>(null);
+    const qtyRef     = useRef<HTMLInputElement>(null);
+    const [entryItemId,  setEntryItemId]  = useState('');
+    const [entryDescription, setEntryDescription] = useState('');
+    const [entryQty,     setEntryQty]     = useState<number | ''>(1);
+    const [entryPrice,   setEntryPrice]   = useState<number | ''>('');
+    const [entryTaxRate, setEntryTaxRate] = useState<number | ''>(0);
+    const [entryStock,   setEntryStock]   = useState<number | null>(null);
+    
+    const [lines,        setLines]        = useState<InvoiceLine[]>([]);
+    const [attachments,  setAttachments]  = useState<{ name: string; type: string; data: string }[]>([]);
+    const [taxSettings,  setTaxSettings]  = useState<any>(null);
+    const [fieldErrors,  setFieldErrors]  = useState<Record<string, string>>({});
+
+    const clearError = (field: string) => {
+        if (fieldErrors[field]) setFieldErrors(prev => {
+            const next = { ...prev };
+            delete next[field];
+            return next;
+        });
+    };
+
+    const [form, setForm] = useState<any>({
+        customerId: '', warehouseId: '', discountPct: 0, discountAmt: 0,
+        paidAmount: '', paymentType: 'cash' as 'cash' | 'bank' | 'credit',
+        treasuryId: '', bankId: '', notes: '',
+        date: new Date().toISOString().split('T')[0],
+        taxRate: 0,
+        taxAmount: 0,
+    });
+
+    const subtotal   = lines.reduce((s, l) => s + l.total, 0);
+    const afterDisc  = Math.max(0, subtotal - (form.discountAmt || 0));
+    
+    // Automatically update taxAmount when afterDisc or taxRate changes
+    useEffect(() => {
+        if (taxSettings?.enabled) {
+            let amt = 0;
+            if (taxSettings.isInclusive) {
+                amt = afterDisc - (afterDisc / (1 + form.taxRate / 100));
+            } else {
+                amt = afterDisc * (form.taxRate / 100);
+            }
+            setForm((f: any) => ({ ...f, taxAmount: amt }));
+        } else {
+            setForm((f: any) => ({ ...f, taxAmount: 0 }));
+        }
+    }, [afterDisc, form.taxRate, taxSettings?.enabled, taxSettings?.isInclusive]);
+
+    const netTotal   = afterDisc + (taxSettings?.isInclusive ? 0 : form.taxAmount);
+    const diff       = netTotal - (form.paidAmount || 0);
+    const remaining  = Math.max(0, diff);
+    const overpaid   = Math.max(0, (form.paidAmount || 0) - netTotal);
+
+    const partners = [
+        ...(Array.isArray(customers) ? customers.map(c => ({ ...c, partnerType: 'customer' })) : []),
+        ...(Array.isArray(suppliers) ? suppliers.map(s => ({ ...s, partnerType: 'supplier' })) : [])
+    ];
+    const selectedPartner= partners.find(p => p.id === form.customerId);
+
+    const loadData = useCallback(async () => {
+        try {
+            const [invR, custR, supR, whR, trR, itemR, coR] = await Promise.all([
+                fetch('/api/sales?justNextNum=true'), fetch('/api/customers'), fetch('/api/suppliers'),
+                fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items'),
+                fetch('/api/company'),
+            ]);
+            const nextNumData = await invR.json();
+            setNextNum(nextNumData.nextNum || 1);
+            
+            const cusData = await custR.json();
+            const cus = Array.isArray(cusData) ? cusData : [];
+            
+            const supsData = await supR.json();
+            const sups = Array.isArray(supsData) ? supsData : [];
+            
+            const whsData = await whR.json();
+            const whs = Array.isArray(whsData) ? whsData : [];
+            
+            const trsData = await trR.json();
+            const trs = Array.isArray(trsData) ? trsData : [];
+            
+            const itsData = await itemR.json();
+            const its = Array.isArray(itsData) ? itsData : [];
+
+            setCustomers(cus); setSuppliers(sups);
+            setWarehouses(whs); setTreasuries(trs);
+            setItems(its);
+            if (coR.ok) setCompany(await coR.json());
+
+            const taxRes = await fetch('/api/settings');
+            if (taxRes.ok) {
+                const taxData = await taxRes.json();
+                if (taxData.company?.taxSettings) {
+                    const ts = typeof taxData.company.taxSettings === 'string' ? JSON.parse(taxData.company.taxSettings) : taxData.company.taxSettings;
+                    setTaxSettings(ts);
+                    if (ts.enabled) {
+                        setForm((f: any) => ({ ...f, taxRate: ts.rate }));
+                    }
+                }
+            }
+
+            // Set Defaults
+            const lastWh = localStorage.getItem('last_warehouse_id');
+            const defaultWh = (lastWh && whs.some((w: any) => w.id === lastWh)) ? lastWh : (whs.length > 0 ? whs[0].id : '');
+            if (defaultWh) setForm((f: any) => ({ ...f, warehouseId: defaultWh }));
+            
+            const firstCash = trs.find((t: any) => t.type !== 'bank');
+            if (firstCash) setForm((f: any) => ({ ...f, treasuryId: firstCash.id }));
+            
+            const firstBank = trs.find((t: any) => t.type === 'bank');
+            if (firstBank) setForm((f: any) => ({ ...f, bankId: firstBank.id }));
+
+        } catch { } finally { setLoading(false); }
+    }, []);
+
+    useEffect(() => { loadData(); }, [loadData]);
+
+    useEffect(() => {
+        if (!entryItemId || !form.warehouseId) { setEntryStock(null); return; }
+        const item = items.find(i => i.id === entryItemId);
+        if (item) {
+            const stock = item.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
+            setEntryStock(stock);
+        } else {
+            setEntryStock(null);
+        }
+    }, [entryItemId, form.warehouseId, items]);
+
+    useEffect(() => {
+        if (entryItemId) {
+            const item = items.find(i => i.id === entryItemId);
+            if (item) { 
+                setEntryPrice(item.sellPrice); 
+                setTimeout(() => qtyRef.current?.focus(), 50);
+            }
+        }
+    }, [entryItemId, items]);
+
+    const addLine = useCallback(() => {
+        setFieldErrors({});
+        const errors: Record<string, string> = {};
+
+        const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
+
+        if (!isServices && !form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن أولاً';
+        if (!form.customerId) errors.customerId = 'يرجى اختيار العميل أولاً';
+        if (!entryItemId) errors.entryItemId = 'يرجى اختيار الخدمة';
+        if (entryQty === '' || Number(entryQty) <= 0) errors.entryQty = 'الكمية؟';
+        if (entryPrice === '' || Number(entryPrice) < 0) errors.entryPrice = 'السعر؟';
+
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(prev => ({ ...prev, ...errors }));
+            return;
+        }
+
+        const item = items.find(i => i.id === entryItemId);
+        if (!item) return;
+
+        // ✅ تخطي فحص المخزون في حالة نشاط الخدمات
+        const stock = isServices ? 999999 : (item.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0);
+        const qty = Number(entryQty);
+
+        if (!isServices) {
+            if (stock <= 0) {
+                setFieldErrors(prev => ({ ...prev, entryItemId: 'ليس لديك رصيد من هذا الصنف' }));
+                return;
+            }
+            if (qty > stock) {
+                setFieldErrors(prev => ({ ...prev, entryQty: `المتاح: ${stock}` }));
+                return;
+            }
+        }
+
+        const price = Number(entryPrice);
+
+        setLines(prev => {
+            const idx = prev.findIndex(l => l.itemId === item.id);
+            if (idx >= 0) {
+                const updated = [...prev];
+                const newQty  = updated[idx].quantity + qty;
+                if (newQty > stock) {
+                    setFieldErrors(prevE => ({ ...prevE, entryQty: `تجاوز المتاح (${stock})` }));
+                    return prev;
+                }
+                updated[idx] = { ...updated[idx], quantity: newQty, total: newQty * updated[idx].price };
+                return updated;
+            }
+            const taxRate = Number(entryTaxRate) || 0;
+            const taxAmountValue = (qty * price) * (taxRate / 100);
+
+            return [...prev, {
+                itemId:   item.id,
+                itemCode: item.code,
+                itemName: item.name,
+                unit:     getUnitName(item.unit),
+                quantity: qty,
+                price,
+                total:    (qty * price) + taxAmountValue,
+                stock,
+                description: entryDescription,
+                taxRate: taxRate,
+                taxAmount: taxAmountValue
+            }];
+        });
+
+        setEntryItemId('');
+        setEntryDescription('');
+        setEntryQty(1);
+        setEntryPrice('');
+        setEntryTaxRate(0);
+        setEntryStock(null);
+        setTimeout(() => itemSelectRef.current?.focus(), 50);
+    }, [entryItemId, entryQty, entryPrice, items, form.warehouseId, form.customerId]);
+
+    const removeLine = (i: number) => setLines(prev => prev.filter((_, idx) => idx !== i));
+    const editLine   = (i: number) => {
+        const l = lines[i];
+        setEntryItemId(l.itemId); 
+        setEntryQty(l.quantity); 
+        setEntryPrice(l.price);
+        setEntryDescription(l.description || '');
+        setEntryTaxRate(l.taxRate || 0);
+        removeLine(i); setTimeout(() => qtyRef.current?.focus(), 50);
+    };
+
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = e.target.files;
+        if (!files) return;
+        const newFiles = await Promise.all(Array.from(files).map(file => {
+            return new Promise<{ name: string; type: string; data: string }>((resolve) => {
+                const reader = new FileReader();
+                reader.onloadend = () => resolve({ name: file.name, type: file.type, data: reader.result as string });
+                reader.readAsDataURL(file);
+            });
+        }));
+        setAttachments(prev => [...prev, ...newFiles]);
+    };
+
+    const handleSubmit = async (andPrint = false) => {
+        setErrorMsg('');
+        setFieldErrors({});
+        const errors: Record<string, string> = {};
+
+        if (!form.customerId) errors.customerId = 'يرجى اختيار العميل';
+        if (!form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن';
+        
+        if (Object.keys(errors).length > 0) {
+            setFieldErrors(errors);
+            return;
+        }
+
+        if (lines.length === 0) {
+            setErrorMsg('يرجى إضافة صنف واحد على الأقل للفاتورة');
+            return;
+        }
+
+        // Final Stock Validation
+        const isServices = (session?.user as any)?.businessType === 'SERVICES';
+        if (!isServices) {
+            for (const line of lines) {
+                const item = items.find(i => i.id === line.itemId);
+                const available = item?.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
+                if (line.quantity > available) {
+                    setErrorMsg(`خطأ: الصنف (${line.itemName}) لم يعد متوفراً بالكمية المطلوبة. المتاح: ${available}`);
+                    return;
+                }
+            }
+        }
+
+        if (form.paymentType !== 'credit' && Number(form.paidAmount || 0) <= 0) {
+            setFieldErrors(prev => ({ ...prev, paidAmount: 'أدخل المبلغ' }));
+            return;
+        }
+
+        if (form.paymentType === 'cash' && Number(form.paidAmount || 0) > 0 && !form.treasuryId) {
+            setFieldErrors(prev => ({ ...prev, treasuryId: 'اختر الخزينة' }));
+            return;
+        }
+        if (form.paymentType === 'bank' && Number(form.paidAmount || 0) > 0 && !form.bankId) {
+            setFieldErrors(prev => ({ ...prev, bankId: 'اختر الحساب البنكي' }));
+            return;
+        }
+
+        setSubmitting(true);
+        try {
+            const res = await fetch('/api/sales', {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    date: form.date,
+                    warehouseId: form.warehouseId,
+                    customerId:  selectedPartner?.partnerType === 'customer' ? form.customerId : undefined,
+                    supplierId:  selectedPartner?.partnerType === 'supplier' ? form.customerId : undefined,
+                    discount: Number(form.discountAmt || 0), 
+                    paidAmount: Number(form.paidAmount || 0),
+                    paymentType: form.paymentType,
+                    treasuryId:  form.paymentType === 'cash' ? form.treasuryId : undefined,
+                    bankId:      form.paymentType === 'bank' ? form.bankId     : undefined,
+                    notes: form.notes, attachments,
+                    taxRate: Number(form.taxRate || 0),
+                    taxAmount: Number(form.taxAmount || 0),
+                    lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price) })),
+                }),
+            });
+            if (res.ok) {
+                const saved = await res.json();
+                if (andPrint) printSaleInvoice(saved, selectedPartner, nextNum, form, company);
+                router.push('/sales');
+            } else alert('فشل الحفظ');
+        } catch { alert('فشل الاتصال'); } finally { setSubmitting(false); }
+    };
+
+    if (loading) return (
+        <DashboardLayout>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: 'var(--text-muted)' }}>
+                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
+            </div>
+        </DashboardLayout>
+    );
+
+    /* ── Section card style ── */
+    const SC: React.CSSProperties = {
+        background: C.card,
+        border: `1px solid ${C.border}`,
+        borderRadius: '16px',
+        padding: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
+    };
+    const STitle: React.CSSProperties = {
+        fontSize: '13px', fontWeight: 800,
+        color: C.primary,
+        marginBottom: '16px',
+        display: 'flex', alignItems: 'center', gap: '8px',
+        fontFamily: CAIRO
+    };
+
+    const InlineError = ({ field }: { field: string }) => {
+        if (!fieldErrors[field]) return null;
+        return (
+            <div style={{
+                position: 'absolute',
+                top: '-32px', // أعلى قليلاً لتجنب التداخل مع العناوين
+                left: '4px',  // من جهة اليسار بدلاً من اليمين لتجنب التصادم مع "الصنف" وغيرها
+                fontSize: '11px',
+                color: '#fff',
+                fontWeight: 800,
+                background: 'linear-gradient(135deg, #ef4444, #b91c1c)',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                pointerEvents: 'none',
+                zIndex: 100,
+                boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                whiteSpace: 'nowrap',
+                animation: 'inlineErrorPush 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }}>
+                <AlertCircle size={12} strokeWidth={3} />
+                {fieldErrors[field]}
+                {/* سهم صغير أسفل الفقاعة */}
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-4px',
+                    left: '12px',
+                    width: '8px',
+                    height: '8px',
+                    background: '#b91c1c',
+                    transform: 'rotate(45deg)',
+                    borderRadius: '1px'
+                }} />
+            </div>
+        );
+    };
+
+    return (
+        <DashboardLayout>
+            <div dir="rtl" style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
+
+                {/* ── Header ── */}
+                <PageHeader
+                    title={isServices ? "فاتورة خدمة جديدة" : "فاتورة مبيعات جديدة"}
+                    subtitle={isServices ? "إصدار فاتورة لخدمة مقدمة وتحصيل قيمتها" : "إنشاء فاتورة مبيعات جديدة وحفظها في النظام"}
+                    icon={Receipt}
+                    backUrl="/sales"
+                />
+
+                {/* ── Branch Warning ── */}
+                {isAllBranches && (
+                    <div style={{
+                        display: 'flex', alignItems: 'center', gap: '14px',
+                        padding: '14px 20px', marginBottom: '16px',
+                        background: 'rgba(251,191,36,0.08)',
+                        border: '1px solid rgba(251,191,36,0.3)',
+                        borderRadius: '12px',
+                        fontFamily: CAIRO,
+                    }}>
+                        <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
+                        <div>
+                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
+                                يرجى تحديد فرع أولاً
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                                أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء الفاتورة
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
+
+                    {/* ══ Left: Main Content ══ */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+
+                        {/* Basic Data */}
+                        <div style={SC}>
+                            <div style={{ ...STitle, color: '#3b82f6' }}><Receipt size={12} /> بيانات الفاتورة</div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
+                                <div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>رقم الفاتورة</label>
+                                    </div>
+                                    <div style={{
+                                        height: '42px', borderRadius: '10px',
+                                        background: 'rgba(59,130,246,0.08)',
+                                        border: `1px solid ${C.border}`,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontFamily: INTER, fontWeight: 900,
+                                        fontSize: '13px', color: '#60a5fa',
+                                        letterSpacing: '1px',
+                                        boxSizing: 'border-box'
+                                    }}>
+                                        {isServices ? 'SRV' : 'SAL'}-{String(nextNum).padStart(5, '0')}
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>اسم العميل</label>
+                                        <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ عميل جديد</button>
+                                    </div>
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect 
+                                            value={form.customerId} 
+                                            onChange={v => { setForm((f: any) => ({ ...f, customerId: v })); clearError('customerId'); }} 
+                                            icon={Search} 
+                                            placeholder="ابحث واختر..." 
+                                            options={partners.map(p => ({ 
+                                                value: p.id, 
+                                                label: p.name,
+                                                sub: p.partnerType === 'supplier' ? 'مورد' : 'عميل'
+                                            }))} 
+                                        />
+                                        <InlineError field="customerId" />
+                                    </div>
+                                    {selectedPartner && (
+                                        <div style={{
+                                            marginTop: '10px',
+                                            padding: '6px 14px',
+                                            borderRadius: '24px',
+                                            fontSize: '12px',
+                                            fontWeight: 700,
+                                            display: 'inline-flex',
+                                            alignItems: 'center',
+                                            gap: '6px',
+                                            background: (selectedPartner?.partnerType === 'supplier'
+                                                ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
+                                                : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
+                                            ),
+                                            color: (selectedPartner?.partnerType === 'supplier'
+                                                ? selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
+                                                : selectedPartner.balance < 0 ? '#f87171' : selectedPartner.balance > 0 ? '#34d399' : '#475569'
+                                            ),
+                                            border: `1px solid ${
+                                                selectedPartner?.partnerType === 'supplier'
+                                                ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                            }`,
+                                        }}>
+                                            <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
+                                            {selectedPartner?.partnerType === 'supplier'
+                                                ? (selectedPartner.balance > 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                : (selectedPartner.balance < 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                            }
+                                        </div>
+                                    )}
+                                </div>
+                                { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
+                                    <div>
+                                        <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>مخزن الصرف</label>
+                                        </div>
+                                        <div style={{ position: 'relative' }}>
+                                            <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} placeholder="اختر المكان..." options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
+                                            <InlineError field="warehouseId" />
+                                        </div>
+                                    </div>
+                                )}
+                                <div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>تاريخ الفاتورة</label>
+                                    </div>
+                                    <div style={{ position: 'relative' }}>
+                                        <input type="date" value={form.date}
+                                            onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
+                                            style={{ ...IS, color: C.textSecondary, textAlign: 'left', direction: 'ltr', fontSize: '13px', fontFamily: INTER }}
+                                            onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>تاريخ الاستحقاق</label>
+                                    </div>
+                                    <div style={{ position: 'relative' }}>
+                                        <input type="date" value={form.dueDate || ''}
+                                            onChange={e => setForm((f: any) => ({ ...f, dueDate: e.target.value }))}
+                                            style={{ ...IS, color: '#fbbf24', textAlign: 'left', direction: 'ltr', fontSize: '13px', fontFamily: INTER, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
+                                            onFocus={focusIn} onBlur={focusOut} className="gold-date-icon" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Items */}
+                        <div style={SC}>
+                                <div style={{ ...STitle, color: '#3b82f6' }}>
+                                    <Package size={12} /> اضافة الاصناف
+                                </div>
+
+                            {/* Entry Row */}
+                            <div style={{ 
+                                background: 'rgba(255,255,255,0.01)', 
+                                borderRadius: '12px', 
+                                padding: '14px', 
+                                marginBottom: '16px', 
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '14px', 
+                                border: `1px solid ${C.border}`,
+                            }}>
+                                <div style={{ 
+                                    display: 'grid', 
+                                    gridTemplateColumns: (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? '1fr 110px 110px 110px 60px' : '1fr 90px 110px 110px 60px', 
+                                    gap: '12px', 
+                                    alignItems: 'end' 
+                                }}>
+                                    <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? "اسم الخدمة" : "الصنف"} {((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) && '(اختر الفرع أولاً)'}</label>
+                                            {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && entryItemId && entryStock !== null && (
+                                                <span style={{ fontSize: '10px', fontWeight: 800, color: (entryStock || 0) > 0 ? '#10b981' : '#ef4444' }}>
+                                                    متاح: {entryStock}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <div style={{ pointerEvents: ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) ? 'none' : 'auto', opacity: ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) ? 0.6 : 1, position: 'relative' }}>
+                                            <CustomSelect ref={itemSelectRef} value={entryItemId} onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} icon={Search} placeholder={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? "اختر الخدمة..." : "اختر الصنف..."} options={items.map(i => ({ value: i.id, label: i.name }))} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الكمية</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)}
+                                                disabled={!entryItemId}
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                        setEntryQty(v === '' ? '' : v as any);
+                                                        clearError('entryQty');
+                                                    }
+                                                }}
+                                                onKeyDown={e => e.key === 'Enter' && addLine()}
+                                                style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                                onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                            <InlineError field="entryQty" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>السعر (يُكتب يدوي)</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
+                                                disabled={!entryItemId}
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                        setEntryPrice(v === '' ? '' : v as any);
+                                                        clearError('entryPrice');
+                                                    }
+                                                }}
+                                                onKeyDown={e => e.key === 'Enter' && addLine()}
+                                                style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }}
+                                                onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                            <InlineError field="entryPrice" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الضريبة %</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <input type="text" inputMode="decimal" value={entryTaxRate === '' ? '0' : fmt(entryTaxRate)}
+                                                disabled={!entryItemId}
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                        setEntryTaxRate(v === '' ? '' : v as any);
+                                                    }
+                                                }}
+                                                onKeyDown={e => e.key === 'Enter' && addLine()}
+                                                style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                                onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        </div>
+                                    </div>
+                                    <button onClick={addLine} disabled={!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)}
+                                        style={{
+                                            height: '38px', borderRadius: '10px', border: 'none',
+                                            background: (!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)) ? 'rgba(37,106,244,0.3)' : C.primary,
+                                            color: '#fff', cursor: (!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)) ? 'not-allowed' : 'pointer',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            transition: 'all 0.15s',
+                                            width: '60px',
+                                            flexShrink: 0
+                                        }}>
+                                        {/* @ts-ignore */}
+                                        <Plus size={22} />
+                                    </button>
+                                </div>
+
+                                {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && entryItemId && (
+                                    <div style={{ animation: 'slideDown 0.2s ease' }}>
+                                        <label style={{ ...LS, fontSize: '11px' }}>الوصف (يتم سحبه تلقائياً ويمكن التعديل)</label>
+                                        <textarea
+                                            value={entryDescription}
+                                            onChange={e => setEntryDescription(e.target.value)}
+                                            placeholder="اكتب وصف الخدمة التفصيلي هنا..."
+                                            style={{ ...IS, height: '60px', padding: '10px 12px', fontSize: '13px', lineHeight: '1.5', resize: 'none' }}
+                                            onFocus={focusIn} onBlur={focusOut}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Lines Table */}
+                            <div className="table-container">
+                                <table className="table">
+                                    <thead>
+                                        <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
+                                            {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? (
+                                                ['الخدمة / الوصف التفصيلي', 'الكمية', 'السعر', 'الضريبة', 'الإجمالي', ''].map((h, i) => (
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'right' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                ))
+                                            ) : (
+                                                ['الصنف', 'الوحدة', 'الكمية', 'السعر', 'الإجمالي', ''].map((h, i) => (
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'right' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                ))
+                                            )}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {lines.map((l, i) => (
+                                            <tr key={i} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: `1px solid ${C.border}` }}>
+                                                <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
+                                                    <div>{l.itemName}</div>
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontWeight: 400 }}>{l.description}</div>}
+                                                </td>
+                                                { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
+                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                )}
+                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
+                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
+                                                { (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && (
+                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
+                                                        {l.taxAmount?.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate}%)</span>
+                                                    </td>
+                                                )}
+                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                                        <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
+                                                        <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {lines.length === 0 && (
+                                            <tr><td colSpan={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 6 : 6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>لا توجد بنود مضافة</td></tr>
+                                        )}
+                                    </tbody>
+                                    {lines.length > 0 && (
+                                        <tfoot>
+                                            <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
+                                                <td colSpan={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
+                                                    إجمالي {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 'الخدمات' : 'الأصناف'}
+                                                </td>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>
+                                                    {subtotal.toLocaleString()} {cSymbol}
+                                                </td>
+                                                <td />
+                                            </tr>
+                                        </tfoot>
+                                    )}
+                                </table>
+                            </div>
+                        </div>
+
+                        {/* Attachments */}
+                        <div style={SC}>
+                            <div style={{ ...STitle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> المرفقات</div>
+                            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                <div style={{ 
+                                    flex: 1,
+                                    border: '1px dashed var(--border-color)', 
+                                    borderRadius: '8px', 
+                                    padding: '8px', 
+                                    textAlign: 'center',
+                                    position: 'relative',
+                                    cursor: 'pointer',
+                                    background: 'rgba(255,255,255,0.01)'
+                                }}>
+                                    <input type="file" multiple onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                        <Plus size={14} /> رفع ملفات
+                                    </div>
+                                </div>
+                                {attachments.length > 0 && (
+                                    <div style={{ color: 'var(--primary-500)', fontSize: '11px', fontWeight: 700 }}>
+                                        {attachments.length} ملفات مدرجة
+                                    </div>
+                                )}
+                            </div>
+                            {attachments.length > 0 && (
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px' }}>
+                                    {attachments.map((file, idx) => (
+                                        <div key={idx} style={{ 
+                                            background: 'var(--surface-850)', 
+                                            border: '1px solid var(--border-color)', 
+                                            borderRadius: '6px', 
+                                            padding: '4px 8px', 
+                                            fontSize: '10px', 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            gap: '6px',
+                                            color: 'var(--text-secondary)'
+                                        }}>
+                                            <span style={{ maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{file.name}</span>
+                                            <button onClick={() => setAttachments(prev => prev.filter((_, i) => i !== idx))} style={{ color: 'var(--danger-500)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}><Trash2 size={12} /></button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Notes */}
+                        <div style={SC}>
+                            <label style={{ ...LS, fontSize: '11px' }}>ملاحظات</label>
+                            <textarea value={form.notes} onChange={e => setForm((f: any) => ({ ...f, notes: e.target.value }))}
+                                style={{ ...IS, height: '60px', padding: '10px', resize: 'none', background: 'rgba(255,255,255,0.02)' }}
+                                placeholder="أدخل أي ملاحظات هنا..."
+                                onFocus={focusIn} onBlur={focusOut} />
+                        </div>
+                    </div>
+
+                    {/* ══ Right: Summary (Sticky) ══ */}
+                    <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+
+                        <div style={SC}>
+                            <div style={{ ...STitle, color: '#3b82f6' }}>ملخص الفاتورة</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+
+                                {/* إجمالي الأصناف */}
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
+                                    <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
+                                    <span style={{ color: '#64748b' }}>إجمالي الأصناف</span>
+                                </div>
+
+                                {/* الخصم */}
+                                <div style={{
+                                    background: 'rgba(255,255,255,0.02)',
+                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    borderRadius: '10px',
+                                    padding: '8px 12px',
+                                }}>
+                                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
+                                        <span>الخصم</span>
+                                    </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                        <div style={{ position: 'relative' }}>
+                                            <input type="text" inputMode="decimal" placeholder="0.00"
+                                                value={fmt(form.discountAmt || '')}
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                        const amt = v === '' ? 0 : parseFloat(v) || 0;
+                                                        setForm((f: any) => ({
+                                                            ...f,
+                                                            discountAmt: amt,
+                                                            discountPct: subtotal > 0 ? Number(((amt / subtotal) * 100).toFixed(2)) : 0,
+                                                        }));
+                                                    }
+                                                }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingLeft: '32px' }}
+                                                onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                        </div>
+                                        <div style={{ position: 'relative' }}>
+                                            <input type="number" min="0" max="100" placeholder="0"
+                                                value={form.discountPct || ''}
+                                                onChange={e => {
+                                                    const pct = parseFloat(e.target.value) || 0;
+                                                    setForm((f: any) => ({
+                                                        ...f,
+                                                        discountPct: pct,
+                                                        discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)),
+                                                    }));
+                                                }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingLeft: '28px' }}
+                                                onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* الضريبة */}
+                                {taxSettings?.enabled && (
+                                    <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? '(مشمولة)' : '(مضافة)'}</span>
+                                        </div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
+                                            <div style={{ position: 'relative' }}>
+                                                <input type="number" step="0.01" value={form.taxRate}
+                                                    onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
+                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingLeft: '22px' }}
+                                                    onFocus={focusIn} onBlur={focusOut} />
+                                                <span style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                            </div>
+                                            <div style={{ position: 'relative' }}>
+                                                <input type="text" inputMode="decimal" value={fmt(form.taxAmount.toFixed(2))}
+                                                    onChange={e => {
+                                                        const v = e.target.value.replace(/,/g, '');
+                                                        if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                            const amt = v === '' ? 0 : parseFloat(v) || 0;
+                                                            setForm((f: any) => ({
+                                                                ...f,
+                                                                taxAmount: amt,
+                                                                // If user edits amount, we temporarily desync rate or back-calculate it
+                                                                taxRate: afterDisc > 0 ? (amt / afterDisc) * 100 : f.taxRate
+                                                            }));
+                                                        }
+                                                    }}
+                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingLeft: '24px', fontWeight: 800, color: C.primary }}
+                                                    onFocus={focusIn} onBlur={focusOut} />
+                                                <span style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* صافي الفاتورة */}
+                                <div style={{
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
+                                    padding: '10px 14px', borderRadius: '12px', marginTop: '6px',
+                                    border: `1px solid ${C.primaryBorder}`,
+                                    boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
+                                }}>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
+                                        {netTotal.toLocaleString()} {cSymbol}
+                                    </span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>صافي الفاتورة</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Payment */}
+                        <div style={SC}>
+                            <div style={{ ...STitle, color: '#3b82f6' }}>التحصيل والسداد</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                {/* Payment Type */}
+                                <div>
+                                    <label style={{ ...LS, fontSize: '11px' }}>طريقة الدفع</label>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
+                                        {(['cash', 'bank', 'credit'] as const).map(t => (
+                                            <button key={t} onClick={() => setForm((f: any) => ({ ...f, paymentType: t, paidAmount: t === 'credit' ? 0 : f.paidAmount }))}
+                                                style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO,
+                                                    borderColor: form.paymentType === t ? C.primary : C.border,
+                                                    background:  form.paymentType === t ? C.primaryBg : 'transparent',
+                                                    color:       form.paymentType === t ? C.primary : C.textSecondary,
+                                                    fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                                                }}>
+                                                {t === 'cash' ? 'كاش' : t === 'bank' ? 'بنكي' : 'آجل'}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {form.paymentType !== 'credit' && (
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>المبلغ المدفوع</label>
+                                        <div style={{ position: 'relative' }}>
+                                            <input
+                                                type="text"
+                                                inputMode="decimal"
+                                                placeholder="0.00"
+                                                value={fmt(form.paidAmount)}
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                        setForm((f: any) => ({ ...f, paidAmount: v }));
+                                                        clearError('paidAmount');
+                                                    }
+                                                }}
+                                                style={{
+                                                    ...IS,
+                                                    height: '44px',
+                                                    fontSize: '18px',
+                                                    fontWeight: 900,
+                                                    textAlign: 'center',
+                                                    paddingRight: '44px',
+                                                    color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary,
+                                                    fontFamily: INTER,
+                                                    background: 'rgba(255,255,255,0.02)'
+                                                }}
+                                                onFocus={e => { focusIn(e); e.target.select(); }}
+                                                onBlur={focusOut}
+                                            />
+                                            {form.paymentType === 'bank' ? (
+                                                <Building2 size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                            ) : (
+                                                <Banknote size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                            )}
+                                            <InlineError field="paidAmount" />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {form.paymentType === 'cash' && form.paidAmount > 0 && (
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>الخزينة المستلمة <span style={{ color: '#f87171' }}>*</span></label>
+                                        <div style={{ position: 'relative' }}>
+                                            <CustomSelect value={form.treasuryId} onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }} icon={Banknote} placeholder="اختر الخزينة..." options={treasuries.filter(t => t.type !== 'bank').map(t => ({ value: t.id, label: t.name }))} />
+                                            <InlineError field="treasuryId" />
+                                        </div>
+                                    </div>
+                                )}
+                                {form.paymentType === 'bank' && form.paidAmount > 0 && (
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>الحساب البنكي <span style={{ color: '#f87171' }}>*</span></label>
+                                        <div style={{ position: 'relative' }}>
+                                            <CustomSelect value={form.bankId} onChange={v => { setForm((f: any) => ({ ...f, bankId: v })); clearError('bankId'); }} icon={Building2} placeholder="اختر البنك..." options={treasuries.filter(t => t.type === 'bank').map(t => ({ value: t.id, label: t.name }))} />
+                                            <InlineError field="bankId" />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Payment Status Badge */}
+                                {lines.length > 0 && (
+                                    <div style={{
+                                        padding: '10px 14px',
+                                        borderRadius: '10px',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        fontSize: '13px',
+                                        fontWeight: 800,
+                                        background: diff > 0
+                                            ? 'rgba(239,68,68,0.07)'
+                                            : diff < 0
+                                            ? 'rgba(99,102,241,0.07)'
+                                            : 'rgba(52,211,153,0.07)',
+                                        color: diff > 0 ? '#f87171' : diff < 0 ? '#818cf8' : '#34d399',
+                                        border: `1px solid ${
+                                            diff > 0 ? 'rgba(239,68,68,0.15)'
+                                            : diff < 0 ? 'rgba(99,102,241,0.15)'
+                                            : 'rgba(52,211,153,0.15)'
+                                        }`,
+                                    }}>
+                                        <span>
+                                            {diff > 0 ? `متبقي: ${Math.abs(diff).toLocaleString()} ${cSymbol}`
+                                            : diff < 0 ? `زيادة: ${Math.abs(diff).toLocaleString()} ${cSymbol}`
+                                            : 'تم السداد بالكامل ✓'}
+                                        </span>
+                                        {diff !== 0 && (
+                                            <span style={{ fontSize: '10px', opacity: 0.7 }}>
+                                                {diff > 0 ? 'آجل' : 'رصيد دائن'}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                            <button onClick={() => handleSubmit(false)} disabled={submitting}
+                                className="btn btn-primary"
+                                style={{ 
+                                    width: '100%', 
+                                    height: '52px', 
+                                    fontSize: '16px', 
+                                    fontWeight: 900, 
+                                    gap: '12px', 
+                                    background: C.primary,
+                                    boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)',
+                                    border: 'none',
+                                    borderRadius: '14px',
+                                    opacity: submitting ? 0.5 : 1,
+                                    cursor: submitting ? 'not-allowed' : 'pointer',
+                                    fontFamily: CAIRO,
+                                    color: '#fff'
+                                }}>
+                                {submitting ? <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /> : <>حفظ الفاتورة <CheckCircle size={20} /></>}
+                            </button>
+                            <button
+                                onClick={() => handleSubmit(true)}
+                                disabled={submitting}
+                                style={{
+                                    width: '100%', height: '42px', borderRadius: '12px',
+                                    border: '1px solid rgba(16,185,129,0.3)',
+                                    background: 'rgba(16,185,129,0.06)',
+                                    color: '#34d399', fontSize: '13px', fontWeight: 700,
+                                    cursor: submitting ? 'not-allowed' : 'pointer',
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                                    fontFamily: 'Cairo, sans-serif',
+                                    opacity: submitting ? 0.5 : 1,
+                                    transition: 'all 0.2s',
+                                }}
+                                onMouseEnter={e => {
+                                    e.currentTarget.style.background = 'rgba(16,185,129,0.12)';
+                                    e.currentTarget.style.borderColor = 'rgba(16,185,129,0.5)';
+                                }}
+                                onMouseLeave={e => {
+                                    e.currentTarget.style.background = 'rgba(16,185,129,0.06)';
+                                    e.currentTarget.style.borderColor = 'rgba(16,185,129,0.3)';
+                                }}>
+                                حفظ وطباعة الفاتورة <Printer size={15} />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    {/* End Page Content */}
+                {/* Unified Add Customer Modal */}
+                <AppModal
+                    show={showAddCust}
+                    onClose={() => setShowAddCust(false)}
+                    title={newPartnerType === 'customer' ? 'إضافة عميل جديد' : 'إضافة مورد جديد'}
+                    icon={UserPlus}
+                    maxWidth="440px"
+                >
+                    <form onSubmit={async (e) => {
+                        e.preventDefault();
+                        const name = (e.currentTarget.elements.namedItem('pName') as HTMLInputElement).value;
+                        const phone = (e.currentTarget.elements.namedItem('pPhone') as HTMLInputElement).value;
+                        
+                        if (!name) return;
+                        setSubmitting(true);
+                        try {
+                            const targetApi = newPartnerType === 'customer' ? '/api/customers' : '/api/suppliers';
+                            const res = await fetch(targetApi, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ name, phone }),
+                            });
+                            if (res.ok) {
+                                const newP = await res.json();
+                                if (newPartnerType === 'customer') setCustomers(prev => [...prev, newP]);
+                                else setSuppliers(prev => [...prev, newP]);
+                                
+                                setForm((f: any) => ({ ...f, customerId: newP.id }));
+                                setShowAddCust(false);
+                            } else alert('فشل في الإضافة');
+                        } catch { alert('خطأ في الاتصال'); } finally { setSubmitting(false); }
+                    }}>
+                        <div style={{ marginBottom: '16px', display: 'flex', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '4px' }}>
+                            <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>عميل</button>
+                            <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>مورد</button>
+                        </div>
+
+                        <div style={{ marginBottom: '16px' }}>
+                            <label style={LS}>الاسم <span style={{ color: C.danger }}>*</span></label>
+                            <div style={{ position: 'relative' }}>
+                                <User size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <input name="pName" required placeholder={newPartnerType === 'customer' ? 'اسم العميل...' : 'اسم المورد...'} style={{ ...IS, height: '42px', paddingRight: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={LS}>رقم الجوال</label>
+                            <div style={{ position: 'relative' }}>
+                                <Phone size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingRight: '40px', direction: 'ltr', textAlign: 'left' }} onFocus={focusIn} onBlur={focusOut} />
+                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '10px' }}>
+                            <button type="submit" disabled={submitting} style={{ 
+                                flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
+                            }}>
+                                {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ'}
+                            </button>
+                            <button type="button" onClick={() => setShowAddCust(false)} style={{ 
+                                flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
+                                background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
+                            }}>إلغاء</button>
+                        </div>
+                    </form>
+                </AppModal>
+            <style jsx global>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+                @keyframes errorSlideDown {
+                    from { transform: translateY(-20px); opacity: 0; }
+                    to { transform: translateY(0); opacity: 1; }
+                }
+                @keyframes inlineErrorPush {
+                    0% { transform: translateY(10px) scale(0.9); opacity: 0; }
+                    100% { transform: translateY(0) scale(1); opacity: 1; }
+                }
+                .blue-date-icon::-webkit-calendar-picker-indicator {
+                    cursor: pointer;
+                    filter: invert(41%) sepia(34%) saturate(3000%) hue-rotate(190deg) brightness(100%) contrast(100%);
+                    border-radius: 4px; padding: 2px;
+                }
+                .blue-date-icon::-webkit-calendar-picker-indicator:hover {
+                    background: rgba(37,106,244,0.1);
+                }
+                /* Hide arrows/spinners in number inputs */
+                input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
+                    -webkit-appearance: none; margin: 0;
+                }
+                input[type=number] { -moz-appearance: textfield; }
+            `}</style>
+            <script dangerouslySetInnerHTML={{ __html: `
+                document.addEventListener('wheel', function(e) {
+                    if (document.activeElement.type === 'number') {
+                        document.activeElement.blur();
+                    }
+                }, { passive: false });
+            `}} />
+        </DashboardLayout>
+    );
+}
