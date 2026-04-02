@@ -742,6 +742,8 @@ model InstallmentPlan {
   totalAmount       Float
   downPayment       Float         @default(0)
   interestRate      Float         @default(0)
+  taxRate           Float         @default(0)
+  taxAmount         Float         @default(0)
   totalInterest     Float         @default(0)
   grandTotal        Float
   monthsCount       Int
