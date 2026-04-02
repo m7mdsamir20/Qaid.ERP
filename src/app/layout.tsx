@@ -14,7 +14,8 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await getServerSession(authOptions);
+  const isBuild = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI;
+  const session = isBuild ? null : await getServerSession(authOptions);
 
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>

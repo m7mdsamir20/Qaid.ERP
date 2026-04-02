@@ -5,7 +5,9 @@ import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 
 export const authOptions: AuthOptions = {
-    adapter: PrismaAdapter(prisma) as any,
+    adapter: (process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI) 
+        ? undefined 
+        : PrismaAdapter(prisma) as any,
     providers: [
         CredentialsProvider({
             name: "credentials",
