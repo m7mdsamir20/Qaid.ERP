@@ -26,6 +26,20 @@ const LS: React.CSSProperties = {
 };
 
 export default function CustomerStatementReportPage() {
+    return (
+        <React.Suspense fallback={
+            <DashboardLayout>
+                <div style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Loader2 size={32} className="animate-spin" style={{ color: C.primary }} />
+                </div>
+            </DashboardLayout>
+        }>
+            <CustomerStatementReportContent />
+        </React.Suspense>
+    );
+}
+
+function CustomerStatementReportContent() {
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -56,173 +70,171 @@ export default function CustomerStatementReportPage() {
     };
 
     return (
-        <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
-                <style>{`
-                    .print-only { display: none; }
-                    @media print {
-                        .print-only { display: block !important; }
-                        .no-print { display: none !important; }
-                        div { background: #fff !important; border-color: #e2e8f0 !important; }
-                        div, span, h2, h3, p { color: #000 !important; }
-                        th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                        body { background: white !important; color: black !important; }
-                    }
-                    @keyframes spin { to { transform: rotate(360deg); } }
-                `}</style>
-                
-                <ReportHeader
-                    title="كشف حساب أقساط عميل"
-                    subtitle="تقرير تفصيلي بجميع خطط التقسيط، الدفعات المسددة، والمبالغ المتبقية لعميل محدد"
-                    backTab="installments"
-                    onExportPdf={() => window.print()}
-                />
+        <div dir="rtl" style={PAGE_BASE}>
+            <style>{`
+                .print-only { display: none; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div, span, h2, h3, p { color: #000 !important; }
+                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
+                    body { background: white !important; color: black !important; }
+                }
+                @keyframes spin { to { transform: rotate(360deg); } }
+            `}</style>
+            
+            <ReportHeader
+                title="كشف حساب أقساط عميل"
+                subtitle="تقرير تفصيلي بجميع خطط التقسيط، الدفعات المسددة، والمبالغ المتبقية لعميل محدد"
+                backTab="installments"
+                onExportPdf={() => window.print()}
+            />
 
-                <div className="no-print" style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: 'minmax(250px, 3fr) 1fr', 
-                    gap: '14px', 
-                    marginBottom: '24px', 
-                    width: '100%',
-                    alignItems: 'end'
-                }}>
-                    <div style={{ position: 'relative' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>اختر العميل المطلوب:</label>
-                        <CustomSelect 
-                            value={selectedCustomer} 
-                            onChange={setSelectedCustomer}
-                            options={[{ value: '', label: '-- اختر العميل الباحث عنه --' }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
-                            placeholder="ابحث عن العميل..."
-                            style={{ 
-                                width: '100%', height: '42.5px', padding: '0 15px', 
-                                borderRadius: '12px', border: `1px solid ${C.border}`, 
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px', 
-                                fontFamily: CAIRO, fontWeight: 500 
-                            }}
-                        />
-                    </div>
-                    
-                    <button onClick={fetchReport} disabled={loading || !selectedCustomer} style={{ 
-                        height: '42.5px', padding: '0 24px', borderRadius: '12px', 
-                        background: C.primary, color: '#fff', border: 'none',
-                        fontSize: '13.5px', fontWeight: 800, cursor: !selectedCustomer ? 'not-allowed' : 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
-                        boxShadow: '0 4px 12px rgba(37,99,235,0.2)', opacity: !selectedCustomer ? 0.6 : 1
-                    }}>
-                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
-                        عرض كشف الحساب
-                    </button>
+            <div className="no-print" style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'minmax(250px, 3fr) 1fr', 
+                gap: '14px', 
+                marginBottom: '24px', 
+                width: '100%',
+                alignItems: 'end'
+            }}>
+                <div style={{ position: 'relative' }}>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>اختر العميل المطلوب:</label>
+                    <CustomSelect 
+                        value={selectedCustomer} 
+                        onChange={setSelectedCustomer}
+                        options={[{ value: '', label: '-- اختر العميل الباحث عنه --' }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
+                        placeholder="ابحث عن العميل..."
+                        style={{ 
+                            width: '100%', height: '42.5px', padding: '0 15px', 
+                            borderRadius: '12px', border: `1px solid ${C.border}`, 
+                            background: C.card, color: C.textPrimary, fontSize: '13.5px', 
+                            fontFamily: CAIRO, fontWeight: 500 
+                        }}
+                    />
                 </div>
+                
+                <button onClick={fetchReport} disabled={loading || !selectedCustomer} style={{ 
+                    height: '42.5px', padding: '0 24px', borderRadius: '12px', 
+                    background: C.primary, color: '#fff', border: 'none',
+                    fontSize: '13.5px', fontWeight: 800, cursor: !selectedCustomer ? 'not-allowed' : 'pointer',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
+                    boxShadow: '0 4px 12px rgba(37,99,235,0.2)', opacity: !selectedCustomer ? 0.6 : 1
+                }}>
+                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
+                    عرض كشف الحساب
+                </button>
+            </div>
 
-                <div style={{ minHeight: '300px' }}>
-                    {loading && (
-                        <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
-                            <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                            <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>جاري جلب البيانات وتحليلها...</p>
-                        </div>
-                    )}
+            <div style={{ minHeight: '300px' }}>
+                {loading && (
+                    <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                        <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
+                        <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>جاري جلب البيانات وتحليلها...</p>
+                    </div>
+                )}
 
-                    {!loading && !data && (
-                        <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
-                            <FileText size={60} style={{ color: C.textMuted }} />
-                            <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>اختر العميل المعني لعرض تفاصيل حسابه</p>
-                        </div>
-                    )}
+                {!loading && !data && (
+                    <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
+                        <FileText size={60} style={{ color: C.textMuted }} />
+                        <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>اختر العميل المعني لعرض تفاصيل حسابه</p>
+                    </div>
+                )}
 
-                    {!loading && data && (
-                        <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
-                            <div className="print-only">
-                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                    <div style={{ textAlign: 'right' }}>
-                                        <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
-                                        {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>}
-                                    </div>
-                                    <div style={{ textAlign: 'center' }}>
-                                        <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>كشف حساب أقساط عميل</h3>
-                                    </div>
-                                    <div style={{ maxWidth: '150px', textAlign: 'left' }}>
-                                        {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
-                                    </div>
+                {!loading && data && (
+                    <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
+                        <div className="print-only">
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
+                                <div style={{ textAlign: 'right' }}>
+                                    <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
+                                    {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>}
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>كشف حساب أقساط عميل</h3>
+                                </div>
+                                <div style={{ maxWidth: '150px', textAlign: 'left' }}>
+                                    {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
                                 </div>
                             </div>
+                        </div>
 
-                            {/* ── KPI Cards (Fixed Assets Style) ── */}
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
-                                {[
-                                    { label: 'عدد خطط التقسيط', value: data.summary?.totalPlans, icon: <FileText size={18} />, color: '#818cf8' },
-                                    { label: 'إجمالي التعاقدات', value: fmtN(data.summary?.totalAmount || 0), icon: <BarChart3 size={18} />, color: '#6366f1' },
-                                    { label: 'إجمالي المسدد', value: fmtN(data.summary?.totalPaid || 0), icon: <CheckCircle2 size={18} />, color: '#10b981' },
-                                    { label: 'الرصيد المتبقي', value: fmtN(data.summary?.totalRemaining || 0), icon: <AlertTriangle size={18} />, color: '#f59e0b' },
-                                ].map((s, i) => (
-                                    <div key={i} style={{
-                                        background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                        padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-                                    }}>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                            <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                                <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
-                                                {i !== 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
-                                            </div>
-                                        </div>
-                                        <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                            {s.icon}
+                        {/* ── KPI Cards (Fixed Assets Style) ── */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
+                            {[
+                                { label: 'عدد خطط التقسيط', value: data.summary?.totalPlans, icon: <FileText size={18} />, color: '#818cf8' },
+                                { label: 'إجمالي التعاقدات', value: fmtN(data.summary?.totalAmount || 0), icon: <BarChart3 size={18} />, color: '#6366f1' },
+                                { label: 'إجمالي المسدد', value: fmtN(data.summary?.totalPaid || 0), icon: <CheckCircle2 size={18} />, color: '#10b981' },
+                                { label: 'الرصيد المتبقي', value: fmtN(data.summary?.totalRemaining || 0), icon: <AlertTriangle size={18} />, color: '#f59e0b' },
+                            ].map((s, i) => (
+                                <div key={i} style={{
+                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
+                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
+                                }}>
+                                    <div style={{ textAlign: 'right' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            {i !== 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-
-                            {(data.plans || []).map((plan: any) => (
-                                <div key={plan.id} style={{ background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '24px', marginBottom: '24px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
-                                    <div style={{ padding: '16px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>#{plan.planNumber}</span>
-                                            <div style={{ width: 1, height: 14, background: C.border }}></div>
-                                            <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{plan.productName || 'منتج عام'}</span>
-                                        </div>
-                                        <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
-                                            {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                        </div>
+                                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                        {s.icon}
                                     </div>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                        <thead>
-                                            <tr style={{ background: 'rgba(0,0,0,0.1)' }}>
-                                                {['م', 'الاستحقاق', 'المبلغ', 'المدفوع', 'المتبقي', 'الحالة'].map((h, i) => (
-                                                    <th key={i} style={{ padding: '12px 16px', textAlign: 'right', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(plan.installments || []).map((inst: any) => (
-                                                <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: 'background 0.2s' }}
-                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                    <td style={{ padding: '12px 16px', color: '#818cf8', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{inst.installmentNo}</td>
-                                                    <td style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
-                                                    <td style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '13.5px', fontFamily: INTER }}>
-                                                        {fmtN(inst.amount)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '13.5px', fontFamily: INTER }}>
-                                                        {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '13.5px', fontFamily: INTER }}>
-                                                        {fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                    </td>
-                                                    <td style={{ padding: '12px 16px' }}>
-                                                        <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 800, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
-                                                            {inst.status === 'paid' ? 'مدفوع' : 'غير مسدد'}
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
                                 </div>
                             ))}
                         </div>
-                    )}
-                </div>
+
+                        {(data.plans || []).map((plan: any) => (
+                            <div key={plan.id} style={{ background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '24px', marginBottom: '24px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                                <div style={{ padding: '16px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>#{plan.planNumber}</span>
+                                        <div style={{ width: 1, height: 14, background: C.border }}></div>
+                                        <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{plan.productName || 'منتج عام'}</span>
+                                    </div>
+                                    <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                        {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                    </div>
+                                </div>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr style={{ background: 'rgba(0,0,0,0.1)' }}>
+                                            {['م', 'الاستحقاق', 'المبلغ', 'المدفوع', 'المتبقي', 'الحالة'].map((h, i) => (
+                                                <th key={i} style={{ padding: '12px 16px', textAlign: 'right', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                            ))}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {(plan.installments || []).map((inst: any) => (
+                                            <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: 'background 0.2s' }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                <td style={{ padding: '12px 16px', color: '#818cf8', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{inst.installmentNo}</td>
+                                                <td style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
+                                                <td style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '13.5px', fontFamily: INTER }}>
+                                                    {fmtN(inst.amount)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                </td>
+                                                <td style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '13.5px', fontFamily: INTER }}>
+                                                    {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                </td>
+                                                <td style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '13.5px', fontFamily: INTER }}>
+                                                    {fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                </td>
+                                                <td style={{ padding: '12px 16px' }}>
+                                                    <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 800, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
+                                                        {inst.status === 'paid' ? 'مدفوع' : 'غير مسدد'}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        ))}
+                    </div>
+                )}
             </div>
-        </DashboardLayout>
+        </div>
     );
 }
