@@ -45,23 +45,15 @@ export const POST = withProtection(async (request, session, body) => {
         const employeeQuery: any = { companyId, status: 'active' };
         if (departmentId) employeeQuery.departmentId = departmentId;
 
-        // Using raw query to bypass "Unknown field 'payrolls'" issue in Prisma client
-        let employees: any[];
-        if (departmentId) {
-            employees = await prisma.$queryRaw`
-                SELECT id, code, name, basicSalary, housingAllowance, transportAllowance, 
-                       foodAllowance, insuranceDeduction, taxDeduction, departmentId, companyId 
-                FROM Employee 
-                WHERE companyId = ${companyId} AND status = 'active' AND departmentId = ${departmentId}
-            `;
-        } else {
-            employees = await prisma.$queryRaw`
-                SELECT id, code, name, basicSalary, housingAllowance, transportAllowance, 
-                       foodAllowance, insuranceDeduction, taxDeduction, departmentId, companyId 
-                FROM Employee 
-                WHERE companyId = ${companyId} AND status = 'active'
-            `;
-        }
+        // Using Prisma selection to bypass client issues and ensure PostgreSQL compatibility
+        const employees = await prisma.employee.findMany({
+            where: employeeQuery,
+            select: {
+                id: true, code: true, name: true, basicSalary: true,
+                housingAllowance: true, transportAllowance: true, foodAllowance: true,
+                insuranceDeduction: true, taxDeduction: true, departmentId: true, companyId: true
+            }
+        });
 
         if (employees.length === 0) {
             return NextResponse.json({ 
