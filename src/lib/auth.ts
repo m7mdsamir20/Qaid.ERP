@@ -115,6 +115,10 @@ export const authOptions: AuthOptions = {
             return token;
         },
         async session({ session, token }) {
+            // SAFEGUARD: Skip DB calls during build to prevent Vercel "Failed to collect page data" errors
+            const isBuild = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI;
+            if (isBuild) return session;
+
             if (session.user && token.sub) {
                 // جلب بيانات المستخدم - مع fallback لو branches غير موجودة بعد
                 let user: any = null;
