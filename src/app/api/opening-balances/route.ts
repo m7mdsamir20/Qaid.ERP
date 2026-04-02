@@ -73,15 +73,17 @@ export const POST = withProtection(async (request, session, body) => {
                 await prisma.journalEntryLine.deleteMany({
                     where: { journalEntryId: existingEntry.id }
                 });
-                await prisma.journalEntryLine.createMany({
-                    data: nonZeroBalances.map(b => ({
-                        journalEntryId: existingEntry.id,
-                        accountId: b.accountId,
-                        debit:  b.debit,
-                        credit: b.credit,
-                        description: `رصيد افتتاحي — ${b.account.name}`,
-                    }))
-                });
+                await Promise.all(nonZeroBalances.map(b => 
+                    prisma.journalEntryLine.create({
+                        data: {
+                            journalEntryId: existingEntry.id,
+                            accountId: b.accountId,
+                            debit:  b.debit,
+                            credit: b.credit,
+                            description: `رصيد افتتاحي — ${b.account.name}`,
+                        }
+                    })
+                ));
             } else {
                 // أنشئ قيداً جديداً
                 const lastEntry = await prisma.journalEntry.findFirst({

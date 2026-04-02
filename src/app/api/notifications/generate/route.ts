@@ -131,9 +131,9 @@ export const POST = withProtection(async (request, session) => {
 
         // Save new notifications
         if (newNotifications.length > 0) {
-            await prisma.notification.createMany({
-                data: newNotifications
-            });
+            await Promise.all(newNotifications.map(n => 
+                prisma.notification.create({ data: n })
+            ));
         }
 
         return NextResponse.json({ generated: newNotifications.length });
