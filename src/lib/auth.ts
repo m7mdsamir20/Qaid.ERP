@@ -20,20 +20,14 @@ export const authOptions: AuthOptions = {
                     throw new Error("بيانات الدخول غير مكتملة");
                 }
 
-                // استخدام استعلام خام لضمان عدم الحساسية لحالة الأحرف في SQLite
-                const matchingUsers: any[] = await prisma.$queryRaw`
-                    SELECT id FROM User 
-                    WHERE LOWER(email) = LOWER(${credentials.username}) 
-                       OR LOWER(username) = LOWER(${credentials.username})
-                    LIMIT 1
-                `;
-
-                if (!matchingUsers || matchingUsers.length === 0) {
-                    throw new Error("بيانات الدخول غير صحيحة");
-                }
-
-                const user: any = await (prisma as any).user.findUnique({
-                    where: { id: matchingUsers[0].id },
+                // استخدام طريقة Prisma القياسية المتوافقة عالمياً (مع دعم تجاهل حالة الأحرف في PostgreSQL)
+                const user: any = await (prisma as any).user.findFirst({
+                    where: {
+                        OR: [
+                            { email: { equals: credentials.username, mode: 'insensitive' } },
+                            { username: { equals: credentials.username, mode: 'insensitive' } }
+                        ]
+                    },
                     include: { company: true, customRole: true }
                 });
 
