@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
+// رفع حد الوقت لـ 60 ثانية على Vercel لأن الحذف الكامل يحتاج وقت
+export const maxDuration = 60;
+
 // GET Single Company
 export const GET = withProtection(async (request, session, body, context) => {
     try {
@@ -119,7 +122,7 @@ export const DELETE = withProtection(async (request, session, body, context) => 
             return NextResponse.json({ error: 'الشركة غير موجودة' }, { status: 404 });
         }
 
-        // Prisma doesn't cascade automatically for SQLite - we delete in order
+        // حذف تسلسلي مع timeout كافي
         await prisma.$transaction(async (tx) => {
             // Delete in dependency order (leaf tables first)
             await tx.stocktakingLine.deleteMany({ where: { stocktaking: { companyId: id } } });
@@ -164,7 +167,7 @@ export const DELETE = withProtection(async (request, session, body, context) => 
             await tx.branch.deleteMany({ where: { companyId: id } });
             await (tx as any).subscription.deleteMany({ where: { companyId: id } });
             await tx.company.delete({ where: { id } });
-        });
+        }, { timeout: 55000 });
 
         return NextResponse.json({ success: true, message: 'تم حذف الشركة وكافة بياناتها بنجاح' });
 

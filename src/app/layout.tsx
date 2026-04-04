@@ -1,8 +1,23 @@
 import type { Metadata } from "next";
+import { Cairo, Outfit } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
+
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["300", "400", "500", "600", "700", "800", "900"],
+  variable: "--font-cairo",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-outfit",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "نظام ERP | إدارة موارد المؤسسات",
@@ -18,13 +33,7 @@ export default async function RootLayout({
   const session = isBuild ? null : await getServerSession(authOptions);
 
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="ar" dir="rtl" suppressHydrationWarning className={`${cairo.variable} ${outfit.variable}`}>
       <body>
         <Providers session={session}>
           {children}

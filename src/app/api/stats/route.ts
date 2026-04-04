@@ -14,6 +14,10 @@ export const GET = withProtection(async (request, session) => {
         endOfDay.setHours(23, 59, 59, 999);
 
         const last7Days: { label: string; start: Date; end: Date }[] = [];
+        const chartStart = new Date();
+        chartStart.setDate(chartStart.getDate() - 6);
+        chartStart.setHours(0, 0, 0, 0);
+
         for (let i = 6; i >= 0; i--) {
             const d = new Date();
             d.setDate(d.getDate() - i);
@@ -28,34 +32,44 @@ export const GET = withProtection(async (request, session) => {
             catch (e) { console.error("Query Error:", e); return fallback; }
         };
 
+        // 12 queries بدل 32 - كل العمليات في Promise.all واحد
         const [
             customers,
             suppliers,
             items,
             treasuries,
-            salesToday,
-            salesTotal,
-            purchasesTotal,
+            salesTodayAgg,
+            salesTotalAgg,
+            purchasesTotalAgg,
+            expensesTotalData,
             lowStockItems,
             topDebtors,
             recentInvoices,
-            expensesTotalData,
+            invoicesLast7Days,
         ] = await Promise.all([
             safeQuery(() => prisma.customer.count({ where: { companyId } }), 0),
             safeQuery(() => prisma.supplier.count({ where: { companyId } }), 0),
             safeQuery(() => prisma.item.count({ where: { companyId } }), 0),
             safeQuery(() => prisma.treasury.findMany({ where: { companyId, ...branchFilter }, select: { name: true, balance: true } }), []),
-            safeQuery(() => prisma.invoice.findMany({
+            // aggregate بدل findMany للمبالغ
+            safeQuery(() => prisma.invoice.aggregate({
                 where: { companyId, type: 'sale', date: { gte: startOfDay, lte: endOfDay }, ...branchFilter },
-                select: { total: true }
-            }), []),
-            safeQuery(() => prisma.invoice.findMany({ where: { companyId, type: 'sale', ...branchFilter }, select: { total: true } }), []),
-            safeQuery(() => prisma.invoice.findMany({ where: { companyId, type: 'purchase', ...branchFilter }, select: { total: true } }), []),
+                _sum: { total: true }
+            }), { _sum: { total: 0 } }),
+            safeQuery(() => prisma.invoice.aggregate({
+                where: { companyId, type: 'sale', ...branchFilter },
+                _sum: { total: true }
+            }), { _sum: { total: 0 } }),
+            safeQuery(() => prisma.invoice.aggregate({
+                where: { companyId, type: 'purchase', ...branchFilter },
+                _sum: { total: true }
+            }), { _sum: { total: 0 } }),
+            safeQuery(() => prisma.invoice.aggregate({
+                where: { companyId, type: 'payment', ...branchFilter },
+                _sum: { total: true }
+            }), { _sum: { total: 0 } }),
             safeQuery(() => prisma.stock.findMany({
-                where: {
-                    item: { companyId: companyId },
-                    quantity: { lte: 10 }
-                },
+                where: { item: { companyId }, quantity: { lte: 10 } },
                 include: { item: true, warehouse: true },
                 orderBy: { quantity: 'asc' },
                 take: 8
@@ -76,43 +90,38 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'desc' },
                 take: 5,
             }), []),
-            safeQuery(() => prisma.invoice.aggregate({
-                where: { companyId, type: 'payment', ...branchFilter },
-                _sum: { total: true }
-            }), { _sum: { total: 0 } }),
+            // query واحد للـ chart بدل 21 query
+            safeQuery(() => prisma.invoice.findMany({
+                where: {
+                    companyId,
+                    type: { in: ['sale', 'purchase', 'payment'] },
+                    date: { gte: chartStart },
+                    ...branchFilter,
+                },
+                select: { type: true, date: true, total: true }
+            }), []),
         ]);
 
-        const chartData = await Promise.all(
-            last7Days.map(async (day) => {
-                const [daySales, dayPurchases, dayExpenses] = await Promise.all([
-                    safeQuery(() => prisma.invoice.aggregate({
-                        where: { companyId, type: 'sale', date: { gte: day.start, lte: day.end }, ...branchFilter },
-                        _sum: { total: true },
-                    }), { _sum: { total: 0 } }),
-                    safeQuery(() => prisma.invoice.aggregate({
-                        where: { companyId, type: 'purchase', date: { gte: day.start, lte: day.end }, ...branchFilter },
-                        _sum: { total: true },
-                    }), { _sum: { total: 0 } }),
-                    safeQuery(() => prisma.invoice.aggregate({
-                        where: { companyId, type: 'payment', date: { gte: day.start, lte: day.end }, ...branchFilter },
-                        _sum: { total: true },
-                    }), { _sum: { total: 0 } }),
-                ]);
-                return {
-                    label: day.label,
-                    sales: daySales._sum.total || 0,
-                    purchases: dayPurchases._sum.total || 0,
-                    expenses: dayExpenses._sum.total || 0,
-                };
-            })
-        );
+        // تجميع بيانات الـ chart في JS بدل 21 query منفصلة
+        const chartData = last7Days.map((day) => {
+            const dayInvoices = (invoicesLast7Days as any[]).filter((inv: any) => {
+                const d = new Date(inv.date);
+                return d >= day.start && d <= day.end;
+            });
+            return {
+                label: day.label,
+                sales: dayInvoices.filter((i: any) => i.type === 'sale').reduce((s: number, i: any) => s + i.total, 0),
+                purchases: dayInvoices.filter((i: any) => i.type === 'purchase').reduce((s: number, i: any) => s + i.total, 0),
+                expenses: dayInvoices.filter((i: any) => i.type === 'payment').reduce((s: number, i: any) => s + i.total, 0),
+            };
+        });
 
-        const treasuriesBalance = treasuries.reduce((sum: number, t: { balance: number }) => sum + t.balance, 0);
-        const salesTodayTotal = salesToday.reduce((sum: number, inv: { total: number }) => sum + inv.total, 0);
-        const totalSalesAmount = salesTotal.reduce((sum: number, inv: { total: number }) => sum + inv.total, 0);
-        const totalPurchasesAmount = purchasesTotal.reduce((sum: number, inv: { total: number }) => sum + inv.total, 0);
+        const treasuriesBalance = (treasuries as any[]).reduce((sum: number, t: any) => sum + t.balance, 0);
+        const salesTodayTotal = (salesTodayAgg as any)?._sum?.total || 0;
+        const totalSalesAmount = (salesTotalAgg as any)?._sum?.total || 0;
+        const totalPurchasesAmount = (purchasesTotalAgg as any)?._sum?.total || 0;
         const isServices = (session.user as any).businessType === 'SERVICES';
-        const expensesTotal = expensesTotalData?._sum?.total || 0;
+        const expensesTotal = (expensesTotalData as any)?._sum?.total || 0;
 
         return NextResponse.json({
             customers,
