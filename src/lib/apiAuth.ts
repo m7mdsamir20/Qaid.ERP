@@ -13,7 +13,8 @@ export async function requireAuth() {
     }
 
     const companyId = (session.user as any)?.companyId;
-    if (!companyId && (session.user as any)?.role !== 'superadmin') {
+    const isSuperAdminUser = !!(session.user as any)?.isSuperAdmin;
+    if (!companyId && !isSuperAdminUser && (session.user as any)?.role !== 'superadmin') {
         return {
             error: NextResponse.json({ error: 'لا يوجد شركة مرتبطة بهذا الحساب' }, { status: 403 }),
             session: null
