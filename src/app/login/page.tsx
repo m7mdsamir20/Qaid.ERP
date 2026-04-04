@@ -14,8 +14,13 @@ export default function LoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    // قراءة callbackUrl من الـ URL لإعادة التوجيه بعد الدخول
+    const [callbackUrl, setCallbackUrl] = useState('/');
     useEffect(() => {
         setMounted(true);
+        const params = new URLSearchParams(window.location.search);
+        const cb = params.get('callbackUrl');
+        if (cb) setCallbackUrl(cb);
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -31,7 +36,7 @@ export default function LoginPage() {
             if (res?.error) {
                 setError(res.error);
             } else {
-                router.push('/');
+                router.push(callbackUrl);
                 router.refresh();
             }
         } finally {
