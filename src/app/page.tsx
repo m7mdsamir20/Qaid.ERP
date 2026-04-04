@@ -153,8 +153,18 @@ function ChartTooltip({ active, payload, label, cSymbol }: any) {
 
 
 export default function DashboardPage() {
-  const { data: session } = useSession();
+  const { data: session, status: sessionStatus } = useSession();
   const { symbol: cSymbol } = useCurrency();
+
+  // انتظر الـ session تتحمل قبل عرض المحتوى - ده بيحل مشكلة الريفريش
+  if (sessionStatus === 'loading') return (
+    <DashboardLayout>
+      <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
+        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
+        <p style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>جاري تحميل البيانات...</p>
+      </div>
+    </DashboardLayout>
+  );
 
   const userRole = (session?.user as any)?.role;
   const userPerms = (session?.user as any)?.permissions || {};

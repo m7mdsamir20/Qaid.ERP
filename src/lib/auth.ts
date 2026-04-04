@@ -3,8 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 
-// على Vercel: لو NEXTAUTH_URL مش متضبط، استخدم VERCEL_URL تلقائياً
-if (!process.env.NEXTAUTH_URL && process.env.VERCEL_URL) {
+// على Vercel: دايماً استخدم VERCEL_URL (يتغلب على أي قيمة غلط في NEXTAUTH_URL)
+if (process.env.VERCEL_URL) {
     process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`;
 }
 
@@ -130,6 +130,9 @@ export const authOptions: AuthOptions = {
             if (session.user && token) {
                 const u = session.user as any;
                 u.id = token.id;
+                // ضبط الاسم والإيميل صريحاً لضمان ظهورهم دايماً
+                u.name = token.name || token.username || 'مستخدم';
+                u.email = token.email;
                 u.username = token.username;
                 u.role = token.role;
                 u.companyId = token.companyId;
