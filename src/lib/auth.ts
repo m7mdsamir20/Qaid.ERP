@@ -1,13 +1,9 @@
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 
 export const authOptions: AuthOptions = {
-    adapter: (process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI) 
-        ? undefined 
-        : PrismaAdapter(prisma) as any,
     providers: [
         CredentialsProvider({
             name: "credentials",
@@ -20,7 +16,7 @@ export const authOptions: AuthOptions = {
                     throw new Error("بيانات الدخول غير مكتملة");
                 }
 
-                // استخدام طريقة Prisma القياسية المتوافقة عالمياً (مع دعم تجاهل حالة الأحرف في PostgreSQL)
+                // جلب بيانات المستخدم الكاملة مرة واحدة فقط عند تسجيل الدخول
                 const user: any = await (prisma as any).user.findFirst({
                     where: {
                         OR: [
@@ -28,198 +24,127 @@ export const authOptions: AuthOptions = {
                             { username: { equals: credentials.username, mode: 'insensitive' } }
                         ]
                     },
-                    include: { company: true, customRole: true }
+                    include: {
+                        company: {
+                            include: {
+                                subscription: true,
+                                branches: { where: { isActive: true }, orderBy: { isMain: 'desc' } }
+                            }
+                        },
+                        customRole: true
+                    }
                 });
 
-                if (!user || !user.password) {
-                    throw new Error("بيانات الدخول غير صحيحة");
-                }
-
-                if (user.status !== "active") {
-                    throw new Error("عفواً، الحساب موقوف، يرجى مراجعة مدير النظام.");
-                }
-
-                if (!user.isPhoneVerified) {
-                    throw new Error("برجاء تأكيد رقم الهاتف أولاً لإتمام التسجيل");
-                }
+                if (!user || !user.password) throw new Error("بيانات الدخول غير صحيحة");
+                if (user.status !== "active") throw new Error("عفواً، الحساب موقوف، يرجى مراجعة مدير النظام.");
+                if (!user.isPhoneVerified) throw new Error("برجاء تأكيد رقم الهاتف أولاً لإتمام التسجيل");
 
                 const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+                if (!isPasswordValid) throw new Error("كلمة المرور غير صحيحة");
 
-                if (!isPasswordValid) {
-                    throw new Error("كلمة المرور غير صحيحة");
+                if (!user.isSuperAdmin && user.role !== 'superadmin') {
+                    if (!user.company) throw new Error("لا توجد شركة مرتبطة بهذا الحساب");
+                    if (!user.company.isActive) throw new Error("اشتراك الشركة غير مفعل، يرجى مراجعة الإدارة");
                 }
 
-                // Verify company subscription if not superadmin
-                if (user.role !== 'superadmin') {
-                    if (!user.company) {
-                        throw new Error("لا توجد شركة مرتبطة بهذا الحساب");
-                    }
-                    if (!user.company.isActive) {
-                        throw new Error("اشتراك الشركة غير مفعل، يرجى مراجعة الإدارة");
-                    }
-                }
+                const branches = user.company?.branches || [];
+                const mainBranch = branches.find((b: any) => b.isMain) || branches[0];
+
+                let permissions = {};
+                try {
+                    if (user.customRole?.permissions) permissions = JSON.parse(user.customRole.permissions);
+                } catch {}
+
+                let allowedBranches = null;
+                try {
+                    if (user.allowedBranches) allowedBranches = JSON.parse(user.allowedBranches);
+                } catch {}
+
+                const sub = user.company?.subscription;
 
                 return {
                     id: user.id,
                     name: user.name,
                     email: user.email,
+                    username: user.username,
                     role: user.role,
                     companyId: user.companyId,
+                    isSuperAdmin: !!user.isSuperAdmin,
                     branchId: user.branchId || null,
-                    gender: (user as any).gender || 'male',
-                    avatar: (user as any).avatar || 'm1',
-                    customRole: user.customRole,
-                    isSuperAdmin: user.isSuperAdmin // إضافة الصلاحية هنا
+                    activeBranchId: user.branchId || mainBranch?.id || null,
+                    activeBranchName: user.branchId
+                        ? branches.find((b: any) => b.id === user.branchId)?.name || 'الفرع الرئيسي'
+                        : mainBranch?.name || '',
+                    branches: branches.map((b: any) => ({ id: b.id, name: b.name, isMain: b.isMain })),
+                    allowedBranches,
+                    gender: user.gender || 'male',
+                    avatar: user.avatar || 'm1',
+                    permissions,
+                    currency: user.company?.currency || 'EGP',
+                    companyName: user.company?.name || '',
+                    companyLogo: user.company?.logo || '',
+                    taxNumber: user.company?.taxNumber || '',
+                    commercialRegister: user.company?.commercialRegister || '',
+                    phone: user.company?.phone || '',
+                    businessType: user.company?.businessType || 'TRADING',
+                    subscription: sub ? {
+                        plan: sub.plan,
+                        endDate: sub.endDate,
+                        isActive: sub.isActive,
+                        features: sub.features,
+                        maxUsers: sub.maxUsers,
+                        maxBranches: sub.maxBranches,
+                        startDate: sub.startDate,
+                    } : null,
                 };
             }
         })
     ],
-    session: {
-        strategy: "jwt"
-    },
+    session: { strategy: "jwt" },
     callbacks: {
-        async jwt({ token, user, trigger, session }) {
+        async jwt({ token, user, trigger, session }: any) {
+            // عند تسجيل الدخول: حفظ كل البيانات في التوكن مرة واحدة
             if (user) {
-                token.id = user.id;
-                token.role = user.role;
-                token.companyId = user.companyId;
-                token.isSuperAdmin = (user as any).isSuperAdmin; // حفظ في التوكن
-                token.branchId = (user as any).branchId || null;
-                token.activeBranchId = (user as any).branchId || null;
-                token.gender = (user as any).gender;
-                token.avatar = (user as any).avatar;
-
-                if ((user as any).customRole && (user as any).customRole.permissions) {
-                    try {
-                        token.permissions = JSON.parse((user as any).customRole.permissions);
-                    } catch (e) {
-                        token.permissions = {};
-                    }
-                }
+                Object.assign(token, user);
             }
-
-            // Handle session update trigger (branch switch + profile updates)
+            // عند تبديل الفرع أو تحديث البروفايل
             if (trigger === "update" && session?.user) {
-                if (session.user.name) token.name = session.user.name;
-                if (session.user.email) token.email = session.user.email;
-                if (session.user.gender) token.gender = session.user.gender;
-                if (session.user.avatar) token.avatar = session.user.avatar;
-                // تبديل الفرع النشط
-                if ((session.user as any).activeBranchId !== undefined) {
-                    token.activeBranchId = (session.user as any).activeBranchId;
-                }
+                const u = session.user as any;
+                if (u.activeBranchId !== undefined) token.activeBranchId = u.activeBranchId;
+                if (u.activeBranchName !== undefined) token.activeBranchName = u.activeBranchName;
+                if (u.name) token.name = u.name;
+                if (u.email) token.email = u.email;
+                if (u.gender) token.gender = u.gender;
+                if (u.avatar) token.avatar = u.avatar;
             }
-
             return token;
         },
-        async session({ session, token }) {
-            // SAFEGUARD: Skip DB calls during build to prevent Vercel "Failed to collect page data" errors
-            const isBuild = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI;
-            if (isBuild) return session;
 
-            if (session.user && token.sub) {
-                // جلب بيانات المستخدم - مع fallback لو branches غير موجودة بعد
-                let user: any = null;
-                try {
-                    user = await (prisma as any).user.findUnique({
-                        where: { id: token.sub },
-                        include: {
-                            company: {
-                                include: {
-                                    subscription: true,
-                                    branches: { where: { isActive: true }, orderBy: { isMain: 'desc' } }
-                                }
-                            },
-                            customRole: true
-                        },
-                    });
-                } catch {
-                    // fallback بدون branches لو الـ model لسه مش موجود
-                    user = await (prisma as any).user.findUnique({
-                        where: { id: token.sub },
-                        include: {
-                            company: { include: { subscription: true } },
-                            customRole: true
-                        },
-                    });
-                }
-
-                if (user) {
-                    (session.user as any).id = user.id;
-                    (session.user as any).role = user.role;
-                    (session.user as any).companyId = user.companyId;
-                    (session.user as any).isSuperAdmin = user.isSuperAdmin;
-                    (session.user as any).branchId = user.branchId || null;
-
-                    // الفرع النشط: من token (لو بدّل) أو الافتراضي
-                    const activeBranchId = (token as any).activeBranchId;
-                    const branches: any[] = user.company?.branches || [];
-                    const mainBranch = branches.find((b: any) => b.isMain) || branches[0];
-
-                    if (activeBranchId === 'all') {
-                        // Admin explicitly chose "كل الفروع"
-                        (session.user as any).activeBranchId = null;
-                        (session.user as any).activeBranchName = 'كل الفروع';
-                    } else if (activeBranchId) {
-                        (session.user as any).activeBranchId = activeBranchId;
-                        const activeBranch = branches.find((b: any) => b.id === activeBranchId);
-                        (session.user as any).activeBranchName = activeBranch?.name || 'الفرع الرئيسي';
-                    } else if (user.branchId) {
-                        (session.user as any).activeBranchId = user.branchId;
-                        const userBranch = branches.find((b: any) => b.id === user.branchId);
-                        (session.user as any).activeBranchName = userBranch?.name || 'الفرع الرئيسي';
-                    } else if (branches.length > 0) {
-                        // Default to main branch on first login
-                        (session.user as any).activeBranchId = mainBranch?.id || null;
-                        (session.user as any).activeBranchName = mainBranch?.name || 'الفرع الرئيسي';
-                    } else {
-                        (session.user as any).activeBranchId = null;
-                        (session.user as any).activeBranchName = '';
-                    }
-
-                    (session.user as any).branches = branches.map((b: any) => ({
-                        id: b.id, name: b.name, isMain: b.isMain
-                    }));
-
-                    // الفروع المسموح بها للمستخدم (null = كل الفروع)
-                    const allowedBranchesRaw = (user as any).allowedBranches;
-                    let allowedBranches: string[] | null = null;
-                    if (allowedBranchesRaw) {
-                        try { allowedBranches = JSON.parse(allowedBranchesRaw); } catch { }
-                    }
-                    (session.user as any).allowedBranches = allowedBranches;
-
-                    if (user.customRole?.permissions) {
-                        try {
-                            (session.user as any).permissions = JSON.parse(user.customRole.permissions);
-                        } catch {
-                            (session.user as any).permissions = {};
-                        }
-                    } else {
-                        (session.user as any).permissions = {};
-                    }
-                    (session.user as any).gender = (user as any).gender || 'male';
-                    (session.user as any).avatar = (user as any).avatar || 'm1';
-                    (session.user as any).currency = user.company?.currency || 'EGP';
-                    (session.user as any).companyName = user.company?.name || '';
-                    (session.user as any).companyLogo = user.company?.logo || '';
-                    (session.user as any).taxNumber = user.company?.taxNumber || '';
-                    (session.user as any).commercialRegister = user.company?.commercialRegister || '';
-                    (session.user as any).phone = user.company?.phone || '';
-
-                    if (user.company?.subscription) {
-                        (session.user as any).subscription = {
-                            plan: user.company.subscription.plan,
-                            endDate: user.company.subscription.endDate,
-                            isActive: user.company.subscription.isActive,
-                            features: user.company.subscription.features,
-                            maxUsers: user.company.subscription.maxUsers,
-                            maxBranches: user.company.subscription.maxBranches,
-                            startDate: user.company.subscription.startDate,
-                        };
-                    }
-                    (session.user as any).businessType = user.company?.businessType || 'TRADING';
-                }
+        // الـ session callback يقرأ من التوكن فقط - صفر اتصالات بقاعدة البيانات
+        async session({ session, token }: any) {
+            if (session.user && token) {
+                const u = session.user as any;
+                u.id = token.id;
+                u.username = token.username;
+                u.role = token.role;
+                u.companyId = token.companyId;
+                u.isSuperAdmin = token.isSuperAdmin;
+                u.branchId = token.branchId;
+                u.activeBranchId = token.activeBranchId;
+                u.activeBranchName = token.activeBranchName;
+                u.branches = token.branches || [];
+                u.allowedBranches = token.allowedBranches;
+                u.gender = token.gender || 'male';
+                u.avatar = token.avatar || 'm1';
+                u.permissions = token.permissions || {};
+                u.currency = token.currency || 'EGP';
+                u.companyName = token.companyName || '';
+                u.companyLogo = token.companyLogo || '';
+                u.taxNumber = token.taxNumber || '';
+                u.commercialRegister = token.commercialRegister || '';
+                u.phone = token.phone || '';
+                u.businessType = token.businessType || 'TRADING';
+                u.subscription = token.subscription || null;
             }
             return session;
         }
