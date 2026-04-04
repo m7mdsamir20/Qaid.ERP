@@ -44,10 +44,17 @@ export default function SuperAdminPage() {
     useEffect(() => {
         if (status === 'loading') return;
         if (!session) {
-            router.push('/login');
+            router.push('/login?callbackUrl=/super-admin');
             return;
         }
-        
+
+        // تحقق من isSuperAdmin من التوكن أولاً
+        if ((session?.user as any)?.isSuperAdmin) {
+            setAuthorized(true);
+            return;
+        }
+
+        // fallback: تحقق مباشرة من قاعدة البيانات
         fetch('/api/super-admin/check')
             .then(r => r.json())
             .then(d => {

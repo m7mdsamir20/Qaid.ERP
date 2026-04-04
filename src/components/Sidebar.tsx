@@ -36,7 +36,12 @@ export default function Sidebar() {
     const hasSubscription = !!(session?.user as any)?.subscription;
 
     const enabledFeatures: Record<string, string[]> = (() => {
-        if (!featuresRaw) return {};
+        if (!featuresRaw) {
+            // fallback: لو ما في features، اعرض كل الأقسام للـ admin
+            const all: Record<string, string[]> = {};
+            navSections.forEach((s: any) => { all[s.featureKey] = s.links.map((l: any) => l.id); });
+            return all;
+        }
         try {
             const parsed = JSON.parse(featuresRaw);
             if (Array.isArray(parsed)) {
@@ -51,6 +56,7 @@ export default function Sidebar() {
         }
         catch { return {}; }
     })();
+
 
     const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
 
