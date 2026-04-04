@@ -27,9 +27,11 @@ const serviceLabels: Record<string, string> = {
 
 export default function Sidebar() {
     const pathname = usePathname();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
+    const userRole = (session?.user as any)?.role;
 
     // جيب الـ features من الـ session
     const featuresRaw = (session?.user as any)?.subscription?.features;
@@ -57,8 +59,6 @@ export default function Sidebar() {
         catch { return {}; }
     })();
 
-
-    const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
 
     // دالة التحقق من الصفحات الفردية
     const hasPage = (featureKey: string, pageId: string): boolean => {
