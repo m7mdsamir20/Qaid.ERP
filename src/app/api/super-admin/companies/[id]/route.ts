@@ -145,6 +145,7 @@ export const DELETE = withProtection(async (request, session, body, context) => 
             await tx.employee.deleteMany({ where: { companyId: id } });
             await tx.partnerTransaction.deleteMany({ where: { companyId: id } });
             await tx.partner.deleteMany({ where: { companyId: id } });
+            await (tx as any).quotation.deleteMany({ where: { companyId: id } });
             await tx.customer.deleteMany({ where: { companyId: id } });
             await tx.supplier.deleteMany({ where: { companyId: id } });
             await tx.treasury.deleteMany({ where: { companyId: id } });

@@ -14,7 +14,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isBuild = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI;
+  const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
   const session = isBuild ? null : await getServerSession(authOptions);
 
   return (
