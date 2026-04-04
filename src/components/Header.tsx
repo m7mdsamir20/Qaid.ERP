@@ -147,7 +147,7 @@ function SearchBox() {
 }
 
 function Actions() {
-    const { data: session } = useSession();
+    const { data: session, status: sessionStatus } = useSession();
     const [openUser, setOpenUser] = useState(false);
     const [openNotif, setOpenNotif] = useState(false);
     const [notifs, setNotifs] = useState<any[]>([]);
@@ -284,9 +284,11 @@ function Actions() {
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
                     <div style={{ textAlign: 'right' }}>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>{session?.user?.name || 'المستخدم'}</div>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
+                            {sessionStatus === 'loading' ? '...' : (session?.user?.name || 'المستخدم')}
+                        </div>
                         <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px' }}>
-                            {roleLabels[(session?.user as any)?.role] || 'مستخدم'}
+                            {sessionStatus === 'loading' ? '' : (roleLabels[(session?.user as any)?.role] || 'مستخدم')}
                         </div>
                     </div>
                     <ChevronDown size={14} color={C.textMuted} style={{ transform: openUser ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
