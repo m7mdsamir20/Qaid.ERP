@@ -62,36 +62,31 @@ export default function Sidebar() {
 
     // دالة التحقق من الصفحات الفردية
     const hasPage = (featureKey: string, pageId: string): boolean => {
-        if (isSuperAdmin) return true;
+        // السوبر أدمن والـ admin يرون كل شيء دائماً
+        if (isSuperAdmin || userRole === 'admin') return true;
 
-        // الداش بورد والإعدادات متاحة دائماً للمدير
+        // الداش بورد والإعدادات متاحة دائماً
         if (featureKey === 'dashboard' || pageId === '/') return true;
 
-        const userRole = (session?.user as any)?.role;
         const userPerms = (session?.user as any)?.permissions || {};
 
         if (featureKey === 'settings') {
-            return userRole === 'admin' || Object.keys(userPerms).length === 0;
+            return Object.keys(userPerms).length === 0;
         }
 
-        // 1. تحقق من الـ subscription features
-        //    - لو فيه subscription: الـ features تحكم الوصول (حتى لو فاضية = لا يوجد وصول)
-        //    - لو ما فيش subscription: السماح للـ admin بكل حاجة (backwards compat)
-        if (hasSubscription) {
+        // للمستخدمين العاديين: تحقق من الـ subscription features
+        if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
             const pagesInSub = enabledFeatures[featureKey] || [];
             if (!pagesInSub.includes(pageId)) return false;
         }
 
-        // 2. لو المستخدم admin واجتاز فحص الـ subscription → يُسمح له
-        if (userRole === 'admin') return true;
-
-        // 3. تحقق من الـ granular permissions للمستخدمين العاديين
+        // تحقق من الـ granular permissions للمستخدمين العاديين
         if (Object.keys(userPerms).length > 0) {
             const p = userPerms[pageId];
             return !!p?.view;
         }
 
-        return false;
+        return true;
     };
 
     // دالة للتحقق من القسم كله
