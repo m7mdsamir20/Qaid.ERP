@@ -68,7 +68,8 @@ export const authOptions: AuthOptions = {
                     branchId: user.branchId || null,
                     gender: (user as any).gender || 'male',
                     avatar: (user as any).avatar || 'm1',
-                    customRole: user.customRole
+                    customRole: user.customRole,
+                    isSuperAdmin: user.isSuperAdmin // إضافة الصلاحية هنا
                 };
             }
         })
@@ -82,6 +83,7 @@ export const authOptions: AuthOptions = {
                 token.id = user.id;
                 token.role = user.role;
                 token.companyId = user.companyId;
+                token.isSuperAdmin = (user as any).isSuperAdmin; // حفظ في التوكن
                 token.branchId = (user as any).branchId || null;
                 token.activeBranchId = (user as any).branchId || null;
                 token.gender = (user as any).gender;
