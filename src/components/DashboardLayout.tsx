@@ -17,31 +17,36 @@ export default function DashboardLayout({
     const pathname = usePathname();
     const router = useRouter();
     const [noFY, setNoFY] = useState(false);
-    const [loadingFY, setLoadingFY] = useState(true);
+    const [loadingFY, setLoadingFY] = useState(false);
 
     useEffect(() => {
-        if (status === 'loading') return;
+        if (status === 'loading' || !session) return;
+        const user = session.user as any;
+        if (!user?.companyId || user?.isSuperAdmin) return;
+        if (pathname.includes('/settings') || pathname.includes('/super-admin') || pathname.includes('/financial-years')) return;
 
-        if (!session || pathname.includes('/settings') || pathname.includes('/super-admin')) {
-            setNoFY(false);
-            setLoadingFY(false);
+        // cache في الـ memory - يتفيتش مرة واحدة بس في الجلسة
+        const cacheKey = `fy_open_${user.companyId}`;
+        const cached = (window as any).__fyCache?.[cacheKey];
+        if (cached !== undefined) {
+            setNoFY(!cached);
             return;
         }
 
         setLoadingFY(true);
-        fetch('/api/settings', { cache: 'no-store' })
-            .then(r => {
-                if (!r.ok) return null;
-                return r.json();
-            })
+        fetch('/api/financial-years/check')
+            .then(r => r.ok ? r.json() : null)
             .then(d => {
-                if (!d) return;
-                const hasOpenYear = (d.financialYears || []).some((fy: any) => fy.isOpen);
-                setNoFY(!hasOpenYear);
+                if (d === null) return;
+                const hasOpen = !!d.hasOpen;
+                if (!(window as any).__fyCache) (window as any).__fyCache = {};
+                (window as any).__fyCache[cacheKey] = hasOpen;
+                setNoFY(!hasOpen);
             })
             .catch(() => { })
             .finally(() => setLoadingFY(false));
-    }, [pathname, status, session]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [status, session]);
 
     if (status === 'loading') {
         return (

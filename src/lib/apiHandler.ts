@@ -5,13 +5,14 @@ import { sanitizeObject } from './sanitize';
 
 type Handler = (req: NextRequest, session?: any, body?: any, context?: any) => Promise<NextResponse>;
 
-export function withProtection(handler: Handler, options: { 
+export function withProtection(handler: Handler, options: {
     requireAdmin?: boolean,
     requireSuperAdmin?: boolean,
     limit?: number,
     windowMs?: number,
     sanitize?: boolean,
-    isPublic?: boolean
+    isPublic?: boolean,
+    cache?: number, // ثواني للـ browser cache على GET requests
 } = {}) {
     return async (request: NextRequest, context: any) => {
         // 1. Rate Limiting
@@ -70,7 +71,12 @@ export function withProtection(handler: Handler, options: {
 
         // 6. Run actual handler
         try {
-            return await handler(request, session, sanitizedBody, context);
+            const response = await handler(request, session, sanitizedBody, context);
+            // إضافة cache header للـ GET requests لو محدد
+            if (options.cache && request.method === 'GET' && response.status === 200) {
+                response.headers.set('Cache-Control', `private, max-age=${options.cache}, stale-while-revalidate=${options.cache * 2}`);
+            }
+            return response;
         } catch (error: any) {
             console.error('API Error:', error);
             const message = process.env.NODE_ENV === 'development' ? error.message : 'حدث خطأ داخلي في الخادم';
