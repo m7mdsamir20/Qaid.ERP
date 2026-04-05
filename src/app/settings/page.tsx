@@ -392,12 +392,21 @@ function SettingsContent() {
         const userPerms = (session?.user as any)?.permissions || {};
         const isUserAdmin = userRole === 'admin';
 
-        if (isUserAdmin) return true;
+        if (isUserAdmin) {
+            if (featureKey === 'settings') return true;
+            if (Object.keys(enabledFeatures).length > 0) {
+                if (!(featureKey in enabledFeatures)) return false;
+                const pagesInSub = enabledFeatures[featureKey];
+                return pagesInSub.length === 0 || pagesInSub.includes(pageId);
+            }
+            return true;
+        }
 
         // 1. Check subscription (granular check)
         if (Object.keys(enabledFeatures).length > 0) {
-            const pagesInSub = enabledFeatures[featureKey] || [];
-            if (!pagesInSub.includes(pageId)) return false;
+            if (!(featureKey in enabledFeatures)) return false;
+            const pagesInSub = enabledFeatures[featureKey];
+            if (pagesInSub.length > 0 && !pagesInSub.includes(pageId)) return false;
         } else if (featureKey !== 'dashboard' && featureKey !== 'settings') {
             // If no subscription features are defined, we might want to restrict or allow all.
             // Based on existing code (line 56), it returns true if empty.

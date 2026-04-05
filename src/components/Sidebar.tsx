@@ -75,7 +75,8 @@ export default function Sidebar() {
         if (userRole === 'admin') {
             if (featureKey === 'settings') return true;
             if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
-                const pagesInSub = enabledFeatures[featureKey] || [];
+                if (!(featureKey in enabledFeatures)) return false;
+                const pagesInSub = enabledFeatures[featureKey];
                 return pagesInSub.length === 0 || pagesInSub.includes(pageId);
             }
             return true;
@@ -87,7 +88,8 @@ export default function Sidebar() {
         }
 
         if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
-            const pagesInSub = enabledFeatures[featureKey] || [];
+            if (!(featureKey in enabledFeatures)) return false;
+            const pagesInSub = enabledFeatures[featureKey];
             if (pagesInSub.length > 0 && !pagesInSub.includes(pageId)) return false;
         }
 
