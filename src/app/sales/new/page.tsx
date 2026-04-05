@@ -138,7 +138,7 @@ export default function NewSalePage() {
             const trs = Array.isArray(trsData) ? trsData : [];
             
             const itsData = await itemR.json();
-            const its = Array.isArray(itsData) ? itsData : [];
+            const its = Array.isArray(itsData) ? itsData : (itsData.items || []);
 
             setCustomers(cus); setSuppliers(sups);
             setWarehouses(whs); setTreasuries(trs);

@@ -141,7 +141,7 @@ export default function NewPurchasePage() {
             setCustomers(Array.isArray(cus) ? cus : []);
             setWarehouses(Array.isArray(whs) ? whs : []); 
             setTreasuries(Array.isArray(trs) ? trs : []);
-            setItems(Array.isArray(its) ? its : []);
+            setItems(Array.isArray(its) ? its : (its.items || []));
 
             if (Array.isArray(whs) && whs.length > 0) {
                 const lastWh = localStorage.getItem('last_warehouse_id');

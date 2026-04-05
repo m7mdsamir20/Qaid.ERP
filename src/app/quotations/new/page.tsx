@@ -48,7 +48,7 @@ export default function NewQuotationPage() {
         try {
             const [custRes, itemRes, numRes, settingsRes, comRes] = await Promise.all([
                 fetch('/api/customers'),
-                fetch('/api/items'),
+                fetch('/api/items?all=true'),
                 fetch('/api/quotations?justNextNum=true'),
                 fetch('/api/settings'),
                 fetch('/api/company')
@@ -56,7 +56,7 @@ export default function NewQuotationPage() {
             if (custRes.ok) setCustomers(await custRes.json());
             if (itemRes.ok) {
                 const itemData = await itemRes.json();
-                setItems(itemData.items || itemData);
+                setItems(Array.isArray(itemData) ? itemData : (itemData.items || []));
             }
             if (numRes.ok) {
                 const data = await numRes.json();

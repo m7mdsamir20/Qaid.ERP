@@ -39,7 +39,7 @@ export default function NewTransferPage() {
             const [trRes, whRes, itemsRes, stockRes] = await Promise.all([
                 fetch('/api/warehouse-transfers'), 
                 fetch('/api/warehouses'), 
-                fetch('/api/items'),
+                fetch('/api/items?all=true'),
                 fetch('/api/stocks')
             ]);
 
@@ -50,7 +50,8 @@ export default function NewTransferPage() {
             setForm(f => ({ ...f, code: `TRF-${String(maxNum + 1).padStart(4, '0')}` }));
             const whs = await whRes.json();
             setWarehouses(whs);
-            setItems(await itemsRes.json());
+            const itsData = await itemsRes.json();
+            setItems(Array.isArray(itsData) ? itsData : (itsData.items || []));
             setStocks(await stockRes.json());
 
             const lastWh = localStorage.getItem('last_warehouse_id');

@@ -145,7 +145,7 @@ tbody td{padding:8px 12px;font-size:11px;color:#1a1a1a;text-align:center;border-
         <div class="inv-date">${date}</div>
     </div>
     <div class="logo-block">
-        ${co.logo ? `<img src="${co.logo}" alt=""/>` : `<div class="logo-letter">${co.name.charAt(0)}</div>`}
+        ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
     </div>
 </div>
 

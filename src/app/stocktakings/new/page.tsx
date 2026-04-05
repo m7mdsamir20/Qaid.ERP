@@ -37,17 +37,17 @@ export default function NewStocktakingPage() {
         setLoading(true);
         try {
             const [whRes, itemsRes, stocksRes] = await Promise.all([
-                fetch('/api/warehouses'), fetch('/api/items'), fetch('/api/stocks')
+                fetch('/api/warehouses'), fetch('/api/items?all=true'), fetch('/api/stocks')
             ]);
             let whData = [];
-            let itData = [];
+            let itData: any = [];
             let stData = [];
             if (whRes.ok) whData = await whRes.json();
             if (itemsRes.ok) itData = await itemsRes.json();
             if (stocksRes.ok) stData = await stocksRes.json();
 
             setWarehouses(Array.isArray(whData) ? whData : []);
-            setItems(Array.isArray(itData) ? itData : []);
+            setItems(Array.isArray(itData) ? itData : (itData.items || []));
             setStocks(Array.isArray(stData) ? stData : []);
         } catch (error) {
             console.error(error);
