@@ -222,7 +222,7 @@ export default function DashboardPage() {
   const loadStats = async () => {
     setIsError(false);
     try {
-      const res = await fetch('/api/stats');
+      const res = await fetch(`/api/stats?period=${period}`);
       const data = await res.json();
       if (data.error) setIsError(true);
       else setStats(data);

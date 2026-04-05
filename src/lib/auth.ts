@@ -119,9 +119,13 @@ export const authOptions: AuthOptions = {
                 if (u.avatar) token.avatar = u.avatar;
             }
 
-            // مزامنة البيانات مع قاعدة البيانات عند كل ريفريش (JWT refresh)
-            // لضمان انعكاس تغييرات السوبر أدمن فورياً بدون تسجيل خروج
-            if (token.id && !user) {
+            // مزامنة البيانات مع قاعدة البيانات عند الريفريش (JWT refresh)
+            // مع إضافة cooldown لمدة 60 ثانية لتقليل الضغط على قاعدة البيانات
+            const now = Date.now();
+            const lastSync = (token.lastSync as number) || 0;
+            const shouldSync = !user && token.id && (now - lastSync > 60000);
+
+            if (shouldSync) {
                 try {
                     const dbUser: any = await (prisma as any).user.findUnique({
                         where: { id: token.id },
@@ -142,6 +146,7 @@ export const authOptions: AuthOptions = {
                     });
 
                     if (dbUser) {
+                        token.lastSync = now;
                         token.role = dbUser.role;
                         token.isSuperAdmin = !!dbUser.isSuperAdmin;
                         token.businessType = dbUser.company?.businessType || 'TRADING';

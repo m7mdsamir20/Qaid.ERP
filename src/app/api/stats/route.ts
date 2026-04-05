@@ -4,14 +4,26 @@ import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
+        const { searchParams } = new URL(request.url);
+        const period = searchParams.get('period') || 'today';
+        
         const companyId = (session.user as any).companyId;
         const activeBranchId = (session.user as any).activeBranchId;
         const branchFilter = activeBranchId && activeBranchId !== 'all' ? { branchId: activeBranchId } : {};
 
-        const startOfDay = new Date();
-        startOfDay.setHours(0, 0, 0, 0);
-        const endOfDay = new Date();
-        endOfDay.setHours(23, 59, 59, 999);
+        // تحديد نطاق التاريخ بناءً على الـ period
+        let startDate = new Date();
+        startDate.setHours(0, 0, 0, 0);
+        let endDate = new Date();
+        endDate.setHours(23, 59, 59, 999);
+
+        if (period === 'week') {
+            startDate.setDate(startDate.getDate() - 7);
+        } else if (period === 'month') {
+            startDate.setDate(1); // بداية الشهر الحالي
+        }
+        
+        const dateFilter = { date: { gte: startDate, lte: endDate } };
 
         const last7Days: { label: string; start: Date; end: Date }[] = [];
         const chartStart = new Date();
@@ -32,15 +44,13 @@ export const GET = withProtection(async (request, session) => {
             catch (e) { console.error("Query Error:", e); return fallback; }
         };
 
-        // 12 queries بدل 32 - كل العمليات في Promise.all واحد
         const [
             customers,
             suppliers,
             items,
             treasuries,
-            salesTodayAgg,
-            salesTotalAgg,
-            purchasesTotalAgg,
+            salesPeriodAgg,
+            purchasesPeriodAgg,
             expensesTotalData,
             lowStockItems,
             topDebtors,
@@ -51,23 +61,25 @@ export const GET = withProtection(async (request, session) => {
             safeQuery(() => prisma.supplier.count({ where: { companyId } }), 0),
             safeQuery(() => prisma.item.count({ where: { companyId } }), 0),
             safeQuery(() => prisma.treasury.findMany({ where: { companyId, ...branchFilter }, select: { name: true, balance: true } }), []),
-            // aggregate بدل findMany للمبالغ
+            
+            // مبيعات الفترة المختارة
             safeQuery(() => prisma.invoice.aggregate({
-                where: { companyId, type: 'sale', date: { gte: startOfDay, lte: endOfDay }, ...branchFilter },
+                where: { companyId, type: 'sale', ...dateFilter, ...branchFilter },
                 _sum: { total: true }
             }), { _sum: { total: 0 } }),
+
+            // مشتريات الفترة المختارة
             safeQuery(() => prisma.invoice.aggregate({
-                where: { companyId, type: 'sale', ...branchFilter },
+                where: { companyId, type: 'purchase', ...dateFilter, ...branchFilter },
                 _sum: { total: true }
             }), { _sum: { total: 0 } }),
+
+            // مصروفات الفترة المختارة
             safeQuery(() => prisma.invoice.aggregate({
-                where: { companyId, type: 'purchase', ...branchFilter },
+                where: { companyId, type: 'payment', ...dateFilter, ...branchFilter },
                 _sum: { total: true }
             }), { _sum: { total: 0 } }),
-            safeQuery(() => prisma.invoice.aggregate({
-                where: { companyId, type: 'payment', ...branchFilter },
-                _sum: { total: true }
-            }), { _sum: { total: 0 } }),
+
             safeQuery(() => prisma.stock.findMany({
                 where: { item: { companyId }, quantity: { lte: 10 } },
                 include: { item: true, warehouse: true },
@@ -90,7 +102,6 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'desc' },
                 take: 5,
             }), []),
-            // query واحد للـ chart بدل 21 query
             safeQuery(() => prisma.invoice.findMany({
                 where: {
                     companyId,
@@ -102,7 +113,6 @@ export const GET = withProtection(async (request, session) => {
             }), []),
         ]);
 
-        // تجميع بيانات الـ chart في JS بدل 21 query منفصلة
         const chartData = last7Days.map((day) => {
             const dayInvoices = (invoicesLast7Days as any[]).filter((inv: any) => {
                 const d = new Date(inv.date);
@@ -117,30 +127,30 @@ export const GET = withProtection(async (request, session) => {
         });
 
         const treasuriesBalance = (treasuries as any[]).reduce((sum: number, t: any) => sum + t.balance, 0);
-        const salesTodayTotal = (salesTodayAgg as any)?._sum?.total || 0;
-        const totalSalesAmount = (salesTotalAgg as any)?._sum?.total || 0;
-        const totalPurchasesAmount = (purchasesTotalAgg as any)?._sum?.total || 0;
+        const salesPeriodTotal = (salesPeriodAgg as any)?._sum?.total || 0;
+        const purchasesPeriodTotal = (purchasesPeriodAgg as any)?._sum?.total || 0;
+        const inputExpensesTotal = (expensesTotalData as any)?._sum?.total || 0;
+        
         const isServices = (session.user as any).businessType === 'SERVICES';
-        const expensesTotal = (expensesTotalData as any)?._sum?.total || 0;
 
         return NextResponse.json({
             customers,
             suppliers,
             items,
             treasuriesBalance,
-            salesTodayTotal,
-            salesTotal: totalSalesAmount,
-            purchasesTotal: totalPurchasesAmount,
+            salesTodayTotal: salesPeriodTotal, // نرسلها كـ todayTotal ليتوافق مع الواجهة
+            salesTotal: salesPeriodTotal,
+            purchasesTotal: purchasesPeriodTotal,
             lowStockItems,
             topDebtors,
             recentInvoices,
             chartData,
-            netProfit: isServices ? (totalSalesAmount - expensesTotal) : (totalSalesAmount - totalPurchasesAmount),
+            netProfit: isServices ? (salesPeriodTotal - inputExpensesTotal) : (salesPeriodTotal - purchasesPeriodTotal),
             treasuryList: treasuries,
-            expensesTotal,
+            expensesTotal: inputExpensesTotal,
         });
     } catch (error: any) {
         console.error("Dashboard API Error DETAILS:", error);
-        return NextResponse.json({ error: "فشل في سحب إحصائيات لوحة التحكم: " + (error.message || "خطأ مجهول") }, { status: 500 });
+        return NextResponse.json({ error: "فشل في سحب إحصائيات لوحة التحكم" }, { status: 500 });
     }
-});
+}, { cache: 10 }); // كاش لمدة 10 ثواني لسرعة التنقل الجانبي 🚀
