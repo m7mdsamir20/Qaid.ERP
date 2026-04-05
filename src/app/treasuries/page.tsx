@@ -12,6 +12,7 @@ import {
     Loader2, X, TrendingUp, TrendingDown, Wallet, AlertTriangle, Building, CreditCard, ShieldCheck, CheckCircle2
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
+import { getListCache, setListCache } from '@/lib/listCache';
 
 /* ── Types ── */
 interface Treasury {
@@ -193,15 +194,19 @@ export default function TreasuriesPage() {
     const canEdit = isAdmin || perms['/treasuries']?.edit;
     const canDelete = isAdmin || perms['/treasuries']?.delete;
 
-    const fetchData = useCallback(async () => {
-        setLoading(true);
+    const fetchData = useCallback(async (showLoading = false) => {
+        if (showLoading) setLoading(true);
         try {
-            const res = await fetch('/api/treasuries');
-            const data = await res.json();
-            setTreasuries(Array.isArray(data) ? data : []);
+            const [tRes, sRes] = await Promise.all([
+                fetch('/api/treasuries'),
+                fetch('/api/settings')
+            ]);
+            const [data, sData] = await Promise.all([tRes.json(), sRes.json()]);
             
-            const sRes = await fetch('/api/settings');
-            const sData = await sRes.json();
+            const trList = Array.isArray(data) ? data : [];
+            setTreasuries(trList);
+            setListCache('treasuries', trList);
+
             const cur = sData?.company?.currency;
             if (cur) {
                 const maps: any = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'USD': 'دولار' };
@@ -211,7 +216,16 @@ export default function TreasuriesPage() {
         finally { setLoading(false); }
     }, []);
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    useEffect(() => {
+        const cached = getListCache('treasuries');
+        if (cached) {
+            setTreasuries(cached);
+            setLoading(false);
+            fetchData(false); // تحديث صامت
+        } else {
+            fetchData(true);
+        }
+    }, [fetchData]);
 
     const handleDelete = async () => {
         if (!deleteItem) return;

@@ -44,11 +44,19 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'desc' },
                 skip,
                 take: limit,
-                include: {
-                    supplier: { select: { id: true, name: true } },
-                    customer: { select: { id: true, name: true } },
-                    lines: { include: { item: { include: { unit: true } } } },
-                },
+                select: {
+                    id: true,
+                    invoiceNumber: true,
+                    date: true,
+                    total: true,
+                    subtotal: true,
+                    discount: true,
+                    paidAmount: true,
+                    remaining: true,
+                    type: true,
+                    supplier: { select: { id: true, name: true, balance: true } },
+                    customer: { select: { id: true, name: true, balance: true } }
+                }
             }),
             prisma.invoice.count({ where }),
             prisma.financialYear.findFirst({ where: { companyId, isOpen: true } })
