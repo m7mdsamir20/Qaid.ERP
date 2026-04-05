@@ -64,8 +64,12 @@ export function printA4Invoice(
     const party = isSale ? (invoice.customer || null) : (invoice.supplier || null);
     const partyLabel = isSale ? 'العميل' : 'المورد';
 
-    const lines = invoice.lines || [];
-    const subtotal = lines.reduce((s: number, l: any) => s + Number(l.total || 0), 0);
+    // Ensure lines is always an array and try to find it in common properties
+    const rawLines = invoice.lines || invoice.InvoiceLine || invoice.items || [];
+    const lines = Array.isArray(rawLines) ? rawLines : [];
+    
+    // Recalculate subtotal from lines to be sure
+    const subtotal = lines.reduce((s: number, l: any) => s + Number(l.total || (Number(l.quantity || 0) * Number(l.price || 0)) || 0), 0);
     const discount = Number(invoice.discount || 0);
     const total = Number(invoice.total || subtotal - discount);
     const paid = Number(invoice.paidAmount || 0);
@@ -180,11 +184,13 @@ tbody td{padding:8px 12px;font-size:11px;color:#1a1a1a;text-align:center;border-
         </tr>
     </thead>
     <tbody>
-        ${lines.map((l: any, i: number) => {
+        ${lines.length === 0 ? '<tr><td colspan="10" style="padding:20px;color:#999">لا توجد بنود في هذه الفاتورة</td></tr>' : lines.map((l: any, i: number) => {
             const unit = l.item?.unit?.name || l.unit?.name || l.unit || '—';
-            const name = l.item?.name || l.itemName || '';
+            const name = l.item?.name || l.itemName || l.name || 'صنف غير معروف';
             const desc = l.description || '';
-            const taxAmount = Number(l.taxAmount || 0);
+            const taxAmountValue = Number(l.taxAmount || 0);
+            const lineTotal = Number(l.total || (Number(l.quantity || 0) * Number(l.price || 0)));
+            
             return `<tr>
                 <td>${i + 1}</td>
                 <td style="text-align:right">
@@ -192,10 +198,10 @@ tbody td{padding:8px 12px;font-size:11px;color:#1a1a1a;text-align:center;border-
                     ${desc ? `<div style="font-size:10px;color:#666;margin-top:2px">${desc}</div>` : ''}
                 </td>
                 ${!isServicesLine ? `<td>${unit}</td>` : ''}
-                <td><strong>${Number(l.quantity).toLocaleString()}</strong></td>
-                <td>${Number(l.price).toLocaleString()} ${sym}</td>
-                ${lines.some((lx: any) => (lx.taxAmount || 0) > 0) ? `<td>${taxAmount > 0 ? taxAmount.toLocaleString() + ' ' + sym : '—'}</td>` : ''}
-                <td><strong>${Number(l.total).toLocaleString()} ${sym}</strong></td>
+                <td><strong>${Number(l.quantity || 0).toLocaleString()}</strong></td>
+                <td>${Number(l.price || 0).toLocaleString()} ${sym}</td>
+                ${lines.some((lx: any) => (lx.taxAmount || 0) > 0) ? `<td>${taxAmountValue > 0 ? taxAmountValue.toLocaleString() + ' ' + sym : '—'}</td>` : ''}
+                <td><strong>${lineTotal.toLocaleString()} ${sym}</strong></td>
             </tr>`;
         }).join('')}
     </tbody>
