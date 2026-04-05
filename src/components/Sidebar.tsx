@@ -62,28 +62,38 @@ export default function Sidebar() {
 
     // دالة التحقق من الصفحات الفردية
     const hasPage = (featureKey: string, pageId: string): boolean => {
-        // السوبر أدمن والـ admin يرون كل شيء دائماً
-        if (isSuperAdmin || userRole === 'admin') return true;
+        // السوبر أدمن يرى كل شيء
+        if (isSuperAdmin) return true;
 
         // الداش بورد والإعدادات متاحة دائماً
         if (featureKey === 'dashboard' || pageId === '/') return true;
 
         const userPerms = (session?.user as any)?.permissions || {};
+        const hasGranularPerms = Object.keys(userPerms).length > 0;
 
-        if (featureKey === 'settings') {
-            return Object.keys(userPerms).length === 0;
+        // الـ admin: يتحقق من الـ subscription features فقط (مش الـ granular permissions)
+        if (userRole === 'admin') {
+            if (featureKey === 'settings') return true;
+            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+                const pagesInSub = enabledFeatures[featureKey] || [];
+                return pagesInSub.length === 0 || pagesInSub.includes(pageId);
+            }
+            return true;
         }
 
-        // للمستخدمين العاديين: تحقق من الـ subscription features
+        // باقي المستخدمين: تحقق من الـ subscription أولاً
+        if (featureKey === 'settings') {
+            return !hasGranularPerms;
+        }
+
         if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
             const pagesInSub = enabledFeatures[featureKey] || [];
-            if (!pagesInSub.includes(pageId)) return false;
+            if (pagesInSub.length > 0 && !pagesInSub.includes(pageId)) return false;
         }
 
-        // تحقق من الـ granular permissions للمستخدمين العاديين
-        if (Object.keys(userPerms).length > 0) {
-            const p = userPerms[pageId];
-            return !!p?.view;
+        // تحقق من الـ granular permissions
+        if (hasGranularPerms) {
+            return !!userPerms[pageId]?.view;
         }
 
         return true;
@@ -95,7 +105,6 @@ export default function Sidebar() {
         if (!featureKey) return true;
         if (featureKey === 'dashboard' || featureKey === 'settings') return true;
 
-        // تحقق إن القسم عنده على الأقل صفحة واحدة مسموح بها
         const section = navSections.find(s => s.featureKey === featureKey);
         if (section) {
             return section.links.some(l => hasPage(featureKey, l.id));

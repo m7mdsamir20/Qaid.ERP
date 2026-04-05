@@ -121,33 +121,38 @@ export async function seedDefaultAccounts(companyId: string) {
     const codeToId = new Map<string, string>();
     current.forEach(a => codeToId.set(a.code, a.id));
 
-    for (const acc of missing) {
-        const created = await (prisma.account.create as any)({
-            data: {
-                code: acc.code,
-                name: acc.name,
-                nameEn: acc.nameEn,
-                nature: natureMap[acc.type],
-                type: acc.type,
-                accountCategory: acc.category,
-                level: acc.level,
-                isParent: acc.category === 'summary',
-                parentId: null,
-                companyId,
-            },
-        });
-        codeToId.set(acc.code, created.id);
-    }
+    // إنشاء كل الحسابات في batch واحد بدل loop
+    await prisma.account.createMany({
+        data: missing.map(acc => ({
+            code: acc.code,
+            name: acc.name,
+            nameEn: acc.nameEn,
+            nature: natureMap[acc.type],
+            type: acc.type,
+            accountCategory: acc.category,
+            level: acc.level,
+            isParent: acc.category === 'summary',
+            parentId: null,
+            companyId,
+        })),
+        skipDuplicates: true,
+    });
 
-    for (const acc of missing) {
-        if (acc.parentCode) {
-            const childId = codeToId.get(acc.code);
-            const parentId = codeToId.get(acc.parentCode);
-            if (childId && parentId) {
-                await prisma.account.update({ where: { id: childId }, data: { parentId } });
-            }
-        }
-    }
+    // جيب الـ IDs الجديدة في query واحد
+    const newAccounts = await prisma.account.findMany({
+        where: { companyId, code: { in: missing.map(a => a.code) } },
+        select: { code: true, id: true }
+    });
+    newAccounts.forEach(a => codeToId.set(a.code, a.id));
+
+    // تحديث الـ parentId في batch بدل loop
+    const parentUpdates = missing
+        .filter(acc => acc.parentCode && codeToId.get(acc.code) && codeToId.get(acc.parentCode))
+        .map(acc => prisma.account.update({
+            where: { id: codeToId.get(acc.code)! },
+            data: { parentId: codeToId.get(acc.parentCode!)! }
+        }));
+    await Promise.all(parentUpdates);
 
     return { skipped: false, count: current.length + missing.length, added: missing.length, missingNames: missing.map(m => m.name) };
 }
