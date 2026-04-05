@@ -28,6 +28,15 @@ const serviceLabels: Record<string, string> = {
 export default function Sidebar() {
     const pathname = usePathname();
     const { data: session, status } = useSession();
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    // 0. هيدريشن قارد
+    if (!isMounted) return <div style={{ width: '260px', height: '100vh', backgroundColor: C.card }} />;
+
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
@@ -118,11 +127,15 @@ export default function Sidebar() {
 
     const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
         const initialState: Record<string, boolean> = { 'الرئيسية': true };
-        navSections.forEach((section: any) => {
-            if (section.links.some((link: any) => link.href === pathname)) {
-                initialState[section.title] = true;
-            }
-        });
+        try {
+            navSections.forEach((section: any) => {
+                if (section && section.links && Array.isArray(section.links)) {
+                    if (section.links.some((link: any) => link.href === pathname)) {
+                        initialState[section.title] = true;
+                    }
+                }
+            });
+        } catch (e) { console.error("Sidebar init error", e); }
         return initialState;
     });
 

@@ -18,6 +18,11 @@ export default function DashboardLayout({
     const router = useRouter();
     const [noFY, setNoFY] = useState(false);
     const [loadingFY, setLoadingFY] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useEffect(() => {
         if (status === 'loading' || !session) return;
@@ -48,16 +53,17 @@ export default function DashboardLayout({
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, session]);
 
+    // هيدريشن قارد
+    if (!isMounted) {
+        return <div style={{ minHeight: '100vh', background: C.bg }} />;
+    }
+
     if (status === 'loading') {
         return (
             <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
                 <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
             </div>
         );
-    }
-
-    if (noFY && !loadingFY && !pathname.includes('/financial-years')) {
-        // We render the layout but with a warning banner at the top and disable pointer events on the content
     }
 
     return (
