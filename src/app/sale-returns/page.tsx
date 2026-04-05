@@ -57,8 +57,23 @@ export default function SaleReturnsListPage() {
         return matchSearch && matchFrom && matchTo;
     });
 
-    const handlePrint = (r: ReturnInvoice) => {
-        printA4Invoice(r, 'sale-return', company);
+    const handlePrint = async (r: ReturnInvoice) => {
+        let fullR = r;
+        if (!r.lines || r.lines.length === 0) {
+            try {
+                const res = await fetch(`/api/sale-returns?id=${r.id}`);
+                if (res.ok) {
+                    fullR = await res.json();
+                } else {
+                    alert('تعذر جلب تفاصيل المرتجع للطباعة');
+                    return;
+                }
+            } catch (err) {
+                alert('خطأ في الاتصال');
+                return;
+            }
+        }
+        printA4Invoice(fullR, 'sale-return', company);
     };
 
     /* ─── Status badge ─── */

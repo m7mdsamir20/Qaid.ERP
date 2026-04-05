@@ -81,9 +81,24 @@ export default function PurchasesListPage() {
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: 'غير مدفوعة', icon: AlertCircle };
     };
 
-    const handlePrint = (inv: Invoice) => {
-        printA4Invoice(inv, 'purchase', company, {
-            partyBalance: inv.supplier?.balance
+    const handlePrint = async (inv: Invoice) => {
+        let fullInv = inv;
+        if (!inv.lines || inv.lines.length === 0) {
+            try {
+                const res = await fetch(`/api/purchases?id=${inv.id}`);
+                if (res.ok) {
+                    fullInv = await res.json();
+                } else {
+                    alert('تعذر جلب تفاصيل الفاتورة للطباعة');
+                    return;
+                }
+            } catch (err) {
+                alert('خطأ في الاتصال');
+                return;
+            }
+        }
+        printA4Invoice(fullInv, 'purchase', company, {
+            partyBalance: fullInv.supplier?.balance
         });
     };
 

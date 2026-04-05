@@ -89,11 +89,28 @@ export default function SalesPage() {
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: 'غير مدفوعة', icon: AlertCircle };
     };
 
-    const handlePrint = (inv: Invoice) => {
-        if (inv.notes?.includes('POS الكاشير السريع')) {
+    const handlePrint = async (inv: Invoice) => {
+        // Find if we already have lines, if not fetch them
+        let fullInv = inv;
+        if (!inv.lines || inv.lines.length === 0) {
+            try {
+                const res = await fetch(`/api/sales?id=${inv.id}`);
+                if (res.ok) {
+                    fullInv = await res.json();
+                } else {
+                    alert('تعذر جلب تفاصيل الفاتورة للطباعة');
+                    return;
+                }
+            } catch (err) {
+                alert('خطأ في الاتصال');
+                return;
+            }
+        }
+
+        if (fullInv.notes?.includes('POS الكاشير السريع')) {
             const printWindow = window.open('', '_blank', 'width=350,height=600');
             if (printWindow) {
-                const receiptDate = new Date(inv.date).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
+                const receiptDate = new Date(fullInv.date).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
                 printWindow.document.write(`
                     <html>
                     <head>
@@ -118,18 +135,18 @@ export default function SalesPage() {
                                 ${company.logo ? `<img src="${company.logo}" style="max-height: 60px; max-width: 120px; object-fit: contain; margin: 0 auto 5px;" alt="Logo" />` : ''}
                                 <h2>${company.name || 'الشركة للأنظمة'}</h2>
                                 <p>فاتورة كاشير POS</p>
-                                <p>رقم الفاتورة: #${inv.invoiceNumber}</p>
+                                <p>رقم الفاتورة: #${fullInv.invoiceNumber}</p>
                                 <p>تاريخ: ${receiptDate}</p>
-                            </div>
+                             </div>
                             <div class="divider"></div>
-                            <div style="font-weight: bold; font-size:12px; display:flex; margin-bottom: 5px;">
+                             <div style="font-weight: bold; font-size:12px; display:flex; margin-bottom: 5px;">
                                 <span class="item-name">الصنف</span>
                                 <span class="item-qty">كمية</span>
                                 <span class="item-total">إجمالي</span>
                             </div>
-                            ${inv.lines.map(line => `
+                            ${(fullInv.lines || []).map(line => `
                                 <div class="item-row">
-                                    <span class="item-name">${line.item?.name || 'صنف'}</span>
+                                    <span class="item-name">${line.item?.name || line.itemName || 'صنف'}</span>
                                     <span class="item-qty">${line.quantity}</span>
                                     <span class="item-total">${fmt(line.total)}</span>
                                 </div>
@@ -137,16 +154,16 @@ export default function SalesPage() {
                             <div class="divider"></div>
                             <div class="totals-row">
                                 <span>المجموع:</span>
-                                <span>${fmt(inv.subtotal)} ${cSymbol}</span>
+                                <span>${fmt(fullInv.subtotal)} ${cSymbol}</span>
                             </div>
-                            ${inv.discount > 0 ? `
+                            ${fullInv.discount > 0 ? `
                             <div class="totals-row">
                                 <span>الخصم:</span>
-                                <span>- ${fmt(inv.discount)} ${cSymbol}</span>
+                                <span>- ${fmt(fullInv.discount)} ${cSymbol}</span>
                             </div>` : ''}
                             <div class="totals-row" style="font-size: 18px; margin-top: 10px; border-top: 1px solid #000; padding-top: 5px;">
                                 <span>الإجمالي:</span>
-                                <span>${fmt(inv.total)} ${cSymbol}</span>
+                                <span>${fmt(fullInv.total)} ${cSymbol}</span>
                             </div>
                             <div class="footer">
                                 <p>شکراً لزيارتكم!</p>
@@ -161,8 +178,8 @@ export default function SalesPage() {
             return;
         }
 
-        printA4Invoice(inv, 'sale', company, {
-            partyBalance: inv.customer?.balance
+        printA4Invoice(fullInv, 'sale', company, {
+            partyBalance: fullInv.customer?.balance
         });
     };
 

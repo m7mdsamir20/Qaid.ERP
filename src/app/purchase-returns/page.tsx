@@ -65,6 +65,25 @@ export default function PurchaseReturnsListPage() {
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: 'غير مدفوعة', icon: AlertCircle };
     };
 
+    const handlePrint = async (inv: PurchaseReturn) => {
+        let fullInv = inv;
+        if (!inv.lines || inv.lines.length === 0) {
+            try {
+                const res = await fetch(`/api/purchase-returns?id=${inv.id}`);
+                if (res.ok) {
+                    fullInv = await res.json();
+                } else {
+                    alert('تعذر جلب تفاصيل المرتجع للطباعة');
+                    return;
+                }
+            } catch (err) {
+                alert('خطأ في الاتصال');
+                return;
+            }
+        }
+        printA4Invoice(fullInv, 'purchase-return', company);
+    };
+
     return (
         <DashboardLayout>
             <div dir="rtl" style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
