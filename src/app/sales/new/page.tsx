@@ -188,11 +188,11 @@ export default function NewSalePage() {
         if (entryItemId) {
             const item = items.find(i => i.id === entryItemId);
             if (item) { 
-                setEntryPrice(item.sellPrice); 
+                setEntryPrice(isServices ? '' : item.sellPrice); 
                 setTimeout(() => qtyRef.current?.focus(), 50);
             }
         }
-    }, [entryItemId, items]);
+    }, [entryItemId, items, isServices]);
 
     const addLine = useCallback(() => {
         setFieldErrors({});

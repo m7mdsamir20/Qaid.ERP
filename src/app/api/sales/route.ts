@@ -202,9 +202,9 @@ export const POST = withProtection(async (request, session, body) => {
                         update: { quantity: { decrement: line.quantity } },
                         create: { itemId: line.itemId, warehouseId, quantity: -line.quantity },
                     })),
-                    // stock movements كلها في وقت واحد
-                    tx.stockMovement.createMany({
-                        data: lines.map((line: any) => ({
+                    // stock movements
+                    ...lines.map((line: any) => tx.stockMovement.create({
+                        data: {
                             type: 'out',
                             date: new Date(),
                             itemId: line.itemId,
@@ -214,10 +214,18 @@ export const POST = withProtection(async (request, session, body) => {
                             notes: `فاتورة مبيعات رقم ${invoiceNumber}`,
                             companyId,
                             invoiceId: invoice.id,
-                        })) as any,
-                    }),
+                        },
+                    })),
                 ]);
             }
+
+            // Update item selling prices to the latest price used in the invoice
+            await Promise.all(lines.map((line: any) => 
+                tx.item.update({
+                    where: { id: line.itemId, companyId },
+                    data: { sellPrice: Number(line.price) }
+                })
+            ));
 
             if (customerId) {
                 await tx.customer.update({
