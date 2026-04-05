@@ -32,26 +32,28 @@ export const GET = withProtection(async (request, session) => {
         }
 
         const branchFilter = getBranchFilter(session);
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
+        const skip = (page - 1) * limit;
 
-        const [invoices, activeYear] = await Promise.all([
+        const where: any = { companyId, type: 'purchase', ...branchFilter };
+
+        const [invoices, total, activeYear] = await Promise.all([
             prisma.invoice.findMany({
-                where: {
-                    companyId,
-                    type: 'purchase',
-                    ...branchFilter,
-                },
+                where,
                 orderBy: { createdAt: 'desc' },
+                skip,
+                take: limit,
                 include: {
-                    supplier: true,
-                    customer: true,
+                    supplier: { select: { id: true, name: true } },
+                    customer: { select: { id: true, name: true } },
                     lines: { include: { item: { include: { unit: true } } } },
                 },
             }),
-            prisma.financialYear.findFirst({
-                where: { companyId, isOpen: true }
-            })
+            prisma.invoice.count({ where }),
+            prisma.financialYear.findFirst({ where: { companyId, isOpen: true } })
         ]);
-        return NextResponse.json({ invoices, activeYear });
+        return NextResponse.json({ invoices, activeYear, total, page, limit });
     } catch {
         return NextResponse.json({ invoices: [], activeYear: null }, { status: 500 });
     }

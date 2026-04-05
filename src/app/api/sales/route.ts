@@ -32,25 +32,34 @@ export const GET = withProtection(async (request, session) => {
         }
 
         const branchFilter = getBranchFilter(session);
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = Math.min(parseInt(url.searchParams.get('limit') || '50'), 100);
+        const skip = (page - 1) * limit;
+        const search = url.searchParams.get('search') || '';
 
-        const [invoices, activeYear] = await Promise.all([
+        const where: any = { companyId, type: 'sale', ...branchFilter };
+        if (search) {
+            where.OR = [
+                { invoiceNumber: { equals: parseInt(search) || undefined } },
+                { customer: { name: { contains: search, mode: 'insensitive' } } },
+            ];
+        }
+
+        const [invoices, total, activeYear] = await Promise.all([
             prisma.invoice.findMany({
-                where: {
-                    companyId,
-                    type: 'sale',
-                    ...branchFilter,
-                },
+                where,
                 orderBy: { createdAt: 'desc' },
+                skip,
+                take: limit,
                 include: {
-                    customer: true,
-                    supplier: true,
+                    customer: { select: { id: true, name: true } },
+                    supplier: { select: { id: true, name: true } },
                     lines: { include: { item: { include: { unit: true } } } },
                     returnInvoices: { include: { lines: true } },
                 },
             }),
-            prisma.financialYear.findFirst({
-                where: { companyId, isOpen: true }
-            })
+            prisma.invoice.count({ where }),
+            prisma.financialYear.findFirst({ where: { companyId, isOpen: true } })
         ]);
 
         const mappedInvoices = invoices.map(inv => {
@@ -58,9 +67,7 @@ export const GET = withProtection(async (request, session) => {
                 let alreadyReturned = 0;
                 inv.returnInvoices.forEach(retInv => {
                     retInv.lines.forEach(retLine => {
-                        if (retLine.itemId === line.itemId) {
-                            alreadyReturned += retLine.quantity;
-                        }
+                        if (retLine.itemId === line.itemId) alreadyReturned += retLine.quantity;
                     });
                 });
                 return { ...line, alreadyReturned };
@@ -68,7 +75,7 @@ export const GET = withProtection(async (request, session) => {
             return { ...inv, lines: linesWithReturned };
         });
 
-        return NextResponse.json({ invoices: mappedInvoices, activeYear });
+        return NextResponse.json({ invoices: mappedInvoices, activeYear, total, page, limit });
     } catch {
         return NextResponse.json({ invoices: [], activeYear: null }, { status: 500 });
     }
@@ -89,16 +96,26 @@ export const POST = withProtection(async (request, session, body) => {
 
         const isServices = (session.user as any).businessType === 'SERVICES';
 
-        // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (فقط للتجاري)
+        // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (query واحد بدل N)
         if (!isServices && warehouseId) {
+            const itemIds = lines.map((l: any) => l.itemId);
+            const [stocks, itemNames] = await Promise.all([
+                prisma.stock.findMany({
+                    where: { itemId: { in: itemIds }, warehouseId },
+                    select: { itemId: true, quantity: true }
+                }),
+                prisma.item.findMany({
+                    where: { id: { in: itemIds } },
+                    select: { id: true, name: true }
+                })
+            ]);
+            const stockMap = Object.fromEntries(stocks.map(s => [s.itemId, s.quantity]));
+            const nameMap = Object.fromEntries(itemNames.map(i => [i.id, i.name]));
             for (const line of lines) {
-                const stock = await prisma.stock.findUnique({
-                    where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } }
-                });
-                if (!stock || stock.quantity < Number(line.quantity)) {
-                    const item = await prisma.item.findUnique({ where: { id: line.itemId }, select: { name: true } });
+                const available = stockMap[line.itemId] ?? 0;
+                if (available < Number(line.quantity)) {
                     return NextResponse.json({
-                        error: `الكمية المتاحة غير كافية للصنف "${item?.name || line.itemId}". المتاح: ${stock?.quantity ?? 0}`
+                        error: `الكمية المتاحة غير كافية للصنف "${nameMap[line.itemId] || line.itemId}". المتاح: ${available}`
                     }, { status: 400 });
                 }
             }
@@ -161,21 +178,18 @@ export const POST = withProtection(async (request, session, body) => {
                 companyId,
                 branchId: body.branchId || (session.user as any).activeBranchId || null,
                 lines: {
-                    create: await Promise.all(lines.map(async (line: { itemId: string; quantity: number; price: number; discount?: number }) => {
-                        const item = await tx.item.findUnique({ where: { id: line.itemId } });
-                        return {
-                            itemId:   line.itemId,
-                            quantity: line.quantity,
-                            price:    line.price,
-                            discount: line.discount || 0,
-                            total:    (line.quantity * line.price) - (line.discount || 0) + ((line as any).taxAmount || 0),
-                            unit:     (line as any).unit || null,
-                            netPrice: line.price - ((line.discount || 0) / line.quantity),
-                            unitCost: item?.averageCost || 0, // Store cost at time of sale
-                            description: (line as any).description || null,
-                            taxRate:     (line as any).taxRate || 0,
-                            taxAmount:   (line as any).taxAmount || 0,
-                        };
+                    create: lines.map((line: any) => ({
+                        itemId:   line.itemId,
+                        quantity: line.quantity,
+                        price:    line.price,
+                        discount: line.discount || 0,
+                        total:    (line.quantity * line.price) - (line.discount || 0) + (line.taxAmount || 0),
+                        unit:     line.unit || null,
+                        netPrice: line.price - ((line.discount || 0) / line.quantity),
+                        unitCost: line.unitCost || 0,
+                        description: line.description || null,
+                        taxRate:     line.taxRate || 0,
+                        taxAmount:   line.taxAmount || 0,
                     })),
                 },
             };
@@ -185,53 +199,30 @@ export const POST = withProtection(async (request, session, body) => {
                 include: { lines: { include: { item: { include: { unit: true } } } }, customer: true },
             });
 
-            // 2. Update stock for each item (Sales -> decrement) - ONLY for trading
+            // 2. تحديث المخزون بشكل متوازي بدل sequential
             if (!isServices && warehouseId) {
-                for (const line of lines) {
-                    await tx.stock.upsert({
-                        where: {
-                            itemId_warehouseId: {
-                                itemId: line.itemId,
-                                warehouseId: warehouseId,
-                            },
-                        },
-                        update: {
-                            quantity: { decrement: line.quantity },
-                        },
-                        create: {
-                            itemId: line.itemId,
-                            warehouseId: warehouseId,
-                            quantity: -line.quantity,
-                        },
-                    });
-
-                    // سجل حركة المخزون
-                    await tx.stockMovement.create({
-                        data: {
+                await Promise.all([
+                    // stock upserts كلها في وقت واحد
+                    ...lines.map((line: any) => tx.stock.upsert({
+                        where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } },
+                        update: { quantity: { decrement: line.quantity } },
+                        create: { itemId: line.itemId, warehouseId, quantity: -line.quantity },
+                    })),
+                    // stock movements كلها في وقت واحد
+                    tx.stockMovement.createMany({
+                        data: lines.map((line: any) => ({
                             type: 'out',
                             date: new Date(),
                             itemId: line.itemId,
-                            warehouseId: warehouseId,
+                            warehouseId,
                             quantity: -line.quantity,
                             reference: `SAL-${invoiceNumber}`,
                             notes: `فاتورة مبيعات رقم ${invoiceNumber}`,
                             companyId,
-                            invoiceId: invoice.id
-                        } as any
-                    });
-
-                    // تحديث سعر البيع للصنف بناءً على السعر المدخل في الفاتورة
-                    const currentItem = await tx.item.findUnique({
-                        where: { id: line.itemId },
-                        select: { sellPrice: true }
-                    });
-                    if (currentItem && currentItem.sellPrice !== line.price) {
-                        await tx.item.update({
-                            where: { id: line.itemId },
-                            data: { sellPrice: line.price }
-                        });
-                    }
-                }
+                            invoiceId: invoice.id,
+                        })) as any,
+                    }),
+                ]);
             }
 
             if (customerId) {

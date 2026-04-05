@@ -6,12 +6,43 @@ import { withProtection } from '@/lib/apiHandler';
 export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
-        const items = await prisma.item.findMany({
-            where: { companyId },
-            orderBy: { createdAt: 'asc' },
-            include: { category: true, unit: true, stocks: true },
-        });
-        return NextResponse.json(items);
+        const url = new URL(request.url);
+        const search = url.searchParams.get('search') || '';
+        const page = parseInt(url.searchParams.get('page') || '1');
+        const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 200);
+        const skip = (page - 1) * limit;
+        const all = url.searchParams.get('all') === 'true'; // لصفحات الفواتير تحتاج كل الأصناف
+
+        const where: any = { companyId };
+        if (search) {
+            where.OR = [
+                { name: { contains: search, mode: 'insensitive' } },
+                { barcode: { contains: search } },
+                { code: { contains: search } },
+            ];
+        }
+
+        if (all) {
+            // بدون pagination للاستخدام في الفواتير - بس بدون stocks
+            const items = await prisma.item.findMany({
+                where,
+                orderBy: { name: 'asc' },
+                include: { category: true, unit: true, stocks: true },
+            });
+            return NextResponse.json(items);
+        }
+
+        const [items, total] = await Promise.all([
+            prisma.item.findMany({
+                where,
+                orderBy: { createdAt: 'asc' },
+                skip,
+                take: limit,
+                include: { category: true, unit: true, stocks: true },
+            }),
+            prisma.item.count({ where }),
+        ]);
+        return NextResponse.json({ items, total, page, limit });
     } catch (error: any) {
         console.error("GET /api/items Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
