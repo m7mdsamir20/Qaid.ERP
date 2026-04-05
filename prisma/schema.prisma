@@ -413,6 +413,8 @@ model Stock {
   item        Item      @relation(fields: [itemId], references: [id])
 
   @@unique([itemId, warehouseId])
+  @@index([quantity])
+  @@index([itemId])
 }
 
 model StockMovement {
@@ -577,7 +579,8 @@ model Invoice {
   lines             InvoiceLine[]
   stockMovements    StockMovement[]
 
-  @@index([companyId, type])
+  @@index([companyId, type, date])
+  @@index([companyId, date])
   @@index([date])
 }
 
