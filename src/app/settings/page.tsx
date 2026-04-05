@@ -397,7 +397,7 @@ function SettingsContent() {
             if (Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
                 const pagesInSub = enabledFeatures[featureKey];
-                return pagesInSub.length === 0 || pagesInSub.includes(pageId);
+                return pagesInSub.includes(pageId);
             }
             return true;
         }
@@ -406,7 +406,7 @@ function SettingsContent() {
         if (Object.keys(enabledFeatures).length > 0) {
             if (!(featureKey in enabledFeatures)) return false;
             const pagesInSub = enabledFeatures[featureKey];
-            if (pagesInSub.length > 0 && !pagesInSub.includes(pageId)) return false;
+            if (!pagesInSub.includes(pageId)) return false;
         } else if (featureKey !== 'dashboard' && featureKey !== 'settings') {
             // If no subscription features are defined, we might want to restrict or allow all.
             // Based on existing code (line 56), it returns true if empty.

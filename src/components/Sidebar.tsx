@@ -77,7 +77,7 @@ export default function Sidebar() {
             if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
                 const pagesInSub = enabledFeatures[featureKey];
-                return pagesInSub.length === 0 || pagesInSub.includes(pageId);
+                return pagesInSub.includes(pageId);
             }
             return true;
         }
@@ -90,7 +90,7 @@ export default function Sidebar() {
         if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
             if (!(featureKey in enabledFeatures)) return false;
             const pagesInSub = enabledFeatures[featureKey];
-            if (pagesInSub.length > 0 && !pagesInSub.includes(pageId)) return false;
+            if (!pagesInSub.includes(pageId)) return false;
         }
 
         // تحقق من الـ granular permissions
