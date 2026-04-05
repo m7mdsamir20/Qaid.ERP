@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { Cairo, Outfit } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/lib/auth";
 
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
@@ -24,18 +22,15 @@ export const metadata: Metadata = {
   description: "نظام شامل لإدارة موارد المؤسسات - المحاسبة، المخزون، المبيعات، المشتريات",
 };
 
-export default async function RootLayout({
+export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
-  const session = isBuild ? null : await getServerSession(authOptions);
-
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning className={`${cairo.variable} ${outfit.variable}`}>
       <body>
-        <Providers session={session}>
+        <Providers>
           {children}
         </Providers>
       </body>

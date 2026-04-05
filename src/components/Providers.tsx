@@ -10,15 +10,12 @@ const ThemeContext = createContext({
 
 export const useTheme = () => useContext(ThemeContext);
 
-export function Providers({ children, session }: { 
-    children: React.ReactNode; 
-    session?: any 
+export function Providers({ children }: {
+    children: React.ReactNode;
 }) {
-    // Forced Dark Mode - Removed Light Mode logic
     useEffect(() => {
         document.documentElement.removeAttribute('data-theme');
 
-        // Global fix to allow page scroll while preventing number input value change
         const handleWheel = (e: WheelEvent) => {
             const el = document.activeElement as any;
             if (el && el.type === 'number') {
@@ -30,7 +27,7 @@ export function Providers({ children, session }: {
     }, []);
 
     return (
-        <SessionProvider session={session}>
+        <SessionProvider refetchOnWindowFocus={false}>
             <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: () => {} }}>
                 {children}
             </ThemeContext.Provider>
