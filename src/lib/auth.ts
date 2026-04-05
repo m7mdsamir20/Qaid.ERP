@@ -118,6 +118,58 @@ export const authOptions: AuthOptions = {
                 if (u.gender) token.gender = u.gender;
                 if (u.avatar) token.avatar = u.avatar;
             }
+
+            // مزامنة البيانات مع قاعدة البيانات عند كل ريفريش (JWT refresh)
+            // لضمان انعكاس تغييرات السوبر أدمن فورياً بدون تسجيل خروج
+            if (token.id && !user) {
+                try {
+                    const dbUser: any = await (prisma as any).user.findUnique({
+                        where: { id: token.id },
+                        select: {
+                            role: true,
+                            isSuperAdmin: true,
+                            allowedBranches: true,
+                            customRole: { select: { permissions: true } },
+                            company: {
+                                select: {
+                                    isActive: true,
+                                    name: true,
+                                    businessType: true,
+                                    subscription: true,
+                                }
+                            }
+                        }
+                    });
+
+                    if (dbUser) {
+                        token.role = dbUser.role;
+                        token.isSuperAdmin = !!dbUser.isSuperAdmin;
+                        token.businessType = dbUser.company?.businessType || 'TRADING';
+                        
+                        if (dbUser.customRole?.permissions) {
+                            try { token.permissions = JSON.parse(dbUser.customRole.permissions); } catch { }
+                        }
+
+                        if (dbUser.company?.subscription) {
+                            const sub = dbUser.company.subscription;
+                            token.subscription = {
+                                plan: sub.plan,
+                                endDate: sub.endDate,
+                                isActive: sub.isActive,
+                                features: sub.features,
+                                maxUsers: sub.maxUsers,
+                                maxBranches: sub.maxBranches,
+                                startDate: sub.startDate,
+                            };
+                        }
+                        
+                        if (dbUser.company?.name) token.companyName = dbUser.company.name;
+                    }
+                } catch (e) {
+                    console.error("[AUTH_SYNC_ERROR]:", e);
+                }
+            }
+
             return token;
         },
 

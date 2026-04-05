@@ -321,10 +321,10 @@ export default function DashboardPage() {
     ];
 
     const tradingActions = [
-      { id: '/sales/new', featureKey: 'sales', href: '/sales/new', label: 'فاتورة مبيعات', icon: Receipt, color: C.primaryBg, iconColor: C.primary },
-      { id: '/purchases/new', featureKey: 'purchases', href: '/purchases/new', label: 'فاتورة مشتريات', icon: ShoppingCart, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
-      { id: '/receipts/new', featureKey: 'treasury', href: '/receipts/new', label: 'سند قبض', icon: TrendingUp, color: C.successBg, iconColor: C.success },
-      { id: '/payments/new', featureKey: 'treasury', href: '/payments/new', label: 'سند صرف', icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
+      { id: '/sales', featureKey: 'sales', href: '/sales/new', label: 'فاتورة مبيعات', icon: Receipt, color: C.primaryBg, iconColor: C.primary },
+      { id: '/purchases', featureKey: 'purchases', href: '/purchases/new', label: 'فاتورة مشتريات', icon: ShoppingCart, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
+      { id: '/receipts', featureKey: 'sales', href: '/receipts/new', label: 'سند قبض', icon: TrendingUp, color: C.successBg, iconColor: C.success },
+      { id: '/purchase-payments', featureKey: 'purchases', href: '/purchase-payments/new', label: 'سند صرف', icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
       { id: '/customers', featureKey: 'sales', href: '/customers', label: 'العملاء', icon: Users, color: 'rgba(6, 182, 212, 0.12)', iconColor: '#06b6d4' },
       { id: '/suppliers', featureKey: 'purchases', href: '/suppliers', label: 'الموردين', icon: Truck, color: 'rgba(244, 63, 94, 0.12)', iconColor: '#f43f5e' },
       
