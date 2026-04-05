@@ -119,7 +119,7 @@ export default function NewSalePage() {
         try {
             const [invR, custR, supR, whR, trR, itemR, coR] = await Promise.all([
                 fetch('/api/sales?justNextNum=true'), fetch('/api/customers'), fetch('/api/suppliers'),
-                fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items'),
+                fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items?all=true'),
                 fetch('/api/company'),
             ]);
             const nextNumData = await invR.json();
@@ -596,7 +596,7 @@ export default function NewSalePage() {
                             }}>
                                 <div style={{ 
                                     display: 'grid', 
-                                    gridTemplateColumns: (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? '1fr 110px 110px 110px 60px' : '1fr 90px 110px 110px 60px', 
+                                    gridTemplateColumns: isServices ? '1fr 110px 110px 110px 60px' : '1fr 90px 110px 60px', 
                                     gap: '12px', 
                                     alignItems: 'end' 
                                 }}>
@@ -649,22 +649,24 @@ export default function NewSalePage() {
                                             <InlineError field="entryPrice" />
                                         </div>
                                     </div>
-                                    <div>
-                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الضريبة %</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={entryTaxRate === '' ? '0' : fmt(entryTaxRate)}
-                                                disabled={!entryItemId}
-                                                onChange={e => {
-                                                    const v = e.target.value.replace(/,/g, '');
-                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
-                                                        setEntryTaxRate(v === '' ? '' : v as any);
-                                                    }
-                                                }}
-                                                onKeyDown={e => e.key === 'Enter' && addLine()}
-                                                style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
-                                                onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                    {isServices && (
+                                        <div>
+                                            <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الضريبة %</label>
+                                            <div style={{ position: 'relative' }}>
+                                                <input type="text" inputMode="decimal" value={entryTaxRate === '' ? '0' : fmt(entryTaxRate)}
+                                                    disabled={!entryItemId}
+                                                    onChange={e => {
+                                                        const v = e.target.value.replace(/,/g, '');
+                                                        if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                            setEntryTaxRate(v === '' ? '' : v as any);
+                                                        }
+                                                    }}
+                                                    onKeyDown={e => e.key === 'Enter' && addLine()}
+                                                    style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                                    onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                     <button onClick={addLine} disabled={!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)}
                                         style={{
                                             height: '38px', borderRadius: '10px', border: 'none',
@@ -699,7 +701,7 @@ export default function NewSalePage() {
                                 <table className="table">
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? (
+                                            {isServices ? (
                                                 ['الخدمة / الوصف التفصيلي', 'الكمية', 'السعر', 'الضريبة', 'الإجمالي', ''].map((h, i) => (
                                                     <th key={i} style={{ textAlign: i === 0 ? 'right' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
@@ -722,7 +724,7 @@ export default function NewSalePage() {
                                                 )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
-                                                { (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && (
+                                                {isServices && (
                                                     <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
                                                         {l.taxAmount?.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate}%)</span>
                                                     </td>
@@ -743,8 +745,8 @@ export default function NewSalePage() {
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
-                                                    إجمالي {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 'الخدمات' : 'الأصناف'}
+                                                <td colSpan={isServices ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
+                                                    إجمالي {isServices ? 'الخدمات' : 'الأصناف'}
                                                 </td>
                                                 <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>
                                                     {subtotal.toLocaleString()} {cSymbol}

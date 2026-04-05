@@ -112,7 +112,7 @@ export default function NewPurchasePage() {
         try {
             const [invR, supR, custR, whR, trR, itemR, coR] = await Promise.all([
                 fetch('/api/purchases?justNextNum=true'), fetch('/api/suppliers'), fetch('/api/customers'),
-                fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items'),
+                fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items?all=true'),
                 fetch('/api/company'),
             ]);
             const nextNumData = await invR.json();
