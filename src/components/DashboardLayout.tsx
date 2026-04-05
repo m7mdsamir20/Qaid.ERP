@@ -18,11 +18,6 @@ export default function DashboardLayout({
     const router = useRouter();
     const [noFY, setNoFY] = useState(false);
     const [loadingFY, setLoadingFY] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
 
     useEffect(() => {
         if (status === 'loading' || !session) return;
@@ -50,13 +45,7 @@ export default function DashboardLayout({
             })
             .catch(() => { })
             .finally(() => setLoadingFY(false));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [status, session]);
-
-    // هيدريشن قارد
-    if (!isMounted) {
-        return <div style={{ minHeight: '100vh', background: C.bg }} />;
-    }
+    }, [status, session, pathname]);
 
     if (status === 'loading') {
         return (
