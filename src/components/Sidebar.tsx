@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useEffect } from 'react';
 import {
     ChevronDown,
     ChevronUp,
@@ -38,67 +38,82 @@ export default function Sidebar() {
     const hasSubscription = !!(session?.user as any)?.subscription;
 
     // 1. حساب الـ features المتاحة (استخدام useMemo لمنع إعادة الحساب في كل رندر)
-    const enabledFeatures = React.useMemo(() => {
-        if (!featuresRaw) {
-            const all: Record<string, string[]> = {};
-            navSections.forEach((s: any) => { all[s.featureKey] = s.links.map((l: any) => l.id); });
-            return all;
-        }
+    const enabledFeatures = useMemo(() => {
         try {
-            const parsed = JSON.parse(featuresRaw);
+            if (!featuresRaw) {
+                const all: Record<string, string[]> = {};
+                navSections.forEach((s: any) => { 
+                    if (s && s.featureKey && s.links) {
+                        const ids = s.links.map((l: any) => l.id);
+                        all[s.featureKey] = [...(all[s.featureKey] || []), ...ids];
+                    }
+                });
+                return all;
+            }
+            const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
             if (Array.isArray(parsed)) {
                 const obj: Record<string, string[]> = {};
                 parsed.forEach((key: string) => {
-                    const section = navSections.find(s => s.featureKey === key);
-                    if (section) obj[key] = section.links.map(l => l.id);
+                    const sections = navSections.filter(s => s.featureKey === key);
+                    sections.forEach(section => {
+                        if (section && section.links) {
+                            obj[key] = [...(obj[key] || []), ...section.links.map(l => l.id)];
+                        }
+                    });
                 });
                 return obj;
             }
             return parsed || {};
+        } catch (e) {
+            console.error("Features parse error", e);
+            return {};
         }
-        catch { return {}; }
     }, [featuresRaw]);
 
     // 2. دالة التحقق من الصفحات (useCallback لمنع إعادة إنشاء الدالة)
-    const hasPage = React.useCallback((featureKey: string, pageId: string): boolean => {
-        if (isSuperAdmin) return true;
-        if (featureKey === 'dashboard' || pageId === '/') return true;
+    const hasPage = useCallback((featureKey: string, pageId: string): boolean => {
+        try {
+            if (isSuperAdmin) return true;
+            if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
 
-        const userPerms = (session?.user as any)?.permissions || {};
-        const hasGranularPerms = Object.keys(userPerms).length > 0;
+            const userPerms = (session?.user as any)?.permissions || {};
+            const hasGranularPerms = Object.keys(userPerms).length > 0;
 
-        if (userRole === 'admin') {
-            if (featureKey === 'settings') return true;
+            if (userRole === 'admin') {
+                if (featureKey === 'settings') return true;
+                if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+                    if (!(featureKey in enabledFeatures)) return false;
+                    const pagesInSub = enabledFeatures[featureKey] || [];
+                    return pagesInSub.includes(pageId);
+                }
+                return true;
+            }
+
+            if (featureKey === 'settings') return !hasGranularPerms;
+
             if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
-                const pagesInSub = enabledFeatures[featureKey];
-                return pagesInSub.includes(pageId);
+                const pagesInSub = enabledFeatures[featureKey] || [];
+                if (pagesInSub && !pagesInSub.includes(pageId)) return false;
             }
+
+            if (hasGranularPerms) return !!userPerms[pageId]?.view;
             return true;
-        }
-
-        if (featureKey === 'settings') return !hasGranularPerms;
-
-        if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
-            if (!(featureKey in enabledFeatures)) return false;
-            const pagesInSub = enabledFeatures[featureKey];
-            if (!pagesInSub.includes(pageId)) return false;
-        }
-
-        if (hasGranularPerms) return !!userPerms[pageId]?.view;
-        return true;
+        } catch { return true; }
     }, [isSuperAdmin, userRole, hasSubscription, enabledFeatures, session?.user]);
 
     // 3. دالة التحقق من القسم كله
-    const hasFeature = React.useCallback((featureKey?: string): boolean => {
-        if (isSuperAdmin) return true;
-        if (!featureKey || featureKey === 'dashboard' || featureKey === 'settings') return true;
+    const hasFeature = useCallback((featureKey?: string): boolean => {
+        try {
+            if (isSuperAdmin) return true;
+            if (!featureKey || featureKey === 'dashboard' || featureKey === 'settings') return true;
 
-        const section = navSections.find(s => s.featureKey === featureKey);
-        if (section) {
-            return section.links.some(l => hasPage(featureKey, l.id));
-        }
-        return true;
+            const section = navSections.find(s => s.featureKey === featureKey);
+            if (section && section.links) {
+                return section.links.some(l => hasPage(featureKey, l.id));
+            }
+            return true;
+        } catch { return true; }
     }, [isSuperAdmin, hasPage]);
 
     const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {

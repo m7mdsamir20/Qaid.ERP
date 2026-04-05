@@ -632,17 +632,16 @@ export default function ItemsPage() {
                                                 text-align: center; overflow: hidden; page-break-inside: avoid;
                                             }
                                             .barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }
-                                            .barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }
                                             svg { max-width: 100%; height: auto; }
                                         </style>
                                     </head>
                                     <body onload="setTimeout(() => { window.print(); window.close(); }, 300)">
-                                        ${Array(barcodeCopies).fill(`
+                                        ${Array(barcodeCopies).fill(\`
                                             <div class="barcode-ticket">
-                                                <div class="barcode-name">${printBarcodeItem.name}</div>
-                                                ${svgElement || ''}
+                                                <div class="barcode-name">\${printBarcodeItem.name}</div>
+                                                \${svgElement || ''}
                                             </div>
-                                        `).join('')}
+                                        \`).join('')}
                                     </body>
                                     </html>
                                 `);
@@ -690,4 +689,3 @@ export default function ItemsPage() {
         </DashboardLayout>
     );
 }
-
