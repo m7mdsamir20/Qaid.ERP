@@ -618,33 +618,25 @@ export default function ItemsPage() {
                                 const printWindow = window.open('', '_blank');
                                 if (!printWindow) return;
                                 const svgElement = document.getElementById('barcode-svg-container')?.innerHTML;
-                                printWindow.document.write(`
-                                    <!DOCTYPE html>
-                                    <html dir="rtl">
-                                    <head>
-                                        <title>طباعة باركود - ${printBarcodeItem.name}</title>
-                                        <style>
-                                            @page { margin: 0; size: auto; }
-                                            body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }
-                                            .barcode-ticket { 
-                                                width: 38mm; height: 25mm;
-                                                display: flex; flex-direction: column; align-items: center; justify-content: center;
-                                                text-align: center; overflow: hidden; page-break-inside: avoid;
-                                            }
-                                            .barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }
-                                            svg { max-width: 100%; height: auto; }
-                                        </style>
-                                    </head>
-                                    <body onload="setTimeout(() => { window.print(); window.close(); }, 300)">
-                                        ${Array(barcodeCopies).fill(\`
-                                            <div class="barcode-ticket">
-                                                <div class="barcode-name">\${printBarcodeItem.name}</div>
-                                                \${svgElement || ''}
-                                            </div>
-                                        \`).join('')}
-                                    </body>
-                                    </html>
-                                `);
+                                const barcodeName = printBarcodeItem.name;
+                                
+                                let html = '<!DOCTYPE html><html dir="rtl"><head><title>طباعة باركود</title>';
+                                html += '<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }';
+                                html += '.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }';
+                                html += '.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }';
+                                html += 'svg { max-width: 100%; height: auto; }</style></head>';
+                                html += '<body onload="setTimeout(() => { window.print(); window.close(); }, 300)">';
+                                
+                                for (let i = 0; i < barcodeCopies; i++) {
+                                    html += '<div class="barcode-ticket">';
+                                    html += '<div class="barcode-name">' + barcodeName + '</div>';
+                                    html += svgElement || '';
+                                    html += '</div>';
+                                }
+                                
+                                html += '</body></html>';
+                                
+                                printWindow.document.write(html);
                                 printWindow.document.close();
                             }} style={{ ...BTN_PRIMARY(false, false), width: '100%', height: '48px', marginTop: '10px' }}>
                                 <Printer size={20} style={{ marginLeft: '10px' }} />
