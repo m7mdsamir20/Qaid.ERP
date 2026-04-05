@@ -8,9 +8,6 @@ import Header from '@/components/Header';
 import TrialBanner from '@/components/TrialBanner';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 
-export const SIDEBAR_EXPANDED = 260;
-export const SIDEBAR_COLLAPSED = 72;
-
 export default function DashboardLayout({
     children,
 }: {
@@ -21,20 +18,6 @@ export default function DashboardLayout({
     const router = useRouter();
     const [noFY, setNoFY] = useState(false);
     const [loadingFY, setLoadingFY] = useState(false);
-    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return localStorage.getItem('sidebar-collapsed') === 'true';
-        }
-        return false;
-    });
-
-    const toggleSidebar = () => {
-        setSidebarCollapsed(prev => {
-            const next = !prev;
-            localStorage.setItem('sidebar-collapsed', String(next));
-            return next;
-        });
-    };
 
     useEffect(() => {
         if (status === 'loading' || !session) return;
@@ -62,7 +45,7 @@ export default function DashboardLayout({
             })
             .catch(() => { })
             .finally(() => setLoadingFY(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status, session]);
 
     if (status === 'loading') {
@@ -77,18 +60,16 @@ export default function DashboardLayout({
         // We render the layout but with a warning banner at the top and disable pointer events on the content
     }
 
-    const sidebarWidth = sidebarCollapsed ? SIDEBAR_COLLAPSED : SIDEBAR_EXPANDED;
-
     return (
         <div style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
             <div className="print-hide">
-                <Sidebar collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+                <Sidebar />
             </div>
             <div className="dashboard-content" style={{
                 flex: 1, display: 'flex', flexDirection: 'column',
-                marginRight: `${sidebarWidth}px`,
+                marginRight: '260px', // Sidebar width
                 paddingTop: '64px',
-                transition: 'margin-right 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                transition: 'all 0.3s ease'
             }}>
                 <div className="print-hide">
                     <Header />

@@ -6,9 +6,7 @@ import { useState } from 'react';
 import {
     ChevronDown,
     ChevronUp,
-    LayoutDashboard,
-    ChevronRight,
-    ChevronLeft,
+    LayoutDashboard
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
@@ -27,15 +25,13 @@ const serviceLabels: Record<string, string> = {
     'الوحدات': 'وحدات القياس',
 };
 
-export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: boolean; onToggle?: () => void }) {
+export default function Sidebar() {
     const pathname = usePathname();
     const { data: session, status } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
     const userRole = (session?.user as any)?.role;
-
-    const sidebarWidth = collapsed ? 72 : 260;
 
     // جيب الـ features من الـ session
     const featuresRaw = (session?.user as any)?.subscription?.features;
@@ -135,7 +131,7 @@ export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: b
 
     return (
         <aside className="sidebar" style={{
-            width: `${sidebarWidth}px`,
+            width: '260px',
             position: 'fixed',
             right: 0, top: 0, bottom: 0,
             backgroundColor: C.card,
@@ -145,62 +141,41 @@ export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: b
             borderLeft: `1px solid ${C.border}`,
             boxShadow: '10px 0 30px rgba(0,0,0,0.2)',
             zIndex: 1001,
-            overflow: 'hidden',
-            transition: 'width 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            overflow: 'hidden'
         }}>
-            {/* Logo + Toggle Button */}
-            <div style={{
-                height: '85px', padding: '0 5px',
-                background: 'transparent',
-                display: 'flex', alignItems: 'center',
-                borderBottom: `1px solid rgba(255,255,255,0.02)`,
-                position: 'relative',
-                overflow: 'hidden'
-            }}>
-                {!collapsed ? (
-                    <Link href="/" className="brand-logo-container" style={{
-                        flex: 1, textDecoration: 'none', display: 'flex', alignItems: 'center',
-                        overflow: 'hidden'
-                    }}>
-                        {BRAND_LOGO ? (
-                            <img src={BRAND_LOGO} alt={BRAND_NAME} style={{ display: 'block', margin: '0 auto', width: '100%', maxWidth: '200px', maxHeight: '55px', objectFit: 'contain' }} />
-                        ) : (
-                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{BRAND_NAME}</div>
-                        )}
-                    </Link>
+            <Link href="/"
+                className="brand-logo-container"
+                style={{
+                    height: '85px', padding: '0 5px',
+                    background: 'transparent',
+                    display: 'flex', alignItems: 'center', gap: '0',
+                    textDecoration: 'none',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    overflow: 'hidden',
+                    borderBottom: `1px solid rgba(255,255,255,0.02)`
+                }}>
+                {BRAND_LOGO ? (
+                    <img src={BRAND_LOGO} alt={BRAND_NAME} style={{ display: 'block', margin: '0 auto', width: '100%', maxWidth: '230px', maxHeight: '55px', objectFit: 'contain' }} />
                 ) : (
-                    <Link href="/" style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center', textDecoration: 'none' }}>
-                        {BRAND_LOGO ? (
-                            <img src={BRAND_LOGO} alt={BRAND_NAME} style={{ width: '36px', height: '36px', objectFit: 'contain', borderRadius: '8px' }} />
-                        ) : (
-                            <div style={{
-                                width: '36px', height: '36px', borderRadius: '10px',
-                                background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`,
-                                color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                fontSize: '18px', fontWeight: 900, fontFamily: CAIRO
-                            }}>{BRAND_NAME.charAt(0)}</div>
-                        )}
-                    </Link>
+                    <>
+                        <div style={{
+                            width: '42px', height: '42px', borderRadius: '12px',
+                            background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`,
+                            color: '#fff',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            fontSize: '22px', fontWeight: 900, fontFamily: CAIRO,
+                            boxShadow: `0 8px 16px -4px ${C.primary}60`,
+                            flexShrink: 0
+                        }}>
+                            {BRAND_NAME.charAt(0)}
+                        </div>
+                        <div style={{ lineHeight: 1.1 }}>
+                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, letterSpacing: '0.4px', fontFamily: CAIRO }}>{BRAND_NAME}</div>
+                            <div style={{ fontSize: '10px', color: C.textMuted, letterSpacing: '1px', direction: 'ltr', opacity: 0.7, fontWeight: 700, marginTop: '2px' }}>ERP ECOSYSTEM</div>
+                        </div>
+                    </>
                 )}
-
-                {/* زر الطي */}
-                <button
-                    onClick={onToggle}
-                    title={collapsed ? 'فرد القائمة' : 'طي القائمة'}
-                    style={{
-                        position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)',
-                        width: '26px', height: '26px', borderRadius: '8px',
-                        background: 'rgba(255,255,255,0.06)', border: `1px solid ${C.border}`,
-                        color: C.textMuted, cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        transition: 'all 0.2s', flexShrink: 0
-                    }}
-                    onMouseOver={e => { e.currentTarget.style.background = C.primaryBg; e.currentTarget.style.color = C.primary; }}
-                    onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textMuted; }}
-                >
-                    {collapsed ? <ChevronLeft size={14} /> : <ChevronRight size={14} />}
-                </button>
-            </div>
+            </Link>
 
             <nav className="sidebar-nav" style={{ padding: '20px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none' }}>
                 {navSections.map((sectionOrigin: any) => {
@@ -246,14 +221,11 @@ export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: b
                     if (section.isStandalone && section.href) {
                         const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
                         return (
-                            <div key={section.title} style={{ marginBottom: '4px', padding: collapsed ? '0 8px' : '0 14px' }}>
+                            <div key={section.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
                                 <Link
                                     href={section.href}
-                                    title={collapsed ? section.title : ''}
                                     style={{
-                                        display: 'flex', alignItems: 'center',
-                                        justifyContent: collapsed ? 'center' : 'flex-start',
-                                        gap: '12px', padding: collapsed ? '10px' : '10px 14px',
+                                        display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px',
                                         color: isActive ? C.primary : C.textSecondary, textDecoration: 'none',
                                         fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px',
                                         backgroundColor: isActive ? C.primaryBg : 'transparent',
@@ -263,9 +235,9 @@ export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: b
                                     onMouseOver={(e) => { if (!isActive) { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = C.textPrimary; } }}
                                     onMouseOut={(e) => { if (!isActive) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = C.textSecondary; } }}
                                 >
-                                    <SectionIcon size={18} style={{ flexShrink: 0 }} />
-                                    {!collapsed && <span style={{ fontFamily: CAIRO }}>{section.title}</span>}
-                                    {!collapsed && isActive && <div style={{ marginLeft: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary, boxShadow: `0 0 8px ${C.primary}` }} />}
+                                    <SectionIcon size={18} />
+                                    <span style={{ fontFamily: CAIRO }}>{section.title}</span>
+                                    {isActive && <div style={{ marginLeft: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary, boxShadow: `0 0 8px ${C.primary}` }} />}
                                 </Link>
                             </div>
                         );
@@ -273,30 +245,6 @@ export default function Sidebar({ collapsed = false, onToggle }: { collapsed?: b
 
                     const isOpen = openSections[section.title];
                     const isActiveGroup = visibleLinks.some((l: any) => pathname === l.href);
-
-                    // وضع الطي: أيقونة فقط مع tooltip
-                    if (collapsed) {
-                        return (
-                            <div key={section.title} style={{ marginBottom: '4px', padding: '0 8px' }}>
-                                <Link
-                                    href={visibleLinks[0]?.href || '#'}
-                                    title={section.title}
-                                    style={{
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        padding: '10px', color: isActiveGroup ? C.primary : C.textSecondary,
-                                        textDecoration: 'none', borderRadius: '12px',
-                                        backgroundColor: isActiveGroup ? C.primaryBg : 'transparent',
-                                        border: `1px solid ${isActiveGroup ? C.primaryBorder : 'transparent'}`,
-                                        transition: 'all 0.2s'
-                                    }}
-                                    onMouseOver={e => { if (!isActiveGroup) { e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = C.textPrimary; } }}
-                                    onMouseOut={e => { if (!isActiveGroup) { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = C.textSecondary; } }}
-                                >
-                                    <SectionIcon size={18} style={{ flexShrink: 0 }} />
-                                </Link>
-                            </div>
-                        );
-                    }
 
                     return (
                         <div key={section.title} style={{ marginBottom: '6px', padding: '0 14px' }}>
