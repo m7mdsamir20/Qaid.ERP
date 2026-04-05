@@ -3,10 +3,6 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
 
-// على Vercel: دايماً استخدم VERCEL_URL (يتغلب على أي قيمة غلط في NEXTAUTH_URL)
-if (process.env.VERCEL_URL) {
-    process.env.NEXTAUTH_URL = `https://${process.env.VERCEL_URL}`;
-}
 
 export const authOptions: AuthOptions = {
     providers: [
