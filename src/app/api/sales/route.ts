@@ -51,31 +51,25 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'desc' },
                 skip,
                 take: limit,
-                include: {
-                    customer: { select: { id: true, name: true } },
-                    supplier: { select: { id: true, name: true } },
-                    lines: { include: { item: { include: { unit: true } } } },
-                    returnInvoices: { include: { lines: true } },
-                },
+                select: {
+                    id: true,
+                    invoiceNumber: true,
+                    date: true,
+                    total: true,
+                    subtotal: true,
+                    discount: true,
+                    paidAmount: true,
+                    remaining: true,
+                    type: true,
+                    customer: { select: { id: true, name: true, balance: true } },
+                    supplier: { select: { id: true, name: true, balance: true } }
+                }
             }),
             prisma.invoice.count({ where }),
             prisma.financialYear.findFirst({ where: { companyId, isOpen: true } })
         ]);
 
-        const mappedInvoices = invoices.map(inv => {
-            const linesWithReturned = inv.lines.map(line => {
-                let alreadyReturned = 0;
-                inv.returnInvoices.forEach(retInv => {
-                    retInv.lines.forEach(retLine => {
-                        if (retLine.itemId === line.itemId) alreadyReturned += retLine.quantity;
-                    });
-                });
-                return { ...line, alreadyReturned };
-            });
-            return { ...inv, lines: linesWithReturned };
-        });
-
-        return NextResponse.json({ invoices: mappedInvoices, activeYear, total, page, limit });
+        return NextResponse.json({ invoices, activeYear, total, page, limit });
     } catch {
         return NextResponse.json({ invoices: [], activeYear: null }, { status: 500 });
     }

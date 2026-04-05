@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
     ChevronDown,
     ChevronUp,
@@ -37,9 +37,9 @@ export default function Sidebar() {
     const featuresRaw = (session?.user as any)?.subscription?.features;
     const hasSubscription = !!(session?.user as any)?.subscription;
 
-    const enabledFeatures: Record<string, string[]> = (() => {
+    // 1. حساب الـ features المتاحة (استخدام useMemo لمنع إعادة الحساب في كل رندر)
+    const enabledFeatures = React.useMemo(() => {
         if (!featuresRaw) {
-            // fallback: لو ما في features، اعرض كل الأقسام للـ admin
             const all: Record<string, string[]> = {};
             navSections.forEach((s: any) => { all[s.featureKey] = s.links.map((l: any) => l.id); });
             return all;
@@ -57,21 +57,16 @@ export default function Sidebar() {
             return parsed || {};
         }
         catch { return {}; }
-    })();
+    }, [featuresRaw]);
 
-
-    // دالة التحقق من الصفحات الفردية
-    const hasPage = (featureKey: string, pageId: string): boolean => {
-        // السوبر أدمن يرى كل شيء
+    // 2. دالة التحقق من الصفحات (useCallback لمنع إعادة إنشاء الدالة)
+    const hasPage = React.useCallback((featureKey: string, pageId: string): boolean => {
         if (isSuperAdmin) return true;
-
-        // الداش بورد والإعدادات متاحة دائماً
         if (featureKey === 'dashboard' || pageId === '/') return true;
 
         const userPerms = (session?.user as any)?.permissions || {};
         const hasGranularPerms = Object.keys(userPerms).length > 0;
 
-        // الـ admin: يتحقق من الـ subscription features فقط (مش الـ granular permissions)
         if (userRole === 'admin') {
             if (featureKey === 'settings') return true;
             if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
@@ -82,10 +77,7 @@ export default function Sidebar() {
             return true;
         }
 
-        // باقي المستخدمين: تحقق من الـ subscription أولاً
-        if (featureKey === 'settings') {
-            return !hasGranularPerms;
-        }
+        if (featureKey === 'settings') return !hasGranularPerms;
 
         if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
             if (!(featureKey in enabledFeatures)) return false;
@@ -93,26 +85,21 @@ export default function Sidebar() {
             if (!pagesInSub.includes(pageId)) return false;
         }
 
-        // تحقق من الـ granular permissions
-        if (hasGranularPerms) {
-            return !!userPerms[pageId]?.view;
-        }
-
+        if (hasGranularPerms) return !!userPerms[pageId]?.view;
         return true;
-    };
+    }, [isSuperAdmin, userRole, hasSubscription, enabledFeatures, session?.user]);
 
-    // دالة للتحقق من القسم كله
-    const hasFeature = (featureKey?: string): boolean => {
+    // 3. دالة التحقق من القسم كله
+    const hasFeature = React.useCallback((featureKey?: string): boolean => {
         if (isSuperAdmin) return true;
-        if (!featureKey) return true;
-        if (featureKey === 'dashboard' || featureKey === 'settings') return true;
+        if (!featureKey || featureKey === 'dashboard' || featureKey === 'settings') return true;
 
         const section = navSections.find(s => s.featureKey === featureKey);
         if (section) {
             return section.links.some(l => hasPage(featureKey, l.id));
         }
         return true;
-    };
+    }, [isSuperAdmin, hasPage]);
 
     const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
         const initialState: Record<string, boolean> = { 'الرئيسية': true };

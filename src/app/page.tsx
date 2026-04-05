@@ -23,6 +23,7 @@ import { useCurrency } from '@/hooks/useCurrency';
    ══════════════════════════════════════════════ */
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
@@ -213,21 +214,28 @@ export default function DashboardPage() {
     }
   }, [canViewDashboard, session]);
 
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<any>(getDashboardCache());
   const [period, setPeriod] = useState<'today' | 'week' | 'month'>('today');
   const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
+  const [loading, setLoading] = useState(!getDashboardCache());
   const [isError, setIsError] = useState(false);
 
-  const loadStats = async () => {
+  const loadStats = async (showLoading = false) => {
+    if (showLoading) setLoading(true);
     setIsError(false);
     try {
       const res = await fetch(`/api/stats?period=${period}`);
       const data = await res.json();
       if (data.error) setIsError(true);
-      else setStats(data);
+      else {
+        setStats(data);
+        setDashboardCache(data);
+      }
     } catch {
       setIsError(true);
+    } finally {
+      if (showLoading) setLoading(false);
     }
   };
 
@@ -241,7 +249,9 @@ export default function DashboardPage() {
     tick();
     const iv = setInterval(tick, 60000);
 
-    loadStats();
+    // تحديث البيانات صامت أو بلودينج لو مفيش كاش
+    const cached = getDashboardCache();
+    loadStats(!cached);
 
     return () => clearInterval(iv);
   }, [session, period]);
@@ -266,7 +276,7 @@ export default function DashboardPage() {
           <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', marginBottom: '8px', fontFamily: CAIRO }}>فشل في تحميل الإحصائيات</h2>
           <p style={{ color: C.textSecondary, fontSize: '14px', fontFamily: CAIRO, marginBottom: '24px' }}>حدث خطأ أثناء جلب البيانات من الخادم، يرجى التحقق من الاتصال والمحاولة مرة أخرى.</p>
           <button
-            onClick={loadStats}
+            onClick={() => loadStats(true)}
             style={{
               padding: '12px 32px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff',
               fontSize: '14px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto'
