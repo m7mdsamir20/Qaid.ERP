@@ -65,13 +65,17 @@ export default function ItemsPage() {
         setLoading(true);
         try {
             const [iRes, wRes, cRes, uRes, setRes] = await Promise.all([
-                fetch('/api/items'),
+                fetch('/api/items?all=true'), // ✅ Essential: Get all items to prevent KPI filter crash
                 fetch('/api/warehouses'),
                 fetch('/api/categories'),
                 fetch('/api/units'),
                 fetch('/api/settings')
             ]);
-            if (iRes.ok) setItems(await iRes.json());
+            
+            if (iRes.ok) {
+                const data = await iRes.json();
+                setItems(Array.isArray(data) ? data : (data.items || []));
+            }
             if (wRes.ok) setWarehouses(await wRes.json());
             if (cRes.ok) setCategories(await cRes.json());
             if (uRes.ok) setUnitsData(await uRes.json());
@@ -80,7 +84,7 @@ export default function ItemsPage() {
                 setCompanyBusinessType(sData.company?.businessType?.toUpperCase() || '');
             }
         } catch (error) {
-            console.error(error);
+            console.error("Fetch Items Error:", error);
         } finally {
             setLoading(false);
         }
@@ -228,7 +232,7 @@ export default function ItemsPage() {
             u.code.toLowerCase().includes(search.toLowerCase());
         if (!matchesSearch) return false;
         if (warehouseFilter !== 'all') {
-            const hasStock = u.stocks.some(s => s.warehouseId === warehouseFilter && s.quantity > 0);
+            const hasStock = u.stocks?.some(s => s.warehouseId === warehouseFilter && s.quantity > 0);
             if (!hasStock) return false;
         }
         const totalQty = u.stocks?.reduce((q, st) => q + st.quantity, 0) || 0;
@@ -617,26 +621,27 @@ export default function ItemsPage() {
                             <button onClick={() => {
                                 const printWindow = window.open('', '_blank');
                                 if (!printWindow) return;
-                                const svgElement = document.getElementById('barcode-svg-container')?.innerHTML;
+                                const svgContainer = document.getElementById('barcode-svg-container');
+                                const svgElement = svgContainer ? svgContainer.innerHTML : '';
                                 const barcodeName = printBarcodeItem.name;
                                 
-                                let html = '<!DOCTYPE html><html dir="rtl"><head><title>طباعة باركود</title>';
-                                html += '<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }';
-                                html += '.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }';
-                                html += '.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }';
-                                html += 'svg { max-width: 100%; height: auto; }</style></head>';
-                                html += '<body onload="setTimeout(() => { window.print(); window.close(); }, 300)">';
+                                let htmlString = '<!DOCTYPE html><html dir="rtl"><head><title>طباعة باركود</title>';
+                                htmlString += '<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }';
+                                htmlString += '.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }';
+                                htmlString += '.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }';
+                                htmlString += 'svg { max-width: 100%; height: auto; }</style></head>';
+                                htmlString += '<body onload="setTimeout(() => { window.print(); window.close(); }, 300)">';
                                 
                                 for (let i = 0; i < barcodeCopies; i++) {
-                                    html += '<div class="barcode-ticket">';
-                                    html += '<div class="barcode-name">' + barcodeName + '</div>';
-                                    html += svgElement || '';
-                                    html += '</div>';
+                                    htmlString += '<div class="barcode-ticket">';
+                                    htmlString += '<div class="barcode-name">' + barcodeName + '</div>';
+                                    htmlString += svgElement || '';
+                                    htmlString += '</div>';
                                 }
                                 
-                                html += '</body></html>';
+                                htmlString += '</body></html>';
                                 
-                                printWindow.document.write(html);
+                                printWindow.document.write(htmlString);
                                 printWindow.document.close();
                             }} style={{ ...BTN_PRIMARY(false, false), width: '100%', height: '48px', marginTop: '10px' }}>
                                 <Printer size={20} style={{ marginLeft: '10px' }} />
