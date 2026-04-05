@@ -24,7 +24,7 @@ export function rateLimit(
         blockMs?: number;
     } = {}
 ) {
-    const { max = 10, windowMs = 60 * 1000, blockMs = 15 * 60 * 1000 } = options;
+    const { max = 10, windowMs = 60 * 1000, blockMs = 60 * 1000 } = options;
     const now = Date.now();
     const record = store.get(key);
 

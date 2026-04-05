@@ -120,4 +120,4 @@ export const POST = withProtection(async (request, session, body) => {
         console.error('Register error:', error);
         return NextResponse.json({ error: 'فشل في إنشاء الحساب' }, { status: 500 });
     }
-}, { isPublic: true, limit: 3, windowMs: 15 * 60 * 1000 }); // Strict rate limit for registration
+}, { isPublic: true, limit: 20, windowMs: 60 * 60 * 1000 }); // 20 registrations per hour
