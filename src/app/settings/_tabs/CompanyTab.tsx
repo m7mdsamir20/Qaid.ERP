@@ -141,7 +141,8 @@ export default function CompanyTab({
                                                             showToast('تم رفع الشعار بنجاح ✓');
                                                         }
                                                     } else {
-                                                        showToast('فشل رفع الملف', 'error');
+                                                        const d = await r.json().catch(() => ({ error: 'فشل رفع الملف' }));
+                                                        showToast(d.error || 'فشل رفع الملف', 'error');
                                                     }
                                                 } catch (err) {
                                                     showToast('خطأ في الاتصال بالسيرفر', 'error');

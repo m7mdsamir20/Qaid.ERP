@@ -89,49 +89,51 @@ export function printA4Invoice(
 <head>
 <meta charset="UTF-8"/>
 <title>${title} - ${prefix}-${invoiceNum}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#111;font-size:12px;background:#fff;direction:rtl}
-.page{width:100%;min-height:100vh;margin:0 auto;padding:10mm 12mm;display:flex;flex-direction:column;gap:12px}
+body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;direction:rtl}
+.page{width:100%;min-height:100vh;margin:0 auto;padding:8mm 12mm;display:flex;flex-direction:column;gap:12px}
 
 /* ── HEADER ── */
-.header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:3px solid #111;margin-bottom:2px}
-.co-name{font-size:20px;font-weight:900;color:#111}
-.co-line{font-size:11px;color:#444;line-height:1.8}
-.header-center{text-align:center;flex:1}
-.inv-title{font-size:24px;font-weight:900;color:#111}
-.inv-num{font-size:13px;color:#555;margin-top:4px;font-family:monospace;font-weight:700}
-.inv-date{font-size:11px;color:#666;margin-top:4px}
-.logo-block img{max-height:75px;max-width:90px;object-fit:contain}
+.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;border-bottom:2px solid #111;margin-bottom:5px}
+.co-block{flex:1;text-align:right}
+.co-name{font-size:18px;font-weight:900;color:#111;margin-bottom:4px}
+.co-line{font-size:10.5px;color:#444;line-height:1.5}
+.header-center{flex:1;text-align:center}
+.inv-title{font-size:26px;font-weight:900;color:#111;background:#f5f5f5;padding:4px 20px;border-radius:8px;display:inline-block;border:1px solid #ddd}
+.inv-num{font-size:13px;color:#333;margin-top:8px;font-family:monospace;font-weight:700}
+.logo-block{flex:1;text-align:left}
+.logo-block img{max-height:85px;max-width:140px;object-fit:contain}
 .logo-letter{width:72px;height:72px;border-radius:12px;background:#f5f5f5;border:1.5px solid #e0e0e0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900}
 
 /* ── TABLES ── */
-.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.info-box{border:1px solid #e0e0e0;border-radius:6px;overflow:hidden}
-.info-head{background:#f8f8f8;padding:7px 12px;font-size:10px;font-weight:800;border-bottom:1px solid #e0e0e0}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.info-box{border:1px solid #e0e0e0;border-radius:10px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,0.02)}
+.info-head{background:#f8f9fa;padding:8px 12px;font-size:11px;font-weight:900;border-bottom:1px solid #e0e0e0;color:#333}
 .info-body{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
-.info-row{font-size:11px}
-.ik{color:#888;min-width:90px;display:inline-block}
-.iv{color:#1a1a1a;font-weight:700}
+.info-row{font-size:11.5px}
+.ik{color:#777;min-width:90px;display:inline-block}
+.iv{color:#111;font-weight:800}
 
-.section-title{font-size:11px;font-weight:900;padding-bottom:4px;border-bottom:2px solid #111;margin-bottom:6px;margin-top:4px}
-table{width:100%;border-collapse:collapse;border:1px solid #d0d0d0;border-radius:6px;overflow:hidden}
-thead{background:#1a1a1a}
-thead th{padding:9px 12px;font-size:10px;font-weight:700;color:#fff;text-align:center;border-right:1px solid #333}
-tbody td{padding:8px 12px;font-size:11px;color:#1a1a1a;text-align:center;border-right:1px solid #ebebeb;vertical-align:middle}
-.item-name{font-weight:700;font-size:12px}
+.section-title{font-size:12px;font-weight:900;padding:6px 12px;background:#f8f9fa;border-right:4px solid #111;margin-bottom:8px;margin-top:8px}
+table{width:100%;border-collapse:collapse;border:1px solid #d0d0d0;border-radius:10px;overflow:hidden}
+thead{background:#111}
+thead th{padding:10px 12px;font-size:11px;font-weight:700;color:#fff;text-align:center;border-left:1px solid #333}
+tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border-left:1px solid #ebebeb;vertical-align:middle}
+.item-name{font-weight:800;font-size:13px}
 
-.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:10px}
-.totals{min-width:270px;border:1px solid #d0d0d0;border-radius:6px;overflow:hidden}
-.t-row{display:flex;justify-content:space-between;padding:8px 14px;border-bottom:1px solid #ebebeb;font-size:11px}
-.t-main{background:#1a1a1a;color:#fff;font-weight:900}
+.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:15px}
+.totals{min-width:270px;border:1px solid #d0d0d0;border-radius:10px;overflow:hidden}
+.t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #ebebeb;font-size:12px}
+.t-main{background:#111;color:#fff;font-weight:900}
 .t-main .tl{color:#fff}
 
-.footer{margin-top:auto;padding-top:14px;border-top:2px solid #1a1a1a}
+.footer{margin-top:auto;padding-top:14px;border-top:1px dashed #ccc}
 .footer-inner{display:flex;justify-content:space-between;align-items:flex-end}
 .sig-box{text-align:center;min-width:140px}
-.sig-label{font-size:10px;color:#888;margin-bottom:30px}
-.sig-line{border-top:1px solid #999;padding-top:5px;font-size:10px}
+.sig-label{font-size:11px;font-weight:800;color:#333;margin-bottom:40px}
+.sig-line{border-top:1px solid #111;padding-top:6px;font-size:11px;font-weight:800}
 </style>
 </head>
 <body>
@@ -146,7 +148,6 @@ tbody td{padding:8px 12px;font-size:11px;color:#1a1a1a;text-align:center;border-
     <div class="header-center">
         <div class="inv-title">${title}</div>
         <div class="inv-num">${prefix}-${invoiceNum}</div>
-        <div class="inv-date">${date}</div>
     </div>
     <div class="logo-block">
         ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
