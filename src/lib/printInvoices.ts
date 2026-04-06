@@ -123,8 +123,8 @@ thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:
 tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle}
 .item-name{font-weight:800;font-size:13px}
 
-.bottom-wrap{display:flex;flex-direction:column;gap:12px;margin-top:15px}
-.totals{width:100%;border:1.5px solid #888;border-radius:10px;overflow:hidden}
+.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:-1px}
+.totals{min-width:300px;border:1.5px solid #888;border-top:none;border-radius:0 0 10px 10px;overflow:hidden;background:#fff}
 .t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #ccc;font-size:12px}
 .t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #888}
 .t-subtotal{background:#f9fafb;color:#111;font-weight:700}
@@ -204,10 +204,12 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 </table>
 
 <div class="bottom-wrap">
-    ${invoice.notes ? `
-    <div style="border:1px dashed #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px">
-        <strong>ملاحظات: </strong>${invoice.notes}
-    </div>` : ''}
+    <div style="flex:1">
+        ${invoice.notes ? `
+        <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-top:10px">
+            <strong>ملاحظات: </strong>${invoice.notes}
+        </div>` : ''}
+    </div>
     
     <div class="totals">
         ${(discount > 0 || lines.some((l: any) => (l.taxAmount || 0) > 0)) ? `
