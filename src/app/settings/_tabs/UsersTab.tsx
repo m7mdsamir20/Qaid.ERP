@@ -183,11 +183,6 @@ export default function UsersTab({
                                                 boxShadow: checked ? `0 4px 12px ${C.primary}08` : 'none'
                                             }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                {b.isMain && (
-                                                    <div title="فرع رئيسي" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24' }}>
-                                                        <Check size={14} fill="#fbbf24" style={{ opacity: 0.9 }} />
-                                                    </div>
-                                                )}
                                                 <span style={{ fontSize: '12.5px', fontWeight: checked ? 900 : 700, color: checked ? C.textPrimary : C.textSecondary, fontFamily: CAIRO }}>
                                                     {b.name}
                                                 </span>
@@ -197,18 +192,23 @@ export default function UsersTab({
                                                 border: `1.5px solid ${checked ? C.primary : 'rgba(255,255,255,0.15)'}`,
                                                 background: checked ? C.primary : 'transparent',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                transition: 'all 0.2s'
+                                                transition: 'all 0.2s',
+                                                position: 'relative' // Critical fix for absolute input
                                             }}>
                                                 <input type="checkbox" checked={checked}
-                                                    onChange={() => setNewUserForm((p: any) => ({
-                                                        ...p,
-                                                        allowedBranches: checked
-                                                            ? p.allowedBranches.filter((id: string) => id !== b.id)
-                                                            : [...p.allowedBranches, b.id]
-                                                    }))}
+                                                    onChange={(e) => {
+                                                        e.stopPropagation(); // Prevent label double-trigger
+                                                        setNewUserForm((p: any) => ({
+                                                            ...p,
+                                                            allowedBranches: checked
+                                                                ? p.allowedBranches.filter((id: string) => id !== b.id)
+                                                                : [...p.allowedBranches, b.id]
+                                                        }));
+                                                    }}
                                                     style={{ 
-                                                        position: 'absolute', opacity: 0, 
-                                                        width: '100%', height: '100%', cursor: 'pointer' 
+                                                        position: 'absolute', inset: 0, opacity: 0, 
+                                                        width: '100%', height: '100%', cursor: 'pointer',
+                                                        zIndex: 2
                                                     }} />
                                                 {checked && <Check size={14} color="#fff" strokeWidth={4} />}
                                             </div>
