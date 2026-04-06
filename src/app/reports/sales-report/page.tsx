@@ -77,11 +77,11 @@ export default function SalesReportPage() {
         <DashboardLayout>
             <div dir="rtl" style={PAGE_BASE}>
                 <ReportHeader
-                    title={isServices ? "تقرير الخدمات والتحصيلات" : "تقرير المبيعات والتحصيلات"}
-                    subtitle={isServices ? "تحليل تفصيلي لجميع الخدمات المقدمة، الخصومات، والمبالغ المحصلة والمتبقية." : "تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية."}
+                    title="تقرير المبيعات"
+                    subtitle="تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية."
                     backTab="sales-purchases"
                     onExportPdf={exportToPDF}
-                    printTitle={isServices ? "تقرير الخدمات والتحصيلات الفترية" : "تقرير المبيعات والتحصيلات الفترية"}
+                    printTitle="تقرير المبيعات"
                     printDate={(from || to) ? `${from ? 'من: ' + from : ''} ${to ? ' إلى: ' + to : ''}` : undefined}
                 />
 
@@ -142,7 +142,7 @@ export default function SalesReportPage() {
                         <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? "جاري استخراج تقرير الخدمات..." : "جاري استخراج تقرير المبيعات..."}</span>
                     </div>
                 ) : !data || data.invoices.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '120px 20px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                    <div className="no-print" style={{ textAlign: 'center', padding: '120px 20px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <BarChart3 size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? "لا توجد خدمات مسجلة" : "لا توجد فواتير متاحة"}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{isServices ? "برجاء اختيار فترة زمنية أخرى أو تعديل معايير البحث لعرض تفاصيل الخدمات." : "برجاء اختيار فترة زمنية أخرى أو تعديل معايير البحث لعرض تفاصيل المبيعات."}</p>
@@ -176,7 +176,7 @@ export default function SalesReportPage() {
                             ))}
                         </div>
 
-                        <div style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
+                        <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
                             <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
                                 placeholder="ابحث برقم الفاتورة أو اسم العميل..."

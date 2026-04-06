@@ -129,7 +129,7 @@ export default function GeneralLedgerPage() {
                     onExportPdf={exportToPDF}
                 />
 
-                <div style={SEARCH_STYLE.container} className="no-print">
+                <div className="no-print" style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <ScrollText size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
@@ -194,63 +194,6 @@ export default function GeneralLedgerPage() {
                     </div>
                 ) : (
                     <>
-                        {/* Header للطباعة فقط */}
-                        <div className="print-only">
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000', paddingTop: '0', marginTop: '0' }}>
-                                
-                                {/* بيانات الشركة — اليمين */}
-                                <div style={{ textAlign: 'right' }}>
-                                    <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000' }}>
-                                        {(session?.user as any)?.companyName || ''}
-                                    </h2>
-                                    {(session?.user as any)?.taxNumber && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0' }}>
-                                            الرقم الضريبي: {(session?.user as any)?.taxNumber}
-                                        </div>
-                                    )}
-                                    {(session?.user as any)?.commercialRegister && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0' }}>
-                                            السجل التجاري: {(session?.user as any)?.commercialRegister}
-                                        </div>
-                                    )}
-                                    {(session?.user as any)?.phone && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0' }}>
-                                            الهاتف: {(session?.user as any)?.phone}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* بيانات التقرير — الوسط */}
-                                <div style={{ textAlign: 'center' }}>
-                                    <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000' }}>
-                                        كشف الحساب العام
-                                    </h3>
-                                    {account && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0' }}>
-                                            الحساب: {account.code} — {account.name}
-                                        </div>
-                                    )}
-                                    {(fromDate || toDate) && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                                            {fromDate && <span>من: {new Date(fromDate).toLocaleDateString('en-GB')}</span>}
-                                            {toDate && <span>إلى: {new Date(toDate).toLocaleDateString('en-GB')}</span>}
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* لوجو الشركة — اليسار */}
-                                <div style={{ maxWidth: '150px', textAlign: 'left', display: 'flex', alignItems: 'center' }}>
-                                    {(session?.user as any)?.companyLogo && (
-                                        <img 
-                                            src={(session?.user as any)?.companyLogo} 
-                                            alt="logo"
-                                            style={{ maxWidth: '150px', maxHeight: '70px', width: 'auto', height: 'auto', objectFit: 'contain' }}
-                                        />
-                                    )}
-                                </div>
-
-                            </div>
-                        </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[

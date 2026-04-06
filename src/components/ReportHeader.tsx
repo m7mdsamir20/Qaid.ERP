@@ -94,28 +94,38 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             </div>
 
             {/* ── Professional Print Header (Visible only on Print) ── */}
-            <div className="print-only" dir="rtl" style={{ marginBottom: '30px', paddingBottom: '20px', borderBottom: '2px solid #111' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px' }}>
-                    <div style={{ flex: 1, textAlign: 'right' }}>
-                        <h2 style={{ margin: '0 0 5px', fontSize: '24px', fontWeight: 900, color: '#111', fontFamily: CAIRO }}>{co.companyName}</h2>
-                        <div style={{ fontSize: '11px', color: '#444', display: 'flex', flexDirection: 'column', gap: '2px', fontFamily: CAIRO }}>
+            <div className="print-only" dir="rtl" style={{ 
+                marginBottom: '40px', 
+                paddingBottom: '25px', 
+                borderBottom: '2.5px double #111',
+                paddingTop: '10px'
+            }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '30px' }}>
+                    
+                    {/* Right: Company Info */}
+                    <div style={{ flex: 1.2, textAlign: 'right' }}>
+                        <h2 style={{ margin: '0 0 8px', fontSize: '26px', fontWeight: 950, color: '#000', fontFamily: CAIRO }}>{co.companyName}</h2>
+                        <div style={{ fontSize: '12px', color: '#111', display: 'flex', flexDirection: 'column', gap: '4px', fontFamily: CAIRO, fontWeight: 600 }}>
                            {co.taxNumber && <span>الرقم الضريبي: {co.taxNumber}</span>}
                            {co.commercialRegister && <span>السجل التجاري: {co.commercialRegister}</span>}
                            {co.phone && <span>الهاتف: {co.phone}</span>}
+                           {co.address && <span>العنوان: {co.address}</span>}
                         </div>
                     </div>
                     
-                    <div style={{ flex: 1, textAlign: 'center' }}>
-                        <div style={{ display: 'inline-block', border: '1.5px solid #111', padding: '8px 24px', borderRadius: '8px', background: '#f5f5f5' }}>
-                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 900, color: '#111', fontFamily: CAIRO }}>{printTitle || title}</h3>
+                    {/* Center: Title Box */}
+                    <div style={{ flex: 1, textAlign: 'center', paddingTop: '10px' }}>
+                        <div style={{ display: 'inline-block', border: '2px solid #111', padding: '10px 40px', background: '#fff', boxShadow: '4px 4px 0px #111' }}>
+                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 1000, color: '#000', fontFamily: CAIRO, textTransform: 'uppercase' }}>{printTitle || title}</h3>
                         </div>
-                        <div style={{ marginTop: '8px', fontSize: '12px', color: '#111', fontWeight: 700, fontFamily: INTER }}>
+                        <div style={{ marginTop: '12px', fontSize: '13px', color: '#000', fontWeight: 800, fontFamily: INTER, opacity: 0.9 }}>
                             {printDate || new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}
                         </div>
                     </div>
 
+                    {/* Left: Logo */}
                     <div style={{ flex: 1, textAlign: 'left' }}>
-                        {co.companyLogo && <img src={co.companyLogo} alt="Logo" style={{ maxHeight: '80px', maxWidth: '160px', objectFit: 'contain' }} />}
+                        {co.companyLogo && <img src={co.companyLogo} alt="Logo" style={{ maxHeight: '100px', maxWidth: '180px', objectFit: 'contain' }} />}
                     </div>
                 </div>
             </div>
@@ -124,8 +134,25 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                 @media print {
                     .no-print, .print-hide { display: none !important; }
                     .print-only { display: block !important; }
-                    body { background: white !important; color: black !important; padding: 0 !important; }
-                    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+                    body { background: white !important; color: black !important; padding: 0.5cm !important; margin: 0 !important; }
+                    * { 
+                        -webkit-print-color-adjust: exact !important; 
+                        print-color-adjust: exact !important; 
+                        box-shadow: none !important; 
+                        text-shadow: none !important;
+                    }
+                    div, section, table, tr, th, td {
+                        border-radius: 0 !important;
+                    }
+                    table { border-collapse: collapse !important; width: 100% !important; }
+                    th, td { border: 1px solid #333 !important; padding: 10px 12px !important; color: #000 !important; background: #fff !important; }
+                    th { font-weight: 900 !important; background: #f0f0f0 !important; }
+                    .stat-card, .stat-item {
+                        border: 1px solid #333 !important;
+                        background: #fff !important;
+                    }
+                    .stat-value { font-size: 14pt !important; font-weight: 900 !important; }
+                    .stat-label { font-size: 10pt !important; font-weight: 700 !important; }
                 }
                 @media screen {
                     .print-only { display: none !important; }

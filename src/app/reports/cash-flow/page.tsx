@@ -82,37 +82,6 @@ export default function CashFlowReportPage() {
                     </div>
                 ) : (
                     <>
-                        {/* Header للطباعة فقط */}
-                        <div className="print-only">
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                <div style={{ textAlign: 'right' }}>
-                                    <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>
-                                        {(session?.user as any)?.companyName || ''}
-                                    </h2>
-                                    {(session?.user as any)?.taxNumber && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>
-                                    )}
-                                    {(session?.user as any)?.commercialRegister && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>
-                                    )}
-                                    {(session?.user as any)?.phone && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الهاتف: {(session?.user as any)?.phone}</div>
-                                    )}
-                                </div>
-                                <div style={{ textAlign: 'center' }}>
-                                    <h3 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>كشف حركة التدفقات النقدية (Cash Flow Statement)</h3>
-                                    <div style={{ fontSize: '12px', color: '#000', fontWeight: 700, fontFamily: INTER }}>
-                                        التاريخ: {new Date().toLocaleDateString('en-GB')}
-                                    </div>
-                                </div>
-                                <div style={{ maxWidth: '150px', textAlign: 'left' }}>
-                                    {(session?.user as any)?.companyLogo && (
-                                        <img src={(session?.user as any)?.companyLogo} alt="logo"
-                                            style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />
-                                    )}
-                                </div>
-                            </div>
-                        </div>
 
                         {/* KPI Cards */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>

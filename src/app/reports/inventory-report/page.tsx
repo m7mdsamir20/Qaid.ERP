@@ -90,7 +90,7 @@ export default function InventoryReportPage() {
                     </div>
                 )}
 
-                <div style={SEARCH_STYLE.container}>
+                <div className="no-print" style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
