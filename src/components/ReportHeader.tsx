@@ -19,7 +19,14 @@ interface ReportHeaderProps {
 export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, printTitle, printDate, printCode }: ReportHeaderProps) {
     const router = useRouter();
     const { data: session } = useSession();
-    const co = (session?.user as any) || {};
+    const [co, setCo] = React.useState<any>((session?.user as any) || {});
+
+    React.useEffect(() => {
+        fetch('/api/company')
+            .then(res => res.json())
+            .then(d => { if (d && !d.error) setCo(d); })
+            .catch(() => { });
+    }, []);
 
     const handleBack = () => {
         if (backTab) router.push(`/reports?tab=${backTab}`);
@@ -105,25 +112,26 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     
                     {/* Visual Right: Info (1st in RTL) */}
                     <div style={{ textAlign: 'right', flex: 1.5 }}>
-                        <h2 style={{ margin: '0 0 5px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{co.companyName}</h2>
-                        <div style={{ fontSize: '11px', color: '#333', display: 'flex', flexDirection: 'column', gap: '2px', fontFamily: CAIRO, fontWeight: 700 }}>
-                           {co.address && <span>{co.address}</span>}
-                           {co.phone && <span dir="ltr" style={{ textAlign: 'right' }}>{co.phone}</span>}
+                        <h2 style={{ margin: '0 0 5px', fontSize: '24px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{co.companyName || co.name}</h2>
+                        <div style={{ fontSize: '12px', color: '#333', display: 'flex', flexDirection: 'column', gap: '3px', fontFamily: CAIRO, fontWeight: 700 }}>
+                           {co.address && <span>العنوان: {co.address}</span>}
+                           {co.phone && <span dir="ltr" style={{ textAlign: 'right' }}>الهاتف: {co.phone}</span>}
                            {co.taxNumber && <span>الرقم الضريبي: {co.taxNumber}</span>}
                            {co.commercialRegister && <span>السجل التجاري: {co.commercialRegister}</span>}
                         </div>
                     </div>
                     
                     {/* Visual Center: Title Box (2nd in RTL) */}
-                    <div style={{ textAlign: 'center', flex: 1, padding: '0 20px' }}>
+                    <div style={{ textAlign: 'center', flex: 1.2, padding: '0 20px' }}>
                         <div style={{ 
                             display: 'inline-block', 
                             border: '1.5px solid #ddd', 
-                            padding: '12px 35px', 
+                            padding: '12px 25px', 
                             background: '#f8f9fa', 
-                            borderRadius: '12px'
+                            borderRadius: '12px',
+                            minWidth: '220px'
                         }}>
-                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 950, color: '#000', fontFamily: CAIRO }}>{printTitle || title}</h3>
+                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 950, color: '#000', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{printTitle || title}</h3>
                         </div>
                         {printCode && (
                             <div style={{ marginTop: '8px', fontSize: '14px', fontWeight: 800, color: '#333', fontFamily: INTER }}>
@@ -137,15 +145,15 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 
                     {/* Visual Left: Logo (3rd in RTL) */}
                     <div style={{ textAlign: 'left', flex: 1.5, display: 'flex', justifyContent: 'flex-end' }}>
-                        {co.companyLogo && (
+                        {(co.companyLogo || co.logo) && (
                             <div style={{ 
                                 width: '100px', height: '100px', 
                                 border: '1px solid #ddd', 
                                 borderRadius: '50%', 
                                 padding: '10px',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff'
                             }}>
-                                <img src={co.companyLogo} alt="Logo" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                                <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                             </div>
                         )}
                     </div>
@@ -172,6 +180,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         -webkit-print-color-adjust: exact !important; 
                         print-color-adjust: exact !important; 
                         box-shadow: none !important; 
+                        text-decoration: none !important;
                     }
 
                     /* ── Card Styling for Print ── */
@@ -205,6 +214,15 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         font-weight: 800 !important;
                         color: #444 !important; 
                         font-family: ${CAIRO} !important;
+                    }
+
+                    /* ── Standardize Table for Print (Remove backgrounds from spans) ── */
+                    table span {
+                        background: transparent !important;
+                        border: none !important;
+                        padding: 0 !important;
+                        color: #000 !important;
+                        font-weight: 800 !important;
                     }
                     
                     table { border-collapse: collapse !important; width: 100% !important; margin-top: 10px; }
