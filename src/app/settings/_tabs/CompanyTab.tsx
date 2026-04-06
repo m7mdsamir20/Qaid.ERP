@@ -119,50 +119,79 @@ export default function CompanyTab({
                                     )}
                                 </div>
                                 {isEditMode && (
-                                    <div style={{ display: 'flex', gap: '10px' }}>
-                                        <label style={{
-                                            height: '38px', padding: '0 20px', borderRadius: '12px',
-                                            border: `1px solid ${C.primary}50`, background: `${C.primary}15`,
-                                            color: C.primary, fontSize: '13px', fontWeight: 800, cursor: 'pointer',
-                                            display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
-                                            transition: 'all 0.2s', boxShadow: `0 4px 12px ${C.primary}10`
-                                        }}>
-                                            <UploadCloud size={16} /> رفع شعار
-                                            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
-                                                const file = e.target.files?.[0]; if (!file) return;
-                                                const fd = new FormData(); fd.append('file', file);
-                                                try {
-                                                    const r = await fetch('/api/upload', { method: 'POST', body: fd });
-                                                    if (r.ok) {
-                                                        const d = await r.json();
-                                                        if (d.url) {
-                                                            // Bust cache by adding timestamp if needed, but standard state update should work
-                                                            setCompanyForm((p: any) => ({ ...p, logo: d.url }));
-                                                            showToast('تم رفع الشعار بنجاح ✓');
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        <div style={{ display: 'flex', gap: '10px' }}>
+                                            <label style={{
+                                                height: '38px', padding: '0 20px', borderRadius: '12px',
+                                                border: `1px solid ${C.primary}50`, background: `${C.primary}15`,
+                                                color: C.primary, fontSize: '13px', fontWeight: 800, cursor: 'pointer',
+                                                display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
+                                                transition: 'all 0.2s', boxShadow: `0 4px 12px ${C.primary}10`
+                                            }}>
+                                                <UploadCloud size={16} /> رفع شعار
+                                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
+                                                    const file = e.target.files?.[0]; if (!file) return;
+                                                    const fd = new FormData(); fd.append('file', file);
+                                                    try {
+                                                        const r = await fetch('/api/upload', { method: 'POST', body: fd });
+                                                        if (r.ok) {
+                                                            const d = await r.json();
+                                                            if (d.url) {
+                                                                setCompanyForm((p: any) => ({ ...p, logo: d.url }));
+                                                                showToast('تم رفع الشعار بنجاح ✓');
+                                                            }
+                                                        } else {
+                                                            const d = await r.json().catch(() => ({ error: '' }));
+                                                            // Fallback to Base64 if it's Vercel or any other write error
+                                                            if (d.error?.includes('Vercel') || r.status === 403 || r.status === 500) {
+                                                                const reader = new FileReader();
+                                                                reader.onload = (event) => {
+                                                                    const base64 = event.target?.result as string;
+                                                                    if (base64.length > 800000) { // Approx 800KB limit for safe DB storage
+                                                                        showToast('حجم الصورة كبير جداً للحفظ ككود، يرجى استخدام صورة أصغر أو رابط خارجي', 'error');
+                                                                        return;
+                                                                    }
+                                                                    setCompanyForm((p: any) => ({ ...p, logo: base64 }));
+                                                                    showToast('تم حفظ الشعار ككود (نظرًا لقيود الاستضافة) ✓');
+                                                                };
+                                                                reader.readAsDataURL(file);
+                                                            } else {
+                                                                showToast(d.error || 'فشل رفع الملف', 'error');
+                                                            }
                                                         }
-                                                    } else {
-                                                        const d = await r.json().catch(() => ({ error: 'فشل رفع الملف' }));
-                                                        showToast(d.error || 'فشل رفع الملف', 'error');
+                                                    } catch (err) {
+                                                        showToast('خطأ في الاتصال بالسيرفر', 'error');
                                                     }
-                                                } catch (err) {
-                                                    showToast('خطأ في الاتصال بالسيرفر', 'error');
-                                                }
-                                            }} />
-                                        </label>
-                                        {companyForm.logo && (
-                                            <button type="button" onClick={() => setCompanyForm((p: any) => ({ ...p, logo: '' }))}
-                                                style={{
-                                                    height: '38px', width: '38px', borderRadius: '12px',
-                                                    border: `1px solid ${C.danger}50`, background: `${C.danger}15`,
-                                                    color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                    transition: 'all 0.2s'
+                                                }} />
+                                            </label>
+                                            {companyForm.logo && (
+                                                <button type="button" onClick={() => setCompanyForm((p: any) => ({ ...p, logo: '' }))}
+                                                    style={{
+                                                        height: '38px', width: '38px', borderRadius: '12px',
+                                                        border: `1px solid ${C.danger}50`, background: `${C.danger}15`,
+                                                        color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                        transition: 'all 0.2s'
+                                                    }}
+                                                    onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`}
+                                                    onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                            <label style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>أو ضع رابط الشعار المباشر هنا:</label>
+                                            <input 
+                                                value={companyForm.logo?.startsWith('data:') ? 'صورة محفوظة ككود (Base64)' : companyForm.logo}
+                                                onChange={e => {
+                                                    const val = e.target.value;
+                                                    if (val === 'صورة محفوظة ككود (Base64)') return;
+                                                    setCompanyForm((p: any) => ({ ...p, logo: val }));
                                                 }}
-                                                onMouseEnter={e => e.currentTarget.style.background = `${C.danger}25`}
-                                                onMouseLeave={e => e.currentTarget.style.background = `${C.danger}15`}
-                                            >
-                                                <Trash2 size={16} />
-                                            </button>
-                                        )}
+                                                placeholder="https://example.com/logo.png"
+                                                style={{ width: '100%', height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, padding: '0 10px', fontSize: '11px', fontFamily: CAIRO, outline: 'none' }}
+                                            />
+                                        </div>
                                     </div>
                                 )}
                             </div>
