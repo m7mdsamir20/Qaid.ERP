@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { C, CAIRO, INTER } from '@/constants/theme';
 import {
     Shield, Users, User, Loader2, Eye, Check, X, ChevronDown, Plus, Trash2, Pencil,
-    RefreshCw, UserPlus
+    RefreshCw, UserPlus, Store
 } from 'lucide-react';
 import { TabHeader } from './shared';
 
@@ -162,26 +162,56 @@ export default function UsersTab({
 
                     {/* تعيين الفروع المسموح بها */}
                     {branches.length > 1 && (
-                        <div>
-                            <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>
-                                الفروع المسموح بها <span style={{ color: C.textMuted, fontSize: '10px' }}>(بلا اختيار = يرى كل الفروع)</span>
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: C.textMuted, marginBottom: '10px', fontFamily: CAIRO }}>
+                                <Store size={13} style={{ color: C.primary }} />
+                                الفروع المسموح بها <span style={{ color: C.textMuted, fontSize: '10px', fontWeight: 500 }}>(بلا اختيار = يرى كل الفروع)</span>
                             </label>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 {branches.map((b: any) => {
                                     const checked = newUserForm.allowedBranches.includes(b.id);
                                     return (
-                                        <label key={b.id} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', borderRadius: '8px', border: `1px solid ${checked ? C.primary + '50' : C.border}`, background: checked ? `${C.primary}08` : 'rgba(255,255,255,0.01)', cursor: 'pointer', transition: 'all 0.15s' }}>
-                                            <input type="checkbox" checked={checked}
-                                                onChange={() => setNewUserForm((p: any) => ({
-                                                    ...p,
-                                                    allowedBranches: checked
-                                                        ? p.allowedBranches.filter((id: string) => id !== b.id)
-                                                        : [...p.allowedBranches, b.id]
-                                                }))}
-                                                style={{ accentColor: C.primary, width: '15px', height: '15px' }} />
-                                            <span style={{ fontSize: '13px', fontWeight: checked ? 700 : 600, color: checked ? C.textPrimary : C.textSecondary, fontFamily: CAIRO }}>
-                                                {b.isMain ? '⭐ ' : ''}{b.name}
-                                            </span>
+                                        <label key={b.id} 
+                                            onMouseEnter={e => { if (!checked) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
+                                            onMouseLeave={e => { if (!checked) e.currentTarget.style.background = 'rgba(255,255,255,0.01)'; }}
+                                            style={{ 
+                                                display: 'flex', alignItems: 'center', justifyContent: 'space-between', 
+                                                padding: '10px 14px', borderRadius: '12px', 
+                                                border: `1px solid ${checked ? C.primary + '60' : C.border}`, 
+                                                background: checked ? `${C.primary}12` : 'rgba(255,255,255,0.01)', 
+                                                cursor: 'pointer', transition: 'all 0.2s',
+                                                boxShadow: checked ? `0 4px 12px ${C.primary}08` : 'none'
+                                            }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                {b.isMain && (
+                                                    <div title="فرع رئيسي" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fbbf24' }}>
+                                                        <Check size={14} fill="#fbbf24" style={{ opacity: 0.9 }} />
+                                                    </div>
+                                                )}
+                                                <span style={{ fontSize: '12.5px', fontWeight: checked ? 900 : 700, color: checked ? C.textPrimary : C.textSecondary, fontFamily: CAIRO }}>
+                                                    {b.name}
+                                                </span>
+                                            </div>
+                                            <div style={{ 
+                                                width: '20px', height: '20px', borderRadius: '6px', 
+                                                border: `1.5px solid ${checked ? C.primary : 'rgba(255,255,255,0.15)'}`,
+                                                background: checked ? C.primary : 'transparent',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                transition: 'all 0.2s'
+                                            }}>
+                                                <input type="checkbox" checked={checked}
+                                                    onChange={() => setNewUserForm((p: any) => ({
+                                                        ...p,
+                                                        allowedBranches: checked
+                                                            ? p.allowedBranches.filter((id: string) => id !== b.id)
+                                                            : [...p.allowedBranches, b.id]
+                                                    }))}
+                                                    style={{ 
+                                                        position: 'absolute', opacity: 0, 
+                                                        width: '100%', height: '100%', cursor: 'pointer' 
+                                                    }} />
+                                                {checked && <Check size={14} color="#fff" strokeWidth={4} />}
+                                            </div>
                                         </label>
                                     );
                                 })}
