@@ -103,43 +103,52 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 
             {/* ── Professional Print Header (Visible only on Print) ── */}
             <div className="print-only" dir="rtl" style={{ 
-                marginBottom: '30px', 
+                marginBottom: '40px', 
                 paddingBottom: '20px', 
-                borderBottom: '2px solid #111',
-                paddingTop: '5px'
+                borderBottom: '1px solid #eee',
+                paddingTop: '10px'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     
                     {/* Visual Right: Info (1st in RTL) */}
                     <div style={{ textAlign: 'right', flex: 1 }}>
-                        <h2 style={{ margin: '0 0 5px', fontSize: '18px', fontWeight: 900, color: '#111', fontFamily: CAIRO }}>{co.companyName || co.name}</h2>
-                        <div style={{ fontSize: '10.5px', color: '#444', display: 'flex', flexDirection: 'column', gap: '3px', fontFamily: CAIRO, fontWeight: 700, lineHeight: 1.5 }}>
-                           {co.address && <span>{co.address}</span>}
-                           {co.phone && <span dir="ltr" style={{ textAlign: 'right' }}>الهاتف: {co.phone}</span>}
-                           {co.taxNumber && <span>الرقم الضريبي: <strong>{co.taxNumber}</strong></span>}
-                           {co.commercialRegister && <span>السجل التجاري: <strong>{co.commercialRegister}</strong></span>}
+                        <h2 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{co.companyName || co.name}</h2>
+                        <div style={{ fontSize: '11.5px', color: '#333', display: 'flex', flexDirection: 'column', gap: '3px', fontFamily: CAIRO, fontWeight: 600 }}>
+                           {co.address && <div style={{ color: '#555' }}>{co.address}</div>}
+                           {co.phone && <div dir="ltr" style={{ textAlign: 'right', color: '#555' }}>{co.phone}</div>}
+                           {co.taxNumber && (
+                               <div style={{ display: 'flex', gap: '4px' }}>
+                                   <span style={{ color: '#777' }}>الرقم الضريبي:</span>
+                                   <span style={{ color: '#000', fontWeight: 800 }}>{co.taxNumber}</span>
+                               </div>
+                           )}
+                           {co.commercialRegister && (
+                               <div style={{ display: 'flex', gap: '4px' }}>
+                                   <span style={{ color: '#777' }}>السجل التجاري:</span>
+                                   <span style={{ color: '#000', fontWeight: 800 }}>{co.commercialRegister}</span>
+                               </div>
+                           )}
                         </div>
                     </div>
                     
                     {/* Visual Center: Title Box (2nd in RTL) */}
-                    <div style={{ textAlign: 'center', flex: 1, padding: '0 20px' }}>
+                    <div style={{ textAlign: 'center', flex: 1, padding: '0 10px' }}>
                         <div style={{ 
                             display: 'inline-block', 
-                            border: '1.5px solid #ccc', 
-                            padding: '6px 24px', 
-                            background: '#f5f5f5', 
-                            borderRadius: '8px',
-                            minWidth: '220px',
-                            whiteSpace: 'nowrap'
+                            border: '1.2px solid #ccc', 
+                            padding: '10px 35px', 
+                            background: '#fff', 
+                            borderRadius: '12px',
+                            minWidth: '260px'
                         }}>
-                            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#111', fontFamily: CAIRO }}>{printTitle || title}</h3>
+                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 950, color: '#000', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{printTitle || title}</h3>
                         </div>
                         {printCode && (
-                            <div style={{ marginTop: '8px', fontSize: '13px', fontWeight: 700, color: '#333', fontFamily: INTER }}>
+                            <div style={{ marginTop: '10px', fontSize: '14px', fontWeight: 700, color: '#111', fontFamily: INTER }}>
                                 {printCode}
                             </div>
                         )}
-                        <div style={{ marginTop: '4px', fontSize: '11px', color: '#555', fontWeight: 700, fontFamily: INTER }}>
+                        <div style={{ marginTop: `${printCode ? '4px' : '10px'}`, fontSize: '12px', color: '#444', fontWeight: 800, fontFamily: INTER }}>
                             {printDate || new Date().toLocaleDateString('en-GB')}
                         </div>
                     </div>
@@ -147,7 +156,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     {/* Visual Left: Logo (3rd in RTL) */}
                     <div style={{ textAlign: 'left', flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                         {(co.companyLogo || co.logo) && (
-                            <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '85px', maxWidth: '140px', objectFit: 'contain' }} />
+                            <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '85px', maxWidth: '145px', objectFit: 'contain' }} />
                         )}
                     </div>
                 </div>
@@ -155,22 +164,29 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 
             <style>{`
                 @media print {
-                    .no-print, .print-hide { display: none !important; }
+                    /* UI Hide */
+                    .no-print, .print-hide, .ui-only, nav, header { display: none !important; }
                     .print-only { display: block !important; }
                     
-                    html, body { 
-                        background: white !important; 
-                        color: black !important; 
-                        padding: 0 !important; 
-                        margin: 0 !important;
-                        height: auto !important;
-                        min-height: 0 !important;
+                    /* Reset Heights to prevent extra blank page */
+                    html, body, #__next, .dashboard-content, main, [style*="minHeight"] { 
+                        height: auto !important; 
+                        min-height: 0 !important; 
                         overflow: visible !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        background: #fff !important;
                     }
                     
                     body { 
-                        padding: 0.5cm !important; 
-                        font-family: 'Cairo', sans-serif !important;
+                        padding: 0.5cm 1cm !important; 
+                        width: 100% !important;
+                    }
+
+                    /* Important: Reset PAGE_BASE padding specifically */
+                    [style*="paddingBottom: '30px'"], [style*="padding-bottom: 30px"] {
+                        padding-bottom: 0 !important;
+                        padding-top: 0 !important;
                     }
 
                     * { 
@@ -180,25 +196,25 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         text-decoration: none !important;
                     }
 
-                    /* Prevent extra blank page */
-                    footer, .footer, .extra-space { display: none !important; }
-                    div, section, table { page-break-after: auto !important; }
-                    tr { page-break-inside: avoid !important; }
+                    /* Break Prevention */
+                    table { page-break-inside: auto !important; }
+                    tr { page-break-inside: avoid !important; page-break-after: auto !important; }
+                    thead { display: table-header-group !important; }
 
                     /* ── Card Styling for Print ── */
                     div[style*="grid-template-columns"] {
                         display: flex !important;
                         flex-wrap: nowrap !important;
                         gap: 10px !important;
-                        margin-bottom: 20px !important;
+                        margin-bottom: 25px !important;
                     }
                     div[style*="grid-template-columns"] > div {
                         flex: 1 !important;
                         min-width: 0 !important;
-                        padding: 8px 10px !important;
+                        padding: 10px !important;
                         border: 1px solid #e0e0e0 !important;
                         background: #fff !important;
-                        border-radius: 10px !important;
+                        border-radius: 12px !important;
                         display: flex !important;
                         flex-direction: column !important;
                         align-items: center !important;
@@ -228,7 +244,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         font-weight: 800 !important;
                     }
                     
-                    table { border-collapse: collapse !important; width: 100% !important; margin-top: 10px; border: 1.5px solid #333 !important; }
+                    table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px; border: 1.5px solid #333 !important; }
                     th, td { border: 1px solid #666 !important; padding: 10px 12px !important; color: #1a1a1a !important; background: #fff !important; font-size: 12px !important; }
                     th { font-weight: 900 !important; background: #f0f0f0 !important; color: #111 !important; border: 1.5px solid #333 !important; font-size: 11px !important; }
                 }
