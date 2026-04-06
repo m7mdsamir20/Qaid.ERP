@@ -86,7 +86,7 @@ export default function CompanyTab({
                                             .replace(/&quot;/g, '"')
                                             .replace(/&#x27;/g, "'");
 
-                                        const finalSrc = cleanLogo.startsWith('http')
+                                        const finalSrc = cleanLogo.startsWith('http') || cleanLogo.startsWith('data:')
                                             ? cleanLogo
                                             : '/' + cleanLogo.replace(/^\/+/, '');
 
