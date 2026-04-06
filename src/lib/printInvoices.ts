@@ -123,8 +123,8 @@ thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:
 tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle}
 .item-name{font-weight:800;font-size:13px}
 
-.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:-1px}
-.totals{min-width:300px;border:1.5px solid #888;border-top:none;border-radius:0 0 10px 10px;overflow:hidden;background:#fff}
+.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:15px}
+.totals{min-width:280px;border:1.5px solid #888;border-radius:10px;overflow:hidden;background:#fff}
 .t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #ccc;font-size:12px}
 .t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #888}
 .t-subtotal{background:#f9fafb;color:#111;font-weight:700}
