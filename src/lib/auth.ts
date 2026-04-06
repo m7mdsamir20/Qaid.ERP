@@ -140,6 +140,7 @@ export const authOptions: AuthOptions = {
                                     name: true,
                                     businessType: true,
                                     subscription: true,
+                                    branches: { where: { isActive: true }, orderBy: { isMain: 'desc' } }
                                 }
                             }
                         }
@@ -150,7 +151,7 @@ export const authOptions: AuthOptions = {
                         token.role = dbUser.role;
                         token.isSuperAdmin = !!dbUser.isSuperAdmin;
                         token.businessType = dbUser.company?.businessType || 'TRADING';
-                        
+
                         if (dbUser.customRole?.permissions) {
                             try { token.permissions = JSON.parse(dbUser.customRole.permissions); } catch { }
                         }
@@ -167,8 +168,15 @@ export const authOptions: AuthOptions = {
                                 startDate: sub.startDate,
                             };
                         }
-                        
+
                         if (dbUser.company?.name) token.companyName = dbUser.company.name;
+
+                        // تحديث الفروع تلقائياً لما تُضاف فروع جديدة
+                        if (dbUser.company?.branches) {
+                            token.branches = dbUser.company.branches.map((b: any) => ({
+                                id: b.id, name: b.name, isMain: b.isMain
+                            }));
+                        }
                     }
                 } catch (e) {
                     console.error("[AUTH_SYNC_ERROR]:", e);

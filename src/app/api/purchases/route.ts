@@ -148,72 +148,64 @@ export const POST = withProtection(async (request, session, body) => {
                 include: { lines: true, supplier: true },
             });
 
-            // ... stock update logic stays same ...
             if (warehouseId) {
-                for (const line of lines) {
-                    const item = await tx.item.findUnique({
-                        where: { id: line.itemId },
-                        include: { stocks: true }
-                    });
+                const itemIds = lines.map((l: any) => l.itemId);
 
-                    if (item) {
-                        const allStocks = await tx.stock.findMany({
-                            where: { itemId: line.itemId }
-                        });
-                        const currentTotalStock = allStocks.reduce((sum, s) => sum + s.quantity, 0);
+                // جيب كل الأصناف وكل مخزونهم دفعة واحدة بدل loop
+                const [allItems, allStocks] = await Promise.all([
+                    tx.item.findMany({
+                        where: { id: { in: itemIds } },
+                        select: { id: true, averageCost: true, costPrice: true }
+                    }),
+                    tx.stock.findMany({ where: { itemId: { in: itemIds } } })
+                ]);
+
+                const itemMap = Object.fromEntries(allItems.map(i => [i.id, i]));
+                const stockMap: Record<string, number> = {};
+                allStocks.forEach(s => {
+                    stockMap[s.itemId] = (stockMap[s.itemId] || 0) + s.quantity;
+                });
+
+                // تحديث الأصناف والمخزون بشكل متوازي
+                await Promise.all([
+                    // تحديث averageCost لكل صنف
+                    ...lines.map((line: any) => {
+                        const item = itemMap[line.itemId];
+                        if (!item) return Promise.resolve();
+                        const currentTotalStock = stockMap[line.itemId] || 0;
                         const currentAvgCost = Number(item.averageCost) || Number(item.costPrice) || 0;
-
-                        const newQty   = Number(line.quantity);
+                        const newQty = Number(line.quantity);
                         const newPrice = Number(line.price);
                         const totalStockAfter = currentTotalStock + newQty;
-
-                        let newAvgCost: number;
-                        if (currentTotalStock > 0 && currentAvgCost > 0) {
-                            newAvgCost = ((currentTotalStock * currentAvgCost) + (newQty * newPrice)) / totalStockAfter;
-                        } else {
-                            newAvgCost = newPrice;
-                        }
-
-                        await tx.item.update({
+                        const newAvgCost = (currentTotalStock > 0 && currentAvgCost > 0)
+                            ? ((currentTotalStock * currentAvgCost) + (newQty * newPrice)) / totalStockAfter
+                            : newPrice;
+                        return tx.item.update({
                             where: { id: line.itemId },
-                            data: {
-                                averageCost: newAvgCost,
-                                costPrice: newPrice, // تحديث سعر التكلفة ليكون هو سعر آخر شراء
-                            }
+                            data: { averageCost: newAvgCost, costPrice: newPrice }
                         });
-                    }
-
-                    await tx.stock.upsert({
-                        where: {
-                            itemId_warehouseId: {
-                                itemId: line.itemId,
-                                warehouseId: warehouseId,
-                            },
-                        },
-                        update: {
-                            quantity: { increment: line.quantity },
-                        },
-                        create: {
-                            itemId: line.itemId,
-                            warehouseId: warehouseId,
-                            quantity: line.quantity,
-                        },
-                    });
-
-                    await tx.stockMovement.create({
+                    }),
+                    // upsert المخزون لكل صنف
+                    ...lines.map((line: any) => tx.stock.upsert({
+                        where: { itemId_warehouseId: { itemId: line.itemId, warehouseId } },
+                        update: { quantity: { increment: line.quantity } },
+                        create: { itemId: line.itemId, warehouseId, quantity: line.quantity }
+                    })),
+                    // إنشاء حركات المخزون بشكل متوازي
+                    ...lines.map((line: any) => tx.stockMovement.create({
                         data: {
                             type: 'in',
                             date: new Date(),
                             itemId: line.itemId,
-                            warehouseId: warehouseId,
+                            warehouseId,
                             quantity: line.quantity,
                             reference: `PUR-${invoiceNumber}`,
                             notes: `فاتورة مشتريات رقم ${invoiceNumber}`,
                             companyId,
                             invoiceId: invoice.id
                         } as any
-                    });
-                }
+                    }))
+                ]);
             }
 
             if (supplierId) {

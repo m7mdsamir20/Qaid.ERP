@@ -19,7 +19,7 @@ export const GET = withProtection(async (request, session) => {
         }
     });
     return NextResponse.json(branches);
-});
+}, { cache: 30 });
 
 // POST - إضافة فرع جديد
 export const POST = withProtection(async (request, session, body) => {

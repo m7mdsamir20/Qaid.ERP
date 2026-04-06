@@ -151,4 +151,4 @@ export const GET = withProtection(async (request, session) => {
         console.error("[Stats API Cache Error]:", error);
         return NextResponse.json({ error: "فشل في معالجة إحصائيات لوحة التحكم" }, { status: 500 });
     }
-}, { cache: 10 }); // كاش لمدة 10 ثواني لسرعة التنقل الجانبي 🚀
+}, { cache: 30 });

@@ -22,7 +22,7 @@ export const GET = withProtection(async (request, session) => {
     } catch {
         return NextResponse.json([], { status: 500 });
     }
-});
+}, { cache: 30 });
 
 export const POST = withProtection(async (request, session, body) => {
     try {

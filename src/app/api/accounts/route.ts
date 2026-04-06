@@ -67,7 +67,7 @@ export const GET = withProtection(async (request, session) => {
         console.error(error);
         return NextResponse.json([], { status: 500 });
     }
-});
+}, { cache: 20 });
 
 export const POST = withProtection(async (request, session, body) => {
     try {

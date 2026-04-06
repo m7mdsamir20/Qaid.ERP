@@ -18,7 +18,7 @@ export const GET = withProtection(async (request, session) => {
         console.error("GET /api/categories Error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
-});
+}, { cache: 30 });
 
 export const POST = withProtection(async (request, session, body) => {
     try {

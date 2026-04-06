@@ -12,4 +12,4 @@ export const GET = withProtection(async (request, session) => {
     } catch {
         return NextResponse.json({}, { status: 500 });
     }
-});
+}, { cache: 30 });
