@@ -101,7 +101,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 .co-name{font-size:18px;font-weight:900;color:#111;margin-bottom:4px}
 .co-line{font-size:10.5px;color:#444;line-height:1.5}
 .header-center{flex:1;text-align:center}
-.inv-title{font-size:24px;font-weight:900;color:#111;padding:4px 0;text-decoration: underline}
+.inv-title{font-size:24px;font-weight:900;color:#111;background:#f5f5f5;padding:6px 24px;border-radius:8px;display:inline-block;border:1.5px solid #ccc}
 .inv-num{font-size:13px;color:#333;margin-top:8px;font-family:monospace;font-weight:700}
 .logo-block{flex:1;text-align:left}
 .logo-block img{max-height:85px;max-width:140px;object-fit:contain}
@@ -116,17 +116,17 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 .ik{color:#777;min-width:90px;display:inline-block}
 .iv{color:#111;font-weight:800}
 
-.section-title{font-size:12px;font-weight:900;padding:6px 0;margin-bottom:8px;margin-top:8px;border-bottom: 2px solid #111; width: fit-content}
-table{width:100%;border-collapse:collapse;border:1px solid #d0d0d0;border-radius:10px;overflow:hidden}
-thead{background:#f8f9fa}
-thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:center;border-left:1px solid #ddd}
-tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border-left:1px solid #ebebeb;vertical-align:middle}
+.section-title{font-size:12px;font-weight:900;padding:6px 12px;margin-bottom:8px;margin-top:8px;border-right: 4px solid #111;background:#f8f9fa;width: fit-content}
+table{width:100%;border-collapse:collapse;border:1.5px solid #888}
+thead{background:#f0f0f0}
+thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1.5px solid #888}
+tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle}
 .item-name{font-weight:800;font-size:13px}
 
 .bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:15px}
-.totals{min-width:280px;border:1px solid #d0d0d0;border-radius:10px;overflow:hidden}
-.t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #ebebeb;font-size:12px}
-.t-main{background:#f8f9fa;color:#111;font-weight:900;border-bottom:2px solid #ddd}
+.totals{min-width:280px;border:1.5px solid #888;border-radius:10px;overflow:hidden}
+.t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #ccc;font-size:12px}
+.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:2.5px solid #888}
 .t-main .tl{color:#111}
 
 .footer{margin-top:auto;padding-top:14px;border-top:1px dashed #ccc}
@@ -172,7 +172,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border-
 <table>
     <thead>
         <tr>
-            <th style="width:5%">#</th>
+            <th style="width:5%">م</th>
             <th style="width:45%;text-align:right">${isServicesLine ? 'الخدمة / الوصف' : 'الصنف'}</th>
             ${!isServicesLine ? '<th style="width:10%">الوحدة</th>' : ''}
             <th style="width:10%">الكمية</th>
@@ -423,7 +423,7 @@ td{padding:12px;border:1px solid #e5e7eb;text-align:center;font-size:13px;word-b
     <table>
         <thead>
             <tr>
-                <th class="item-num">#</th>
+                <th class="item-num">م</th>
                 <th class="item-name">الخدمة / الصنف</th>
                 <th style="width: 70px">الكمية</th>
                 <th style="width: 100px">السعر</th>
