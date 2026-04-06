@@ -35,28 +35,60 @@ export const POST = withProtection(async (request, session, body) => {
         });
 
         // Send Email
+        const origin = request.nextUrl.origin;
+        const logoUrl = `${origin}/logo-system.png`;
+
         await transporter.sendMail({
             from: `"قيد ERP" <${process.env.SMTP_USER}>`,
             to: email,
             subject: 'كود التحقق - قيد ERP',
             html: `
-                <div dir="rtl" style="font-family: Arial, sans-serif; max-width: 500px; margin: auto; padding: 40px; background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
-                    <div style="text-align: center; margin-bottom: 30px;">
-                        <h1 style="color: #2563eb; margin: 0; font-size: 28px; font-weight: 900; letter-spacing: -1px;">قيد ERP</h1>
-                    </div>
-                    <div style="text-align: center; padding: 20px; background: #f8fafc; border-radius: 12px; margin-bottom: 30px;">
-                        <p style="color: #475569; font-size: 16px; margin-bottom: 15px; font-weight: 600;">كود التحقق الخاص بك هو:</p>
-                        <div style="font-size: 42px; font-weight: 900; letter-spacing: 12px; color: #1e293b; font-family: 'Courier New', Courier, monospace; background: #f1f5f9; padding: 20px 0; border-radius: 8px;">
-                            ${otp}
+                <!DOCTYPE html>
+                <html lang="ar" dir="rtl">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { margin: 0; padding: 0; background-color: #f7fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+                        .container { max-width: 600px; margin: 40px auto; background: #ffffff; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e2e8f0; }
+                        .header { background: #0f172a; padding: 40px 20px; text-align: center; }
+                        .logo { max-height: 50px; display: block; margin: 0 auto; filter: brightness(0) invert(1); }
+                        .content { padding: 40px; text-align: center; }
+                        .title { color: #1e293b; font-size: 24px; font-weight: 800; margin-bottom: 16px; margin-top: 0; }
+                        .description { color: #64748b; font-size: 16px; line-height: 1.6; margin-bottom: 32px; }
+                        .otp-box { background: #f8fafc; border: 2px dashed #0f172a; border-radius: 16px; padding: 24px 0; margin-bottom: 32px; position: relative; }
+                        .otp-code { font-size: 48px; font-weight: 900; letter-spacing: 12px; color: #0f172a; font-family: 'Courier New', Courier, monospace; display: block; margin: 0; }
+                        .otp-label { color: #94a3b8; font-size: 12px; font-weight: 700; text-transform: uppercase; margin-bottom: 8px; display: block; }
+                        .warning { color: #ef4444; font-size: 13px; font-weight: 600; margin-bottom: 24px; }
+                        .footer { background: #f8fafc; padding: 24px; text-align: center; border-top: 1px solid #f1f5f9; }
+                        .footer-text { color: #94a3b8; font-size: 12px; margin: 0; }
+                        .btn { background: #0f172a; color: #ffffff !important; padding: 14px 28px; border-radius: 12px; text-decoration: none; font-weight: 700; display: inline-block; margin-top: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="container">
+                        <div class="header">
+                            <img src="${logoUrl}" alt="قيد ERP" class="logo">
+                        </div>
+                        <div class="content">
+                            <h1 class="title">مرحباً بك في قيد ERP</h1>
+                            <p class="description">لقد طلبت كود التحقق لتسجيل الدخول أو إثبات الهوية. يرجى استخدام الكود التالي لإتمام العملية:</p>
+                            
+                            <div class="otp-box">
+                                <span class="otp-label">كود التحقق الخاص بك هو:</span>
+                                <span class="otp-code">${otp}</span>
+                            </div>
+
+                            <p class="warning">صلاحية هذا الكود هي 10 دقائق فقط. لا تقم بمشاركة هذا الكود مع أي شخص.</p>
+                            
+                            <p style="color: #475569; font-size: 14px; margin-bottom: 0;">إذا لم تطلب هذا الكود، فيمكنك تجاهل هذا البريد بأمان.</p>
+                        </div>
+                        <div class="footer">
+                            <p class="footer-text">© ${new Date().getFullYear()} قيد ERP - نظام إدارة الموارد المتكاملة</p>
+                            <p class="footer-text" style="margin-top: 8px;">مقر العمل - القاهرة، جمهورية مصر العربية</p>
                         </div>
                     </div>
-                    <p style="color: #64748b; font-size: 14px; text-align: center; line-height: 1.6;">
-                        يرجى استخدام هذا الكود لإتمام عملية المصادقة. <br/>
-                        <span style="color: #ef4444; font-weight: 700;">الكود صالح لمدة 10 دقائق فقط.</span>
-                    </p>
-                    <div style="height: 1px; background: #f1f5f9; margin: 30px 0;"></div>
-                    <p style="color: #94a3b8; font-size: 11px; text-align: center; margin: 0;">هذا بريد مرسل آلياً، يرجى عدم الرد.</p>
-                </div>
+                </body>
+                </html>
             `
         });
 
