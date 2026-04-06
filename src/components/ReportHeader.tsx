@@ -144,17 +144,9 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     </div>
 
                     {/* Visual Left: Logo (3rd in RTL) */}
-                    <div style={{ textAlign: 'left', flex: 1.5, display: 'flex', justifyContent: 'flex-end' }}>
+                    <div style={{ textAlign: 'left', flex: 1.5, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                         {(co.companyLogo || co.logo) && (
-                            <div style={{ 
-                                width: '100px', height: '100px', 
-                                border: '1px solid #ddd', 
-                                borderRadius: '50%', 
-                                padding: '10px',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#fff'
-                            }}>
-                                <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
-                            </div>
+                            <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '120px', maxWidth: '180px', objectFit: 'contain' }} />
                         )}
                     </div>
                 </div>
@@ -171,10 +163,13 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         padding: 0 !important; 
                         margin: 0 !important;
                         height: auto !important;
+                        min-height: 0 !important;
                         overflow: visible !important;
                     }
                     
-                    body { padding: 0.5cm !important; }
+                    body { 
+                        padding: 0.5cm !important; 
+                    }
 
                     * { 
                         -webkit-print-color-adjust: exact !important; 
@@ -182,6 +177,11 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         box-shadow: none !important; 
                         text-decoration: none !important;
                     }
+
+                    /* Prevent extra blank page */
+                    footer, .footer, .extra-space { display: none !important; }
+                    div, section, table { page-break-after: auto !important; }
+                    tr { page-break-inside: avoid !important; }
 
                     /* ── Card Styling for Print ── */
                     div[style*="grid-template-columns"] {
