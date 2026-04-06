@@ -130,11 +130,10 @@ export default function DashboardLayout({
                     .dashboard-content {
                         margin: 0 !important;
                         padding: 0 !important;
-                        width: 100vw !important;
+                        width: 100% !important;
                         max-width: 100% !important;
-                        position: absolute !important;
-                        right: 0 !important;
-                        left: 0 !important;
+                        flex: 1 !important;
+                        display: block !important;
                     }
 
                     div[style*="maxWidth: '1600px'"],
@@ -150,17 +149,16 @@ export default function DashboardLayout({
                         width: 100% !important;
                     }
 
-                    body, html {
+                    body, html, div[style*="minHeight: '100vh'"] {
                         background: #fff !important;
                         color: #000 !important;
+                        min-height: auto !important;
+                        height: auto !important;
                     }
 
                     * {
                         -webkit-print-color-adjust: exact !important;
                         print-color-adjust: exact !important;
-                        background: #fff !important;
-                        color: #000 !important;
-                        border-color: #e2e8f0 !important;
                         box-shadow: none !important;
                     }
 

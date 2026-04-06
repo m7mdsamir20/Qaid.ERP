@@ -201,16 +201,20 @@ export default function PurchasesReportPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.invoices.filter(inv => 
-                                        String(inv.invoiceNumber).includes(q) || 
-                                        (inv.supplier?.name || 'مورد نقدي').toLowerCase().includes(q.toLowerCase())
-                                    ).map((inv, idx) => (
+                                    {data.invoices.filter(inv => {
+                                        const code = `PUR-${String(inv.invoiceNumber).padStart(5, '0')}`;
+                                        return code.includes(q.toUpperCase()) || 
+                                               String(inv.invoiceNumber).includes(q) || 
+                                               (inv.supplier?.name || 'مورد نقدي').toLowerCase().includes(q.toLowerCase());
+                                    }).map((inv, idx) => (
                                         <tr key={inv.id}
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>#{inv.invoiceNumber}</span>
+                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>
+                                                    PUR-{String(inv.invoiceNumber).padStart(5, '0')}
+                                                </span>
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{inv.supplier?.name || 'مورد نقدي'}</td>

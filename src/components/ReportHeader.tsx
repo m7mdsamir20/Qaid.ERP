@@ -13,9 +13,10 @@ interface ReportHeaderProps {
     data?: any;
     printTitle?: string;
     printDate?: string;
+    printCode?: string;
 }
 
-export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, printTitle, printDate }: ReportHeaderProps) {
+export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, printTitle, printDate, printCode }: ReportHeaderProps) {
     const router = useRouter();
     const { data: session } = useSession();
     const co = (session?.user as any) || {};
@@ -95,37 +96,58 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 
             {/* ── Professional Print Header (Visible only on Print) ── */}
             <div className="print-only" dir="rtl" style={{ 
-                marginBottom: '40px', 
-                paddingBottom: '25px', 
-                borderBottom: '2.5px double #111',
-                paddingTop: '10px'
+                marginBottom: '30px', 
+                paddingBottom: '20px', 
+                borderBottom: '1.5px solid #000',
+                paddingTop: '5px'
             }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '30px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     
-                    {/* Right: Company Info */}
-                    <div style={{ flex: 1.2, textAlign: 'right' }}>
-                        <h2 style={{ margin: '0 0 8px', fontSize: '26px', fontWeight: 950, color: '#000', fontFamily: CAIRO }}>{co.companyName}</h2>
-                        <div style={{ fontSize: '12px', color: '#111', display: 'flex', flexDirection: 'column', gap: '4px', fontFamily: CAIRO, fontWeight: 600 }}>
+                    {/* Visual Right: Info (1st in RTL) */}
+                    <div style={{ textAlign: 'right', flex: 1.5 }}>
+                        <h2 style={{ margin: '0 0 5px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{co.companyName}</h2>
+                        <div style={{ fontSize: '11px', color: '#333', display: 'flex', flexDirection: 'column', gap: '2px', fontFamily: CAIRO, fontWeight: 700 }}>
+                           {co.address && <span>{co.address}</span>}
+                           {co.phone && <span dir="ltr" style={{ textAlign: 'right' }}>{co.phone}</span>}
                            {co.taxNumber && <span>الرقم الضريبي: {co.taxNumber}</span>}
                            {co.commercialRegister && <span>السجل التجاري: {co.commercialRegister}</span>}
-                           {co.phone && <span>الهاتف: {co.phone}</span>}
-                           {co.address && <span>العنوان: {co.address}</span>}
                         </div>
                     </div>
                     
-                    {/* Center: Title Box */}
-                    <div style={{ flex: 1, textAlign: 'center', paddingTop: '10px' }}>
-                        <div style={{ display: 'inline-block', border: '2px solid #111', padding: '10px 40px', background: '#fff', boxShadow: '4px 4px 0px #111' }}>
-                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 1000, color: '#000', fontFamily: CAIRO, textTransform: 'uppercase' }}>{printTitle || title}</h3>
+                    {/* Visual Center: Title Box (2nd in RTL) */}
+                    <div style={{ textAlign: 'center', flex: 1, padding: '0 20px' }}>
+                        <div style={{ 
+                            display: 'inline-block', 
+                            border: '1.5px solid #ddd', 
+                            padding: '12px 35px', 
+                            background: '#f8f9fa', 
+                            borderRadius: '12px'
+                        }}>
+                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 950, color: '#000', fontFamily: CAIRO }}>{printTitle || title}</h3>
                         </div>
-                        <div style={{ marginTop: '12px', fontSize: '13px', color: '#000', fontWeight: 800, fontFamily: INTER, opacity: 0.9 }}>
-                            {printDate || new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}
+                        {printCode && (
+                            <div style={{ marginTop: '8px', fontSize: '14px', fontWeight: 800, color: '#333', fontFamily: INTER }}>
+                                {printCode}
+                            </div>
+                        )}
+                        <div style={{ marginTop: '4px', fontSize: '12px', color: '#555', fontWeight: 700, fontFamily: INTER }}>
+                            {printDate || new Date().toLocaleDateString('en-GB')}
                         </div>
                     </div>
 
-                    {/* Left: Logo */}
-                    <div style={{ flex: 1, textAlign: 'left' }}>
-                        {co.companyLogo && <img src={co.companyLogo} alt="Logo" style={{ maxHeight: '100px', maxWidth: '180px', objectFit: 'contain' }} />}
+                    {/* Visual Left: Logo (3rd in RTL) */}
+                    <div style={{ textAlign: 'left', flex: 1.5, display: 'flex', justifyContent: 'flex-end' }}>
+                        {co.companyLogo && (
+                            <div style={{ 
+                                width: '100px', height: '100px', 
+                                border: '1px solid #ddd', 
+                                borderRadius: '50%', 
+                                padding: '10px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}>
+                                <img src={co.companyLogo} alt="Logo" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -134,25 +156,60 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                 @media print {
                     .no-print, .print-hide { display: none !important; }
                     .print-only { display: block !important; }
-                    body { background: white !important; color: black !important; padding: 0.5cm !important; margin: 0 !important; }
+                    
+                    html, body { 
+                        background: white !important; 
+                        color: black !important; 
+                        padding: 0 !important; 
+                        margin: 0 !important;
+                        height: auto !important;
+                        overflow: visible !important;
+                    }
+                    
+                    body { padding: 0.5cm !important; }
+
                     * { 
                         -webkit-print-color-adjust: exact !important; 
                         print-color-adjust: exact !important; 
                         box-shadow: none !important; 
-                        text-shadow: none !important;
                     }
-                    div, section, table, tr, th, td {
-                        border-radius: 0 !important;
+
+                    /* ── Card Styling for Print ── */
+                    div[style*="grid-template-columns"] {
+                        display: flex !important;
+                        flex-wrap: nowrap !important;
+                        gap: 10px !important;
+                        margin-bottom: 20px !important;
                     }
-                    table { border-collapse: collapse !important; width: 100% !important; }
-                    th, td { border: 1px solid #333 !important; padding: 10px 12px !important; color: #000 !important; background: #fff !important; }
-                    th { font-weight: 900 !important; background: #f0f0f0 !important; }
-                    .stat-card, .stat-item {
-                        border: 1px solid #333 !important;
+                    div[style*="grid-template-columns"] > div {
+                        flex: 1 !important;
+                        min-width: 0 !important;
+                        padding: 8px 10px !important;
+                        border: 0.5px solid #ccc !important;
                         background: #fff !important;
+                        border-radius: 8px !important;
+                        display: flex !important;
+                        flex-direction: column !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        text-align: center !important;
                     }
-                    .stat-value { font-size: 14pt !important; font-weight: 900 !important; }
-                    .stat-label { font-size: 10pt !important; font-weight: 700 !important; }
+                    .stat-value { 
+                        font-size: 13px !important; 
+                        font-weight: 950 !important; 
+                        color: #000 !important; 
+                        margin: 2px 0 !important;
+                    }
+                    .stat-label { 
+                        font-size: 9.5px !important; 
+                        font-weight: 800 !important;
+                        color: #444 !important; 
+                        font-family: ${CAIRO} !important;
+                    }
+                    
+                    table { border-collapse: collapse !important; width: 100% !important; margin-top: 10px; }
+                    th, td { border: 0.5px solid #ccc !important; padding: 8px 10px !important; color: #000 !important; background: #fff !important; font-size: 10px !important; }
+                    th { font-weight: 950 !important; background: #f8f9fa !important; }
                 }
                 @media screen {
                     .print-only { display: none !important; }

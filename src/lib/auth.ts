@@ -87,6 +87,7 @@ export const authOptions: AuthOptions = {
                     taxNumber: user.company?.taxNumber || '',
                     commercialRegister: user.company?.commercialRegister || '',
                     phone: user.company?.phone || '',
+                    address: user.company?.address || '',
                     businessType: user.company?.businessType || 'TRADING',
                     subscription: sub ? {
                         plan: sub.plan,
@@ -170,6 +171,7 @@ export const authOptions: AuthOptions = {
                         }
 
                         if (dbUser.company?.name) token.companyName = dbUser.company.name;
+                        if (dbUser.company?.address) token.address = dbUser.company.address;
 
                         // تحديث الفروع تلقائياً لما تُضاف فروع جديدة
                         if (dbUser.company?.branches) {
@@ -212,6 +214,7 @@ export const authOptions: AuthOptions = {
                 u.taxNumber = token.taxNumber || '';
                 u.commercialRegister = token.commercialRegister || '';
                 u.phone = token.phone || '';
+                u.address = token.address || '';
                 u.businessType = token.businessType || 'TRADING';
                 u.subscription = token.subscription || null;
             }

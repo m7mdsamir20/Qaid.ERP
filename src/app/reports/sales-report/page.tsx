@@ -77,11 +77,11 @@ export default function SalesReportPage() {
         <DashboardLayout>
             <div dir="rtl" style={PAGE_BASE}>
                 <ReportHeader
-                    title="تقرير المبيعات"
-                    subtitle="تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية."
+                    title={isServices ? "تقرير مبيعات الخدمات" : "تقرير المبيعات"}
+                    subtitle={isServices ? "تحليل تفصيلي لجميع فواتير الخدمات الصادرة." : "تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية."}
                     backTab="sales-purchases"
                     onExportPdf={exportToPDF}
-                    printTitle="تقرير المبيعات"
+                    printTitle={isServices ? "تقرير مبيعات الخدمات" : "تقرير مبيعات الأصناف"}
                     printDate={(from || to) ? `${from ? 'من: ' + from : ''} ${to ? ' إلى: ' + to : ''}` : undefined}
                 />
 
@@ -207,16 +207,20 @@ export default function SalesReportPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {data.invoices.filter(inv => 
-                                        String(inv.invoiceNumber).includes(q) || 
-                                        (inv.customer?.name || 'عميل نقدي').toLowerCase().includes(q.toLowerCase())
-                                    ).map((inv, idx) => (
+                                    {data.invoices.filter(inv => {
+                                        const code = `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`;
+                                        return code.includes(q.toUpperCase()) || 
+                                               String(inv.invoiceNumber).includes(q) || 
+                                               (inv.customer?.name || 'عميل نقدي').toLowerCase().includes(q.toLowerCase());
+                                    }).map((inv, idx) => (
                                         <tr key={inv.id}
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>#{inv.invoiceNumber}</span>
+                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>
+                                                    SAL-{String(inv.invoiceNumber).padStart(5, '0')}
+                                                </span>
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{inv.customer?.name || 'عميل نقدي'}</td>
