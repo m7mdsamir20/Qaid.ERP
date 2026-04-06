@@ -214,18 +214,68 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border-
         <strong>ملاحظات: </strong>${invoice.notes || ''}
     </div>
     <div class="totals">
+        ${(discount > 0 || lines.some((l: any) => (l.taxAmount || 0) > 0)) ? `
+        <div class="t-row">
+            <span>الإجمالي (قبل الخصم)</span>
+            <span>${subtotal.toLocaleString()} ${sym}</span>
+        </div>` : ''}
+        
+        ${discount > 0 ? `
+        <div class="t-row">
+            <span>الخصم</span>
+            <span>-${discount.toLocaleString()} ${sym}</span>
+        </div>` : ''}
+
+        ${lines.reduce((acc: number, l: any) => acc + (Number(l.taxAmount) || 0), 0) > 0 ? `
+        <div class="t-row">
+            <span>ضريبة القيمة المضافة</span>
+            <span>${lines.reduce((acc: number, l: any) => acc + (Number(l.taxAmount) || 0), 0).toLocaleString()} ${sym}</span>
+        </div>` : ''}
+
+        ${partyBalance !== null ? (() => {
+            const currentTransaction = isSale ? (total - paid) : (paid - total);
+            const oldBalance = Number(partyBalance) - currentTransaction;
+            const formatBal = (val: number) => {
+                const abs = Math.abs(val).toLocaleString();
+                const suffix = isSale 
+                    ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
+                    : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : ''); 
+                return `${abs} ${sym}${suffix}`;
+            };
+            return `
+            <div class="t-row" style="border-top: 1px dashed #ddd; margin-top: 5px; padding-top: 5px;">
+                <span>الرصيد السابق لـ ${partyLabel}</span>
+                <span>${formatBal(oldBalance)}</span>
+            </div>`;
+        })() : ''}
+
         <div class="t-row t-main">
             <span>صافي الفاتورة</span>
             <span>${total.toLocaleString()} ${sym}</span>
         </div>
         <div class="t-row">
-            <span>المدفوع</span>
+            <span>المبلغ المدفوع</span>
             <span>${paid.toLocaleString()} ${sym}</span>
         </div>
         <div class="t-row">
-            <span>المتبقي</span>
+            <span>متبقي من الفاتورة</span>
             <span>${remaining.toLocaleString()} ${sym}</span>
         </div>
+
+        ${partyBalance !== null ? (() => {
+            const formatBal = (val: number) => {
+                const abs = Math.abs(val).toLocaleString();
+                const suffix = isSale 
+                    ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
+                    : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
+                return `${abs} ${sym}${suffix}`;
+            };
+            return `
+            <div class="t-row" style="background: #fdfdfd; font-weight: 700;">
+                <span>إجمالي رصيد ${partyLabel}</span>
+                <span>${formatBal(Number(partyBalance))}</span>
+            </div>`;
+        })() : ''}
     </div>
 </div>
 
