@@ -32,28 +32,28 @@ export default function BranchesTab({
                 title="إدارة الفروع"
                 sub="أضف وعدّل فروع شركتك - كل فرع له مخازن وخزائن وموظفين مستقلين"
                 hideEditBtn={true}
-            />
-
-            {/* زر إضافة فرع */}
-            {(session?.user as any)?.role === 'admin' && (
-                <div style={{ marginBottom: '20px' }}>
-                    <button
-                        onClick={() => { setBranchForm({ name: '', code: '', address: '', phone: '' }); setEditingBranchId(null); setShowBranchModal(true); }}
-                        style={{ ...BTN_PRIMARY(false, false), width: 'auto', height: '40px', padding: '0 20px', fontSize: '13px' }}
-                    >
-                        <Plus size={15} /> إضافة فرع جديد
-                    </button>
-                    {(() => {
-                        const sub = (session?.user as any)?.subscription;
-                        const max = sub?.maxBranches ?? 1;
-                        return (
-                            <span style={{ marginRight: '12px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
-                                {branches.length} / {max === 999 ? '∞' : max} فرع
-                            </span>
-                        );
-                    })()}
-                </div>
-            )}
+            >
+                {/* زر إضافة فرع */}
+                {(session?.user as any)?.role === 'admin' && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        {(() => {
+                            const sub = (session?.user as any)?.subscription;
+                            const max = sub?.maxBranches ?? 1;
+                            return (
+                                <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                                    {branches.length} / {max === 999 ? '∞' : max} فرع
+                                </span>
+                            );
+                        })()}
+                        <button
+                            onClick={() => { setBranchForm({ name: '', code: '', address: '', phone: '' }); setEditingBranchId(null); setShowBranchModal(true); }}
+                            style={{ ...BTN_PRIMARY(false, false), width: 'auto', height: '36px', padding: '0 16px', fontSize: '12.5px' }}
+                        >
+                            <Plus size={14} /> إضافة فرع جديد
+                        </button>
+                    </div>
+                )}
+            </TabHeader>
 
             {/* قائمة الفروع */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
