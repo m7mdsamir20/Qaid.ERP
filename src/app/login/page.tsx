@@ -162,7 +162,7 @@ export default function LoginPage() {
                             style={{ height: '50px', borderRadius: '12px', border: 'none', background: loading ? C.primaryBg : C.primary, color: '#fff', fontSize: '16px', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO, marginTop: '8px', boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}40`, transition: 'all 0.2s' }}
                             onMouseEnter={e => { if (!loading) e.currentTarget.style.background = C.primaryHover; }}
                             onMouseLeave={e => { if (!loading) e.currentTarget.style.background = C.primary; }}>
-                            {loading ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جاري الدخول...</> : 'دخول'}
+                            {loading ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جاري الدخول...</> : 'تسجيل الدخول'}
                         </button>
                     </form>
 
