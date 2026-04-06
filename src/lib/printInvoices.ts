@@ -117,16 +117,16 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 .iv{color:#111;font-weight:800}
 
 .section-title{font-size:12px;font-weight:900;padding:6px 12px;margin-bottom:8px;margin-top:8px;border-right: 4px solid #111;background:#f8f9fa;width: fit-content}
-table{width:100%;border-collapse:collapse;border:1.5px solid #888}
+table{width:100%;border-collapse:collapse;border:1.5px solid #333}
 thead{background:#f0f0f0}
-thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1.5px solid #888}
-tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle}
+thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333}
+tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:1px solid #666;vertical-align:middle}
 .item-name{font-weight:800;font-size:13px}
 
 .bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:15px}
-.totals{min-width:280px;border:1.5px solid #888;border-radius:10px;overflow:hidden;background:#fff}
-.t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #ccc;font-size:12px}
-.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #888}
+.totals{min-width:320px;border:1.5px solid #333;border-radius:10px;overflow:hidden;background:#fff}
+.t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #444;font-size:12px}
+.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #333}
 .t-subtotal{background:#f9fafb;color:#111;font-weight:700}
 
 .footer{margin-top:auto;padding-top:14px;border-top:1px dashed #ccc}
@@ -164,6 +164,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
     <div class="info-col">
         <div class="info-row"><span class="ik">رقم الفاتورة:</span><span class="iv">${prefix}-${invoiceNum}</span></div>
         <div class="info-row"><span class="ik">التاريخ:</span><span class="iv">${date}</span></div>
+        ${invoice.dueDate ? `<div class="info-row"><span class="ik">تاريخ الاستحقاق:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}</span></div>` : ''}
     </div>
 </div>
 

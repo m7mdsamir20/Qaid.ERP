@@ -81,6 +81,8 @@ export default function SalesReportPage() {
                     subtitle={isServices ? "تحليل تفصيلي لجميع الخدمات المقدمة، الخصومات، والمبالغ المحصلة والمتبقية." : "تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية."}
                     backTab="sales-purchases"
                     onExportPdf={exportToPDF}
+                    printTitle={isServices ? "تقرير الخدمات والتحصيلات الفترية" : "تقرير المبيعات والتحصيلات الفترية"}
+                    printDate={(from || to) ? `${from ? 'من: ' + from : ''} ${to ? ' إلى: ' + to : ''}` : undefined}
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
@@ -117,7 +119,7 @@ export default function SalesReportPage() {
                                     style={{ background: C.card, border: `1px solid ${C.border}` }}
                                     options={[
                                         { value: 'all', label: 'كل الفروع' },
-                                        ...branches.map((b: any) => ({ value: b.id, label: (b.isMain ? '⭐ ' : '') + b.name }))
+                                        ...branches.map((b: any) => ({ value: b.id, label: b.name }))
                                     ]}
                                 />
                             </div>
@@ -147,38 +149,6 @@ export default function SalesReportPage() {
                     </div>
                 ) : (
                     <>
-                        <div className="print-only">
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', paddingBottom: '16px', borderBottom: '2px solid #000' }}>
-                                <div style={{ textAlign: 'right' }}>
-                                    <h2 style={{ margin: '0 0 6px', fontSize: '24px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>
-                                        {(session?.user as any)?.companyName || ''}
-                                    </h2>
-                                    {(session?.user as any)?.taxNumber && (
-                                        <div style={{ fontSize: '11.5px', color: '#333', margin: '3px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>
-                                    )}
-                                    {(session?.user as any)?.commercialRegister && (
-                                        <div style={{ fontSize: '11.5px', color: '#333', margin: '3px 0', fontFamily: CAIRO }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>
-                                    )}
-                                    {(session?.user as any)?.phone && (
-                                        <div style={{ fontSize: '11.5px', color: '#333', margin: '3px 0', fontFamily: CAIRO }}>الهاتف: {(session?.user as any)?.phone}</div>
-                                    )}
-                                </div>
-                                <div style={{ textAlign: 'center' }}>
-                                    <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{isServices ? "تقرير الخدمات والتحصيلات الفترية" : "تقرير المبيعات والتحصيلات الفترية"}</h3>
-                                    {(from || to) && (
-                                        <div style={{ fontSize: '12px', color: '#000', fontWeight: 700, direction: 'rtl', fontFamily: INTER }}>
-                                            {from && <span>من: {from} </span>}
-                                            {to && <span>إلى: {to}</span>}
-                                        </div>
-                                    )}
-                                </div>
-                                <div style={{ maxWidth: '160px', textAlign: 'left' }}>
-                                    {(session?.user as any)?.companyLogo && (
-                                        <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '160px', maxHeight: '80px', objectFit: 'contain' }} />
-                                    )}
-                                </div>
-                            </div>
-                        </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[

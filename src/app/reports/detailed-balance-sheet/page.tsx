@@ -74,60 +74,8 @@ export default function DetailedBalanceSheetPage() {
                     subtitle="عرض شامل لموجودات الشركة (الأصول) والتزاماتها (الخصوم) وحقوق المساهمين."
                     backTab="financial"
                     onExportPdf={exportToPDF}
+                    printTitle="الميزانية التفصيلية (Detailed Balance Sheet)"
                 />
-
-                <div className="no-print" style={{ 
-                    padding: '12px 20px', 
-                    background: isBalanced ? 'rgba(16, 185, 129, 0.08)' : 'rgba(239, 68, 68, 0.08)',
-                    border: `1px solid ${isBalanced ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)'}`,
-                    borderRadius: '12px',
-                    marginBottom: '24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between'
-                }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        {isBalanced ? <CheckCircle2 size={18} color={C.success} /> : <AlertCircle size={18} color={C.danger} />}
-                        <span style={{ fontSize: '13px', fontWeight: 800, color: isBalanced ? C.success : C.danger, fontFamily: CAIRO }}>
-                           المركز المالي التفصيلي متزن
-                        </span>
-                    </div>
-                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>
-                        الأصول = الخصوم + حقوق الملكية
-                    </div>
-                </div>
-
-                {/* Header للطباعة فقط */}
-                <div className="print-only">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                        <div style={{ textAlign: 'right' }}>
-                            <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>
-                                {(session?.user as any)?.companyName || ''}
-                            </h2>
-                            {(session?.user as any)?.taxNumber && (
-                                <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>
-                            )}
-                            {(session?.user as any)?.commercialRegister && (
-                                <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>
-                            )}
-                            {(session?.user as any)?.phone && (
-                                <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الهاتف: {(session?.user as any)?.phone}</div>
-                            )}
-                        </div>
-                        <div style={{ textAlign: 'center' }}>
-                            <h3 style={{ margin: '0 0 6px', fontSize: '16px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>الميزانية التفصيلية (Detailed Balance Sheet)</h3>
-                            <div style={{ fontSize: '12px', color: '#000', fontWeight: 700, fontFamily: INTER }}>
-                                التاريخ: {new Date().toLocaleDateString('en-GB')}
-                            </div>
-                        </div>
-                        <div style={{ maxWidth: '150px', textAlign: 'left' }}>
-                            {(session?.user as any)?.companyLogo && (
-                                <img src={(session?.user as any)?.companyLogo} alt="logo"
-                                    style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />
-                            )}
-                        </div>
-                    </div>
-                </div>
 
                 <div className="print-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'start' }}>
                     {/* ASSETS SIDE */}

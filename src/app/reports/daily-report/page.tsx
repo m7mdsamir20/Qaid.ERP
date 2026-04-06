@@ -56,6 +56,7 @@ export default function DailyReportPage() {
                     subtitle="ملخص شامل لكافة العمليات المالية والتجارية التي تمت خلال اليوم."
                     backTab="financial"
                     onExportPdf={exportToPDF}
+                    printDate={new Date(date).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}
                 />
 
                 <div className="no-print" style={{ ...SEARCH_STYLE.container, marginBottom: '24px' }}>
@@ -103,37 +104,6 @@ export default function DailyReportPage() {
                     </div>
                 ) : data && (
                     <>
-                        {/* Header للطباعة فقط */}
-                        <div className="print-only">
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                <div style={{ textAlign: 'right' }}>
-                                    <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000' }}>
-                                        {(session?.user as any)?.companyName || ''}
-                                    </h2>
-                                    {(session?.user as any)?.taxNumber && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0' }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>
-                                    )}
-                                    {(session?.user as any)?.commercialRegister && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0' }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>
-                                    )}
-                                    {(session?.user as any)?.phone && (
-                                        <div style={{ fontSize: '11px', color: '#333', margin: '2px 0' }}>الهاتف: {(session?.user as any)?.phone}</div>
-                                    )}
-                                </div>
-                                <div style={{ textAlign: 'center' }}>
-                                    <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000' }}>التقرير اليومي للمبيعات والتحصيلات</h3>
-                                    <div style={{ fontSize: '11px', color: '#333' }}>
-                                        تاريخ: {new Date(date).toLocaleDateString('en-GB')}
-                                    </div>
-                                </div>
-                                <div style={{ maxWidth: '150px', textAlign: 'left', display: 'flex', alignItems: 'center' }}>
-                                    {(session?.user as any)?.companyLogo && (
-                                        <img src={(session?.user as any)?.companyLogo} alt="logo"
-                                            style={{ maxWidth: '150px', maxHeight: '70px', width: 'auto', height: 'auto', objectFit: 'contain' }} />
-                                    )}
-                                </div>
-                            </div>
-                        </div>
 
                         {/* Summary Cards */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
