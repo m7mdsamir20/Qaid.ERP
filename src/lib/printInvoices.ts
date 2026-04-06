@@ -141,9 +141,10 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border-
 <div class="header">
     <div class="co-block">
         <div class="co-name">${co.name}</div>
-        ${co.addr  ? `<div class="co-line">📍 ${co.addr}</div>` : ''}
-        ${co.phone ? `<div class="co-line">📞 ${co.phone}</div>` : ''}
+        ${co.addr  ? `<div class="co-line">${co.addr}</div>` : ''}
+        ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
         ${co.tax    ? `<div class="co-line">الرقم الضريبي: <strong>${co.tax}</strong></div>` : ''}
+        ${co.cr     ? `<div class="co-line">السجل التجاري: <strong>${co.cr}</strong></div>` : ''}
     </div>
     <div class="header-center">
         <div class="inv-title">${title}</div>
@@ -346,6 +347,7 @@ td{padding:12px;border:1px solid #e5e7eb;text-align:center;font-size:13px;word-b
             <p class="co-line">${co.addr}</p>
             <p class="co-line">${co.phone} - ${co.email}</p>
             ${co.tax ? `<p class="co-line">الرقم الضريبي: ${co.tax}</p>` : ''}
+            ${co.cr ? `<p class="co-line">السجل التجاري: ${co.cr}</p>` : ''}
         </div>
         <div class="header-center">
             <h2 class="inv-title">${title}</h2>
