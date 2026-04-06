@@ -105,48 +105,49 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             <div className="print-only" dir="rtl" style={{ 
                 marginBottom: '30px', 
                 paddingBottom: '20px', 
-                borderBottom: '1.5px solid #000',
+                borderBottom: '2px solid #111',
                 paddingTop: '5px'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     
                     {/* Visual Right: Info (1st in RTL) */}
-                    <div style={{ textAlign: 'right', flex: 1.5 }}>
-                        <h2 style={{ margin: '0 0 5px', fontSize: '24px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{co.companyName || co.name}</h2>
-                        <div style={{ fontSize: '12px', color: '#333', display: 'flex', flexDirection: 'column', gap: '3px', fontFamily: CAIRO, fontWeight: 700 }}>
-                           {co.address && <span>العنوان: {co.address}</span>}
+                    <div style={{ textAlign: 'right', flex: 1 }}>
+                        <h2 style={{ margin: '0 0 5px', fontSize: '18px', fontWeight: 900, color: '#111', fontFamily: CAIRO }}>{co.companyName || co.name}</h2>
+                        <div style={{ fontSize: '10.5px', color: '#444', display: 'flex', flexDirection: 'column', gap: '3px', fontFamily: CAIRO, fontWeight: 700, lineHeight: 1.5 }}>
+                           {co.address && <span>{co.address}</span>}
                            {co.phone && <span dir="ltr" style={{ textAlign: 'right' }}>الهاتف: {co.phone}</span>}
-                           {co.taxNumber && <span>الرقم الضريبي: {co.taxNumber}</span>}
-                           {co.commercialRegister && <span>السجل التجاري: {co.commercialRegister}</span>}
+                           {co.taxNumber && <span>الرقم الضريبي: <strong>{co.taxNumber}</strong></span>}
+                           {co.commercialRegister && <span>السجل التجاري: <strong>{co.commercialRegister}</strong></span>}
                         </div>
                     </div>
                     
                     {/* Visual Center: Title Box (2nd in RTL) */}
-                    <div style={{ textAlign: 'center', flex: 1.2, padding: '0 20px' }}>
+                    <div style={{ textAlign: 'center', flex: 1, padding: '0 20px' }}>
                         <div style={{ 
                             display: 'inline-block', 
-                            border: '1.5px solid #ddd', 
-                            padding: '12px 25px', 
-                            background: '#f8f9fa', 
-                            borderRadius: '12px',
-                            minWidth: '220px'
+                            border: '1.5px solid #ccc', 
+                            padding: '6px 24px', 
+                            background: '#f5f5f5', 
+                            borderRadius: '8px',
+                            minWidth: '220px',
+                            whiteSpace: 'nowrap'
                         }}>
-                            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 950, color: '#000', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{printTitle || title}</h3>
+                            <h3 style={{ margin: 0, fontSize: '24px', fontWeight: 900, color: '#111', fontFamily: CAIRO }}>{printTitle || title}</h3>
                         </div>
                         {printCode && (
-                            <div style={{ marginTop: '8px', fontSize: '14px', fontWeight: 800, color: '#333', fontFamily: INTER }}>
+                            <div style={{ marginTop: '8px', fontSize: '13px', fontWeight: 700, color: '#333', fontFamily: INTER }}>
                                 {printCode}
                             </div>
                         )}
-                        <div style={{ marginTop: '4px', fontSize: '12px', color: '#555', fontWeight: 700, fontFamily: INTER }}>
+                        <div style={{ marginTop: '4px', fontSize: '11px', color: '#555', fontWeight: 700, fontFamily: INTER }}>
                             {printDate || new Date().toLocaleDateString('en-GB')}
                         </div>
                     </div>
 
                     {/* Visual Left: Logo (3rd in RTL) */}
-                    <div style={{ textAlign: 'left', flex: 1.5, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <div style={{ textAlign: 'left', flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                         {(co.companyLogo || co.logo) && (
-                            <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '120px', maxWidth: '180px', objectFit: 'contain' }} />
+                            <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '85px', maxWidth: '140px', objectFit: 'contain' }} />
                         )}
                     </div>
                 </div>
@@ -169,6 +170,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     
                     body { 
                         padding: 0.5cm !important; 
+                        font-family: 'Cairo', sans-serif !important;
                     }
 
                     * { 
@@ -194,25 +196,26 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         flex: 1 !important;
                         min-width: 0 !important;
                         padding: 8px 10px !important;
-                        border: 0.5px solid #ccc !important;
+                        border: 1px solid #e0e0e0 !important;
                         background: #fff !important;
-                        border-radius: 8px !important;
+                        border-radius: 10px !important;
                         display: flex !important;
                         flex-direction: column !important;
                         align-items: center !important;
                         justify-content: center !important;
                         text-align: center !important;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
                     }
                     .stat-value { 
                         font-size: 13px !important; 
                         font-weight: 950 !important; 
-                        color: #000 !important; 
+                        color: #111 !important; 
                         margin: 2px 0 !important;
                     }
                     .stat-label { 
-                        font-size: 9.5px !important; 
-                        font-weight: 800 !important;
-                        color: #444 !important; 
+                        font-size: 11px !important; 
+                        font-weight: 900 !important;
+                        color: #111 !important; 
                         font-family: ${CAIRO} !important;
                     }
 
@@ -221,13 +224,13 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         background: transparent !important;
                         border: none !important;
                         padding: 0 !important;
-                        color: #000 !important;
+                        color: #111 !important;
                         font-weight: 800 !important;
                     }
                     
-                    table { border-collapse: collapse !important; width: 100% !important; margin-top: 10px; }
-                    th, td { border: 0.5px solid #ccc !important; padding: 8px 10px !important; color: #000 !important; background: #fff !important; font-size: 10px !important; }
-                    th { font-weight: 950 !important; background: #f8f9fa !important; }
+                    table { border-collapse: collapse !important; width: 100% !important; margin-top: 10px; border: 1.5px solid #333 !important; }
+                    th, td { border: 1px solid #666 !important; padding: 10px 12px !important; color: #1a1a1a !important; background: #fff !important; font-size: 12px !important; }
+                    th { font-weight: 900 !important; background: #f0f0f0 !important; color: #111 !important; border: 1.5px solid #333 !important; font-size: 11px !important; }
                 }
                 @media screen {
                     .print-only { display: none !important; }
