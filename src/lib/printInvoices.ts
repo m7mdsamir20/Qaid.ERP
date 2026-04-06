@@ -123,11 +123,11 @@ thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:
 tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle}
 .item-name{font-weight:800;font-size:13px}
 
-.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:15px}
-.totals{min-width:280px;border:1.5px solid #888;border-radius:10px;overflow:hidden}
+.bottom-wrap{display:flex;flex-direction:column;gap:12px;margin-top:15px}
+.totals{width:100%;border:1.5px solid #888;border-radius:10px;overflow:hidden}
 .t-row{display:flex;justify-content:space-between;padding:10px 16px;border-bottom:1px solid #ccc;font-size:12px}
-.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:2.5px solid #888}
-.t-main .tl{color:#111}
+.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #888}
+.t-subtotal{background:#f9fafb;color:#111;font-weight:700}
 
 .footer{margin-top:auto;padding-top:14px;border-top:1px dashed #ccc}
 .footer-inner{display:flex;justify-content:space-between;align-items:flex-end}
@@ -156,19 +156,17 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 </div>
 
 <div class="info-section">
+    <div style="grid-column: span 2; background: #f8f9fa; padding: 6px 18px; border-bottom: 1px solid #e0e0e0; font-weight: 900; font-size: 11px">بيانات الفاتورة</div>
     <div class="info-col">
-        <div class="info-head">بيانات ${partyLabel}</div>
-        <div class="info-row"><span class="ik">الاسم:</span><span class="iv">${party?.name || '— عميل نقدي'}</span></div>
+        <div class="info-row"><span class="ik">العميل / المورد:</span><span class="iv">${party?.name || '— عميل نقدي'}</span></div>
         ${party?.phone ? `<div class="info-row"><span class="ik">الهاتف:</span><span class="iv">${party.phone}</span></div>` : ''}
     </div>
     <div class="info-col">
-        <div class="info-head">بيانات الفاتورة</div>
         <div class="info-row"><span class="ik">رقم الفاتورة:</span><span class="iv">${prefix}-${invoiceNum}</span></div>
         <div class="info-row"><span class="ik">التاريخ:</span><span class="iv">${date}</span></div>
     </div>
 </div>
 
-<div class="section-title">بنود الفاتورة</div>
 <table>
     <thead>
         <tr>
@@ -206,9 +204,11 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 </table>
 
 <div class="bottom-wrap">
-    <div style="flex:1;border:1px dashed #ccc;padding:10px;font-size:11px;color:#555">
-        <strong>ملاحظات: </strong>${invoice.notes || ''}
-    </div>
+    ${invoice.notes ? `
+    <div style="border:1px dashed #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px">
+        <strong>ملاحظات: </strong>${invoice.notes}
+    </div>` : ''}
+    
     <div class="totals">
         ${(discount > 0 || lines.some((l: any) => (l.taxAmount || 0) > 0)) ? `
         <div class="t-row">
@@ -239,22 +239,22 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
                 return `${abs} ${sym}${suffix}`;
             };
             return `
-            <div class="t-row" style="border-top: 1px dashed #ddd; margin-top: 5px; padding-top: 5px;">
+            <div class="t-row t-subtotal">
                 <span>الرصيد السابق لـ ${partyLabel}</span>
                 <span>${formatBal(oldBalance)}</span>
             </div>`;
         })() : ''}
 
-        <div class="t-row t-main">
-            <span>صافي الفاتورة</span>
+        <div class="t-main t-row">
+            <span>صافي هذه الفاتورة</span>
             <span>${total.toLocaleString()} ${sym}</span>
         </div>
         <div class="t-row">
-            <span>المبلغ المدفوع</span>
+            <span>المبلغ المدفوع حـالياً</span>
             <span>${paid.toLocaleString()} ${sym}</span>
         </div>
         <div class="t-row">
-            <span>متبقي من الفاتورة</span>
+            <span>متبقي من هذه الفاتورة</span>
             <span>${remaining.toLocaleString()} ${sym}</span>
         </div>
 
@@ -267,8 +267,8 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
                 return `${abs} ${sym}${suffix}`;
             };
             return `
-            <div class="t-row" style="background: #fdfdfd; font-weight: 700;">
-                <span>إجمالي رصيد ${partyLabel}</span>
+            <div class="t-row t-main" style="border-top: 1.5px solid #888; border-bottom: none">
+                <span>إجمالي رصيد ${partyLabel} نهائياً</span>
                 <span>${formatBal(Number(partyBalance))}</span>
             </div>`;
         })() : ''}
