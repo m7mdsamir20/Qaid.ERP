@@ -38,23 +38,41 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         try {
             setIsGeneratingPdf(true);
             
+            // 1. Create a graceful loading overlay to hide the layout shift from the user
+            const overlay = document.createElement('div');
+            overlay.style.position = 'fixed';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100vw';
+            overlay.style.height = '100vh';
+            overlay.style.backgroundColor = '#ffffff';
+            overlay.style.zIndex = '999999';
+            overlay.style.display = 'flex';
+            overlay.style.flexDirection = 'column';
+            overlay.style.justifyContent = 'center';
+            overlay.style.alignItems = 'center';
+            overlay.innerHTML = `
+                <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                <h2 style="margin-top: 20px; font-family: 'Cairo', sans-serif; color: #111;">جاري تجهيز وتنزيل ملف الـ PDF...</h2>
+                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+            `;
+            document.body.appendChild(overlay);
+
             // Dynamic import to avoid SSR issues
             const html2pdf = (await import('html2pdf.js')).default;
-            
-            // Get the main container holding the report
             const element = document.querySelector('.dashboard-content') || document.querySelector('main') || document.body;
             
             // Temporarily apply a class to the body to force print styles onto the screen
             document.body.classList.add('pdf-export-mode');
 
-            // Add a small delay to allow the browser to repaint the DOM with the new styles
-            await new Promise(resolve => setTimeout(resolve, 100));
+            // Wait a critical amount of time for fonts to render and the DOM to repaint completely
+            await new Promise(resolve => setTimeout(resolve, 350));
 
             const opt = {
-                margin:       10,
+                margin:       [10, 10, 15, 10] as [number, number, number, number], // Top, Right, Bottom, Left
                 filename:     `${printTitle || title}.pdf`,
-                image:        { type: 'jpeg' as const, quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                image:        { type: 'jpeg' as const, quality: 1 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
             };
 
@@ -62,11 +80,14 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             
             // Restore the normal screen view
             document.body.classList.remove('pdf-export-mode');
+            document.body.removeChild(overlay);
             
         } catch (error) {
             console.error('Error generating PDF:', error);
             alert('حدث خطأ أثناء إنشاء ملف PDF');
             document.body.classList.remove('pdf-export-mode');
+            const overlay = document.querySelector('div[style*="999999"]');
+            if (overlay) document.body.removeChild(overlay);
         } finally {
             setIsGeneratingPdf(false);
         }
@@ -182,7 +203,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                             borderRadius: '12px',
                             minWidth: '260px'
                         }}>
-                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 950, color: '#000', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{printTitle || title}</h3>
+                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 950, color: '#000', fontFamily: CAIRO }}>{printTitle || title}</h3>
                         </div>
                         {printCode && (
                             <div style={{ marginTop: '10px', fontSize: '14px', fontWeight: 700, color: '#111', fontFamily: INTER }}>
@@ -233,7 +254,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     height: auto !important; min-height: 0 !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; background: #fff !important;
                 }
                 body.pdf-export-mode [style*="paddingBottom: '30px'"], body.pdf-export-mode [style*="padding-bottom: 30px"] { padding-bottom: 0 !important; padding-top: 0 !important; }
-                body.pdf-export-mode * { box-shadow: none !important; text-decoration: none !important; font-family: 'Cairo', sans-serif !important; }
+                body.pdf-export-mode * { box-shadow: none !important; text-decoration: none !important; font-family: 'Cairo', sans-serif !important; color: #000 !important; }
                 body.pdf-export-mode table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px; border: 1.5px solid #333 !important; }
                 body.pdf-export-mode div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
                 body.pdf-export-mode div[style*="grid-template-columns"] > div { flex: 1 !important; min-width: 0 !important; padding: 10px !important; border: 1px solid #e0e0e0 !important; background: #fff !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; }
