@@ -42,64 +42,78 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             const html2pdf = (await import('html2pdf.js')).default;
             const originalElement = document.querySelector('.dashboard-content') || document.querySelector('main') || document.body;
             
-            // Create a "Ghost Wrapper" that is placed exactly at the current scroll position 
-            // but hidden BEHIND the website, ensuring a pure CSS extraction without flashing the user.
-            const pdfWrapper = document.createElement('div');
-            pdfWrapper.id = 'pdf-ghost';
-            pdfWrapper.style.position = 'absolute';
-            pdfWrapper.style.top = `${window.scrollY}px`; // Place at exact scroll offset to fix white screen bug
-            pdfWrapper.style.left = '0';
-            pdfWrapper.style.width = '1100px'; 
-            pdfWrapper.style.padding = '30px';
-            pdfWrapper.style.backgroundColor = '#ffffff';
-            pdfWrapper.style.zIndex = '-9999'; // Hide natively behind the screen
-            pdfWrapper.style.pointerEvents = 'none';
-            // Important: we don't use opacity: 0 because html2canvas ignores completely transparent items
+            // Extract the raw HTML content from the view
+            const rawHtml = originalElement.innerHTML;
             
-            const clone = originalElement.cloneNode(true) as HTMLElement;
-            
-            // Inject strictly mapped CSS isolated to the ghost wrapper
-            const pdfStyle = document.createElement('style');
-            pdfStyle.innerHTML = `
-                #pdf-ghost .no-print, #pdf-ghost .print-hide, #pdf-ghost .ui-only, #pdf-ghost nav, #pdf-ghost header, #pdf-ghost button { display: none !important; }
-                #pdf-ghost .print-only { display: block !important; }
-                #pdf-ghost * { color: #000 !important; font-family: 'Cairo', sans-serif !important; box-shadow: none !important; }
-                
-                #pdf-ghost table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px !important; border: 1.5px solid #333 !important; }
-                #pdf-ghost th, #pdf-ghost td { border: 1px solid #666 !important; padding: 10px 12px !important; font-size: 12px !important; background: transparent !important; }
-                #pdf-ghost th { background: #f0f0f0 !important; font-weight: 900 !important; font-size: 11px !important; }
-                
-                #pdf-ghost div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
-                #pdf-ghost div[style*="grid-template-columns"] > div { flex: 1 !important; border: 1px solid #999 !important; padding: 10px !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; background: transparent !important; }
-                #pdf-ghost .stat-value { font-size: 14px !important; font-weight: 950 !important; margin: 4px 0 !important; color: #000 !important; }
-                #pdf-ghost .stat-label { font-size: 12px !important; font-weight: 900 !important; color: #000 !important; }
+            // Rebuild it into a perfectly isolated HTML document strictly for the PDF engine
+            const isolatedHtml = `
+                <!DOCTYPE html>
+                <html dir="rtl">
+                <head>
+                    <meta charset="utf-8">
+                    <style>
+                        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+                        
+                        body { 
+                            font-family: 'Cairo', sans-serif !important; 
+                            direction: rtl; 
+                            background: #fff; 
+                            color: #000; 
+                            padding: 20px;
+                        }
+                        
+                        * { color: #000 !important; font-family: 'Cairo', sans-serif; box-shadow: none !important; }
+                        
+                        /* Hide UI Elements */
+                        .no-print, .print-hide, .ui-only, nav, header, button { display: none !important; }
+                        .print-only { display: block !important; }
+                        
+                        /* Table Styling */
+                        table { border-collapse: collapse !important; width: 100% !important; margin-top: 20px !important; border: 1.5px solid #333 !important; }
+                        th, td { border: 1px solid #666 !important; padding: 12px !important; font-size: 13px !important; text-align: right; background: #fff !important; }
+                        th { background: #f4f4f4 !important; font-weight: 900 !important; font-size: 12px !important; }
+                        
+                        /* Layout Fixes for Grid/Flex */
+                        div[style*="flex"] { display: flex !important; }
+                        div[style*="grid"] { display: flex !important; flex-wrap: wrap !important; gap: 15px !important; margin-bottom: 25px !important; }
+                        div[style*="grid"] > div { 
+                            flex: 1; 
+                            min-width: 200px; 
+                            border: 1px solid #ccc !important; 
+                            padding: 15px !important; 
+                            border-radius: 12px !important; 
+                            display: flex !important; 
+                            flex-direction: column !important; 
+                            align-items: center !important; 
+                            background: #fff !important; 
+                            margin: 5px;
+                        }
+                        
+                        .stat-value { font-size: 15px !important; font-weight: 950 !important; margin: 5px 0 !important; color: #000 !important; }
+                        .stat-label { font-size: 13px !important; font-weight: 800 !important; color: #000 !important; }
+                    </style>
+                </head>
+                <body>
+                    ${rawHtml}
+                </body>
+                </html>
             `;
-            
-            pdfWrapper.appendChild(pdfStyle);
-            pdfWrapper.appendChild(clone);
-            document.body.appendChild(pdfWrapper);
-
-            // Wait specifically for SVG and elements to flow inside the hidden wrapper
-            await new Promise(resolve => setTimeout(resolve, 200));
 
             const opt = {
-                margin:       [5, 5, 10, 5] as [number, number, number, number],
+                margin:       10, // mm
                 filename:     `${printTitle || title}.pdf`,
                 image:        { type: 'jpeg' as const, quality: 1 },
-                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0 },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
             };
 
-            await html2pdf().from(pdfWrapper).set(opt).save();
-            
-            // Cleanup perfectly
-            document.body.removeChild(pdfWrapper);
-            
+            // Process the pure string document without touching the DOM
+            await html2pdf().from(isolatedHtml).set(opt).save();
+
         } catch (error) {
             console.error('Error generating PDF:', error);
             alert('حدث خطأ أثناء إنشاء ملف PDF');
-            const wrapper = document.getElementById('pdf-ghost');
-            if (wrapper) document.body.removeChild(wrapper);
         } finally {
             setIsGeneratingPdf(false);
         }
