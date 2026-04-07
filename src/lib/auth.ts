@@ -85,7 +85,7 @@ export const authOptions: AuthOptions = {
                     permissions,
                     currency: user.company?.currency || 'EGP',
                     companyName: user.company?.name || '',
-                    companyLogo: user.company?.logo || '',
+                    companyLogo: '', // Removed from token to prevent oversized JWT cookie crash
                     taxNumber: user.company?.taxNumber || '',
                     commercialRegister: user.company?.commercialRegister || '',
                     phone: user.company?.phone || '',
