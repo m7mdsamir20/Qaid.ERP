@@ -1,6 +1,6 @@
 import { ArrowRight, Printer, FileSpreadsheet, FileDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useState } from 'react';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 
@@ -20,6 +20,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const router = useRouter();
     const { data: session } = useSession();
     const [co, setCo] = React.useState<any>((session?.user as any) || {});
+    const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
 
     React.useEffect(() => {
         fetch('/api/company')
@@ -31,6 +32,86 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const handleBack = () => {
         if (backTab) router.push(`/reports?tab=${backTab}`);
         else router.push('/reports');
+    };
+
+    const handleGeneratePdf = async () => {
+        if (onExportPdf) {
+            onExportPdf();
+            return;
+        }
+
+        try {
+            setIsGeneratingPdf(true);
+            
+            // Dynamic import to avoid SSR issues
+            const html2pdf = (await import('html2pdf.js')).default;
+            
+            // Get the main content container
+            const element = document.querySelector('main') || document.body;
+            
+            // Create a temporary wrapper to apply special PDF styles
+            const wrapper = document.createElement('div');
+            wrapper.innerHTML = element.innerHTML;
+            
+            // Critical: Force print elements to show, and UI elements to hide, JUST for the PDF capture
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .no-print, .print-hide, .ui-only, button { display: none !important; }
+                .print-only { display: block !important; }
+                
+                /* Reset theme backgrounds for a cleaner PDF */
+                * {
+                    color: black !important;
+                }
+                
+                div[style*="grid-template-columns"] {
+                    display: flex !important;
+                    flex-wrap: wrap !important;
+                    gap: 10px !important;
+                }
+                
+                div[style*="grid-template-columns"] > div {
+                    flex: 1 1 200px !important;
+                    background: white !important;
+                    border: 1px solid #ccc !important;
+                }
+                
+                table { border-collapse: collapse !important; width: 100% !important; }
+                th, td { border: 1px solid #ccc !important; padding: 8px !important; background: white !important; }
+                th { background: #f0f0f0 !important; font-weight: bold !important; }
+                
+                /* Fix RTL direction */
+                body, html, div { direction: rtl !important; }
+            `;
+            wrapper.appendChild(style);
+            
+            // Temporarily append to body to render correctly
+            wrapper.style.position = 'absolute';
+            wrapper.style.left = '-9999px';
+            wrapper.style.top = '0';
+            wrapper.style.width = '1200px'; // Force desktop width
+            wrapper.style.background = 'white';
+            document.body.appendChild(wrapper);
+
+            const opt = {
+                margin:       10,
+                filename:     `${printTitle || title}.pdf`,
+                image:        { type: 'jpeg' as const, quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+            };
+
+            await html2pdf().from(wrapper).set(opt).save();
+            
+            // Cleanup
+            document.body.removeChild(wrapper);
+            
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            alert('حدث خطأ أثناء إنشاء ملف PDF');
+        } finally {
+            setIsGeneratingPdf(false);
+        }
     };
 
     return (
@@ -73,17 +154,19 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         </button>
                     )}
                     <button
-                        onClick={onExportPdf || (() => window.print())}
+                        onClick={handleGeneratePdf}
+                        disabled={isGeneratingPdf}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
                             borderRadius: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa',
                             border: '1px solid rgba(59, 130, 246, 0.2)', fontSize: '12px', fontWeight: 700,
-                            cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO
+                            cursor: isGeneratingPdf ? 'wait' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+                            opacity: isGeneratingPdf ? 0.7 : 1
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'; e.currentTarget.style.transform = 'none'; }}
+                        onMouseEnter={e => { if(!isGeneratingPdf) { e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                        onMouseLeave={e => { if(!isGeneratingPdf) { e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'; e.currentTarget.style.transform = 'none'; } }}
                     >
-                        <FileDown size={15} /> حفظ PDF
+                        <FileDown size={15} /> {isGeneratingPdf ? 'جاري التحضير...' : 'حفظ PDF'}
                     </button>
                     <button
                         onClick={() => window.print()}
