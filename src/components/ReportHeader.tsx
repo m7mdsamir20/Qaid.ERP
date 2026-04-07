@@ -38,7 +38,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         try {
             setIsGeneratingPdf(true);
             
-            // 1. Create a graceful loading overlay to hide the layout shift from the user
+            // 1. Loading Overlay (Hide everything from user gracefully)
             const overlay = document.createElement('div');
             overlay.style.position = 'fixed';
             overlay.style.top = '0';
@@ -51,6 +51,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             overlay.style.flexDirection = 'column';
             overlay.style.justifyContent = 'center';
             overlay.style.alignItems = 'center';
+            overlay.setAttribute('data-html2canvas-ignore', 'true');
             overlay.innerHTML = `
                 <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
                 <h2 style="margin-top: 20px; font-family: 'Cairo', sans-serif; color: #111;">جاري تجهيز وتنزيل ملف الـ PDF...</h2>
@@ -58,36 +59,66 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             `;
             document.body.appendChild(overlay);
 
-            // Dynamic import to avoid SSR issues
+            // Dynamic import
             const html2pdf = (await import('html2pdf.js')).default;
-            const element = document.querySelector('.dashboard-content') || document.querySelector('main') || document.body;
+            const originalElement = document.querySelector('.dashboard-content') || document.querySelector('main') || document.body;
             
-            // Temporarily apply a class to the body to force print styles onto the screen
-            document.body.classList.add('pdf-export-mode');
+            // 2. Create isolated clone to decouple PDF styling from the active screen
+            const pdfWrapper = document.createElement('div');
+            pdfWrapper.style.position = 'absolute';
+            pdfWrapper.style.top = '0';
+            pdfWrapper.style.left = '0';
+            pdfWrapper.style.width = '1100px'; // Force a clean desktop width for grid stability
+            pdfWrapper.style.padding = '30px';
+            pdfWrapper.style.backgroundColor = '#ffffff';
+            pdfWrapper.style.zIndex = '999998'; // Hidden securely exactly underneath the loading overlay
+            
+            const clone = originalElement.cloneNode(true) as HTMLElement;
+            
+            // Inject decoupled CSS specifically mapped for html2canvas extraction
+            const pdfStyle = document.createElement('style');
+            pdfStyle.innerHTML = `
+                .no-print, .print-hide, .ui-only, nav, header, button { display: none !important; }
+                .print-only { display: block !important; }
+                * { color: #000 !important; font-family: 'Cairo', sans-serif !important; box-shadow: none !important; }
+                
+                table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px !important; border: 1.5px solid #333 !important; }
+                th, td { border: 1px solid #666 !important; padding: 10px 12px !important; font-size: 12px !important; background: transparent !important; }
+                th { background: #f0f0f0 !important; font-weight: 900 !important; font-size: 11px !important; }
+                
+                div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
+                div[style*="grid-template-columns"] > div { flex: 1 !important; border: 1px solid #999 !important; padding: 10px !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; background: transparent !important; }
+                .stat-value { font-size: 14px !important; font-weight: 950 !important; margin: 4px 0 !important; }
+                .stat-label { font-size: 12px !important; font-weight: 900 !important; }
+            `;
+            
+            pdfWrapper.appendChild(pdfStyle);
+            pdfWrapper.appendChild(clone);
+            document.body.appendChild(pdfWrapper);
 
-            // Wait a critical amount of time for fonts to render and the DOM to repaint completely
-            await new Promise(resolve => setTimeout(resolve, 350));
+            await new Promise(resolve => setTimeout(resolve, 150));
 
             const opt = {
-                margin:       [10, 10, 15, 10] as [number, number, number, number], // Top, Right, Bottom, Left
+                margin:       [5, 5, 10, 5] as [number, number, number, number],
                 filename:     `${printTitle || title}.pdf`,
                 image:        { type: 'jpeg' as const, quality: 1 },
-                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
             };
 
-            await html2pdf().from(element as HTMLElement).set(opt).save();
+            await html2pdf().from(pdfWrapper).set(opt).save();
             
-            // Restore the normal screen view
-            document.body.classList.remove('pdf-export-mode');
+            // Cleanup perfectly
+            document.body.removeChild(pdfWrapper);
             document.body.removeChild(overlay);
             
         } catch (error) {
             console.error('Error generating PDF:', error);
             alert('حدث خطأ أثناء إنشاء ملف PDF');
-            document.body.classList.remove('pdf-export-mode');
             const overlay = document.querySelector('div[style*="999999"]');
             if (overlay) document.body.removeChild(overlay);
+            const wrapper = document.querySelector('div[style*="999998"]');
+            if (wrapper) document.body.removeChild(wrapper);
         } finally {
             setIsGeneratingPdf(false);
         }
@@ -246,23 +277,6 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     th, td { border: 1px solid #666 !important; padding: 10px 12px !important; color: #1a1a1a !important; background: #fff !important; font-size: 12px !important; }
                     th { font-weight: 900 !important; background: #f0f0f0 !important; color: #111 !important; border: 1.5px solid #333 !important; font-size: 11px !important; }
                 }
-
-                /* ── PDF Export Screen Overrides (Used by html2pdf) ── */
-                body.pdf-export-mode .no-print, body.pdf-export-mode .print-hide, body.pdf-export-mode .ui-only, body.pdf-export-mode nav, body.pdf-export-mode header { display: none !important; }
-                body.pdf-export-mode .print-only { display: block !important; }
-                body.pdf-export-mode, body.pdf-export-mode #__next, body.pdf-export-mode .dashboard-content, body.pdf-export-mode main, body.pdf-export-mode [style*="minHeight"] { 
-                    height: auto !important; min-height: 0 !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; background: #fff !important;
-                }
-                body.pdf-export-mode [style*="paddingBottom: '30px'"], body.pdf-export-mode [style*="padding-bottom: 30px"] { padding-bottom: 0 !important; padding-top: 0 !important; }
-                body.pdf-export-mode * { box-shadow: none !important; text-decoration: none !important; font-family: 'Cairo', sans-serif !important; color: #000 !important; }
-                body.pdf-export-mode table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px; border: 1.5px solid #333 !important; }
-                body.pdf-export-mode div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
-                body.pdf-export-mode div[style*="grid-template-columns"] > div { flex: 1 !important; min-width: 0 !important; padding: 10px !important; border: 1px solid #e0e0e0 !important; background: #fff !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; }
-                body.pdf-export-mode .stat-value { font-size: 13px !important; font-weight: 950 !important; color: #111 !important; margin: 2px 0 !important; }
-                body.pdf-export-mode .stat-label { font-size: 11px !important; font-weight: 900 !important; color: #111 !important; }
-                body.pdf-export-mode table span { background: transparent !important; border: none !important; padding: 0 !important; color: #111 !important; font-weight: 800 !important; }
-                body.pdf-export-mode th, body.pdf-export-mode td { border: 1px solid #666 !important; padding: 10px 12px !important; color: #1a1a1a !important; background: #fff !important; font-size: 12px !important; }
-                body.pdf-export-mode th { font-weight: 900 !important; background: #f0f0f0 !important; color: #111 !important; border: 1.5px solid #333 !important; font-size: 11px !important; }
 
                 @media screen {
                     .print-only { display: none !important; }
