@@ -37,13 +37,15 @@ export const authOptions: AuthOptions = {
                 });
 
                 if (!user || !user.password) throw new Error("بيانات الدخول غير صحيحة");
-                if (user.status !== "active") throw new Error("عفواً، الحساب موقوف، يرجى مراجعة مدير النظام.");
-                if (!user.isPhoneVerified) throw new Error("برجاء تأكيد رقم الهاتف أولاً لإتمام التسجيل");
 
                 const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
                 if (!isPasswordValid) throw new Error("كلمة المرور غير صحيحة");
 
-                if (!user.isSuperAdmin && user.role !== 'superadmin') {
+                const isSuperAdmin = user.isSuperAdmin || user.role === 'superadmin';
+
+                if (!isSuperAdmin) {
+                    if (user.status !== "active") throw new Error("عفواً، الحساب موقوف، يرجى مراجعة مدير النظام.");
+                    if (!user.isPhoneVerified) throw new Error("برجاء تأكيد رقم الهاتف أولاً لإتمام التسجيل");
                     if (!user.company) throw new Error("لا توجد شركة مرتبطة بهذا الحساب");
                     if (!user.company.isActive) throw new Error("اشتراك الشركة غير مفعل، يرجى مراجعة الإدارة");
                 }
