@@ -41,52 +41,14 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             // Dynamic import to avoid SSR issues
             const html2pdf = (await import('html2pdf.js')).default;
             
-            // Get the main content container
-            const element = document.querySelector('main') || document.body;
+            // Get the main container holding the report
+            const element = document.querySelector('.dashboard-content') || document.querySelector('main') || document.body;
             
-            // Create a temporary wrapper to apply special PDF styles
-            const wrapper = document.createElement('div');
-            wrapper.innerHTML = element.innerHTML;
-            
-            // Critical: Force print elements to show, and UI elements to hide, JUST for the PDF capture
-            const style = document.createElement('style');
-            style.innerHTML = `
-                .no-print, .print-hide, .ui-only, button { display: none !important; }
-                .print-only { display: block !important; }
-                
-                /* Reset theme backgrounds for a cleaner PDF */
-                * {
-                    color: black !important;
-                }
-                
-                div[style*="grid-template-columns"] {
-                    display: flex !important;
-                    flex-wrap: wrap !important;
-                    gap: 10px !important;
-                }
-                
-                div[style*="grid-template-columns"] > div {
-                    flex: 1 1 200px !important;
-                    background: white !important;
-                    border: 1px solid #ccc !important;
-                }
-                
-                table { border-collapse: collapse !important; width: 100% !important; }
-                th, td { border: 1px solid #ccc !important; padding: 8px !important; background: white !important; }
-                th { background: #f0f0f0 !important; font-weight: bold !important; }
-                
-                /* Fix RTL direction */
-                body, html, div { direction: rtl !important; }
-            `;
-            wrapper.appendChild(style);
-            
-            // Temporarily append to body to render correctly
-            wrapper.style.position = 'absolute';
-            wrapper.style.left = '-9999px';
-            wrapper.style.top = '0';
-            wrapper.style.width = '1200px'; // Force desktop width
-            wrapper.style.background = 'white';
-            document.body.appendChild(wrapper);
+            // Temporarily apply a class to the body to force print styles onto the screen
+            document.body.classList.add('pdf-export-mode');
+
+            // Add a small delay to allow the browser to repaint the DOM with the new styles
+            await new Promise(resolve => setTimeout(resolve, 100));
 
             const opt = {
                 margin:       10,
@@ -96,14 +58,15 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
             };
 
-            await html2pdf().from(wrapper).set(opt).save();
+            await html2pdf().from(element as HTMLElement).set(opt).save();
             
-            // Cleanup
-            document.body.removeChild(wrapper);
+            // Restore the normal screen view
+            document.body.classList.remove('pdf-export-mode');
             
         } catch (error) {
             console.error('Error generating PDF:', error);
             alert('حدث خطأ أثناء إنشاء ملف PDF');
+            document.body.classList.remove('pdf-export-mode');
         } finally {
             setIsGeneratingPdf(false);
         }
@@ -241,91 +204,45 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             </div>
 
             <style>{`
+                /* ── Print Media Styles ── */
                 @media print {
-                    /* UI Hide */
                     .no-print, .print-hide, .ui-only, nav, header { display: none !important; }
                     .print-only { display: block !important; }
-                    
-                    /* Reset Heights to prevent extra blank page */
                     html, body, #__next, .dashboard-content, main, [style*="minHeight"] { 
-                        height: auto !important; 
-                        min-height: 0 !important; 
-                        overflow: visible !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        background: #fff !important;
+                        height: auto !important; min-height: 0 !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; background: #fff !important;
                     }
-                    
-                    body { 
-                        padding: 0.5cm 1cm !important; 
-                        width: 100% !important;
-                    }
-
-                    /* Important: Reset PAGE_BASE padding specifically */
-                    [style*="paddingBottom: '30px'"], [style*="padding-bottom: 30px"] {
-                        padding-bottom: 0 !important;
-                        padding-top: 0 !important;
-                    }
-
-                    * { 
-                        -webkit-print-color-adjust: exact !important; 
-                        print-color-adjust: exact !important; 
-                        box-shadow: none !important; 
-                        text-decoration: none !important;
-                    }
-
-                    /* Break Prevention */
-                    table { page-break-inside: auto !important; }
+                    body { padding: 0.5cm 1cm !important; width: 100% !important; }
+                    [style*="paddingBottom: '30px'"], [style*="padding-bottom: 30px"] { padding-bottom: 0 !important; padding-top: 0 !important; }
+                    * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; box-shadow: none !important; text-decoration: none !important; font-family: 'Cairo', sans-serif !important; }
+                    table { page-break-inside: auto !important; border-collapse: collapse !important; width: 100% !important; margin-top: 15px; border: 1.5px solid #333 !important; }
                     tr { page-break-inside: avoid !important; page-break-after: auto !important; }
                     thead { display: table-header-group !important; }
-
-                    /* ── Card Styling for Print ── */
-                    div[style*="grid-template-columns"] {
-                        display: flex !important;
-                        flex-wrap: nowrap !important;
-                        gap: 10px !important;
-                        margin-bottom: 25px !important;
-                    }
-                    div[style*="grid-template-columns"] > div {
-                        flex: 1 !important;
-                        min-width: 0 !important;
-                        padding: 10px !important;
-                        border: 1px solid #e0e0e0 !important;
-                        background: #fff !important;
-                        border-radius: 12px !important;
-                        display: flex !important;
-                        flex-direction: column !important;
-                        align-items: center !important;
-                        justify-content: center !important;
-                        text-align: center !important;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
-                    }
-                    .stat-value { 
-                        font-size: 13px !important; 
-                        font-weight: 950 !important; 
-                        color: #111 !important; 
-                        margin: 2px 0 !important;
-                    }
-                    .stat-label { 
-                        font-size: 11px !important; 
-                        font-weight: 900 !important;
-                        color: #111 !important; 
-                        font-family: ${CAIRO} !important;
-                    }
-
-                    /* ── Standardize Table for Print (Remove backgrounds from spans) ── */
-                    table span {
-                        background: transparent !important;
-                        border: none !important;
-                        padding: 0 !important;
-                        color: #111 !important;
-                        font-weight: 800 !important;
-                    }
-                    
-                    table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px; border: 1.5px solid #333 !important; }
+                    div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
+                    div[style*="grid-template-columns"] > div { flex: 1 !important; min-width: 0 !important; padding: 10px !important; border: 1px solid #e0e0e0 !important; background: #fff !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; }
+                    .stat-value { font-size: 13px !important; font-weight: 950 !important; color: #111 !important; margin: 2px 0 !important; }
+                    .stat-label { font-size: 11px !important; font-weight: 900 !important; color: #111 !important; }
+                    table span { background: transparent !important; border: none !important; padding: 0 !important; color: #111 !important; font-weight: 800 !important; }
                     th, td { border: 1px solid #666 !important; padding: 10px 12px !important; color: #1a1a1a !important; background: #fff !important; font-size: 12px !important; }
                     th { font-weight: 900 !important; background: #f0f0f0 !important; color: #111 !important; border: 1.5px solid #333 !important; font-size: 11px !important; }
                 }
+
+                /* ── PDF Export Screen Overrides (Used by html2pdf) ── */
+                body.pdf-export-mode .no-print, body.pdf-export-mode .print-hide, body.pdf-export-mode .ui-only, body.pdf-export-mode nav, body.pdf-export-mode header { display: none !important; }
+                body.pdf-export-mode .print-only { display: block !important; }
+                body.pdf-export-mode, body.pdf-export-mode #__next, body.pdf-export-mode .dashboard-content, body.pdf-export-mode main, body.pdf-export-mode [style*="minHeight"] { 
+                    height: auto !important; min-height: 0 !important; overflow: visible !important; margin: 0 !important; padding: 0 !important; background: #fff !important;
+                }
+                body.pdf-export-mode [style*="paddingBottom: '30px'"], body.pdf-export-mode [style*="padding-bottom: 30px"] { padding-bottom: 0 !important; padding-top: 0 !important; }
+                body.pdf-export-mode * { box-shadow: none !important; text-decoration: none !important; font-family: 'Cairo', sans-serif !important; }
+                body.pdf-export-mode table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px; border: 1.5px solid #333 !important; }
+                body.pdf-export-mode div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
+                body.pdf-export-mode div[style*="grid-template-columns"] > div { flex: 1 !important; min-width: 0 !important; padding: 10px !important; border: 1px solid #e0e0e0 !important; background: #fff !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; justify-content: center !important; text-align: center !important; }
+                body.pdf-export-mode .stat-value { font-size: 13px !important; font-weight: 950 !important; color: #111 !important; margin: 2px 0 !important; }
+                body.pdf-export-mode .stat-label { font-size: 11px !important; font-weight: 900 !important; color: #111 !important; }
+                body.pdf-export-mode table span { background: transparent !important; border: none !important; padding: 0 !important; color: #111 !important; font-weight: 800 !important; }
+                body.pdf-export-mode th, body.pdf-export-mode td { border: 1px solid #666 !important; padding: 10px 12px !important; color: #1a1a1a !important; background: #fff !important; font-size: 12px !important; }
+                body.pdf-export-mode th { font-weight: 900 !important; background: #f0f0f0 !important; color: #111 !important; border: 1.5px solid #333 !important; font-size: 11px !important; }
+
                 @media screen {
                     .print-only { display: none !important; }
                 }
