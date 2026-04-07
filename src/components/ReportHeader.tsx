@@ -38,71 +38,55 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         try {
             setIsGeneratingPdf(true);
             
-            // 1. Loading Overlay (Hide everything from user gracefully)
-            const overlay = document.createElement('div');
-            overlay.style.position = 'fixed';
-            overlay.style.top = '0';
-            overlay.style.left = '0';
-            overlay.style.width = '100vw';
-            overlay.style.height = '100vh';
-            overlay.style.backgroundColor = '#ffffff';
-            overlay.style.zIndex = '999999';
-            overlay.style.display = 'flex';
-            overlay.style.flexDirection = 'column';
-            overlay.style.justifyContent = 'center';
-            overlay.style.alignItems = 'center';
-            overlay.setAttribute('data-html2canvas-ignore', 'true');
-            overlay.innerHTML = `
-                <div style="width: 50px; height: 50px; border: 5px solid #f3f3f3; border-top: 5px solid #3b82f6; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-                <h2 style="margin-top: 20px; font-family: 'Cairo', sans-serif; color: #111;">جاري تجهيز وتنزيل ملف الـ PDF...</h2>
-                <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-            `;
-            document.body.appendChild(overlay);
-
             // Dynamic import
             const html2pdf = (await import('html2pdf.js')).default;
             const originalElement = document.querySelector('.dashboard-content') || document.querySelector('main') || document.body;
             
-            // 2. Create isolated clone to decouple PDF styling from the active screen
+            // Create a "Ghost Wrapper" that is placed exactly at the current scroll position 
+            // but hidden BEHIND the website, ensuring a pure CSS extraction without flashing the user.
             const pdfWrapper = document.createElement('div');
+            pdfWrapper.id = 'pdf-ghost';
             pdfWrapper.style.position = 'absolute';
-            pdfWrapper.style.top = '0';
+            pdfWrapper.style.top = `${window.scrollY}px`; // Place at exact scroll offset to fix white screen bug
             pdfWrapper.style.left = '0';
-            pdfWrapper.style.width = '1100px'; // Force a clean desktop width for grid stability
+            pdfWrapper.style.width = '1100px'; 
             pdfWrapper.style.padding = '30px';
             pdfWrapper.style.backgroundColor = '#ffffff';
-            pdfWrapper.style.zIndex = '999998'; // Hidden securely exactly underneath the loading overlay
+            pdfWrapper.style.zIndex = '-9999'; // Hide natively behind the screen
+            pdfWrapper.style.pointerEvents = 'none';
+            // Important: we don't use opacity: 0 because html2canvas ignores completely transparent items
             
             const clone = originalElement.cloneNode(true) as HTMLElement;
             
-            // Inject decoupled CSS specifically mapped for html2canvas extraction
+            // Inject strictly mapped CSS isolated to the ghost wrapper
             const pdfStyle = document.createElement('style');
             pdfStyle.innerHTML = `
-                .no-print, .print-hide, .ui-only, nav, header, button { display: none !important; }
-                .print-only { display: block !important; }
-                * { color: #000 !important; font-family: 'Cairo', sans-serif !important; box-shadow: none !important; }
+                #pdf-ghost .no-print, #pdf-ghost .print-hide, #pdf-ghost .ui-only, #pdf-ghost nav, #pdf-ghost header, #pdf-ghost button { display: none !important; }
+                #pdf-ghost .print-only { display: block !important; }
+                #pdf-ghost * { color: #000 !important; font-family: 'Cairo', sans-serif !important; box-shadow: none !important; }
                 
-                table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px !important; border: 1.5px solid #333 !important; }
-                th, td { border: 1px solid #666 !important; padding: 10px 12px !important; font-size: 12px !important; background: transparent !important; }
-                th { background: #f0f0f0 !important; font-weight: 900 !important; font-size: 11px !important; }
+                #pdf-ghost table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px !important; border: 1.5px solid #333 !important; }
+                #pdf-ghost th, #pdf-ghost td { border: 1px solid #666 !important; padding: 10px 12px !important; font-size: 12px !important; background: transparent !important; }
+                #pdf-ghost th { background: #f0f0f0 !important; font-weight: 900 !important; font-size: 11px !important; }
                 
-                div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
-                div[style*="grid-template-columns"] > div { flex: 1 !important; border: 1px solid #999 !important; padding: 10px !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; background: transparent !important; }
-                .stat-value { font-size: 14px !important; font-weight: 950 !important; margin: 4px 0 !important; }
-                .stat-label { font-size: 12px !important; font-weight: 900 !important; }
+                #pdf-ghost div[style*="grid-template-columns"] { display: flex !important; flex-wrap: nowrap !important; gap: 10px !important; margin-bottom: 25px !important; }
+                #pdf-ghost div[style*="grid-template-columns"] > div { flex: 1 !important; border: 1px solid #999 !important; padding: 10px !important; border-radius: 12px !important; display: flex !important; flex-direction: column !important; align-items: center !important; background: transparent !important; }
+                #pdf-ghost .stat-value { font-size: 14px !important; font-weight: 950 !important; margin: 4px 0 !important; color: #000 !important; }
+                #pdf-ghost .stat-label { font-size: 12px !important; font-weight: 900 !important; color: #000 !important; }
             `;
             
             pdfWrapper.appendChild(pdfStyle);
             pdfWrapper.appendChild(clone);
             document.body.appendChild(pdfWrapper);
 
-            await new Promise(resolve => setTimeout(resolve, 150));
+            // Wait specifically for SVG and elements to flow inside the hidden wrapper
+            await new Promise(resolve => setTimeout(resolve, 200));
 
             const opt = {
                 margin:       [5, 5, 10, 5] as [number, number, number, number],
                 filename:     `${printTitle || title}.pdf`,
                 image:        { type: 'jpeg' as const, quality: 1 },
-                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0 },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
             };
 
@@ -110,14 +94,11 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             
             // Cleanup perfectly
             document.body.removeChild(pdfWrapper);
-            document.body.removeChild(overlay);
             
         } catch (error) {
             console.error('Error generating PDF:', error);
             alert('حدث خطأ أثناء إنشاء ملف PDF');
-            const overlay = document.querySelector('div[style*="999999"]');
-            if (overlay) document.body.removeChild(overlay);
-            const wrapper = document.querySelector('div[style*="999998"]');
+            const wrapper = document.getElementById('pdf-ghost');
             if (wrapper) document.body.removeChild(wrapper);
         } finally {
             setIsGeneratingPdf(false);
