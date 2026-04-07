@@ -35,11 +35,6 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     };
 
     const handleGeneratePdf = async () => {
-        if (onExportPdf) {
-            onExportPdf();
-            return;
-        }
-
         try {
             setIsGeneratingPdf(true);
             
