@@ -40,58 +40,69 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
             
             // Dynamic import
             const html2pdf = (await import('html2pdf.js')).default;
-            const originalElement = document.querySelector('.dashboard-content') || document.querySelector('main') || document.body;
             
-            // Extract the raw HTML content from the view
-            const rawHtml = originalElement.innerHTML;
+            // TARGET EXACTLY THE REPORT CONTAINER (Parent of the header)
+            const headerRoot = document.getElementById('report-header-root');
+            const targetContainer = headerRoot ? (headerRoot.parentElement || document.body) : document.body;
             
-            // Rebuild it into a perfectly isolated HTML document strictly for the PDF engine
+            const rawHtml = targetContainer.innerHTML;
+            
+            // Rebuild it strictly into a white/black printable layout
             const isolatedHtml = `
                 <!DOCTYPE html>
-                <html dir="rtl">
+                <html dir="rtl" class="light">
                 <head>
                     <meta charset="utf-8">
                     <style>
                         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
-                        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
                         
+                        /* Base Resets */
                         body { 
                             font-family: 'Cairo', sans-serif !important; 
                             direction: rtl; 
-                            background: #fff; 
-                            color: #000; 
+                            background-color: #ffffff !important; 
+                            color: #000000 !important; 
                             padding: 20px;
                         }
                         
-                        * { color: #000 !important; font-family: 'Cairo', sans-serif; box-shadow: none !important; }
+                        /* Force everything to black text on transparent backgrounds */
+                        * { 
+                            color: #000000 !important; 
+                            background-color: transparent !important; 
+                            font-family: 'Cairo', sans-serif !important; 
+                            box-shadow: none !important; 
+                            text-shadow: none !important;
+                        }
                         
-                        /* Hide UI Elements */
-                        .no-print, .print-hide, .ui-only, nav, header, button { display: none !important; }
+                        /* Hide UI Elements completely */
+                        .no-print, .print-hide, .ui-only, nav, header, button, svg[class*="lucide"] { display: none !important; }
                         .print-only { display: block !important; }
                         
-                        /* Table Styling */
-                        table { border-collapse: collapse !important; width: 100% !important; margin-top: 20px !important; border: 1.5px solid #333 !important; }
-                        th, td { border: 1px solid #666 !important; padding: 12px !important; font-size: 13px !important; text-align: right; background: #fff !important; }
-                        th { background: #f4f4f4 !important; font-weight: 900 !important; font-size: 12px !important; }
+                        /* Standardize Tables */
+                        table { border-collapse: collapse !important; width: 100% !important; margin-top: 20px !important; border: 1.5px solid #000 !important; }
+                        th, td { border: 1px solid #666 !important; padding: 12px !important; font-size: 13px !important; text-align: right; }
+                        th { background-color: #f4f4f4 !important; font-weight: 900 !important; font-size: 12px !important; -webkit-print-color-adjust: exact !important; border-bottom: 2px solid #000 !important; }
                         
-                        /* Layout Fixes for Grid/Flex */
+                        /* Grid/Flexboxes (Cards) */
                         div[style*="flex"] { display: flex !important; }
                         div[style*="grid"] { display: flex !important; flex-wrap: wrap !important; gap: 15px !important; margin-bottom: 25px !important; }
                         div[style*="grid"] > div { 
                             flex: 1; 
                             min-width: 200px; 
-                            border: 1px solid #ccc !important; 
+                            border: 1.5px solid #000 !important; 
                             padding: 15px !important; 
-                            border-radius: 12px !important; 
+                            border-radius: 8px !important; 
                             display: flex !important; 
                             flex-direction: column !important; 
                             align-items: center !important; 
-                            background: #fff !important; 
                             margin: 5px;
                         }
                         
-                        .stat-value { font-size: 15px !important; font-weight: 950 !important; margin: 5px 0 !important; color: #000 !important; }
-                        .stat-label { font-size: 13px !important; font-weight: 800 !important; color: #000 !important; }
+                        /* Typography Fixes */
+                        h1, h2, h3, h4, .stat-value, .stat-label { color: #000000 !important; margin: 5px 0 !important; }
+                        .stat-value { font-size: 16px !important; font-weight: 950 !important; }
+                        .stat-label { font-size: 13px !important; font-weight: 800 !important; }
+                        a { text-decoration: none !important; color: #000 !important; }
                     </style>
                 </head>
                 <body>
@@ -104,11 +115,10 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                 margin:       10, // mm
                 filename:     `${printTitle || title}.pdf`,
                 image:        { type: 'jpeg' as const, quality: 1 },
-                html2canvas:  { scale: 2, useCORS: true, letterRendering: true },
+                html2canvas:  { scale: 2, useCORS: true, letterRendering: true, backgroundColor: '#ffffff' },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
             };
 
-            // Process the pure string document without touching the DOM
             await html2pdf().from(isolatedHtml).set(opt).save();
 
         } catch (error) {
@@ -120,7 +130,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     };
 
     return (
-        <div style={{ marginBottom: THEME.header.mb }}>
+        <div id="report-header-root" style={{ marginBottom: THEME.header.mb }}>
             {/* ── UI Header (Hidden on Print) ── */}
             <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '300px' }}>
