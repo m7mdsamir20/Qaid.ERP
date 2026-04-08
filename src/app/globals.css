@@ -68,14 +68,15 @@
 }
 
 /* ==================== نظام الألوان - ERP Theme ==================== */
+/* ==================== نظام الألوان - ERP Theme (Dark Logic) ==================== */
 :root {
-  /* Primary - Professional Blue (Updated to match Customers) */
+  /* Primary - Professional Blue */
   --primary: #256af4;
   --primary-hover: #1a56d6;
   --primary-bg: rgba(37, 106, 244, 0.12);
   --primary-border: rgba(37, 106, 244, 0.35);
 
-  /* New Surfaces (Deep Navy) */
+  /* Backgrounds — Dark (Default) */
   --bg-app: #070d1a;
   --bg-card: #0e1628;
   --bg-hover: #131e30;
@@ -91,6 +92,40 @@
   --modal-overlay: rgba(7, 13, 26, 0.75);
   --modal-blur: blur(10px);
   --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+
+  /* New tokens for Light Mode support */
+  --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
+  --shadow-md: 0 12px 48px rgba(0,0,0,0.5);
+  --shadow-lg: 0 32px 80px rgba(0,0,0,0.6);
+}
+
+/* ==================== Light Mode (Website DNA) ==================== */
+[data-theme="light"] {
+  --primary: #1a56d6;
+  --primary-hover: #1445b8;
+  --primary-bg: rgba(26, 86, 214, 0.08);
+  --primary-border: rgba(26, 86, 214, 0.25);
+
+  /* Backgrounds — Azure Light (Same as Website) */
+  --bg-app: #f0f4ff;
+  --bg-card: #ffffff;
+  --bg-hover: #f1f5fe;
+  --border-app: #d0daf0;
+  --input-bg: #f8fafc;
+
+  /* Text — Deep Contrast */
+  --text-primary: #0f1a2e;
+  --text-secondary: #3d5278;
+  --text-muted: #7a93b8;
+
+  /* Modal Specific */
+  --modal-overlay: rgba(15, 26, 46, 0.4);
+  --modal-shadow: 0 20px 60px rgba(37,106,244,0.15);
+
+  /* Shadows — Soft Azure */
+  --shadow-sm: 0 2px 8px rgba(37,106,244,0.08);
+  --shadow-md: 0 8px 32px rgba(37,106,244,0.12);
+  --shadow-lg: 0 20px 60px rgba(37,106,244,0.15);
 }
 
 

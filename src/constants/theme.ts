@@ -1,10 +1,10 @@
 /* ─── ERP Design System Tokens ─── */
 export const THEME = {
     colors: {
-        primary: '#256af4',
-        primaryHover: '#1a56d6',
-        primaryBg: 'rgba(37,106,244,0.12)',
-        primaryBorder: 'rgba(37,106,244,0.3)',
+        primary: 'var(--primary)',
+        primaryHover: 'var(--primary-hover)',
+        primaryBg: 'var(--primary-bg)',
+        primaryBorder: 'var(--primary-border)',
 
         success: '#4ade80',
         successBg: 'rgba(74,222,128,0.1)',
@@ -22,15 +22,15 @@ export const THEME = {
         teal: '#14b8a6',
         purple: '#a78bfa',
 
-        bg: '#070d1a',   // absolute deep navy
-        card: '#0e172a',   // slate card
-        hover: 'rgba(255,255,255,0.04)',
-        border: 'rgba(255,255,255,0.15)',
-        inputBg: 'rgba(14, 23, 41, 0.4)',
+        bg: 'var(--bg-app)',
+        card: 'var(--bg-card)',
+        hover: 'var(--bg-hover)',
+        border: 'var(--border-app)',
+        inputBg: 'var(--input-bg)',
 
-        textPrimary: '#f8fafc',   // crisp white
-        textSecondary: '#94a3b8',   // slate-400
-        textMuted: '#64748b',   // slate-500
+        textPrimary: 'var(--text-primary)',
+        textSecondary: 'var(--text-secondary)',
+        textMuted: 'var(--text-muted)',
     },
     fonts: {
         /* ERP-Numbers أول → يطبق Outfit على الأرقام، Cairo للحروف */
@@ -46,10 +46,10 @@ export const THEME = {
     },
     glass: {
         card: {
-            background: 'rgba(15, 23, 42, 0.7)',
+            background: 'var(--bg-card)',
             backdropFilter: 'blur(16px)',
             WebkitBackdropFilter: 'blur(16px)',
-            border: '1px solid rgba(255, 255, 255, 0.08)',
+            border: '1px solid var(--primary-border)',
         }
     },
     header: {
