@@ -197,17 +197,21 @@ function Actions() {
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
 
-            {/* Lang Switch */}
+            {/* Lang Switch - AR/EN Abbreviation */}
             <button style={{
-                width: '36px', height: '36px', borderRadius: '10px',
+                height: '36px', padding: '0 12px', borderRadius: '10px',
                 border: `1px solid ${C.border}`, background: C.card,
                 color: C.textSecondary, display: 'flex', alignItems: 'center',
-                justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s'
+                justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s',
+                gap: '6px'
             }}
-                onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
-                onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
+                title="تغيير لغة التصفح"
+                onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.color = C.primary; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSecondary; }}
             >
-                <Globe size={18} />
+                <span style={{ fontSize: '14px', fontWeight: 900, fontFamily: 'sans-serif' }}>EN</span>
+                <span style={{ width: '1px', height: '14px', background: C.border }} />
+                <span style={{ fontSize: '15px', fontWeight: 900, fontFamily: CAIRO, marginTop: '-2px' }}>ع</span>
             </button>
 
             {/* Notifications */}
