@@ -544,7 +544,10 @@ export const dictionaries = {
         "حذف": "Delete",
         "تأكيد": "Confirm",
         "تعديل البيانات": "Edit Data",
-        "حفظ البيانات": "Save Data"
+        "حفظ البيانات": "Save Data",
+        "عرض التقارير": "View Reports",
+        "ذمم العملاء المستحقة": "Outstanding Customer Debts",
+        "إجمالي المطلوب تحصيله": "Total to be Collected"
     }
 };
 

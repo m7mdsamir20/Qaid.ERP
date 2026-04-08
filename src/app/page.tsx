@@ -559,7 +559,7 @@ export default function DashboardPage() {
             <SectionCard title="آخر الحركات المالية" icon={Receipt}
               action={hasPage('reports-financial', 'reports') && (
                 <Link href="/reports" style={{ fontSize: '12px', color: C.primary, fontWeight: 700, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  عرض التقارير <ArrowUpRight size={14} />
+                  {t('عرض التقارير')} <ArrowUpRight size={14} />
                 </Link>
               )}>
               <div style={{ padding: '0 10px 10px' }}>
@@ -588,7 +588,7 @@ export default function DashboardPage() {
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <td style={{ padding: '14px 16px' }}>
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
-                              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('ar-EG')}</div>
+                              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>
                             </td>
                             <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: isRtl ? 'right' : 'left' }}>{renderCurrency(inv.total, '14px', 800)}</td>
                             <td style={{ padding: '14px 16px', textAlign: isRtl ? 'right' : 'left' }}>
@@ -608,7 +608,7 @@ export default function DashboardPage() {
             <SectionCard title="أكبر مديونيات العملاء" icon={CreditCard}>
               <div style={{ padding: '18px 20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, marginBottom: '5px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <Users size={14} /> ذمم العملاء المستحقة
+                  <Users size={14} /> {t('ذمم العملاء المستحقة')}
                 </div>
                 {stats.topDebtors.map((d: any, i: number) => (
                   <div key={i} style={{
@@ -625,7 +625,7 @@ export default function DashboardPage() {
                   marginTop: '10px', paddingTop: '15px', borderTop: `1px dashed ${C.border}`,
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                 }}>
-                  <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700 }}>إجمالي المطلوب تحصيله</span>
+                  <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700 }}>{t('إجمالي المطلوب تحصيله')}</span>
                   <div style={{ color: C.danger }}>
                     {renderCurrency(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0), '16px', 900)}
                   </div>

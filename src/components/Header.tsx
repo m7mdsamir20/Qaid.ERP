@@ -29,6 +29,8 @@ const typeIcon: Record<string, any> = {
     invoice: Receipt, product: Package, customer: Users, supplier: FileText
 };
 
+import { useTranslation } from '@/lib/i18n';
+
 const roleLabels: Record<string, string> = {
     admin: 'مدير النظام',
     manager: 'مدير فرع',
@@ -46,6 +48,7 @@ const roleLabels: Record<string, string> = {
    ══════════════════════════════════════════ */
 
 function SearchBox() {
+    const { t } = useTranslation();
     const { data: session } = useSession();
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
@@ -101,7 +104,7 @@ function SearchBox() {
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     onFocus={() => results.length && setOpen(true)}
-                    placeholder={isServices ? "ابحث عن فاتورة، عميل أو خدمة..." : "ابحث عن فاتورة، عميل أو صنف..."}
+                    placeholder={t(isServices ? "ابحث عن فاتورة، عميل أو خدمة..." : "ابحث عن فاتورة، عميل أو صنف...")}
                     style={{
                         flex: 1, background: 'none', border: 'none', outline: 'none',
                         color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO
@@ -146,7 +149,6 @@ function SearchBox() {
     );
 }
 
-import { useTranslation } from '@/lib/i18n';
 
 function Actions() {
     const { data: session, status: sessionStatus } = useSession();
@@ -276,7 +278,7 @@ function Actions() {
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
                     <div style={{ textAlign: 'start' }}>
                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
-                            {sessionStatus === 'loading' ? '...' : (session?.user?.name || 'المستخدم')}
+                            {sessionStatus === 'loading' ? '...' : (session?.user?.name || t('مستخدم'))}
                         </div>
                         <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px' }}>
                             {sessionStatus === 'loading' ? '' : t(roleLabels[(session?.user as any)?.role] || 'مستخدم')}
@@ -367,6 +369,7 @@ function Actions() {
 }
 
 function BranchSwitcher() {
+    const { t } = useTranslation();
     const { data: session, update } = useSession();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -407,8 +410,8 @@ function BranchSwitcher() {
                     cursor: 'pointer', transition: '0.2s'
                 }}>
                 <GitBranch size={14} color={C.primary} />
-                <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
-                    {activeBranchId === 'all' || !activeBranchId ? 'كل الفروع' : activeBranch?.name}
+                 <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
+                    {activeBranchId === 'all' || !activeBranchId ? t('كل الفروع') : activeBranch?.name}
                 </span>
                 <ChevronDown size={14} color={C.primary} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
             </button>
@@ -420,8 +423,8 @@ function BranchSwitcher() {
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
                     animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
                 }}>
-                    <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
-                        <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>الفروع المتاحة</div>
+                     <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('الفروع المتاحة')}</div>
                     </div>
                     <div style={{ padding: '6px' }}>
                         {role === 'admin' && (
@@ -437,7 +440,7 @@ function BranchSwitcher() {
                                 onMouseEnter={e => { if (activeBranchId) e.currentTarget.style.background = C.hover; }}
                                 onMouseLeave={e => { if (activeBranchId) e.currentTarget.style.background = 'transparent'; }}>
                                 <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
-                                كل الفروع
+                                {t('كل الفروع')}
                             </button>
                         )}
                         {branches.map(b => (
