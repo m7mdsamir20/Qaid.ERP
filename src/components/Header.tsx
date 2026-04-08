@@ -230,7 +230,7 @@ function Actions() {
                 {openNotif && (
                     <div style={{
                         position: 'absolute', top: 'calc(100% + 15px)', 
-                        insetInlineEnd: isRtl ? '-142px' : 0, 
+                        insetInlineEnd: 0, 
                         width: '320px',
                         background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px',
                         boxShadow: '0 30px 60px rgba(0,0,0,0.6)', zIndex: 1000, overflow: 'hidden',
@@ -404,7 +404,7 @@ function BranchSwitcher() {
     const activeBranch = branches.find(b => b.id === activeBranchId);
 
     return (
-        <div ref={ref} style={{ position: 'relative', marginInlineStart: '12px' }}>
+        <div ref={ref} style={{ position: 'relative' }}>
             <button onClick={() => setOpen(!open)}
                 style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
@@ -423,7 +423,7 @@ function BranchSwitcher() {
             {open && (
                 <div style={{
                     position: 'absolute', top: 'calc(100% + 12px)',
-                    [isRtl ? 'insetInlineStart' : 'insetInlineEnd']: 0,
+                    insetInlineStart: 0,
                     width: '240px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
@@ -489,18 +489,18 @@ export default function Header() {
             alignItems: 'center', padding: '0 24px'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 
-            {/* Branch Switcher - Push to start/end based on language */}
-            <div style={{ [isRtl ? 'marginInlineStart' : 'marginInlineEnd']: 'auto' }}>
+            {/* Branch Switcher - Left in English, Right in Arabic */}
+            <div style={{ order: isRtl ? 10 : 1 }}>
                 <BranchSwitcher />
             </div>
 
             {/* Center: Search */}
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', order: 5 }}>
                 <SearchBox />
             </div>
 
-            {/* Actions & User Menu */}
-            <div style={{ [isRtl ? 'marginInlineEnd' : 'marginInlineStart']: 'auto' }}>
+            {/* Actions & User Menu - Right in English, Left in Arabic */}
+            <div style={{ order: isRtl ? 1 : 10 }}>
                 <Actions />
             </div>
 
