@@ -93,13 +93,13 @@ function SearchBox() {
         <div ref={boxRef} style={{ position: 'relative', width: '340px' }}>
             <div style={{
                 display: 'flex', alignItems: 'center', gap: '10px',
-                background: C.inputBg, border: `1px solid ${C.border}`,
+                background: 'var(--bg-app)', border: `1px solid var(--border-app)`,
                 borderRadius: '12px', padding: '0 12px', transition: 'all 0.2s',
-                height: '38px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
+                height: '40px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.02)'
             }}>
                 {loading
-                    ? <Loader2 size={16} color={C.textMuted} style={{ animation: 'spin 1s linear infinite' }} />
-                    : <Search size={16} color={C.textMuted} />
+                    ? <Loader2 size={16} color="var(--text-muted)" style={{ animation: 'spin 1s linear infinite' }} />
+                    : <Search size={16} color="var(--primary)" />
                 }
                 <input
                     value={query}
@@ -108,7 +108,7 @@ function SearchBox() {
                     placeholder={t(isServices ? "ابحث عن فاتورة، عميل أو خدمة..." : "ابحث عن فاتورة، عميل أو صنف...")}
                     style={{
                         flex: 1, background: 'none', border: 'none', outline: 'none',
-                        color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO
+                        color: 'var(--text-primary)', fontSize: '13px', fontFamily: CAIRO
                     }}
                 />
             </div>
@@ -274,11 +274,12 @@ function Actions() {
                     style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
                         padding: isRtl ? '4px 6px 4px 12px' : '4px 12px 4px 6px', borderRadius: '12px',
-                        background: C.card, border: `1px solid ${C.border}`,
-                        cursor: 'pointer', transition: 'all 0.2s'
+                        background: 'var(--bg-card)', border: `1px solid var(--border-app)`,
+                        cursor: 'pointer', transition: 'all 0.2s',
+                        boxShadow: 'var(--shadow-sm)'
                     }}
-                    onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
-                    onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
+                    onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--primary)'}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border-app)'}>
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
                     <div style={{ textAlign: 'start' }}>
                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
@@ -487,15 +488,18 @@ export default function Header() {
 
     return (
         <header style={{
-            height: '64px', position: 'fixed', top: 0, 
+            height: '70px', position: 'fixed', top: 0, 
             insetInlineStart: '260px',
             insetInlineEnd: 0,
             zIndex: 800,
-            background: 'var(--modal-overlay)', 
-            backdropFilter: 'blur(12px)',
+            background: 'rgba(255, 255, 255, 0.01)', // Will be set by global styles but adding glass here
+            backgroundColor: 'var(--bg-card)', 
+            opacity: 0.98,
+            backdropFilter: 'blur(20px)',
             borderBottom: `1px solid var(--border-app)`, 
             display: 'flex',
-            alignItems: 'center', padding: '0 24px'
+            alignItems: 'center', padding: '0 32px',
+            boxShadow: 'var(--shadow-sm)'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 
             {/* Branch Switcher - Fixed Position */}
