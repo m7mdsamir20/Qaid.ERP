@@ -292,58 +292,39 @@ function Actions() {
                         boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
                         animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
                     }}>
-                        <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px' }}>{session?.user?.name}</div>
-                            <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{session?.user?.email}</div>
-                        </div>
-
-                        {/* Language & Theme Controls */}
-                        <div style={{ padding: '12px 16px', borderBottom: `1px solid ${C.border}` }}>
-                            <div style={{ marginBottom: '6px', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>لغة النظام</div>
-                            <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
-                                <button
-                                    onClick={() => toggleLang()}
-                                    style={{
-                                        flex: 1, padding: '8px 0', borderRadius: '8px', cursor: 'pointer',
-                                        background: lang === 'ar' ? C.primary : 'transparent',
-                                        color: lang === 'ar' ? '#fff' : C.textSecondary,
-                                        border: `1px solid ${lang === 'ar' ? C.primary : C.border}`,
-                                        fontFamily: CAIRO, fontWeight: 800, fontSize: '12px', transition: '0.2s'
-                                    }}>
-                                    العربية
-                                </button>
-                                <button
-                                    onClick={() => toggleLang()}
-                                    style={{
-                                        flex: 1, padding: '8px 0', borderRadius: '8px', cursor: 'pointer',
-                                        background: lang === 'en' ? C.primary : 'transparent',
-                                        color: lang === 'en' ? '#fff' : C.textSecondary,
-                                        border: `1px solid ${lang === 'en' ? C.primary : C.border}`,
-                                        fontFamily: 'sans-serif', fontWeight: 800, fontSize: '12px', transition: '0.2s'
-                                    }}>
-                                    English
-                                </button>
+                        <div style={{ padding: '12px 16px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <div style={{ flex: 1, overflow: 'hidden' }}>
+                                <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{session?.user?.name}</div>
+                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{session?.user?.email}</div>
                             </div>
-
-                            <div style={{ marginBottom: '6px', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>المظهر</div>
-                            <div style={{ display: 'flex', gap: '8px' }}>
+                            
+                            <div style={{ width: '1px', height: '28px', background: C.border, margin: '0 12px' }} />
+                            
+                            <div style={{ display: 'flex', gap: '6px' }}>
                                 <button
+                                    onClick={() => toggleLang()}
+                                    title={lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
                                     style={{
-                                        flex: 1, padding: '8px 0', borderRadius: '8px', cursor: 'not-allowed',
-                                        background: 'transparent', color: C.textSecondary,
-                                        border: `1px solid ${C.border}`, opacity: 0.5,
-                                        fontFamily: CAIRO, fontWeight: 800, fontSize: '12px'
-                                    }}>
-                                    فاتح ☀️
+                                        width: '28px', height: '28px', borderRadius: '8px', cursor: 'pointer',
+                                        background: `${C.primary}15`, color: C.primary,
+                                        border: `1px solid ${C.primary}30`,
+                                        fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO, fontWeight: 900, fontSize: lang === 'ar' ? '11px' : '13px',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s'
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = `${C.primary}30`}
+                                    onMouseLeave={e => e.currentTarget.style.background = `${C.primary}15`}
+                                >
+                                    {lang === 'ar' ? 'EN' : 'ع'}
                                 </button>
                                 <button
+                                    title="تبديل المظهر"
                                     style={{
-                                        flex: 1, padding: '8px 0', borderRadius: '8px', cursor: 'not-allowed',
-                                        background: C.primary, color: '#fff',
-                                        border: `1px solid ${C.primary}`, opacity: 0.5,
-                                        fontFamily: CAIRO, fontWeight: 800, fontSize: '12px'
+                                        width: '28px', height: '28px', borderRadius: '8px', cursor: 'not-allowed',
+                                        background: 'transparent', color: C.textSecondary,
+                                        border: `1px solid ${C.border}`, opacity: 0.7,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px'
                                     }}>
-                                    داكن 🌙
+                                    🌙
                                 </button>
                             </div>
                         </div>
