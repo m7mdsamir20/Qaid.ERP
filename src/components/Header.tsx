@@ -223,20 +223,21 @@ function Actions() {
                 <button
                     onClick={() => setOpenNotif(!openNotif)}
                     style={{
-                        height: '36px', padding: '0 12px', borderRadius: '10px',
+                        width: '36px', height: '36px', borderRadius: '10px',
                         border: `1px solid ${C.border}`, background: C.card,
                         color: C.textSecondary, display: 'flex', alignItems: 'center',
                         justifyContent: 'center', cursor: 'pointer', position: 'relative',
-                        transition: 'all 0.2s', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
+                        transition: 'all 0.2s'
                     }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
                 >
-                    {t('الإشعارات')}
+                    <Bell size={18} />
                     {notifs.some(n => !n.read) && (
                         <span style={{
-                            position: 'absolute', top: '8px', insetInlineEnd: '4px', width: '6px',
-                            height: '6px', background: C.danger, borderRadius: '50%'
+                            position: 'absolute', top: '8px', insetInlineEnd: '8px', width: '8px',
+                            height: '8px', background: C.danger, borderRadius: '50%',
+                            border: `2px solid ${C.card}`
                         }} />
                     )}
                 </button>
@@ -265,7 +266,7 @@ function Actions() {
                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                     <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: (n.color || C.primary) + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: n.color || C.primary, flexShrink: 0 }}>
-                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'currentColor' }} />
+                                        <n.icon size={18} />
                                     </div>
                                     <div style={{ flex: 1 }}>
                                         <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: n.read ? 600 : 800, fontFamily: CAIRO, marginBottom: '3px', lineHeight: 1.4 }}>{n.title}</div>
@@ -278,18 +279,28 @@ function Actions() {
                 )}
             </div>
 
+            <div style={{ width: '1px', height: '24px', background: C.border, margin: '0 4px' }} />
+
             {/* User Menu */}
             <div ref={userRef} style={{ position: 'relative' }}>
                 <button onClick={() => setOpenUser(!openUser)}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
-                        padding: '4px 12px 4px 6px', borderRadius: '12px',
+                        padding: isRtl ? '4px 6px 4px 12px' : '4px 12px 4px 6px', borderRadius: '12px',
                         background: C.card, border: `1px solid ${C.border}`,
                         cursor: 'pointer', transition: 'all 0.2s'
                     }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
+                    <div style={{ textAlign: 'start' }}>
+                        <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
+                            {sessionStatus === 'loading' ? '...' : (session?.user?.name || t('مستخدم'))}
+                        </div>
+                        <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px' }}>
+                            {sessionStatus === 'loading' ? '' : t(roleLabels[(session?.user as any)?.role] || 'مستخدم')}
+                        </div>
+                    </div>
                     <ChevronDown size={14} color={C.textMuted} style={{ transform: openUser ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
                 </button>
 
@@ -309,17 +320,22 @@ function Actions() {
                             </div>
                         </div>
 
-                        <button onClick={() => { router.push('/profile'); setOpenUser(false); }}
-                            style={{
-                                width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
-                                padding: '11px 16px', background: 'none', border: 'none',
-                                color: C.textSecondary, fontSize: '13.5px', cursor: 'pointer',
-                                fontFamily: CAIRO, transition: '0.1s', boxSizing: 'border-box'
-                            }}
-                            onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
-                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
-                            {t('ملفي الشخصي')}
-                        </button>
+                        {[
+                            { icon: User, label: 'ملفي الشخصي', path: '/profile' },
+                            { icon: KeyRound, label: 'تغيير كلمة المرور', path: '/profile/password' },
+                        ].map((it, i) => (
+                            <button key={i} onClick={() => { router.push(it.path); setOpenUser(false); }}
+                                style={{
+                                    width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
+                                    padding: '11px 16px', background: 'none', border: 'none',
+                                    color: C.textSecondary, fontSize: '13.5px', cursor: 'pointer',
+                                    fontFamily: CAIRO, transition: '0.1s', boxSizing: 'border-box'
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
+                                <it.icon size={15} /> {t(it.label)}
+                            </button>
+                        ))}
 
                         <div style={{ borderTop: `1px solid ${C.border}` }}>
                             <button onClick={() => signOut({ callbackUrl: '/login' })}
@@ -329,7 +345,7 @@ function Actions() {
                                     color: C.danger, fontSize: '13.5px', cursor: 'pointer', fontFamily: CAIRO,
                                     boxSizing: 'border-box'
                                 }}>
-                                {t('تسجيل الخروج')}
+                                <LogOut size={16} /> {t('تسجيل الخروج')}
                             </button>
                         </div>
                     </div>
