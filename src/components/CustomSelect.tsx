@@ -130,7 +130,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     padding: Icon ? '0 36px' : '0 16px',
                     opacity: disabled ? 0.6 : 1,
                     boxSizing: 'border-box',
-                    boxShadow: isOpen ? 'var(--shadow-md)' : 'none',
+                    boxShadow: isOpen ? '0 0 0 1px var(--primary), var(--shadow-md)' : 'none',
                     ...appearanceStyle
                 }}
             >
@@ -185,14 +185,14 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     background: 'var(--bg-card)',
                     border: '1px solid var(--border-app)',
                     borderRadius: '14px',
-                    padding: '6px',
-                    boxShadow: 'var(--shadow-lg)',
+                    padding: '8px',
+                    boxShadow: '0 10px 40px rgba(0,0,0,0.1), 0 0 1px var(--primary)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '2px',
                     zIndex: 100000,
                     maxHeight: maxHeight,
-                    backdropFilter: 'blur(16px)',
+                    backdropFilter: 'blur(20px)',
                     overflow: 'hidden',
                     boxSizing: 'border-box',
                     animation: openUp ? 'dropdownInUp 0.2s ease-out' : 'dropdownIn 0.2s ease-out'
@@ -281,10 +281,10 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                         borderRadius: '10px',
                                         cursor: 'pointer',
                                         fontSize: '13px',
-                                        fontWeight: isSelected ? 800 : 500,
+                                        fontWeight: isSelected ? 800 : 600,
                                         background: isSelected ? 'var(--primary-bg)' : (isActive ? 'var(--bg-hover)' : 'transparent'),
                                         color: isSelected ? 'var(--primary)' : (isActive ? 'var(--text-primary)' : 'var(--text-secondary)'),
-                                        transition: 'all 0.15s',
+                                        transition: 'all 0.2s',
                                         textAlign: 'start',
                                         minHeight: '40px',
                                         ...opt.style
