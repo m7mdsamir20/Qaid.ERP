@@ -201,7 +201,7 @@ function Actions() {
     };
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexDirection: isRtl ? 'row' : 'row' }}>
 
             {/* Notifications */}
             <div ref={notifRef} style={{ position: 'relative' }}>
@@ -229,7 +229,9 @@ function Actions() {
 
                 {openNotif && (
                     <div style={{
-                        position: 'absolute', top: 'calc(100% + 15px)', insetInlineEnd: '-142px', width: '320px',
+                        position: 'absolute', top: 'calc(100% + 15px)', 
+                        insetInlineEnd: isRtl ? '-142px' : 0, 
+                        width: '320px',
                         background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px',
                         boxShadow: '0 30px 60px rgba(0,0,0,0.6)', zIndex: 1000, overflow: 'hidden',
                         animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
@@ -269,7 +271,7 @@ function Actions() {
                 <button onClick={() => setOpenUser(!openUser)}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
-                        padding: '4px 6px 4px 12px', borderRadius: '12px',
+                        padding: isRtl ? '4px 6px 4px 12px' : '4px 12px 4px 6px', borderRadius: '12px',
                         background: C.card, border: `1px solid ${C.border}`,
                         cursor: 'pointer', transition: 'all 0.2s'
                     }}
@@ -427,7 +429,7 @@ function BranchSwitcher() {
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
                     animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
                 }}>
-                     <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)', textAlign: isRtl ? 'right' : 'left' }}>
+                     <div style={{ padding: '14px 16px 14px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)', textAlign: 'start' }}>
                         <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('الفروع المتاحة')}</div>
                     </div>
                     <div style={{ padding: '6px' }}>
@@ -487,8 +489,8 @@ export default function Header() {
             alignItems: 'center', padding: '0 24px'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 
-            {/* Right: Branch Switcher */}
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Branch Switcher - Push to start/end based on language */}
+            <div style={{ [isRtl ? 'marginInlineStart' : 'marginInlineEnd']: 'auto' }}>
                 <BranchSwitcher />
             </div>
 
@@ -497,8 +499,8 @@ export default function Header() {
                 <SearchBox />
             </div>
 
-            {/* Left: Actions */}
-            <div style={{ display: 'flex', alignItems: 'center' }}>
+            {/* Actions & User Menu */}
+            <div style={{ [isRtl ? 'marginInlineEnd' : 'marginInlineStart']: 'auto' }}>
                 <Actions />
             </div>
 
