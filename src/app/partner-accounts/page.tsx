@@ -6,11 +6,10 @@ import { Users, TrendingUp, TrendingDown, ArrowUpDown, Plus, X, Loader2, Chevron
 import { C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import { useTranslation } from '@/lib/i18n';
 
 interface Partner { id: string; name: string; share: number; capital: number; balance: number; }
 interface Transaction { id: string; type: string; amount: number; date: string; notes?: string; }
-
-
 
 const TX_LABELS: Record<string, { label: string; color: string; bg: string; icon: any }> = {
     deposit: { label: 'إيداع', color: '#34d399', bg: 'rgba(16,185,129,0.1)', icon: TrendingUp },
@@ -362,4 +361,3 @@ export default function PartnerAccountsPage() {
         </DashboardLayout>
     );
 }
-
