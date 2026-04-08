@@ -14,6 +14,7 @@ import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { useTranslation } from '@/lib/i18n';
 
 interface Invoice {
     id: string;
@@ -33,6 +34,8 @@ export default function SalesPage() {
     const router = useRouter();
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
@@ -189,13 +192,13 @@ export default function SalesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? "rtl" : "ltr"} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title={isServices ? "فواتير الخدمات" : "المبيعات"}
-                    subtitle={isServices ? "سجل الخدمات المقدمة للعملاء وتحصيل الرسوم" : "سجل فواتير المبيعات وحالات التحصيل الفعلية"}
+                    title={isServices ? t("فواتير الخدمات") : t("المبيعات")}
+                    subtitle={isServices ? t("سجل الخدمات المقدمة للعملاء وتحصيل الرسوم") : t("سجل فواتير المبيعات وحالات التحصيل الفعلية")}
                     icon={Receipt}
                     primaryButton={{
-                        label: isServices ? "إصدار فاتورة خدمة" : "إضافة فاتورة",
+                        label: isServices ? t("إصدار فاتورة خدمة") : t("إضافة فاتورة"),
                         onClick: () => router.push('/sales/new'),
                         icon: Plus
                     }}
@@ -206,18 +209,18 @@ export default function SalesPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="رقم الفاتورة أو اسم العميل..." 
+                            placeholder={t("رقم الفاتورة أو اسم العميل...")}
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }} />
                         </div>
@@ -234,7 +237,7 @@ export default function SalesPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
+                            <Trash2 size={14} /> {t("مسح")}
                         </button>
                     )}
                 </div>
@@ -248,21 +251,21 @@ export default function SalesPage() {
                     ) : filteredAll.length === 0 ? (
                         <div style={{ padding: '70px', textAlign: 'center' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? 'لا توجد نتائج بحث مطابقة' : `لا توجد ${isServices ? 'فواتير خدمات' : 'فواتير مبيعات'}`}</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : (isServices ? t('لا توجد فواتير خدمات') : t('لا توجد فواتير مبيعات'))}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم الفاتورة</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>العميل</th>
-                                        <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
-                                        <th style={TABLE_STYLE.th(false)}>المدفوع</th>
-                                        <th style={TABLE_STYLE.th(false)}>المتبقي</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={{ ...TABLE_STYLE.th(true), textAlign: isRtl ? 'right' : 'left' }}>{t("رقم الفاتورة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("العميل")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الإجمالي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("المدفوع")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("المتبقي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الحالة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -274,27 +277,27 @@ export default function SalesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: isRtl ? 'right' : 'left' }}>
                                                     SAL-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.customer ? inv.customer.name : 'عميل نقدي'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: isRtl ? 'right' : 'left' }}>{inv.customer ? inv.customer.name : t("عميل نقدي")}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>
                                                     {fmt(inv.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: INTER }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>
                                                     {fmt(inv.paidAmount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: INTER }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>
                                                     {fmt(inv.remaining)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}>
                                                     <div style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px', 
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
                                                         background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
                                                     }}>
-                                                        {st.text} <st.icon size={12} />
+                                                        {t(st.text)} <st.icon size={12} />
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>

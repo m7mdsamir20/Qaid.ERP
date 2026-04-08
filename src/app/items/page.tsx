@@ -15,6 +15,7 @@ import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import Barcode from 'react-barcode';
+import { useTranslation } from '@/lib/i18n';
 
 interface Item {
     id: string;
@@ -37,6 +38,8 @@ interface Item {
 
 export default function ItemsPage() {
     const { symbol: currencySymbol } = useCurrency();
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [items, setItems] = useState<Item[]>([]);
     const [warehouses, setWarehouses] = useState<{ id: string, name: string }[]>([]);
     const [loading, setLoading] = useState(true);
@@ -255,13 +258,13 @@ export default function ItemsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? "rtl" : "ltr"} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title={companyBusinessType === 'SERVICES' ? "الخدمات" : "الأصناف"}
-                    subtitle={companyBusinessType === 'SERVICES' ? "تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها" : "إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع"}
+                    title={companyBusinessType === 'SERVICES' ? t("الخدمات") : t("الأصناف")}
+                    subtitle={companyBusinessType === 'SERVICES' ? t("تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها") : t("إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع")}
                     icon={companyBusinessType === 'SERVICES' ? Package : Boxes}
                     primaryButton={{
-                        label: companyBusinessType === 'SERVICES' ? "إضافة خدمة جديدة" : "إضافة صنف جديد",
+                        label: companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : t("إضافة صنف جديد"),
                         onClick: () => handleOpenModal(),
                         icon: Plus
                     }}
@@ -270,10 +273,10 @@ export default function ItemsPage() {
                 {companyBusinessType?.toUpperCase() !== 'SERVICES' && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { id: 'all', label: 'إجمالي الأصناف', val: items.length, icon: Package, color: C.blue, unit: 'صنف' },
-                            { id: 'value', label: 'قيمة المخزون', val: items.reduce((s, i) => s + (i.costPrice || 0), 0), icon: TrendingUp, color: C.teal, unit: currencySymbol },
-                            { id: 'low', label: 'أصناف منخفضة', val: itemsLowStock, icon: AlertTriangle, color: C.warning, unit: 'تنبيه' },
-                            { id: 'out', label: 'أصناف نفدت', val: itemsOutOfStock, icon: PackageX, color: C.danger, unit: 'صنف' }
+                            { id: 'all', label: t('إجمالي الأصناف'), val: items.length, icon: Package, color: C.blue, unit: t('صنف') },
+                            { id: 'value', label: t('قيمة المخزون'), val: items.reduce((s, i) => s + (i.costPrice || 0), 0), icon: TrendingUp, color: C.teal, unit: currencySymbol },
+                            { id: 'low', label: t('أصناف منخفضة'), val: itemsLowStock, icon: AlertTriangle, color: C.warning, unit: t('تنبيه') },
+                            { id: 'out', label: t('أصناف نفدت'), val: itemsOutOfStock, icon: PackageX, color: C.danger, unit: t('صنف') }
                         ].map((s, idx) => {
                             const isSelected = kpiFilter === s.id;
                             const isClickable = s.id === 'low' || s.id === 'out';
@@ -318,25 +321,26 @@ export default function ItemsPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={kpiFilter === 'low' ? "البحث في الأصناف منخفضة المخزون..." : (kpiFilter === 'out' ? "البحث في الأصناف التي نفدت..." : "ابحث باسم الصنف أو كود المنتج...")}
+                            placeholder={kpiFilter === 'low' ? t("البحث في الأصناف منخفضة المخزون...") : (kpiFilter === 'out' ? t("البحث في الأصناف التي نفدت...") : t("ابحث باسم الصنف أو كود المنتج..."))}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{
                                 ...SEARCH_STYLE.input,
                                 borderColor: kpiFilter !== 'all' ? (kpiFilter === 'low' ? C.warning : C.danger) : C.border,
-                                borderRightWidth: kpiFilter !== 'all' ? '3px' : '1px'
+                                borderRightWidth: kpiFilter !== 'all' ? (isRtl ? '3px' : '1px') : '1px',
+                                borderLeftWidth: kpiFilter !== 'all' ? (!isRtl ? '3px' : '1px') : '1px'
                             }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                         {kpiFilter !== 'all' && (
                             <button onClick={() => setKpiFilter('all')}
                                 style={{
-                                    position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)',
+                                    position: 'absolute', [isRtl ? 'left' : 'right']: '12px', top: '50%', transform: 'translateY(-50%)',
                                     background: 'rgba(255,255,255,0.05)', border: 'none', color: C.textMuted,
                                     borderRadius: '4px', fontSize: '10px', padding: '2px 6px', cursor: 'pointer'
                                 }}
                             >
-                                عرض الكل ✕
+                                {t("عرض الكل")} ✕
                             </button>
                         )}
                     </div>
@@ -371,15 +375,15 @@ export default function ItemsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>الكود</th>
-                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={TABLE_STYLE.th(false)}>الباركود</th>}
-                                        <th style={TABLE_STYLE.th(false)}>{companyBusinessType === 'SERVICES' ? 'الخدمة' : 'الصنف'}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={TABLE_STYLE.th(false)}>الكمية</th>}
-                                        {companyBusinessType !== 'SERVICES' && <th style={TABLE_STYLE.th(false)}>سعر التكلفة</th>}
-                                        <th style={TABLE_STYLE.th(false)}>{companyBusinessType === 'SERVICES' ? 'سعر الخدمة' : 'سعر البيع'}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={TABLE_STYLE.th(false)}>متوسط التكلفة</th>}
-                                        {companyBusinessType !== 'SERVICES' && <th style={TABLE_STYLE.th(false)}>إجمالي التكلفة</th>}
-                                        <th style={TABLE_STYLE.th(false)}>إجراء</th>
+                                        <th style={{ ...TABLE_STYLE.th(true), textAlign: isRtl ? 'right' : 'left' }}>{t("الكود")}</th>
+                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الباركود")}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الكمية")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("سعر التكلفة")}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("متوسط التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجمالي التكلفة")}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -392,11 +396,11 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={TABLE_STYLE.td(true)}><div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: isRtl ? 'right' : 'left' }}><div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                     <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: INTER, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'right' }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, textAlign: 'center' }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || 'قطعة'}</span></td>
                                                 )}

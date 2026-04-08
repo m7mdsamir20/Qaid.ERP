@@ -303,7 +303,7 @@ export default function DashboardPage() {
     </DashboardLayout>
   );
 
-  const periodLabel: any = { today: 'اليوم', week: 'هذا الأسبوع', month: 'هذا الشهر' };
+  const periodLabel: any = { today: t('اليوم'), week: t('هذا الأسبوع'), month: t('هذا الشهر') };
   const renderCurrency = (n: number, fontSize: string = '14px', numWeight: number = 800, color: string = 'inherit') => (
     <div style={{ display: 'inline-flex', alignItems: 'baseline', gap: '4px', direction: 'ltr', color: color === 'inherit' ? 'inherit' : color }}>
       <span style={{ fontSize: `calc(${fontSize} - 3px)`, fontWeight: 700, fontFamily: CAIRO, opacity: 1 }}>{cSymbol}</span>
@@ -364,14 +364,12 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', animation: 'fadeUp 0.3s ease both' }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 900, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {greeting}، <span style={{ color: C.primary }}>{session?.user?.name || 'مستخدم النظام'}</span>
+              {t(greeting)}، <span style={{ color: C.primary }}>{session?.user?.name || t('مستخدم النظام')}</span>
             </h1>
             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
               {(() => {
                 const d = new Date();
-                const months = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
-                const days = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
-                return `${days[d.getDay()]}، ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+                return d.toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
               })()}
               <span style={{ margin: '0 8px', color: C.border }}>|</span>
               <span style={{ color: C.textSecondary, fontFamily: INTER }}>{time}</span>
@@ -569,7 +567,7 @@ export default function DashboardPage() {
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                       {['التاريخ والطرف', 'القيمة', 'النوع', 'رقم'].map((h, i) => (
-                        <th key={h} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 3 ? 'left' : 'right' }}>{h}</th>
+                        <th key={h} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 3 ? (isRtl ? 'left' : 'right') : (isRtl ? 'right' : 'left') }}>{t(h)}</th>
                       ))}
                     </tr>
                   </thead>
@@ -592,11 +590,11 @@ export default function DashboardPage() {
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
                               <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('ar-EG')}</div>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: 'right' }}>{renderCurrency(inv.total, '14px', 800)}</td>
-                            <td style={{ padding: '14px 16px' }}>
-                              <span style={{ fontSize: '11px', fontWeight: 800, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20` }}>{s.label}</span>
+                            <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: isRtl ? 'right' : 'left' }}>{renderCurrency(inv.total, '14px', 800)}</td>
+                            <td style={{ padding: '14px 16px', textAlign: isRtl ? 'right' : 'left' }}>
+                              <span style={{ fontSize: '11px', fontWeight: 800, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20` }}>{t(s.label)}</span>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: INTER, textAlign: 'left' }}>#{inv.invoiceNumber}</td>
+                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: INTER, textAlign: isRtl ? 'left' : 'right' }}>#{inv.invoiceNumber}</td>
                           </tr>
                         );
                       })}
