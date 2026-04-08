@@ -489,8 +489,8 @@ export default function Header() {
             alignItems: 'center', padding: '0 24px'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 
-            {/* Right in Arabic, Left in English */}
-            <div style={{ order: isRtl ? 1 : 10 }}>
+            {/* Branch Switcher - Fixed Position */}
+            <div style={{ order: 1 }}>
                 <BranchSwitcher />
             </div>
 
@@ -499,8 +499,8 @@ export default function Header() {
                 <SearchBox />
             </div>
 
-            {/* Left in Arabic, Right in English */}
-            <div style={{ order: isRtl ? 10 : 1 }}>
+            {/* Actions & User Menu - Fixed Position */}
+            <div style={{ order: 10 }}>
                 <Actions />
             </div>
 
