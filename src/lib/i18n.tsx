@@ -77,8 +77,7 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
         localStorage.setItem('erp_lang', newLang);
         document.documentElement.dir = newLang === 'en' ? 'ltr' : 'rtl';
         document.documentElement.lang = newLang;
-        // Optionally refresh page or let React reactivity handle UI
-        window.location.reload(); 
+        // Optionally refresh page or let React reactivity handle UI 
     };
 
     const t = (key: string): string => {
