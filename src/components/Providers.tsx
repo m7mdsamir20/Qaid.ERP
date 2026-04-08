@@ -20,9 +20,9 @@ export function Providers({ children }: {
         const saved = localStorage.getItem('erp_theme') as 'dark' | 'light' | null;
         if (saved) {
             setTheme(saved);
-            document.documentElement.className = saved;
+            document.documentElement.setAttribute('data-theme', saved);
         } else {
-            document.documentElement.className = 'dark';
+            document.documentElement.setAttribute('data-theme', 'dark');
         }
 
         const handleWheel = (e: WheelEvent) => {
@@ -37,7 +37,7 @@ export function Providers({ children }: {
         const next = theme === 'dark' ? 'light' : 'dark';
         setTheme(next);
         localStorage.setItem('erp_theme', next);
-        document.documentElement.className = next;
+        document.documentElement.setAttribute('data-theme', next);
     };
 
     return (
