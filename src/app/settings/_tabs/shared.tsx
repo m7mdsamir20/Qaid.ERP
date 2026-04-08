@@ -12,7 +12,7 @@ export function Toggle({ checked, onChange, disabled }: { checked: boolean; onCh
     );
 }
 
-export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSaving, hideEditBtn, form, children }: any) {
+export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSaving, hideEditBtn, form, children, t }: any) {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', paddingBottom: '12px', borderBottom: `1px solid ${C.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -25,14 +25,14 @@ export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSavi
                 !isEdit ? (
                     <button onClick={onEdit}
                         style={{ ...BTN_PRIMARY(false, false), width: 'auto', height: '36px', padding: '0 18px', fontSize: '12.5px' }}>
-                        <Pencil size={14} /> <span style={{ marginInlineEnd: '6px' }}>تعديل البيانات</span>
+                        <Pencil size={14} /> <span style={{ marginInlineEnd: '6px' }}>{t ? t('تعديل البيانات') : 'تعديل البيانات'}</span>
                     </button>
                 ) : (
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button onClick={onSave} disabled={isSaving} form={form} type={form ? 'submit' : 'button'}
                             style={{ ...BTN_PRIMARY(false, isSaving), width: 'auto', height: '36px', padding: '0 18px', fontSize: '12.5px' }}>
                             {isSaving ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={14} />}
-                            <span style={{ marginInlineEnd: '6px' }}>حفظ التغييرات</span>
+                            <span style={{ marginInlineEnd: '6px' }}>{t ? t('حفظ التغييرات') : 'حفظ التغييرات'}</span>
                         </button>
                         <button type="button" onClick={onCancel}
                             style={{
@@ -45,7 +45,7 @@ export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSavi
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = C.textPrimary; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.color = C.textSecondary; }}
                         >
-                            <X size={14} /> إلغاء
+                            <X size={14} /> {t ? t('إلغاء') : 'إلغاء'}
                         </button>
                     </div>
                 )

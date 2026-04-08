@@ -1,5 +1,6 @@
 'use client';
-
+ 
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, BTN_PRIMARY } from '@/constants/theme';
 import { Store, Plus, Pencil, Trash2, Save, Loader2 } from 'lucide-react';
 import AppModal from '@/components/AppModal';
@@ -26,12 +27,15 @@ export default function BranchesTab({
     showBranchModal, setShowBranchModal, isSavingBranch, setIsSavingBranch,
     fetchBranches, showToast, session, setConfirmDelete
 }: BranchesTabProps) {
+    const { t } = useTranslation();
+
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '400px' }}>
             <TabHeader
-                title="إدارة الفروع"
-                sub="أضف وعدّل فروع شركتك - كل فرع له مخازن وخزائن وموظفين مستقلين"
+                title={t("إدارة الفروع")}
+                sub={t("أضف وعدّل فروع شركتك - كل فرع له مخازن وخزائن وموظفين مستقلين")}
                 hideEditBtn={true}
+                t={t}
             >
                 {/* زر إضافة فرع */}
                 {(session?.user as any)?.role === 'admin' && (
@@ -41,7 +45,7 @@ export default function BranchesTab({
                             const max = sub?.maxBranches ?? 1;
                             return (
                                 <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
-                                    {branches.length} / {max === 999 ? '∞' : max} فرع
+                                    {branches.length} / {max === 999 ? '∞' : max} {t('فرع')}
                                 </span>
                             );
                         })()}
@@ -49,7 +53,7 @@ export default function BranchesTab({
                             onClick={() => { setBranchForm({ name: '', code: '', address: '', phone: '' }); setEditingBranchId(null); setShowBranchModal(true); }}
                             style={{ ...BTN_PRIMARY(false, false), width: 'auto', height: '36px', padding: '0 16px', fontSize: '12.5px' }}
                         >
-                            <Plus size={14} /> إضافة فرع جديد
+                            <Plus size={14} /> {t('إضافة فرع جديد')}
                         </button>
                     </div>
                 )}
@@ -75,14 +79,14 @@ export default function BranchesTab({
                             </div>
                             <div>
                                 <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>
-                                    {b.name} {b.isMain && <span style={{ fontSize: '11px', background: C.primary + '20', color: C.primary, padding: '2px 8px', borderRadius: '20px', marginInlineEnd: '6px' }}>رئيسي</span>}
+                                    {b.name} {b.isMain && <span style={{ fontSize: '11px', background: C.primary + '20', color: C.primary, padding: '2px 8px', borderRadius: '20px', marginInlineEnd: '6px' }}>{t('رئيسي')}</span>}
                                 </div>
                                 <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>
-                                    {b.code && <span style={{ marginInlineStart: '12px' }}>كود: {b.code}</span>}
+                                    {b.code && <span style={{ marginInlineStart: '12px' }}>{t('كود')}: {b.code}</span>}
                                     {b.address && <span style={{ marginInlineStart: '12px' }}>{b.address}</span>}
                                     {b.phone && <span>{b.phone}</span>}
                                     <span style={{ marginInlineEnd: '12px' }}>
-                                        {b._count?.warehouses || 0} مخزن · {b._count?.treasuries || 0} خزينة · {b._count?.employees || 0} موظف
+                                        {b._count?.warehouses || 0} {t('مخزن')} · {b._count?.treasuries || 0} {t('خزينة')} · {b._count?.employees || 0} {t('موظف')}
                                     </span>
                                 </div>
                             </div>
@@ -102,13 +106,13 @@ export default function BranchesTab({
                     </div>
                 ))}
                 {branches.length === 0 && (
-                    <div style={{ textAlign: 'center', padding: '40px', color: C.textMuted, fontFamily: CAIRO }}>لا توجد فروع بعد</div>
+                    <div style={{ textAlign: 'center', padding: '40px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد فروع بعد')}</div>
                 )}
             </div>
 
             {/* Modal إضافة/تعديل فرع */}
             {showBranchModal && (
-                <AppModal show={showBranchModal} title={editingBranchId ? 'تعديل الفرع' : 'إضافة فرع جديد'} onClose={() => setShowBranchModal(false)}>
+                <AppModal show={showBranchModal} title={editingBranchId ? t('تعديل الفرع') : t('إضافة فرع جديد')} onClose={() => setShowBranchModal(false)}>
                     <form onSubmit={async (e) => {
                         e.preventDefault();
                         if (!branchForm.name.trim()) return;
@@ -120,22 +124,22 @@ export default function BranchesTab({
                                 body: JSON.stringify(editingBranchId ? { id: editingBranchId, ...branchForm } : branchForm)
                             });
                             if (res.ok) {
-                                showToast(editingBranchId ? 'تم تعديل الفرع ✓' : 'تم إضافة الفرع ✓');
+                                showToast(editingBranchId ? t('تم تعديل الفرع ✓') : t('تم إضافة الفرع ✓'));
                                 setShowBranchModal(false);
                                 fetchBranches();
                             } else {
                                 const d = await res.json();
-                                showToast(d.error || 'حدث خطأ', 'error');
+                                showToast(d.error || t('حدث خطأ'), 'error');
                             }
                         } finally {
                             setIsSavingBranch(false);
                         }
                     }} style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                         {[
-                            { key: 'name', label: 'اسم الفرع *', placeholder: 'مثال: فرع المعادي' },
-                            { key: 'code', label: 'كود الفرع', placeholder: 'مثال: BR-001' },
-                            { key: 'address', label: 'العنوان', placeholder: 'عنوان الفرع' },
-                            { key: 'phone', label: 'الهاتف', placeholder: 'رقم هاتف الفرع' },
+                            { key: 'name', label: t('اسم الفرع *'), placeholder: t('مثال: فرع المعادي') },
+                            { key: 'code', label: t('كود الفرع'), placeholder: t('مثال: BR-001') },
+                            { key: 'address', label: t('العنوان'), placeholder: t('عنوان الفرع') },
+                            { key: 'phone', label: t('الهاتف'), placeholder: t('رقم هاتف الفرع') },
                         ].map(f => (
                             <div key={f.key}>
                                 <label style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, display: 'block', marginBottom: '6px' }}>{f.label}</label>
@@ -151,7 +155,7 @@ export default function BranchesTab({
                         <button type="submit" disabled={isSavingBranch}
                             style={{ ...BTN_PRIMARY(false, isSavingBranch), marginTop: '8px' }}>
                             {isSavingBranch ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={15} />}
-                            {editingBranchId ? 'حفظ التعديلات' : 'إضافة الفرع'}
+                            {editingBranchId ? t('حفظ التعديلات') : t('إضافة الفرع')}
                         </button>
                     </form>
                 </AppModal>

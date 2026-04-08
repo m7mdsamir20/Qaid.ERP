@@ -1,8 +1,9 @@
 'use client';
 
-import { LucideIcon, Plus, ArrowRight } from 'lucide-react';
+import { LucideIcon, Plus, ArrowRight, ArrowLeft } from 'lucide-react';
 import { THEME, C, CAIRO } from '@/constants/theme';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/lib/i18n';
 
 interface PageHeaderProps {
     title: string;
@@ -39,6 +40,9 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     children
 }) => {
     const router = useRouter();
+    const { lang } = useTranslation();
+    const isRtl = lang === 'ar';
+    const BackIcon = isRtl ? ArrowRight : ArrowLeft;
     return (
         <div style={{ 
             display: 'flex', 
@@ -56,7 +60,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
-                        <ArrowRight size={22} />
+                        <BackIcon size={22} />
                     </button>
                 )}
                 {backButton && (
@@ -70,7 +74,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
-                        <ArrowRight size={18} /> {backButton.label}
+                        <BackIcon size={18} /> {backButton.label}
                     </button>
                 )}
                 <div style={{ 

@@ -1,5 +1,6 @@
 'use client';
-
+ 
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO } from '@/constants/theme';
 import { Package, BellRing, Clock, AlertCircle, Check } from 'lucide-react';
 import { TabHeader, Toggle } from './shared';
@@ -21,16 +22,19 @@ export default function NotificationsTab(props: NotificationsTabProps) {
         notificationsForm, setNotificationsForm, isSaving, saveSettings,
         isEditMode, setIsEditMode, fetchData, hasInstallmentsAccess, isServices
     } = props;
+    const { t } = useTranslation();
+
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
             <TabHeader
-                title="الإشعارات"
-                sub="تحكم في أنواع التنبيهات التي تظهر في النظام"
+                title={t("الإشعارات")}
+                sub={t("تحكم في أنواع التنبيهات التي تظهر في النظام")}
                 isEdit={isEditMode}
                 onEdit={() => setIsEditMode(true)}
                 onCancel={() => { setIsEditMode(false); fetchData(); }}
                 onSave={() => saveSettings('update_notifications', notificationsForm)}
                 isSaving={isSaving}
+                t={t}
             />
 
             <form onSubmit={e => { e.preventDefault(); saveSettings('update_notifications', notificationsForm); }}>
@@ -39,7 +43,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                 {!isServices && (
                     <>
                         <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            <Package size={14} /> إدارة تنبيهات المخزون
+                            <Package size={14} /> {t('إدارة تنبيهات المخزون')}
                         </div>
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', marginBottom: '24px' }}>
@@ -49,11 +53,11 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                     <div style={{ color: notificationsForm.lowStock?.enabled ? '#f59e0b' : C.textMuted }}>
                                         <Package size={16} />
                                     </div>
-                                    <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>تنبيه انخفاض المخزون</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تنبيه انخفاض المخزون')}</span>
                                 </div>
                                 <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                     <span style={{ fontSize: '14px', color: notificationsForm.lowStock?.enabled ? '#f59e0b' : C.textMuted, fontWeight: 900, fontFamily: CAIRO }}>
-                                        {notificationsForm.lowStock?.enabled ? 'مفعّل — نظام التتبع النشط' : 'معطّل'}
+                                        {notificationsForm.lowStock?.enabled ? t('مفعّل — نظام التتبع النشط') : t('معطّل')}
                                     </span>
                                     <Toggle
                                         checked={notificationsForm.lowStock?.enabled || false}
@@ -68,12 +72,12 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
                                     <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: isEditMode ? C.primary : C.textMuted }}><AlertCircle size={15} /></div>
-                                        <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>حد التنبيه</span>
+                                        <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('حد التنبيه')}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         {!isEditMode ? (
                                             <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
-                                                {notificationsForm.lowStock?.threshold || 10} وحدة متوفرة
+                                                {notificationsForm.lowStock?.threshold || 10} {t('وحدة متوفرة')}
                                             </div>
                                         ) : (
                                             <>
@@ -92,7 +96,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                                         value={notificationsForm.lowStock?.threshold || 10}
                                                         onChange={e => setNotificationsForm((p: any) => ({ ...p, lowStock: { ...p.lowStock, threshold: +e.target.value } }))}
                                                         style={{ width: '80px', height: '34px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.primary}30`, background: `${C.primary}05`, color: C.textPrimary, fontSize: '14px', fontWeight: 800, outline: 'none', textAlign: 'center', fontFamily: CAIRO }} />
-                                                    <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>وحدة</span>
+                                                    <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{t('وحدة')}</span>
                                                 </div>
                                             </>
                                         )}
@@ -107,15 +111,15 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                 {hasInstallmentsAccess && (
                     <>
                         <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                            <BellRing size={14} /> المدفوعات والمديونيات
+                            <BellRing size={14} /> {t('المدفوعات والمديونيات')}
                         </div>
 
                         <div style={{ background: C.card, border: `1px solid ${isEditMode ? `${C.primary}30` : C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', marginBottom: '16px' }}>
                             {[
                                 {
                                     key: 'latePayment', icon: <Clock size={16} />,
-                                    label: 'المتأخرات والأقساط',
-                                    desc: 'تنبيه بالأقساط والمديونيات التي تجاوزت موعد استحقاقها',
+                                    label: t('المتأخرات والأقساط'),
+                                    desc: t('تنبيه بالأقساط والمديونيات التي تجاوزت موعد استحقاقها'),
                                     activeColor: '#f59e0b',
                                 },
                             ].map((item, i, arr) => (
@@ -128,7 +132,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                     </div>
                                     <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                                         <span style={{ fontSize: '14px', color: notificationsForm[item.key]?.enabled ? item.activeColor : C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>
-                                            {notificationsForm[item.key]?.enabled ? `مفعّل — ${item.desc}` : 'معطّل'}
+                                            {notificationsForm[item.key]?.enabled ? `${t('مفعّل')} — ${item.desc}` : t('معطّل')}
                                         </span>
                                         <Toggle
                                             checked={notificationsForm[item.key]?.enabled || false}

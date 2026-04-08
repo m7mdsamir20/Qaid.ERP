@@ -362,12 +362,12 @@ export default function ItemsPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>جاري استخراج البيانات...</p>
+                        <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <Package size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? 'لا توجد نتائج بحث تطابق استفسارك' : 'لا توجد أصناف مسجلة حالياً'}</p>
+                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -438,7 +438,7 @@ export default function ItemsPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title={companyBusinessType === 'SERVICES' ? (form.id ? 'تعديل بيانات الخدمة' : 'إضافة خدمة جديدة') : (form.id ? 'تعديل بيانات الصنف' : 'إضافة صنف جديد')}
+                    title={companyBusinessType === 'SERVICES' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
                     icon={form.id ? Pencil : Plus}
                     maxWidth="640px"
                 >
@@ -446,7 +446,7 @@ export default function ItemsPage() {
                         
                         <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'SERVICES' || !usesBarcode) ? '140px 1fr' : '120px 160px 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? 'كود الخدمة' : 'كود الصنف'}</label>
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('كود الخدمة') : t('كود الصنف')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="text" readOnly disabled value={form.code} style={{ ...IS, textAlign: 'center', color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
                                     <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
@@ -455,23 +455,23 @@ export default function ItemsPage() {
                             
                             {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                 <div>
-                                    <label style={LS}>الباركود الإضافي</label>
-                                    <input type="text" placeholder="سكان الباركود..." value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, textAlign: 'center', fontFamily: INTER, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <label style={LS}>{t('الباركود الإضافي')}</label>
+                                    <input type="text" placeholder={t("سكان الباركود...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, textAlign: 'center', fontFamily: INTER, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             )}
 
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? 'اسم الخدمة' : 'اسم الصنف'} <span style={{ color: C.danger }}>*</span></label>
-                                <input type="text" required autoFocus placeholder={companyBusinessType === 'SERVICES' ? "مثال: استشارة قانونية" : (usesBarcode ? "مثال: زيت موتر 5 لتر" : "اسم المنتج")} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('اسم الخدمة') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
+                                <input type="text" required autoFocus placeholder={companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? 'تصنيف الخدمة' : 'التصنيف'}</label>
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('تصنيف الخدمة') : t('التصنيف')}</label>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <div style={{ flex: 1 }}>
-                                        <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder="اختر التصنيف..." maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
+                                        <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder={t("اختر التصنيف...")} maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
                                     </div>
                                     <button type="button" onClick={() => setShowAddCat(true)}
                                         style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, width: '42px', height: '42px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -484,22 +484,22 @@ export default function ItemsPage() {
                             </div>
                             {companyBusinessType === 'SERVICES' ? (
                                 <div>
-                                    <label style={LS}>حالة الخدمة</label>
+                                    <label style={LS}>{t('حالة الخدمة')}</label>
                                     <CustomSelect 
                                         value={form.status} 
                                         onChange={v => setForm({ ...form, status: v })} 
                                         options={[
-                                            { value: 'active', label: 'نشط', icon: Check },
-                                            { value: 'inactive', label: 'غير نشط', icon: X }
+                                            { value: 'active', label: t('نشط'), icon: Check },
+                                            { value: 'inactive', label: t('غير نشط'), icon: X }
                                         ]} 
                                     />
                                 </div>
                             ) : (
                                 <div>
-                                    <label style={LS}>وحدة القياس</label>
+                                    <label style={LS}>{t('وحدة القياس')}</label>
                                     <div style={{ display: 'flex', gap: '8px' }}>
                                         <div style={{ flex: 1 }}>
-                                            <CustomSelect value={form.unitId} onChange={v => setForm({ ...form, unitId: v })} placeholder="قطعة، كرتونة..." maxHeight="165px" options={unitsData.map(u => ({ value: u.id, label: u.name, icon: Package }))} />
+                                            <CustomSelect value={form.unitId} onChange={v => setForm({ ...form, unitId: v })} placeholder={t("قطعة، كرتونة...")} maxHeight="165px" options={unitsData.map(u => ({ value: u.id, label: u.name, icon: Package }))} />
                                         </div>
                                         <button type="button" onClick={() => setShowAddUnit(true)}
                                             style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, width: '42px', height: '42px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -515,11 +515,11 @@ export default function ItemsPage() {
 
                         {companyBusinessType === 'SERVICES' ? (
                             <div>
-                                <label style={LS}>وصف الخدمة</label>
+                                <label style={LS}>{t('وصف الخدمة')}</label>
                                 <textarea 
                                     value={form.description} 
                                     onChange={e => setForm({ ...form, description: e.target.value })} 
-                                    placeholder="اكتب تفاصيل الخدمة هنا ليتم سحبها في الفاتورة..."
+                                    placeholder={t("اكتب تفاصيل الخدمة هنا ليتم سحبها في الفاتورة...")}
                                     style={{ ...IS, height: '100px', padding: '10px', resize: 'none' }}
                                     onFocus={focusIn} onBlur={focusOut}
                                 />
@@ -528,14 +528,14 @@ export default function ItemsPage() {
                             <>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                     <div>
-                                        <label style={LS}>سعر التكلفة</label>
+                                        <label style={LS}>{t('سعر التكلفة')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={LS}>سعر البيع</label>
+                                        <label style={LS}>{t('سعر البيع')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
@@ -545,7 +545,7 @@ export default function ItemsPage() {
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                     <div>
-                                        <label style={LS}>حد الطلب <span style={{ color: C.textMuted, fontWeight: 500 }}>(تنبيه نقص المخزون)</span></label>
+                                        <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
                                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                             {!form.minLimit && (
                                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: INTER }}>
@@ -560,15 +560,15 @@ export default function ItemsPage() {
 
                                 {!form.id && (
                                     <div style={{ padding: '10px 14px', borderRadius: '12px', background: 'rgba(59,130,246,0.03)', border: `1px solid rgba(59,130,246,0.15)`, marginTop: '0px' }}>
-                                        <div style={{ ...STitle, marginBottom: '6px', color: C.primary }}><MapPin size={14} /> الرصيد الافتتاحي</div>
-                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات</p>
+                                        <div style={{ ...STitle, marginBottom: '6px', color: C.primary }}><MapPin size={14} /> {t('الرصيد الافتتاحي')}</div>
+                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>{t('اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات')}</p>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                             <div>
-                                                <label style={LS}>المخزن {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineEnd: '6px' }}>* مطلوب</span>}</label>
-                                                <CustomSelect value={form.warehouseId} onChange={v => { setForm({ ...form, warehouseId: v }); localStorage.setItem('last_warehouse_id', v); }} openUp={true} hideSearch={true} placeholder="اختر المخزن..." options={warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))} />
+                                                <label style={LS}>{t('المخزن')} {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineStart: '6px' }}>* {t('مطلوب')}</span>}</label>
+                                                <CustomSelect value={form.warehouseId} onChange={v => { setForm({ ...form, warehouseId: v }); localStorage.setItem('last_warehouse_id', v); }} openUp={true} hideSearch={true} placeholder={t("اختر المخزن...")} options={warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))} />
                                             </div>
                                             <div>
-                                                <label style={LS}>الكمية الافتتاحية</label>
+                                                <label style={LS}>{t('الكمية الافتتاحية')}</label>
                                                 <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                                     {!form.initialQuantity && (
                                                         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: INTER }}>
@@ -581,7 +581,7 @@ export default function ItemsPage() {
                                         </div>
                                         {form.initialQuantity > 0 && form.costPrice > 0 && (
                                             <div style={{ marginTop: '8px', padding: '6px 12px', borderRadius: '8px', background: 'rgba(59,130,246,0.08)', fontSize: '11px', color: C.primary, fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
-                                                <span>القيمة الإجمالية للمخزون</span>
+                                                <span>{t('القيمة الإجمالية للمخزون')}</span>
                                                 <span style={{ fontFamily: INTER }}>{(form.initialQuantity * form.costPrice).toLocaleString()} <span style={{ fontFamily: CAIRO }}>{currencySymbol}</span></span>
                                             </div>
                                         )}
@@ -592,9 +592,9 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'flex', gap: '12px', borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '0px' }}>
                             <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(59,130,246,0.3)' : 'linear-gradient(135deg,#3b82f6,#2563eb)', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? 'حفظ الخدمة' : 'إضافة الخدمة') : (form.id ? 'حفظ التعديلات' : 'إضافة الصنف'))}
+                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>تراجع</button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>
                         </div>
                     </form>
                 </AppModal>

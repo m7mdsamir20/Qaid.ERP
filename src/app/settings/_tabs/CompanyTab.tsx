@@ -1,9 +1,10 @@
 'use client';
-
-import { C, CAIRO, BTN_DANGER } from '@/constants/theme';
+ 
+import { useTranslation } from '@/lib/i18n';
+import { BTN_DANGER, C, CAIRO } from '@/constants/theme';
 import {
-    Building2, Globe, Phone, Mail, MapPin, Percent, FileText, AlignRight,
-    UploadCloud, Shield, Loader2, Trash2
+    AlignRight, Building2, FileText, Globe, Loader2, Mail, MapPin, Percent, Phone, Shield, Trash2,
+    UploadCloud
 } from 'lucide-react';
 import { TabHeader } from './shared';
 
@@ -25,28 +26,30 @@ export default function CompanyTab({
     isEditMode, setIsEditMode, companyForm, setCompanyForm,
     isSaving, handleCancel, saveSettings, showToast
 }: CompanyTabProps) {
+    const { t } = useTranslation();
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
             <TabHeader
-                title="بيانات الشركة والمؤسسة"
-                sub="الهوية المؤسسية، بيانات الاتصال، والبيانات القانونية"
+                title={t("بيانات الشركة والمؤسسة")}
+                sub={t("الهوية المؤسسية، بيانات الاتصال، والبيانات القانونية")}
                 isEdit={isEditMode}
                 onEdit={() => setIsEditMode(true)}
                 onCancel={handleCancel}
                 form="companyForm"
                 isSaving={isSaving}
+                t={t}
             />
 
             <form id="companyForm" onSubmit={e => { e.preventDefault(); saveSettings('update_company', companyForm); }}>
                 {/* ══ الهوية المؤسسية ══ */}
                 <div style={{ marginBottom: '24px' }}>
                     <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        <Building2 size={14} /> الهوية المؤسسية
+                        <Building2 size={14} /> {t('الهوية المؤسسية')}
                     </div>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: 'اسم الشركة (عربي)', key: 'name', dir: 'rtl', icon: <FileText size={15} />, placeholder: 'أدخل الاسم بالعربية' },
-                            { label: 'اسم الشركة (EN)', key: 'nameEn', dir: 'ltr', icon: <AlignRight size={15} />, placeholder: 'Enter name in English' },
+                            { label: t('اسم الشركة (عربي)'), key: 'name', dir: 'rtl', icon: <FileText size={15} />, placeholder: t('أدخل الاسم بالعربية') },
+                            { label: t('اسم الشركة (EN)'), key: 'nameEn', dir: 'ltr', icon: <AlignRight size={15} />, placeholder: t('Enter name in English') },
                         ].map((f, i) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
                                 <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
@@ -57,7 +60,7 @@ export default function CompanyTab({
                                     {isEditMode ? (
                                         <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
                                     )}
                                 </div>
                             </div>
@@ -67,7 +70,7 @@ export default function CompanyTab({
                         <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', gap: '20px' }}>
                             <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', borderInlineStart: `1px solid ${C.border}` }}>
                                 <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}><UploadCloud size={15} /></div>
-                                <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>شعار المؤسسة</span>
+                                <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('شعار المؤسسة')}</span>
                             </div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                 <div style={{
@@ -128,7 +131,7 @@ export default function CompanyTab({
                                                 display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
                                                 transition: 'all 0.2s', boxShadow: `0 4px 12px ${C.primary}10`
                                             }}>
-                                                <UploadCloud size={16} /> رفع شعار
+                                                <UploadCloud size={16} /> {t('رفع شعار')}
                                                 <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async e => {
                                                     const file = e.target.files?.[0]; if (!file) return;
                                                     const fd = new FormData(); fd.append('file', file);
@@ -138,7 +141,7 @@ export default function CompanyTab({
                                                             const d = await r.json();
                                                             if (d.url) {
                                                                 setCompanyForm((p: any) => ({ ...p, logo: d.url }));
-                                                                showToast('تم رفع الشعار بنجاح ✓');
+                                                                showToast(t('تم رفع الشعار بنجاح ✓'));
                                                             }
                                                         } else {
                                                             const d = await r.json().catch(() => ({ error: '' }));
@@ -148,19 +151,19 @@ export default function CompanyTab({
                                                                 reader.onload = (event) => {
                                                                     const base64 = event.target?.result as string;
                                                                     if (base64.length > 800000) { // Approx 800KB limit for safe DB storage
-                                                                        showToast('حجم الصورة كبير جداً للحفظ ككود، يرجى استخدام صورة أصغر أو رابط خارجي', 'error');
+                                                                        showToast(t('حجم الصورة كبير جداً للحفظ ككود، يرجى استخدام صورة أصغر أو رابط خارجي'), 'error');
                                                                         return;
                                                                     }
                                                                     setCompanyForm((p: any) => ({ ...p, logo: base64 }));
-                                                                    showToast('تم حفظ الشعار ككود (نظرًا لقيود الاستضافة) ✓');
+                                                                    showToast(t('تم حفظ الشعار ككود (نظرًا لقيود الاستضافة) ✓'));
                                                                 };
                                                                 reader.readAsDataURL(file);
                                                             } else {
-                                                                showToast(d.error || 'فشل رفع الملف', 'error');
+                                                                showToast(d.error || t('فشل رفع الملف'), 'error');
                                                             }
                                                         }
                                                     } catch (err) {
-                                                        showToast('خطأ في الاتصال بالسيرفر', 'error');
+                                                        showToast(t('خطأ في الاتصال بالسيرفر'), 'error');
                                                     }
                                                 }} />
                                             </label>
@@ -180,7 +183,7 @@ export default function CompanyTab({
                                             )}
                                         </div>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                            <label style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>أو ضع رابط الشعار المباشر هنا:</label>
+                                            <label style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t('أو ضع رابط الشعار المباشر هنا:')}</label>
                                             <input 
                                                 value={companyForm.logo?.startsWith('data:') ? 'صورة محفوظة ككود (Base64)' : companyForm.logo}
                                                 onChange={e => {
@@ -202,14 +205,14 @@ export default function CompanyTab({
                 {/* ══ بيانات الاتصال ══ */}
                 <div style={{ marginBottom: '24px' }}>
                     <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        <Globe size={14} /> بيانات الاتصال
+                        <Globe size={14} /> {t('بيانات الاتصال')}
                     </div>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: 'رقم الهاتف', key: 'phone', dir: 'ltr', icon: <Phone size={15} />, placeholder: '+20 100 000 0000' },
-                            { label: 'البريد الإلكتروني', key: 'email', dir: 'ltr', icon: <Mail size={15} />, placeholder: 'info@company.com' },
-                            { label: 'العنوان', key: 'address', dir: 'rtl', icon: <MapPin size={15} />, placeholder: 'القاهرة، مصر' },
-                            { label: 'الموقع الإلكتروني', key: 'website', dir: 'ltr', icon: <Globe size={15} />, placeholder: 'www.company.com' },
+                            { label: t('رقم الهاتف'), key: 'phone', dir: 'ltr', icon: <Phone size={15} />, placeholder: '+20 100 000 0000' },
+                            { label: t('البريد الإلكتروني'), key: 'email', dir: 'ltr', icon: <Mail size={15} />, placeholder: 'info@company.com' },
+                            { label: t('العنوان'), key: 'address', dir: 'rtl', icon: <MapPin size={15} />, placeholder: t('القاهرة، مصر') },
+                            { label: t('الموقع الإلكتروني'), key: 'website', dir: 'ltr', icon: <Globe size={15} />, placeholder: 'www.company.com' },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', gap: '0', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                 <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
@@ -220,7 +223,7 @@ export default function CompanyTab({
                                     {isEditMode ? (
                                         <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
                                     )}
                                 </div>
                             </div>
@@ -231,12 +234,12 @@ export default function CompanyTab({
                 {/* ══ البيانات القانونية ══ */}
                 <div style={{ marginBottom: '24px' }}>
                     <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                        <Shield size={14} /> البيانات القانونية
+                        <Shield size={14} /> {t('البيانات القانونية')}
                     </div>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: 'الرقم الضريبي', key: 'taxNumber', dir: 'ltr', icon: <Percent size={15} />, placeholder: '000-000-000' },
-                            { label: 'السجل التجاري', key: 'commercialRegister', dir: 'ltr', icon: <FileText size={15} />, placeholder: '000000' },
+                            { label: t('الرقم الضريبي'), key: 'taxNumber', dir: 'ltr', icon: <Percent size={15} />, placeholder: '000-000-000' },
+                            { label: t('السجل التجاري'), key: 'commercialRegister', dir: 'ltr', icon: <FileText size={15} />, placeholder: '000000' },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                 <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
@@ -247,7 +250,7 @@ export default function CompanyTab({
                                     {isEditMode ? (
                                         <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
                                     )}
                                 </div>
                             </div>
