@@ -20,12 +20,12 @@ export const POST = withProtection(async (request, session, body) => {
         if (quotation.status === 'converted') return NextResponse.json({ error: 'عرض السعر تم تحويله بالفعل' }, { status: 400 });
 
         // ② فحص المخزون قبل التحويل — للنشاط التجاري فقط
-        if (!isServices && quotation.warehouseId) {
+        if (!isServices && (quotation as any).warehouseId) {
             const itemIds = quotation.lines.map((l: any) => l.itemId).filter(Boolean);
             if (itemIds.length > 0) {
                 const [stocks, itemNames] = await Promise.all([
                     prisma.stock.findMany({
-                        where: { itemId: { in: itemIds }, warehouseId: quotation.warehouseId },
+                        where: { itemId: { in: itemIds }, warehouseId: (quotation as any).warehouseId },
                         select: { itemId: true, quantity: true }
                     }),
                     prisma.item.findMany({
