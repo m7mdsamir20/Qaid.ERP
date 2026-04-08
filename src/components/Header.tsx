@@ -487,8 +487,8 @@ export default function Header() {
     return (
         <header style={{
             height: '64px', position: 'fixed', top: 0, 
-            [isRtl ? 'right' : 'left']: '260px', 
-            [isRtl ? 'left' : 'right']: 0, 
+            right: isRtl ? '260px' : 0, 
+            left: isRtl ? 0 : '260px', 
             zIndex: 800,
             background: 'rgba(7, 13, 26, 0.7)', backdropFilter: 'blur(12px)',
             borderBottom: `1px solid ${C.border}`, display: 'flex',
