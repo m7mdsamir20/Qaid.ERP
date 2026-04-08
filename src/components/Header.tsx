@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
 import { Avatar } from '@/components/UserAvatar';
+import { useTheme } from '@/components/Providers';
 
 /* ══════════════════════════════════════════
    TYPES & MOCK DATA
@@ -153,6 +154,7 @@ function SearchBox() {
 function Actions() {
     const { data: session, status: sessionStatus } = useSession();
     const { lang, t, toggleLang } = useTranslation();
+    const { theme, toggleTheme } = useTheme();
     const isRtl = lang === 'ar';
     const [openUser, setOpenUser] = useState(false);
     const [openNotif, setOpenNotif] = useState(false);
@@ -323,14 +325,17 @@ function Actions() {
                                     {lang === 'ar' ? 'EN' : 'ع'}
                                 </button>
                                 <button
+                                    onClick={() => toggleTheme()}
                                     title="تبديل المظهر"
                                     style={{
-                                        width: '28px', height: '28px', borderRadius: '8px', cursor: 'not-allowed',
-                                        background: 'transparent', color: C.textSecondary,
-                                        border: `1px solid ${C.border}`, opacity: 0.7,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px'
+                                        width: '28px', height: '28px', borderRadius: '8px', cursor: 'pointer',
+                                        background: theme === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(0,0,0,0.05)', 
+                                        color: theme === 'dark' ? '#fbbf24' : C.primary,
+                                        border: `1px solid ${C.border}`,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px',
+                                        transition: '0.2s'
                                     }}>
-                                    🌙
+                                    {theme === 'dark' ? '🌞' : '🌙'}
                                 </button>
                             </div>
                         </div>
@@ -409,15 +414,17 @@ function BranchSwitcher() {
                 style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
                     height: '36px', padding: '0 12px', borderRadius: '10px',
-                    background: `${C.primary}10`, border: `1px solid ${C.primary}30`,
+                    background: 'var(--primary-bg)', 
+                    border: '1px solid var(--primary-border)',
                     cursor: 'pointer', transition: '0.2s',
-                    flexDirection: isRtl ? 'row' : 'row'
+                    flexDirection: isRtl ? 'row' : 'row',
+                    boxShadow: '0 2px 8px rgba(37,106,244,0.1)'
                 }}>
-                <GitBranch size={14} color={C.primary} />
-                 <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
+                <GitBranch size={14} color="var(--primary)" />
+                 <span style={{ fontSize: '13px', fontWeight: 800, color: 'var(--primary)', fontFamily: CAIRO }}>
                     {activeBranchId === 'all' || !activeBranchId ? t('كل الفروع') : t(activeBranch?.name || '')}
                 </span>
-                <ChevronDown size={14} color={C.primary} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+                <ChevronDown size={14} color="var(--primary)" style={{ transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
             </button>
 
             {open && (
@@ -484,8 +491,10 @@ export default function Header() {
             insetInlineStart: '260px',
             insetInlineEnd: 0,
             zIndex: 800,
-            background: 'rgba(7, 13, 26, 0.7)', backdropFilter: 'blur(12px)',
-            borderBottom: `1px solid ${C.border}`, display: 'flex',
+            background: 'var(--modal-overlay)', 
+            backdropFilter: 'blur(12px)',
+            borderBottom: `1px solid var(--border-app)`, 
+            display: 'flex',
             alignItems: 'center', padding: '0 24px'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 

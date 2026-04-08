@@ -146,11 +146,18 @@ export default function RegisterPage() {
             <div style={{ position: 'absolute', top: '24px', insetInlineEnd: '24px', display: 'flex', gap: '12px', zIndex: 100 }}>
                 {/* زر اللغة */}
                 <button onClick={toggleLang}
-                    style={{ background: THEME.glass.card.background, border: THEME.glass.card.border, backdropFilter: 'blur(10px)', color: C.textPrimary, padding: '8px 16px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 700, fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}
+                    title={lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
+                    style={{
+                        width: '40px', height: '40px', borderRadius: '12px', cursor: 'pointer',
+                        background: THEME.glass.card.background, color: C.primary,
+                        border: THEME.glass.card.border, backdropFilter: 'blur(10px)',
+                        fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO, fontWeight: 900, fontSize: lang === 'ar' ? '12px' : '14px',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s',
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+                    }}
                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                     onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                    <Languages size={16} color={C.primary} />
-                    {lang === 'ar' ? 'English' : 'العربية'}
+                    {lang === 'ar' ? 'EN' : 'ع'}
                 </button>
 
                 {/* زر الثيم */}
