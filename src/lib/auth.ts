@@ -122,11 +122,9 @@ export const authOptions: AuthOptions = {
                 if (u.avatar) token.avatar = u.avatar;
             }
 
-            // مزامنة البيانات مع قاعدة البيانات عند الريفريش (JWT refresh)
-            // مع إضافة cooldown لمدة 60 ثانية لتقليل الضغط على قاعدة البيانات
-            const now = Date.now();
-            const lastSync = (token.lastSync as number) || 0;
-            const shouldSync = !user && token.id && (now - lastSync > 60000);
+            // مكرر: تحديث البيانات مع قاعدة البيانات عند كل ريفريش لضمان تفعيل الصلاحيات فوراً
+            // تم إلغاء الـ cooldown بناءً على طلب المستخدم لضمان الاستجابة اللحظية
+            const shouldSync = !user && token.id;
 
             if (shouldSync) {
                 try {
@@ -150,7 +148,7 @@ export const authOptions: AuthOptions = {
                     });
 
                     if (dbUser) {
-                        token.lastSync = now;
+                        token.lastSync = Date.now();
                         token.role = dbUser.role;
                         token.isSuperAdmin = !!dbUser.isSuperAdmin;
                         token.businessType = dbUser.company?.businessType || 'TRADING';
