@@ -4,6 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
 import { ScrollText, Search, Loader2, ArrowUpRight, ArrowDownRight, ChevronDown, FileText, Trash2, Receipt } from 'lucide-react';
 import { C, CAIRO, INTER, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { useTranslation } from '@/lib/i18n';
 
 /* ── Types ── */
 interface Account { id: string; code: string; name: string; type: string; accountCategory?: string; nature: string; }
@@ -25,12 +26,14 @@ const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2,
 const typeColors: Record<string, string> = {
     asset: '#10b981', liability: '#f87171', equity: '#a78bfa', revenue: '#60a5fa', expense: '#fb923c',
 };
-const typeLabels: Record<string, string> = {
-    asset: 'أصول', liability: 'خصوم', equity: 'حقوق ملكية', revenue: 'إيرادات', expense: 'مصروفات',
-};
 
 /* ══════════════════════════════════════════ */
 export default function GeneralLedgerPage() {
+    const { t } = useTranslation();
+
+    const typeLabels: Record<string, string> = {
+        asset: t('أصول'), liability: t('خصوم'), equity: t('حقوق ملكية'), revenue: t('إيرادات'), expense: t('مصروفات'),
+    };
 
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [selectedAccount, setSelectedAccount] = useState('');
@@ -101,9 +104,9 @@ export default function GeneralLedgerPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                 <div>
                     <h1 className="page-title">
-                        <ScrollText size={20} style={{ color: '#3b82f6' }} /> كشف حساب عام
+                        <ScrollText size={20} style={{ color: '#3b82f6' }} /> {t('كشف حساب عام')}
                     </h1>
-                    <p className="page-subtitle">عرض وتتبع كافة الحركات المالية لأي حساب — كشف حركة الأستاذ</p>
+                    <p className="page-subtitle">{t('عرض وتتبع كافة الحركات المالية لأي حساب — كشف حركة الأستاذ')}</p>
                 </div>
             </div>
 
@@ -113,11 +116,11 @@ export default function GeneralLedgerPage() {
                 {/* Account Selector */}
                 <div style={{ position: 'relative' }}>
                     <label style={{ display: 'block', fontSize: '11px', color: '#475569', fontWeight: 700, marginBottom: '4px' }}>
-                        الحساب <span style={{ color: '#f87171' }}>*</span>
+                        {t('الحساب')} <span style={{ color: '#f87171' }}>*</span>
                     </label>
                     <div style={{ position: 'relative' }}>
                         <input
-                            placeholder={loadingAccounts ? 'جاري التحميل...' : 'ابحث عن الحساب بالاسم أو الكود...'}
+                            placeholder={loadingAccounts ? t('جاري التحميل...') : t('ابحث عن الحساب بالاسم أو الكود...')}
                             value={accountSearch}
                             onChange={e => { setAccountSearch(e.target.value); setShowAccountList(true); }}
                             onFocus={() => {
@@ -171,7 +174,7 @@ export default function GeneralLedgerPage() {
 
                 {/* From Date */}
                 <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#475569', fontWeight: 700, marginBottom: '4px' }}>من تاريخ</label>
+                    <label style={{ display: 'block', fontSize: '11px', color: '#475569', fontWeight: 700, marginBottom: '4px' }}>{t('من تاريخ')}</label>
                     <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
                         style={{ ...IS, height: '38px', direction: 'ltr', textAlign: 'end', colorScheme: 'dark', fontSize: '13px', borderRadius: '8px' }}
                         onFocus={focusIn} onBlur={focusOut} />
@@ -179,7 +182,7 @@ export default function GeneralLedgerPage() {
 
                 {/* To Date */}
                 <div>
-                    <label style={{ display: 'block', fontSize: '11px', color: '#475569', fontWeight: 700, marginBottom: '4px' }}>إلى تاريخ</label>
+                    <label style={{ display: 'block', fontSize: '11px', color: '#475569', fontWeight: 700, marginBottom: '4px' }}>{t('إلى تاريخ')}</label>
                     <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
                         style={{ ...IS, height: '38px', direction: 'ltr', textAlign: 'end', colorScheme: 'dark', fontSize: '13px', borderRadius: '8px' }}
                         onFocus={focusIn} onBlur={focusOut} />
@@ -190,23 +193,23 @@ export default function GeneralLedgerPage() {
                 /* No account selected */
                 <div style={{ textAlign: 'center', padding: '100px 20px', color: '#475569' }}>
                     <ScrollText size={64} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.07 }} />
-                    <p style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#334155' }}>اختر الحساب</p>
-                    <p style={{ margin: '8px 0 0', fontSize: '13px' }}>ابحث عن الحساب أعلاه لعرض حركاته</p>
+                    <p style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#334155' }}>{t('اختر الحساب')}</p>
+                    <p style={{ margin: '8px 0 0', fontSize: '13px' }}>{t('ابحث عن الحساب أعلاه لعرض حركاته')}</p>
                 </div>
             ) : loading ? (
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: '#475569' }}>
                     <Loader2 size={36} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span>جاري تحميل الحركات...</span>
+                    <span>{t('جاري تحميل الحركات...')}</span>
                 </div>
             ) : (
                 <>
                     {/* ── Stats ── */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '10px', marginBottom: '16px' }}>
                         {[
-                            { label: 'الرصيد الافتتاحي', value: fmt(openingBalance), color: '#60a5fa' },
-                            { label: 'إجمالي المدين', value: fmt(totalDebit), color: '#10b981' },
-                            { label: 'إجمالي الدائن', value: fmt(totalCredit), color: '#f87171' },
-                            { label: 'الرصيد الختامي', value: fmt(closingBalance), color: tColor },
+                            { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#60a5fa' },
+                            { label: t('إجمالي المدين'), value: fmt(totalDebit), color: '#10b981' },
+                            { label: t('إجمالي الدائن'), value: fmt(totalCredit), color: '#f87171' },
+                            { label: t('الرصيد الختامي'), value: fmt(closingBalance), color: tColor },
                         ].map((s, i) => (
                             <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '10px 12px' }}>
                                 <div style={{ fontSize: '11px', color: '#475569', fontWeight: 600, marginBottom: '2px' }}>{s.label}</div>
@@ -219,26 +222,26 @@ export default function GeneralLedgerPage() {
                     <div style={SEARCH_STYLE.container}>
                         <div style={SEARCH_STYLE.wrapper}>
                             <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
-                            <input 
-                                placeholder="ابحث في تفاصيل القيود أو البيان..." 
+                            <input
+                                placeholder={t('ابحث في تفاصيل القيود أو البيان...')}
                                 value={search}
                                 onChange={e => setSearch(e.target.value)}
-                                style={SEARCH_STYLE.input} 
+                                style={SEARCH_STYLE.input}
                                 onFocus={focusIn} onBlur={focusOut}
                             />
                         </div>
                         {search && (
-                            <button 
+                            <button
                                 onClick={() => setSearch('')}
-                                style={{ 
+                                style={{
                                     display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '42px',
-                                    background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
+                                    background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                     borderRadius: '10px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                                 }}
                                 onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                             >
-                                <Trash2 size={14} /> مسح
+                                <Trash2 size={14} /> {t('مسح')}
                             </button>
                         )}
                     </div>
@@ -247,20 +250,20 @@ export default function GeneralLedgerPage() {
                     {filtered.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '60px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '14px' }}>
                             <FileText size={48} style={{ margin: '0 auto 12px', display: 'block', opacity: 0.08 }} />
-                            <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>لا توجد حركات في هذه الفترة</p>
+                            <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات في هذه الفترة')}</p>
                         </div>
                     ) : (
                         <div style={TABLE_STYLE.container}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>رقم القيد</th>
-                                        <th style={TABLE_STYLE.th(false)}>البيان</th>
-                                        <th style={TABLE_STYLE.th(false)}>مركز التكلفة</th>
-                                        <th style={TABLE_STYLE.th(false)}>مدين</th>
-                                        <th style={TABLE_STYLE.th(false)}>دائن</th>
-                                        <th style={TABLE_STYLE.th(false)}>الرصيد</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('مراكز التكلفة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('مدين')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('دائن')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الرصيد')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -268,7 +271,7 @@ export default function GeneralLedgerPage() {
                                     {/* Opening Balance Row */}
                                     <tr style={{ background: 'rgba(59,130,246,0.06)', borderBottom: `1px solid ${C.border}` }}>
                                         <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
-                                            {fromDate ? `رصيد مرحّل حتى ${new Date(fromDate).toLocaleDateString('en-GB')}` : 'الرصيد الافتتاحي'}
+                                            {fromDate ? `${t('رصيد مرحّل حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')}` : t('الرصيد الافتتاحي')}
                                         </td>
                                         <td colSpan={2} style={TABLE_STYLE.td(false)} />
                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 800, color: C.primary, direction: 'ltr' }}>
@@ -343,7 +346,7 @@ export default function GeneralLedgerPage() {
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.04)', borderTop: `1px solid ${C.border}` }}>
                                         <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>
-                                            الإجمالي — {filtered.length} حركة
+                                            {t('الإجمالي')} — {filtered.length} {t('حركة')}
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '14px', fontWeight: 900, color: '#10b981', direction: 'ltr' }}>
                                             {fmt(totalDebit)}
@@ -365,4 +368,3 @@ export default function GeneralLedgerPage() {
         </DashboardLayout>
     );
 }
-

@@ -13,6 +13,7 @@ import {
 } from '@/constants/theme';
 import Pagination from '@/components/Pagination';
 import PageHeader from '@/components/PageHeader';
+import { useTranslation } from '@/lib/i18n';
 
 /* ── Types ── */
 interface AccountInfo { id: string; code: string; name: string; type: string; accountCategory?: string; nature?: string; }
@@ -30,14 +31,17 @@ interface JournalEntry {
 }
 const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2 });
 
-const refTypeLabels: Record<string, string> = {
-    invoice: 'فاتورة', payment: 'سند دفع', receipt: 'سند قبض', manual: 'يدوي',
-};
+// refTypeLabels is initialized inside the component to support i18n
 
 /* ══════════════════════════════════════════ */
 export default function JournalEntriesPage() {
     const { data: session } = useSession();
     const { symbol: currencySymbol } = useCurrency();
+    const { t } = useTranslation();
+
+    const refTypeLabels: Record<string, string> = {
+        invoice: t('فاتورة'), payment: t('سند دفع'), receipt: t('سند قبض'), manual: t('يدوي'),
+    };
     const [entries, setEntries] = useState<JournalEntry[]>([]);
     const [accounts, setAccounts] = useState<AccountInfo[]>([]);
     const [costCenters, setCostCenters] = useState<CostCenter[]>([]);
@@ -127,11 +131,11 @@ export default function JournalEntriesPage() {
         e.preventDefault();
         setFormError(null);
         if (!isBalanced) {
-            setFormError(`القيد غير متزن — الفرق: ${fmt(Math.abs(totalDebit - totalCredit))}`);
+            setFormError(`${t('القيد غير متزن')} — ${t('الفرق')}: ${fmt(Math.abs(totalDebit - totalCredit))}`);
             return;
         }
         if (form.lines.some(l => !l.accountId)) {
-            setFormError('يجب اختيار الحساب لجميع أطراف القيد');
+            setFormError(t('يجب اختيار الحساب لجميع أطراف القيد'));
             return;
         }
         setSubmitting(true);
@@ -141,7 +145,7 @@ export default function JournalEntriesPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...form, isPosted: postAfterSave }),
             });
-            if (!res.ok) { const d = await res.json(); throw new Error(d.error || 'فشل الحفظ'); }
+            if (!res.ok) { const d = await res.json(); throw new Error(d.error || t('فشل الحفظ')); }
             setView('list');
             setForm({ date: new Date().toISOString().split('T')[0], description: '', reference: '', lines: [emptyLine(), emptyLine()] });
             await fetchEntries();
@@ -181,12 +185,12 @@ export default function JournalEntriesPage() {
 
     return (
         <DashboardLayout>
-            <PageHeader 
-                title="قيود اليومية العامة"
-                subtitle="إثبات وتوثيق كافة العمليات المالية بالدفاتر — الضبط المحاسبي المزدوج"
+            <PageHeader
+                title={t("قيود اليومية العامة")}
+                subtitle={t("إثبات وتوثيق كافة العمليات المالية بالدفاتر — الضبط المحاسبي المزدوج")}
                 icon={FileText}
                 primaryButton={canCreate && view === 'list' ? {
-                    label: 'قيد يومية جديد',
+                    label: t('قيد يومية جديد'),
                     onClick: () => { setFormError(null); setView('create'); },
                     icon: Plus
                 } : undefined}
@@ -197,10 +201,10 @@ export default function JournalEntriesPage() {
                     {/* ── Stats ── */}
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي القيود', value: entries.length, color: C.blue, icon: <FileText size={18} /> },
-                            { label: 'قيود مرحّلة', value: postedCount, color: C.success, icon: <CheckCircle2 size={18} /> },
-                            { label: 'مسودات', value: draftCount, color: C.warning, icon: <Clock size={18} /> },
-                            { label: 'إجمالي المبالغ', value: totalAmt.toLocaleString('en-US'), color: C.purple, icon: <Send size={18} />, small: true, suffix: currencySymbol },
+                            { label: t('إجمالي القيود'), value: entries.length, color: C.blue, icon: <FileText size={18} /> },
+                            { label: t('قيود مرحّلة'), value: postedCount, color: C.success, icon: <CheckCircle2 size={18} /> },
+                            { label: t('مسودات'), value: draftCount, color: C.warning, icon: <Clock size={18} /> },
+                            { label: t('إجمالي المبالغ'), value: totalAmt.toLocaleString('en-US'), color: C.purple, icon: <Send size={18} />, small: true, suffix: currencySymbol },
                         ].map((s, i) => (
                             <div key={i} style={{ ...SC, ...KPI_STYLE(s.color), padding: '16px 20px', justifyContent: 'flex-start' }}>
                                 <div style={KPI_ICON(s.color)}>
@@ -220,8 +224,8 @@ export default function JournalEntriesPage() {
                     <div style={SEARCH_STYLE.container}>
                         <div style={SEARCH_STYLE.wrapper}>
                             <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
-                            <input 
-                                placeholder="ابحث برقم القيد، الوصف، أو المرجع..." 
+                            <input
+                                placeholder={t("ابحث برقم القيد، الوصف، أو المرجع...")}
                                 value={search} onChange={e => setSearch(e.target.value)}
                                 style={SEARCH_STYLE.input} 
                                 onFocus={focusIn} onBlur={focusOut} 
@@ -229,7 +233,7 @@ export default function JournalEntriesPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '8px' }}>
-                            {([['all', 'الكل'], ['posted', 'مرحّل'], ['draft', 'مسودة']] as const).map(([val, label]) => (
+                            {([['all', t('الكل')], ['posted', t('مرحّل')], ['draft', t('مسودة')]] as [string, string][]).map(([val, label]) => (
                                 <button key={val} onClick={() => setFilterStatus(val)}
                                     style={{ 
                                         height: '42px', padding: '0 20px', borderRadius: '12px', 
@@ -252,26 +256,26 @@ export default function JournalEntriesPage() {
                     {loading ? (
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: '#475569' }}>
                             <Loader2 size={36} style={{ animation: 'spin 1s linear infinite' }} />
-                            <span>جاري التحميل...</span>
+                            <span>{t('جاري التحميل...')}</span>
                         </div>
                     ) : filteredAll.length === 0 ? (
                         <div style={{ textAlign: 'center', padding: '80px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '14px' }}>
                             <FileText size={56} style={{ margin: '0 auto 14px', display: 'block', opacity: 0.08 }} />
-                            <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#334155' }}>{search ? 'لا توجد نتائج' : 'لا توجد قيود بعد'}</p>
-                            <p style={{ margin: '8px 0 0', fontSize: '13px' }}>اضغط "قيد جديد" للبدء</p>
+                            <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: '#334155' }}>{search ? t('لا توجد نتائج') : t('لا توجد قيود بعد')}</p>
+                            <p style={{ margin: '8px 0 0', fontSize: '13px' }}>{t('اضغط "قيد جديد" للبدء')}</p>
                         </div>
                     ) : (
                         <div style={TABLE_STYLE.container}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم القيد</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>البيان / الوصف العام</th>
-                                        <th style={TABLE_STYLE.th(false)}>المرجع</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'end' }}>المبلغ الإجمالي</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>التفاصيل</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('رقم القيد')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('البيان / الوصف العام')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المرجع')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'end' }}>{t('المبلغ الإجمالي')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التفاصيل')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -296,7 +300,7 @@ export default function JournalEntriesPage() {
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         {entry.reference ? (
                                                             <span style={{ fontSize: '11px', color: C.textMuted, background: C.inputBg, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>
-                                                                {refTypeLabels[entry.referenceType || ''] || 'مرجع'}: {entry.reference}
+                                                                {refTypeLabels[entry.referenceType || ''] || t('مرجع')}: {entry.reference}
                                                             </span>
                                                         ) : '—'}
                                                     </td>
@@ -313,7 +317,7 @@ export default function JournalEntriesPage() {
                                                                         ...(entry.isPosted ? { background: C.successBg, color: C.success, borderColor: C.successBorder } : { background: C.warningBg, color: C.warning, borderColor: C.warningBorder }) 
                                                                     }}
                                                                 >
-                                                                    {posting === entry.id ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} /> : entry.isPosted ? <><CheckCircle2 size={11} /> مرحّل</> : <><Clock size={11} /> مسودة</>}
+                                                                    {posting === entry.id ? <Loader2 size={11} style={{ animation: 'spin 1s linear infinite' }} /> : entry.isPosted ? <><CheckCircle2 size={11} /> {t('مرحّل')}</> : <><Clock size={11} /> {t('مسودة')}</>}
                                                                 </button>
                                                             ) : (
                                                                 <span style={{ 
@@ -321,7 +325,7 @@ export default function JournalEntriesPage() {
                                                                     fontSize: '11px', fontWeight: 800, fontFamily: CAIRO,
                                                                     ...(entry.isPosted ? { background: C.successBg, color: C.success, borderColor: C.successBorder } : { background: C.warningBg, color: C.warning, borderColor: C.warningBorder }) 
                                                                 }}>
-                                                                    {entry.isPosted ? <><CheckCircle2 size={11} /> مرحّل</> : <><Clock size={11} /> مسودة</>}
+                                                                    {entry.isPosted ? <><CheckCircle2 size={11} /> {t('مرحّل')}</> : <><Clock size={11} /> {t('مسودة')}</>}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -348,11 +352,11 @@ export default function JournalEntriesPage() {
                                                                 <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                                                                     <thead>
                                                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>الحساب</th>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>مركز التكلفة</th>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>البيان</th>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '120px', fontFamily: CAIRO }}>مدين</th>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '120px', fontFamily: CAIRO }}>دائن</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب')}</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('مراكز التكلفة')}</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('البيان')}</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '120px', fontFamily: CAIRO }}>{t('مدين')}</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '120px', fontFamily: CAIRO }}>{t('دائن')}</th>
                                                                         </tr>
                                                                     </thead>
                                                                     <tbody>
@@ -381,7 +385,7 @@ export default function JournalEntriesPage() {
                                                                     </tbody>
                                                                     <tfoot>
                                                                         <tr style={{ background: 'rgba(255,255,255,0.015)', borderTop: `1px solid ${C.border}` }}>
-                                                                            <td colSpan={3} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 900, color: C.textMuted, fontFamily: CAIRO }}>الإجمالي المتزن</td>
+                                                                            <td colSpan={3} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 900, color: C.textMuted, fontFamily: CAIRO }}>{t('الإجمالي المتزن')}</td>
                                                                             <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: INTER }}>{fmt(dr)}</td>
                                                                             <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fmt(dr)}</td>
                                                                         </tr>
@@ -417,12 +421,12 @@ export default function JournalEntriesPage() {
                                     <Plus size={20} />
                                 </div>
                                 <div>
-                                    <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>إنشاء قيد يومية جديد</h2>
-                                    <p style={{ margin: 0, fontSize: '11px', color: C.textMuted }}>أدخل تفاصيل الأطراف المتأثرة بالقيد لضمان توازن الحسابات</p>
+                                    <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('إنشاء قيد يومية جديد')}</h2>
+                                    <p style={{ margin: 0, fontSize: '11px', color: C.textMuted }}>{t('أدخل تفاصيل الأطراف المتأثرة بالقيد لضمان توازن الحسابات')}</p>
                                 </div>
                             </div>
                             <div style={{ background: C.inputBg, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '6px 16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>رقم القيد المقترح:</span>
+                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('رقم القيد المقترح')}:</span>
                                 <span style={{ fontFamily: INTER, fontSize: '14px', fontWeight: 900, color: C.primary }}>{nextNumber}</span>
                             </div>
                         </div>
@@ -433,25 +437,25 @@ export default function JournalEntriesPage() {
                                 {/* Basic Info */}
                                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 1fr) 2fr 1fr', gap: '20px', marginBottom: '24px' }}>
                                     <div>
-                                        <label style={{ ...LS, marginBottom: '8px', display: 'block' }}>تاريخ القيد <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={{ ...LS, marginBottom: '8px', display: 'block' }}>{t('تاريخ القيد')} <span style={{ color: C.danger }}>*</span></label>
                                         <input type="date" required value={form.date}
                                             onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
                                             style={{ ...IS, height: '44px', direction: 'ltr', textAlign: 'end', colorScheme: 'dark', fontSize: '14px', fontWeight: 700, fontFamily: INTER }}
                                             onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, marginBottom: '8px', display: 'block' }}>البيان العام للقيد <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={{ ...LS, marginBottom: '8px', display: 'block' }}>{t('البيان العام للقيد')} <span style={{ color: C.danger }}>*</span></label>
                                         <input required value={form.description}
                                             onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                                            placeholder="اكتب وصفاً مختصراً يوضح طبيعة هذا القيد..."
+                                            placeholder={t("اكتب وصفاً مختصراً يوضح طبيعة هذا القيد...")}
                                             style={{ ...IS, height: '44px', fontSize: '14px', fontFamily: CAIRO }} 
                                             onFocus={focusIn} onBlur={focusOut} autoFocus />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, marginBottom: '8px', display: 'block' }}>رقم المرجع (اختياري)</label>
+                                        <label style={{ ...LS, marginBottom: '8px', display: 'block' }}>{t('رقم المرجع (اختياري)')}</label>
                                         <input value={form.reference}
                                             onChange={e => setForm(f => ({ ...f, reference: e.target.value }))}
-                                            placeholder="رقم المستند المرتبط"
+                                            placeholder={t("رقم المستند المرتبط")}
                                             style={{ ...IS, height: '44px', direction: 'ltr', textAlign: 'end', fontSize: '14px', fontFamily: INTER }}
                                             onFocus={focusIn} onBlur={focusOut} />
                                     </div>
@@ -462,11 +466,11 @@ export default function JournalEntriesPage() {
                                     <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                                         <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                                             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>الحساب المحاسبي</th>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', width: '220px', fontFamily: CAIRO }}>مركز التكلفة</th>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>بيان السطر</th>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '140px', fontFamily: CAIRO }}>مدين</th>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '140px', fontFamily: CAIRO }}>دائن</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', width: '220px', fontFamily: CAIRO }}>{t('مراكز التكلفة')}</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('بيان السطر')}</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '140px', fontFamily: CAIRO }}>{t('مدين')}</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '140px', fontFamily: CAIRO }}>{t('دائن')}</th>
                                                 <th style={{ width: '50px' }}></th>
                                             </tr>
                                         </thead>
@@ -514,7 +518,7 @@ export default function JournalEntriesPage() {
                                             <tr>
                                                 <td colSpan={3} style={{ padding: '16px 20px' }}>
                                                     <button type="button" onClick={addLine} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: C.primary, color: '#fff', border: 'none', padding: '8px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '13px', fontWeight: 700, fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(37,106,244,0.3)' }}>
-                                                        <Plus size={16} /> إضافة طرف للقيد
+                                                        <Plus size={16} /> {t('إضافة طرف للقيد')}
                                                     </button>
                                                 </td>
                                                 <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: INTER, borderInlineEnd: `1px solid ${C.border}` }}>{fmt(totalDebit)}</td>
@@ -535,7 +539,7 @@ export default function JournalEntriesPage() {
                                     }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: isBalanced ? C.success : C.danger, fontWeight: 800, fontSize: '14px', fontFamily: CAIRO }}>
                                             {isBalanced ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
-                                            {isBalanced ? 'القيد متزن وجاهز للحفظ' : `القيد غير متزن — الفرق: ${fmt(Math.abs(totalDebit - totalCredit))}`}
+                                            {isBalanced ? t('القيد متزن وجاهز للحفظ') : `${t('القيد غير متزن')} — ${t('الفرق')}: ${fmt(Math.abs(totalDebit - totalCredit))}`}
                                         </div>
                                     </div>
                                 </div>
@@ -558,24 +562,24 @@ export default function JournalEntriesPage() {
                                 onClick={() => { setView('list'); setForm({ date: new Date().toISOString().split('T')[0], description: '', reference: '', lines: [emptyLine(), emptyLine()] }); }} 
                                 style={{ height: '48px', padding: '0 30px', borderRadius: '12px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}
                             >
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                             <div style={{ flex: 1 }} />
-                            <button type="submit" form="journal-form" disabled={submitting} 
+                            <button type="submit" form="journal-form" disabled={submitting}
                                 style={{ height: '48px', padding: '0 30px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', color: C.textPrimary, border: `1px solid ${C.border}`, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}
                             >
-                                حفظ كمسودة
+                                {t('حفظ كمسودة')}
                             </button>
-                            <button type="button" onClick={e => handleSubmit(e as any, true)} disabled={submitting || !isBalanced} 
-                                style={{ 
-                                    height: '48px', padding: '0 40px', borderRadius: '12px', 
-                                    background: !isBalanced ? C.border : `linear-gradient(135deg, ${C.primary}, ${C.primaryHover})`, 
+                            <button type="button" onClick={e => handleSubmit(e as any, true)} disabled={submitting || !isBalanced}
+                                style={{
+                                    height: '48px', padding: '0 40px', borderRadius: '12px',
+                                    background: !isBalanced ? C.border : `linear-gradient(135deg, ${C.primary}, ${C.primaryHover})`,
                                     color: '#fff', border: 'none', fontWeight: 800, fontSize: '15px',
                                     cursor: !isBalanced ? 'not-allowed' : 'pointer', fontFamily: CAIRO,
                                     boxShadow: isBalanced ? '0 10px 25px rgba(37,106,244,0.3)' : 'none'
                                 }}
                             >
-                                ترحيل القيد الآن
+                                {t('ترحيل القيد الآن')}
                             </button>
                         </div>
                     </div>

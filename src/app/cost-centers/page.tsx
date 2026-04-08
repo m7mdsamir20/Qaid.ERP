@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Plus, X, Layers, CheckCircle2, XCircle, Pencil, Trash2, AlertTriangle, Loader2, Search, Eye } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
+import { useTranslation } from '@/lib/i18n';
 
 interface CostCenter {
     id: string;
@@ -34,6 +35,7 @@ const AC = C.primary;
 export default function CostCentersPage() {
     const { symbol: cSymbol } = useCurrency();
     const { data: session } = useSession();
+    const { t } = useTranslation();
     const [costCenters, setCostCenters] = useState<CostCenter[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
@@ -90,11 +92,11 @@ export default function CostCentersPage() {
                 fetchData();
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل الحذف');
+                alert(d.error || t('فشل الحذف'));
                 setDeleteItem(null);
             }
-        } catch { 
-            alert('فشل الاتصال'); 
+        } catch {
+            alert(t('فشل الاتصال'));
             setDeleteItem(null);
         }
         finally { setSaving(false); }
@@ -111,8 +113,8 @@ export default function CostCentersPage() {
                 body: JSON.stringify(form),
             });
             if (res.ok) { setShowModal(false); fetchData(); }
-            else { const d = await res.json(); alert(d.error || 'حدث خطأ'); }
-        } catch { alert('فشل الاتصال'); }
+            else { const d = await res.json(); alert(d.error || t('حدث خطأ')); }
+        } catch { alert(t('فشل الاتصال')); }
         finally { setSaving(false); }
     };
 
@@ -143,12 +145,12 @@ export default function CostCentersPage() {
 
     return (
         <DashboardLayout>
-            <PageHeader 
-                title="مراكز التكلفة"
-                subtitle="تقسيم المصروفات والمشاريع — تتبع كفاءة الصرف لكل قسم"
+            <PageHeader
+                title={t("مراكز التكلفة")}
+                subtitle={t("تقسيم المصروفات والمشاريع — تتبع كفاءة الصرف لكل قسم")}
                 icon={Layers}
                 primaryButton={canCreate ? {
-                    label: "مركز تكلفة جديد",
+                    label: t("مركز تكلفة جديد"),
                     onClick: openCreate,
                     icon: Plus
                 } : undefined}
@@ -161,7 +163,7 @@ export default function CostCentersPage() {
                 <div style={SEARCH_STYLE.wrapper}>
                     <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                     <input 
-                        placeholder="ابحث بالاسم أو رمز المركز..." 
+                        placeholder={t("ابحث بالاسم أو رمز المركز...")}
                         value={search} onChange={e => setSearch(e.target.value)}
                         style={SEARCH_STYLE.input} 
                         onFocus={focusIn} onBlur={focusOut} 
@@ -174,24 +176,24 @@ export default function CostCentersPage() {
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textMuted }}>
                         <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                        <span style={{ fontSize: '14px', fontFamily: CAIRO }}>جاري التحميل...</span>
+                        <span style={{ fontSize: '14px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                     </div>
                 ) : filteredAll.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <Layers size={60} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{search ? 'لا توجد نتائج بحث مطابقة' : 'لا توجد مراكز تكلفة مضافة بعد'}</p>
+                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مراكز تكلفة مضافة بعد')}</p>
                     </div>
                 ) : (
                     <div style={{ overflowX: 'auto' }}>
                         <table style={TABLE_STYLE.table}>
                             <thead>
                                 <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>رمز المركز</th>
-                                    <th style={TABLE_STYLE.th(false)}>اسم المركز التكاليفي</th>
-                                    <th style={TABLE_STYLE.th(false)}>البيان / الملاحظات</th>
-                                    <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>إجمالي المصروفات</th>
-                                    <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                    <th style={TABLE_STYLE.th(true)}>{t('رمز المركز')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('اسم المركز التكاليفي')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('البيان / الملاحظات')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجمالي المصروفات')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -214,7 +216,7 @@ export default function CostCentersPage() {
                                         <td style={TABLE_STYLE.td(false)}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 800, color: cc.isActive ? C.success : C.danger, background: cc.isActive ? C.successBg : C.dangerBg, padding: '3px 10px', borderRadius: '20px', border: `1px solid ${cc.isActive ? C.successBorder : C.dangerBorder}` }}>
                                                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: cc.isActive ? C.success : C.danger }} />
-                                                {cc.isActive ? 'نشط' : 'موقوف'}
+                                                {cc.isActive ? t('نشط') : t('موقوف')}
                                             </div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -226,16 +228,16 @@ export default function CostCentersPage() {
                                         <td style={TABLE_STYLE.td(false)}>
                                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                 {canEdit && (
-                                                    <button onClick={() => openEdit(cc)} style={TABLE_STYLE.actionBtn()} title="تعديل">
+                                                    <button onClick={() => openEdit(cc)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
                                                         <Pencil size={TABLE_STYLE.actionIconSize} />
                                                     </button>
                                                 )}
                                                 {canDelete && (
-                                                    <button onClick={() => setDeleteItem(cc)} style={TABLE_STYLE.actionBtn(C.danger)} title="حذف">
+                                                    <button onClick={() => setDeleteItem(cc)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')}>
                                                         <Trash2 size={TABLE_STYLE.actionIconSize} />
                                                     </button>
                                                 )}
-                                                <button onClick={() => window.location.href = `/cost-centers/${cc.id}`} style={TABLE_STYLE.actionBtn()} title="عرض التفاصيل">
+                                                <button onClick={() => window.location.href = `/cost-centers/${cc.id}`} style={TABLE_STYLE.actionBtn()} title={t('عرض التفاصيل')}>
                                                     <Eye size={TABLE_STYLE.actionIconSize} />
                                                 </button>
                                             </div>
@@ -259,27 +261,27 @@ export default function CostCentersPage() {
             <AppModal
                 show={showModal}
                 onClose={() => setShowModal(false)}
-                title={editItem ? 'تعديل مركز التكلفة' : 'مركز تكلفة جديد'}
+                title={editItem ? t('تعديل مركز التكلفة') : t('مركز تكلفة جديد')}
                 icon={Layers}
             >
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '14px' }}>
                         <div>
-                            <label style={LS}>رمز المركز</label>
+                            <label style={LS}>{t('رمز المركز')}</label>
                             <input readOnly value={form.code}
                                 style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.02)', color: '#64748b', cursor: 'not-allowed', borderColor: 'rgba(255,255,255,0.04)' }} />
                         </div>
                         <div>
-                            <label style={LS}>اسم المركز <span style={{ color: '#f87171' }}>*</span></label>
+                            <label style={LS}>{t('اسم المركز')} <span style={{ color: '#f87171' }}>*</span></label>
                             <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                                placeholder="مثال: مشروع البنية التحتية" style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                placeholder={t("مثال: مشروع البنية التحتية")} style={IS} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
 
                     <div>
-                        <label style={LS}>الوصف التفصيلي</label>
+                        <label style={LS}>{t('الوصف التفصيلي')}</label>
                         <textarea value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))}
-                            placeholder="ملاحظات حول طبيعة المركز..." rows={3}
+                            placeholder={t("ملاحظات حول طبيعة المركز...")} rows={3}
                             style={{ ...IS, height: 'auto', padding: '10px 14px', resize: 'none' as const }}
                             onFocus={focusIn} onBlur={focusOut} />
                     </div>
@@ -288,10 +290,10 @@ export default function CostCentersPage() {
                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: '10px', border: `1px solid ${form.isActive ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.07)'}`, background: form.isActive ? 'rgba(16,185,129,0.06)' : 'rgba(255,255,255,0.02)', cursor: 'pointer', transition: 'all 0.15s' }}>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 700, color: form.isActive ? '#34d399' : '#64748b' }}>
-                                {form.isActive ? 'نشط للاستخدام' : 'موقوف مؤقتاً'}
+                                {form.isActive ? t('نشط للاستخدام') : t('موقوف مؤقتاً')}
                             </div>
                             <div style={{ fontSize: '11px', color: '#475569', marginTop: '2px' }}>
-                                {form.isActive ? 'يمكن تحديده في القيود المحاسبية' : 'لن يظهر عند إدخال القيود'}
+                                {form.isActive ? t('يمكن تحديده في القيود المحاسبية') : t('لن يظهر عند إدخال القيود')}
                             </div>
                         </div>
                         <div style={{ width: 44, height: 24, borderRadius: '12px', background: form.isActive ? '#10b981' : 'rgba(255,255,255,0.1)', position: 'relative', transition: 'background 0.2s', flexShrink: 0 }}>
@@ -302,9 +304,9 @@ export default function CostCentersPage() {
                     <div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
                         <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(saving, false), flex: 1.5, height: '48px' }}>
                             {saving ? <Loader2 size={18} className="animate-spin" /> : (editItem ? <CheckCircle2 size={18} /> : <Plus size={18} />)}
-                            <span style={{ marginInlineEnd: '8px' }}>{editItem ? 'حفظ التعديلات' : 'إضافة المركز'}</span>
+                            <span style={{ marginInlineEnd: '8px' }}>{editItem ? t('حفظ التعديلات') : t('إضافة المركز')}</span>
                         </button>
-                        <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '12px', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                        <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '12px', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                     </div>
                 </form>
             </AppModal>
@@ -313,7 +315,7 @@ export default function CostCentersPage() {
                 show={!!deleteItem}
                 onClose={() => setDeleteItem(null)}
                 isDelete={true}
-                title="حذف مركز التكلفة"
+                title={t("حذف مركز التكلفة")}
                 itemName={deleteItem?.name}
                 onConfirm={handleDelete}
                 isSubmitting={saving}

@@ -10,6 +10,7 @@ import {
     C, CAIRO, INTER, PAGE_BASE, TABLE_STYLE, STitle
 } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import { useTranslation } from '@/lib/i18n';
 
 interface TransferLine {
     item: { name: string };
@@ -29,6 +30,7 @@ interface Transfer {
 
 export default function WarehouseTransfersPage() {
     const router = useRouter();
+    const { t } = useTranslation();
     const [transfers, setTransfers] = useState<Transfer[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -44,12 +46,12 @@ export default function WarehouseTransfersPage() {
     return (
         <DashboardLayout>
             <div style={PAGE_BASE}>
-                <PageHeader 
-                    title="التحويل بين المخازن" 
-                    subtitle="متابعة حركة المخزون ونقل البضائع بين الفروع والمستودعات بشكل دقيق" 
-                    icon={ArrowRightLeft} 
+                <PageHeader
+                    title={t("التحويل بين المخازن")}
+                    subtitle={t("متابعة حركة المخزون ونقل البضائع بين الفروع والمستودعات بشكل دقيق")}
+                    icon={ArrowRightLeft}
                     primaryButton={{
-                        label: "تحويل جديد",
+                        label: t("تحويل جديد"),
                         onClick: () => router.push('/warehouse-transfers/new'),
                         icon: Plus
                     }}
@@ -58,19 +60,19 @@ export default function WarehouseTransfersPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '100px 0', color: C.textMuted }}>
                         <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
-                        <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>جاري تحميل سجل التحويلات...</p>
+                        <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تحميل سجل التحويلات...')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
                         <table style={TABLE_STYLE.table}>
                             <thead>
                                 <tr style={TABLE_STYLE.thead}>
-                                    <th style={{ ...TABLE_STYLE.th(true), width: '120px' }}>رقم التحويل</th>
-                                    <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                    <th style={TABLE_STYLE.th(false)}>من مخزن</th>
-                                    <th style={TABLE_STYLE.th(false)}>إلى مخزن</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>الأصناف المحولة</th>
-                                    <th style={TABLE_STYLE.th(false)}>الملاحظات</th>
+                                    <th style={{ ...TABLE_STYLE.th(true), width: '120px' }}>{t('رقم التحويل')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('من مخزن')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('إلى مخزن')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('الأصناف المحولة')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('الملاحظات')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -79,7 +81,7 @@ export default function WarehouseTransfersPage() {
                                         <td colSpan={6} style={{ padding: '80px 0', textAlign: 'center', color: C.textMuted }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
                                                 <History size={48} style={{ opacity: 0.2 }} />
-                                                <div style={{ fontFamily: CAIRO, fontSize: '14px', fontWeight: 600 }}>لا توجد عمليات تحويل مسجلة حالياً</div>
+                                                <div style={{ fontFamily: CAIRO, fontSize: '14px', fontWeight: 600 }}>{t('لا توجد عمليات تحويل مسجلة حالياً')}</div>
                                             </div>
                                         </td>
                                     </tr>

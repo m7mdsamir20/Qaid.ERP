@@ -369,7 +369,8 @@ function Actions() {
 }
 
 function BranchSwitcher() {
-    const { t } = useTranslation();
+    const { t, lang } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session, update } = useSession();
     const [open, setOpen] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
@@ -411,7 +412,7 @@ function BranchSwitcher() {
                 }}>
                 <GitBranch size={14} color={C.primary} />
                  <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
-                    {activeBranchId === 'all' || !activeBranchId ? t('كل الفروع') : activeBranch?.name}
+                    {activeBranchId === 'all' || !activeBranchId ? t('كل الفروع') : t(activeBranch?.name || '')}
                 </span>
                 <ChevronDown size={14} color={C.primary} style={{ transform: open ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
             </button>
@@ -423,7 +424,7 @@ function BranchSwitcher() {
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
                     animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
                 }}>
-                     <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                     <div style={{ padding: '14px 16px 12px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)', textAlign: isRtl ? 'right' : 'left' }}>
                         <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('الفروع المتاحة')}</div>
                     </div>
                     <div style={{ padding: '6px' }}>
@@ -432,7 +433,7 @@ function BranchSwitcher() {
                                 style={{
                                     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
                                     padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box',
+                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: isRtl ? 'right' : 'left', boxSizing: 'border-box',
                                     background: !activeBranchId || activeBranchId === 'all' ? `${C.primary}15` : 'transparent',
                                     color: !activeBranchId || activeBranchId === 'all' ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: (!activeBranchId || activeBranchId === 'all') ? 800 : 600
@@ -448,15 +449,16 @@ function BranchSwitcher() {
                                 style={{
                                     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
                                     padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box',
+                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: isRtl ? 'right' : 'left', boxSizing: 'border-box',
                                     background: activeBranchId === b.id ? `${C.primary}15` : 'transparent',
                                     color: activeBranchId === b.id ? C.primary : C.textSecondary,
-                                    transition: '0.15s', fontWeight: activeBranchId === b.id ? 800 : 500
+                                    transition: '0.15s', fontWeight: activeBranchId === b.id ? 800 : 500,
+                                    flexDirection: isRtl ? 'row' : 'row'
                                 }}
                                 onMouseEnter={e => { if (activeBranchId !== b.id) e.currentTarget.style.background = C.hover; }}
                                 onMouseLeave={e => { if (activeBranchId !== b.id) e.currentTarget.style.background = 'transparent'; }}>
-                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeBranchId === b.id ? C.primary : 'rgba(255,255,255,0.1)' }} />
-                                <div style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{b.name}</div>
+                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeBranchId === b.id ? C.primary : 'rgba(255,255,255,0.1)', flexShrink: 0 }} />
+                                <div style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t(b.name)}</div>
                             </button>
                         ))}
                     </div>

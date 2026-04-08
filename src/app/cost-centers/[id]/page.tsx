@@ -8,14 +8,16 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useParams, useRouter } from 'next/navigation';
 import CustomSelect from '@/components/CustomSelect';
 
-import { 
-    C, CAIRO, INTER, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, 
-    TABLE_STYLE, KPI_STYLE, KPI_ICON, BTN_PRIMARY 
+import {
+    C, CAIRO, INTER, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut,
+    TABLE_STYLE, KPI_STYLE, KPI_ICON, BTN_PRIMARY
 } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import { useTranslation } from '@/lib/i18n';
 
 export default function CostCenterDetails() {
     const { symbol: cSymbol } = useCurrency();
+    const { t } = useTranslation();
     const { id } = useParams();
     const router = useRouter();
     const [data, setData] = useState<any>(null);
@@ -24,10 +26,10 @@ export default function CostCenterDetails() {
     const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear());
 
     const months = [
-        { id: 1, name: 'يناير' }, { id: 2, name: 'فبراير' }, { id: 3, name: 'مارس' },
-        { id: 4, name: 'أبريل' }, { id: 5, name: 'مايو' }, { id: 6, name: 'يونيو' },
-        { id: 7, name: 'يوليو' }, { id: 8, name: 'أغسطس' }, { id: 9, name: 'سبتمبر' },
-        { id: 10, name: 'أكتوبر' }, { id: 11, name: 'نوفمبر' }, { id: 12, name: 'ديسمبر' },
+        { id: 1, name: t('يناير') }, { id: 2, name: t('فبراير') }, { id: 3, name: t('مارس') },
+        { id: 4, name: t('أبريل') }, { id: 5, name: t('مايو') }, { id: 6, name: t('يونيو') },
+        { id: 7, name: t('يوليو') }, { id: 8, name: t('أغسطس') }, { id: 9, name: t('سبتمبر') },
+        { id: 10, name: t('أكتوبر') }, { id: 11, name: t('نوفمبر') }, { id: 12, name: t('ديسمبر') },
     ];
     
     useEffect(() => {
@@ -50,7 +52,7 @@ export default function CostCenterDetails() {
     const handleExportExcel = () => {
         if (!data?.journalLines) return;
         let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-        csvContent += "التاريخ,البيان,المبلغ,المصدر\n";
+        csvContent += `${t('التاريخ')},${t('البيان')},${t('المبلغ')},${t('المصدر')}\n`;
         data.journalLines.forEach((line: any) => {
             const date = new Date(line.journalEntry.date).toLocaleDateString('en-GB');
             const desc = line.description || line.journalEntry.description || 'بدون بيان';
@@ -72,7 +74,7 @@ export default function CostCenterDetails() {
             <DashboardLayout>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textMuted }}>
                     <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                    <span style={{ fontSize: '14px', fontFamily: CAIRO }}>جاري التحميل...</span>
+                    <span style={{ fontSize: '14px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                 </div>
             </DashboardLayout>
         );
@@ -83,14 +85,14 @@ export default function CostCenterDetails() {
             <DashboardLayout>
                 <div style={{ color: C.danger, textAlign: 'center', padding: '80px 20px', fontFamily: CAIRO }}>
                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.5 }} />
-                    لم يتم العثور على مركز التكلفة
+                    {t('لم يتم العثور على مركز التكلفة')}
                 </div>
             </DashboardLayout>
         );
     }
 
     const monthlyData = new Array(12).fill(0);
-    const monthNames = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+    const monthNames = [t('يناير'), t('فبراير'), t('مارس'), t('أبريل'), t('مايو'), t('يونيو'), t('يوليو'), t('أغسطس'), t('سبتمبر'), t('أكتوبر'), t('نوفمبر'), t('ديسمبر')];
     
     if (data.journalLines) {
         data.journalLines.forEach((line: any) => {
@@ -108,8 +110,8 @@ export default function CostCenterDetails() {
     return (
         <DashboardLayout>
             <PageHeader 
-                title={`مركز التكلفة: ${data.name}`}
-                subtitle={`عرض المعاملات والتحليلات الخاصة بالمركز الكودي (${data.code})`}
+                title={`${t('مركز التكلفة')}: ${data.name}`}
+                subtitle={`${t('عرض المعاملات والتحليلات الخاصة بالمركز الكودي')} (${data.code})`}
                 icon={Layers}
                 backUrl="/cost-centers"
                 actions={[
@@ -122,13 +124,13 @@ export default function CostCenterDetails() {
                                 color: selectedMonth === null ? '#fff' : C.textSecondary,
                                 fontFamily: CAIRO
                             }}>
-                            كل الوقت
+                            {t('كل الوقت')}
                         </button>
                         <CustomSelect
                             value={selectedMonth || ''}
                             onChange={(val) => setSelectedMonth(val ? Number(val) : null)}
                             options={[
-                                { value: '', label: 'اختر الشهر' },
+                                { value: '', label: t('اختر الشهر') },
                                 ...months.map(m => ({ value: m.id, label: m.name }))
                             ]}
                             minWidth="140px"
@@ -145,7 +147,7 @@ export default function CostCenterDetails() {
                         />
                     </div>,
                     <div style={{ display: 'flex', gap: '8px' }}>
-                        <button onClick={handlePrint} title="طباعة"
+                        <button onClick={handlePrint} title={t('طباعة')}
                             style={{ width: '40px', height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' }}
                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                             onMouseLeave={e => e.currentTarget.style.background = C.card}
@@ -157,7 +159,7 @@ export default function CostCenterDetails() {
                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                             onMouseLeave={e => e.currentTarget.style.background = C.card}
                         >
-                            <Download size={18} /> تصدير
+                            <Download size={18} /> {t('تصدير')}
                         </button>
                     </div>
                 ]}
@@ -166,10 +168,10 @@ export default function CostCenterDetails() {
             {/* KPIs */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                 {[
-                    { label: 'إجمالي المصروفات', value: data.totalExpenses, icon: <DollarSign size={20} />, color: C.danger },
-                    { label: 'هذه السنة', value: data.thisYearExpenses, icon: <TrendingUp size={20} />, color: C.warning },
-                    { label: 'هذا الشهر', value: data.thisMonthExpenses, icon: <Calendar size={20} />, color: C.blue },
-                    { label: 'عدد المعاملات', value: data.transactionCount, icon: <Activity size={20} />, color: C.success, isCount: true },
+                    { label: t('إجمالي المصروفات'), value: data.totalExpenses, icon: <DollarSign size={20} />, color: C.danger },
+                    { label: t('هذه السنة'), value: data.thisYearExpenses, icon: <TrendingUp size={20} />, color: C.warning },
+                    { label: t('هذا الشهر'), value: data.thisMonthExpenses, icon: <Calendar size={20} />, color: C.blue },
+                    { label: t('عدد المعاملات'), value: data.transactionCount, icon: <Activity size={20} />, color: C.success, isCount: true },
                 ].map((kpi, i) => (
                     <div key={i} style={{ ...SC, ...KPI_STYLE(kpi.color), padding: '16px 20px', justifyContent: 'flex-start' }}>
                         <div style={KPI_ICON(kpi.color)}>
@@ -191,24 +193,24 @@ export default function CostCenterDetails() {
                 <div style={TABLE_STYLE.container}>
                     <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <h2 style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, margin: 0, display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
-                           <Activity size={18} style={{ color: AC }} /> المعاملات المسجلة
+                           <Activity size={18} style={{ color: AC }} /> {t('المعاملات المسجلة')}
                         </h2>
                     </div>
                     
                     {(!data.journalLines || data.journalLines.length === 0) ? (
                         <div style={{ textAlign: 'center', padding: '60px 20px', color: C.textMuted }}>
                             <Activity size={48} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                            <p style={{ margin: 0, fontSize: '14px', fontFamily: CAIRO }}>لا توجد معاملات مسجلة لهذا التصنيف</p>
+                            <p style={{ margin: 0, fontSize: '14px', fontFamily: CAIRO }}>{t('لا توجد معاملات مسجلة لهذا التصنيف')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>البيان</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'end' }}>المبلغ</th>
-                                        <th style={TABLE_STYLE.th(false)}>المصدر</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'end' }}>{t('المبلغ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المصدر')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -228,8 +230,8 @@ export default function CostCenterDetails() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '6px', background: C.inputBg, border: `1px solid ${C.border}`, fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>
-                                                    {line.journalEntry.referenceType === 'invoice' ? 'فاتورة' : 
-                                                     line.journalEntry.referenceType === 'voucher' ? 'سند' : 'قيد يومية'}
+                                                    {line.journalEntry.referenceType === 'invoice' ? t('فاتورة') :
+                                                     line.journalEntry.referenceType === 'voucher' ? t('سند') : t('قيد يومية')}
                                                 </div>
                                             </td>
                                         </tr>
@@ -243,7 +245,7 @@ export default function CostCenterDetails() {
                 {/* Chart Card */}
                 <div style={{ ...TABLE_STYLE.container, padding: '24px', display: 'flex', flexDirection: 'column' }}>
                     <h2 style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, margin: '0 0 24px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                        <TrendingUp size={18} style={{ color: AC }} /> مصروفات {selectedYear}
+                        <TrendingUp size={18} style={{ color: AC }} /> {t('مصروفات')} {selectedYear}
                     </h2>
                     
                     <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', gap: '8px', height: '240px', paddingTop: '20px' }}>

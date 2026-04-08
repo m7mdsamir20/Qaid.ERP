@@ -13,27 +13,29 @@ import {
 } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import { useTranslation } from '@/lib/i18n';
 
 interface FinancialYear { id: string; name: string; isOpen: boolean; openingBalancesLocked: boolean; startDate: string; }
 interface Account { id: string; code: string; name: string; nature: string; type: string; isParent: boolean; accountCategory?: string; }
 interface OpeningBalance { id: string; accountId: string; debit: number; credit: number; account: Account; }
 
-const typeLabels: Record<string, string> = {
-    asset: 'أصول', liability: 'خصوم', equity: 'حقوق ملكية',
-};
-
 const ALLOWED_TYPES = ['asset', 'liability', 'equity'];
 const fmtDisplay = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const FILTER_BTNS = [
-    { key: 'all',       label: 'الكل',        color: C.primary },
-    { key: 'asset',     label: 'أصول',        color: C.success },
-    { key: 'liability', label: 'خصوم',        color: C.danger },
-    { key: 'equity',    label: 'حقوق ملكية', color: '#a78bfa' },
-];
-
 export default function OpeningBalancesPage() {
     const { data: session } = useSession();
+    const { t } = useTranslation();
+
+    const typeLabels: Record<string, string> = {
+        asset: t('أصول'), liability: t('خصوم'), equity: t('حقوق ملكية'),
+    };
+
+    const FILTER_BTNS = [
+        { key: 'all',       label: t('الكل'),        color: C.primary },
+        { key: 'asset',     label: t('أصول'),        color: C.success },
+        { key: 'liability', label: t('خصوم'),        color: C.danger },
+        { key: 'equity',    label: t('حقوق ملكية'), color: '#a78bfa' },
+    ];
     const [years, setYears]               = useState<FinancialYear[]>([]);
     const [selectedYear, setSelectedYear] = useState('');
     const [accounts, setAccounts]         = useState<Account[]>([]);
@@ -132,7 +134,7 @@ export default function OpeningBalancesPage() {
                 alert(data.message);
                 window.location.reload();
             } else {
-                alert(data.error || 'فشل الترحيل');
+                alert(data.error || t('فشل الترحيل'));
             }
         } catch {
             alert('حدث خطأ أثناء الترحيل');
@@ -155,7 +157,7 @@ export default function OpeningBalancesPage() {
             });
             fetchYears();
         } catch {
-            alert('فشل تحديث حالة القفل');
+            alert(t('فشل تحديث حالة القفل'));
         } finally {
             setLocking(false);
         }
@@ -176,17 +178,17 @@ export default function OpeningBalancesPage() {
     return (
         <DashboardLayout>
             <div style={PAGE_BASE}>
-                <PageHeader 
-                    title="الأرصدة الافتتاحية" 
-                    subtitle="إدخال أرصدة الحسابات عند بداية السنة المالية — تأكد من توازن القيد لضمان صحة القوائم المالية" 
-                    icon={Wallet} 
+                <PageHeader
+                    title={t("الأرصدة الافتتاحية")}
+                    subtitle={t("إدخال أرصدة الحسابات عند بداية السنة المالية — تأكد من توازن القيد لضمان صحة القوائم المالية")}
+                    icon={Wallet}
                     leftContent={(
                         <div style={{ width: '220px' }}>
-                            <CustomSelect 
-                                value={selectedYear} 
-                                onChange={setSelectedYear} 
-                                icon={CalendarDays} 
-                                placeholder="اختر السنة المالية"
+                            <CustomSelect
+                                value={selectedYear}
+                                onChange={setSelectedYear}
+                                icon={CalendarDays}
+                                placeholder={t("اختر السنة المالية")}
                                 options={years.filter(y => y.isOpen).map(y => ({ value: y.id, label: y.name }))} 
                             />
                         </div>
@@ -200,7 +202,7 @@ export default function OpeningBalancesPage() {
                                     background: 'rgba(16,185,129,0.1)', border: `1px solid ${C.success}30`, color: C.success 
                                 }}>
                                 {carrying ? <Loader2 size={16} className="animate-spin" /> : <ArrowRightLeft size={16} />}
-                                ترحيل من سنة سابقة
+                                {t('ترحيل من سنة سابقة')}
                             </button>
                         ),
                         canUnlock && (
@@ -211,14 +213,14 @@ export default function OpeningBalancesPage() {
                                     color: isLocked ? C.danger : C.textSecondary, background: isLocked ? `${C.danger}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${isLocked ? `${C.danger}30` : C.border}` 
                                 }}>
                                 {locking ? <Loader2 size={16} className="animate-spin" /> : isLocked ? <Lock size={16} /> : <Unlock size={16} />}
-                                {isLocked ? 'فتح القفل' : 'قفل الأرصدة'}
+                                {isLocked ? t('فتح القفل') : t('قفل الأرصدة')}
                             </button>
                         ),
                         !isReadlyOnly && (
                             <button key="save" onClick={handleSave} disabled={saving || !filledCount} 
                                 style={{ ...BTN_PRIMARY(saving || !filledCount, saved), width: 'auto', height: THEME.button.height, padding: '0 20px', fontSize: '13px', boxShadow: 'none' }}>
                                 {saving ? <Loader2 size={16} className="animate-spin" /> : saved ? <CheckCircle2 size={16} /> : <Save size={16} />}
-                                {saving ? 'جاري الحفظ...' : saved ? 'تم الحفظ بنجاح' : 'حفظ الأرصدة'}
+                                {saving ? t('جاري الحفظ...') : saved ? t('تم الحفظ بنجاح') : t('حفظ الأرصدة')}
                             </button>
                         )
                     ].filter(Boolean) as React.ReactNode[] : undefined}
@@ -229,21 +231,21 @@ export default function OpeningBalancesPage() {
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                             <Wallet size={40} style={{ color: C.textMuted, opacity: 0.5 }} />
                         </div>
-                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>برجاء اختيار السنة المالية</p>
-                        <p style={{ margin: '8px 0 0', fontSize: '14px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>حدد السنة المالية المناسبة لاستعراض أو إدخال الأرصدة الافتتاحية</p>
+                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('برجاء اختيار السنة المالية')}</p>
+                        <p style={{ margin: '8px 0 0', fontSize: '14px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('حدد السنة المالية المناسبة لاستعراض أو إدخال الأرصدة الافتتاحية')}</p>
                     </div>
                 ) : loading ? (
                     <div style={{ ...SC, height: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontSize: '15px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>جاري تحميل البيانات...</span>
+                        <span style={{ fontSize: '15px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</span>
                     </div>
                 ) : accounts.length === 0 ? (
                     <div style={{ ...SC, padding: '100px 20px', textAlign: 'center', borderStyle: 'styled' }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <AlertTriangle size={36} style={{ color: C.warning }} />
                         </div>
-                        <p style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد حسابات تحليلية متاحة</p>
-                        <p style={{ margin: '8px 0 0', fontSize: '14px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>يجب إضافة حسابات "أصول" أو "خصوم" أو "حقوق ملكية" في دليل الحسابات أولاً</p>
+                        <p style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حسابات تحليلية متاحة')}</p>
+                        <p style={{ margin: '8px 0 0', fontSize: '14px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('يجب إضافة حسابات "أصول" أو "خصوم" أو "حقوق ملكية" في دليل الحسابات أولاً')}</p>
                     </div>
                 ) : (
                     <>
@@ -256,21 +258,21 @@ export default function OpeningBalancesPage() {
                                 <div style={{ width: 32, height: 32, borderRadius: '8px', background: `${C.danger}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Lock size={18} />
                                 </div>
-                                <span>هذه الأرصدة معتمدة ومقفلة نهائياً. {canUnlock ? 'لديك صلاحية فك القفل للتعديل عند الضرورة.' : 'لا يمكن إجراء أي تعديلات إلا بتصريح من الإدارة المالية.'}</span>
+                                <span>{t('هذه الأرصدة معتمدة ومقفلة نهائياً.')} {canUnlock ? t('لديك صلاحية فك القفل للتعديل عند الضرورة.') : t('لا يمكن إجراء أي تعديلات إلا بتصريح من الإدارة المالية.')}</span>
                             </div>
                         )}
 
                         {/* Stats Cards - Unified Design */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[
-                                { label: 'الحسابات المسجلة', value: `${filledCount} / ${accounts.length}`, color: C.primary, icon: Wallet, sub: 'حساب تحليلي' },
-                                { label: 'إجمالي مدين', value: fmtDisplay(totalDebit), color: C.success, icon: TrendingUp, sub: currencySymbol },
-                                { label: 'إجمالي دائن', value: fmtDisplay(totalCredit), color: C.danger, icon: TrendingDown, sub: currencySymbol },
-                                { label: 'حالة التوازن', 
-                                  value: isBalanced ? 'متوازن' : fmtDisplay(Math.abs(difference)), 
-                                  color: isBalanced ? C.success : C.warning, 
-                                  icon: Scale, 
-                                  sub: isBalanced ? 'القيد متوازن ✓' : 'يوجد فرق' },
+                                { label: t('الحسابات المسجلة'), value: `${filledCount} / ${accounts.length}`, color: C.primary, icon: Wallet, sub: t('حساب تحليلي') },
+                                { label: t('إجمالي مدين'), value: fmtDisplay(totalDebit), color: C.success, icon: TrendingUp, sub: currencySymbol },
+                                { label: t('إجمالي دائن'), value: fmtDisplay(totalCredit), color: C.danger, icon: TrendingDown, sub: currencySymbol },
+                                { label: t('حالة التوازن'),
+                                  value: isBalanced ? t('متوازن') : fmtDisplay(Math.abs(difference)),
+                                  color: isBalanced ? C.success : C.warning,
+                                  icon: Scale,
+                                  sub: isBalanced ? t('القيد متوازن ✓') : t('يوجد فرق') },
                             ].map((s, i) => (
                                 <div key={i} style={{ 
                                     background: `${s.color}08`, 
@@ -305,8 +307,8 @@ export default function OpeningBalancesPage() {
                         <div style={SEARCH_STYLE.container}>
                             <div style={SEARCH_STYLE.wrapper}>
                                 <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
-                                <input 
-                                    placeholder="ابحث بكود الحساب أو الاسم العربي/الإنجليزي..." 
+                                <input
+                                    placeholder={t("ابحث بكود الحساب أو الاسم العربي/الإنجليزي...")}
                                     value={search} 
                                     onChange={e => setSearch(e.target.value)}
                                     style={SEARCH_STYLE.input}
@@ -333,15 +335,15 @@ export default function OpeningBalancesPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead style={TABLE_STYLE.thead}>
                                     <tr>
-                                        {['الكود المحاسبي', 'اسم الحساب', 'النوع', 'الطبيعة', 'مدين', 'دائن'].map((h, i) => (
+                                        {[t('الكود المحاسبي'), t('اسم الحساب'), t('النوع'), t('الطبيعة'), t('مدين'), t('دائن')].map((h, i) => (
                                             <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '15px', fontFamily: CAIRO, fontWeight: 700 }}>لا توجد نتائج مطابقة لعملية البحث</td></tr>
-                                    ) : filtered.map((account, idx) => {
+                                        <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '15px', fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد نتائج مطابقة لعملية البحث')}</td></tr>
+                                    ) : filtered.map((account: Account, idx: number) => {
                                         const balance = balances.get(account.id) || { debit: 0, credit: 0 };
                                         const hasDr   = balance.debit  > 0;
                                         const hasCr   = balance.credit > 0;
@@ -364,7 +366,7 @@ export default function OpeningBalancesPage() {
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <span style={{ fontSize: '11px', fontWeight: 800, padding: '4px 8px', borderRadius: '6px', background: `${natureColor}12`, color: natureColor, border: `1px solid ${natureColor}20`, fontFamily: CAIRO }}>
-                                                        {account.nature === 'debit' ? 'مدين' : 'دائن'}
+                                                        {account.nature === 'debit' ? t('مدين') : t('دائن')}
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), width: '160px' }}>
@@ -407,14 +409,14 @@ export default function OpeningBalancesPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>إجمالي الأرصدة الختامية</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{t('إجمالي الأرصدة الختامية')}</td>
                                         <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.success, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalDebit)}</td>
                                         <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.danger, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
                                             <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 800, color: C.warning, textAlign: 'start', fontFamily: CAIRO }}>
-                                                <AlertTriangle size={14} style={{ display: 'inline', marginInlineStart: '6px' }} /> يرجى مراجعة المدخلات - القيد غير متوازن
+                                                <AlertTriangle size={14} style={{ display: 'inline', marginInlineStart: '6px' }} /> {t('يرجى مراجعة المدخلات - القيد غير متوازن')}
                                             </td>
                                             <td colSpan={2} style={{ padding: '10px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.warning, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(Math.abs(difference))}</td>
                                         </tr>
@@ -430,27 +432,27 @@ export default function OpeningBalancesPage() {
                 show={showCarryModal}
                 onClose={() => setShowCarryModal(false)}
                 onConfirm={handleCarryForward}
-                title="تأكيد ترحيل الأرصدة"
+                title={t("تأكيد ترحيل الأرصدة")}
                 icon={ArrowRightLeft}
             >
                 <div style={{ textAlign: 'center', padding: '10px 0' }}>
                     <div style={{ width: 60, height: 60, borderRadius: '20px', background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.success, margin: '0 auto 20px' }}>
                         <ArrowRightLeft size={30} />
                     </div>
-                    <p style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>هل أنت متأكد من ترحيل الأرصدة الختامية؟</p>
+                    <p style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من ترحيل الأرصدة الختامية؟')}</p>
                     <p style={{ fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, lineHeight: 1.6 }}>
-                        سيتم استيراد كافة الأرصدة الختامية من السنة المالية السابقة كأرصدة افتتاحية لهذه السنة ({curYear?.name}).
+                        {t('سيتم استيراد كافة الأرصدة الختامية من السنة المالية السابقة كأرصدة افتتاحية لهذه السنة')} ({curYear?.name}).
                         <br />
-                        <span style={{ color: C.warning, fontWeight: 700 }}>ملاحظة: تأكد أن السنة السابقة تم تدقيقها وإقفالها بشكل نهائي.</span>
+                        <span style={{ color: C.warning, fontWeight: 700 }}>{t('ملاحظة: تأكد أن السنة السابقة تم تدقيقها وإقفالها بشكل نهائي.')}</span>
                     </p>
                 </div>
                 <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                     <button onClick={handleCarryForward} disabled={carrying} style={{ ...BTN_PRIMARY(carrying, false), flex: 1.5, height: '46px' }}>
                         {carrying ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
-                        <span style={{ marginInlineEnd: '8px' }}>تأكيد الترحيل الآن</span>
+                        <span style={{ marginInlineEnd: '8px' }}>{t('تأكيد الترحيل الآن')}</span>
                     </button>
                     <button onClick={() => setShowCarryModal(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', flex: 1, fontFamily: CAIRO }}>
-                        تراجع
+                        {t('تراجع')}
                     </button>
                 </div>
             </AppModal>
