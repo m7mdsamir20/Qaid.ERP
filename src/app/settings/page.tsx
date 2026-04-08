@@ -147,32 +147,29 @@ function SettingsContent() {
                 '/financial-years',
             ], ['reports-financial', 'reports-treasury-bank']);
         } else if (role === 'sales') {
-            // مندوب مبيعات: مبيعات + أقساط + عملاء + تقارير المبيعات
-            grant([
-                '/', '/sales', '/sale-returns', '/receipts', '/customers', '/settlements',
-                '/installments', '/due-installments', '/overdue-installments',
-            ], ['reports-sales-purchases', 'reports-installments']);
+            // مندوب مبيعات / خدمات: مبيعات + عملاء
+            const salesPages = isServices ? ['/', '/sales', '/customers', '/receipts'] : ['/', '/sales', '/sale-returns', '/receipts', '/customers', '/installments'];
+            grant(salesPages, ['reports-sales-purchases']);
         } else if (role === 'procurement') {
             // مسؤول مشتريات: مشتريات + موردين
             grant([
                 '/', '/purchases', '/purchase-returns', '/purchase-payments', '/suppliers',
             ], ['reports-sales-purchases']);
         } else if (role === 'storekeeper') {
-            // أمين مستودع / مسؤول خدمات: مخزون كامل / خدمات كاملة
-            grant([
-                '/', '/units', '/items', '/warehouses', '/stocktakings', '/warehouse-transfers',
-            ], ['reports-inventory']);
+            // أمين مستودع / مسؤول خدمات: قائمة الخدمات + الفروع
+            const invPages = isServices ? ['/', '/categories', '/items', '/warehouses'] : ['/', '/units', '/items', '/warehouses', '/stocktakings', '/warehouse-transfers'];
+            grant(invPages, ['reports-inventory']);
         } else if (role === 'hr') {
             // موارد بشرية: موظفين + رواتب + سلف + خصومات + أقسام
             grant([
                 '/', '/employees', '/payrolls', '/advances', '/deductions', '/departments',
             ], ['reports-hr']);
         } else if (role === 'cashier') {
-            // كاشير: مبيعات + سندات قبض + أرصدة خزن (عرض فقط)
+            // كاشير
             grant(['/', '/sales', '/receipts'], ['/customers', '/treasuries']);
         } else if (role === 'manager') {
-            // مدير فرع: كل شيء عدا الإعدادات والحسابات الختامية
-            navSections
+            // مدير فرع: كل شيء عدا الإعدادات
+            permissionHierarchy
                 .filter(s => s.featureKey !== 'settings')
                 .forEach(s => grant(s.links.map(l => l.id)));
         }
@@ -431,15 +428,37 @@ function SettingsContent() {
 
     // Build the permission hierarchy based on user's actual permissions and subscription
     const permissionHierarchy = navSections
-        .filter(section => {
-            // A section is visible if at least one of its links is visible
-            return section.links.some(link => hasPage(section.featureKey || '', link.id));
+        .filter(sectionOrigin => {
+            return sectionOrigin.links.some(link => hasPage(sectionOrigin.featureKey || '', link.id));
         })
-        .map(section => {
-            const filteredLinks = section.links.filter(link => hasPage(section.featureKey || '', link.id));
+        .map(sectionOrigin => {
+            let section = { ...sectionOrigin };
+            // Apply services terminology to the permission tree
+            if (isServices) {
+                if (section.featureKey === 'sales') {
+                    section.title = 'فواتير الخدمات';
+                    section.links = section.links?.map((l: any) => {
+                        if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
+                        if (l.label === 'مرتجع مبيعات') return { ...l, label: 'إلغاء خدمات / مرتجع' };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'inventory') {
+                    section.title = 'الخدمات';
+                    section.links = [
+                        { id: '/categories', href: '/categories', label: 'تصنيفات الخدمات' },
+                        { id: '/items', href: '/items', label: 'قائمة الخدمات' },
+                        { id: '/units', href: '/units', label: 'الوحدات' },
+                        { id: '/warehouses', href: '/warehouses', label: 'الفروع / مواقع العمل' }
+                    ];
+                }
+            }
+
+            const filteredLinks = section.links?.filter((link: any) => hasPage(section.featureKey || '', link.id)) || [];
             return {
                 title: section.title,
-                links: filteredLinks.map(link => ({ id: link.id, label: link.label }))
+                featureKey: section.featureKey,
+                links: filteredLinks.map((link: any) => ({ id: link.id, label: link.label }))
             };
         })
         .filter(section => section.links.length > 0); // Remove empty sections

@@ -129,6 +129,7 @@ export default function Sidebar() {
                             section.links = [
                                 { id: '/categories', href: '/categories', label: 'تصنيفات الخدمات' },
                                 { id: '/items', href: '/items', label: 'قائمة الخدمات' },
+                                { id: '/units', href: '/units', label: 'الوحدات' },
                                 { id: '/warehouses', href: '/warehouses', label: 'الفروع / مواقع العمل' },
                             ];
                         }
