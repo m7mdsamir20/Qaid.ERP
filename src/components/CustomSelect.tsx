@@ -127,22 +127,13 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     height: '42px',
                     cursor: disabled ? 'not-allowed' : 'pointer',
-                    padding: Icon ? '0 36px' : '0 16px',
+                    padding: '0 16px',
                     opacity: disabled ? 0.6 : 1,
                     boxSizing: 'border-box',
                     boxShadow: isOpen ? '0 0 0 4px rgba(37,106,244,0.15), 0 4px 12px rgba(0,0,0,0.2)' : 'none',
                     ...appearanceStyle
                 }}
             >
-                {/* Prefix Icon */}
-                {Icon && (
-                    <Icon
-                        size={16}
-                        color="#256af4"
-                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', transition: '0.2s' }}
-                    />
-                )}
-
                 {/* Selected Label */}
                 <div style={{
                     flex: 1,
@@ -156,8 +147,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-start',
-                    height: '100%',
-                    paddingInlineEnd: Icon ? '10px' : '0'
+                    height: '100%'
                 }}>
                     {selectedOption ? selectedOption.label : placeholder}
                 </div>
@@ -258,7 +248,6 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                         {filteredOptions.map((opt, idx) => {
                             const isSelected = opt.value === value;
                             const isActive = activeIndex === idx;
-                            const OptIcon = opt.icon;
 
                             return (
                                 <div
@@ -289,10 +278,6 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                         ...opt.style
                                     }}
                                 >
-                                    {OptIcon && <OptIcon size={16} style={{
-                                        color: isSelected ? '#3b82f6' : (isActive ? '#fff' : 'inherit'),
-                                        opacity: isActive ? 1 : 0.6
-                                    }} />}
                                     <span style={{ flex: 1 }}>{opt.label}</span>
                                     {(opt as any).sub && <span style={{ fontSize: '11px', opacity: 0.5, fontWeight: 400 }}>{(opt as any).sub}</span>}
                                 </div>

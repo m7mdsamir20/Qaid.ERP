@@ -67,20 +67,11 @@
   unicode-range: U+0030-0039, U+002E, U+002C, U+0025, U+002B, U+002D, U+002F, U+003A;
 }
 
-/* ==================== نظام الألوان - ERP Theme ==================== */
+/* ==================== نظام الألوان - ERP Theme (Fixed Light) ==================== */
 :root {
-  /* Primary - Professional Blue (Updated to match Customers) */
+  /* Primary - Professional Blue */
   --primary: #256af4;
   --primary-hover: #1a56d6;
-  --primary-bg: rgba(37, 106, 244, 0.12);
-  --primary-border: rgba(37, 106, 244, 0.35);
-
-  /* New Surfaces (Deep Navy) */
-  --bg-app: #070d1a;
-  --bg-card: #0e1628;
-  --bg-hover: #131e30;
-  --border-app: #1d2a3f;
-  --input-bg: #131e30;
 
   /* Text - High Contrast */
   --text-primary: #e8edf5;

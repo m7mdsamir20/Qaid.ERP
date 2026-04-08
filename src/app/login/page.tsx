@@ -200,10 +200,3 @@ export default function LoginPage() {
         </div>
     );
 }
--webkit - text - fill - color: ${ C.textPrimary } !important;
-transition: background - color 5000s ease -in -out 0s;
-                }
-`}</style>
-        </div>
-    );
-}

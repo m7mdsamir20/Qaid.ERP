@@ -201,28 +201,42 @@ function Actions() {
     };
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexDirection: isRtl ? 'row' : 'row' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            {/* Language Switcher */}
+            <button
+                onClick={() => toggleLang()}
+                style={{
+                    height: '36px', padding: '0 12px', borderRadius: '10px',
+                    border: `1px solid ${C.primary}30`, background: `${C.primary}10`,
+                    color: C.primary, cursor: 'pointer', transition: 'all 0.2s',
+                    fontSize: '13px', fontWeight: 900, fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = `${C.primary}20`}
+                onMouseLeave={e => e.currentTarget.style.background = `${C.primary}10`}
+            >
+                {lang === 'ar' ? 'EN' : 'ع'}
+            </button>
 
             {/* Notifications */}
             <div ref={notifRef} style={{ position: 'relative' }}>
                 <button
                     onClick={() => setOpenNotif(!openNotif)}
                     style={{
-                        width: '36px', height: '36px', borderRadius: '10px',
+                        height: '36px', padding: '0 12px', borderRadius: '10px',
                         border: `1px solid ${C.border}`, background: C.card,
                         color: C.textSecondary, display: 'flex', alignItems: 'center',
                         justifyContent: 'center', cursor: 'pointer', position: 'relative',
-                        transition: 'all 0.2s'
+                        transition: 'all 0.2s', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
                     }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
                 >
-                    <Bell size={18} />
+                    {t('الإشعارات')}
                     {notifs.some(n => !n.read) && (
                         <span style={{
-                            position: 'absolute', top: '8px', insetInlineEnd: '8px', width: '8px',
-                            height: '8px', background: C.danger, borderRadius: '50%',
-                            border: `2px solid ${C.card}`
+                            position: 'absolute', top: '8px', insetInlineEnd: '4px', width: '6px',
+                            height: '6px', background: C.danger, borderRadius: '50%'
                         }} />
                     )}
                 </button>
@@ -251,7 +265,7 @@ function Actions() {
                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                     <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: (n.color || C.primary) + '15', display: 'flex', alignItems: 'center', justifyContent: 'center', color: n.color || C.primary, flexShrink: 0 }}>
-                                        <n.icon size={18} />
+                                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'currentColor' }} />
                                     </div>
                                     <div style={{ flex: 1 }}>
                                         <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: n.read ? 600 : 800, fontFamily: CAIRO, marginBottom: '3px', lineHeight: 1.4 }}>{n.title}</div>
@@ -264,28 +278,18 @@ function Actions() {
                 )}
             </div>
 
-            <div style={{ width: '1px', height: '24px', background: C.border, margin: '0 4px' }} />
-
             {/* User Menu */}
             <div ref={userRef} style={{ position: 'relative' }}>
                 <button onClick={() => setOpenUser(!openUser)}
                     style={{
                         display: 'flex', alignItems: 'center', gap: '10px',
-                        padding: isRtl ? '4px 6px 4px 12px' : '4px 12px 4px 6px', borderRadius: '12px',
+                        padding: '4px 12px 4px 6px', borderRadius: '12px',
                         background: C.card, border: `1px solid ${C.border}`,
                         cursor: 'pointer', transition: 'all 0.2s'
                     }}
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
-                    <div style={{ textAlign: 'start' }}>
-                        <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
-                            {sessionStatus === 'loading' ? '...' : (session?.user?.name || t('مستخدم'))}
-                        </div>
-                        <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px' }}>
-                            {sessionStatus === 'loading' ? '' : t(roleLabels[(session?.user as any)?.role] || 'مستخدم')}
-                        </div>
-                    </div>
                     <ChevronDown size={14} color={C.textMuted} style={{ transform: openUser ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
                 </button>
 
@@ -303,54 +307,19 @@ function Actions() {
                                 <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{session?.user?.name}</div>
                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{session?.user?.email}</div>
                             </div>
-
-                            <div style={{ width: '1px', height: '28px', background: C.border, margin: '0 12px' }} />
-
-                            <div style={{ display: 'flex', gap: '6px' }}>
-                                <button
-                                    onClick={() => toggleLang()}
-                                    title={lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
-                                    style={{
-                                        width: '28px', height: '28px', borderRadius: '8px', cursor: 'pointer',
-                                        background: `${C.primary}15`, color: C.primary,
-                                        border: `1px solid ${C.primary}30`,
-                                        fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO, fontWeight: 900, fontSize: lang === 'ar' ? '11px' : '13px',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s'
-                                    }}
-                                    onMouseEnter={e => e.currentTarget.style.background = `${C.primary}30`}
-                                    onMouseLeave={e => e.currentTarget.style.background = `${C.primary}15`}
-                                >
-                                    {lang === 'ar' ? 'EN' : 'ع'}
-                                </button>
-                                <button
-                                    title="تبديل المظهر"
-                                    style={{
-                                        width: '28px', height: '28px', borderRadius: '8px', cursor: 'not-allowed',
-                                        background: 'transparent', color: C.textSecondary,
-                                        border: `1px solid ${C.border}`, opacity: 0.7,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px'
-                                    }}>
-                                    🌙
-                                </button>
-                            </div>
                         </div>
 
-                        {[
-                            { icon: User, label: 'ملفي الشخصي', path: '/profile' },
-                            { icon: KeyRound, label: 'تغيير كلمة المرور', path: '/profile/password' },
-                        ].map((it, i) => (
-                            <button key={i} onClick={() => { router.push(it.path); setOpenUser(false); }}
-                                style={{
-                                    width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
-                                    padding: '11px 16px', background: 'none', border: 'none',
-                                    color: C.textSecondary, fontSize: '13.5px', cursor: 'pointer',
-                                    fontFamily: CAIRO, transition: '0.1s', boxSizing: 'border-box'
-                                }}
-                                onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
-                                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
-                                <it.icon size={15} /> {t(it.label)}
-                            </button>
-                        ))}
+                        <button onClick={() => { router.push('/profile'); setOpenUser(false); }}
+                            style={{
+                                width: '100%', display: 'flex', alignItems: 'center', gap: '12px',
+                                padding: '11px 16px', background: 'none', border: 'none',
+                                color: C.textSecondary, fontSize: '13.5px', cursor: 'pointer',
+                                fontFamily: CAIRO, transition: '0.1s', boxSizing: 'border-box'
+                            }}
+                            onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
+                            onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
+                            {t('ملفي الشخصي')}
+                        </button>
 
                         <div style={{ borderTop: `1px solid ${C.border}` }}>
                             <button onClick={() => signOut({ callbackUrl: '/login' })}
@@ -360,7 +329,7 @@ function Actions() {
                                     color: C.danger, fontSize: '13.5px', cursor: 'pointer', fontFamily: CAIRO,
                                     boxSizing: 'border-box'
                                 }}>
-                                <LogOut size={16} /> {t('تسجيل الخروج')}
+                                {t('تسجيل الخروج')}
                             </button>
                         </div>
                     </div>
@@ -510,10 +479,6 @@ export default function Header() {
                     to { opacity: 1; transform: translateY(0); }
                 }
             `}</style>
-        </header>
-    );
-}
-`}</style>
         </header>
     );
 }
