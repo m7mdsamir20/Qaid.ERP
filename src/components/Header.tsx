@@ -200,21 +200,21 @@ function Actions() {
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
 
-            {/* Lang Switch - AR/EN Abbreviation */}
+            {/* Lang Switch */}
             <button onClick={toggleLang} style={{
-                height: '36px', padding: '0 12px', borderRadius: '10px',
+                width: '36px', height: '36px', borderRadius: '10px',
                 border: `1px solid ${C.border}`, background: C.card,
                 color: C.textSecondary, display: 'flex', alignItems: 'center',
                 justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s',
-                gap: '6px'
+                fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO,
+                fontWeight: 900,
+                fontSize: lang === 'ar' ? '15px' : '18px'
             }}
-                title={lang === 'ar' ? 'تغيير لغة التصفح' : 'Change Language'}
+                title={lang === 'ar' ? 'التبديل إلى الإنجليزية' : 'Switch to Arabic'}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.color = C.primary; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSecondary; }}
             >
-                <span style={{ fontSize: '14px', fontWeight: 900, fontFamily: 'sans-serif', color: lang === 'en' ? C.primary : 'inherit' }}>EN</span>
-                <span style={{ width: '1px', height: '14px', background: C.border }} />
-                <span style={{ fontSize: '15px', fontWeight: 900, fontFamily: CAIRO, marginTop: '-2px', color: lang === 'ar' ? C.primary : 'inherit' }}>ع</span>
+                {lang === 'ar' ? 'EN' : 'ع'}
             </button>
 
             {/* Notifications */}
