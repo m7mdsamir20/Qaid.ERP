@@ -423,7 +423,7 @@ function BranchSwitcher() {
             {open && (
                 <div style={{
                     position: 'absolute', top: 'calc(100% + 12px)',
-                    [isRtl ? 'insetInlineStart' : 'insetInlineEnd']: 0,
+                    insetInlineStart: 0,
                     width: '240px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
