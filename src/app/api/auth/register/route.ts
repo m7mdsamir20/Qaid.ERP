@@ -13,7 +13,7 @@ export const POST = withProtection(async (request, session, body) => {
 
         const MODULES_MAP: Record<string, string[]> = {
             TRADING: ['sales', 'purchases', 'inventory', 'installments', 'financials', 'reports'],
-            SERVICES: ['sales', 'inventory', 'financials', 'reports'],
+            SERVICES: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports'],
         };
 
         const activeModules = MODULES_MAP[businessType] || MODULES_MAP['TRADING'];

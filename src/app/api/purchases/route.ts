@@ -68,6 +68,8 @@ export const GET = withProtection(async (request, session) => {
 });
 
 export const POST = withProtection(async (request, session, body) => {
+    if ((session.user as any).businessType === 'SERVICES')
+        return NextResponse.json({ error: 'النشاط الخدمي لا يدعم فواتير المشتريات' }, { status: 403 });
     try {
         const companyId = (session.user as any).companyId;
         const { 

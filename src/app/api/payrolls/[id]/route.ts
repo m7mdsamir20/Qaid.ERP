@@ -293,15 +293,28 @@ export const DELETE = withProtection(async (request, session, body, context) => 
         const companyId = (session.user as any).companyId;
 
         const payroll = await prisma.payroll.findUnique({
-            where: { id: id, companyId }
+            where: { id, companyId },
+            include: { lines: { select: { id: true } } }
         });
 
-        if (!payroll) return NextResponse.json({ error: "Not found" }, { status: 404 });
-        if (payroll.status === 'paid') return NextResponse.json({ error: "لا يمكن حذف مسير معتمد" }, { status: 400 });
+        if (!payroll) return NextResponse.json({ error: "المسير غير موجود" }, { status: 404 });
+        if (payroll.status === 'paid') return NextResponse.json({ error: "لا يمكن حذف مسير معتمد — استخدم الإلغاء" }, { status: 400 });
 
-        await prisma.payroll.delete({ where: { id: id } });
+        await prisma.$transaction(async (tx) => {
+            // حذف أي قيود يومية مرتبطة بالمسير (احتياط)
+            await tx.journalEntry.deleteMany({
+                where: { companyId, referenceType: 'payroll', referenceId: id }
+            });
+
+            // حذف بنود المسير
+            await tx.payrollLine.deleteMany({ where: { payrollId: id } });
+
+            // حذف المسير
+            await tx.payroll.delete({ where: { id, companyId } });
+        });
+
         return NextResponse.json({ success: true });
-    } catch {
-        return NextResponse.json({ error: "Server Error" }, { status: 500 });
+    } catch (e: any) {
+        return NextResponse.json({ error: e.message || "فشل حذف المسير" }, { status: 500 });
     }
 });

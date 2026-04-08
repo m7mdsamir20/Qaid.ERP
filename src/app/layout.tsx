@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   description: "نظام شامل لإدارة موارد المؤسسات - المحاسبة، المخزون، المبيعات، المشتريات",
 };
 
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,6 +35,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
+        <SpeedInsights />
       </body>
     </html>
   );

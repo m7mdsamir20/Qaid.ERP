@@ -111,13 +111,21 @@ export const POST = withProtection(async (request, session, body) => {
                 data: { balance: { decrement: numAmount } }
             });
 
-            let creditAccount = await tx.account.findFirst({
-                where: {
-                    companyId,
-                    name: treasury.name,
-                    accountCategory: 'detail'
-                }
-            });
+            // أولوية: استخدام accountId المرتبط بالخزينة مباشرة
+            let creditAccount = treasury.accountId
+                ? await tx.account.findUnique({ where: { id: treasury.accountId } })
+                : null;
+
+            // fallback: البحث بالاسم
+            if (!creditAccount) {
+                creditAccount = await tx.account.findFirst({
+                    where: {
+                        companyId,
+                        name: treasury.name,
+                        accountCategory: 'detail'
+                    }
+                });
+            }
 
             if (!creditAccount) {
                 creditAccount = await tx.account.findFirst({
@@ -131,18 +139,7 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             if (!creditAccount) {
-                creditAccount = await tx.account.findFirst({
-                    where: {
-                        companyId,
-                        type: 'asset',
-                        accountCategory: 'detail'
-                    },
-                    orderBy: { code: 'desc' }
-                });
-            }
-
-            if (!creditAccount) {
-                throw new Error('لا يوجد حساب نقدية أو بنك متاح لهذا الفرع لتسجيل القيد. نوصي بإنشاء حساب بنفس اسم الخزينة.');
+                throw new Error('الخزينة غير مرتبطة بحساب محاسبي — يرجى ربط الخزينة بحساب من إعدادات الخزن والبنوك.');
             }
 
             const newEntry = await tx.journalEntry.create({

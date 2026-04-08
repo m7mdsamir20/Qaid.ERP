@@ -121,11 +121,27 @@ export const POST = withProtection(async (request, session, body) => {
                     }
 
                     if (creditAccountId) {
+                        // بناء وصف تفصيلي لحصة كل شريك
+                        const partnerIds = (lines as { partnerId: string; amount: number }[]).map(l => l.partnerId);
+                        const partnerNames = await tx.partner.findMany({
+                            where: { id: { in: partnerIds }, companyId },
+                            select: { id: true, name: true },
+                        });
+                        const nameMap = Object.fromEntries(partnerNames.map(p => [p.id, p.name]));
+                        const detailStr = (lines as { partnerId: string; amount: number }[])
+                            .map(l => `${nameMap[l.partnerId] || l.partnerId}: ${Number(l.amount).toLocaleString('en-US')}`)
+                            .join(' | ');
+
+                        const entryDescription = `توزيع أرباح ${period}${immediatePayment ? ' (صرف فوري)' : ''} — ${notes || ''} [${detailStr}]`;
+                        const lineDescription = immediatePayment
+                            ? `صرف أرباح نقداً — ${detailStr}`
+                            : `حصص الشركاء — ${detailStr}`;
+
                         await tx.journalEntry.create({
                             data: {
                                 entryNumber: (lastEntry?.entryNumber || 0) + 1,
                                 date: txDate,
-                                description: `توزيع أرباح ${period}${immediatePayment ? ' (صرف فوري)' : ''} — ${notes || ''}`,
+                                description: entryDescription,
                                 referenceType: 'profit_distribution',
                                 referenceId: batchId,
                                 financialYearId: activeYear.id,
@@ -133,8 +149,8 @@ export const POST = withProtection(async (request, session, body) => {
                                 isPosted: true,
                                 lines: {
                                     create: [
-                                        { accountId: plAccount.id, debit: Number(totalAmount), credit: 0, description: 'توزيع أرباح' },
-                                        { accountId: creditAccountId, debit: 0, credit: Number(totalAmount), description: immediatePayment ? 'صرف أرباح نقداً' : 'حصص الشركاء' },
+                                        { accountId: plAccount.id, debit: Number(totalAmount), credit: 0, description: `توزيع أرباح — ${detailStr}` },
+                                        { accountId: creditAccountId, debit: 0, credit: Number(totalAmount), description: lineDescription },
                                     ]
                                 }
                             }

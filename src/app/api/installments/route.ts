@@ -25,6 +25,7 @@ export const GET = withProtection(async (request, session) => {
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
+        const isServices = (session.user as any).businessType === 'SERVICES';
 
         const {
             customerId, productName, totalAmount, downPayment,
@@ -95,7 +96,12 @@ export const POST = withProtection(async (request, session, body) => {
                 const salesAcc = await tx.account.findFirst({
                     where: {
                         companyId, type: 'revenue', accountCategory: 'detail',
-                        OR: [
+                        OR: isServices ? [
+                            { code: '4200' },
+                            { name: { contains: 'إيرادات الخدمات' } },
+                            { name: { contains: 'خدمات' } },
+                        ] : [
+                            { code: '4100' },
                             { name: { contains: 'إيرادات المبيعات' } },
                             { name: { contains: 'مبيعات' } },
                         ],
@@ -180,7 +186,7 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             }
 
-            if (itemId && currentYear) {
+            if (!isServices && itemId && currentYear) {
                 const qty = parseInt(quantity) || 1;
                 const item = await tx.item.findUnique({
                     where:  { id: itemId },

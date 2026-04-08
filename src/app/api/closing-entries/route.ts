@@ -92,27 +92,29 @@ export const POST = withProtection(async (request, session, body) => {
             });
         }
 
-        const lastJE = await prisma.journalEntry.findFirst({
-            where: { companyId, financialYearId },
-            orderBy: { entryNumber: 'desc' },
-            select: { entryNumber: true },
-        });
-        const nextEntryNumber = (lastJE?.entryNumber || 0) + 1;
+        const entry = await prisma.$transaction(async (tx) => {
+            const lastJE = await tx.journalEntry.findFirst({
+                where: { companyId, financialYearId },
+                orderBy: { entryNumber: 'desc' },
+                select: { entryNumber: true },
+            });
+            const nextEntryNumber = (lastJE?.entryNumber || 0) + 1;
 
-        const entry = await prisma.journalEntry.create({
-            data: {
-                entryNumber: nextEntryNumber,
-                date: new Date(year.endDate),
-                description: `قيود إقفال الحسابات الختامية للسنة المالية ${year.name}`,
-                reference: `CLS-${year.name}`,
-                referenceType: 'closing',
-                financialYearId: year.id,
-                companyId: companyId,
-                isPosted: true,
-                lines: {
-                    create: linesToCreate
+            return tx.journalEntry.create({
+                data: {
+                    entryNumber: nextEntryNumber,
+                    date: new Date(year.endDate),
+                    description: `قيود إقفال الحسابات الختامية للسنة المالية ${year.name}`,
+                    reference: `CLS-${year.name}`,
+                    referenceType: 'closing',
+                    financialYearId: year.id,
+                    companyId: companyId,
+                    isPosted: true,
+                    lines: {
+                        create: linesToCreate
+                    }
                 }
-            }
+            });
         });
 
         return NextResponse.json({

@@ -29,6 +29,8 @@ export const GET = withProtection(async (request, session) => {
         chartStart.setDate(chartStart.getDate() - 6);
         chartStart.setHours(0, 0, 0, 0);
 
+        const isServices = user.businessType === 'SERVICES';
+
         const safeQuery = async (fn: any, fallback: any) => {
             try { return await fn(); }
             catch (e) { return fallback; }
@@ -51,7 +53,7 @@ export const GET = withProtection(async (request, session) => {
                 safeQuery(() => prisma.item.count({ where: { companyId } }), 0),
             ]),
             // Treasuries
-            safeQuery(() => prisma.treasury.aggregate({ 
+            safeQuery(() => prisma.treasury.aggregate({
                 where: { companyId, ...branchFilter },
                 _sum: { balance: true }
             }), { _sum: { balance: 0 } }),
@@ -65,10 +67,24 @@ export const GET = withProtection(async (request, session) => {
                     where: { companyId, type: 'purchase', ...dateFilter, ...branchFilter },
                     _sum: { total: true }
                 }), { _sum: { total: 0 } }),
-                safeQuery(() => prisma.invoice.aggregate({
-                    where: { companyId, type: 'payment', ...dateFilter, ...branchFilter },
-                    _sum: { total: true }
-                }), { _sum: { total: 0 } }),
+                // للنشاط الخدمي: المصروفات من القيود الفعلية (other_expense)
+                // للنشاط التجاري: سندات الصرف للموردين (payment)
+                isServices
+                    ? safeQuery(() => prisma.journalEntryLine.aggregate({
+                        where: {
+                            debit: { gt: 0 },
+                            journalEntry: {
+                                companyId,
+                                referenceType: 'other_expense',
+                                date: { gte: startDate, lte: endDate },
+                            },
+                        },
+                        _sum: { debit: true }
+                    }), { _sum: { debit: 0 } })
+                    : safeQuery(() => prisma.invoice.aggregate({
+                        where: { companyId, type: 'payment', ...dateFilter, ...branchFilter },
+                        _sum: { total: true }
+                    }), { _sum: { total: 0 } }),
             ]),
             // Alerts & Data
             safeQuery(() => prisma.stock.findMany({
@@ -129,8 +145,9 @@ export const GET = withProtection(async (request, session) => {
 
         const salesTotal = kpis[0]._sum?.total || 0;
         const purchasesTotal = kpis[1]._sum?.total || 0;
-        const expensesTotal = kpis[2]._sum?.total || 0;
-        const isServices = user.businessType === 'SERVICES';
+        const expensesTotal = isServices
+            ? (kpis[2]._sum?.debit || 0)
+            : (kpis[2]._sum?.total || 0);
 
         return NextResponse.json({
             customers: counts[0],

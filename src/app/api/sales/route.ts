@@ -246,7 +246,11 @@ export const POST = withProtection(async (request, session, body) => {
                 const salesAccount = await tx.account.findFirst({
                     where: {
                         companyId, accountCategory: 'detail',
-                        OR: [
+                        OR: isServices ? [
+                            { code: '4200' },
+                            { type: 'revenue', name: { contains: 'إيرادات الخدمات' } },
+                            { type: 'revenue', name: { contains: 'خدمات' } },
+                        ] : [
                             { code: '4100' },
                             { type: 'revenue', name: { contains: 'إيرادات المبيعات' } },
                             { type: 'revenue', name: { contains: 'مبيعات' } },
@@ -332,55 +336,56 @@ export const POST = withProtection(async (request, session, body) => {
                         });
                     }
 
-                    // قيد تكلفة البضاعة المباعة
-                    const inventoryAccount = await tx.account.findFirst({
-                        where: {
-                            companyId, accountCategory: 'detail',
-                            OR: [
-                                { code: '1131' },
-                                { type: 'asset', name: { contains: 'مخزون' } },
-                                { type: 'asset', name: { contains: 'بضاعة' } },
-                                { type: 'asset', name: { contains: 'بضائع' } },
-                            ],
-                        },
-                    });
+                    // قيد تكلفة البضاعة المباعة — للنشاط التجاري فقط
+                    if (!isServices) {
+                        const inventoryAccount = await tx.account.findFirst({
+                            where: {
+                                companyId, accountCategory: 'detail',
+                                OR: [
+                                    { code: '1131' },
+                                    { type: 'asset', name: { contains: 'مخزون' } },
+                                    { type: 'asset', name: { contains: 'بضاعة' } },
+                                    { type: 'asset', name: { contains: 'بضائع' } },
+                                ],
+                            },
+                        });
 
-                    const cogsAccount = await tx.account.findFirst({
-                        where: {
-                            companyId, accountCategory: 'detail',
-                            OR: [
-                                { code: '5100' },
-                                { type: 'expense', name: { contains: 'تكلفة' } },
-                                { type: 'expense', name: { contains: 'COGS' } },
-                                { type: 'expense', name: { contains: 'البضاعة المباعة' } },
-                            ],
-                        },
-                    });
+                        const cogsAccount = await tx.account.findFirst({
+                            where: {
+                                companyId, accountCategory: 'detail',
+                                OR: [
+                                    { code: '5100' },
+                                    { type: 'expense', name: { contains: 'تكلفة' } },
+                                    { type: 'expense', name: { contains: 'COGS' } },
+                                    { type: 'expense', name: { contains: 'البضاعة المباعة' } },
+                                ],
+                            },
+                        });
 
-                    if (inventoryAccount && cogsAccount) {
-                        // حساب إجمالي تكلفة الأصناف المباعة
-                        let totalCost = 0;
-                        for (const line of lines) {
-                            const item = await tx.item.findUnique({
-                                where: { id: line.itemId },
-                                select: { averageCost: true },
-                            });
-                            totalCost += (item?.averageCost || 0) * line.quantity;
-                        }
+                        if (inventoryAccount && cogsAccount) {
+                            let totalCost = 0;
+                            for (const line of lines) {
+                                const item = await tx.item.findUnique({
+                                    where: { id: line.itemId },
+                                    select: { averageCost: true },
+                                });
+                                totalCost += (item?.averageCost || 0) * line.quantity;
+                            }
 
-                        if (totalCost > 0) {
-                            journalLines.push({
-                                accountId:   cogsAccount.id,
-                                debit:       totalCost,
-                                credit:      0,
-                                description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
-                            });
-                            journalLines.push({
-                                accountId:   inventoryAccount.id,
-                                debit:       0,
-                                credit:      totalCost,
-                                description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
-                            });
+                            if (totalCost > 0) {
+                                journalLines.push({
+                                    accountId:   cogsAccount.id,
+                                    debit:       totalCost,
+                                    credit:      0,
+                                    description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
+                                });
+                                journalLines.push({
+                                    accountId:   inventoryAccount.id,
+                                    debit:       0,
+                                    credit:      totalCost,
+                                    description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
+                                });
+                            }
                         }
                     }
 

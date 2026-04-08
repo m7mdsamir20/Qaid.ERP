@@ -7,9 +7,7 @@ export const GET = withProtection(async (request, session) => {
         const companyId = (session.user as any).companyId;
 
         const vouchers = await prisma.voucher.findMany({
-            where: {
-                treasury: { companyId }
-            },
+            where: { companyId },
             include: {
                 treasury: { select: { name: true } },
                 customer: { select: { name: true } },

@@ -23,6 +23,7 @@ export const GET = withProtection(async (request, session) => {
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
+        const isServices = (session.user as any).businessType === 'SERVICES';
         const { customerId, warehouseId, originalInvoiceId, lines, discount, paidAmount, notes, treasuryId, bankId } = body;
 
         const effectiveTreasuryId = treasuryId || bankId;
@@ -208,64 +209,66 @@ export const POST = withProtection(async (request, session, body) => {
                         }
                     }
 
-                    const inventoryAcc = await tx.account.findFirst({
-                        where: {
-                            companyId, accountCategory: 'detail',
-                            OR: [
-                                { code: '1131' },
-                                { type: 'asset', name: { contains: 'مخزون' } },
-                                { type: 'asset', name: { contains: 'بضاعة' } },
-                            ],
-                        },
-                    });
+                    // عكس تكلفة البضاعة — للنشاط التجاري فقط
+                    if (!isServices) {
+                        const inventoryAcc = await tx.account.findFirst({
+                            where: {
+                                companyId, accountCategory: 'detail',
+                                OR: [
+                                    { code: '1131' },
+                                    { type: 'asset', name: { contains: 'مخزون' } },
+                                    { type: 'asset', name: { contains: 'بضاعة' } },
+                                ],
+                            },
+                        });
 
-                    const cogsAcc = await tx.account.findFirst({
-                        where: {
-                            companyId, accountCategory: 'detail',
-                            OR: [
-                                { code: '5100' },
-                                { type: 'expense', name: { contains: 'تكلفة' } },
-                                { type: 'expense', name: { contains: 'البضاعة المباعة' } },
-                            ],
-                        },
-                    });
+                        const cogsAcc = await tx.account.findFirst({
+                            where: {
+                                companyId, accountCategory: 'detail',
+                                OR: [
+                                    { code: '5100' },
+                                    { type: 'expense', name: { contains: 'تكلفة' } },
+                                    { type: 'expense', name: { contains: 'البضاعة المباعة' } },
+                                ],
+                            },
+                        });
 
-                    if (inventoryAcc && cogsAcc) {
-                        let totalCost = 0;
-                        const originalInvoice = originalInvoiceId ? await tx.invoice.findUnique({
-                            where: { id: originalInvoiceId },
-                            include: { lines: true }
-                        }) : null;
+                        if (inventoryAcc && cogsAcc) {
+                            let totalCost = 0;
+                            const originalInvoice = originalInvoiceId ? await tx.invoice.findUnique({
+                                where: { id: originalInvoiceId },
+                                include: { lines: true }
+                            }) : null;
 
-                        for (const line of lines) {
-                            const originalLine = originalInvoice?.lines.find(ol => ol.itemId === line.itemId);
-                            const costToUse = originalLine?.unitCost || 0;
-                            
-                            // If we can't find the original cost, fallback to current average cost
-                            if (!costToUse) {
-                                const item = await tx.item.findUnique({
-                                    where: { id: line.itemId },
-                                    select: { averageCost: true },
-                                });
-                                totalCost += (item?.averageCost || 0) * line.quantity;
-                            } else {
-                                totalCost += costToUse * line.quantity;
+                            for (const line of lines) {
+                                const originalLine = originalInvoice?.lines.find(ol => ol.itemId === line.itemId);
+                                const costToUse = originalLine?.unitCost || 0;
+
+                                if (!costToUse) {
+                                    const item = await tx.item.findUnique({
+                                        where: { id: line.itemId },
+                                        select: { averageCost: true },
+                                    });
+                                    totalCost += (item?.averageCost || 0) * line.quantity;
+                                } else {
+                                    totalCost += costToUse * line.quantity;
+                                }
                             }
-                        }
 
-                        if (totalCost > 0) {
-                            journalLines.push({
-                                accountId: inventoryAcc.id,
-                                debit: totalCost,
-                                credit: 0,
-                                description: `إعادة بضاعة مرتجعة`,
-                            });
-                            journalLines.push({
-                                accountId: cogsAcc.id,
-                                debit: 0,
-                                credit: totalCost,
-                                description: `عكس تكلفة مرتجع مبيعات`,
-                            });
+                            if (totalCost > 0) {
+                                journalLines.push({
+                                    accountId: inventoryAcc.id,
+                                    debit: totalCost,
+                                    credit: 0,
+                                    description: `إعادة بضاعة مرتجعة`,
+                                });
+                                journalLines.push({
+                                    accountId: cogsAcc.id,
+                                    debit: 0,
+                                    credit: totalCost,
+                                    description: `عكس تكلفة مرتجع مبيعات`,
+                                });
+                            }
                         }
                     }
 
