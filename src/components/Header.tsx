@@ -423,7 +423,7 @@ function BranchSwitcher() {
             {open && (
                 <div style={{
                     position: 'absolute', top: 'calc(100% + 12px)',
-                    insetInlineStart: 0,
+                    [isRtl ? 'insetInlineStart' : 'insetInlineEnd']: 0,
                     width: '240px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
@@ -489,8 +489,8 @@ export default function Header() {
             alignItems: 'center', padding: '0 24px'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 
-            {/* Branch Switcher - Left in English, Right in Arabic */}
-            <div style={{ order: isRtl ? 10 : 1 }}>
+            {/* Right in Arabic, Left in English */}
+            <div style={{ order: isRtl ? 1 : 10 }}>
                 <BranchSwitcher />
             </div>
 
@@ -499,8 +499,8 @@ export default function Header() {
                 <SearchBox />
             </div>
 
-            {/* Actions & User Menu - Right in English, Left in Arabic */}
-            <div style={{ order: isRtl ? 1 : 10 }}>
+            {/* Left in Arabic, Right in English */}
+            <div style={{ order: isRtl ? 10 : 1 }}>
                 <Actions />
             </div>
 
