@@ -288,8 +288,7 @@ function Actions() {
                 {openUser && (
                     <div style={{
                         position: 'absolute', top: 'calc(100% + 12px)', 
-                        right: isRtl ? 'auto' : 0, 
-                        left: isRtl ? 0 : 'auto',
+                        insetInlineEnd: 0,
                         width: '260px',
                         background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
                         boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
@@ -471,8 +470,8 @@ export default function Header() {
     return (
         <header style={{
             height: '64px', position: 'fixed', top: 0, 
-            right: isRtl ? '260px' : 0, 
-            left: isRtl ? 0 : '260px', 
+            insetInlineStart: '260px',
+            insetInlineEnd: 0,
             zIndex: 800,
             background: 'rgba(7, 13, 26, 0.7)', backdropFilter: 'blur(12px)',
             borderBottom: `1px solid ${C.border}`, display: 'flex',

@@ -66,8 +66,7 @@ export default function DashboardLayout({
             </div>
             <div className="dashboard-content" style={{
                 flex: 1, display: 'flex', flexDirection: 'column',
-                marginInlineEnd: isRtl ? '260px' : 0,
-                marginInlineStart: isRtl ? 0 : '260px',
+                marginInlineStart: '260px',
                 paddingTop: '64px',
                 transition: 'all 0.3s ease'
             }}>
