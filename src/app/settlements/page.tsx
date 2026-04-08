@@ -84,6 +84,8 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
 }
 
 function Modal({ isOpen, onClose, title, icon, children, maxWidth = '800px' }: { isOpen: boolean; onClose: () => void; title: string; icon: React.ReactNode; children: React.ReactNode; maxWidth?: string; }) {
+    const { lang } = useTranslation();
+    const isRtl = lang === 'ar';
     useEffect(() => {
         const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
         if (isOpen) window.addEventListener('keydown', handler);
