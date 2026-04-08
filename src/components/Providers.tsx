@@ -14,23 +14,36 @@ export const useTheme = () => useContext(ThemeContext);
 export function Providers({ children }: {
     children: React.ReactNode;
 }) {
+    const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
     useEffect(() => {
-        document.documentElement.removeAttribute('data-theme');
+        const saved = localStorage.getItem('erp_theme') as 'dark' | 'light' | null;
+        if (saved) {
+            setTheme(saved);
+            document.documentElement.className = saved;
+        } else {
+            document.documentElement.className = 'dark';
+        }
 
         const handleWheel = (e: WheelEvent) => {
             const el = document.activeElement as any;
-            if (el && el.type === 'number') {
-                el.blur();
-            }
+            if (el && el.type === 'number') el.blur();
         };
         window.addEventListener('wheel', handleWheel, { passive: true });
         return () => window.removeEventListener('wheel', handleWheel);
     }, []);
 
+    const toggleTheme = () => {
+        const next = theme === 'dark' ? 'light' : 'dark';
+        setTheme(next);
+        localStorage.setItem('erp_theme', next);
+        document.documentElement.className = next;
+    };
+
     return (
         <SessionProvider refetchOnWindowFocus={false}>
             <LanguageProvider>
-                <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: () => {} }}>
+                <ThemeContext.Provider value={{ theme, toggleTheme }}>
                     {children}
                 </ThemeContext.Provider>
             </LanguageProvider>

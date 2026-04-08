@@ -4,30 +4,31 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2, ChevronDown, Search } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ChevronDown, Search, Languages, Sun, Moon } from 'lucide-react';
+import { useTheme } from '@/components/Providers';
 import { C, CAIRO, IS, LS, focusIn, focusOut, THEME } from '@/constants/theme';
 
 const COUNTRIES = [
-    { code: 'EG', dial: '+20', name: 'مصر', flag: '🇪🇬' },
-    { code: 'SA', dial: '+966', name: 'السعودية', flag: '🇸🇦' },
-    { code: 'AE', dial: '+971', name: 'الإمارات', flag: '🇦🇪' },
-    { code: 'KW', dial: '+965', name: 'الكويت', flag: '🇰🇼' },
-    { code: 'QA', dial: '+974', name: 'قطر', flag: '🇶🇦' },
-    { code: 'BH', dial: '+973', name: 'البحرين', flag: '🇧🇭' },
-    { code: 'OM', dial: '+968', name: 'عُمان', flag: '🇴🇲' },
-    { code: 'JO', dial: '+962', name: 'الأردن', flag: '🇯🇴' },
-    { code: 'LB', dial: '+961', name: 'لبنان', flag: '🇱🇧' },
-    { code: 'IQ', dial: '+964', name: 'العراق', flag: '🇮🇶' },
-    { code: 'SY', dial: '+963', name: 'سوريا', flag: '🇸🇾' },
-    { code: 'YE', dial: '+967', name: 'اليمن', flag: '🇾🇪' },
-    { code: 'LY', dial: '+218', name: 'ليبيا', flag: '🇱🇾' },
-    { code: 'TN', dial: '+216', name: 'تونس', flag: '🇹🇳' },
-    { code: 'DZ', dial: '+213', name: 'الجزائر', flag: '🇩🇿' },
-    { code: 'MA', dial: '+212', name: 'المغرب', flag: '🇲🇦' },
-    { code: 'SD', dial: '+249', name: 'السودان', flag: '🇸🇩' },
-    { code: 'US', dial: '+1', name: 'أمريكا', flag: '🇺🇸' },
-    { code: 'GB', dial: '+44', name: 'بريطانيا', flag: '🇬🇧' },
-    { code: 'TR', dial: '+90', name: 'تركيا', flag: '🇹🇷' },
+    { code: 'EG', dial: '+20', name: 'مصر', flag: '🇪🇬', currency: 'EGP' },
+    { code: 'SA', dial: '+966', name: 'السعودية', flag: '🇸🇦', currency: 'SAR' },
+    { code: 'AE', dial: '+971', name: 'الإمارات', flag: '🇦🇪', currency: 'AED' },
+    { code: 'KW', dial: '+965', name: 'الكويت', flag: '🇰🇼', currency: 'KWD' },
+    { code: 'QA', dial: '+974', name: 'قطر', flag: '🇶🇦', currency: 'QAR' },
+    { code: 'BH', dial: '+973', name: 'البحرين', flag: '🇧🇭', currency: 'BHD' },
+    { code: 'OM', dial: '+968', name: 'عُمان', flag: '🇴🇲', currency: 'OMR' },
+    { code: 'JO', dial: '+962', name: 'الأردن', flag: '🇯🇴', currency: 'JOD' },
+    { code: 'LB', dial: '+961', name: 'لبنان', flag: '🇱🇧', currency: 'LBP' },
+    { code: 'IQ', dial: '+964', name: 'العراق', flag: '🇮🇶', currency: 'IQD' },
+    { code: 'SY', dial: '+963', name: 'سوريا', flag: '🇸🇾', currency: 'SYP' },
+    { code: 'YE', dial: '+967', name: 'اليمن', flag: '🇾🇪', currency: 'YER' },
+    { code: 'LY', dial: '+218', name: 'ليبيا', flag: '🇱🇾', currency: 'LYD' },
+    { code: 'TN', dial: '+216', name: 'تونس', flag: '🇹🇳', currency: 'TND' },
+    { code: 'DZ', dial: '+213', name: 'الجزائر', flag: '🇩🇿', currency: 'DZD' },
+    { code: 'MA', dial: '+212', name: 'المغرب', flag: '🇲🇦', currency: 'MAD' },
+    { code: 'SD', dial: '+249', name: 'السودان', flag: '🇸🇩', currency: 'SDG' },
+    { code: 'US', dial: '+1', name: 'أمريكا', flag: '🇺🇸', currency: 'USD' },
+    { code: 'GB', dial: '+44', name: 'بريطانيا', flag: '🇬🇧', currency: 'GBP' },
+    { code: 'TR', dial: '+90', name: 'تركيا', flag: '🇹🇷', currency: 'TRY' },
 ];
 
 const BUSINESS_TYPES = [
@@ -89,7 +90,11 @@ export default function RegisterPage() {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, phone: fullPhone }),
+                body: JSON.stringify({ 
+                    ...form, 
+                    phone: fullPhone,
+                    currency: selectedCountry.currency // الربط الذكي للعملة بناءً على الدولة
+                }),
             });
             const data = await res.json();
             if (!res.ok) { setError(data.error); setLoading(false); return; }
@@ -131,10 +136,34 @@ export default function RegisterPage() {
     const BRAND_NAME = 'قيد المطور';
     const BRAND_LOGO = '/logo-system.png'; // لوجو النظام الموحد (قيد المطور)
 
+    const { theme, toggleTheme } = useTheme();
+    const { toggleLang } = useTranslation();
+
     return (
-        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px' }}>
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: theme === 'dark' ? C.bg : '#f4f7fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative', transition: 'background 0.3s ease' }}>
+            
+            {/* أزرار التحكم - لغة وثيم */}
+            <div style={{ position: 'absolute', top: '24px', insetInlineEnd: '24px', display: 'flex', gap: '12px', zIndex: 100 }}>
+                {/* زر اللغة */}
+                <button onClick={toggleLang}
+                    style={{ background: THEME.glass.card.background, border: THEME.glass.card.border, backdropFilter: 'blur(10px)', color: C.textPrimary, padding: '8px 16px', borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', fontWeight: 700, fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                    <Languages size={16} color={C.primary} />
+                    {lang === 'ar' ? 'English' : 'العربية'}
+                </button>
+
+                {/* زر الثيم */}
+                <button onClick={toggleTheme}
+                    style={{ width: '40px', height: '40px', background: THEME.glass.card.background, border: THEME.glass.card.border, backdropFilter: 'blur(10px)', color: C.textPrimary, borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}
+                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                    {theme === 'dark' ? <Sun size={18} color="#fbbf24" /> : <Moon size={18} color={C.primary} />}
+                </button>
+            </div>
+
             {/* الخلفية الرسمية */}
-            <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.primary}15 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, ${C.purple}10 0%, transparent 50%)`, pointerEvents: 'none' }} />
+            <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.primary}15 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, ${C.purple}10 0%, transparent 50%)`, pointerEvents: 'none', zIndex: 0 }} />
 
             {/* نجوم - Render only on client side to avoid hydration mismatch */}
             {mounted && (
