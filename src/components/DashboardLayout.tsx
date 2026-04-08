@@ -60,7 +60,7 @@ export default function DashboardLayout({
     const isRtl = lang === 'ar';
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: C.bg, direction: isRtl ? 'rtl' : 'ltr' }}>
+        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
             <div className="print-hide">
                 <Sidebar />
             </div>
@@ -112,6 +112,15 @@ export default function DashboardLayout({
             </div>
 
             <style jsx global>{`
+                .app-container.ltr-mode { direction: ltr; }
+                .app-container.rtl-mode { direction: rtl; }
+
+                .ltr-mode .sidebar { left: 0 !important; right: auto !important; }
+                .rtl-mode .sidebar { right: 0 !important; left: auto !important; }
+
+                .ltr-mode .dashboard-content { margin-left: 260px !important; margin-right: 0 !important; }
+                .rtl-mode .dashboard-content { margin-right: 260px !important; margin-left: 0 !important; }
+
                 @keyframes slideUp {
                     from { opacity: 0; transform: translateY(20px); }
                     to { opacity: 1; transform: translateY(0); }
