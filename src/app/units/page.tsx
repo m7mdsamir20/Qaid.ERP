@@ -1,4 +1,5 @@
 'use client';
+import { useTranslation } from '@/lib/i18n';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
