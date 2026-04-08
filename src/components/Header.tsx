@@ -440,12 +440,12 @@ function BranchSwitcher() {
                                     background: !activeBranchId || activeBranchId === 'all' ? `${C.primary}15` : 'transparent',
                                     color: !activeBranchId || activeBranchId === 'all' ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: (!activeBranchId || activeBranchId === 'all') ? 800 : 600,
-                                    flexDirection: isRtl ? 'row-reverse' : 'row'
+                                    flexDirection: 'row'
                                 }}
                                 onMouseEnter={e => { if (activeBranchId) e.currentTarget.style.background = C.hover; }}
                                 onMouseLeave={e => { if (activeBranchId) e.currentTarget.style.background = 'transparent'; }}>
                                 <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor', flexShrink: 0 }} />
-                                <span style={{ flex: 1 }}>{t('كل الفروع')}</span>
+                                <span style={{ flex: 1, textAlign: 'start' }}>{t('كل الفروع')}</span>
                             </button>
                         )}
                         {branches.map(b => (
@@ -457,12 +457,12 @@ function BranchSwitcher() {
                                     background: activeBranchId === b.id ? `${C.primary}15` : 'transparent',
                                     color: activeBranchId === b.id ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: activeBranchId === b.id ? 800 : 500,
-                                    flexDirection: isRtl ? 'row-reverse' : 'row'
+                                    flexDirection: 'row'
                                 }}
                                 onMouseEnter={e => { if (activeBranchId !== b.id) e.currentTarget.style.background = C.hover; }}
                                 onMouseLeave={e => { if (activeBranchId !== b.id) e.currentTarget.style.background = 'transparent'; }}>
                                 <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: activeBranchId === b.id ? C.primary : 'rgba(255,255,255,0.1)', flexShrink: 0 }} />
-                                <div style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{t(b.name)}</div>
+                                <div style={{ flex: 1, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', textAlign: 'start' }}>{t(b.name)}</div>
                             </button>
                         ))}
                     </div>
