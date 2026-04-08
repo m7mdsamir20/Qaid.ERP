@@ -126,12 +126,12 @@ export default function Sidebar() {
                         }
                         if (section.featureKey === 'inventory') {
                             section.title = 'الخدمات';
-                            section.links = [
-                                { id: '/categories', href: '/categories', label: 'تصنيفات الخدمات' },
-                                { id: '/items', href: '/items', label: 'قائمة الخدمات' },
-                                { id: '/units', href: '/units', label: 'الوحدات' },
-                                { id: '/warehouses', href: '/warehouses', label: 'الفروع / مواقع العمل' },
-                            ];
+                            section.links = section.links?.map((l: any) => {
+                                if (l.id === '/categories') return { ...l, label: 'تصنيفات الخدمات' };
+                                if (l.id === '/items') return { ...l, label: 'قائمة الخدمات' };
+                                if (l.id === '/warehouses') return { ...l, label: 'الفروع / مواقع العمل' };
+                                return l;
+                            });
                         }
                     }
 
