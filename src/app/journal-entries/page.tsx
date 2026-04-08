@@ -233,7 +233,7 @@ export default function JournalEntriesPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '8px' }}>
-                            {([['all', t('الكل')], ['posted', t('مرحّل')], ['draft', t('مسودة')]] as [string, string][]).map(([val, label]) => (
+                            {([['all', t('الكل')], ['posted', t('مرحّل')], ['draft', t('مسودة')]] as ["all" | "posted" | "draft", string][]).map(([val, label]) => (
                                 <button key={val} onClick={() => setFilterStatus(val)}
                                     style={{ 
                                         height: '42px', padding: '0 20px', borderRadius: '12px', 
