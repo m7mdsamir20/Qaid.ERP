@@ -11,6 +11,7 @@ import {
     Check
 } from 'lucide-react';
 import { Avatar, AVATAR_OPTIONS } from '@/components/UserAvatar';
+import { useTranslation } from '@/lib/i18n';
 
 export default function ProfilePage() {
     const { lang, t } = useTranslation();
