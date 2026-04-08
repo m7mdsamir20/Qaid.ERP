@@ -233,21 +233,29 @@ export default function NewSalePage() {
         }
 
         const price = Number(entryPrice);
+        const taxRate = Number(entryTaxRate) || 0;
+        const taxAmountValue = (qty * price) * (taxRate / 100);
 
         setLines(prev => {
-            const idx = prev.findIndex(l => l.itemId === item.id);
+            const idx = prev.findIndex(l => l.itemId === entryItemId);
             if (idx >= 0) {
                 const updated = [...prev];
                 const newQty  = updated[idx].quantity + qty;
-                if (newQty > stock) {
+                if (!isServices && newQty > stock) {
                     setFieldErrors(prevE => ({ ...prevE, entryQty: `${t('تجاوز المتاح')} (${stock})` }));
                     return prev;
                 }
-                updated[idx] = { ...updated[idx], quantity: newQty, total: newQty * updated[idx].price };
+                const newTaxAmt = (newQty * price) * (taxRate / 100);
+                updated[idx] = { 
+                    ...updated[idx], 
+                    quantity: newQty, 
+                    price: price,
+                    taxRate: taxRate,
+                    taxAmount: newTaxAmt,
+                    total: (newQty * price) + newTaxAmt 
+                };
                 return updated;
             }
-            const taxRate = Number(entryTaxRate) || 0;
-            const taxAmountValue = (qty * price) * (taxRate / 100);
 
             return [...prev, {
                 itemId:   item.id,
@@ -298,15 +306,17 @@ export default function NewSalePage() {
     };
 
     const handleSubmit = async (andPrint = false) => {
+        const isServicesBusiness = (session?.user as any)?.businessType === 'SERVICES';
         setErrorMsg('');
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
         if (!form.customerId) errors.customerId = t('يرجى اختيار العميل أولاً');
-        if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
+        if (!isServicesBusiness && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
         
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
+            setErrorMsg(t('يرجى استكمال البيانات المطلوبة'));
             return;
         }
 
@@ -316,8 +326,7 @@ export default function NewSalePage() {
         }
 
         // Final Stock Validation
-        const isServices = (session?.user as any)?.businessType === 'SERVICES';
-        if (!isServices) {
+        if (!isServicesBusiness) {
             for (const line of lines) {
                 const item = items.find(i => i.id === line.itemId);
                 const available = item?.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
@@ -328,17 +337,20 @@ export default function NewSalePage() {
             }
         }
 
-        if (form.paymentType !== 'credit' && Number(form.paidAmount || 0) <= 0) {
+        if (form.paymentType !== 'credit' && (form.paidAmount === '' || Number(form.paidAmount) <= 0)) {
             setFieldErrors(prev => ({ ...prev, paidAmount: t('أدخل المبلغ') }));
+            setErrorMsg(t('يرجى إدخال المبلغ المدفوع أو تغيير طريقة الدفع إلى آجل'));
             return;
         }
 
         if (form.paymentType === 'cash' && Number(form.paidAmount || 0) > 0 && !form.treasuryId) {
             setFieldErrors(prev => ({ ...prev, treasuryId: t('اختر الخزينة...') }));
+            setErrorMsg(t('يرجى اختيار الخزينة المستلمة للمبلغ'));
             return;
         }
         if (form.paymentType === 'bank' && Number(form.paidAmount || 0) > 0 && !form.bankId) {
             setFieldErrors(prev => ({ ...prev, bankId: t('اختر البنك...') }));
+            setErrorMsg(t('يرجى اختيار الحساب البنكي المستلم للمبلغ'));
             return;
         }
 
@@ -363,10 +375,11 @@ export default function NewSalePage() {
                 }),
             });
             if (res.ok) {
-                const saved = await res.json();
-                if (andPrint) printSaleInvoice(saved, selectedPartner, nextNum, form, company);
                 router.push('/sales');
-            } else alert(t('فشل الحفظ'));
+            } else {
+                const data = await res.json();
+                setErrorMsg(data.error || t('فشل الحفظ'));
+            }
         } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
     };
 
