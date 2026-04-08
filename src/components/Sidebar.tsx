@@ -101,7 +101,7 @@ export default function Sidebar() {
         return initialState;
     });
 
-    const { lang } = useTranslation();
+    const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
 
     const BRAND_LOGO = '/logo-system.png';
@@ -145,7 +145,7 @@ export default function Sidebar() {
                             <div key={section.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
                                 <Link href={section.href} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
                                     <SectionIcon size={18} />
-                                    <span style={{ fontFamily: CAIRO }}>{section.title}</span>
+                                    <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>
                                 </Link>
                             </div>
                         );
@@ -158,7 +158,7 @@ export default function Sidebar() {
                         <div key={section.title} style={{ marginBottom: '6px', padding: '0 14px' }}>
                             <button onClick={() => setOpenSections(prev => ({ ...prev, [section.title]: !prev[section.title] }))} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
-                                    <SectionIcon size={18} /> {section.title}
+                                    <SectionIcon size={18} /> {t(section.title)}
                                 </div>
                                 <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>
                             </button>
@@ -169,7 +169,7 @@ export default function Sidebar() {
                                         return (
                                             <Link key={link.href} href={link.href} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', color: isActive ? C.primary : C.textMuted, textDecoration: 'none', fontSize: '13px', fontWeight: isActive ? 700 : 500, borderRadius: '8px', backgroundColor: isActive ? C.primaryBg : 'transparent', fontFamily: CAIRO }}>
                                                 <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: isActive ? C.primary : 'rgba(255,255,255,0.1)' }} />
-                                                <span>{link.label}</span>
+                                                <span>{t(link.label)}</span>
                                             </Link>
                                         );
                                     })}

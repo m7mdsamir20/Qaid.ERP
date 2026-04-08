@@ -13,49 +13,43 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const dictionaries = {
-    ar: {
-        // عام
-        "welcome": "مرحباً",
-        "search_placeholder": "ابحث عن فاتورة، عميل أو صنف...",
-        "search_services": "ابحث عن فاتورة، عميل أو خدمة...",
-        "notifications": "الإشعارات",
-        "mark_all_read": "تحديد كـ مقروء",
-        "no_notifications": "لا توجد إشعارات جديدة",
-        "branches": "الفروع المتاحة",
-        "all_branches": "كل الفروع",
-        "my_profile": "ملفي الشخصي",
-        "change_password": "تغيير كلمة المرور",
-        "logout": "تسجيل الخروج",
-        // القائمة الجانبية (أمثلة مبدئية)
-        "dashboard": "لوحة القيادة",
-        "sales": "المبيعات",
-        "purchases": "المشتريات",
-        "inventory": "المخزون",
-        "accounting": "الحسابات",
-        "reports": "التقارير",
-        "settings": "الإعدادات"
-    },
+    ar: {}, // ar defaults to returning the key itself, which is already in Arabic
     en: {
-        // General
-        "welcome": "Welcome",
-        "search_placeholder": "Search invoice, customer, or item...",
-        "search_services": "Search invoice, customer, or service...",
-        "notifications": "Notifications",
-        "mark_all_read": "Mark all as read",
-        "no_notifications": "No new notifications",
-        "branches": "Available Branches",
-        "all_branches": "All Branches",
-        "my_profile": "My Profile",
-        "change_password": "Change Password",
-        "logout": "Logout",
-        // Sidebar
-        "dashboard": "Dashboard",
-        "sales": "Sales",
-        "purchases": "Purchases",
-        "inventory": "Inventory",
-        "accounting": "Accounting",
-        "reports": "Reports",
-        "settings": "Settings"
+        "الرئيسية": "Dashboard",
+        "المبيعات": "Sales",
+        "الأقساط": "Installments",
+        "المشتريات": "Purchases",
+        "إدارة المخزون": "Inventory",
+        "الحسابات العامة": "Accounting",
+        "الخزن والبنوك": "Treasury & Banks",
+        "القيود": "Journal Entries",
+        "الموارد البشرية": "Human Resources",
+        "الشركاء": "Partners",
+        "الأصول الثابتة": "Fixed Assets",
+        "التقارير الإحصائية": "Statistical Reports",
+        "إعدادات النظام": "System Settings",
+        
+        // Header specific
+        "الإشعارات": "Notifications",
+        "تحديد كـ مقروء": "Mark all as read",
+        "لا توجد إشعارات جديدة": "No new notifications",
+        "لكل الفروع": "All Branches",
+        "كل الفروع": "All Branches",
+        "الفروع المتاحة": "Available Branches",
+        "تغيير كلمة المرور": "Change Password",
+        "ملفي الشخصي": "My Profile",
+        "مستخدم": "User",
+        "تسجيل الخروج": "Logout",
+        
+        // Roles
+        "مدير النظام": "System Admin",
+        "مدير فرع": "Branch Manager",
+        "محاسب": "Accountant",
+        "مندوب مبيعات": "Sales Rep",
+        "مسؤول مشتريات": "Procurement",
+        "أمين مستودع": "Storekeeper",
+        "موارد بشرية": "HR",
+        "كاشير": "Cashier"
     }
 };
 

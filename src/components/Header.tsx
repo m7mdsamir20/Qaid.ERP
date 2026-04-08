@@ -151,6 +151,7 @@ import { useTranslation } from '@/lib/i18n';
 function Actions() {
     const { data: session, status: sessionStatus } = useSession();
     const { lang, t, toggleLang } = useTranslation();
+    const isRtl = lang === 'ar';
     const [openUser, setOpenUser] = useState(false);
     const [openNotif, setOpenNotif] = useState(false);
     const [notifs, setNotifs] = useState<any[]>([]);
@@ -232,15 +233,15 @@ function Actions() {
                         animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
                     }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
-                            <span style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>الإشعارات</span>
+                            <span style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإشعارات')}</span>
                             <span onClick={markAllRead}
                                 style={{ fontSize: '11px', color: C.primary, cursor: 'pointer', fontWeight: 800, fontFamily: CAIRO, opacity: notifs.some(n => !n.read) ? 1 : 0.5 }}>
-                                تحديد كـ مقروء
+                                {t('تحديد كـ مقروء')}
                             </span>
                         </div>
                         <div style={{ maxHeight: '210px', overflowY: 'auto', scrollbarWidth: 'none' }}>
                             {notifs.length === 0 ? (
-                                <div style={{ padding: '40px 20px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>لا توجد إشعارات جديدة</div>
+                                <div style={{ padding: '40px 20px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد إشعارات جديدة')}</div>
                             ) : notifs.map((n, i) => (
                                 <div key={i} style={{ padding: '14px 20px', display: 'flex', gap: '14px', cursor: 'pointer', borderBottom: i < notifs.length - 1 ? `1px dashed ${C.border}` : 'none', opacity: n.read ? 0.6 : 1 }}
                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
@@ -278,7 +279,7 @@ function Actions() {
                             {sessionStatus === 'loading' ? '...' : (session?.user?.name || 'المستخدم')}
                         </div>
                         <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px' }}>
-                            {sessionStatus === 'loading' ? '' : (roleLabels[(session?.user as any)?.role] || 'مستخدم')}
+                            {sessionStatus === 'loading' ? '' : t(roleLabels[(session?.user as any)?.role] || 'مستخدم')}
                         </div>
                     </div>
                     <ChevronDown size={14} color={C.textMuted} style={{ transform: openUser ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
@@ -286,7 +287,9 @@ function Actions() {
 
                 {openUser && (
                     <div style={{
-                        position: 'absolute', top: 'calc(100% + 12px)', left: 0,
+                        position: 'absolute', top: 'calc(100% + 12px)', 
+                        right: isRtl ? 'auto' : 0, 
+                        left: isRtl ? 0 : 'auto',
                         width: '260px',
                         background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
                         boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
@@ -342,7 +345,7 @@ function Actions() {
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
-                                <it.icon size={15} /> {it.label}
+                                <it.icon size={15} /> {t(it.label)}
                             </button>
                         ))}
 
@@ -354,7 +357,7 @@ function Actions() {
                                     color: C.danger, fontSize: '13.5px', cursor: 'pointer', fontFamily: CAIRO,
                                     boxSizing: 'border-box'
                                 }}>
-                                <LogOut size={16} /> تسجيل الخروج
+                                <LogOut size={16} /> {t('تسجيل الخروج')}
                             </button>
                         </div>
                     </div>
