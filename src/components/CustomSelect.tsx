@@ -121,8 +121,8 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     position: 'relative',
                     display: 'flex',
                     alignItems: 'center',
-                    background: 'var(--bg-card)',
-                    border: `1px solid ${isOpen ? 'var(--primary)' : 'var(--border-app)'}`,
+                    background: 'rgba(14, 23, 41, 0.4)',
+                    border: `1px solid ${isOpen ? '#256af4' : 'rgba(255,255,255,0.1)'}`,
                     borderRadius: '12px',
                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     height: '42px',
@@ -130,7 +130,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     padding: Icon ? '0 36px' : '0 16px',
                     opacity: disabled ? 0.6 : 1,
                     boxSizing: 'border-box',
-                    boxShadow: isOpen ? '0 0 0 1px var(--primary), var(--shadow-md)' : 'none',
+                    boxShadow: isOpen ? '0 0 0 4px rgba(37,106,244,0.15), 0 4px 12px rgba(0,0,0,0.2)' : 'none',
                     ...appearanceStyle
                 }}
             >
@@ -138,7 +138,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                 {Icon && (
                     <Icon
                         size={16}
-                        color="var(--primary)"
+                        color="#256af4"
                         style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', transition: '0.2s' }}
                     />
                 )}
@@ -149,7 +149,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     textAlign: 'start',
                     fontSize: '14px',
                     fontWeight: 600,
-                    color: selectedOption ? 'var(--text-primary)' : 'var(--text-muted)',
+                    color: selectedOption ? '#94a3b8' : '#64748b',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     whiteSpace: 'nowrap',
@@ -164,7 +164,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
 
                 <ChevronDown
                     size={16}
-                    color="var(--text-muted)"
+                    color="#64748b"
                     style={{
                         position: 'absolute',
                         insetInlineStart: '12px',
@@ -182,17 +182,16 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     [openUp ? 'bottom' : 'top']: 'calc(100% + 8px)',
                     insetInlineEnd: 0,
                     width: '100%',
-                    background: 'var(--bg-card)',
-                    border: '1px solid var(--border-app)',
+                    background: '#1e293b',
+                    border: '1px solid rgba(255,255,255,0.08)',
                     borderRadius: '14px',
-                    padding: '8px',
-                    boxShadow: '0 10px 40px rgba(0,0,0,0.1), 0 0 1px var(--primary)',
+                    padding: '6px',
+                    boxShadow: '0 25px 60px -12px rgba(0, 0, 0, 0.5), 0 0 1px rgba(255,255,255,0.1)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '2px',
                     zIndex: 100000,
                     maxHeight: maxHeight,
-                    backdropFilter: 'blur(20px)',
                     overflow: 'hidden',
                     boxSizing: 'border-box',
                     animation: openUp ? 'dropdownInUp 0.2s ease-out' : 'dropdownIn 0.2s ease-out'
@@ -213,10 +212,10 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                         width: '100%',
                                         height: '36px',
                                         padding: '0 12px',
-                                        background: 'var(--bg-app)',
-                                        border: '1px solid var(--border-app)',
+                                        background: 'rgba(255,255,255,0.03)',
+                                        border: '1px solid rgba(255,255,255,0.1)',
                                         borderRadius: '8px',
-                                        color: 'var(--text-primary)',
+                                        color: '#fff',
                                         fontSize: '13px',
                                         outline: 'none',
                                         textAlign: 'start',
@@ -281,17 +280,17 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                         borderRadius: '10px',
                                         cursor: 'pointer',
                                         fontSize: '13px',
-                                        fontWeight: isSelected ? 800 : 600,
-                                        background: isSelected ? 'var(--primary-bg)' : (isActive ? 'var(--bg-hover)' : 'transparent'),
-                                        color: isSelected ? 'var(--primary)' : (isActive ? 'var(--text-primary)' : 'var(--text-secondary)'),
-                                        transition: 'all 0.2s',
+                                        fontWeight: isSelected ? 800 : 500,
+                                        background: isSelected ? 'rgba(37,106,244,0.15)' : (isActive ? 'rgba(255,255,255,0.05)' : 'transparent'),
+                                        color: isSelected ? '#3b82f6' : (isActive ? '#fff' : '#64748b'),
+                                        transition: 'all 0.15s',
                                         textAlign: 'start',
                                         minHeight: '40px',
                                         ...opt.style
                                     }}
                                 >
                                     {OptIcon && <OptIcon size={16} style={{
-                                        color: isSelected ? 'var(--primary)' : (isActive ? 'var(--text-primary)' : 'inherit'),
+                                        color: isSelected ? '#3b82f6' : (isActive ? '#fff' : 'inherit'),
                                         opacity: isActive ? 1 : 0.6
                                     }} />}
                                     <span style={{ flex: 1 }}>{opt.label}</span>
@@ -319,10 +318,10 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                     cursor: 'pointer',
                                     fontSize: '13px',
                                     fontWeight: 700,
-                                    color: 'var(--success)',
-                                    background: activeIndex === filteredOptions.length ? 'var(--success-bg)' : 'transparent',
+                                    color: '#34d399',
+                                    background: activeIndex === filteredOptions.length ? 'rgba(16,185,129,0.1)' : 'rgba(16,185,129,0.03)',
                                     marginTop: '4px',
-                                    border: `1px dashed ${activeIndex === filteredOptions.length ? 'var(--success)' : 'var(--border-app)'}`,
+                                    border: `1px dashed ${activeIndex === filteredOptions.length ? '#34d399' : 'rgba(52,211,153,0.3)'}`,
                                     textAlign: 'start',
                                     transition: 'all 0.2s'
                                 }}

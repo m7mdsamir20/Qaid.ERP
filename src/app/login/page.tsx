@@ -4,8 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2, Languages, Sun, Moon } from 'lucide-react';
-import { useTheme } from '@/components/Providers';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { C, CAIRO, IS, LS, focusIn, focusOut, THEME } from '@/constants/theme';
 
 export default function LoginPage() {
@@ -48,46 +47,11 @@ export default function LoginPage() {
         }
     };
 
-    const { theme, toggleTheme } = useTheme();
-
     const BRAND_NAME = 'قيد المطور'; // اسم البراند (النظام)
     const BRAND_LOGO = '/logo-system.png'; // لوجو النظام الموحد (قيد المطور)
 
-    const toggleLanguage = () => {
-        const { toggleLang } = useTranslation(); // workaround to get from hook if needed, but we already have toggleLang in context usually
-        // Note: we need to use the actual toggleLang from the hook
-    };
-    const { toggleLang } = useTranslation();
-
     return (
-        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: theme === 'dark' ? C.bg : '#f4f7fe', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative', transition: 'background 0.3s ease' }}>
-            
-            {/* أزرار التحكم - لغة وثيم */}
-            <div style={{ position: 'absolute', top: '24px', insetInlineEnd: '24px', display: 'flex', gap: '12px', zIndex: 100 }}>
-                {/* زر اللغة */}
-                <button onClick={toggleLang}
-                    title={lang === 'ar' ? 'Switch to English' : 'التبديل إلى العربية'}
-                    style={{
-                        width: '40px', height: '40px', borderRadius: '12px', cursor: 'pointer',
-                        background: THEME.glass.card.background, color: C.primary,
-                        border: THEME.glass.card.border, backdropFilter: 'blur(10px)',
-                        fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO, fontWeight: 900, fontSize: lang === 'ar' ? '12px' : '14px',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s',
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
-                    }}
-                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                    {lang === 'ar' ? 'EN' : 'ع'}
-                </button>
-
-                {/* زر الثيم */}
-                <button onClick={toggleTheme}
-                    style={{ width: '40px', height: '40px', background: THEME.glass.card.background, border: THEME.glass.card.border, backdropFilter: 'blur(10px)', color: C.textPrimary, borderRadius: '12px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', transition: 'all 0.2s' }}
-                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                    onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
-                    {theme === 'dark' ? <Sun size={18} color="#fbbf24" /> : <Moon size={18} color={C.primary} />}
-                </button>
-            </div>
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative' }}>
             {/* الخلفية الرسمية */}
             <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.primary}15 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, ${C.purple}10 0%, transparent 50%)`, pointerEvents: 'none', zIndex: 0 }} />
 
@@ -233,6 +197,13 @@ export default function LoginPage() {
                     transition: background-color 5000s ease-in-out 0s;
                 }
             `}</style>
+        </div>
+    );
+}
+-webkit - text - fill - color: ${ C.textPrimary } !important;
+transition: background - color 5000s ease -in -out 0s;
+                }
+`}</style>
         </div>
     );
 }

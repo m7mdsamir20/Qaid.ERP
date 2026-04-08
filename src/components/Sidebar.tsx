@@ -16,7 +16,7 @@ import { useTranslation } from '@/lib/i18n';
 export default function Sidebar() {
     const pathname = usePathname();
     const { data: session } = useSession();
-    
+
     const user = session?.user as any;
     const businessType = user?.businessType?.toUpperCase() || 'TRADING';
     const isSuperAdmin = !!user?.isSuperAdmin;
@@ -29,7 +29,7 @@ export default function Sidebar() {
         try {
             if (!featuresRaw) {
                 const all: Record<string, string[]> = {};
-                navSections.forEach((s: any) => { 
+                navSections.forEach((s: any) => {
                     if (s && s.featureKey && s.links) {
                         all[s.featureKey] = s.links.map((l: any) => l.id);
                     }
@@ -97,7 +97,7 @@ export default function Sidebar() {
                     initialState[section.title] = true;
                 }
             });
-        } catch {}
+        } catch { }
         return initialState;
     });
 
@@ -107,19 +107,9 @@ export default function Sidebar() {
     const BRAND_LOGO = '/logo-system.png';
 
     return (
-        <aside className="sidebar" style={{ 
-            width: '260px', position: 'fixed', insetInlineStart: 0, top: 0, bottom: 0, 
-            backgroundColor: 'var(--bg-card)', 
-            color: 'var(--text-primary)', 
-            display: 'flex', flexDirection: 'column', 
-            borderInlineEnd: `1px solid var(--border-app)`, 
-            boxShadow: isRtl ? '-4px 0 20px rgba(0,0,0,0.05)' : '4px 0 20px rgba(0,0,0,0.05)', 
-            zIndex: 1001, overflow: 'hidden',
-            backdropFilter: 'blur(20px)',
-            opacity: 0.99
-        }} dir={isRtl ? 'rtl' : 'ltr'}>
-            <Link href="/" style={{ height: '85px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: `1px solid var(--border-app)`, padding: '0 20px' }}>
-                <img src={BRAND_LOGO} alt="Logo" style={{ display: 'block', width: 'auto', maxWidth: '100%', maxHeight: '50px', objectFit: 'contain' }} />
+        <aside className="sidebar" style={{ width: '260px', position: 'fixed', insetInlineStart: 0, top: 0, bottom: 0, backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px rgba(0,0,0,0.2)' : '10px 0 30px rgba(0,0,0,0.2)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
+            <Link href="/" style={{ height: '85px', display: 'flex', alignItems: 'center', borderBottom: `1px solid rgba(255,255,255,0.02)` }}>
+                <img src={BRAND_LOGO} alt="Logo" style={{ display: 'block', margin: '0 auto', width: '100%', maxWidth: '230px', maxHeight: '55px', objectFit: 'contain' }} />
             </Link>
 
             <nav className="sidebar-nav" style={{ padding: '20px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none' }}>
@@ -153,17 +143,9 @@ export default function Sidebar() {
                     if (section.isStandalone && section.href) {
                         const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
                         return (
-                            <div key={section.title} style={{ marginBottom: '4px', padding: '0 12px' }}>
-                                <Link href={section.href} style={{ 
-                                    display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', 
-                                    color: isActive ? 'var(--primary)' : 'var(--text-secondary)', 
-                                    textDecoration: 'none', fontWeight: isActive ? 700 : 600, 
-                                    fontSize: '14px', borderRadius: '12px', 
-                                    backgroundColor: isActive ? 'var(--primary-bg)' : 'transparent', 
-                                    transition: 'all 0.2s', 
-                                    border: `1px solid ${isActive ? 'var(--primary-border)' : 'transparent'}` 
-                                }}>
-                                    <SectionIcon size={18} style={{ opacity: isActive ? 1 : 0.7 }} />
+                            <div key={section.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
+                                <Link href={section.href} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
+                                    <SectionIcon size={18} />
                                     <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>
                                 </Link>
                             </div>
@@ -174,33 +156,20 @@ export default function Sidebar() {
                     const isActiveGroup = visibleLinks.some((l: any) => pathname === l.href);
 
                     return (
-                        <div key={section.title} style={{ marginBottom: '6px', padding: '0 12px' }}>
-                            <button onClick={() => setOpenSections(prev => ({ ...prev, [section.title]: !prev[section.title] }))} style={{ 
-                                width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 16px', 
-                                color: isActiveGroup ? 'var(--primary)' : 'var(--text-secondary)', 
-                                cursor: 'pointer', borderRadius: '12px', fontSize: '14px',
-                                transition: 'all 0.2s'
-                            }}>
+                        <div key={section.title} style={{ marginBottom: '6px', padding: '0 14px' }}>
+                            <button onClick={() => setOpenSections(prev => ({ ...prev, [section.title]: !prev[section.title] }))} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
-                                    <SectionIcon size={18} style={{ opacity: isActiveGroup ? 1 : 0.7 }} /> {t(section.title)}
+                                    <SectionIcon size={18} /> {t(section.title)}
                                 </div>
                                 <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>
                             </button>
                             {isOpen && (
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginInlineEnd: '20px', paddingInlineEnd: '12px', marginTop: '4px', borderInlineEnd: `1px dashed var(--border-app)` }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginInlineEnd: '22px', paddingInlineEnd: '12px', marginTop: '6px', borderInlineEnd: `1px dashed ${C.border}` }}>
                                     {visibleLinks.map((link: any) => {
                                         const isActive = pathname === link.href;
                                         return (
-                                            <Link key={link.href} href={link.href} style={{ 
-                                                display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 12px', 
-                                                color: isActive ? 'var(--primary)' : 'var(--text-muted)', 
-                                                textDecoration: 'none', fontSize: '13px', fontWeight: isActive ? 700 : 500, 
-                                                borderRadius: '8px', 
-                                                backgroundColor: isActive ? 'var(--primary-bg)' : 'transparent', 
-                                                fontFamily: CAIRO,
-                                                transition: 'all 0.15s'
-                                            }}>
-                                                <div style={{ width: '5px', height: '5px', borderRadius: '50%', backgroundColor: isActive ? 'var(--primary)' : 'rgba(0,0,0,0.1)' }} />
+                                            <Link key={link.href} href={link.href} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', color: isActive ? C.primary : C.textMuted, textDecoration: 'none', fontSize: '13px', fontWeight: isActive ? 700 : 500, borderRadius: '8px', backgroundColor: isActive ? C.primaryBg : 'transparent', fontFamily: CAIRO }}>
+                                                <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: isActive ? C.primary : 'rgba(255,255,255,0.1)' }} />
                                                 <span>{t(link.label)}</span>
                                             </Link>
                                         );

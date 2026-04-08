@@ -68,15 +68,14 @@
 }
 
 /* ==================== نظام الألوان - ERP Theme ==================== */
-/* ==================== نظام الألوان - ERP Theme (Dark Logic) ==================== */
 :root {
-  /* Primary - Professional Blue */
+  /* Primary - Professional Blue (Updated to match Customers) */
   --primary: #256af4;
   --primary-hover: #1a56d6;
   --primary-bg: rgba(37, 106, 244, 0.12);
   --primary-border: rgba(37, 106, 244, 0.35);
 
-  /* Backgrounds — Dark (Default) */
+  /* New Surfaces (Deep Navy) */
   --bg-app: #070d1a;
   --bg-card: #0e1628;
   --bg-hover: #131e30;
@@ -92,45 +91,6 @@
   --modal-overlay: rgba(7, 13, 26, 0.75);
   --modal-blur: blur(10px);
   --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-
-  /* Shadows — Deep */
-  --shadow-sm: 0 4px 12px rgba(0,0,0,0.4);
-  --shadow-md: 0 12px 48px rgba(0,0,0,0.5);
-  --shadow-lg: 0 32px 80px rgba(0,0,0,0.6);
-
-  --font-cairo: 'Cairo', sans-serif;
-}
-
-/* ==================== Light Mode (Website DNA) ==================== */
-[data-theme="light"] {
-  --primary: #256af4;
-  --primary-hover: #1a56d6;
-  --primary-bg: rgba(37, 106, 244, 0.08);
-  --primary-border: rgba(37, 106, 244, 0.25);
-
-  /* Backgrounds — Azure Light (Website Style) */
-  --bg-app: #f0f4ff;
-  --bg-card: #ffffff;
-  --bg-hover: #f1f5fe;
-  --border-app: #d0daf0;
-  --input-bg: #f8fafc;
-
-  /* Text — Deep Contrast */
-  --text-primary: #0f1a2e;
-  --text-secondary: #3d5278;
-  --text-muted: #7a93b8;
-
-  /* Modal */
-  --modal-overlay: rgba(15, 26, 46, 0.4);
-  --modal-shadow: 0 20px 60px rgba(37,106,244,0.15);
-
-  /* Shadows — Soft Azure */
-  --shadow-sm: 0 2px 8px rgba(37,106,244,0.08);
-  --shadow-md: 0 8px 32px rgba(37,106,244,0.12);
-  --shadow-lg: 0 20px 60px rgba(37,106,244,0.15);
-
-  --success: #10b981;
-  --success-bg: #ecfdf5;
 }
 
 
@@ -149,7 +109,7 @@ html {
 
 body {
   font-family: 'ERP-Numbers', 'Cairo', 'Segoe UI', sans-serif;
-  background: var(--bg-app);
+  background: var(--surface-900);
   color: var(--text-primary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -568,11 +528,10 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 
 /* ==================== Tables ==================== */
 .table-container {
-  background: var(--bg-card);
-  border: 1px solid var(--border-app);
+  background: var(--surface-800);
+  border: 1px solid var(--border-color);
   border-radius: 16px;
   overflow: hidden;
-  box-shadow: var(--shadow-sm);
 }
 
 .table {
@@ -581,28 +540,27 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
 }
 
 .table th {
-  padding: 16px 20px;
+  padding: 14px 20px;
   text-align: right;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text-secondary);
-  background: var(--bg-hover);
-  border-bottom: 2px solid var(--border-app);
-  font-family: var(--font-cairo);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-muted);
+  background: var(--surface-850);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .table td {
   padding: 14px 20px;
-  font-size: 13px;
-  color: var(--text-primary);
-  border-bottom: 1px solid var(--border-app);
-  background: var(--bg-card) !important;
-  font-weight: 500;
+  font-size: 14px;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .table tr:hover td {
-  background: var(--primary-bg) !important;
-  color: var(--primary);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--text-primary);
 }
 
 .table tr:last-child td {
@@ -953,6 +911,33 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 input[type="number"] {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+/* ==================== Autofill Styling (Universal Fix) ==================== */
+/* 
+   Chrome/Edge/Safari apply a yellow/white background to autofilled inputs.
+   This fix forces the theme's dark colors even when autofill is active.
+*/
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: #e8edf5 !important;
+  -webkit-box-shadow: 0 0 0px 1000px #0e1628 inset !important;
+  box-shadow: 0 0 0px 1000px #0e1628 inset !important;
+  caret-color: #f8fafc !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+nput[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
 }
