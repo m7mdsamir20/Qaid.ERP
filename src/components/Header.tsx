@@ -146,8 +146,11 @@ function SearchBox() {
     );
 }
 
+import { useTranslation } from '@/lib/i18n';
+
 function Actions() {
     const { data: session, status: sessionStatus } = useSession();
+    const { lang, t, toggleLang } = useTranslation();
     const [openUser, setOpenUser] = useState(false);
     const [openNotif, setOpenNotif] = useState(false);
     const [notifs, setNotifs] = useState<any[]>([]);
@@ -198,20 +201,20 @@ function Actions() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
 
             {/* Lang Switch - AR/EN Abbreviation */}
-            <button style={{
+            <button onClick={toggleLang} style={{
                 height: '36px', padding: '0 12px', borderRadius: '10px',
                 border: `1px solid ${C.border}`, background: C.card,
                 color: C.textSecondary, display: 'flex', alignItems: 'center',
                 justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s',
                 gap: '6px'
             }}
-                title="تغيير لغة التصفح"
+                title={lang === 'ar' ? 'تغيير لغة التصفح' : 'Change Language'}
                 onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.color = C.primary; }}
                 onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.color = C.textSecondary; }}
             >
-                <span style={{ fontSize: '14px', fontWeight: 900, fontFamily: 'sans-serif' }}>EN</span>
+                <span style={{ fontSize: '14px', fontWeight: 900, fontFamily: 'sans-serif', color: lang === 'en' ? C.primary : 'inherit' }}>EN</span>
                 <span style={{ width: '1px', height: '14px', background: C.border }} />
-                <span style={{ fontSize: '15px', fontWeight: 900, fontFamily: CAIRO, marginTop: '-2px' }}>ع</span>
+                <span style={{ fontSize: '15px', fontWeight: 900, fontFamily: CAIRO, marginTop: '-2px', color: lang === 'ar' ? C.primary : 'inherit' }}>ع</span>
             </button>
 
             {/* Notifications */}

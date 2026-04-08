@@ -2,6 +2,7 @@
 
 import { SessionProvider } from "next-auth/react";
 import { createContext, useContext, useEffect, useState } from "react";
+import { LanguageProvider } from "@/lib/i18n";
 
 const ThemeContext = createContext({
     theme: 'dark',
@@ -28,9 +29,11 @@ export function Providers({ children }: {
 
     return (
         <SessionProvider refetchOnWindowFocus={false}>
-            <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: () => {} }}>
-                {children}
-            </ThemeContext.Provider>
+            <LanguageProvider>
+                <ThemeContext.Provider value={{ theme: 'dark', toggleTheme: () => {} }}>
+                    {children}
+                </ThemeContext.Provider>
+            </LanguageProvider>
         </SessionProvider>
     );
 }
