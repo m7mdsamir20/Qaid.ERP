@@ -43,7 +43,7 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: "حساب الإيرادات والأرباح الختامي غير موجود" }, { status: 400 });
         }
 
-        const linesToCreate = [];
+        const linesToCreate: any[] = [];
         let totalRevenue = 0;
         let totalExpense = 0;
 
