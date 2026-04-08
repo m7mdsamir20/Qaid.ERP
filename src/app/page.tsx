@@ -24,6 +24,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
+import { useTranslation } from '@/lib/i18n';
 
 const fmt = (n: number) => n.toLocaleString('en-US');
 
@@ -42,6 +43,7 @@ function KpiCard({
   icon: any; delay?: number;
 }) {
   const [isHover, setIsHover] = useState(false);
+  const { t } = useTranslation();
 
   return (
     <div
@@ -94,7 +96,7 @@ function KpiCard({
       }}>
         {value}
       </div>
-      <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{label}</div>
+      <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t(label)}</div>
       {sub && <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{sub}</div>}
     </div>
   );
@@ -103,6 +105,7 @@ function KpiCard({
 function SectionCard({ title, icon: Icon, children, action }: {
   title: string; icon?: any; children: React.ReactNode; action?: React.ReactNode;
 }) {
+  const { t } = useTranslation();
   return (
     <div style={{
       background: C.card,
@@ -118,7 +121,7 @@ function SectionCard({ title, icon: Icon, children, action }: {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {Icon && <div style={{ color: C.primary }}><Icon size={18} /></div>}
-          <span style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{title}</span>
+          <span style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t(title)}</span>
         </div>
         {action}
       </div>
@@ -156,6 +159,8 @@ function ChartTooltip({ active, payload, label, cSymbol }: any) {
 export default function DashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
   const { symbol: cSymbol } = useCurrency();
+  const { lang, t } = useTranslation();
+  const isRtl = lang === 'ar';
 
   const userRole = (session?.user as any)?.role;
   const userPerms = (session?.user as any)?.permissions || {};
@@ -353,7 +358,7 @@ export default function DashboardPage() {
 
   return (
     <DashboardLayout>
-      <div dir="rtl" style={{ color: C.textPrimary, fontFamily: CAIRO, padding: '0 0 12px' }}>
+      <div dir={isRtl ? 'rtl' : 'ltr'} style={{ color: C.textPrimary, fontFamily: CAIRO, padding: '0 0 12px' }}>
 
         {/* ── Header ── */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', animation: 'fadeUp 0.3s ease both' }}>
@@ -434,7 +439,7 @@ export default function DashboardPage() {
         <div style={{ marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <LayoutDashboard size={16} color={C.primary} />
-            <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: C.textPrimary }}>الوصول السريع</h3>
+            <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: C.textPrimary }}>{t('الوصول السريع')}</h3>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px' }}>
             {visibleQuickActions.map((action, i) => (
@@ -454,7 +459,7 @@ export default function DashboardPage() {
                     }}>
                       <action.icon size={20} />
                     </div>
-                    <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, textAlign: 'center', fontFamily: CAIRO }}>{action.label}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, textAlign: 'center', fontFamily: CAIRO }}>{t(action.label)}</span>
                   </div>
                 </Link>
               ))}

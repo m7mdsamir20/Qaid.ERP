@@ -49,7 +49,33 @@ export const dictionaries = {
         "مسؤول مشتريات": "Procurement",
         "أمين مستودع": "Storekeeper",
         "موارد بشرية": "HR",
-        "كاشير": "Cashier"
+        "كاشير": "Cashier",
+        
+        // Dashboard Home
+        "الوصول السريع": "Quick Access",
+        "المبيعات مقابل المشتريات": "Sales vs Purchases",
+        "توزيع السيولة النقدية": "Cash Distribution",
+        "آخر الحركات المالية": "Recent Transactions",
+        "أكبر مديونيات العملاء": "Top Customer Debts",
+        "إجمالي المبيعات": "Total Sales",
+        "إجمالي المشتريات": "Total Purchases",
+        "صافي الربح": "Net Profit",
+        "رصيد الخزينة": "Treasury Balance",
+        "ذمم العملاء": "Customer Debts",
+        "مبيعات اليوم": "Today's Sales",
+        "نواقص المخزن": "Low Stock Items",
+        "فاتورة مبيعات": "Sales Invoice",
+        "فاتورة مشتريات": "Purchase Invoice",
+        "سند قبض": "Receipt Voucher",
+        "سند صرف": "Payment Voucher",
+        "الأصناف": "Items",
+        "شجرة الحسابات": "Chart of Accounts",
+        "إيرادات الخدمات مقابل المصروفات": "Services Revenue vs Expenses",
+        "إيرادات اليوم": "Today's Revenue",
+        "عدد الخدمات": "Number of Services",
+        "عدد العملاء": "Number of Customers",
+        "المصروفات": "Expenses",
+        "صافي الأرباح": "Net Profits"
     }
 };
 
