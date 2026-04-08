@@ -7,6 +7,7 @@ import CustomSelect from '@/components/CustomSelect';
 import {
     BookOpen, Plus, X, ArrowRight, Lock, Loader2, FolderOpen
 } from 'lucide-react';
+import { useTranslation } from '@/lib/i18n';
 
 interface Account {
     id: string;
