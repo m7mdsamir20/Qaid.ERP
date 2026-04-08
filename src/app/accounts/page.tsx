@@ -33,14 +33,7 @@ interface Account {
     balance?: number;
 }
 
-/* ── Constants ── */
-const accountTypes = [
-    { value: 'asset', label: 'أصول', nature: 'debit', color: '#10b981' },
-    { value: 'liability', label: 'خصوم', nature: 'credit', color: '#f87171' },
-    { value: 'equity', label: 'حقوق ملكية', nature: 'credit', color: '#a78bfa' },
-    { value: 'revenue', label: 'إيرادات', nature: 'credit', color: '#60a5fa' },
-    { value: 'expense', label: 'مصروفات', nature: 'debit', color: '#fb923c' },
-];
+/* ── Constants (labels set inside component to use t()) ── */
 
 const typeColors: Record<string, string> = {
     asset: '#10b981', liability: '#f87171', equity: '#a78bfa', revenue: '#60a5fa', expense: '#fb923c',
@@ -53,6 +46,14 @@ const typeColors: Record<string, string> = {
    ══════════════════════════════════════════ */
 export default function AccountsPage() {
     const { lang, t } = useTranslation();
+
+    const accountTypes = [
+        { value: 'asset', label: t('أصول'), nature: 'debit', color: '#10b981' },
+        { value: 'liability', label: t('خصوم'), nature: 'credit', color: '#f87171' },
+        { value: 'equity', label: t('حقوق ملكية'), nature: 'credit', color: '#a78bfa' },
+        { value: 'revenue', label: t('إيرادات'), nature: 'credit', color: '#60a5fa' },
+        { value: 'expense', label: t('مصروفات'), nature: 'debit', color: '#fb923c' },
+    ];
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
@@ -138,10 +139,10 @@ export default function AccountsPage() {
                 setShowModal(false);
             } else {
                 const error = await res.json();
-                alert(error.error || 'فشل التعديل');
+                alert(error.error || t('فشل التعديل'));
             }
         } catch {
-            alert('خطأ في الاتصال');
+            alert(t('خطأ في الاتصال'));
         } finally {
             setIsSaving(false);
         }
@@ -157,10 +158,10 @@ export default function AccountsPage() {
                 setDeleteAccount(null);
             } else {
                 const error = await res.json();
-                alert(error.error || 'فشل الحذف');
+                alert(error.error || t('فشل الحذف'));
             }
         } catch {
-            alert('خطأ في الاتصال');
+            alert(t('خطأ في الاتصال'));
         } finally {
             setIsSaving(false);
         }
@@ -243,10 +244,10 @@ export default function AccountsPage() {
                     </div>
 
                     <div style={{ width: '100px', display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
-                        <button onClick={() => handleEdit(acc)} style={TABLE_STYLE.actionBtn()} title="تعديل">
+                        <button onClick={() => handleEdit(acc)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
                             <Pencil size={14} />
                         </button>
-                        <button onClick={() => setDeleteAccount(acc)} style={TABLE_STYLE.actionBtn(C.danger)} title="حذف" disabled={hasChildren}>
+                        <button onClick={() => setDeleteAccount(acc)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')} disabled={hasChildren}>
                             <Trash2 size={14} />
                         </button>
                     </div>
@@ -260,12 +261,12 @@ export default function AccountsPage() {
     return (
         <DashboardLayout>
             <div dir={isRtl ? "rtl" : "ltr"} style={PAGE_BASE}>
-                <PageHeader 
-                    title="دليل الحسابات" 
-                    subtitle="إدارة شجرة الحسابات، تصنيفها، وتتبع الأرصدة الافتتاحية والحالية"
+                <PageHeader
+                    title={t("دليل الحسابات")}
+                    subtitle={t("إدارة شجرة الحسابات، تصنيفها، وتتبع الأرصدة الافتتاحية والحالية")}
                     icon={BookOpen}
                     primaryButton={{
-                        label: "إضافة حساب",
+                        label: t("إضافة حساب"),
                         icon: Plus,
                         onClick: () => router.push('/accounts/new')
                     }}
@@ -274,8 +275,8 @@ export default function AccountsPage() {
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
                         <Search size={18} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                        <input 
-                            placeholder="ابحث بكود الحساب أو الاسم..."
+                        <input
+                            placeholder={t("ابحث بكود الحساب أو الاسم...")}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             style={{ 
@@ -291,14 +292,14 @@ export default function AccountsPage() {
                             background: viewMode === 'tree' ? C.primary : 'transparent', color: viewMode === 'tree' ? '#fff' : C.textMuted,
                             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
                         }}>
-                            <RefreshCcw size={14} /> شجرة
+                            <RefreshCcw size={14} /> {t('شجرة')}
                         </button>
                         <button onClick={() => setViewMode('table')} style={{ 
                             padding: '6px 12px', borderRadius: '8px', border: 'none', 
                             background: viewMode === 'table' ? C.primary : 'transparent', color: viewMode === 'table' ? '#fff' : C.textMuted,
                             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
                         }}>
-                            <LayoutGrid size={14} /> جدول
+                            <LayoutGrid size={14} /> {t('جدول')}
                         </button>
                     </div>
                 </div>
@@ -306,7 +307,7 @@ export default function AccountsPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 700 }}>جاري تحميل الدليل المحاسبي...</p>
+                        <p style={{ fontWeight: 700 }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
                     </div>
                 ) : (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
@@ -317,11 +318,11 @@ export default function AccountsPage() {
                             fontSize: '11px', fontWeight: 800, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
                         }}>
                             <div style={{ width: '32px' }}></div>
-                            <div style={{ width: '100px' }}>الكود</div>
-                            <div style={{ flex: 1 }}>اسم الحساب</div>
-                            <div style={{ width: '120px', textAlign: 'center' }}>النوع</div>
-                            <div style={{ width: '150px', textAlign: 'center' }}>الرصيد الحالي</div>
-                            <div style={{ width: '100px', textAlign: 'end' }}>إجراءات</div>
+                            <div style={{ width: '100px' }}>{t('الكود')}</div>
+                            <div style={{ flex: 1 }}>{t('اسم الحساب')}</div>
+                            <div style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
+                            <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
+                            <div style={{ width: '100px', textAlign: 'end' }}>{t('إجراءات')}</div>
                         </div>
 
                         <div style={{ padding: '8px', maxHeight: '70vh', overflowY: 'auto' }}>
@@ -334,7 +335,7 @@ export default function AccountsPage() {
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
                                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', opacity: 0.1 }} />
-                                    <p style={{ fontWeight: 700 }}>لم نجد أي حسابات بهذا الاسم</p>
+                                    <p style={{ fontWeight: 700 }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
                                 </div>
                             )}
                         </div>
@@ -343,25 +344,25 @@ export default function AccountsPage() {
             </div>
 
             {/* Edit Modal */}
-            <AppModal 
-                show={showModal} 
-                onClose={() => setShowModal(false)} 
-                title="تعديل بيانات الحساب" 
+            <AppModal
+                show={showModal}
+                onClose={() => setShowModal(false)}
+                title={t("تعديل بيانات الحساب")}
                 icon={Pencil}
                 maxWidth="550px"
             >
                 <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px' }}>
                         <div>
-                            <label style={LS}>كود الحساب</label>
+                            <label style={LS}>{t('كود الحساب')}</label>
                             <input disabled value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed', textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textMuted }} />
                         </div>
                         <div>
-                            <label style={LS}>اسم الحساب بالعربية <span style={{ color: C.danger }}>*</span></label>
-                            <input 
-                                required value={form.name} 
-                                onChange={e => setForm({ ...form, name: e.target.value })} 
-                                placeholder="اسم الحساب..." style={IS} 
+                            <label style={LS}>{t('اسم الحساب بالعربية')} <span style={{ color: C.danger }}>*</span></label>
+                            <input
+                                required value={form.name}
+                                onChange={e => setForm({ ...form, name: e.target.value })}
+                                placeholder={t("اسم الحساب...")} style={IS} 
                                 onFocus={focusIn} onBlur={focusOut} 
                             />
                         </div>
@@ -369,31 +370,31 @@ export default function AccountsPage() {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         <div>
-                            <label style={LS}>نوع الحساب</label>
+                            <label style={LS}>{t('نوع الحساب')}</label>
                             <select value={form.type} disabled style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed' }}>
-                                {accountTypes.map(t => <option key={t.value} value={t.value}>{t.label}</option>)}
+                                {accountTypes.map(at => <option key={at.value} value={at.value}>{at.label}</option>)}
                             </select>
                         </div>
                         <div>
-                            <label style={LS}>طبيعة الحساب</label>
+                            <label style={LS}>{t('طبيعة الحساب')}</label>
                             <select value={form.nature} disabled style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed' }}>
-                                <option value="debit">مدين</option>
-                                <option value="credit">دائن</option>
+                                <option value="debit">{t('مدين')}</option>
+                                <option value="credit">{t('دائن')}</option>
                             </select>
                         </div>
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px', paddingTop: '10px', borderTop: `1px solid ${C.border}` }}>
                         <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), flex: 1, height: '44px' }}>
-                            {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ التعديلات'}
+                            {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ التعديلات')}
                         </button>
-                        <button type="button" onClick={() => setShowModal(false)} style={{ border: `1px solid ${C.border}`, borderRadius: '10px', background: 'transparent', color: C.textSecondary, padding: '0 20px', cursor: 'pointer', fontFamily: CAIRO }}>تراجع</button>
+                        <button type="button" onClick={() => setShowModal(false)} style={{ border: `1px solid ${C.border}`, borderRadius: '10px', background: 'transparent', color: C.textSecondary, padding: '0 20px', cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>
                     </div>
                 </form>
             </AppModal>
 
             {/* Delete Confirmation */}
-            <AppModal isDelete show={!!deleteAccount} onClose={() => setDeleteAccount(null)} onConfirm={confirmDelete} itemName={deleteAccount?.name} title="تأكيد حذف الحساب" isSubmitting={isSaving} />
+            <AppModal isDelete show={!!deleteAccount} onClose={() => setDeleteAccount(null)} onConfirm={confirmDelete} itemName={deleteAccount?.name} title={t("تأكيد حذف الحساب")} isSubmitting={isSaving} />
 
             <style jsx global>{`
                 .account-row-hover:hover { background: rgba(59,130,246,0.05) !important; }
