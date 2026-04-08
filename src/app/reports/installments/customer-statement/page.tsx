@@ -43,6 +43,8 @@ export default function CustomerStatementReportPage() {
 }
 
 function CustomerStatementReportContent() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
