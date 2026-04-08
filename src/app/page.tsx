@@ -480,7 +480,7 @@ export default function DashboardPage() {
               </div>}>
               <div style={{ padding: '20px 10px 10px', height: '260px' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={stats.chartData} margin={{ top: 5, insetInlineEnd: 10, insetInlineStart: 0, bottom: 0 }}>
+                  <AreaChart data={stats.chartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gSales" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor={C.primary} stopOpacity={0.25} />
