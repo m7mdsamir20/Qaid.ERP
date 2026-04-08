@@ -42,6 +42,7 @@ export const dictionaries = {
         "تسجيل الخروج": "Logout",
         
         // Roles
+        "VAT": "VAT",
         "مدير النظام": "System Admin",
         "مدير فرع": "Branch Manager",
         "محاسب": "Accountant",
@@ -50,6 +51,7 @@ export const dictionaries = {
         "أمين مستودع": "Storekeeper",
         "موارد بشرية": "HR",
         "كاشير": "Cashier",
+        "مخصص": "Custom",
         
         // Dashboard Home
         "الوصول السريع": "Quick Access",
@@ -159,6 +161,70 @@ export const dictionaries = {
         "قواعد البيانات": "Databases",
         "جاري تحميل الإعدادات...": "Loading Settings...",
 
+        // General Tab Extras
+        "العملة والمنطقة الزمنية وتنسيق التاريخ": "Currency, Timezone, and Date Format",
+        "العملة الأساسية": "Base Currency",
+        "المنطقة الزمنية": "Timezone",
+        "نوع التقويم": "Calendar Type",
+        "تنسيق التاريخ": "Date Format",
+        "ميلادي": "Gregorian",
+        "هجري": "Hijri",
+        "بحث عن عملة...": "Currency search...",
+        "عملة أخرى (كتابة يدوية)": "Other currency (manual entry)",
+        "اكتب كود العملة هنا (مثال: KWD)": "Type currency code here (e.g., KWD)",
+        "يتم استخدام هذا الكود في النظام بالكامل": "This code is used throughout the system",
+        "الجنيه المصري": "Egyptian Pound",
+        "الريال السعودي": "Saudi Riyal",
+        "الدرهم الإماراتي": "UAE Dirham",
+        "الدينار الكويتي": "Kuwaiti Dinar",
+        "الدولار الأمريكي": "US Dollar",
+        "الريال القطري": "Qatari Riyal",
+        "الدينار البحريني": "Bahraini Dinar",
+        "الريال العماني": "Omani Rial",
+        "الدينار الأردني": "Jordanian Dinar",
+        "الدينار الليبي": "Libyan Dinar",
+        "الدينار العراقي": "Iraqi Dinar",
+        "الليرة التركية": "Turkish Lira",
+        "اليورو": "Euro",
+        "الجنيه الإسترليني": "British Pound",
+        "أخرى": "Other",
+
+        // Tax Tab Extras
+        "إعدادات الضريبة": "Tax Settings",
+        "تفعيل نظام الضرائب، تحديد النوع والنسبة الافتراضية": "Enable tax system, define type and default rate",
+        "تفعيل النظام الضريبي": "Enable Tax System",
+        "عند تفعيله سيتم إضافة حقول الضريبة في الفواتير والتقسيط": "When enabled, tax fields will be added to invoices and installments",
+        "نوع الضريبة": "Tax Type",
+        "ضريبة مبيعات": "Sales Tax",
+        "ضريبة جدول": "Schedule Tax",
+        "ضريبة دمغة": "Stamp Duty",
+        "النسبة الافتراضية (%)": "Default Rate (%)",
+        "الأسعار شاملة الضريبة": "Prices include tax",
+        "عند التفعيل، سيتم اعتبار سلع الفاتورة شاملة لنسبة الضريبة المسجلة": "When enabled, invoice items will be considered inclusive of recorded tax",
+        "تفعيل رسوم الخدمة (POS)": "Enable Service Charge (POS)",
+        "عند تفعيلها، سيتم إضافة حقل 'خدمة' بنسبة مئوية في شاشة الكاشير السريع (المطاعم/الكافيهات)": "When enabled, a 'Service' percentage field will be added to the POS screen",
+        "نسبة الخدمة الافتراضية (%)": "Default Service Rate (%)",
+
+        // Notifications Tab Extras
+        "تحكم في أنواع التنبيهات التي تظهر في النظام": "Control which alerts appear in the system",
+        "إدارة تنبيهات المخزون": "Manage Inventory Alerts",
+        "تنبيه انخفاض المخزون": "Low Stock Alert",
+        "مفعّل — نظام التتبع النشط": "Enabled — Active Tracking System",
+        "حد التنبيه": "Alert Threshold",
+        "وحدة متوفرة": "Units Available",
+        "وحدة": "Unit",
+        "المدفوعات والمديونيات": "Payments and Debts",
+        "المتاخرات والأقساط": "Overdue and Installments",
+        "تنبيه بالأقساط والمديونيات التي تجاوزت موعد استحقاقها": "Alert for installments and debts past their due date",
+
+        // Users Tab Extras
+        "إضافة المستخدمين وضبط صلاحياتهم والتحكم الكامل في أدوار الوصول": "Add users, set permissions, and fully control access roles",
+        "الفروع المسموح بها": "Allowed Branches",
+        "بلا اختيار = يرى كل الفروع": "No selection = sees all branches",
+        "الفرع الرئيسي": "Main Branch",
+        "وصول فقط": "Access only",
+        "المستخدم": "User",
+
         // Customers
         "العملاء": "Customers",
         "إدارة بيانات العملاء والشركات والمستحقات": "Manage customers, companies, and dues data",
@@ -198,16 +264,23 @@ export const dictionaries = {
         "إلغاء": "Cancel",
         "ابحث باسم العميل أو رقم الهاتف...": "Search by customer name or phone...",
         "لا يوجد عملاء مضافين حالياً": "No customers currently added",
+
+        "إلغاء خدمات / مرتجع": "Cancel Services / Returns",
+        "تصنيفات الخدمات": "Service Categories",
+        "قائمة الخدمات": "Services List",
+        "الفروع / مواقع العمل": "Branches / Work Sites",
         
         // Navigation / Sidebar Links
+        "لوحة التحكم": "Control Panel",
         "عروض الأسعار": "Quotations",
         "فواتير المبيعات": "Sales Invoices",
         "مرتجع مبيعات": "Sales Returns",
         "سندات القبض": "Receipt Vouchers",
-        "تسوية ديون (حوالة)": "Debt Settlement",
+        "تسوية ديون (حوالة)": "Debt Settlement (Transfer)",
         "خطط التقسيط": "Installment Plans",
         "الأقساط المستحقة": "Due Installments",
         "المتأخرات": "Overdue payments",
+        "فواتير المشتريات": "Purchase Invoices",
         "مرتجع مشتريات": "Purchase Returns",
         "سندات الصرف": "Payment Vouchers",
         "الموردين": "Suppliers",
@@ -218,6 +291,7 @@ export const dictionaries = {
         "التحويل بين المخازن": "Warehouse Transfers",
         "الأرصدة الافتتاحية": "Opening Balances",
         "السنة المالية": "Financial Years",
+        "الإيرادات": "Revenues",
         "مراكز التكلفة": "Cost Centers",
         "القيود اليومية": "Journal Entries",
         "قيود الإقفال": "Closing Entries",
@@ -239,11 +313,8 @@ export const dictionaries = {
         "العملاء والموردين": "Customers & Suppliers",
         "تقارير الموظفين": "HR Reports",
         "تقارير الأقساط": "Installment Reports",
-        "التنبيهات": "Notifications",
-        "المستخدمين": "Users",
-        "الاشتراك": "Subscription",
-        "قاعدة البيانات": "Database",
         "تراجع": "Back",
+        "الأساسية": "Basic",
         "إرجاع": "Back",
         "يرجى اختيار المخزن أولاً": "Please select a warehouse first",
         "يرجى اختيار العميل أولاً": "Please select a customer first",
@@ -329,7 +400,7 @@ export const dictionaries = {
         "مخزن الاستلام": "Receiving Warehouse",
         "التكلفة": "Cost",
 
-        // Settings Tabs Strings
+        // Subscription Tab Strings
         "باقتك الحالية، تاريخ الانتهاء، والمميزات المفعّلة": "Current plan, expiration date, and active features",
         "لا توجد بيانات اشتراك": "No subscription data",
         "تواصل مع المسؤول لتفعيل اشتراكك": "Contact admin to activate subscription",
@@ -340,7 +411,7 @@ export const dictionaries = {
         "باقة": "Plan",
         "حالة الاشتراك": "Subscription Status",
         "غير مفعّلة / منتهية": "Inactive / Expired",
-        "مفعّلة ونشطة": "Active",
+        "مفعّل": "Active",
         "نسخة تجريبية": "Trial Version",
         "تاريخ البداية": "Start Date",
         "تاريخ الانتهاء": "End Date",
@@ -357,6 +428,7 @@ export const dictionaries = {
         "للوصول لمزيد من المميزات المتقدمة أو زيادة عدد المستخدمين المسموح بهم في النظام؛ يرجى التواصل مع فريق الدعم الفني والمبيعات مباشرة.": "To access more features or increase user limits, please contact our support and sales team directly.",
         "مراسلة الدعم عبر واتساب": "Contact Support via WhatsApp",
 
+        // Branches Tab
         "إدارة الفروع": "Branches Management",
         "أضف وعدّل فروع شركتك - كل فرع له مخازن وخزائن وموظفين مستقلين": "Add and edit branches - each branch has its own warehouses, treasuries, and employees",
         "فرع": "Branch",
@@ -379,6 +451,7 @@ export const dictionaries = {
         "حفظ التعديلات": "Save Edits",
         "إضافة الفرع": "Add Branch",
 
+        // Database Tab
         "قاعدة البيانات والنسخ الاحتياطي": "Database & Backup",
         "إدارة بياناتك، تحميل نسخ احتياطية، أو استعادة النظام": "Manage data, download backups, or restore system",
         "النسخ الاحتياطي اليدوي": "Manual Backup",
@@ -405,6 +478,7 @@ export const dictionaries = {
         "موظفين": "Employees",
         "ملف غير صالح": "Invalid file",
 
+        // Import Wizard
         "استيراد البيانات من Excel": "Import Data from Excel",
         "استيراد قائمة العملاء وأرصدتهم الافتتاحية": "Import customers list and opening balances",
         "استيراد قائمة الموردين والمستحقات السابقة": "Import suppliers list and previous dues",
@@ -426,12 +500,12 @@ export const dictionaries = {
         "جاري استيراد السجل": "Importing record",
         "الأعمدة المطلوبة: اسم الصنف، التصنيف، وحدة القياس، سعر التكلفة، سعر البيع، الكمية الافتتاحية": "Required columns: Item name, Category, Unit, Cost price, Sell price, Opening qty",
 
+        // User Management Extras
         "إضافة مستخدم": "Add User",
         "أضف مستخدم جديد": "Add new user",
         "تعديل مستخدم": "Edit User",
         "مستخدم جديد": "New User",
         "الاسم الكامل": "Full Name",
-        "محمد أحمد": "Mohamed Ahmed",
         "اسم المستخدم": "Username",
         "البريد الإلكتروني": "Email",
         "كلمة المرور": "Password",
@@ -447,8 +521,6 @@ export const dictionaries = {
         "الموظفين والرواتب والأقسام": "HR, Payroll, and Departments",
         "نقاط البيع وسندات القبض": "POS and Receipt Vouchers",
         "تحديد الصلاحيات يدوياً": "Define permissions manually",
-        "الفروع المسموح بها": "Allowed Branches",
-        "بلا اختيار = يرى كل الفروع": "Empty = All branches accessible",
         "تحديث البيانات": "Update Data",
         "الصلاحيات": "Permissions",
         "تحديد الكل": "Select All",
@@ -457,7 +529,6 @@ export const dictionaries = {
         "القائمة / الصفحة": "Menu / Page",
         "صفحة": "pages",
         "جزئي": "Partial",
-        "مفعّل": "Enabled",
         "معطّل": "Disabled",
         "مشاهدة": "View",
         "إضافة": "Create",
@@ -471,7 +542,9 @@ export const dictionaries = {
         "حذف الفرع": "Delete Branch",
         "إغلاق السنة المالية": "Close Financial Year",
         "حذف": "Delete",
-        "تأكيد": "Confirm"
+        "تأكيد": "Confirm",
+        "تعديل البيانات": "Edit Data",
+        "حفظ البيانات": "Save Data"
     }
 };
 
