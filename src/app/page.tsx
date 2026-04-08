@@ -97,7 +97,7 @@ function KpiCard({
         {value}
       </div>
       <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t(label)}</div>
-      {sub && <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{sub}</div>}
+      {sub && <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t(sub)}</div>}
     </div>
   );
 }
@@ -130,7 +130,7 @@ function SectionCard({ title, icon: Icon, children, action }: {
   );
 }
 
-function ChartTooltip({ active, payload, label, cSymbol }: any) {
+function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
   const fmtFull = (n: number) => n.toLocaleString('en-US') + ' ' + cSymbol;
   if (!active || !payload?.length) return null;
   return (
@@ -146,7 +146,7 @@ function ChartTooltip({ active, payload, label, cSymbol }: any) {
       {payload.map((p: any, i: number) => (
         <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '4px' }}>
           <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: p.color }} />
-          <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{p.name}:</span>
+          <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t(p.name)}:</span>
           <span style={{ fontWeight: 800, fontFamily: INTER }}>{fmtFull(p.value)}</span>
         </div>
       ))}
@@ -411,17 +411,17 @@ export default function DashboardPage() {
             </>
           ) : (
             <>
-              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fmt(stats.salesTotal)} sub={periodLabel[period]} trend="↑ مباشر" trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
-              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fmt(stats.purchasesTotal)} sub={periodLabel[period]} trend="↓ مباشر" trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fmt(stats.salesTotal)} sub={periodLabel[period]} trend={`↑ ${t('مباشر')}`} trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
+              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fmt(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
               {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
-                <KpiCard label="صافي الربح" value={fmt(stats.netProfit)} sub={`هامش ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
-                  trend={stats.netProfit >= 0 ? "↑ نمو" : "↓ تراجع"}
+                <KpiCard label="صافي الربح" value={fmt(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
+                  trend={stats.netProfit >= 0 ? `↑ ${t('نمو')}` : `↓ ${t('تراجع')}`}
                   trendUp={stats.netProfit >= 0}
                   color={stats.netProfit >= 0 ? C.success : C.danger}
                   icon={BarChart2} delay={120} />
               )}
               {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fmt(stats.treasuriesBalance)} sub="إجمالي السيولة" color={C.primary} icon={Wallet} delay={180} />}
-              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fmt(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} عملاء`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
+              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fmt(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
               {hasPage('/suppliers', 'purchases') && <KpiCard label="الموردين" value={stats.suppliers} sub="إجمالي الموردين" color={C.warning} icon={Truck} delay={300} />}
               {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fmt(stats.salesTodayTotal)} sub="إحصائيات فورية" color={C.primary} icon={Eye} delay={360} />}
               {(hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory')) && (
@@ -475,8 +475,8 @@ export default function DashboardPage() {
           {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
             <SectionCard title={isServices ? "إيرادات الخدمات مقابل المصروفات" : "المبيعات مقابل المشتريات"} icon={BarChart2}
               action={<div style={{ fontSize: '11px', color: C.textSecondary, display: 'flex', gap: '15px' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{isServices ? 'إيرادات' : 'مبيعات'}</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isServices ? C.danger : C.warning }} />{isServices ? 'مصروفات' : 'مشتريات'}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isServices ? 'إيرادات' : 'مبيعات')}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isServices ? C.danger : C.warning }} />{t(isServices ? 'مصروفات' : 'مشتريات')}</span>
               </div>}>
               <div style={{ padding: '20px 10px 10px', height: '260px' }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -498,7 +498,7 @@ export default function DashboardPage() {
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} opacity={0.5} />
                     <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: INTER }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: INTER }} axisLine={false} tickLine={false} tickFormatter={v => fmt(v)} width={40} />
-                    <Tooltip content={<ChartTooltip cSymbol={cSymbol} />} />
+                    <Tooltip content={<ChartTooltip cSymbol={cSymbol} t={t} />} />
                     {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={isServices ? "إيرادات" : "مبيعات"} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
                     {isServices 
                        ? <Area type="monotone" dataKey="expenses" name="مصروفات" stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
@@ -512,10 +512,10 @@ export default function DashboardPage() {
 
           {hasPage('/treasuries', 'treasury') && (
             <SectionCard title="توزيع السيولة النقدية" icon={Landmark}
-              action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 800, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} حساب</span>}>
+              action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 800, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} {t('حساب')}</span>}>
               <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {!stats.treasuryList || stats.treasuryList.length === 0 ? (
-                  <div style={{ padding: '30px', textAlign: 'center', color: C.textMuted, fontSize: '13px' }}>لا توجد نقدية مسجلة حالياً</div>
+                  <div style={{ padding: '30px', textAlign: 'center', color: C.textMuted, fontSize: '13px' }}>{t('لا توجد نقدية مسجلة حالياً')}</div>
                 ) : (
                   stats.treasuryList.map((t: any, i: number) => (
                     <div key={i} style={{
@@ -539,7 +539,7 @@ export default function DashboardPage() {
                     marginTop: '10px', paddingTop: '15px', borderTop: `1px dashed ${C.border}`,
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                   }}>
-                    <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>إجمالي السيولة المتاحة</span>
+                    <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{t('إجمالي السيولة المتاحة')}</span>
                     {renderCurrency(stats.treasuryList.reduce((s: any, t: any) => s + t.balance, 0), '18px', 900)}
                   </div>
                 )}

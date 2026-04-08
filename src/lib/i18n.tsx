@@ -313,7 +313,7 @@ export const dictionaries = {
         "العملاء والموردين": "Customers & Suppliers",
         "تقارير الموظفين": "HR Reports",
         "تقارير الأقساط": "Installment Reports",
-        "تراجع": "Back",
+        "تراجع": "Decline",
         "الأساسية": "Basic",
         "إرجاع": "Back",
         "يرجى اختيار المخزن أولاً": "Please select a warehouse first",
@@ -543,11 +543,27 @@ export const dictionaries = {
         "إغلاق السنة المالية": "Close Financial Year",
         "حذف": "Delete",
         "تأكيد": "Confirm",
-        "تعديل البيانات": "Edit Data",
         "حفظ البيانات": "Save Data",
         "عرض التقارير": "View Reports",
         "ذمم العملاء المستحقة": "Outstanding Customer Debts",
-        "إجمالي المطلوب تحصيله": "Total to be Collected"
+        "إجمالي المطلوب تحصيله": "Total to be Collected",
+        "مباشر": "Direct",
+        "نمو": "Growth",
+        "تراجع": "Decline",
+        "هامش": "Margin",
+        "عملاء": "Customers",
+        "حساب": "Accounts",
+        "إيرادات": "Revenues",
+        "لا توجد نقدية مسجلة حالياً": "No cash currently recorded",
+        "إجمالي السيولة المتاحة": "Total Available Liquidty",
+        "إجمالي مبيعات الخدمات اليوم": "Total services sales today",
+        "إجمالي الخدمات المسجلة": "Total registered services",
+        "قاعدة العملاء الحالية": "Current customer base",
+        "لا يوجد مواعيد مسجلة حالياً": "No appointments currently recorded",
+        "إجمالي مدفوعات المصاريف": "Total expense payments",
+        "الإيرادات - المصروفات": "Revenue - Expenses",
+        "إحصائيات فورية": "Instant stats",
+        "أصناف تحت الحد – اضغط للعرض": "Items under limit - Click to view"
     }
 };
 
