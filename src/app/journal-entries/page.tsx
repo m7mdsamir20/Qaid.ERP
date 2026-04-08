@@ -206,10 +206,10 @@ export default function JournalEntriesPage() {
                                 <div style={KPI_ICON(s.color)}>
                                     {s.icon}
                                 </div>
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'start' }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{s.label}</div>
                                     <div style={{ fontSize: s.small ? '15px' : '20px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
-                                        {s.value} {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, marginRight: '4px' }}>{s.suffix}</span>}
+                                        {s.value} {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                             </div>
@@ -269,7 +269,7 @@ export default function JournalEntriesPage() {
                                         <th style={TABLE_STYLE.th(false)}>التاريخ</th>
                                         <th style={TABLE_STYLE.th(false)}>البيان / الوصف العام</th>
                                         <th style={TABLE_STYLE.th(false)}>المرجع</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'left' }}>المبلغ الإجمالي</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'end' }}>المبلغ الإجمالي</th>
                                         <th style={TABLE_STYLE.th(false)}>الحالة</th>
                                         <th style={TABLE_STYLE.th(false)}>التفاصيل</th>
                                     </tr>
@@ -300,8 +300,8 @@ export default function JournalEntriesPage() {
                                                             </span>
                                                         ) : '—'}
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'left', fontSize: '16px', fontWeight: 900, color: C.purple, fontFamily: INTER }}>
-                                                        {fmt(dr)} <span style={{ fontSize: '10px', color: C.textMuted, marginRight: '4px' }}>{currencySymbol}</span>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'end', fontSize: '16px', fontWeight: 900, color: C.purple, fontFamily: INTER }}>
+                                                        {fmt(dr)} <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{currencySymbol}</span>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <div onClick={e => e.stopPropagation()}>
@@ -348,9 +348,9 @@ export default function JournalEntriesPage() {
                                                                 <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                                                                     <thead>
                                                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>الحساب</th>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>مركز التكلفة</th>
-                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>البيان</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>الحساب</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>مركز التكلفة</th>
+                                                                            <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>البيان</th>
                                                                             <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '120px', fontFamily: CAIRO }}>مدين</th>
                                                                             <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '120px', fontFamily: CAIRO }}>دائن</th>
                                                                         </tr>
@@ -436,7 +436,7 @@ export default function JournalEntriesPage() {
                                         <label style={{ ...LS, marginBottom: '8px', display: 'block' }}>تاريخ القيد <span style={{ color: C.danger }}>*</span></label>
                                         <input type="date" required value={form.date}
                                             onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, height: '44px', direction: 'ltr', textAlign: 'left', colorScheme: 'dark', fontSize: '14px', fontWeight: 700, fontFamily: INTER }}
+                                            style={{ ...IS, height: '44px', direction: 'ltr', textAlign: 'end', colorScheme: 'dark', fontSize: '14px', fontWeight: 700, fontFamily: INTER }}
                                             onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                     <div>
@@ -452,7 +452,7 @@ export default function JournalEntriesPage() {
                                         <input value={form.reference}
                                             onChange={e => setForm(f => ({ ...f, reference: e.target.value }))}
                                             placeholder="رقم المستند المرتبط"
-                                            style={{ ...IS, height: '44px', direction: 'ltr', textAlign: 'left', fontSize: '14px', fontFamily: INTER }}
+                                            style={{ ...IS, height: '44px', direction: 'ltr', textAlign: 'end', fontSize: '14px', fontFamily: INTER }}
                                             onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
@@ -462,9 +462,9 @@ export default function JournalEntriesPage() {
                                     <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                                         <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                                             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>الحساب المحاسبي</th>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'right', width: '220px', fontFamily: CAIRO }}>مركز التكلفة</th>
-                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>بيان السطر</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>الحساب المحاسبي</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', width: '220px', fontFamily: CAIRO }}>مركز التكلفة</th>
+                                                <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>بيان السطر</th>
                                                 <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '140px', fontFamily: CAIRO }}>مدين</th>
                                                 <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'center', width: '140px', fontFamily: CAIRO }}>دائن</th>
                                                 <th style={{ width: '50px' }}></th>
@@ -517,7 +517,7 @@ export default function JournalEntriesPage() {
                                                         <Plus size={16} /> إضافة طرف للقيد
                                                     </button>
                                                 </td>
-                                                <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: INTER, borderRight: `1px solid ${C.border}` }}>{fmt(totalDebit)}</td>
+                                                <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: INTER, borderInlineEnd: `1px solid ${C.border}` }}>{fmt(totalDebit)}</td>
                                                 <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fmt(totalCredit)}</td>
                                                 <td></td>
                                             </tr>

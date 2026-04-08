@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
@@ -16,6 +17,8 @@ interface Item { id: string; code: string; name: string; sellPrice: number; desc
 interface QuotationLine { itemId: string; itemCode: string; itemName: string; unit: string; quantity: number; price: number; total: number; description?: string; taxRate?: number; taxAmount?: number; }
 
 export default function NewQuotationPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
@@ -182,7 +185,7 @@ export default function NewQuotationPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
                 <PageHeader 
                     title="إنشاء عرض سعر"
                     subtitle={`قم بتجهيز عرض سعر احترافي لعملائك برقم #${nextNum}`}
@@ -224,10 +227,10 @@ export default function NewQuotationPage() {
                                         <input 
                                             type="number" step="any" 
                                             value={entryPrice} onChange={e => setEntryPrice(e.target.value as any)}
-                                            style={{ ...IS, textAlign: 'center', height: '42px', paddingLeft: '30px' }} 
+                                            style={{ ...IS, textAlign: 'center', height: '42px', paddingInlineStart: '30px' }} 
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
-                                        <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted }}>{cSymbol}</span>
+                                        <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted }}>{cSymbol}</span>
                                     </div>
                                 </div>
                                 <button 
@@ -255,7 +258,7 @@ export default function NewQuotationPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
-                                            <th style={{ padding: '14px', textAlign: 'right', fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>الخدمة / الصنف</th>
+                                            <th style={{ padding: '14px', textAlign: 'start', fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>الخدمة / الصنف</th>
                                             <th style={{ padding: '14px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 800 }}>الكمية</th>
                                             <th style={{ padding: '14px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '130px', fontWeight: 800 }}>السعر</th>
                                             <th style={{ padding: '14px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '130px', fontWeight: 800 }}>الإجمالي</th>

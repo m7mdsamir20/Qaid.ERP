@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
@@ -36,6 +37,8 @@ interface Employee {
 
 /* ══════════════════════════════════════════ */
 export default function EmployeeDetailPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: currencySymbol } = useCurrency();
     const params = useParams();
@@ -84,7 +87,7 @@ export default function EmployeeDetailPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
                 
                 {/* Custom Page Header */}
                 <PageHeader 
@@ -154,11 +157,11 @@ export default function EmployeeDetailPage() {
                                 <div>
                                     <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '8px', opacity: 0.8 }}>صافي الراتب المتوقع</div>
                                     <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: INTER }} dir="ltr">
-                                        <span style={{ fontSize: '16px', color: C.textMuted, marginRight: '8px' }}>{currencySymbol}</span>
+                                        <span style={{ fontSize: '16px', color: C.textMuted, marginInlineEnd: '8px' }}>{currencySymbol}</span>
                                         {net.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                     </div>
                                 </div>
-                                <div style={{ textAlign: 'left', zIndex: 1 }}>
+                                <div style={{ textAlign: 'end', zIndex: 1 }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                         <SummaryRow label="الراتب الأساسي" value={employee.basicSalary} color={C.textPrimary} unit={currencySymbol} />
                                         <SummaryRow label="إجمالي البدلات" value={allowances} color="#10b981" prefix="+" unit={currencySymbol} />
@@ -249,7 +252,7 @@ function StatCard({ icon: Icon, label, value, color, family }: any) {
             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             transition: 'all 0.2s', position: 'relative', overflow: 'hidden'
         }}>
-            <div style={{ textAlign: 'right' }}>
+            <div style={{ textAlign: 'start' }}>
                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{label}</p>
                 <div style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: family }}>{value}</div>
             </div>

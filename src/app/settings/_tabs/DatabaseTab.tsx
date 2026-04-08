@@ -49,7 +49,7 @@ export default function DatabaseTab({
             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                 {/* JSON Backup */}
                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: C.primary }}><Download size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>نسخة كاملة (JSON)</div>
@@ -83,7 +83,7 @@ export default function DatabaseTab({
 
                 {/* Excel */}
                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: '#10b981' }}><FileSpreadsheet size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>نسخة Excel</div>
@@ -118,7 +118,7 @@ export default function DatabaseTab({
 
                 {/* استعادة JSON */}
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: '#f59e0b' }}><UploadCloud size={15} /></div>
                         <div>
                             <div style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>استعادة نسخة</div>
@@ -180,7 +180,7 @@ export default function DatabaseTab({
                     { id: 'items', label: 'الأصناف', icon: <Package size={15} />, color: '#a78bfa', desc: 'استيراد الأصناف والأسعار والمخزون الأولي' },
                 ].map((item, i, arr) => (
                     <div key={item.id} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                        <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                             <div style={{ color: item.color }}>{item.icon}</div>
                             <span style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{item.label}</span>
                         </div>
@@ -294,7 +294,7 @@ export default function DatabaseTab({
                                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                                             <thead style={{ background: 'rgba(255,255,255,0.04)', position: 'sticky', top: 0, zIndex: 5 }}>
                                                 <tr>
-                                                    <th style={{ padding: '12px 14px', textAlign: 'right', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>الاسم</th>
+                                                    <th style={{ padding: '12px 14px', textAlign: 'start', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>الاسم</th>
                                                     <th style={{ padding: '12px 14px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>
                                                         {importType === 'items' ? 'الوحدة' : 'الهاتف'}
                                                     </th>

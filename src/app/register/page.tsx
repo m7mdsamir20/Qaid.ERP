@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
@@ -35,6 +36,8 @@ const BUSINESS_TYPES = [
 ];
 
 export default function RegisterPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
     const [form, setForm] = useState({
@@ -129,7 +132,7 @@ export default function RegisterPage() {
     const BRAND_LOGO = '/logo-system.png'; // لوجو النظام الموحد (قيد المطور)
 
     return (
-        <div dir="rtl" style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px' }}>
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px' }}>
             {/* الخلفية الرسمية */}
             <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.primary}15 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, ${C.purple}10 0%, transparent 50%)`, pointerEvents: 'none' }} />
 
@@ -145,7 +148,7 @@ export default function RegisterPage() {
                             background: i % 5 === 0 ? '#60a5fa' : '#ffffff',
                             opacity: 0.2,
                             top: `${Math.random() * 100}%`,
-                            left: `${Math.random() * 100}%`,
+                            insetInlineStart: `${Math.random() * 100}%`,
                             animationName: 'twinkle',
                             animationDuration: `${Math.random() * 3 + 2}s`,
                             animationTimingFunction: 'ease-in-out',
@@ -154,32 +157,32 @@ export default function RegisterPage() {
                         }} />
                     ))}
                     {/* دوائر ضبابية كبيرة */}
-                    <div style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)', top: '-200px', right: '-200px', animationName: 'float1', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                    <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%)', bottom: '-150px', left: '-150px', animationName: 'float2', animationDuration: '10s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                    <div style={{ position: 'absolute', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 70%)', top: '40%', left: '30%', animationName: 'float1', animationDuration: '12s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
+                    <div style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)', top: '-200px', insetInlineEnd: '-200px', animationName: 'float1', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
+                    <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%)', bottom: '-150px', insetInlineStart: '-150px', animationName: 'float2', animationDuration: '10s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
+                    <div style={{ position: 'absolute', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 70%)', top: '40%', insetInlineStart: '30%', animationName: 'float1', animationDuration: '12s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
                 </div>
             )}
 
             {/* أشكال هندسية */}
             <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
                 {/* مربعات دوارة */}
-                <div style={{ position: 'absolute', width: '80px', height: '80px', border: '1px solid rgba(59,130,246,0.15)', borderRadius: '12px', top: '10%', left: '8%', animationName: 'spin', animationDuration: '20s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '50px', height: '50px', border: '1px solid rgba(99,102,241,0.12)', borderRadius: '8px', top: '20%', left: '15%', animationName: 'spin', animationDuration: '15s', animationTimingFunction: 'linear', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
-                <div style={{ position: 'absolute', width: '120px', height: '120px', border: '1px solid rgba(59,130,246,0.08)', borderRadius: '16px', bottom: '15%', left: '5%', animationName: 'spin', animationDuration: '25s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '60px', height: '60px', border: '1px solid rgba(99,102,241,0.1)', borderRadius: '10px', top: '60%', left: '20%', animationName: 'spin', animationDuration: '18s', animationTimingFunction: 'linear', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
+                <div style={{ position: 'absolute', width: '80px', height: '80px', border: '1px solid rgba(59,130,246,0.15)', borderRadius: '12px', top: '10%', insetInlineStart: '8%', animationName: 'spin', animationDuration: '20s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} />
+                <div style={{ position: 'absolute', width: '50px', height: '50px', border: '1px solid rgba(99,102,241,0.12)', borderRadius: '8px', top: '20%', insetInlineStart: '15%', animationName: 'spin', animationDuration: '15s', animationTimingFunction: 'linear', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
+                <div style={{ position: 'absolute', width: '120px', height: '120px', border: '1px solid rgba(59,130,246,0.08)', borderRadius: '16px', bottom: '15%', insetInlineStart: '5%', animationName: 'spin', animationDuration: '25s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} />
+                <div style={{ position: 'absolute', width: '60px', height: '60px', border: '1px solid rgba(99,102,241,0.1)', borderRadius: '10px', top: '60%', insetInlineStart: '20%', animationName: 'spin', animationDuration: '18s', animationTimingFunction: 'linear', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
 
                 {/* مثلثات */}
-                <div style={{ position: 'absolute', width: 0, height: 0, borderLeft: '30px solid transparent', borderRight: '30px solid transparent', borderBottom: '52px solid rgba(59,130,246,0.06)', top: '35%', left: '3%', animationName: 'float', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: 0, height: 0, borderLeft: '20px solid transparent', borderRight: '20px solid transparent', borderBottom: '35px solid rgba(99,102,241,0.06)', bottom: '30%', left: '25%', animationName: 'float', animationDuration: '11s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
+                <div style={{ position: 'absolute', width: 0, height: 0, borderInlineStart: '30px solid transparent', borderInlineEnd: '30px solid transparent', borderBottom: '52px solid rgba(59,130,246,0.06)', top: '35%', insetInlineStart: '3%', animationName: 'float', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
+                <div style={{ position: 'absolute', width: 0, height: 0, borderInlineStart: '20px solid transparent', borderInlineEnd: '20px solid transparent', borderBottom: '35px solid rgba(99,102,241,0.06)', bottom: '30%', insetInlineStart: '25%', animationName: 'float', animationDuration: '11s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
 
                 {/* دوائر */}
-                <div style={{ position: 'absolute', width: '100px', height: '100px', borderRadius: '50%', border: '1px solid rgba(59,130,246,0.1)', top: '5%', right: '10%', animationName: 'float', animationDuration: '9s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.12)', bottom: '20%', right: '8%', animationName: 'float', animationDuration: '7s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
-                <div style={{ position: 'absolute', width: '160px', height: '160px', borderRadius: '50%', border: '1px solid rgba(99,102,241,0.06)', bottom: '5%', right: '20%', animationName: 'float', animationDuration: '13s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
+                <div style={{ position: 'absolute', width: '100px', height: '100px', borderRadius: '50%', border: '1px solid rgba(59,130,246,0.1)', top: '5%', insetInlineEnd: '10%', animationName: 'float', animationDuration: '9s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
+                <div style={{ position: 'absolute', width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.12)', bottom: '20%', insetInlineEnd: '8%', animationName: 'float', animationDuration: '7s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
+                <div style={{ position: 'absolute', width: '160px', height: '160px', borderRadius: '50%', border: '1px solid rgba(99,102,241,0.06)', bottom: '5%', insetInlineEnd: '20%', animationName: 'float', animationDuration: '13s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
 
                 {/* خطوط قطرية */}
-                <div style={{ position: 'absolute', width: '150px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.15), transparent)', top: '45%', left: '0', transform: 'rotate(-30deg)', animationName: 'fade', animationDuration: '6s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '100px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.12), transparent)', bottom: '40%', right: '5%', transform: 'rotate(45deg)', animationName: 'fade', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
+                <div style={{ position: 'absolute', width: '150px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.15), transparent)', top: '45%', insetInlineStart: '0', transform: 'rotate(-30deg)', animationName: 'fade', animationDuration: '6s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
+                <div style={{ position: 'absolute', width: '100px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.12), transparent)', bottom: '40%', insetInlineEnd: '5%', transform: 'rotate(45deg)', animationName: 'fade', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
             </div>
 
             <div style={{ width: '100%', maxWidth: '480px', position: 'relative', zIndex: 1 }}>
@@ -224,9 +227,9 @@ export default function RegisterPage() {
                                     </button>
 
                                     {showCountries && (
-                                        <div style={{ position: 'absolute', top: 'calc(100% + 12px)', right: 0, width: '240px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden', animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}` }}>
+                                        <div style={{ position: 'absolute', top: 'calc(100% + 12px)', insetInlineEnd: 0, width: '240px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden', animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}` }}>
                                             <div style={{ padding: '12px', borderBottom: `1px solid ${C.border}`, position: 'relative', background: 'rgba(255,255,255,0.01)' }}>
-                                                <Search size={14} style={{ position: 'absolute', right: '22px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                                <Search size={14} style={{ position: 'absolute', insetInlineEnd: '22px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
                                                 <input placeholder="ابحث عن الدولة..." value={countrySearch} onChange={e => setCountrySearch(e.target.value)}
                                                     style={{ width: '100%', height: '36px', padding: '0 32px 0 10px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '12.5px', outline: 'none', fontFamily: CAIRO, direction: 'rtl', boxSizing: 'border-box' }}
                                                     autoFocus
@@ -236,11 +239,11 @@ export default function RegisterPage() {
                                                 {filteredCountries.map(c => (
                                                     <button key={c.code} type="button"
                                                         onClick={() => { setSelectedCountry(c); setShowCountries(false); setCountrySearch(''); }}
-                                                        style={{ width: '100%', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px', background: selectedCountry.code === c.code ? `${C.primary}15` : 'transparent', border: 'none', cursor: 'pointer', transition: '0.15s', borderRadius: '10px', textAlign: 'right', color: selectedCountry.code === c.code ? C.primary : C.textSecondary, fontWeight: selectedCountry.code === c.code ? 800 : 500 }}
+                                                        style={{ width: '100%', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px', background: selectedCountry.code === c.code ? `${C.primary}15` : 'transparent', border: 'none', cursor: 'pointer', transition: '0.15s', borderRadius: '10px', textAlign: 'start', color: selectedCountry.code === c.code ? C.primary : C.textSecondary, fontWeight: selectedCountry.code === c.code ? 800 : 500 }}
                                                         onMouseEnter={e => { if (selectedCountry.code !== c.code) e.currentTarget.style.background = C.hover; }}
                                                         onMouseLeave={e => { if (selectedCountry.code !== c.code) e.currentTarget.style.background = 'transparent'; }}>
                                                         <img src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`} alt={c.name} style={{ width: 22, height: 16, objectFit: 'cover', borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
-                                                        <span style={{ fontSize: '13.5px', fontFamily: CAIRO, flex: 1, textAlign: 'right' }}>{c.name}</span>
+                                                        <span style={{ fontSize: '13.5px', fontFamily: CAIRO, flex: 1, textAlign: 'start' }}>{c.name}</span>
                                                         <span style={{ fontSize: '13px', direction: 'ltr', opacity: 0.8 }}>{c.dial}</span>
                                                     </button>
                                                 ))}
@@ -254,7 +257,7 @@ export default function RegisterPage() {
                                     value={form.phone}
                                     onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                                     placeholder="رقم الهاتف"
-                                    style={{ ...IS, height: '44px', flex: 1, direction: 'ltr', textAlign: 'right' }}
+                                    style={{ ...IS, height: '44px', flex: 1, direction: 'ltr', textAlign: 'start' }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
                                     spellCheck={false}
@@ -274,23 +277,23 @@ export default function RegisterPage() {
                                         style={{ width: '100%', height: '44px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
-                                        <span style={{ flex: 1, textAlign: 'right', color: form.businessType ? C.textPrimary : `${C.textMuted}90` }}>{form.businessType ? BUSINESS_TYPES.find(b => b.value === form.businessType)?.label : 'اختر نوع النشاط'}</span>
+                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : `${C.textMuted}90` }}>{form.businessType ? BUSINESS_TYPES.find(b => b.value === form.businessType)?.label : 'اختر نوع النشاط'}</span>
                                         <ChevronDown size={14} color={C.textMuted} style={{ transform: showBusinessTypes ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                                     </button>
                                     
                                     {/* حقل مخفي لفرض الإجبارية عبر المتصفح */}
-                                    <input type="text" required value={form.businessType} onChange={() => {}} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: '1px', height: '1px', bottom: '0', left: '50%' }} tabIndex={-1} />
+                                    <input type="text" required value={form.businessType} onChange={() => {}} style={{ position: 'absolute', opacity: 0, pointerEvents: 'none', width: '1px', height: '1px', bottom: '0', insetInlineStart: '50%' }} tabIndex={-1} />
 
                                     {showBusinessTypes && (
-                                        <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', left: 0, right: 0, background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 -25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden', animation: 'fadeUp 0.2s ease', borderBottom: `2px solid ${C.primary}` }}>
+                                        <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', insetInlineStart: 0, insetInlineEnd: 0, background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 -25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden', animation: 'fadeUp 0.2s ease', borderBottom: `2px solid ${C.primary}` }}>
                                             <div style={{ maxHeight: '200px', overflowY: 'auto', padding: '6px' }}>
                                                 {BUSINESS_TYPES.map(b => (
                                                     <button key={b.value} type="button" 
                                                         onClick={() => { setForm({ ...form, businessType: b.value }); setShowBusinessTypes(false); }}
-                                                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'right', boxSizing: 'border-box', background: form.businessType === b.value ? `${C.primary}15` : 'transparent', color: form.businessType === b.value ? C.primary : C.textSecondary, transition: '0.15s', fontWeight: form.businessType === b.value ? 800 : 500 }}
+                                                        style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box', background: form.businessType === b.value ? `${C.primary}15` : 'transparent', color: form.businessType === b.value ? C.primary : C.textSecondary, transition: '0.15s', fontWeight: form.businessType === b.value ? 800 : 500 }}
                                                         onMouseEnter={e => { if (form.businessType !== b.value) e.currentTarget.style.background = C.hover; }}
                                                         onMouseLeave={e => { if (form.businessType !== b.value) e.currentTarget.style.background = 'transparent'; }}>
-                                                        <span style={{ flex: 1, textAlign: 'right' }}>{b.label}</span>
+                                                        <span style={{ flex: 1, textAlign: 'start' }}>{b.label}</span>
                                                     </button>
                                                 ))}
                                             </div>
@@ -308,12 +311,12 @@ export default function RegisterPage() {
                                         value={form.password}
                                         onChange={e => setForm({ ...form, password: e.target.value })}
                                         placeholder="8 أحرف على الأقل"
-                                        style={{ ...IS, height: '44px', paddingLeft: '44px', direction: 'ltr', textAlign: 'right' }}
+                                        style={{ ...IS, height: '44px', paddingInlineStart: '44px', direction: 'ltr', textAlign: 'start' }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
                                     />
                                     <button type="button" onClick={() => setShowPass(!showPass)}
-                                        style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
+                                        style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
                                         {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -326,12 +329,12 @@ export default function RegisterPage() {
                                         value={form.confirmPassword}
                                         onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                                         placeholder="إعادة الكلمة"
-                                        style={{ ...IS, height: '44px', paddingLeft: '44px', direction: 'ltr', textAlign: 'right' }}
+                                        style={{ ...IS, height: '44px', paddingInlineStart: '44px', direction: 'ltr', textAlign: 'start' }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
                                     />
                                     <button type="button" onClick={() => setShowConfirmPass(!showConfirmPass)}
-                                        style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
+                                        style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
                                         {showConfirmPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>

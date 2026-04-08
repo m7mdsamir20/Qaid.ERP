@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { ScrollText, Search, Loader2, ArrowUpRight, ArrowDownRight, ChevronDown, Calendar, Wallet, Activity, Printer, FileDown } from 'lucide-react';
@@ -37,7 +38,7 @@ const getCurrencyName = (code: string) => {
 };
 
 const IS_LOCAL: React.CSSProperties = {
-    width: '100%', height: '42px', padding: '0 14px', textAlign: 'right', direction: 'rtl',
+    width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: 'rtl',
     borderRadius: '10px', border: `1px solid ${C.border}`,
     background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '12px',
     fontWeight: 500, outline: 'none', transition: 'border-color 0.15s', boxSizing: 'border-box',
@@ -46,6 +47,8 @@ const focusIn = (e: React.FocusEvent<any>) => { e.currentTarget.style.borderColo
 const focusOut = (e: React.FocusEvent<any>) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; };
 
 export default function GeneralLedgerPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -121,7 +124,7 @@ export default function GeneralLedgerPage() {
     return (
         <DashboardLayout>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" async></script>
-            <div dir="rtl" style={PAGE_BASE} ref={reportRef}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE} ref={reportRef}>
                 <ReportHeader
                     title="كشف الحساب العام"
                     subtitle="تحليل الحركات المالية والرصيد التفصيلي لأي حساب خلال فترة زمنية محددة."
@@ -137,13 +140,13 @@ export default function GeneralLedgerPage() {
                             value={accountSearch}
                             onChange={e => { setAccountSearch(e.target.value); setShowAccountList(true); }}
                             onFocus={() => { setAccountSearch(''); setShowAccountList(true); }}
-                            style={{ ...SEARCH_STYLE.input, paddingLeft: '40px' }}
+                            style={{ ...SEARCH_STYLE.input, paddingInlineStart: '40px' }}
                             onBlur={e => { setTimeout(() => setShowAccountList(false), 200); }}
                         />
-                        <ChevronDown size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, opacity: 0.5, pointerEvents: 'none' }} />
+                        <ChevronDown size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, opacity: 0.5, pointerEvents: 'none' }} />
 
                         {showAccountList && filteredAccounts.length > 0 && (
-                            <div style={{ position: 'absolute', top: '100%', right: 0, left: 0, zIndex: 50, background: '#0f1c2e', border: `1px solid ${C.border}`, borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', maxHeight: '300px', overflowY: 'auto', marginTop: '6px' }}>
+                            <div style={{ position: 'absolute', top: '100%', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 50, background: '#0f1c2e', border: `1px solid ${C.border}`, borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', maxHeight: '300px', overflowY: 'auto', marginTop: '6px' }}>
                                 {filteredAccounts.map(a => (
                                     <div key={a.id}
                                         onMouseDown={() => {
@@ -210,7 +213,7 @@ export default function GeneralLedgerPage() {
                                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                                 >
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>

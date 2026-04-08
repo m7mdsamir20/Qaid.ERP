@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
@@ -66,6 +67,8 @@ const fmt = (v: any) => {
 };
 
 export default function NewPurchaseReturnPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const activeBranchId = (session?.user as any)?.activeBranchId;
@@ -295,7 +298,7 @@ export default function NewPurchaseReturnPage() {
         if (!fieldErrors[field]) return null;
         return (
             <div style={{
-                position: 'absolute', top: '-32px', left: '4px', fontSize: '11px', color: '#fff', fontWeight: 800,
+                position: 'absolute', top: '-32px', insetInlineStart: '4px', fontSize: '11px', color: '#fff', fontWeight: 800,
                 background: 'linear-gradient(135deg, #ef4444, #b91c1c)', padding: '4px 10px', borderRadius: '8px',
                 pointerEvents: 'none', zIndex: 100, boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
                 display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap',
@@ -303,14 +306,14 @@ export default function NewPurchaseReturnPage() {
             }}>
                 <AlertCircle size={12} strokeWidth={3} />
                 {fieldErrors[field]}
-                <div style={{ position: 'absolute', bottom: '-4px', left: '12px', width: '8px', height: '8px', background: '#b91c1c', transform: 'rotate(45deg)', borderRadius: '1px' }} />
+                <div style={{ position: 'absolute', bottom: '-4px', insetInlineStart: '12px', width: '8px', height: '8px', background: '#b91c1c', transform: 'rotate(45deg)', borderRadius: '1px' }} />
             </div>
         );
     };
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '30px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 <PageHeader
                     title="مرتجع مشتريات جديد"
                     subtitle="إرجاع أصناف للمورد وتسوية حسابه المالي والمخزني"
@@ -370,7 +373,7 @@ export default function NewPurchaseReturnPage() {
                                         <label style={{ ...LS, fontSize: '11px' }}>تاريخ المرتجع</label>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, textAlign: 'left', direction: 'ltr', fontSize: '13px', fontFamily: CAIRO }}
+                                            style={{ ...IS, background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: CAIRO }}
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                     <div>
@@ -514,7 +517,7 @@ export default function NewPurchaseReturnPage() {
                                         <thead>
                                             <tr style={{ background: 'rgba(0,0,0,0.1)', borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '10px', width: '30px' }}>✓</th>
-                                                <th style={{ padding: '10px', textAlign: 'right', color: C.textMuted, fontSize: '10px' }}>اسم الصنف</th>
+                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>اسم الصنف</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>الوحدة</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>الكمية المشتراة</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>سابق الإرجاع</th>
@@ -531,7 +534,7 @@ export default function NewPurchaseReturnPage() {
                                                         <td style={{ padding: '8px 10px' }}>
                                                             {!fullyReturned && <input type="checkbox" checked={l.selected} onChange={() => toggleLine(i)} style={{ width: 14, height: 14, cursor: 'pointer', accentColor: C.primary }} />}
                                                         </td>
-                                                        <td style={{ padding: '8px 10px', textAlign: 'right' }}>
+                                                        <td style={{ padding: '8px 10px', textAlign: 'start' }}>
                                                             <div style={{ fontWeight: 600, color: C.textPrimary }}>{l.itemName}</div>
                                                         </td>
                                                         <td style={{ padding: '8px 10px', color: C.textSecondary }}>{l.unit}</td>
@@ -558,7 +561,7 @@ export default function NewPurchaseReturnPage() {
                                                                         onFocus={focusIn} onBlur={focusOut}
                                                                     />
                                                                 </div>
-                                                                <div style={{ display: 'flex', flexDirection: 'column', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
+                                                                <div style={{ display: 'flex', flexDirection: 'column', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
                                                                     <button 
                                                                         type="button" disabled={!l.selected || l.returnQty >= l.availableQty}
                                                                         onClick={() => updateReturnQty(i, (l.returnQty || 0) + 1)}
@@ -675,16 +678,16 @@ export default function NewPurchaseReturnPage() {
                                                         border: `1px solid ${C.primary}50`, 
                                                         color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.primary,
                                                         background: 'rgba(59,130,246,0.03)',
-                                                        paddingRight: '40px',
+                                                        paddingInlineEnd: '40px',
                                                         fontFamily: CAIRO
                                                     }}
                                                     onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut}
                                                 />
                                                 <InlineError field="paidAmount" />
                                                 {form.refundType === 'cash' ? (
-                                                    <Banknote size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                                    <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                                 ) : (
-                                                    <Building2 size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                                    <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                                 )}
                                             </div>
                                         </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
@@ -22,6 +23,8 @@ interface Deduction {
 }
 
 export default function DeductionDetailPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const params = useParams();
     const id = params.id as string;
@@ -93,7 +96,7 @@ export default function DeductionDetailPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '40px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '40px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                         <button onClick={() => router.push('/deductions')} style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = '#fff'; }} onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = '#94a3b8'; }}>

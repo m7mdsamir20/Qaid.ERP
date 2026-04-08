@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { 
     FileText, Plus, Search, Eye, Trash2, Loader2, 
@@ -29,6 +30,8 @@ interface Quotation {
 }
 
 export default function QuotationsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
@@ -104,7 +107,7 @@ export default function QuotationsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
                     title="عروض الأسعار"
@@ -141,7 +144,7 @@ export default function QuotationsPage() {
                                 onChange={e => setDateFrom(e.target.value)}
                                 style={{ ...IS, width: '150px', fontSize: '12px', padding: '0 12px', height: '40px' }} 
                             />
-                            <span style={{ position: 'absolute', top: '-8px', right: '10px', fontSize: '10px', background: C.bg, padding: '0 4px', color: C.textMuted }}>من تاريخ</span>
+                            <span style={{ position: 'absolute', top: '-8px', insetInlineEnd: '10px', fontSize: '10px', background: C.bg, padding: '0 4px', color: C.textMuted }}>من تاريخ</span>
                         </div>
                         <div style={{ position: 'relative' }}>
                             <input 
@@ -150,7 +153,7 @@ export default function QuotationsPage() {
                                 onChange={e => setDateTo(e.target.value)}
                                 style={{ ...IS, width: '150px', fontSize: '12px', padding: '0 12px', height: '40px' }} 
                             />
-                            <span style={{ position: 'absolute', top: '-8px', right: '10px', fontSize: '10px', background: C.bg, padding: '0 4px', color: C.textMuted }}>إلى تاريخ</span>
+                            <span style={{ position: 'absolute', top: '-8px', insetInlineEnd: '10px', fontSize: '10px', background: C.bg, padding: '0 4px', color: C.textMuted }}>إلى تاريخ</span>
                         </div>
                     </div>
                 </div>

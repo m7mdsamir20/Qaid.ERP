@@ -1,5 +1,6 @@
 'use client';
 import { useState, useRef, useEffect, Suspense } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle2, RefreshCw, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
@@ -93,7 +94,7 @@ function VerifyContent() {
     return (
         <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', textAlign: 'center', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden' }}>
             {/* زخرفة داخلية */}
-            <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '100px', height: '100px', background: `${C.primary}10`, borderRadius: '50%', filter: 'blur(30px)' }} />
+            <div style={{ position: 'absolute', top: '-20px', insetInlineEnd: '-20px', width: '100px', height: '100px', background: `${C.primary}10`, borderRadius: '50%', filter: 'blur(30px)' }} />
             
             {success ? (
                 <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
@@ -189,11 +190,13 @@ function VerifyContent() {
 }
 
 export default function VerifyPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [mounted, setMounted] = useState(false);
     useEffect(() => { setMounted(true); }, []);
 
     return (
-        <div dir="rtl" style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px' }}>
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px' }}>
             {/* الخلفية الرسمية */}
             <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 50% 50%, ${C.primary}12 0%, transparent 70%), radial-gradient(circle at 10% 10%, ${C.purple}08 0%, transparent 40%)`, pointerEvents: 'none' }} />
 
@@ -209,14 +212,14 @@ export default function VerifyPage() {
                             background: i % 5 === 0 ? C.primary : '#ffffff',
                             opacity: 0.15,
                             top: `${Math.random() * 100}%`,
-                            left: `${Math.random() * 100}%`,
+                            insetInlineStart: `${Math.random() * 100}%`,
                             animation: `twinkle ${Math.random() * 3 + 3}s ease-in-out infinite`,
                             animationDelay: `${Math.random() * 5}s`
                         }} />
                     ))}
                     {/* أشكال عائمة */}
-                    <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: `radial-gradient(circle, ${C.primary}05 0%, transparent 70%)`, top: '-10%', right: '-5%', animation: 'float 15s ease-in-out infinite' }} />
-                    <div style={{ position: 'absolute', width: '400px', height: '400px', borderRadius: '50%', background: `radial-gradient(circle, ${C.purple}03 0%, transparent 70%)`, bottom: '5%', left: '5%', animation: 'float 18s ease-in-out infinite reverse' }} />
+                    <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: `radial-gradient(circle, ${C.primary}05 0%, transparent 70%)`, top: '-10%', insetInlineEnd: '-5%', animation: 'float 15s ease-in-out infinite' }} />
+                    <div style={{ position: 'absolute', width: '400px', height: '400px', borderRadius: '50%', background: `radial-gradient(circle, ${C.purple}03 0%, transparent 70%)`, bottom: '5%', insetInlineStart: '5%', animation: 'float 18s ease-in-out infinite reverse' }} />
                 </div>
             )}
 

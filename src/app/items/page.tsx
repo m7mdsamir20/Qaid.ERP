@@ -294,7 +294,7 @@ export default function ItemsPage() {
                                         boxShadow: isSelected ? `0 4px 15px ${s.color}20` : 'none'
                                     }}
                                 >
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>
@@ -448,8 +448,8 @@ export default function ItemsPage() {
                             <div>
                                 <label style={LS}>{companyBusinessType === 'SERVICES' ? 'كود الخدمة' : 'كود الصنف'}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="text" readOnly disabled value={form.code} style={{ ...IS, textAlign: 'center', color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingLeft: '32px' }} />
-                                    <ShieldCheck size={13} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
+                                    <input type="text" readOnly disabled value={form.code} style={{ ...IS, textAlign: 'center', color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
+                                    <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
                                 </div>
                             </div>
                             
@@ -530,15 +530,15 @@ export default function ItemsPage() {
                                     <div>
                                         <label style={LS}>سعر التكلفة</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingLeft: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
                                         <label style={LS}>سعر البيع</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingLeft: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -553,7 +553,7 @@ export default function ItemsPage() {
                                                 </div>
                                             )}
                                             <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: CAIRO, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <AlertTriangle size={12} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: C.warning, opacity: 0.6 }} />
+                                            <AlertTriangle size={12} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.warning, opacity: 0.6 }} />
                                         </div>
                                     </div>
                                 </div>
@@ -564,7 +564,7 @@ export default function ItemsPage() {
                                         <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات</p>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                             <div>
-                                                <label style={LS}>المخزن {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginRight: '6px' }}>* مطلوب</span>}</label>
+                                                <label style={LS}>المخزن {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineEnd: '6px' }}>* مطلوب</span>}</label>
                                                 <CustomSelect value={form.warehouseId} onChange={v => { setForm({ ...form, warehouseId: v }); localStorage.setItem('last_warehouse_id', v); }} openUp={true} hideSearch={true} placeholder="اختر المخزن..." options={warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))} />
                                             </div>
                                             <div>
@@ -629,7 +629,7 @@ export default function ItemsPage() {
                                 const svgElement = svgContainer ? svgContainer.innerHTML : '';
                                 const barcodeName = printBarcodeItem.name;
                                 
-                                let htmlString = '<!DOCTYPE html><html dir="rtl"><head><title>طباعة باركود</title>';
+                                let htmlString = '<!DOCTYPE html><html dir={isRtl ? 'rtl' : 'ltr'}><head><title>طباعة باركود</title>';
                                 htmlString += '<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }';
                                 htmlString += '.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }';
                                 htmlString += '.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }';
@@ -648,7 +648,7 @@ export default function ItemsPage() {
                                 printWindow.document.write(htmlString);
                                 printWindow.document.close();
                             }} style={{ ...BTN_PRIMARY(false, false), width: '100%', height: '48px', marginTop: '10px' }}>
-                                <Printer size={20} style={{ marginLeft: '10px' }} />
+                                <Printer size={20} style={{ marginInlineStart: '10px' }} />
                                 طباعة الباركود
                             </button>
                         </div>

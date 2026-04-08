@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -16,6 +17,8 @@ interface Warehouse { id: string; name: string }
 interface Item { id: string; name: string }
 
 export default function NewStocktakingPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [items, setItems] = useState<Item[]>([]);
@@ -122,7 +125,7 @@ export default function NewStocktakingPage() {
 
         const html = `
             <!DOCTYPE html>
-            <html dir="rtl" lang="ar">
+            <html dir={isRtl ? 'rtl' : 'ltr'} lang="ar">
             <head>
                 <meta charset="utf-8">
                 <title>طباعة جرد المخزون</title>
@@ -220,7 +223,7 @@ export default function NewStocktakingPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 
                 <PageHeader 
                     title="جلسة جرد جديدة" 

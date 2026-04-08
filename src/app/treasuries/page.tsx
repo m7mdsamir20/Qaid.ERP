@@ -3,6 +3,7 @@ import {
     THEME, C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, IS, LS, focusIn, focusOut, TABLE_STYLE
 } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import { useTranslation } from '@/lib/i18n';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -107,7 +108,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
 
                 {/* Bank fields */}
                 {form.type === 'bank' && (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: 'rgba(59,130,246,0.02)', border: `1px solid rgba(59,130,246,0.1)`, borderRadius: '16px', padding: '16px', animation: 'fadeIn 0.2s ease', borderLeft: `3px solid ${C.primary}` }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: 'rgba(59,130,246,0.02)', border: `1px solid rgba(59,130,246,0.1)`, borderRadius: '16px', padding: '16px', animation: 'fadeIn 0.2s ease', borderInlineStart: `3px solid ${C.primary}` }}>
                         <div>
                             <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>اسم البنك</label>
                             <input value={form.bankName} onChange={e => setForm(f => ({ ...f, bankName: e.target.value }))}
@@ -116,7 +117,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                         <div>
                             <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>رقم الحساب / IBAN</label>
                             <input value={form.accountNumber} onChange={e => setForm(f => ({ ...f, accountNumber: e.target.value }))}
-                                placeholder="XXXX-XXXX-XXXX" style={{ ...IS, fontSize: '12px', height: '36px', direction: 'ltr', textAlign: 'left' }} onFocus={focusIn} onBlur={focusOut} />
+                                placeholder="XXXX-XXXX-XXXX" style={{ ...IS, fontSize: '12px', height: '36px', direction: 'ltr', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
                 )}
@@ -140,7 +141,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     setForm(f => ({ ...f, balance: val }));
                                 }}
                                 style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '46px', fontSize: '17px', width: '100%', padding: '0' }} onFocus={focusIn} onBlur={focusOut} />
-                            <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
+                            <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
                         </div>
                     </div>
                 )}
@@ -179,6 +180,8 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
 
 /* ── Main Page ── */
 export default function TreasuriesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [loading, setLoading] = useState(true);
@@ -257,7 +260,7 @@ export default function TreasuriesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader 
                     title="الخزن والبنوك" 
                     subtitle="إدارة السيولة النقدية، أرصدة البنوك، ومتابعة الأرصدة المتوفرة لحظياً"
@@ -278,7 +281,7 @@ export default function TreasuriesPage() {
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px', 
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' 
                         }}>
-                            <div style={{ textAlign: 'right' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                                     <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>

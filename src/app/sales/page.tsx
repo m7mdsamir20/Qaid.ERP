@@ -125,7 +125,7 @@ export default function SalesPage() {
                             .header p { margin: 2px 0; font-size: 12px; }
                             .divider { border-bottom: 1px dashed #000; margin: 10px 0; }
                             .item-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; text-align: right; }
-                            .item-name { flex: 1; padding-left: 5px; }
+                            .item-name { flex: 1; padding-insetInlineStart: 5px; }
                             .item-qty { width: 30px; text-align: center; }
                             .item-total { width: 70px; text-align: left; }
                             .totals-row { display: flex; justify-content: space-between; font-size: 14px; margin-top: 5px; font-weight: bold; }

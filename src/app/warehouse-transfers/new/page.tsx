@@ -17,6 +17,8 @@ interface Item { id: string; name: string; }
 interface StockRecord { itemId: string; warehouseId: string; quantity: number; }
 
 export default function NewTransferPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [items, setItems] = useState<Item[]>([]);
@@ -150,7 +152,7 @@ export default function NewTransferPage() {
                 />
 
                 <div style={{ ...SC, background: C.card, borderRadius: '20px', padding: '24px', boxShadow: '0 4px 24px rgba(0,0,0,0.2)' }}>
-                    <form onSubmit={handleSubmit} dir="rtl" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                    <form onSubmit={handleSubmit} dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         
                         {/* Session Header Fields */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 1fr) 1fr 1fr 1fr', gap: '16px' }}>
@@ -159,9 +161,9 @@ export default function NewTransferPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type="text" readOnly disabled value={form.code} dir="ltr"
-                                        style={{ ...IS, paddingLeft: '36px', color: C.textMuted, opacity: 0.6, fontSize: '11px', fontFamily: INTER, fontWeight: 900 }}
+                                        style={{ ...IS, paddingInlineStart: '36px', color: C.textMuted, opacity: 0.6, fontSize: '11px', fontFamily: INTER, fontWeight: 900 }}
                                     />
-                                    <Lock size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
+                                    <Lock size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
                                 </div>
                             </div>
                             <div>
@@ -269,7 +271,7 @@ export default function NewTransferPage() {
                                                                 placeholder="0.00"
                                                             />
                                                             {isOverstock && (
-                                                                <AlertCircle size={14} style={{ position: 'absolute', left: '-22px', top: '50%', transform: 'translateY(-50%)', color: C.danger }} />
+                                                                <AlertCircle size={14} style={{ position: 'absolute', insetInlineStart: '-22px', top: '50%', transform: 'translateY(-50%)', color: C.danger }} />
                                                             )}
                                                         </div>
                                                     </td>

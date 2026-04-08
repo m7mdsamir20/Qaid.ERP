@@ -91,7 +91,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             fontWeight: titleWeight || 600, 
                             margin: 0, 
                             color: C.textPrimary, 
-                            textAlign: 'right',
+                            textAlign: 'start',
                             fontFamily: CAIRO
                         }}>
                             {title}
@@ -104,7 +104,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             color: C.textMuted, 
                             margin: '2px 0 0', 
                             fontWeight: 400, 
-                            textAlign: 'right',
+                            textAlign: 'start',
                             fontFamily: CAIRO
                         }}>
                             {subtitle}

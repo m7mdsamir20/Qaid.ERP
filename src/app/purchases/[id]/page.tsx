@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, use } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { 
@@ -37,6 +38,8 @@ interface PurchaseInvoice {
 }
 
 export default function PurchaseDetailPage(props: { params: Promise<{ id: string }> }) {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const params = use(props.params);
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
@@ -87,7 +90,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
                     title={`تفاصيل فاتورة مشتريات #${invoice.invoiceNumber}`}
@@ -161,7 +164,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                 <tbody>
                                     {invoice.lines.map((l, idx) => (
                                         <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'right' }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
                                             </td>

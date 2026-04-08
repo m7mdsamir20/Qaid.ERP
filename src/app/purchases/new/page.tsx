@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
@@ -29,6 +30,8 @@ const fmt = (v: any) => {
 
 
 export default function NewPurchasePage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const activeBranchId = (session?.user as any)?.activeBranchId;
@@ -183,11 +186,11 @@ export default function NewPurchasePage() {
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
-        if (!form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن أولاً';
-        if (!form.supplierId) errors.supplierId = 'يرجى اختيار المورد أولاً';
-        if (!entryItemId) errors.entryItemId = 'يرجى اختيار الصنف';
-        if (entryQty === '' || Number(entryQty) <= 0) errors.entryQty = 'الكمية؟';
-        if (entryPrice === '') errors.entryPrice = 'السعر؟';
+        if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
+        if (!form.supplierId) errors.supplierId = t('يرجى اختيار المورد أولاً');
+        if (!entryItemId) errors.entryItemId = t('يرجى اختيار الصنف');
+        if (entryQty === '' || Number(entryQty) <= 0) errors.entryQty = t('الكمية؟');
+        if (entryPrice === '') errors.entryPrice = t('السعر؟');
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(prev => ({ ...prev, ...errors }));
@@ -254,10 +257,10 @@ export default function NewPurchasePage() {
                 });
                 setTimeout(() => qtyRef.current?.focus(), 100);
             } else {
-                alert('فشل في إضافة الصنف');
+                alert(t('فشل في إضافة الصنف'));
             }
         } catch {
-            alert('خطأ في الاتصال');
+            alert(t('خطأ في الاتصال'));
         } finally {
             setSubmitting(false);
         }
@@ -281,8 +284,8 @@ export default function NewPurchasePage() {
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
-        if (!form.supplierId) errors.supplierId = 'يرجى اختيار المورد';
-        if (!form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن';
+        if (!form.supplierId) errors.supplierId = t('يرجى اختيار المورد');
+        if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن');
         
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
@@ -290,21 +293,21 @@ export default function NewPurchasePage() {
         }
 
         if (lines.length === 0) {
-            setErrorMsg('يرجى إضافة صنف واحد على الأقل للفاتورة');
+            setErrorMsg(t('يرجى إضافة صنف واحد على الأقل للفاتورة'));
             return;
         }
 
         if (form.paymentType !== 'credit' && Number(form.paidAmount || 0) <= 0) {
-            setFieldErrors(prev => ({ ...prev, paidAmount: 'أدخل المبلغ' }));
+            setFieldErrors(prev => ({ ...prev, paidAmount: t('أدخل المبلغ') }));
             return;
         }
 
         if (form.paymentType === 'cash' && Number(form.paidAmount || 0) > 0 && !form.treasuryId) {
-            setFieldErrors(prev => ({ ...prev, treasuryId: 'اختر الخزينة' }));
+            setFieldErrors(prev => ({ ...prev, treasuryId: t('اختر الخزينة...') }));
             return;
         }
         if (form.paymentType === 'bank' && Number(form.paidAmount || 0) > 0 && !form.bankId) {
-            setFieldErrors(prev => ({ ...prev, bankId: 'اختر الحساب البنكي' }));
+            setFieldErrors(prev => ({ ...prev, bankId: t('اختر البنك...') }));
             return;
         }
 
@@ -332,8 +335,8 @@ export default function NewPurchasePage() {
                 const saved = await res.json();
                 if (andPrint) printA4Invoice(saved.invoice || saved, 'purchase', company);
                 router.push('/purchases');
-            } else alert('فشل الحفظ');
-        } catch { alert('فشل الاتصال'); } finally { setSubmitting(false); }
+            } else alert(t('فشل الحفظ'));
+        } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
     };
 
     if (loading) return (
@@ -365,7 +368,7 @@ export default function NewPurchasePage() {
             <div style={{
                 position: 'absolute',
                 top: '-32px',
-                left: '4px',
+                insetInlineStart: '4px',
                 fontSize: '11px',
                 color: '#fff',
                 fontWeight: 800,
@@ -383,17 +386,17 @@ export default function NewPurchasePage() {
             }}>
                 <AlertCircle size={12} strokeWidth={3} />
                 {fieldErrors[field]}
-                <div style={{ position: 'absolute', bottom: '-4px', left: '12px', width: '8px', height: '8px', background: '#b91c1c', transform: 'rotate(45deg)', borderRadius: '1px' }} />
+                <div style={{ position: 'absolute', bottom: '-4px', insetInlineStart: '12px', width: '8px', height: '8px', background: '#b91c1c', transform: 'rotate(45deg)', borderRadius: '1px' }} />
             </div>
         );
     };
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
                 <PageHeader
-                    title="فاتورة مشتريات جديدة"
-                    subtitle="تسجيل مشتريات جديدة وتوريد المخازن وتحديث حسابات الموردين"
+                    title={t("فاتورة مشتريات جديدة")}
+                    subtitle={t("تسجيل مشتريات جديدة وتوريد المخازن وتحديث حسابات الموردين")}
                     icon={ShoppingCart}
                     backUrl="/purchases"
                 />
@@ -411,10 +414,10 @@ export default function NewPurchasePage() {
                         <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
                         <div>
                             <div style={{ fontSize: '14px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
-                                يرجى تحديد فرع أولاً
+                                {t('يرجى تحديد فرع أولاً')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-                                أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء الفاتورة
+                                {t('أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء الفاتورة')}
                             </div>
                         </div>
                     </div>
@@ -424,17 +427,17 @@ export default function NewPurchasePage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}><Receipt size={12} /> بيانات الفاتورة</div>
+                            <div style={{ ...STitleStyle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>رقم الفاتورة</label>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الفاتورة')}</label>
                                     </div>
                                     <div style={{
                                         height: '42px', borderRadius: '10px',
                                         background: 'rgba(59,130,246,0.08)',
                                         border: `1px solid ${C.border}`,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center',
                                         fontFamily: INTER, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
                                     }}>
                                         PUR-{String(nextNum).padStart(5, '0')}
@@ -442,19 +445,19 @@ export default function NewPurchasePage() {
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>اسم المورد</label>
-                                        <button onClick={() => setShowAddSup(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ مورد جديد</button>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('اسم المورد')}</label>
+                                        <button onClick={() => setShowAddSup(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ {t('مورد جديد')}</button>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect 
                                             value={form.supplierId} 
                                             onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }} 
                                             icon={Search} 
-                                            placeholder="ابحث واختر..." 
+                                            placeholder={t("ابحث واختر...")} 
                                             options={partners.map(p => ({ 
                                                 value: p.id, 
                                                 label: p.name,
-                                                sub: p.partnerType === 'customer' ? 'عميل' : 'مورد'
+                                                sub: p.partnerType === 'customer' ? t('عميل') : t('مورد')
                                             }))} 
                                         />
                                         <InlineError field="supplierId" />
@@ -478,71 +481,71 @@ export default function NewPurchasePage() {
                                         }}>
                                             <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                             {selectedPartner.partnerType === 'customer'
-                                                ? (selectedPartner.balance > 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
-                                                : (selectedPartner.balance > 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                ? (selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
+                                                : (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
                                             }
                                         </div>
                                     )}
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>مخزن الاستلام</label>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مخزن الاستلام')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} hideSearch={true} placeholder="اختر المخزن..." options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
+                                        <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} hideSearch={true} placeholder={t("اختر المكان...")} options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
                                         <InlineError field="warehouseId" />
                                     </div>
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>تاريخ الفاتورة</label>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الفاتورة')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, textAlign: 'left', direction: 'ltr', fontSize: '13px', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
+                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, textAlign: 'start', direction: 'ltr', fontSize: '13px', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
                             </div>
                         </div>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}><Package size={12} /> اضافة الاصناف</div>
+                            <div style={{ ...STitleStyle, color: '#3b82f6' }}><Package size={12} /> {t('اضافة الاصناف')}</div>
                             <div style={{ background: 'rgba(255,255,255,0.01)', borderRadius: '12px', padding: '14px', marginBottom: '16px', display: 'grid', gridTemplateColumns: '1.2fr 80px 80px 110px 110px 44px', gap: '12px', alignItems: 'end', border: `1px solid ${C.border}` }}>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>الصنف</label>
-                                        {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 800, color: '#3b82f6' }}>مخزون: {entryStock}</span>}
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('الصنف')}</label>
+                                        {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 800, color: '#3b82f6' }}>{t('متاح:')} {entryStock}</span>}
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect ref={itemSelectRef} value={entryItemId} 
                                             onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} 
                                             onCreate={handleCreateItem}
-                                            icon={Search} placeholder="اختر الصنف..." options={items.map(i => ({ value: i.id, label: i.name }))} />
+                                            icon={Search} placeholder={t("اختر الصنف...")} options={items.map(i => ({ value: i.id, label: i.name }))} />
                                         <InlineError field="entryItemId" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الوحدة</label>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الوحدة')}</label>
                                     <input type="text" readOnly 
                                         value={entryItemId ? getUnitName(items.find(i => i.id === entryItemId)?.unit) : ''} 
                                         style={{ ...IS, textAlign: 'center', background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '12px' }} 
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الكمية</label>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>التكلفة</label>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('التكلفة')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryPrice" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الإجمالي</label>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الإجمالي')}</label>
                                     <input type="text" readOnly value={((Number(entryQty) || 0) * (Number(entryPrice) || 0)) === 0 ? '0.00' : ((Number(entryQty) || 0) * (Number(entryPrice) || 0)).toLocaleString()} style={{ ...IS, textAlign: 'center', background: 'rgba(255,255,255,0.02)', color: ((Number(entryQty) || 0) * (Number(entryPrice) || 0)) === 0 ? C.textMuted : C.textPrimary, fontWeight: 800, fontFamily: INTER }} />
                                 </div>
                                 <button onClick={addLine} disabled={!entryItemId} style={{ height: '38px', borderRadius: '10px', border: 'none', background: !entryItemId ? 'rgba(37,106,244,0.3)' : C.primary, color: '#fff', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s', width: '44px' }}><Plus size={22} /></button>
@@ -552,7 +555,7 @@ export default function NewPurchasePage() {
                                 <table className="table">
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            {['الصنف', 'الوحدة', 'الكمية', 'التكلفة', 'الإجمالي', ''].map((h, i) => <th key={i} style={{ textAlign: i === 0 ? 'right' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>)}
+                                            {[t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>)}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -571,12 +574,12 @@ export default function NewPurchasePage() {
                                                 </td>
                                             </tr>
                                         ))}
-                                        {lines.length === 0 && <tr><td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>لا توجد أصناف مضافة</td></tr>}
+                                        {lines.length === 0 && <tr><td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>}
                                     </tbody>
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>إجمالي {lines.length} أصناف</td>
+                                                <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {t('الأصناف')}</td>
                                                 <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{subtotal.toLocaleString()} {cSymbol}</td>
                                                 <td />
                                             </tr>
@@ -587,13 +590,13 @@ export default function NewPurchasePage() {
                         </div>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> المرفقات</div>
+                            <div style={{ ...STitleStyle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> {t('المرفقات')}</div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <div style={{ flex: 1, border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '8px', textAlign: 'center', position: 'relative', cursor: 'pointer', background: 'rgba(255,255,255,0.01)' }}>
                                     <input type="file" multiple onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
-                                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> رفع ملفات</div>
+                                    <div style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> {t('رفع ملفات')}</div>
                                 </div>
-                                {attachments.length > 0 && <div style={{ color: 'var(--primary-500)', fontSize: '11px', fontWeight: 700 }}>{attachments.length} ملفات مدرجة</div>}
+                                {attachments.length > 0 && <div style={{ color: 'var(--primary-500)', fontSize: '11px', fontWeight: 700 }}>{attachments.length} {t('ملفات مدرجة')}</div>}
                             </div>
                             {attachments.length > 0 && (
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px' }}>
@@ -608,29 +611,29 @@ export default function NewPurchasePage() {
                         </div>
 
                         <div style={SCStyle}>
-                            <label style={{ ...LS, fontSize: '11px' }}>ملاحظات</label>
-                            <textarea value={form.notes} onChange={e => setForm((f: any) => ({ ...f, notes: e.target.value }))} style={{ ...IS, height: '80px', padding: '10px', resize: 'none' }} placeholder="أدخل أي ملاحظات هنا..." onFocus={focusIn} onBlur={focusOut} />
+                            <label style={{ ...LS, fontSize: '11px' }}>{t('ملاحظات')}</label>
+                            <textarea value={form.notes} onChange={e => setForm((f: any) => ({ ...f, notes: e.target.value }))} style={{ ...IS, height: '80px', padding: '10px', resize: 'none' }} placeholder={t("أدخل أي ملاحظات هنا...")} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
 
                     <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}>ملخص الحساب</div>
+                            <div style={{ ...STitleStyle, color: '#3b82f6' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
                                     <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
-                                    <span style={{ color: '#64748b' }}>إجمالي الأصناف</span>
+                                    <span style={{ color: '#64748b' }}>{t('إجمالي الأصناف')}</span>
                                 </div>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '8px 12px' }}>
-                                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>الخصم المكتسب</span></div>
+                                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.discountAmt || '')} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { const amt = v === '' ? 0 : parseFloat(v) || 0; setForm((f: any) => ({ ...f, discountAmt: amt, discountPct: subtotal > 0 ? Number(((amt / subtotal) * 100).toFixed(2)) : 0 })); } }} style={{ ...IS, height: '36px', textAlign: 'center', fontSize: '13px', paddingLeft: '32px' }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.discountAmt || '')} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { const amt = v === '' ? 0 : parseFloat(v) || 0; setForm((f: any) => ({ ...f, discountAmt: amt, discountPct: subtotal > 0 ? Number(((amt / subtotal) * 100).toFixed(2)) : 0 })); } }} style={{ ...IS, height: '36px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '32px' }} onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                         </div>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', textAlign: 'center', fontSize: '13px', paddingLeft: '28px' }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                            <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -639,15 +642,15 @@ export default function NewPurchasePage() {
                                 {taxSettings?.enabled && (
                                     <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? '(مشمولة)' : '(مضافة)'}</span>
+                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="number" step="0.01" value={form.taxRate}
                                                     onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingLeft: '22px' }}
+                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '22px' }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" value={fmt(form.taxAmount.toFixed(2))}
@@ -662,9 +665,9 @@ export default function NewPurchasePage() {
                                                             }));
                                                         }
                                                     }}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingLeft: '24px', fontWeight: 800, color: C.primary }}
+                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -672,54 +675,54 @@ export default function NewPurchasePage() {
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))', padding: '10px 14px', borderRadius: '12px', marginTop: '6px', border: `1px solid ${C.primaryBorder}`, boxShadow: '0 4px 12px rgba(37,106,244,0.08)' }}>
                                     <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>{netTotal.toLocaleString()} {cSymbol}</span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>صافي المطلوب</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
                             </div>
                         </div>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}>السداد للمورد</div>
+                            <div style={{ ...STitleStyle, color: '#3b82f6' }}>{t('التحصيل والسداد')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px' }}>طريقة الدفع</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('طريقة الدفع')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                                        {(['cash', 'bank', 'credit'] as const).map(t => (
-                                            <button key={t} onClick={() => setForm((f: any) => ({ ...f, paymentType: t, paidAmount: t === 'credit' ? 0 : f.paidAmount }))} style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO, borderColor: form.paymentType === t ? C.primary : C.border, background:  form.paymentType === t ? C.primaryBg : 'transparent', color: form.paymentType === t ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>{t === 'cash' ? 'كاش' : t === 'bank' ? 'بنكي' : 'آجل'}</button>
+                                        {(['cash', 'bank', 'credit'] as const).map(tType => (
+                                            <button key={tType} onClick={() => setForm((f: any) => ({ ...f, paymentType: tType, paidAmount: tType === 'credit' ? 0 : f.paidAmount }))} style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO, borderColor: form.paymentType === tType ? C.primary : C.border, background:  form.paymentType === tType ? C.primaryBg : 'transparent', color: form.paymentType === tType ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>{tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}</button>
                                         ))}
                                     </div>
                                 </div>
                                 {form.paymentType !== 'credit' && (
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>المبلغ المدفوع</label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المدفوع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.paidAmount)} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setForm((f: any) => ({ ...f, paidAmount: v })); clearError('paidAmount'); } }} style={{ ...IS, height: '48px', fontSize: '18px', fontWeight: 900, textAlign: 'center', paddingRight: '44px', color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
-                                            {form.paymentType === 'bank' ? <Building2 size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} /> : <Banknote size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />}
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.paidAmount)} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setForm((f: any) => ({ ...f, paidAmount: v })); clearError('paidAmount'); } }} style={{ ...IS, height: '48px', fontSize: '18px', fontWeight: 900, textAlign: 'center', paddingInlineEnd: '44px', color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                            {form.paymentType === 'bank' ? <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} /> : <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />}
                                             <InlineError field="paidAmount" />
                                         </div>
                                     </div>
                                 )}
                                 {form.paymentType === 'cash' && form.paidAmount > 0 && (
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>الخزينة المنصرف منها <span style={{ color: '#f87171' }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('الخزينة المستلمة')} <span style={{ color: '#f87171' }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
-                                            <CustomSelect value={form.treasuryId} onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }} icon={Banknote} placeholder="اختر الخزينة..." options={treasuries.filter(t => t.type !== 'bank').map(t => ({ value: t.id, label: t.name }))} />
+                                            <CustomSelect value={form.treasuryId} onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }} icon={Banknote} placeholder={t("اختر الخزينة...")} options={treasuries.filter(t => t.type !== 'bank').map(t => ({ value: t.id, label: t.name }))} />
                                             <InlineError field="treasuryId" />
                                         </div>
                                     </div>
                                 )}
                                 {form.paymentType === 'bank' && form.paidAmount > 0 && (
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>الحساب البنكي <span style={{ color: '#f87171' }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('الحساب البنكي')} <span style={{ color: '#f87171' }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
-                                            <CustomSelect value={form.bankId} onChange={v => { setForm((f: any) => ({ ...f, bankId: v })); clearError('bankId'); }} icon={Building2} placeholder="اختر البنك..." options={treasuries.filter(t => t.type === 'bank').map(t => ({ value: t.id, label: t.name }))} />
+                                            <CustomSelect value={form.bankId} onChange={v => { setForm((f: any) => ({ ...f, bankId: v })); clearError('bankId'); }} icon={Building2} placeholder={t("اختر البنك...")} options={treasuries.filter(t => t.type === 'bank').map(t => ({ value: t.id, label: t.name }))} />
                                             <InlineError field="bankId" />
                                         </div>
                                     </div>
                                 )}
                                 {lines.length > 0 && (
                                     <div style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', fontWeight: 800, background: diff > 0 ? 'rgba(239,68,68,0.07)' : diff < 0 ? 'rgba(99,102,241,0.07)' : 'rgba(52,211,153,0.07)', color: diff > 0 ? '#f87171' : diff < 0 ? '#818cf8' : '#34d399', border: `1px solid ${diff > 0 ? 'rgba(239,68,68,0.15)' : diff < 0 ? 'rgba(99,102,241,0.15)' : 'rgba(52,211,153,0.15)'}`, }}>
-                                        <span>{diff > 0 ? `متبقي: ${Math.abs(diff).toLocaleString()} ${cSymbol}` : diff < 0 ? `زيادة: ${Math.abs(diff).toLocaleString()} ${cSymbol}` : 'تم السداد بالكامل ✓'}</span>
-                                        {diff !== 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{diff > 0 ? 'آجل' : 'رصيد دائن'}</span>}
+                                        <span>{diff > 0 ? `${t('متبقي:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}` : diff < 0 ? `${t('زيادة:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}` : t('تم السداد بالكامل ✓')}</span>
+                                        {diff !== 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{diff > 0 ? t('آجل') : t('رصيد دائن')}</span>}
                                     </div>
                                 )}
                             </div>
@@ -727,9 +730,9 @@ export default function NewPurchasePage() {
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                             <button onClick={() => handleSubmit(false)} disabled={submitting} className="btn btn-primary" style={{ width: '100%', height: '52px', fontSize: '16px', fontWeight: 900, gap: '12px', background: C.primary, boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)', border: 'none', borderRadius: '14px', opacity: submitting ? 0.5 : 1, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO, color: '#fff' }}>
-                                {submitting ? <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /> : <>حفظ الفاتورة <CheckCircle size={20} /></>}
+                                {submitting ? <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /> : <>{t('حفظ الفاتورة')} <CheckCircle size={20} /></>}
                             </button>
-                            <button onClick={() => handleSubmit(true)} disabled={submitting} style={{ width: '100%', height: '42px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.06)', color: '#34d399', fontSize: '13px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Cairo, sans-serif', opacity: submitting ? 0.5 : 1, transition: 'all 0.2s', }}>حفظ وطباعة الفاتورة <Printer size={15} /></button>
+                            <button onClick={() => handleSubmit(true)} disabled={submitting} style={{ width: '100%', height: '42px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.06)', color: '#34d399', fontSize: '13px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Cairo, sans-serif', opacity: submitting ? 0.5 : 1, transition: 'all 0.2s', }}>{t('حفظ وطباعة الفاتورة')} <Printer size={15} /></button>
                         </div>
                     </div>
                 </div>
@@ -738,7 +741,7 @@ export default function NewPurchasePage() {
             <AppModal
                 show={showAddSup}
                 onClose={() => setShowAddSup(false)}
-                title={newPartnerType === 'supplier' ? 'إضافة مورد جديد' : 'إضافة عميل جديد'}
+                title={newPartnerType === 'supplier' ? t('إضافة مورد جديد') : t('إضافة عميل جديد')}
                 icon={UserPlus}
                 maxWidth="440px"
             >
@@ -763,27 +766,27 @@ export default function NewPurchasePage() {
                             
                             setForm((f: any) => ({ ...f, supplierId: newP.id }));
                             setShowAddSup(false);
-                        } else alert('فشل في الإضافة');
-                    } catch { alert('خطأ في الاتصال'); } finally { setSubmitting(false); }
+                        } else alert(t('فشل في الإضافة'));
+                    } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                 }}>
                     <div style={{ marginBottom: '16px', display: 'flex', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '4px' }}>
-                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>مورد</button>
-                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>عميل</button>
+                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
+                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
                     </div>
 
                     <div style={{ marginBottom: '16px' }}>
-                        <label style={LS}>الاسم <span style={{ color: C.danger }}>*</span></label>
+                        <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
                         <div style={{ position: 'relative' }}>
-                            <User size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                            <input name="pName" required placeholder={newPartnerType === 'supplier' ? 'اسم المورد...' : 'اسم العميل...'} style={{ ...IS, height: '42px', paddingRight: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                            <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                            <input name="pName" required placeholder={newPartnerType === 'supplier' ? t('اسم المورد...') : t('اسم العميل...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                         </div>
                     </div>
 
                     <div style={{ marginBottom: '24px' }}>
-                        <label style={LS}>رقم الجوال</label>
+                        <label style={LS}>{t('رقم الجوال')}</label>
                         <div style={{ position: 'relative' }}>
-                            <Phone size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingRight: '40px', direction: 'ltr', textAlign: 'left' }} onFocus={focusIn} onBlur={focusOut} />
+                            <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
 
@@ -791,12 +794,12 @@ export default function NewPurchasePage() {
                         <button type="submit" disabled={submitting} style={{ 
                             flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
                         }}>
-                            {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ'}
+                            {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                         </button>
                         <button type="button" onClick={() => setShowAddSup(false)} style={{ 
                             flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
                             background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
-                        }}>إلغاء</button>
+                        }}>{t('إلغاء')}</button>
                     </div>
                 </form>
             </AppModal>

@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import AppModal from '@/components/AppModal';
 import PageHeader from '@/components/PageHeader';
 import { useState, useEffect, useRef } from 'react';
@@ -52,6 +53,8 @@ function KpiCard({ icon: Icon, label, value, sub, color }: any) {
 }
 
 export default function FinancialYearsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -138,17 +141,17 @@ export default function FinancialYearsPage() {
         borderRadius: '10px', padding: '0 14px', height: '40px',
         color: C.textPrimary, fontSize: '13px', outline: 'none',
         colorScheme: 'dark' as any, fontFamily: CAIRO,
-        direction: 'ltr', textAlign: 'left'
+        direction: 'ltr', textAlign: 'end'
     };
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
 
                 {/* Toast */}
                 {toast && (
                     <div style={{
-                        position: 'fixed', bottom: '24px', left: '24px',
+                        position: 'fixed', bottom: '24px', insetInlineStart: '24px',
                         background: toast.type === 'success' ? '#10b981' : '#ef4444',
                         color: '#fff', padding: '12px 24px', borderRadius: '10px',
                         boxShadow: '0 4px 16px rgba(0,0,0,0.2)', display: 'flex',
@@ -196,7 +199,7 @@ export default function FinancialYearsPage() {
                                         { label: 'تاريخ البداية', key: 'startDate' },
                                         { label: 'تاريخ النهاية', key: 'endDate' },
                                     ].map(f => (
-                                        <div key={f.key} style={{ textAlign: 'right' }}>
+                                        <div key={f.key} style={{ textAlign: 'start' }}>
                                             <label style={{ display: 'block', fontSize: '12px', color: C.textSecondary, marginBottom: '8px', fontFamily: CAIRO, fontWeight: 700 }}>{f.label}</label>
                                             <input type="date"
                                                 value={(createForm as any)[f.key]}

@@ -69,7 +69,7 @@ export default function WarehouseTransfersPage() {
                                     <th style={TABLE_STYLE.th(false)}>التاريخ</th>
                                     <th style={TABLE_STYLE.th(false)}>من مخزن</th>
                                     <th style={TABLE_STYLE.th(false)}>إلى مخزن</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'right' }}>الأصناف المحولة</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>الأصناف المحولة</th>
                                     <th style={TABLE_STYLE.th(false)}>الملاحظات</th>
                                 </tr>
                             </thead>
@@ -108,7 +108,7 @@ export default function WarehouseTransfersPage() {
                                                 <Building2 size={12} /> {tf.toWarehouse?.name || '—'}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'right' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                                 {tf.lines.map((l, i) => (
                                                     <div key={i} style={{ 
@@ -116,7 +116,7 @@ export default function WarehouseTransfersPage() {
                                                         border: `1px solid ${C.border}`, color: C.textPrimary,
                                                         fontWeight: 600, width: 'fit-content'
                                                     }}>
-                                                        {l.item?.name} <span style={{ color: C.primary, marginLeft: '4px' }}>({l.quantity})</span>
+                                                        {l.item?.name} <span style={{ color: C.primary, marginInlineStart: '4px' }}>({l.quantity})</span>
                                                     </div>
                                                 ))}
                                             </div>

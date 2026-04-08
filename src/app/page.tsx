@@ -62,7 +62,7 @@ function KpiCard({
     >
       {/* Dynamic Background Glow */}
       <div style={{
-        position: 'absolute', top: '-10px', left: '-10px', width: '80px', height: '80px',
+        position: 'absolute', top: '-10px', insetInlineStart: '-10px', width: '80px', height: '80px',
         borderRadius: '50%', background: color, opacity: isHover ? 0.12 : 0.05,
         filter: 'blur(30px)', transition: 'all 0.5s'
       }} />
@@ -480,7 +480,7 @@ export default function DashboardPage() {
               </div>}>
               <div style={{ padding: '20px 10px 10px', height: '260px' }}>
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={stats.chartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
+                  <AreaChart data={stats.chartData} margin={{ top: 5, insetInlineEnd: 10, insetInlineStart: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="gSales" x1="0" y1="0" x2="0" y2="1">
                         <stop offset="5%" stopColor={C.primary} stopOpacity={0.25} />
@@ -563,7 +563,7 @@ export default function DashboardPage() {
                 </Link>
               )}>
               <div style={{ padding: '0 10px 10px' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start' }}>
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                       {['التاريخ والطرف', 'القيمة', 'النوع', 'رقم'].map((h, i) => (

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -22,6 +23,8 @@ const SC = '#10b981';
 const DC = '#ef4444';
 
 export default function BankStatementPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -106,7 +109,7 @@ export default function BankStatementPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader 
                     title="كشف حساب بنكي" 
                     subtitle="متابعة دقيقة لكافة العمليات البنكية، السحوبات، الإيداعات، والتحويلات المصرفية." 
@@ -140,7 +143,7 @@ export default function BankStatementPage() {
                         <div style={{ width: '160px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -151,7 +154,7 @@ export default function BankStatementPage() {
                         <div style={{ width: '160px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -197,7 +200,7 @@ export default function BankStatementPage() {
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     transition: 'all 0.2s', boxShadow: '0 2px 8px -4px rgba(0,0,0,0.1)'
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value.toLocaleString('en-US')}</span>
@@ -228,7 +231,7 @@ export default function BankStatementPage() {
                                     </thead>
                                     <tbody>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'right', fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>رصيد منقول (قبل الفترة المستعرضة)</td>
+                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'start', fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>رصيد منقول (قبل الفترة المستعرضة)</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>

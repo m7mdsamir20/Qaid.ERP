@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO } from '@/constants/theme';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
@@ -11,6 +12,8 @@ const PC = '#4f46e5';
 const DC = '#ef4444';
 
 export default function ExpensesReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { symbol: cSymbol } = useCurrency();
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
@@ -36,7 +39,7 @@ export default function ExpensesReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ width: '100%', paddingBottom: '60px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
                 <ReportHeader
                     title="تقرير المصروفات"
                     subtitle="عرض تفصيلي لجميع المصروفات المسجلة خلال فترة زمنية محددة."
@@ -52,7 +55,7 @@ export default function ExpensesReportPage() {
                                 type="date"
                                 value={from}
                                 onChange={(e) => setFrom(e.target.value)}
-                                style={{ flex: 1, height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'left', colorScheme: 'dark' }}
+                                style={{ flex: 1, height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'end', colorScheme: 'dark' }}
                             />
                         </div>
                         <div style={{ flex: 1, minWidth: '200px', display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -61,7 +64,7 @@ export default function ExpensesReportPage() {
                                 type="date"
                                 value={to}
                                 onChange={(e) => setTo(e.target.value)}
-                                style={{ flex: 1, height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'left', colorScheme: 'dark' }}
+                                style={{ flex: 1, height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'end', colorScheme: 'dark' }}
                             />
                         </div>
                         <button
@@ -88,13 +91,13 @@ export default function ExpensesReportPage() {
                     <div>
                         {/* Summary */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '20px', marginBottom: '24px' }}>
-                            <div className="card" style={{ padding: '20px', borderRight: `4px solid ${DC}` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${DC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px', fontFamily: CAIRO }}>إجمالي المصروفات</div>
                                 <div style={{ fontSize: '22px', fontWeight: 900, color: DC, fontFamily: CAIRO }}>
                                     {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} {cSymbol}
                                 </div>
                             </div>
-                            <div className="card" style={{ padding: '20px', borderRight: `4px solid #64748b` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px', fontFamily: CAIRO }}>عدد العمليات</div>
                                 <div style={{ fontSize: '22px', fontWeight: 900, color: '#fff', fontFamily: CAIRO }}>{data.rows.length}</div>
                             </div>
@@ -113,11 +116,11 @@ export default function ExpensesReportPage() {
                                 <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
-                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8', fontFamily: CAIRO }}>رقم القيد</th>
-                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8', fontFamily: CAIRO }}>التاريخ</th>
-                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8', fontFamily: CAIRO }}>البيان</th>
-                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8', fontFamily: CAIRO }}>حساب المصروف</th>
-                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8', fontFamily: CAIRO }}>المصدر</th>
+                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8', fontFamily: CAIRO }}>رقم القيد</th>
+                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8', fontFamily: CAIRO }}>التاريخ</th>
+                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8', fontFamily: CAIRO }}>البيان</th>
+                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8', fontFamily: CAIRO }}>حساب المصروف</th>
+                                            <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8', fontFamily: CAIRO }}>المصدر</th>
                                             <th style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'center', color: DC, fontFamily: CAIRO }}>المبلغ</th>
                                         </tr>
                                     </thead>
@@ -147,7 +150,7 @@ export default function ExpensesReportPage() {
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: '2px solid rgba(255,255,255,0.1)' }}>
                                         <tr>
-                                            <td colSpan={5} style={{ padding: '18px 16px', textAlign: 'right', fontWeight: 800, color: '#f1f5f9', fontFamily: CAIRO }}>الإجمالي</td>
+                                            <td colSpan={5} style={{ padding: '18px 16px', textAlign: 'start', fontWeight: 800, color: '#f1f5f9', fontFamily: CAIRO }}>الإجمالي</td>
                                             <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, fontSize: '15px', color: DC, fontFamily: CAIRO }}>
                                                 {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} {cSymbol}
                                             </td>

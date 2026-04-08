@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
@@ -18,6 +19,8 @@ interface Supplier { id: string; name: string; balance: number; }
 interface Treasury { id: string; name: string; type: string; balance: number; }
 
 export default function NewPaymentPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
@@ -129,7 +132,7 @@ export default function NewPaymentPage() {
         if (!fieldErrors[field]) return null;
         return (
             <div style={{
-                position: 'absolute', top, left: '4px', fontSize: '11px', color: '#fff', fontWeight: 800,
+                position: 'absolute', top, insetInlineStart: '4px', fontSize: '11px', color: '#fff', fontWeight: 800,
                 background: 'linear-gradient(135deg, #ef4444, #b91c1c)', padding: '4px 10px', borderRadius: '8px',
                 pointerEvents: 'none', zIndex: 100, boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
                 display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap',
@@ -137,7 +140,7 @@ export default function NewPaymentPage() {
             }}>
                 <AlertCircle size={12} strokeWidth={3} />
                 {fieldErrors[field]}
-                <div style={{ position: 'absolute', bottom: '-4px', left: '12px', width: '8px', height: '8px', background: '#b91c1c', transform: 'rotate(45deg)', borderRadius: '1px' }} />
+                <div style={{ position: 'absolute', bottom: '-4px', insetInlineStart: '12px', width: '8px', height: '8px', background: '#b91c1c', transform: 'rotate(45deg)', borderRadius: '1px' }} />
             </div>
         );
     };
@@ -155,7 +158,7 @@ export default function NewPaymentPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
                     title="سند صرف جديد"
                     subtitle="صرف نقدية للمورد من الخزينة أو البنك"
@@ -194,7 +197,7 @@ export default function NewPaymentPage() {
                                      <label style={LS}>تاريخ السند <span style={{ color: C.danger }}>*</span></label>
                                      <input type="date" value={form.date}
                                          onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                         style={{ ...IS, direction: 'ltr', textAlign: 'left', background: C.card, height: '42px', borderRadius: '10px', fontSize: '13px', fontFamily: CAIRO }}
+                                         style={{ ...IS, direction: 'ltr', textAlign: 'end', background: C.card, height: '42px', borderRadius: '10px', fontSize: '13px', fontFamily: CAIRO }}
                                          className="blue-date-icon" onFocus={focusIn} onBlur={focusOut}
                                      />
                                  </div>
@@ -242,7 +245,7 @@ export default function NewPaymentPage() {
                                                 borderColor: form.paymentType === opt.val ? opt.color : C.border,
                                                 background: form.paymentType === opt.val ? `${opt.color}11` : 'transparent',
                                                 cursor: 'pointer', transition: 'all 0.2s',
-                                                display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'right',
+                                                display: 'flex', alignItems: 'center', gap: '12px', textAlign: 'start',
                                             }}>
                                             <span style={{ color: form.paymentType === opt.val ? opt.color : C.textMuted }}>{opt.icon}</span>
                                             <div>
@@ -250,7 +253,7 @@ export default function NewPaymentPage() {
                                                 <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px' }}>{opt.sub}</div>
                                             </div>
                                             {form.paymentType === opt.val && (
-                                                <div style={{ marginRight: 'auto', width: '8px', height: '8px', borderRadius: '50%', background: opt.color }} />
+                                                <div style={{ marginInlineEnd: 'auto', width: '8px', height: '8px', borderRadius: '50%', background: opt.color }} />
                                             )}
                                         </button>
                                     ))}
@@ -307,13 +310,13 @@ export default function NewPaymentPage() {
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
                                                 border: 'none', color: C.danger, fontWeight: 900,
-                                                fontSize: '22px', textAlign: 'center', paddingRight: '20px',
+                                                fontSize: '22px', textAlign: 'center', paddingInlineEnd: '20px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut}
                                         />
                                         <InlineError field="amount" top="-42px" />
-                                        <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.danger, opacity: 0.6 }}>
+                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.danger, opacity: 0.6 }}>
                                             {form.paymentType === 'cash' ? <Banknote size={20} /> : <Building2 size={20} />}
                                         </div>
                                     </div>

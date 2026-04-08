@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -28,6 +29,8 @@ interface ReportData {
 }
 
 export default function InventoryReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
@@ -53,7 +56,7 @@ export default function InventoryReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title={isServices ? "قائمة أسعار الخدمات" : "تقرير أرصدة المخزون"}
                     subtitle={isServices ? "عرض قائمة بجميع الخدمات المسجلة وأسعار البيع المقترحة." : "عرض أرصدة جميع الأصناف في كل مخزن مع القيمة الإجمالية والتكلفة."}
@@ -75,7 +78,7 @@ export default function InventoryReportPage() {
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                 padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                             }}>
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                         <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -136,7 +139,7 @@ export default function InventoryReportPage() {
                                             <td style={TABLE_STYLE.td(true)}>
                                                 <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>{st.item?.code || '-'}</span>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'right' }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? 'خدمة غير معرفة' : 'صنف غير معرف')}</div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{st.item?.unit || '-'}</span></td>

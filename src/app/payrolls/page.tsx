@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
 import { 
@@ -68,6 +69,8 @@ const formatCurrency = (code: string) => {
 };
 
 export default function PayrollsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [payrolls, setPayrolls] = useState<Payroll[]>([]);
     const [loading, setLoading] = useState(true);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -159,7 +162,7 @@ export default function PayrollsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl">
+            <div dir={isRtl ? 'rtl' : 'ltr'}>
                 
                 {/* Header Section */}
                 <PageHeader

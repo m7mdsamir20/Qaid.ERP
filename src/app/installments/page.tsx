@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import {
@@ -19,6 +20,8 @@ const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function InstallmentsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
     const [plans, setPlans] = useState<any[]>([]);
@@ -213,7 +216,7 @@ export default function InstallmentsPage() {
     return (
         <DashboardLayout>
             <>
-                <div dir="rtl" style={{ 
+                <div dir={isRtl ? 'rtl' : 'ltr'} style={{ 
                     ...PAGE_BASE, 
                     background: C.bg, 
                     minHeight: '100%', 
@@ -258,7 +261,7 @@ export default function InstallmentsPage() {
                         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                         onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                            <div style={{ textAlign: 'right' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{k.value}</span>
@@ -275,11 +278,11 @@ export default function InstallmentsPage() {
                 {/* ── Filters ── */}
                 <div style={{ display: 'flex', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                         <input 
                             placeholder="ابحث باسم العميل، المنتج أو رقم الخطة..." 
                             value={search} onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingRight: '40px', height: '38px', borderRadius: '8px', background: C.card }} 
+                            style={{ ...IS, width: '100%', paddingInlineEnd: '40px', height: '38px', borderRadius: '8px', background: C.card }} 
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
@@ -469,8 +472,8 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>قيمة المنتج الإجمالية <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px', paddingLeft: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -493,9 +496,9 @@ export default function InstallmentsPage() {
                                                     else taxAmt = total * (r / 100);
                                                     setForm(f => ({ ...f, taxRate: e.target.value, taxAmount: String(taxAmt.toFixed(2)) }));
                                                 }} 
-                                                style={{ ...IS, height: '34px', paddingLeft: '28px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} 
+                                                style={{ ...IS, height: '34px', paddingInlineStart: '28px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} 
                                             />
-                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
                                         </div>
                                     </div>
                                     <div>
@@ -512,9 +515,9 @@ export default function InstallmentsPage() {
                                                         setForm(f => ({ ...f, taxAmount: v, taxRate: String(r.toFixed(2)) }));
                                                     }
                                                 }}
-                                                style={{ ...IS, height: '34px', paddingLeft: '32px', textAlign: 'center', fontWeight: 800, color: C.primary }} onFocus={focusIn} onBlur={focusOut} 
+                                                style={{ ...IS, height: '34px', paddingInlineStart: '32px', textAlign: 'center', fontWeight: 800, color: C.primary }} onFocus={focusIn} onBlur={focusOut} 
                                             />
-                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -529,16 +532,16 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>الدفعة المقدمة</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="0" placeholder="0.00" value={form.downPayment} onChange={e => setForm(f => ({ ...f, downPayment: e.target.value }))} style={{ ...IS, height: '38px', paddingLeft: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    <input type="number" min="0" placeholder="0.00" value={form.downPayment} onChange={e => setForm(f => ({ ...f, downPayment: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>فائدة سنوية %</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', paddingLeft: '28px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
+                                    <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '28px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
                                 </div>
                             </div>
 
@@ -565,16 +568,16 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>مدة التقسيط (شهر)</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="1" placeholder="12" value={form.monthsCount} onChange={e => setForm(f => ({ ...f, monthsCount: e.target.value }))} style={{ ...IS, height: '38px', paddingLeft: '42px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', fontWeight: 700, color: C.textMuted }}>شهر</span>
+                                    <input type="number" min="1" placeholder="12" value={form.monthsCount} onChange={e => setForm(f => ({ ...f, monthsCount: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '42px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', fontWeight: 700, color: C.textMuted }}>شهر</span>
                                 </div>
                             </div>
 
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>تاريخ أول استحقاق</label>
                                 <div style={{ position: 'relative' }}>
-                                    <Calendar size={14} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
-                                    <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} style={{ ...IS, height: '38px', paddingRight: '38px', colorScheme: 'dark', fontFamily: INTER, fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <Calendar size={14} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                                    <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineEnd: '38px', colorScheme: 'dark', fontFamily: INTER, fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
 
@@ -772,16 +775,16 @@ export default function InstallmentsPage() {
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>اسم العميل الجديد <span style={{ color: C.danger }}>*</span></label>
                             <div style={{ position: 'relative' }}>
-                                <User size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                <input name="custName" required placeholder="الاسم الكامل للعميل..." style={{ ...IS, height: '42px', paddingRight: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                                <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <input name="custName" required placeholder="الاسم الكامل للعميل..." style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>رقم الهاتف</label>
                             <div style={{ position: 'relative' }}>
-                                <Phone size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                <input name="custPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingRight: '40px', direction: 'ltr', textAlign: 'left' }} onFocus={focusIn} onBlur={focusOut} />
+                                <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <input name="custPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
@@ -809,9 +812,9 @@ export default function InstallmentsPage() {
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
                 .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.2); border-radius: 10px; }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.4); }
-                [dir="rtl"] input[type="date"]::-webkit-calendar-picker-indicator {
+                [dir={isRtl ? 'rtl' : 'ltr'}] input[type="date"]::-webkit-calendar-picker-indicator {
                     position: absolute;
-                    right: 0;
+                    insetInlineEnd: 0;
                     width: 40px;
                     opacity: 0;
                     cursor: pointer;

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -28,6 +29,8 @@ const DEP_METHODS = [
 
 
 export default function NewFixedAssetPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [saving, setSaving] = useState(false);
@@ -142,7 +145,7 @@ export default function NewFixedAssetPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ width: '100%', paddingBottom: '60px', background: C.bg, fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px', background: C.bg, fontFamily: CAIRO }}>
 
                 <PageHeader
                     title="إضافة أصل ثابت جديد"
@@ -191,7 +194,7 @@ export default function NewFixedAssetPage() {
                                 <label style={LS}>تاريخ الشراء <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="date" value={form.purchaseDate}
                                     onChange={e => setForm(f => ({ ...f, purchaseDate: e.target.value }))}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'left' }}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end' }}
                                     onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
@@ -235,7 +238,7 @@ export default function NewFixedAssetPage() {
                                         onClick={() => setForm(f => ({ ...f, depreciationMethod: m.value as any }))}
                                         style={{
                                             padding: '12px 16px', borderRadius: '12px',
-                                            border: '1px solid', textAlign: 'right',
+                                            border: '1px solid', textAlign: 'start',
                                             cursor: 'pointer', transition: 'all 0.15s',
                                             borderColor: form.depreciationMethod === m.value
                                                 ? 'rgba(251,191,36,0.4)' : 'rgba(255,255,255,0.07)',
@@ -258,7 +261,7 @@ export default function NewFixedAssetPage() {
                     <div style={{ ...SC, marginBottom: '20px' }}>
                         <div style={STitle}>
                             <Building2 size={16} /> الحسابات المحاسبية
-                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginRight: 'auto' }}>
+                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginInlineEnd: 'auto' }}>
                                 مطلوبة لإنشاء القيود تلقائياً
                             </span>
                         </div>

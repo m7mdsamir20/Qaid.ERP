@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
@@ -63,6 +64,8 @@ const formatCurrency = (code: string) => {
 };
 
 export default function PayrollDetailsPage(props: { params: Promise<{ id: string }> }) {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const params = use(props.params);
     const { data: session } = useSession();
     const [payroll, setPayroll] = useState<any>(null);
@@ -155,7 +158,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ width: '100%' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%' }}>
                 
                 {/* Header Standardized */}
                 <div className="print-hide">
@@ -216,7 +219,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                         onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                             <div style={{ textAlign: 'right' }}>
+                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800, color: stat.color, fontFamily: INTER }} dir="ltr">
                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
@@ -232,7 +235,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
 
                 {/* Table Card - Standardized */}
                 {/* Print Header */}
-                <div className="print-only" dir="rtl" style={{
+                <div className="print-only" dir={isRtl ? 'rtl' : 'ltr'} style={{
                     display: 'none',
                     flexDirection: 'column',
                     borderBottom: '2px solid #000',
@@ -305,7 +308,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                                         <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: INTER }}>{line.employee.code}</span>
                                     </td>
                                     <td style={TABLE_STYLE.td(false)}>
-                                        <div style={{ textAlign: 'right' }}>
+                                        <div style={{ textAlign: 'start' }}>
                                             <div style={{ fontSize: '13px', fontWeight: 800, color: '#fff' }}>{line.employee.name}</div>
                                             <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{line.employee.position || 'موظف'}</div>
                                         </div>

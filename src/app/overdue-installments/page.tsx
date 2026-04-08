@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { AlertTriangle, Loader2, X, Banknote, ChevronDown, Calendar, ArrowLeftCircle, ListFilter, Wallet, Check, Eye } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
@@ -15,6 +16,8 @@ const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function OverduePage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
     const [installments, setInstallments] = useState<any[]>([]);
@@ -73,7 +76,7 @@ export default function OverduePage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
 
                 {/* Page Header (Stand alone) */}
                 <PageHeader
@@ -249,10 +252,10 @@ export default function OverduePage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
-                                        style={{ ...IS, paddingLeft: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER, border: `1px solid ${C.danger}30` }} 
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER, border: `1px solid ${C.danger}30` }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
-                                    <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, INTER, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
@@ -45,6 +46,8 @@ const typeColors: Record<string, string> = {
 };
 
 export default function EmployeesDeductionsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
     const [data, setData] = useState<ReportData | null>(null);
@@ -70,7 +73,7 @@ export default function EmployeesDeductionsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="سجل الخصومات والجزاءات الفترية"
                     subtitle="تحليل مالي وإداري لجميع الخصومات المطبقة على الموظفين (تأخيرات، غياب، وجزاءات)."
@@ -98,8 +101,8 @@ export default function EmployeesDeductionsPage() {
                 </div>
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '20px' }}>
-                    <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                    <input placeholder="ابحث باسم الموظف أو سبب الخصم..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingRight: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                    <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                    <input placeholder="ابحث باسم الموظف أو سبب الخصم..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineEnd: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                 </div>
 
                 {loading ? (

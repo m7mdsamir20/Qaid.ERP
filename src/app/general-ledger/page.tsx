@@ -124,10 +124,10 @@ export default function GeneralLedgerPage() {
                                 setAccountSearch(''); // Clear search on click to show all
                                 setShowAccountList(true);
                             }}
-                            style={{ ...IS, height: '38px', paddingRight: '12px', borderRadius: '8px', fontSize: '13px' }}
+                            style={{ ...IS, height: '38px', paddingInlineEnd: '12px', borderRadius: '8px', fontSize: '13px' }}
                             onBlur={e => { setTimeout(() => setShowAccountList(false), 200); focusOut(e); }}
                         />
-                        <ChevronDown size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: '#475569', pointerEvents: 'none' }} />
+                        <ChevronDown size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: '#475569', pointerEvents: 'none' }} />
                     </div>
 
                     {/* Selected account display */}
@@ -145,7 +145,7 @@ export default function GeneralLedgerPage() {
 
                     {/* Dropdown */}
                     {showAccountList && filteredAccounts.length > 0 && (
-                        <div style={{ position: 'absolute', top: '100%', right: 0, left: 0, zIndex: 50, background: '#0f1c2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)', maxHeight: '260px', overflowY: 'auto', marginTop: '4px' }}>
+                        <div style={{ position: 'absolute', top: '100%', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 50, background: '#0f1c2e', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '10px', boxShadow: '0 16px 40px rgba(0,0,0,0.5)', maxHeight: '260px', overflowY: 'auto', marginTop: '4px' }}>
                             {filteredAccounts.map(a => (
                                 <div key={a.id}
                                     onMouseDown={() => {
@@ -173,7 +173,7 @@ export default function GeneralLedgerPage() {
                 <div>
                     <label style={{ display: 'block', fontSize: '11px', color: '#475569', fontWeight: 700, marginBottom: '4px' }}>من تاريخ</label>
                     <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
-                        style={{ ...IS, height: '38px', direction: 'ltr', textAlign: 'left', colorScheme: 'dark', fontSize: '13px', borderRadius: '8px' }}
+                        style={{ ...IS, height: '38px', direction: 'ltr', textAlign: 'end', colorScheme: 'dark', fontSize: '13px', borderRadius: '8px' }}
                         onFocus={focusIn} onBlur={focusOut} />
                 </div>
 
@@ -181,7 +181,7 @@ export default function GeneralLedgerPage() {
                 <div>
                     <label style={{ display: 'block', fontSize: '11px', color: '#475569', fontWeight: 700, marginBottom: '4px' }}>إلى تاريخ</label>
                     <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
-                        style={{ ...IS, height: '38px', direction: 'ltr', textAlign: 'left', colorScheme: 'dark', fontSize: '13px', borderRadius: '8px' }}
+                        style={{ ...IS, height: '38px', direction: 'ltr', textAlign: 'end', colorScheme: 'dark', fontSize: '13px', borderRadius: '8px' }}
                         onFocus={focusIn} onBlur={focusOut} />
                 </div>
             </div>
@@ -210,7 +210,7 @@ export default function GeneralLedgerPage() {
                         ].map((s, i) => (
                             <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '10px 12px' }}>
                                 <div style={{ fontSize: '11px', color: '#475569', fontWeight: 600, marginBottom: '2px' }}>{s.label}</div>
-                                <div style={{ fontSize: '14px', fontWeight: 800, color: s.color, direction: 'ltr', textAlign: 'right' }}>{s.value}</div>
+                                <div style={{ fontSize: '14px', fontWeight: 800, color: s.color, direction: 'ltr', textAlign: 'start' }}>{s.value}</div>
                             </div>
                         ))}
                     </div>
@@ -294,12 +294,12 @@ export default function GeneralLedgerPage() {
                                                     {line.entryNumber}
                                                 </span>
                                                 {line.reference && (
-                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginRight: '8px' }}>· {line.reference}</span>
+                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '8px' }}>· {line.reference}</span>
                                                 )}
                                             </td>
 
                                             {/* Description */}
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'right', fontSize: '13px', color: C.textSecondary, fontWeight: 500, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start', fontSize: '13px', color: C.textSecondary, fontWeight: 500, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {line.description}
                                             </td>
 

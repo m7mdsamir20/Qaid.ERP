@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Package, AlertTriangle, Search, Activity, ShoppingCart, Loader2, Box } from 'lucide-react';
@@ -25,6 +26,8 @@ interface LowStockItem {
 }
 
 export default function LowStockReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -49,7 +52,7 @@ export default function LowStockReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="أصناف تحت الحد الأدنى"
                     subtitle="قائمة المنتجات التي أوشكت على النفاذ أو وصلت لمستوى إعادة الطلب."
@@ -62,7 +65,7 @@ export default function LowStockReportPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
                             <div style={{ position: 'relative', flex: 1 }}>
-                                <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                                <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                                 <input
                                     placeholder="ابحث بالاسم، الكود، أو التصنيف..."
                                     value={q} onChange={e => setQ(e.target.value)}
@@ -127,7 +130,7 @@ export default function LowStockReportPage() {
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
                                                     {item.minLimit.toLocaleString('en-US')}
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'left', fontWeight: 900, color: '#10b981', fontSize: '13.5px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: '#10b981', fontSize: '13.5px', fontFamily: INTER }}>
                                                     {item.value.toLocaleString('en-US')} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                             </tr>
@@ -135,8 +138,8 @@ export default function LowStockReportPage() {
                                     </tbody>
                                     <tfoot>
                                         <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
-                                            <td colSpan={4} style={{ padding: '18px 24px', textAlign: 'right', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>إجماليات النقص للفترة المختارة</td>
-                                            <td style={{ padding: '18px 20px', textAlign: 'left', fontWeight: 1000, color: '#10b981', fontSize: '16px', fontFamily: INTER }}>
+                                            <td colSpan={4} style={{ padding: '18px 24px', textAlign: 'start', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>إجماليات النقص للفترة المختارة</td>
+                                            <td style={{ padding: '18px 20px', textAlign: 'end', fontWeight: 1000, color: '#10b981', fontSize: '16px', fontFamily: INTER }}>
                                                 {totalValue.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: '#10b981', fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>
                                         </tr>
@@ -154,7 +157,7 @@ export default function LowStockReportPage() {
                             <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>إجمالي عدد النواقص</div>
                             <div style={{ fontSize: '32px', fontWeight: 1000, color: '#ef4444', fontFamily: INTER }}>
                                 {filtered.length.toLocaleString('en-US')}
-                                <span style={{ fontSize: '14px', marginRight: '6px', fontWeight: 700, fontFamily: CAIRO }}>صنف</span>
+                                <span style={{ fontSize: '14px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>صنف</span>
                             </div>
                         </div>
 
@@ -162,7 +165,7 @@ export default function LowStockReportPage() {
                             <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
                                 <Activity size={18} color={C.primary} /> دليل الإحصائيات
                             </div>
-                            <ul style={{ margin: 0, paddingRight: '22px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            <ul style={{ margin: 0, paddingInlineEnd: '22px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {[
                                     'الأصناف التي وصل رصيدها للحد الأدنى.',
                                     'الأصناف التي نفد رصيدها تماماً (0).',

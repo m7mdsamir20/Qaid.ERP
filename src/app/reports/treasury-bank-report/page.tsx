@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -21,6 +22,8 @@ const SC = '#10b981';
 const DC = '#ef4444';
 
 export default function TreasuryBankReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -79,7 +82,7 @@ export default function TreasuryBankReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ width: '100%', paddingBottom: '60px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
                 <ReportHeader
                     title="كشف حساب الخزن والبنوك"
                     subtitle="تحليل تفصيلي للحركات المالية والمقبوضات والمدفوعات لكل خزينة أو حساب بنكي."
@@ -105,13 +108,13 @@ export default function TreasuryBankReportPage() {
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>من</label>
                             <div style={{ flex: 1 }}>
-                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'left', colorScheme: 'dark' }} />
+                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'end', colorScheme: 'dark' }} />
                             </div>
                         </div>
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>إلى</label>
                             <div style={{ flex: 1 }}>
-                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'left', colorScheme: 'dark' }} />
+                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'end', colorScheme: 'dark' }} />
                             </div>
                         </div>
                         <button onClick={fetchReport} className="btn btn-primary" style={{ height: '42px', padding: '0 30px', fontWeight: 800, gap: '10px', borderRadius: '12px', fontFamily: CAIRO, display: 'flex', alignItems: 'center' }}>
@@ -134,19 +137,19 @@ export default function TreasuryBankReportPage() {
                     <div>
                         {/* Summary Header */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
-                            <div className="card" style={{ padding: '20px', borderRight: `4px solid #64748b` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>رصيد أول المدة</div>
                                 <div style={{ fontSize: '12px', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{data.openingBalance.toLocaleString('en-US')} {cSymbol}</div>
                             </div>
-                            <div className="card" style={{ padding: '20px', borderRight: `4px solid ${SC}` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${SC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>إجمالي المقبوضات (وارد)</div>
                                 <div style={{ fontSize: '12px', fontWeight: 900, color: SC , fontFamily: CAIRO}}>+ {totalReceipts.toLocaleString('en-US')}</div>
                             </div>
-                            <div className="card" style={{ padding: '20px', borderRight: `4px solid ${DC}` }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${DC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>إجمالي المدفوعات (صادر)</div>
                                 <div style={{ fontSize: '12px', fontWeight: 900, color: DC , fontFamily: CAIRO}}>- {totalPayments.toLocaleString('en-US')}</div>
                             </div>
-                            <div className="card" style={{ padding: '20px', borderRight: `4px solid ${PC}`, background: 'rgba(79, 70, 229, 0.05)' }}>
+                            <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${PC}`, background: 'rgba(79, 70, 229, 0.05)' }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>الرصيد الحالي</div>
                                 <div style={{ fontSize: '12px', fontWeight: 950, color: PC , fontFamily: CAIRO}}>{data.currentBalance.toLocaleString('en-US')} {cSymbol}</div>
                             </div>
@@ -161,10 +164,10 @@ export default function TreasuryBankReportPage() {
                             <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
-                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8' , fontFamily: CAIRO}}>التاريخ</th>
-                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8' , fontFamily: CAIRO}}>النوع</th>
-                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8' , fontFamily: CAIRO}}>البيان</th>
-                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'right', color: '#94a3b8' , fontFamily: CAIRO}}>الجهة</th>
+                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8' , fontFamily: CAIRO}}>التاريخ</th>
+                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8' , fontFamily: CAIRO}}>النوع</th>
+                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8' , fontFamily: CAIRO}}>البيان</th>
+                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8' , fontFamily: CAIRO}}>الجهة</th>
                                         <th style={{ padding: '16px', fontSize: '12px', textAlign: 'center', color: '#22c55e' , fontFamily: CAIRO}}>مدين (+)</th>
                                         <th style={{ padding: '16px', fontSize: '12px', textAlign: 'center', color: '#ef4444' , fontFamily: CAIRO}}>دائن (-)</th>
                                         <th style={{ padding: '16px', fontSize: '12px', textAlign: 'center', color: '#fff' , fontFamily: CAIRO}}>الرصيد</th>

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -10,6 +11,8 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 
 export default function QuotationViewPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const params = useParams();
     const router = useRouter();
     const { data: session } = useSession();
@@ -81,7 +84,7 @@ export default function QuotationViewPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
                 <PageHeader 
                     title={`عرض سعر #${quotation.quotationNumber}`}
                     subtitle={`بتاريخ ${new Date(quotation.date).toLocaleDateString('ar-EG')}`}
@@ -140,7 +143,7 @@ export default function QuotationViewPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '15px 20px', textAlign: 'right', fontSize: '13px', color: C.textMuted }}>الخدمة / الصنف</th>
+                                        <th style={{ padding: '15px 20px', textAlign: 'start', fontSize: '13px', color: C.textMuted }}>الخدمة / الصنف</th>
                                         <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '80px' }}>الكمية</th>
                                         <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>السعر</th>
                                         <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>الإجمالي</th>

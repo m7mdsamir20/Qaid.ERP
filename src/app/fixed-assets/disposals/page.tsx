@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import {
@@ -35,6 +36,8 @@ const REASON_COLORS: Record<string, string> = {
 };
 
 export default function DisposalsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [showModal, setShowModal] = useState(false);
     const [disposals, setDisposals] = useState<Disposal[]>([]);
     const [loadingList, setLoadingList] = useState(true);
@@ -93,7 +96,7 @@ export default function DisposalsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
                     title="استبعاد ومبيعات الأصول"
@@ -119,11 +122,11 @@ export default function DisposalsPage() {
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                 padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                             }}>
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                         <span>{s.val.toLocaleString('en-US')}</span>
-                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginLeft: '4px' }}>ج.م</span>}
+                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>ج.م</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -164,7 +167,7 @@ export default function DisposalsPage() {
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                 {['الأصل الثابت', 'السبب', 'تاريخ الاستبعاد', 'العائد / البيع', 'القيمة الدفترية', 'نتيجة التخلص', 'ملاحظات'].map((h, i) => (
-                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>{h}</th>
+                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -206,7 +209,7 @@ export default function DisposalsPage() {
                 {/* Disposal Modal */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title="تسجيل عملية استبعاد / بيع أصل" icon={ArrowRightLeft}>
                     <form onSubmit={handleSubmit}>
-                        {error && <div style={{ background: `${C.danger}10`, color: C.danger, padding: '12px', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', border: `1px solid ${C.danger}25`, fontWeight: 800, fontFamily: CAIRO }}><AlertTriangle size={14} style={{ marginBottom: '-3px', marginLeft: '6px' }} /> {error}</div>}
+                        {error && <div style={{ background: `${C.danger}10`, color: C.danger, padding: '12px', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', border: `1px solid ${C.danger}25`, fontWeight: 800, fontFamily: CAIRO }}><AlertTriangle size={14} style={{ marginBottom: '-3px', marginInlineStart: '6px' }} /> {error}</div>}
                         
                         <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: `1px solid ${C.border}`, marginBottom: '20px' }}>
                             <div style={{ marginBottom: '16px' }}>
@@ -236,7 +239,7 @@ export default function DisposalsPage() {
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>الصافي الدفتري الحالي: <b>{fmt(selectedAsset.netBookValue)}</b></span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{isGain ? 'أرباح رأسمالية مٌحققة' : isLoss ? 'خسائر رأسمالية ناتجة' : 'تعادل دفتري'}</div>
                                         <div style={{ fontSize: '22px', fontWeight: 950, color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted, direction: 'ltr', fontFamily: INTER }}>{isLoss ? '-' : '+'}{fmt(Math.abs(gainLoss))} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>ج.م</span></div>
                                     </div>
@@ -258,7 +261,7 @@ export default function DisposalsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={saving || !selectedAsset} style={{ ...BTN_PRIMARY(false, saving || !selectedAsset), flex: 1.5, height: '48px' }}>
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={18} />}
-                                <span style={{ marginRight: '8px', fontWeight: 900 }}>تأكيد وترحيل عملية الاستبعاد</span>
+                                <span style={{ marginInlineEnd: '8px', fontWeight: 900 }}>تأكيد وترحيل عملية الاستبعاد</span>
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
                         </div>

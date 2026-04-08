@@ -81,7 +81,7 @@ export const C = THEME.colors;
 
 export const IS: React.CSSProperties = {
     width: '100%', height: THEME.input.height, padding: '0 16px',
-    textAlign: 'right', direction: 'rtl',
+    textAlign: 'start',
     borderRadius: THEME.input.radius, border: `1px solid ${C.border}`,
     background: C.inputBg, color: C.textPrimary, fontSize: THEME.input.fontSize,
     fontWeight: 500, outline: 'none', transition: 'all 0.15s', boxSizing: 'border-box',
@@ -90,7 +90,7 @@ export const IS: React.CSSProperties = {
 
 export const LS: React.CSSProperties = {
     display: 'block', marginBottom: '8px', fontSize: '11px',
-    fontWeight: 700, color: C.textSecondary, textAlign: 'right',
+    fontWeight: 700, color: C.textSecondary, textAlign: 'start',
     fontFamily: CAIRO
 };
 
@@ -180,12 +180,12 @@ export const SEARCH_STYLE = {
     container: { marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center' },
     wrapper: { flex: 1, position: 'relative' as 'relative' },
     input: {
-        ...IS, width: '100%', paddingRight: '42px', height: '42px',
+        ...IS, width: '100%', paddingInlineStart: '42px', paddingInlineEnd: '16px', paddingRight: undefined, paddingLeft: undefined, height: '42px',
         borderRadius: '10px', background: C.inputBg, fontSize: '13.5px',
         border: `1px solid ${C.border}`, transition: 'all 0.2s ease-in-out'
     },
     icon: (color: string): React.CSSProperties => ({
-        position: 'absolute' as 'absolute', right: '14px', top: '50%',
+        position: 'absolute' as 'absolute', insetInlineStart: '14px', top: '50%', right: undefined, left: undefined,
         transform: 'translateY(-50%)', color: color, pointerEvents: 'none' as 'none',
         opacity: 0.7
     }),

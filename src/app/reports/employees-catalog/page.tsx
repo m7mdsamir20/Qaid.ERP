@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, INTER, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
@@ -18,6 +19,8 @@ interface Employee {
 }
 
 export default function EmployeesCatalogPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const [data, setData] = useState<Employee[] | null>(null);
     const [loading, setLoading] = useState(false);
@@ -42,7 +45,7 @@ export default function EmployeesCatalogPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="دليل بيانات الموظفين"
                     subtitle="كشف تفصيلي ببيانات الموظفين، المسميات الوظيفية، الأقسام، وحالة العمل الحالية."
@@ -51,8 +54,8 @@ export default function EmployeesCatalogPage() {
                 />
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
-                    <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                    <input placeholder="ابحث باسم الموظف، القسم، أو المسمى الوظيفي..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingRight: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                    <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                    <input placeholder="ابحث باسم الموظف، القسم، أو المسمى الوظيفي..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineEnd: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                 </div>
 
                 {loading ? (

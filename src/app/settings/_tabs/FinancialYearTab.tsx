@@ -58,12 +58,12 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                         <p style={{ margin: '0 0 24px', fontSize: '13px', color: C.textMuted, maxWidth: '440px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.6 }}>يجب عليك تحديد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.</p>
 
                         <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '24px' }}>
-                            <div style={{ textAlign: 'right' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <label style={{ display: 'block', fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 700 }}>تاريخ البداية</label>
                                 <input id="fys" type="date" defaultValue={`${new Date().getFullYear()}-01-01`}
                                     style={{ height: '38px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '13px', outline: 'none', colorScheme: 'dark' }} />
                             </div>
-                            <div style={{ textAlign: 'right' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <label style={{ display: 'block', fontSize: '11px', color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 700 }}>تاريخ النهاية</label>
                                 <input id="fye" type="date" defaultValue={`${new Date().getFullYear()}-12-31`}
                                     style={{ height: '38px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '13px', outline: 'none', colorScheme: 'dark' }} />
@@ -122,7 +122,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                                 <item.icon size={12} />
                                                 <span style={{ fontSize: '10px', fontWeight: 800, fontFamily: CAIRO }}>{item.label}</span>
                                             </div>
-                                            <div style={{ fontSize: '13px', fontWeight: 900, color: item.highlight ? (remaining < 30 ? C.danger : C.primary) : C.textPrimary, direction: 'ltr', textAlign: 'right', fontFamily: 'monospace' }}>{item.value}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 900, color: item.highlight ? (remaining < 30 ? C.danger : C.primary) : C.textPrimary, direction: 'ltr', textAlign: 'start', fontFamily: 'monospace' }}>{item.value}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -179,7 +179,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                         {['اسم السنة', 'من', 'إلى', 'إجمالي الأيام', 'الحالة'].map(h => (
-                                            <th key={h} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>{h}</th>
+                                            <th key={h} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>

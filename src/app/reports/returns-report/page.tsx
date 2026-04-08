@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 
 import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
@@ -26,6 +27,8 @@ interface ReturnInvoice {
 }
 
 export default function ReturnsReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -61,7 +64,7 @@ export default function ReturnsReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="تقرير مرتجعات البيع والشراء"
                     subtitle="متابعة دقيقة لكافة عمليات المرتجع الصادرة والواردة وتأثيرها المالي على المخزون."
@@ -81,7 +84,7 @@ export default function ReturnsReportPage() {
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                             padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                         }}>
-                            <div style={{ textAlign: 'right' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -98,7 +101,7 @@ export default function ReturnsReportPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', alignItems: 'center' }}>
                         <div style={{ position: 'relative', flex: 1 }}>
-                            <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
                                 placeholder="ابحث برقم الفاتورة أو الطرف الآخر..."
                                 value={q} onChange={e => setQ(e.target.value)}
@@ -170,7 +173,7 @@ export default function ReturnsReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} صنف</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'left', fontWeight: 900, color: C.textPrimary, fontSize: '13.5px', fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.textPrimary, fontSize: '13.5px', fontFamily: INTER }}>
                                                 {fmt(r.total)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>
                                         </tr>

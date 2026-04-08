@@ -139,14 +139,14 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     <Icon
                         size={16}
                         color="#256af4"
-                        style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', transition: '0.2s' }}
+                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', transition: '0.2s' }}
                     />
                 )}
 
                 {/* Selected Label */}
                 <div style={{
                     flex: 1,
-                    textAlign: 'right',
+                    textAlign: 'start',
                     fontSize: '14px',
                     fontWeight: 600,
                     color: selectedOption ? '#94a3b8' : '#64748b',
@@ -157,7 +157,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                     height: '100%',
-                    paddingRight: Icon ? '10px' : '0'
+                    paddingInlineEnd: Icon ? '10px' : '0'
                 }}>
                     {selectedOption ? selectedOption.label : placeholder}
                 </div>
@@ -167,7 +167,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     color="#64748b"
                     style={{
                         position: 'absolute',
-                        left: '12px',
+                        insetInlineStart: '12px',
                         top: '50%',
                         transform: `translateY(-50%) rotate(${isOpen ? '180deg' : '0deg'})`,
                         transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
@@ -180,7 +180,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                 <div style={{
                     position: 'absolute',
                     [openUp ? 'bottom' : 'top']: 'calc(100% + 8px)',
-                    right: 0,
+                    insetInlineEnd: 0,
                     width: '100%',
                     background: '#1e293b',
                     border: '1px solid rgba(255,255,255,0.08)',
@@ -218,8 +218,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                         color: '#fff',
                                         fontSize: '13px',
                                         outline: 'none',
-                                        textAlign: 'right',
-                                        direction: 'rtl',
+                                        textAlign: 'start',
                                         boxSizing: 'border-box'
                                     }}
                                     onClick={e => e.stopPropagation()}
@@ -254,7 +253,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     <div
                         ref={optionsListRef}
                         className="custom-select-list"
-                        style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '2px', paddingRight: '2px' }}
+                        style={{ overflowY: 'auto', flex: 1, display: 'flex', flexDirection: 'column', gap: '2px', paddingInlineEnd: '2px' }}
                     >
                         {filteredOptions.map((opt, idx) => {
                             const isSelected = opt.value === value;
@@ -285,8 +284,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                         background: isSelected ? 'rgba(37,106,244,0.15)' : (isActive ? 'rgba(255,255,255,0.05)' : 'transparent'),
                                         color: isSelected ? '#3b82f6' : (isActive ? '#fff' : '#64748b'),
                                         transition: 'all 0.15s',
-                                        textAlign: 'right',
-                                        direction: 'rtl',
+                                        textAlign: 'start',
                                         minHeight: '40px',
                                         ...opt.style
                                     }}
@@ -324,8 +322,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                     background: activeIndex === filteredOptions.length ? 'rgba(16,185,129,0.1)' : 'rgba(16,185,129,0.03)',
                                     marginTop: '4px',
                                     border: `1px dashed ${activeIndex === filteredOptions.length ? '#34d399' : 'rgba(52,211,153,0.3)'}`,
-                                    direction: 'rtl',
-                                    textAlign: 'right',
+                                    textAlign: 'start',
                                     transition: 'all 0.2s'
                                 }}
                             >

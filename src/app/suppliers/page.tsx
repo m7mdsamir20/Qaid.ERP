@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import {
     Truck, Plus, Phone, MapPin, X, Edit3, Trash2, Search,
@@ -26,6 +27,8 @@ interface Supplier {
 }
 
 export default function SuppliersPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
@@ -150,7 +153,7 @@ export default function SuppliersPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ fontFamily: CAIRO, background: C.bg, minHeight: '100%', paddingBottom: '60px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ fontFamily: CAIRO, background: C.bg, minHeight: '100%', paddingBottom: '60px' }}>
                 
                 <PageHeader 
                     title="الموردين"
@@ -174,7 +177,7 @@ export default function SuppliersPage() {
                         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                         onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                             <div style={{ textAlign: 'right' }}>
+                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.value as number)}</span>
@@ -191,12 +194,12 @@ export default function SuppliersPage() {
                 {/* Toolbar - Search */}
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
                             placeholder="ابحث باسم المورد أو رقم الهاتف..."
                             style={{ 
-                                ...IS, paddingRight: '40px', height: '40px', fontSize: '13px', 
+                                ...IS, paddingInlineEnd: '40px', height: '40px', fontSize: '13px', 
                                 background: C.card,
                                 borderRadius: '12px'
                             }}
@@ -296,7 +299,7 @@ export default function SuppliersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>رقم الهاتف</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, width: '100%', boxSizing: 'border-box', textAlign: 'left', direction: 'ltr' }} placeholder="01XXXXXXXXX" onFocus={focusIn} onBlur={focusOut} />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, width: '100%', boxSizing: 'border-box', textAlign: 'end', direction: 'ltr' }} placeholder="01XXXXXXXXX" onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <div>
                                     <label style={LS}>العنوان</label>
@@ -329,7 +332,7 @@ export default function SuppliersPage() {
                                             style={{ ...IS, width: '100%', border: 'none', background: 'transparent', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} 
                                             onFocus={focusIn} onBlur={focusOut} 
                                         />
-                                        <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{cSymbol}</span>
+                                        <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             )}

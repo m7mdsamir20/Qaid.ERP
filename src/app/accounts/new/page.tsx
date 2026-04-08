@@ -27,6 +27,8 @@ const accountTypes = [
 ];
 
 export default function NewAccountPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [loading, setLoading] = useState(true);
@@ -115,10 +117,10 @@ export default function NewAccountPage() {
     };
 
     const LS: React.CSSProperties = {
-        display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#94a3b8', textAlign: 'right',
+        display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#94a3b8', textAlign: 'start',
     };
     const IS: React.CSSProperties = {
-        width: '100%', height: '42px', padding: '0 14px', textAlign: 'right', direction: 'rtl',
+        width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: 'rtl',
         borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)',
         background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '14px',
         fontWeight: 500, outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s', boxSizing: 'border-box',
@@ -168,16 +170,16 @@ export default function NewAccountPage() {
             </div>
 
             <div style={{ background: 'linear-gradient(145deg,#0f1c2e 0%,#0d1625 100%)', border: '1px solid rgba(99,179,237,0.12)', borderRadius: '16px', padding: '32px', boxShadow: '0 24px 64px rgba(0,0,0,0.2)', maxWidth: '800px', margin: '0 auto' }}>
-                <form onSubmit={handleSubmit} dir="rtl">
+                <form onSubmit={handleSubmit} dir={isRtl ? 'rtl' : 'ltr'}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
                         <div>
                             <label style={LS}>كود الحساب <span style={{ color: '#f87171' }}>*</span></label>
                             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <input
                                     type="text" readOnly disabled value={form.code} dir="ltr"
-                                    style={{ ...IS, paddingLeft: '42px', color: '#475569', cursor: 'not-allowed', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', fontFamily: 'monospace', fontWeight: 700 }}
+                                    style={{ ...IS, paddingInlineStart: '42px', color: '#475569', cursor: 'not-allowed', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', fontFamily: 'monospace', fontWeight: 700 }}
                                 />
-                                <Lock size={15} style={{ position: 'absolute', left: '14px', color: '#334155', pointerEvents: 'none' }} />
+                                <Lock size={15} style={{ position: 'absolute', insetInlineStart: '14px', color: '#334155', pointerEvents: 'none' }} />
                             </div>
                             <p style={{ fontSize: '11px', color: '#475569', marginTop: '6px' }}>يتم توليد الكود تلقائياً بناءً على الحساب الأب ونوع الحساب</p>
                         </div>
@@ -252,7 +254,7 @@ export default function NewAccountPage() {
                                     .map(a => ({
                                         value: a.id,
                                         label: `${a.code} — ${a.name}`,
-                                        style: { paddingRight: `${(a.level || 0) * 16 + 12}px` }
+                                        style: { paddingInlineEnd: `${(a.level || 0) * 16 + 12}px` }
                                     }))}
                                 style={{ minWidth: '100%' }}
                             />

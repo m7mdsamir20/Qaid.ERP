@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
@@ -47,6 +48,8 @@ const CATEGORIES = ['الكل', 'مركبات', 'أجهزة وحاسبات', 'أ
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function FixedAssetsReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -86,7 +89,7 @@ export default function FixedAssetsReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
 
                 {/* ── Header ── */}
                 <ReportHeader
@@ -116,7 +119,7 @@ export default function FixedAssetsReportPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -135,7 +138,7 @@ export default function FixedAssetsReportPage() {
                 <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
                     {/* Search Field */}
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
                         <input 
                             value={search} 
                             onChange={e => setSearch(e.target.value)}
@@ -152,7 +155,7 @@ export default function FixedAssetsReportPage() {
                                 ...IS, 
                                 width: '100%', 
                                 height: '42px', 
-                                paddingRight: '44px', 
+                                paddingInlineEnd: '44px', 
                                 borderRadius: '12px', 
                                 background: C.card,
                                 border: `1px solid ${C.border}`,
@@ -209,7 +212,7 @@ export default function FixedAssetsReportPage() {
                     </div>
                 </div>
 
-                <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingLeft: '4px' }}>
+                <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
                     <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
                         عدد الأصول المفلترة: <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
                     </div>
@@ -226,7 +229,7 @@ export default function FixedAssetsReportPage() {
                                                 fontSize: '12px', 
                                                 fontWeight: 800, 
                                                 color: C.textSecondary, 
-                                                textAlign: 'right', 
+                                                textAlign: 'start', 
                                                 fontFamily: CAIRO,
                                                 borderBottom: `1px solid ${C.border}` 
                                             }}>{h}</th>
@@ -252,12 +255,12 @@ export default function FixedAssetsReportPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{a.name}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '11.5px', color: C.textMuted, fontFamily: INTER }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 750, fontFamily: INTER, textAlign: 'right' }}>{fmt(a.purchaseCost)}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'right' }}>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 750, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.purchaseCost)}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start' }}>
                                                     <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 800, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)}</div>
                                                     <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% مستهلك</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13.5px', color: '#10b981', fontWeight: 950, fontFamily: INTER, textAlign: 'right' }}>{fmt(a.netBookValue)}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13.5px', color: '#10b981', fontWeight: 950, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.netBookValue)}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: '#f59e0b', fontWeight: 800, fontFamily: INTER }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
@@ -270,10 +273,10 @@ export default function FixedAssetsReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '12.5px', fontWeight: 850, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>إجمالي الأصول المفلترة ({filtered.length})</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: C.textPrimary, textAlign: 'right', fontFamily: INTER }}>{fmt(totalCost)}</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: '#fb7185', textAlign: 'right', fontFamily: INTER }}>{fmt(totalAccum)}</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '15px', fontWeight: 1000, color: '#10b981', textAlign: 'right', fontFamily: INTER }}>{fmt(totalNet)}</td>
+                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '12.5px', fontWeight: 850, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>إجمالي الأصول المفلترة ({filtered.length})</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: C.textPrimary, textAlign: 'start', fontFamily: INTER }}>{fmt(totalCost)}</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: '#fb7185', textAlign: 'start', fontFamily: INTER }}>{fmt(totalAccum)}</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '15px', fontWeight: 1000, color: '#10b981', textAlign: 'start', fontFamily: INTER }}>{fmt(totalNet)}</td>
                                         <td colSpan={2} />
                                     </tr>
                                 </tfoot>

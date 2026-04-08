@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { RotateCcw, Plus, Printer, Loader2, Search, ChevronDown, Package, Trash2, Calendar, Eye, X } from 'lucide-react';
@@ -22,6 +23,8 @@ interface ReturnInvoice {
 }
 
 export default function SaleReturnsListPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
@@ -86,7 +89,7 @@ export default function SaleReturnsListPage() {
     /* ─── RENDER ─── */
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '60px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
                     title={isServices ? "مرتجعات الخدمات" : "مرتجعات المبيعات"}
                     subtitle={isServices ? "إدارة إلغاء الخدمات أو رد قيمتها للعملاء — تسوية مبالغ خدمات سابقة" : "إدارة المرتجعات من العملاء — رد قيمة الأصناف نقداً أو تسوية مبيعات سابقة"}

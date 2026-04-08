@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
 import {
@@ -25,6 +26,8 @@ const statusColor: Record<string, { bg: string; color: string; label: string }> 
 };
 
 export default function InstallmentDetailPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router   = useRouter();
     const params   = useParams();
     const id       = params.id as string;
@@ -124,7 +127,7 @@ export default function InstallmentDetailPage() {
         const w = window.open('', '_blank');
         if (!w) return;
         w.document.write(`
-            <html dir="rtl"><head><title>جدول أقساط - ${plan.customer?.name}</title>
+            <html dir={isRtl ? 'rtl' : 'ltr'}><head><title>جدول أقساط - ${plan.customer?.name}</title>
             <style>
                 body{font-family:Arial,sans-serif;padding:20px;direction:rtl;}
                 h2{color:#1e3a5f;} table{width:100%;border-collapse:collapse;}
@@ -186,7 +189,7 @@ export default function InstallmentDetailPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
                 
                 {/* Header Section */}
@@ -276,7 +279,7 @@ export default function InstallmentDetailPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {['رقم القسط', 'تاريخ الاستحقاق', 'المبلغ المستحق', 'المدفوع', 'المتبقي', 'الحالة', 'إجراء'].map((h, i) => (
-                                                <th key={i} style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: 700, color: C.textMuted }}>{h}</th>
+                                                <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -408,7 +411,7 @@ export default function InstallmentDetailPage() {
                                         </div>
                                         <div style={{ fontSize: '14px', fontWeight: 800, color: s.color, fontFamily: INTER }}>
                                             {typeof s.value === 'number' ? fmtN(s.value) : s.value} 
-                                            <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.6, marginRight: '3px' }}>{s.unit || cSymbol}</span>
+                                            <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.6, marginInlineEnd: '3px' }}>{s.unit || cSymbol}</span>
                                         </div>
                                     </div>
                                 ))}
@@ -445,10 +448,10 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
-                                        style={{ ...IS, paddingLeft: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER }} 
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
-                                    <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -572,9 +575,9 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={settleForm.amount} 
                                         onChange={e => setSettleForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingLeft: '45px', fontSize: '18px', fontWeight: 900, fontFamily: INTER, textAlign: 'center' }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: INTER, textAlign: 'center' }}
                                     />
-                                    <span style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                                 <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '5px', textAlign: 'center' }}>💡 سيتم التنازل عن الفوائد المتبقية للعميل عند التكييش.</p>
                             </div>
@@ -612,7 +615,7 @@ export default function InstallmentDetailPage() {
                 {/* Cancel Plan Modal */}
                 {showCancel && (
                     <div onClick={() => !cancelling && setShowCancel(false)} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', padding: '20px' }}>
-                        <div onClick={e => e.stopPropagation()} dir="rtl" style={{ width: 460, background: '#0e172a', border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+                        <div onClick={e => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'} style={{ width: 460, background: '#0e172a', border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
                             <div style={{ textAlign: 'center', marginBottom: '24px' }}>
                                 <div style={{ width: 64, height: 64, borderRadius: '20px', background: `${C.danger}15`, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                                     <AlertTriangle size={32} />

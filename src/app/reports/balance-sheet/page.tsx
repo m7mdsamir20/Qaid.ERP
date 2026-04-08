@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useSession } from 'next-auth/react';
@@ -33,6 +34,8 @@ interface BalanceSheetData {
 }
 
 export default function BalanceSheetPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -60,7 +63,7 @@ export default function BalanceSheetPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="المركز المالي (Balance Sheet)"
                     subtitle="يعرض الموقف المالي للشركة من حيث الأصول، الخصوم، وحقوق الملكية في تاريخ محدد."
@@ -202,7 +205,7 @@ export default function BalanceSheetPage() {
                                 <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>إجمالي الخصوم وحقوق الملكية</p>
                                 <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <small style={{fontSize: '14px'}}>{getCurrencyName(currency)}</small></h2>
                             </div>
-                            <div className="no-print" style={{ textAlign: 'left' }}>
+                            <div className="no-print" style={{ textAlign: 'end' }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontFamily: CAIRO }}>فرق التوازن</div>
                                 <div style={{ fontWeight: 800, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: INTER }}>{fmt(Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities))}</div>
                             </div>

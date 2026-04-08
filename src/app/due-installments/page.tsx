@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { Clock, Loader2, AlertTriangle, X, Banknote, ChevronDown, Calendar, ArrowLeftCircle, ListFilter, Wallet, Check, Eye } from 'lucide-react';
@@ -14,6 +15,8 @@ const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function DuePage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
     const [installments, setInstallments] = useState<any[]>([]);
@@ -72,7 +75,7 @@ export default function DuePage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
 
                 {/* Header Section */}
                 <PageHeader
@@ -256,10 +259,10 @@ export default function DuePage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount}
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingLeft: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
-                                    <span style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 

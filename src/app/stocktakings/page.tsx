@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import {
@@ -30,6 +31,8 @@ interface Stocktaking {
 }
 
 export default function StocktakingsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const [stocktakings, setStocktakings] = useState<Stocktaking[]>([]);
     const [loading, setLoading] = useState(true);
@@ -80,7 +83,7 @@ export default function StocktakingsPage() {
 
         const html = `
             <!DOCTYPE html>
-            <html dir="rtl" lang="ar">
+            <html dir={isRtl ? 'rtl' : 'ltr'} lang="ar">
             <head>
                 <meta charset="utf-8">
                 <title>طباعة جرد المخزون</title>
@@ -164,7 +167,7 @@ export default function StocktakingsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 
                 <PageHeader 
                     title="جرد المخازن" 

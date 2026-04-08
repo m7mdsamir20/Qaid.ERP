@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import {
@@ -45,19 +46,19 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
                     boxShadow: open ? `0 0 0 2px ${C.primaryBg}` : 'none',
                     background: open ? C.hover : C.inputBg
                 }}>
-                <div style={{ flex: 1, textAlign: 'right', color: selected ? C.textPrimary : C.textMuted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'flex-start' }}>
+                <div style={{ flex: 1, textAlign: 'start', color: selected ? C.textPrimary : C.textMuted, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'flex-start' }}>
                     {Icon && <Icon size={16} style={{ color: selected ? C.primary : C.textMuted }} />}
                     <span style={{ fontWeight: selected ? 700 : 500, fontFamily: CAIRO }}>{selected ? selected.label : placeholder}</span>
                 </div>
                 <ChevronDown size={14} style={{ color: C.textMuted, flexShrink: 0, transform: open ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
             </div>
             {open && (
-                <div style={{ position: 'absolute', top: 'calc(100% + 8px)', left: 0, right: 0, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', zIndex: 1100, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)', overflow: 'hidden', animation: 'scaleIn 0.15s ease' }}>
+                <div style={{ position: 'absolute', top: 'calc(100% + 8px)', insetInlineStart: 0, insetInlineEnd: 0, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', zIndex: 1100, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)', overflow: 'hidden', animation: 'scaleIn 0.15s ease' }}>
                     <div style={{ padding: '10px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ position: 'relative' }}>
-                            <Search size={14} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                            <Search size={14} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                             <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="ابحث في القائمة..."
-                                style={{ ...IS, height: '36px', paddingRight: '36px', fontSize: '12px' }} />
+                                style={{ ...IS, height: '36px', paddingInlineEnd: '36px', fontSize: '12px' }} />
                         </div>
                     </div>
                     <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
@@ -65,10 +66,10 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
                             ? <div style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontWeight: 600 }}>لا توجد خيارات مطابقة</div>
                             : filtered.map(opt => (
                                 <div key={opt.id} onClick={() => { onChange(opt.id); setOpen(false); setQ(''); }}
-                                    style={{ padding: '10px 16px', cursor: 'pointer', background: opt.id === value ? C.primaryBg : 'transparent', borderRight: opt.id === value ? `3px solid ${C.primary}` : '3px solid transparent', transition: 'all 0.1s' }}
+                                    style={{ padding: '10px 16px', cursor: 'pointer', background: opt.id === value ? C.primaryBg : 'transparent', borderInlineEnd: opt.id === value ? `3px solid ${C.primary}` : '3px solid transparent', transition: 'all 0.1s' }}
                                     onMouseEnter={e => opt.id !== value && (e.currentTarget.style.background = C.hover)}
                                     onMouseLeave={e => opt.id !== value && (e.currentTarget.style.background = 'transparent')}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{opt.label}</div>
                                         {opt.sub && <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 600, fontFamily: INTER }}>{opt.sub}</div>}
                                     </div>
@@ -91,7 +92,7 @@ function Modal({ isOpen, onClose, title, icon, children, maxWidth = '800px' }: {
     if (!isOpen) return null;
     return (
         <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'grid', placeItems: 'center', padding: '40px 16px', background: 'rgba(7,13,26,0.75)', backdropFilter: 'blur(10px)', animation: 'fadeIn 0.2s ease' }}>
-            <div onClick={e => e.stopPropagation()} dir="rtl" style={{ width: '100%', maxWidth, background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)', animation: 'slideUp 0.3s cubic-bezier(0.16,1,0.3,1)', overflow: 'hidden' }}>
+            <div onClick={e => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', maxWidth, background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)', animation: 'slideUp 0.3s cubic-bezier(0.16,1,0.3,1)', overflow: 'hidden' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ width: 40, height: 40, borderRadius: '10px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
@@ -111,6 +112,8 @@ function Modal({ isOpen, onClose, title, icon, children, maxWidth = '800px' }: {
 let pageCache: any = null;
 
 export default function ComprehensiveSettlementPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { symbol: currencySign } = useCurrency();
     const router = useRouter();
     const [customers, setCustomers] = useState<any[]>([]);
@@ -187,7 +190,7 @@ export default function ComprehensiveSettlementPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ fontFamily: CAIRO, paddingBottom: '60px', paddingTop: THEME.header.pt }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ fontFamily: CAIRO, paddingBottom: '60px', paddingTop: THEME.header.pt }}>
                 {/* ── Header ── */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: THEME.header.mb }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -203,8 +206,8 @@ export default function ComprehensiveSettlementPage() {
                             <ArrowRightLeft size={THEME.header.iconSize} />
                         </div>
                         <div>
-                            <h1 style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'right', fontFamily: CAIRO }}>تسوية ديون</h1>
-                            <p style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'right', fontFamily: CAIRO }}>إدارة ومراجعة التحويلات المالية وتسوية الأرصدة</p>
+                            <h1 style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>تسوية ديون</h1>
+                            <p style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>إدارة ومراجعة التحويلات المالية وتسوية الأرصدة</p>
                         </div>
                     </div>
 
@@ -226,7 +229,7 @@ export default function ComprehensiveSettlementPage() {
 
                 {/* ── Search ── */}
                 <div style={{ position: 'relative', marginBottom: '14px' }}>
-                    <Search size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                    <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                     <input
                         placeholder="ابحث برقم القيد أو تفاصيل العملية..."
                         value={settlementSearch}
@@ -235,7 +238,7 @@ export default function ComprehensiveSettlementPage() {
                             ...IS,
                             width: '100%',
                             height: '36px',
-                            paddingRight: '40px',
+                            paddingInlineEnd: '40px',
                             boxSizing: 'border-box',
                             background: C.card,
                         }}
@@ -252,7 +255,7 @@ export default function ComprehensiveSettlementPage() {
                     <>
                         {showForm && (
                             <div style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'grid', placeItems: 'center', padding: '40px 16px', background: 'rgba(7,13,26,0.75)', backdropFilter: 'blur(10px)', animation: 'fadeIn 0.2s ease' }}>
-                                <div dir="rtl" style={{ width: '100%', maxWidth: '480px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)', animation: 'slideUp 0.3s cubic-bezier(0.16,1,0.3,1)', overflow: 'hidden' }}>
+                                <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', maxWidth: '480px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.7)', animation: 'slideUp 0.3s cubic-bezier(0.16,1,0.3,1)', overflow: 'hidden' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 22px', background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <div style={{ padding: '8px', borderRadius: '8px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -272,7 +275,7 @@ export default function ComprehensiveSettlementPage() {
                                                             type="date" 
                                                             value={form.date} 
                                                             onChange={e => setForm(f => ({ ...f, date: e.target.value }))} 
-                                                            style={{ ...IS, paddingRight: '12px', direction: 'ltr', color: C.textSecondary }} 
+                                                            style={{ ...IS, paddingInlineEnd: '12px', direction: 'ltr', color: C.textSecondary }} 
                                                             onFocus={focusIn} onBlur={focusOut} 
                                                             className="blue-date-icon"
                                                         />
@@ -292,10 +295,10 @@ export default function ComprehensiveSettlementPage() {
                                                                 const formatted = parts.join('.');
                                                                 setForm(f => ({ ...f, amount: formatted }));
                                                             }} 
-                                                            style={{ ...IS, paddingLeft: '44px', fontFamily: INTER, fontWeight: 400 }} 
+                                                            style={{ ...IS, paddingInlineStart: '44px', fontFamily: INTER, fontWeight: 400 }} 
                                                             onFocus={focusIn} onBlur={focusOut} placeholder="0.00" 
                                                         />
-                                                        <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{currencySign}</span>
+                                                        <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{currencySign}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -361,7 +364,7 @@ export default function ComprehensiveSettlementPage() {
                         ) : (
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', overflow: 'hidden' }}>
                                 <div style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'right', fontSize: '14px' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start', fontSize: '14px' }}>
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                 {[
@@ -373,35 +376,35 @@ export default function ComprehensiveSettlementPage() {
                                                     { label: 'المبلغ', width: '14%' },
                                                     { label: 'إجراء', width: '6%' }
                                                 ].map((h, i) => (
-                                                    <th key={i} style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'right', width: h.width, fontFamily: CAIRO }}>{h.label}</th>
+                                                    <th key={i} style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', width: h.width, fontFamily: CAIRO }}>{h.label}</th>
                                                 ))}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {filteredSettlements.map((s: any, idx) => (
                                                 <tr key={s.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < filteredSettlements.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right', color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: INTER }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start', color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: INTER }}>
                                                         {new Date(s.date).toLocaleDateString('en-GB')}
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right' }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start' }}>
                                                         <span style={{ padding: '2px 8px', borderRadius: '6px', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 700, fontSize: '11px', fontFamily: INTER }}>
                                                             {String(s.entryNumber).padStart(4, '0')}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right' }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start' }}>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'flex-start' }}>
                                                             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.dangerBg, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserMinus size={12} /></div>
                                                             <span style={{ fontWeight: 500, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.fromConfig?.name}</span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right' }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start' }}>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'flex-start' }}>
                                                             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.successBg, color: C.success, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserPlus size={12} /></div>
                                                             <span style={{ fontWeight: 500, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.toConfig?.name}</span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right', fontSize: '13px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.notes || '-'}</td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right' }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start', fontSize: '13px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.notes || '-'}</td>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start' }}>
                                                         <div style={{ fontSize: '14px', fontWeight: 700, color: C.success, fontFamily: INTER }}>
                                                             {s.amount.toLocaleString()} <span style={{ fontSize: '10px' }}>{currencySign}</span>
                                                         </div>
@@ -432,13 +435,13 @@ export default function ComprehensiveSettlementPage() {
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 22px', background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <div style={{ padding: '8px', borderRadius: '8px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><History size={16} /></div>
-                                <div dir="rtl">
+                                <div dir={isRtl ? 'rtl' : 'ltr'}>
                                     <h3 style={{ margin: 0, color: C.textPrimary, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>مراجعة سند التسوية</h3>
                                 </div>
                             </div>
                             <button onClick={() => setDetailsModal(null)} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textMuted, cursor: 'pointer', width: 30, height: 30, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = C.dangerBg }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}><X size={16} /></button>
                         </div>
-                        <div dir="rtl" style={{ padding: '22px' }}>
+                        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '22px' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '22px' }}>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>تاريخ التسجيل</div>
@@ -454,7 +457,7 @@ export default function ComprehensiveSettlementPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                                         <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '10px 16px', textAlign: 'right', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>الحساب المتأثر</th>
+                                            <th style={{ padding: '10px 16px', textAlign: 'start', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>الحساب المتأثر</th>
                                             <th style={{ padding: '10px 16px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>مدين (+)</th>
                                             <th style={{ padding: '10px 16px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>دائن (-)</th>
                                         </tr>
@@ -502,7 +505,7 @@ export default function ComprehensiveSettlementPage() {
                 input[type="date"]::-webkit-calendar-picker-indicator {
                     cursor: pointer;
                     filter: invert(41%) sepia(34%) saturate(3000%) hue-rotate(190deg) brightness(100%) contrast(100%);
-                    margin-right: 5px;
+                    margin-insetInlineEnd: 5px;
                 }
             `}</style>
         </DashboardLayout>

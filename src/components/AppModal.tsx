@@ -59,7 +59,7 @@ const AppModal: React.FC<AppModalProps> = ({
     return (
         <div
             style={{
-                position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 99999,
+                position: 'fixed', top: 0, insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, zIndex: 99999,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 background: THEME.colors.bg === '#070d1a' ? 'rgba(7, 13, 26, 0.75)' : 'rgba(0,0,0,0.5)',
                 backdropFilter: 'blur(10px)',

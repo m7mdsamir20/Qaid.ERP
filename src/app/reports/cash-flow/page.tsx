@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
@@ -30,6 +31,8 @@ const getCurrencyName = (code: string) => {
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function CashFlowReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -67,7 +70,7 @@ export default function CashFlowReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="قائمة التدفق النقدي"
                     subtitle="تحليل السيولة النقدية الواردة والمنصرفة عبر كافة الخزن والتحويلات البنكية."
@@ -95,7 +98,7 @@ export default function CashFlowReportPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -111,7 +114,7 @@ export default function CashFlowReportPage() {
 
                         {/* ── Search Bar (Fard - Expanded) ── */}
                         <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
-                            <Search size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
+                            <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
                             <input
                                 placeholder="ابحث بالخزينة، الطرف الآخر، أو البيان..."
                                 value={q} onChange={e => setQ(e.target.value)}
@@ -119,8 +122,8 @@ export default function CashFlowReportPage() {
                                     ...IS,
                                     width: '100%', 
                                     height: '42px', 
-                                    paddingRight: '44px', 
-                                    paddingLeft: '14px', 
+                                    paddingInlineEnd: '44px', 
+                                    paddingInlineStart: '14px', 
                                     borderRadius: '12px', 
                                     border: `1px solid ${C.border}`, 
                                     background: C.card, 
@@ -133,7 +136,7 @@ export default function CashFlowReportPage() {
                         </div>
 
                         {/* Result Count Indicator */}
-                        <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingLeft: '4px' }}>
+                        <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
                             <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
                                 نتائج البحث: <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
                             </div>
@@ -178,7 +181,7 @@ export default function CashFlowReportPage() {
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 750, color: C.textSecondary, fontFamily: CAIRO }}>{v.treasury}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600 }}>{v.party}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{v.description || '—'}</td>
-                                            <td dir="ltr" style={{ padding: '14px 20px', textAlign: 'left', fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>
+                                            <td dir="ltr" style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>
                                                 {fmt(v.amount)}</td>
                                         </tr>
                                     ))}

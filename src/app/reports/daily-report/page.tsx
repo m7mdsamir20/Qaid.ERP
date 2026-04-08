@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
@@ -19,6 +20,8 @@ const getCurrencyName = (code: string) => {
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function DailyReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
@@ -50,7 +53,7 @@ export default function DailyReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="التقرير اليومي للمبيعات والتحصيلات"
                     subtitle="ملخص شامل لكافة العمليات المالية والتجارية التي تمت خلال اليوم."
@@ -65,7 +68,7 @@ export default function DailyReportPage() {
                         <div style={{ width: '180px' }}>
                             <input type="date" value={date} onChange={e => setDate(e.target.value)}
                                 style={{
-                                    width: '100%', height: '36px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '8px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textSecondary, fontSize: '13px',
                                     fontWeight: 500, outline: 'none', fontFamily: INTER
@@ -121,7 +124,7 @@ export default function DailyReportPage() {
                                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                                 >
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>

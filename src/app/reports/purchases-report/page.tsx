@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, INTER, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
@@ -35,6 +36,8 @@ interface ReportData {
 }
 
 export default function PurchasesReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -70,7 +73,7 @@ export default function PurchasesReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="تقرير المشتريات"
                     subtitle="تحليل تفصيلي لجميع عمليات الشراء الواردة، الخصومات، والمبالغ المدفوعة والمتبقية."
@@ -86,7 +89,7 @@ export default function PurchasesReportPage() {
                         <div style={{ width: '170px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -97,7 +100,7 @@ export default function PurchasesReportPage() {
                         <div style={{ width: '170px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -156,7 +159,7 @@ export default function PurchasesReportPage() {
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     transition: 'all 0.2s'
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -171,12 +174,12 @@ export default function PurchasesReportPage() {
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                            <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
                                 placeholder="ابحث برقم الفاتورة أو اسم المورد..."
                                 value={q} onChange={e => setQ(e.target.value)}
                                 style={{ 
-                                    ...IS, paddingRight: '45px', height: '42px', fontSize: '13.5px', 
+                                    ...IS, paddingInlineEnd: '45px', height: '42px', fontSize: '13.5px', 
                                     background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
                                     fontWeight: 500
                                 }}

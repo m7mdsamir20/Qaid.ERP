@@ -21,6 +21,8 @@ const TX_LABELS: Record<string, { label: string; color: string; bg: string; icon
 };
 
 export default function PartnerAccountsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [partners, setPartners] = useState<Partner[]>([]);
     const [treasuries, setTreasuries] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ export default function PartnerAccountsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 {/* Header Section */}
                 <PageHeader
@@ -99,11 +101,11 @@ export default function PartnerAccountsPage() {
                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                             onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                             >
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                         <span>{s.val.toLocaleString('en-US')}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginLeft: '4px' }}>{s.suffix}</span>}
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -328,7 +330,7 @@ export default function PartnerAccountsPage() {
                                 </div>
                                 <div>
                                     <label style={LS}>التاريخ</label>
-                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
 
@@ -342,7 +344,7 @@ export default function PartnerAccountsPage() {
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1, height: '48px' }}>
                                     {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Plus size={18} />}
-                                    <span style={{ marginRight: '8px' }}>اعتماد الحركة</span>
+                                    <span style={{ marginInlineEnd: '8px' }}>اعتماد الحركة</span>
                                 </button>
                                 <button type="button" onClick={() => setShowModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                     إلغاء

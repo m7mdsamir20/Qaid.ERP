@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
@@ -32,6 +33,8 @@ const fmt = (v: any) => {
 
 
 export default function NewSalePage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
@@ -200,11 +203,11 @@ export default function NewSalePage() {
 
         const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
 
-        if (!isServices && !form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن أولاً';
-        if (!form.customerId) errors.customerId = 'يرجى اختيار العميل أولاً';
-        if (!entryItemId) errors.entryItemId = 'يرجى اختيار الخدمة';
-        if (entryQty === '' || Number(entryQty) <= 0) errors.entryQty = 'الكمية؟';
-        if (entryPrice === '' || Number(entryPrice) < 0) errors.entryPrice = 'السعر؟';
+        if (!isServices && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
+        if (!form.customerId) errors.customerId = t('يرجى اختيار العميل أولاً');
+        if (!entryItemId) errors.entryItemId = t('يرجى اختيار الخدمة');
+        if (entryQty === '' || Number(entryQty) <= 0) errors.entryQty = t('الكمية؟');
+        if (entryPrice === '' || Number(entryPrice) < 0) errors.entryPrice = t('السعر؟');
 
         if (Object.keys(errors).length > 0) {
             setFieldErrors(prev => ({ ...prev, ...errors }));
@@ -220,11 +223,11 @@ export default function NewSalePage() {
 
         if (!isServices) {
             if (stock <= 0) {
-                setFieldErrors(prev => ({ ...prev, entryItemId: 'ليس لديك رصيد من هذا الصنف' }));
+                setFieldErrors(prev => ({ ...prev, entryItemId: t('ليس لديك رصيد من هذا الصنف') }));
                 return;
             }
             if (qty > stock) {
-                setFieldErrors(prev => ({ ...prev, entryQty: `المتاح: ${stock}` }));
+                setFieldErrors(prev => ({ ...prev, entryQty: `${t('المتاح')}: ${stock}` }));
                 return;
             }
         }
@@ -237,7 +240,7 @@ export default function NewSalePage() {
                 const updated = [...prev];
                 const newQty  = updated[idx].quantity + qty;
                 if (newQty > stock) {
-                    setFieldErrors(prevE => ({ ...prevE, entryQty: `تجاوز المتاح (${stock})` }));
+                    setFieldErrors(prevE => ({ ...prevE, entryQty: `${t('تجاوز المتاح')} (${stock})` }));
                     return prev;
                 }
                 updated[idx] = { ...updated[idx], quantity: newQty, total: newQty * updated[idx].price };
@@ -299,8 +302,8 @@ export default function NewSalePage() {
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
-        if (!form.customerId) errors.customerId = 'يرجى اختيار العميل';
-        if (!form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن';
+        if (!form.customerId) errors.customerId = t('يرجى اختيار العميل أولاً');
+        if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
         
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
@@ -308,7 +311,7 @@ export default function NewSalePage() {
         }
 
         if (lines.length === 0) {
-            setErrorMsg('يرجى إضافة صنف واحد على الأقل للفاتورة');
+            setErrorMsg(t('يرجى إضافة صنف واحد على الأقل للفاتورة'));
             return;
         }
 
@@ -319,23 +322,23 @@ export default function NewSalePage() {
                 const item = items.find(i => i.id === line.itemId);
                 const available = item?.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
                 if (line.quantity > available) {
-                    setErrorMsg(`خطأ: الصنف (${line.itemName}) لم يعد متوفراً بالكمية المطلوبة. المتاح: ${available}`);
+                    setErrorMsg(`${t('خطأ: الصنف')} (${line.itemName}) ${t('لم يعد متوفراً بالكمية المطلوبة. المتاح:')} ${available}`);
                     return;
                 }
             }
         }
 
         if (form.paymentType !== 'credit' && Number(form.paidAmount || 0) <= 0) {
-            setFieldErrors(prev => ({ ...prev, paidAmount: 'أدخل المبلغ' }));
+            setFieldErrors(prev => ({ ...prev, paidAmount: t('أدخل المبلغ') }));
             return;
         }
 
         if (form.paymentType === 'cash' && Number(form.paidAmount || 0) > 0 && !form.treasuryId) {
-            setFieldErrors(prev => ({ ...prev, treasuryId: 'اختر الخزينة' }));
+            setFieldErrors(prev => ({ ...prev, treasuryId: t('اختر الخزينة...') }));
             return;
         }
         if (form.paymentType === 'bank' && Number(form.paidAmount || 0) > 0 && !form.bankId) {
-            setFieldErrors(prev => ({ ...prev, bankId: 'اختر الحساب البنكي' }));
+            setFieldErrors(prev => ({ ...prev, bankId: t('اختر البنك...') }));
             return;
         }
 
@@ -363,8 +366,8 @@ export default function NewSalePage() {
                 const saved = await res.json();
                 if (andPrint) printSaleInvoice(saved, selectedPartner, nextNum, form, company);
                 router.push('/sales');
-            } else alert('فشل الحفظ');
-        } catch { alert('فشل الاتصال'); } finally { setSubmitting(false); }
+            } else alert(t('فشل الحفظ'));
+        } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
     };
 
     if (loading) return (
@@ -397,7 +400,7 @@ export default function NewSalePage() {
             <div style={{
                 position: 'absolute',
                 top: '-32px', // أعلى قليلاً لتجنب التداخل مع العناوين
-                left: '4px',  // من جهة اليسار بدلاً من اليمين لتجنب التصادم مع "الصنف" وغيرها
+                insetInlineStart: '4px',  // من جهة اليسار بدلاً من اليمين لتجنب التصادم مع "الصنف" وغيرها
                 fontSize: '11px',
                 color: '#fff',
                 fontWeight: 800,
@@ -419,7 +422,7 @@ export default function NewSalePage() {
                 <div style={{
                     position: 'absolute',
                     bottom: '-4px',
-                    left: '12px',
+                    insetInlineStart: '12px',
                     width: '8px',
                     height: '8px',
                     background: '#b91c1c',
@@ -432,12 +435,12 @@ export default function NewSalePage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>
 
                 {/* ── Header ── */}
                 <PageHeader
-                    title={isServices ? "فاتورة خدمة جديدة" : "فاتورة مبيعات جديدة"}
-                    subtitle={isServices ? "إصدار فاتورة لخدمة مقدمة وتحصيل قيمتها" : "إنشاء فاتورة مبيعات جديدة وحفظها في النظام"}
+                    title={isServices ? t("فاتورة خدمة جديدة") : t("فاتورة مبيعات جديدة")}
+                    subtitle={isServices ? t("إصدار فاتورة لخدمة مقدمة وتحصيل قيمتها") : t("إنشاء فاتورة مبيعات جديدة وحفظها في النظام")}
                     icon={Receipt}
                     backUrl="/sales"
                 />
@@ -455,10 +458,10 @@ export default function NewSalePage() {
                         <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
                         <div>
                             <div style={{ fontSize: '14px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
-                                يرجى تحديد فرع أولاً
+                                {t('يرجى تحديد فرع أولاً')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-                                أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء الفاتورة
+                                {t('أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء الفاتورة')}
                             </div>
                         </div>
                     </div>
@@ -471,11 +474,11 @@ export default function NewSalePage() {
 
                         {/* Basic Data */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}><Receipt size={12} /> بيانات الفاتورة</div>
+                            <div style={{ ...STitle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>رقم الفاتورة</label>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الفاتورة')}</label>
                                     </div>
                                     <div style={{
                                         height: '42px', borderRadius: '10px',
@@ -492,19 +495,19 @@ export default function NewSalePage() {
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>اسم العميل</label>
-                                        <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ عميل جديد</button>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('اسم العميل')}</label>
+                                        <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ {t('عميل جديد')}</button>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect 
                                             value={form.customerId} 
                                             onChange={v => { setForm((f: any) => ({ ...f, customerId: v })); clearError('customerId'); }} 
                                             icon={Search} 
-                                            placeholder="ابحث واختر..." 
+                                            placeholder={t("ابحث واختر...")} 
                                             options={partners.map(p => ({ 
                                                 value: p.id, 
                                                 label: p.name,
-                                                sub: p.partnerType === 'supplier' ? 'مورد' : 'عميل'
+                                                sub: p.partnerType === 'supplier' ? t('مورد') : t('عميل')
                                             }))} 
                                         />
                                         <InlineError field="customerId" />
@@ -535,8 +538,8 @@ export default function NewSalePage() {
                                         }}>
                                             <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                             {selectedPartner?.partnerType === 'supplier'
-                                                ? (selectedPartner.balance > 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
-                                                : (selectedPartner.balance < 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                ? (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
+                                                : (selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
                                             }
                                         </div>
                                     )}
@@ -544,33 +547,33 @@ export default function NewSalePage() {
                                 { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>مخزن الصرف</label>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مخزن الصرف')}</label>
                                         </div>
                                         <div style={{ position: 'relative' }}>
-                                            <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} placeholder="اختر المكان..." options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
+                                            <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} placeholder={t("اختر المكان...")} options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
                                             <InlineError field="warehouseId" />
                                         </div>
                                     </div>
                                 )}
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>تاريخ الفاتورة</label>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الفاتورة')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, color: C.textSecondary, textAlign: 'left', direction: 'ltr', fontSize: '13px', fontFamily: INTER }}
+                                            style={{ ...IS, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: INTER }}
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
-                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>تاريخ الاستحقاق</label>
+                                        <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الاستحقاق')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.dueDate || ''}
                                             onChange={e => setForm((f: any) => ({ ...f, dueDate: e.target.value }))}
-                                            style={{ ...IS, color: '#fbbf24', textAlign: 'left', direction: 'ltr', fontSize: '13px', fontFamily: INTER, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
+                                            style={{ ...IS, color: '#fbbf24', textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: INTER, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
                                             onFocus={focusIn} onBlur={focusOut} className="gold-date-icon" />
                                     </div>
                                 </div>
@@ -580,7 +583,7 @@ export default function NewSalePage() {
                         {/* Items */}
                         <div style={SC}>
                                 <div style={{ ...STitle, color: '#3b82f6' }}>
-                                    <Package size={12} /> اضافة الاصناف
+                                    <Package size={12} /> {t('اضافة الاصناف')}
                                 </div>
 
                             {/* Entry Row */}
@@ -602,19 +605,19 @@ export default function NewSalePage() {
                                 }}>
                                     <div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? "اسم الخدمة" : "الصنف"} {((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) && '(اختر الفرع أولاً)'}</label>
+                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? t("اسم الخدمة") : t("الصنف")} {((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) && t('(اختر الفرع أولاً)')}</label>
                                             {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && entryItemId && entryStock !== null && (
                                                 <span style={{ fontSize: '10px', fontWeight: 800, color: (entryStock || 0) > 0 ? '#10b981' : '#ef4444' }}>
-                                                    متاح: {entryStock}
+                                                    {t('متاح:')} {entryStock}
                                                 </span>
                                             )}
                                         </div>
                                         <div style={{ pointerEvents: ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) ? 'none' : 'auto', opacity: ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) ? 0.6 : 1, position: 'relative' }}>
-                                            <CustomSelect ref={itemSelectRef} value={entryItemId} onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} icon={Search} placeholder={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? "اختر الخدمة..." : "اختر الصنف..."} options={items.map(i => ({ value: i.id, label: i.name }))} />
+                                            <CustomSelect ref={itemSelectRef} value={entryItemId} onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} icon={Search} placeholder={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? t("اختر الخدمة...") : t("اختر الصنف...")} options={items.map(i => ({ value: i.id, label: i.name }))} />
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الكمية</label>
+                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)}
                                                 disabled={!entryItemId}
@@ -632,7 +635,7 @@ export default function NewSalePage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>السعر (يُكتب يدوي)</label>
+                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر (يُكتب يدوي)')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
                                                 disabled={!entryItemId}
@@ -651,7 +654,7 @@ export default function NewSalePage() {
                                     </div>
                                     {isServices && (
                                         <div>
-                                            <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>الضريبة %</label>
+                                            <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الضريبة %')}</label>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" value={entryTaxRate === '' ? '0' : fmt(entryTaxRate)}
                                                     disabled={!entryItemId}
@@ -684,11 +687,11 @@ export default function NewSalePage() {
 
                                 {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && entryItemId && (
                                     <div style={{ animation: 'slideDown 0.2s ease' }}>
-                                        <label style={{ ...LS, fontSize: '11px' }}>الوصف (يتم سحبه تلقائياً ويمكن التعديل)</label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('الوصف (يتم سحبه تلقائياً ويمكن التعديل)')}</label>
                                         <textarea
                                             value={entryDescription}
                                             onChange={e => setEntryDescription(e.target.value)}
-                                            placeholder="اكتب وصف الخدمة التفصيلي هنا..."
+                                            placeholder={t("اكتب وصف الخدمة التفصيلي هنا...")}
                                             style={{ ...IS, height: '60px', padding: '10px 12px', fontSize: '13px', lineHeight: '1.5', resize: 'none' }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
@@ -702,12 +705,12 @@ export default function NewSalePage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
-                                                ['الخدمة / الوصف التفصيلي', 'الكمية', 'السعر', 'الضريبة', 'الإجمالي', ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'right' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الضريبة'), t('الإجمالي'), ''].map((h, i) => (
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             ) : (
-                                                ['الصنف', 'الوحدة', 'الكمية', 'السعر', 'الإجمالي', ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'right' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             )}
                                         </tr>
@@ -739,14 +742,14 @@ export default function NewSalePage() {
                                             </tr>
                                         ))}
                                         {lines.length === 0 && (
-                                            <tr><td colSpan={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 6 : 6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>لا توجد بنود مضافة</td></tr>
+                                            <tr><td colSpan={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 6 : 6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>
                                         )}
                                     </tbody>
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
                                                 <td colSpan={isServices ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
-                                                    إجمالي {isServices ? 'الخدمات' : 'الأصناف'}
+                                                    {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
                                                 <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>
                                                     {subtotal.toLocaleString()} {cSymbol}
@@ -761,7 +764,7 @@ export default function NewSalePage() {
 
                         {/* Attachments */}
                         <div style={SC}>
-                            <div style={{ ...STitle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> المرفقات</div>
+                            <div style={{ ...STitle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> {t('المرفقات')}</div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <div style={{ 
                                     flex: 1,
@@ -775,12 +778,12 @@ export default function NewSalePage() {
                                 }}>
                                     <input type="file" multiple onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
                                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                                        <Plus size={14} /> رفع ملفات
+                                        <Plus size={14} /> {t('رفع ملفات')}
                                     </div>
                                 </div>
                                 {attachments.length > 0 && (
                                     <div style={{ color: 'var(--primary-500)', fontSize: '11px', fontWeight: 700 }}>
-                                        {attachments.length} ملفات مدرجة
+                                        {attachments.length} {t('ملفات مدرجة')}
                                     </div>
                                 )}
                             </div>
@@ -808,10 +811,10 @@ export default function NewSalePage() {
 
                         {/* Notes */}
                         <div style={SC}>
-                            <label style={{ ...LS, fontSize: '11px' }}>ملاحظات</label>
+                            <label style={{ ...LS, fontSize: '11px' }}>{t('ملاحظات')}</label>
                             <textarea value={form.notes} onChange={e => setForm((f: any) => ({ ...f, notes: e.target.value }))}
                                 style={{ ...IS, height: '60px', padding: '10px', resize: 'none', background: 'rgba(255,255,255,0.02)' }}
-                                placeholder="أدخل أي ملاحظات هنا..."
+                                placeholder={t("أدخل أي ملاحظات هنا...")}
                                 onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
@@ -820,13 +823,13 @@ export default function NewSalePage() {
                     <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
 
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}>ملخص الفاتورة</div>
+                            <div style={{ ...STitle, color: '#3b82f6' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
 
                                 {/* إجمالي الأصناف */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
                                     <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
-                                    <span style={{ color: '#64748b' }}>إجمالي الأصناف</span>
+                                    <span style={{ color: '#64748b' }}>{t('إجمالي الأصناف')}</span>
                                 </div>
 
                                 {/* الخصم */}
@@ -837,7 +840,7 @@ export default function NewSalePage() {
                                     padding: '8px 12px',
                                 }}>
                                     <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}>
-                                        <span>الخصم</span>
+                                        <span>{t('الخصم')}</span>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
@@ -854,9 +857,9 @@ export default function NewSalePage() {
                                                         }));
                                                     }
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingLeft: '32px' }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '32px' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                         </div>
                                         <div style={{ position: 'relative' }}>
                                             <input type="number" min="0" max="100" placeholder="0"
@@ -869,9 +872,9 @@ export default function NewSalePage() {
                                                         discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)),
                                                     }));
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingLeft: '28px' }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '28px' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -880,15 +883,15 @@ export default function NewSalePage() {
                                 {taxSettings?.enabled && (
                                     <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? '(مشمولة)' : '(مضافة)'}</span>
+                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="number" step="0.01" value={form.taxRate}
                                                     onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingLeft: '22px' }}
+                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '22px' }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" value={fmt(form.taxAmount.toFixed(2))}
@@ -904,9 +907,9 @@ export default function NewSalePage() {
                                                             }));
                                                         }
                                                     }}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingLeft: '24px', fontWeight: 800, color: C.primary }}
+                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', left: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -923,28 +926,28 @@ export default function NewSalePage() {
                                     <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
                                         {netTotal.toLocaleString()} {cSymbol}
                                     </span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>صافي الفاتورة</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
                             </div>
                         </div>
 
                         {/* Payment */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}>التحصيل والسداد</div>
+                            <div style={{ ...STitle, color: '#3b82f6' }}>{t('التحصيل والسداد')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {/* Payment Type */}
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px' }}>طريقة الدفع</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('طريقة الدفع')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
-                                        {(['cash', 'bank', 'credit'] as const).map(t => (
-                                            <button key={t} onClick={() => setForm((f: any) => ({ ...f, paymentType: t, paidAmount: t === 'credit' ? 0 : f.paidAmount }))}
+                                        {(['cash', 'bank', 'credit'] as const).map(tType => (
+                                            <button key={tType} onClick={() => setForm((f: any) => ({ ...f, paymentType: tType, paidAmount: tType === 'credit' ? 0 : f.paidAmount }))}
                                                 style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO,
-                                                    borderColor: form.paymentType === t ? C.primary : C.border,
-                                                    background:  form.paymentType === t ? C.primaryBg : 'transparent',
-                                                    color:       form.paymentType === t ? C.primary : C.textSecondary,
+                                                    borderColor: form.paymentType === tType ? C.primary : C.border,
+                                                    background:  form.paymentType === tType ? C.primaryBg : 'transparent',
+                                                    color:       form.paymentType === tType ? C.primary : C.textSecondary,
                                                     fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
                                                 }}>
-                                                {t === 'cash' ? 'كاش' : t === 'bank' ? 'بنكي' : 'آجل'}
+                                                {tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}
                                             </button>
                                         ))}
                                     </div>
@@ -972,7 +975,7 @@ export default function NewSalePage() {
                                                     fontSize: '18px',
                                                     fontWeight: 900,
                                                     textAlign: 'center',
-                                                    paddingRight: '44px',
+                                                    paddingInlineEnd: '44px',
                                                     color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary,
                                                     fontFamily: INTER,
                                                     background: 'rgba(255,255,255,0.02)'
@@ -981,9 +984,9 @@ export default function NewSalePage() {
                                                 onBlur={focusOut}
                                             />
                                             {form.paymentType === 'bank' ? (
-                                                <Building2 size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                                <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                             ) : (
-                                                <Banknote size={20} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                                <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                             )}
                                             <InlineError field="paidAmount" />
                                         </div>
@@ -992,9 +995,9 @@ export default function NewSalePage() {
 
                                 {form.paymentType === 'cash' && form.paidAmount > 0 && (
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>الخزينة المستلمة <span style={{ color: '#f87171' }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('الخزينة المستلمة')} <span style={{ color: '#f87171' }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
-                                            <CustomSelect value={form.treasuryId} onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }} icon={Banknote} placeholder="اختر الخزينة..." options={treasuries.filter(t => t.type !== 'bank').map(t => ({ value: t.id, label: t.name }))} />
+                                            <CustomSelect value={form.treasuryId} onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }} icon={Banknote} placeholder={t("اختر الخزينة...")} options={treasuries.filter(t => t.type !== 'bank').map(t => ({ value: t.id, label: t.name }))} />
                                             <InlineError field="treasuryId" />
                                         </div>
                                     </div>
@@ -1032,13 +1035,13 @@ export default function NewSalePage() {
                                         }`,
                                     }}>
                                         <span>
-                                            {diff > 0 ? `متبقي: ${Math.abs(diff).toLocaleString()} ${cSymbol}`
-                                            : diff < 0 ? `زيادة: ${Math.abs(diff).toLocaleString()} ${cSymbol}`
-                                            : 'تم السداد بالكامل ✓'}
+                                            {diff > 0 ? `${t('متبقي:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}`
+                                            : diff < 0 ? `${t('زيادة:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}`
+                                            : t('تم السداد بالكامل ✓')}
                                         </span>
                                         {diff !== 0 && (
                                             <span style={{ fontSize: '10px', opacity: 0.7 }}>
-                                                {diff > 0 ? 'آجل' : 'رصيد دائن'}
+                                                {diff > 0 ? t('آجل') : t('رصيد دائن')}
                                             </span>
                                         )}
                                     </div>
@@ -1064,7 +1067,7 @@ export default function NewSalePage() {
                                     fontFamily: CAIRO,
                                     color: '#fff'
                                 }}>
-                                {submitting ? <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /> : <>حفظ الفاتورة <CheckCircle size={20} /></>}
+                                {submitting ? <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /> : <>{t('حفظ الفاتورة')} <CheckCircle size={20} /></>}
                             </button>
                             <button
                                 onClick={() => handleSubmit(true)}
@@ -1088,7 +1091,7 @@ export default function NewSalePage() {
                                     e.currentTarget.style.background = 'rgba(16,185,129,0.06)';
                                     e.currentTarget.style.borderColor = 'rgba(16,185,129,0.3)';
                                 }}>
-                                حفظ وطباعة الفاتورة <Printer size={15} />
+                                {t('حفظ وطباعة الفاتورة')} <Printer size={15} />
                             </button>
                         </div>
                     </div>
@@ -1099,7 +1102,7 @@ export default function NewSalePage() {
                 <AppModal
                     show={showAddCust}
                     onClose={() => setShowAddCust(false)}
-                    title={newPartnerType === 'customer' ? 'إضافة عميل جديد' : 'إضافة مورد جديد'}
+                    title={newPartnerType === 'customer' ? t('إضافة عميل جديد') : t('إضافة مورد جديد')}
                     icon={UserPlus}
                     maxWidth="440px"
                 >
@@ -1124,27 +1127,27 @@ export default function NewSalePage() {
                                 
                                 setForm((f: any) => ({ ...f, customerId: newP.id }));
                                 setShowAddCust(false);
-                            } else alert('فشل في الإضافة');
-                        } catch { alert('خطأ في الاتصال'); } finally { setSubmitting(false); }
+                            } else alert(t('فشل في الإضافة'));
+                        } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                     }}>
                         <div style={{ marginBottom: '16px', display: 'flex', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '4px' }}>
-                            <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>عميل</button>
-                            <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>مورد</button>
+                            <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
+                            <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
                         </div>
 
                         <div style={{ marginBottom: '16px' }}>
-                            <label style={LS}>الاسم <span style={{ color: C.danger }}>*</span></label>
+                            <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
                             <div style={{ position: 'relative' }}>
-                                <User size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                <input name="pName" required placeholder={newPartnerType === 'customer' ? 'اسم العميل...' : 'اسم المورد...'} style={{ ...IS, height: '42px', paddingRight: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                                <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <input name="pName" required placeholder={newPartnerType === 'customer' ? t('اسم العميل...') : t('اسم المورد...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>رقم الجوال</label>
+                            <label style={LS}>{t('رقم الجوال')}</label>
                             <div style={{ position: 'relative' }}>
-                                <Phone size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingRight: '40px', direction: 'ltr', textAlign: 'left' }} onFocus={focusIn} onBlur={focusOut} />
+                                <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
@@ -1152,12 +1155,12 @@ export default function NewSalePage() {
                             <button type="submit" disabled={submitting} style={{ 
                                 flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
                             }}>
-                                {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ'}
+                                {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                             </button>
                             <button type="button" onClick={() => setShowAddCust(false)} style={{ 
                                 flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
                                 background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
-                            }}>إلغاء</button>
+                            }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

@@ -52,8 +52,8 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         <ArrowRight size={22} />
                     </button>
                     <div>
-                        <h1 className="page-title" style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'right', fontFamily: CAIRO }}>{title}</h1>
-                        <p className="page-subtitle" style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'right', fontFamily: CAIRO }}>{subtitle}</p>
+                        <h1 className="page-title" style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{title}</h1>
+                        <p className="page-subtitle" style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>{subtitle}</p>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
@@ -111,11 +111,11 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
 
                     {/* Visual Right: Info (1st in RTL) */}
-                    <div style={{ textAlign: 'right', flex: 1 }}>
+                    <div style={{ textAlign: 'start', flex: 1 }}>
                         <h2 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{co.companyName || co.name}</h2>
                         <div style={{ fontSize: '11.5px', color: '#333', display: 'flex', flexDirection: 'column', gap: '3px', fontFamily: CAIRO, fontWeight: 600 }}>
                             {co.address && <div style={{ color: '#555' }}>{co.address}</div>}
-                            {co.phone && <div dir="ltr" style={{ textAlign: 'right', color: '#555' }}>{co.phone}</div>}
+                            {co.phone && <div dir="ltr" style={{ textAlign: 'start', color: '#555' }}>{co.phone}</div>}
                             {co.taxNumber && (
                                 <div style={{ display: 'flex', gap: '4px' }}>
                                     <span style={{ color: '#777' }}>الرقم الضريبي:</span>
@@ -154,7 +154,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     </div>
 
                     {/* Visual Left: Logo (3rd in RTL) */}
-                    <div style={{ textAlign: 'left', flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                    <div style={{ textAlign: 'end', flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
                         {(co.companyLogo || co.logo) && (
                             <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '85px', maxWidth: '145px', objectFit: 'contain' }} />
                         )}

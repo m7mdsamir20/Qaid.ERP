@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, use } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import {
@@ -45,6 +46,8 @@ interface SaleInvoice {
 }
 
 export default function SaleDetailPage(props: { params: Promise<{ id: string }> }) {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const params = use(props.params);
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
@@ -96,7 +99,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
                     title={`تفاصيل فاتورة مبيعات #${invoice.invoiceNumber}`}
@@ -124,7 +127,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 .header p { margin: 2px 0; font-size: 12px; }
                                                 .divider { border-bottom: 1px dashed #000; margin: 10px 0; }
                                                 .item-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; text-align: right; }
-                                                .item-name { flex: 1; padding-left: 5px; }
+                                                .item-name { flex: 1; padding-insetInlineStart: 5px; }
                                                 .item-qty { width: 30px; text-align: center; }
                                                 .item-total { width: 70px; text-align: left; }
                                                 .totals-row { display: flex; justify-content: space-between; font-size: 14px; margin-top: 5px; font-weight: bold; }
@@ -242,7 +245,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 <tbody>
                                     {invoice.lines.map((l, idx) => (
                                         <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'right' }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
                                             </td>

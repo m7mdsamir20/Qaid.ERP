@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import {
@@ -22,6 +23,8 @@ const BLANK = { name: '', capital: '', phone: '', notes: '' };
 const PARTNER_COLORS = ['#6366f1', '#a78bfa', '#34d399', '#60a5fa', '#f97316', '#f472b6', '#fb923c'];
 
 export default function PartnersPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const [partners, setPartners] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
@@ -81,7 +84,7 @@ export default function PartnersPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
                     title="بيانات الشركاء"
@@ -109,11 +112,11 @@ export default function PartnersPage() {
                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                             onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                             >
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                         <span>{typeof s.val === 'number' ? s.val.toLocaleString('en-US') : s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginLeft: '4px' }}>{s.suffix}</span>}
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -141,7 +144,7 @@ export default function PartnersPage() {
                             ))}
                             {totalShare < 100 && (
                                 <div title={`غير موزع: ${(100 - totalShare).toFixed(1)}%`}
-                                    style={{ width: `${100 - totalShare}%`, background: 'rgba(255,255,255,0.06)', borderLeft: '1px dashed rgba(255,255,255,0.1)' }} />
+                                    style={{ width: `${100 - totalShare}%`, background: 'rgba(255,255,255,0.06)', borderInlineStart: '1px dashed rgba(255,255,255,0.1)' }} />
                             )}
                         </div>
                         
@@ -232,7 +235,7 @@ export default function PartnersPage() {
                                         </div>
                                     </div>
                                     
-                                    <div style={{ position: 'absolute', bottom: 0, right: 0, left: 0, height: '3px', background: 'rgba(255,255,255,0.03)' }}>
+                                    <div style={{ position: 'absolute', bottom: 0, insetInlineEnd: 0, insetInlineStart: 0, height: '3px', background: 'rgba(255,255,255,0.03)' }}>
                                         <div style={{ height: '100%', width: `${p.share}%`, background: color, transition: 'width 1s ease-out' }} />
                                     </div>
                                 </div>
@@ -278,7 +281,7 @@ export default function PartnersPage() {
 
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>رقم الهاتف</label>
-                            <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="05xxxxxxxx" />
+                            <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="05xxxxxxxx" />
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>
@@ -291,7 +294,7 @@ export default function PartnersPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1, height: '48px' }}>
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Save size={18} />}
-                                <span style={{ marginRight: '8px' }}>{modal === 'add' ? 'إضافة الشريك' : 'حفظ التعديلات'}</span>
+                                <span style={{ marginInlineEnd: '8px' }}>{modal === 'add' ? 'إضافة الشريك' : 'حفظ التعديلات'}</span>
                             </button>
                             <button type="button" onClick={() => setModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                 إلغاء

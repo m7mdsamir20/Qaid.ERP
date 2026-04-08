@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -22,6 +23,8 @@ const SC = '#10b981';
 const DC = '#ef4444';
 
 export default function TreasuryReconciliationPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -87,7 +90,7 @@ export default function TreasuryReconciliationPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader 
                     title="تقرير الجرد والعجز والزيادة" 
                     subtitle="مطابقة الأرصدة الفعلية بالأرصدة الدفترية المودعة في النظام للخزن والحسابات البنكية." 
@@ -110,7 +113,7 @@ export default function TreasuryReconciliationPage() {
                             padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             transition: 'all 0.2s', boxShadow: '0 2px 8px -4px rgba(0,0,0,0.1)'
                         }}>
-                            <div style={{ textAlign: 'right' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
@@ -129,7 +132,7 @@ export default function TreasuryReconciliationPage() {
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', width: '100%', padding: 0 }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: q ? C.primary : C.textMuted, zIndex: 10 }} />
+                        <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: q ? C.primary : C.textMuted, zIndex: 10 }} />
                         <input
                             placeholder="ابحث باسم الخزينة أو الحساب البنكي..."
                             value={q} onChange={e => setQ(e.target.value)}

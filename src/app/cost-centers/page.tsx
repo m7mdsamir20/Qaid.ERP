@@ -220,7 +220,7 @@ export default function CostCentersPage() {
                                         <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                             <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                                 {cc.totalExpenses ? cc.totalExpenses.toLocaleString('en-US') : '0.00'} 
-                                                <span style={{ fontSize: '10px', color: C.textMuted, marginRight: '4px' }}>{cSymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </div>
                                         </td>
                                         <td style={TABLE_STYLE.td(false)}>
@@ -267,7 +267,7 @@ export default function CostCentersPage() {
                         <div>
                             <label style={LS}>رمز المركز</label>
                             <input readOnly value={form.code}
-                                style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.02)', color: '#64748b', cursor: 'not-allowed', borderColor: 'rgba(255,255,255,0.04)' }} />
+                                style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.02)', color: '#64748b', cursor: 'not-allowed', borderColor: 'rgba(255,255,255,0.04)' }} />
                         </div>
                         <div>
                             <label style={LS}>اسم المركز <span style={{ color: '#f87171' }}>*</span></label>
@@ -302,7 +302,7 @@ export default function CostCentersPage() {
                     <div style={{ display: 'flex', gap: '12px', marginTop: '4px' }}>
                         <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(saving, false), flex: 1.5, height: '48px' }}>
                             {saving ? <Loader2 size={18} className="animate-spin" /> : (editItem ? <CheckCircle2 size={18} /> : <Plus size={18} />)}
-                            <span style={{ marginRight: '8px' }}>{editItem ? 'حفظ التعديلات' : 'إضافة المركز'}</span>
+                            <span style={{ marginInlineEnd: '8px' }}>{editItem ? 'حفظ التعديلات' : 'إضافة المركز'}</span>
                         </button>
                         <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '12px', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
                     </div>

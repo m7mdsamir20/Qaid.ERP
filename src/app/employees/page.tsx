@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -33,6 +34,8 @@ interface Employee {
 
 /* ══════════════════════════════════════════ */
 export default function EmployeesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: currencySymbol } = useCurrency();
     const [employees, setEmployees] = useState<Employee[]>([]);
@@ -93,7 +96,7 @@ export default function EmployeesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
 
                 {/* Header Section */}
                 <PageHeader 
@@ -118,7 +121,7 @@ export default function EmployeesPage() {
                         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                         onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                             <div style={{ textAlign: 'right' }}>
+                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -137,12 +140,12 @@ export default function EmployeesPage() {
                     display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px'
                 }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
                             placeholder="ابحث باسم الموظف أو الكود أو المنصب الوظيفي..."
                             style={{ 
-                                ...IS, paddingRight: '40px', height: '40px', fontSize: '13px', 
+                                ...IS, paddingInlineEnd: '40px', height: '40px', fontSize: '13px', 
                                 borderRadius: '12px'
                             }}
                             onFocus={focusIn}
@@ -235,7 +238,7 @@ export default function EmployeesPage() {
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir="rtl">
+                                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
                                                         {new Date(emp.hireDate).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' })}
                                                     </div>
                                                 </td>

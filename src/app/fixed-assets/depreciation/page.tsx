@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import {
@@ -40,6 +41,8 @@ function calcDepreciation(asset: FixedAsset, months: number): number {
 }
 
 export default function DepreciationPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [years, setYears]         = useState<FinancialYear[]>([]);
     const [selectedYearId, setSelectedYearId] = useState('');
     const [period, setPeriod]       = useState('سنوي');
@@ -111,7 +114,7 @@ export default function DepreciationPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
                     title="احتساب قيود الإهلاك للفترة"
@@ -136,11 +139,11 @@ export default function DepreciationPage() {
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                         }}>
-                            <div style={{ textAlign: 'right' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                     <span>{s.val.toLocaleString('en-US')}</span>
-                                    {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginLeft: '4px' }}>ج.م</span>}
+                                    {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>ج.م</span>}
                                 </div>
                             </div>
                             <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -180,7 +183,7 @@ export default function DepreciationPage() {
                         <span>احسب الإهلاك الآن</span>
                     </button>
                     {selectedYear && (
-                        <div style={{ marginRight: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO, paddingBottom: '10px' }}>
+                        <div style={{ marginInlineEnd: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO, paddingBottom: '10px' }}>
                             <InfoIcon size={14} />
                             <span>نطاق السنة: {new Date(selectedYear.startDate).toLocaleDateString('en-GB')} ← {new Date(selectedYear.endDate).toLocaleDateString('en-GB')}</span>
                         </div>
@@ -213,7 +216,7 @@ export default function DepreciationPage() {
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                     {['كود الأصل', 'اسم الأصل', 'تكلفة الشراء', 'مجمع قبل', 'قسط الفترة', 'مجمع بعد', 'الصافي الباقي', 'الحالة'].map((h, i) => (
-                                        <th key={i} style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>{h}</th>
+                                        <th key={i} style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -263,7 +266,7 @@ export default function DepreciationPage() {
                             <Calculator size={32} />
                         </div>
                         <h3 style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>هل أنت متأكد من تسجيل هذه القيود؟</h3>
-                        <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: `1px solid ${C.border}`, marginBottom: '24px', textAlign: 'right' }}>
+                        <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: `1px solid ${C.border}`, marginBottom: '24px', textAlign: 'start' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
                                 <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>عدد الأصول المشمولة:</span>
                                 <span style={{ color: C.textPrimary, fontWeight: 900 }}>{pendingCount} أصل</span>

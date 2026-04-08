@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
 import {
@@ -29,6 +30,8 @@ interface ReturnInvoice {
 }
 
 export default function SaleReturnDetailsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const params = useParams();
     const router = useRouter();
     const { data: session } = useSession();
@@ -105,7 +108,7 @@ export default function SaleReturnDetailsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '40px', paddingTop: '8px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '40px', paddingTop: '8px' }}>
 
                 {/* 1. Header: Title & Actions */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
@@ -181,7 +184,7 @@ export default function SaleReturnDetailsPage() {
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>رصيد العميل الحالي:</div>
                             <div style={{ fontSize: '14px', fontWeight: 800, color: customer.balance > 0 ? '#f87171' : '#10b981' }}>
-                                <span style={{ fontSize: '11px', marginLeft: '4px' }}>{customer.balance > 0 ? 'عليه' : 'له'}</span>
+                                <span style={{ fontSize: '11px', marginInlineStart: '4px' }}>{customer.balance > 0 ? 'عليه' : 'له'}</span>
                                 {Math.abs(customer.balance).toLocaleString()}
                             </div>
                         </div>
@@ -203,7 +206,7 @@ export default function SaleReturnDetailsPage() {
                             <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
-                                        <th style={{ padding: '12px 16px', textAlign: 'right', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "الخدمة" : "الصنف"}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'start', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "الخدمة" : "الصنف"}</th>
                                         <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "الحالة/الوصف" : "الوحدة"}</th>
                                         <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "الكمية الملغاة" : "الكمية المرتجعة"}</th>
                                         <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "سعر الخدمة" : "سعر الوحدة"}</th>

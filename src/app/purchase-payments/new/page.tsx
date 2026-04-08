@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
@@ -19,6 +20,8 @@ interface Supplier { id: string; name: string; balance: number; }
 interface Treasury { id: string; name: string; type: string; balance: number; }
 
 export default function NewPurchasePaymentPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
     const [partners, setPartners] = useState<any[]>([]);
@@ -127,7 +130,7 @@ export default function NewPurchasePaymentPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
                     title="سند صرف جديد"
                     subtitle="صرف نقدية لجهة (مورد/عميل) وتحديث الرصيد"
@@ -164,7 +167,7 @@ export default function NewPurchasePaymentPage() {
                                         <label style={{ ...LS, fontSize: '11px' }}>تاريخ السند <span style={{ color: C.danger }}>*</span></label>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, direction: 'ltr', textAlign: 'left', background: C.inputBg, fontSize: '13px', fontFamily: CAIRO }}
+                                            style={{ ...IS, direction: 'ltr', textAlign: 'end', background: C.inputBg, fontSize: '13px', fontFamily: CAIRO }}
                                             className="blue-date-icon" onFocus={focusIn} onBlur={focusOut}
                                         />
                                     </div>
@@ -296,11 +299,11 @@ export default function NewPurchasePaymentPage() {
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
                                                 border: 'none', color: C.primary, fontWeight: 900,
-                                                fontSize: '22px', textAlign: 'center', paddingRight: '20px',
+                                                fontSize: '22px', textAlign: 'center', paddingInlineEnd: '20px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
                                         />
-                                        <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.6 }}>
+                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.6 }}>
                                             {form.paymentType === 'cash' ? <Banknote size={20} /> : <Building2 size={20} />}
                                         </div>
                                     </div>
@@ -377,7 +380,7 @@ function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, for
     const nextBal = isCust ? (supplier?.balance || 0) + (voucher.amount || 0) : (supplier?.balance || 0) - (voucher.amount || 0);
 
     const html = `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir={isRtl ? 'rtl' : 'ltr'}>
 <head><meta charset="UTF-8"/><title>سند صرف - PMT-${String(voucherNumber).padStart(5, '0')}</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}

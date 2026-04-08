@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { useTranslation } from '@/lib/i18n';
 import { Cairo, Outfit } from "next/font/google";
 import { Providers } from "@/components/Providers";
 import "./globals.css";

@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import {
     Warehouse, Plus, Trash2, Search, Pencil, Loader2, MapPin, Building2, Boxes, ShieldCheck, AlertTriangle
@@ -22,6 +23,8 @@ interface WarehouseItem {
 }
 
 export default function WarehousesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [warehouses, setWarehouses] = useState<WarehouseItem[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -130,7 +133,7 @@ export default function WarehousesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 
                 <PageHeader 
                     title="المخازن" 
@@ -250,9 +253,9 @@ export default function WarehousesPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input 
                                         type="text" readOnly disabled value={form.code} 
-                                        style={{ ...IS, paddingLeft: '32px', textAlign: 'center', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', borderStyle: 'dashed' }} 
+                                        style={{ ...IS, paddingInlineStart: '32px', textAlign: 'center', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', borderStyle: 'dashed' }} 
                                     />
-                                    <ShieldCheck size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }} />
+                                    <ShieldCheck size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }} />
                                 </div>
                             </div>
                             <div>
@@ -276,10 +279,10 @@ export default function WarehousesPage() {
                                     placeholder="أدخل عنوان المخزن بالتفصيل..." 
                                     value={form.address} 
                                     onChange={e => setForm({ ...form, address: e.target.value })} 
-                                    style={{ ...IS, paddingRight: '40px' }} 
+                                    style={{ ...IS, paddingInlineEnd: '40px' }} 
                                     onFocus={focusIn} onBlur={focusOut} 
                                 />
-                                <MapPin size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.blue, opacity: 0.8 }} />
+                                <MapPin size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.blue, opacity: 0.8 }} />
                             </div>
                         </div>
 

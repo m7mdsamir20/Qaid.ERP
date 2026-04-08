@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
@@ -33,6 +34,8 @@ interface Item {
 }
 
 export default function ItemMovementReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -78,7 +81,7 @@ export default function ItemMovementReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="تقرير حركة صنف"
                     subtitle="متابعة تفصيلية لكافة عمليات الصادر والوارد لكل قطعة بالاسم أو الكود."

@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -29,6 +30,8 @@ interface ReportResult {
 }
 
 export default function ClientsSuppliersBalancesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -104,7 +107,7 @@ export default function ClientsSuppliersBalancesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="أرصدة العملاء والموردين"
                     subtitle="تقرير شامل يعرض جميع المستحقات (ما لنا وما علينا) لكل حساب."
@@ -116,7 +119,7 @@ export default function ClientsSuppliersBalancesPage() {
 
                 <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
                     <div style={{ position: 'relative', width: '100%' }}>
-                        <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                        <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
                             placeholder="ابحث باسم الحساب أو رقم الهاتف..."
                             value={search} onChange={e => setSearch(e.target.value)}

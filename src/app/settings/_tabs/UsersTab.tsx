@@ -110,13 +110,13 @@ export default function UsersTab({
                                     fontFamily: CAIRO, transition: 'border-color 0.2s'
                                 }}>
                                 <ChevronDown size={14} style={{ color: C.primary, transform: openDropdown === 'role' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                                <span style={{ flex: 1, textAlign: 'right', fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? `${C.textMuted}aa` : C.textPrimary }}>
+                                <span style={{ flex: 1, textAlign: 'start', fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? `${C.textMuted}aa` : C.textPrimary }}>
                                     {({ none: 'اختر الدور الوظيفي', admin: 'مدير النظام', accountant: 'محاسب', sales: 'مندوب مبيعات', procurement: 'مسؤول مشتريات', storekeeper: 'أمين مستودع', hr: 'موارد بشرية', custom: 'مخصص' } as any)[newUserForm.roleId] || newUserForm.roleId}
                                 </span>
                             </button>
 
                             {openDropdown === 'role' && (
-                                <div style={{ position: 'absolute', top: '46px', right: 0, left: 0, zIndex: 999, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 12px 32px rgba(0,0,0,0.5)' }}>
+                                <div style={{ position: 'absolute', top: '46px', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 999, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 12px 32px rgba(0,0,0,0.5)' }}>
                                     {[
                                         { value: 'none', label: 'اختر الدور الوظيفي', desc: '-- يرجى اختيار نوع الصلاحية --' },
                                         { value: 'admin', label: 'مدير النظام', desc: 'كل الصلاحيات بدون قيود' },
@@ -144,7 +144,7 @@ export default function UsersTab({
                                                 borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none',
                                                 background: newUserForm.roleId === opt.value ? `${C.primary}15` : 'transparent',
                                                 color: newUserForm.roleId === opt.value ? C.primary : C.textSecondary,
-                                                fontSize: '12.5px', cursor: 'pointer', textAlign: 'right', fontFamily: CAIRO
+                                                fontSize: '12.5px', cursor: 'pointer', textAlign: 'start', fontFamily: CAIRO
                                             }}
                                             onMouseEnter={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; }}
                                             onMouseLeave={e => { if (newUserForm.roleId !== opt.value) e.currentTarget.style.background = 'transparent'; }}>
@@ -307,7 +307,7 @@ export default function UsersTab({
                                                 <span style={{ fontSize: '13px', fontWeight: 800, color: allSel ? C.textPrimary : C.textSecondary, fontFamily: CAIRO }}>
                                                     {section.title}
                                                 </span>
-                                                <span style={{ fontSize: '10px', padding: '2px 10px', borderRadius: '20px', background: activeCount > 0 ? `${C.primary}15` : 'rgba(255,255,255,0.05)', color: activeCount > 0 ? C.primary : C.textMuted, border: `1px solid ${activeCount > 0 ? `${C.primary}25` : 'rgba(255,255,255,0.08)'}`, fontWeight: 900, marginRight: '8px', fontFamily: CAIRO }}>
+                                                <span style={{ fontSize: '10px', padding: '2px 10px', borderRadius: '20px', background: activeCount > 0 ? `${C.primary}15` : 'rgba(255,255,255,0.05)', color: activeCount > 0 ? C.primary : C.textMuted, border: `1px solid ${activeCount > 0 ? `${C.primary}25` : 'rgba(255,255,255,0.08)'}`, fontWeight: 900, marginInlineEnd: '8px', fontFamily: CAIRO }}>
                                                     {activeCount > 0 ? `${activeCount} / ${section.links.length}` : `${section.links.length} صفحة`}
                                                 </span>
                                             </div>

@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
@@ -154,6 +155,8 @@ function AttachmentUploader({ attachments, onAdd, onRemove }: {
    EDIT EMPLOYEE PAGE
    ══════════════════════════════════════════ */
 export default function EditEmployeePage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { symbol: cSymbol } = useCurrency();
     const router = useRouter();
     const { id } = useParams();
@@ -232,7 +235,7 @@ export default function EditEmployeePage() {
             <DashboardLayout>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#64748b' }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span style={{ marginRight: '12px' }}>جاري تحميل بيانات الموظف...</span>
+                    <span style={{ marginInlineEnd: '12px' }}>جاري تحميل بيانات الموظف...</span>
                 </div>
             </DashboardLayout>
         );
@@ -244,7 +247,7 @@ export default function EditEmployeePage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '40px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '40px' }}>
 
                 {/* Top Bar */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
@@ -326,8 +329,8 @@ export default function EditEmployeePage() {
                             <FormSection label="الراتب والبدلات والخصومات" icon={CreditCard} color="#10b981" description="تفاصيل الراتب الشهري والحوافز والاستقطاعات">
                                 <Field label={`الراتب الأساسي الشهري (${cSymbol})`} required>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="number" step="0.01" min="0" className="input" required value={form.basicSalary} onChange={e => set('basicSalary')(e.target.value)} placeholder="0.00" style={{ fontSize: '20px', fontWeight: 900, height: '56px', paddingRight: '16px', color: '#10b981', background: 'rgba(16,185,129,0.02)', borderColor: 'rgba(16,185,129,0.2)' }} />
-                                        <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontWeight: 800, color: '#64748b' }}>{cSymbol}</span>
+                                        <input type="number" step="0.01" min="0" className="input" required value={form.basicSalary} onChange={e => set('basicSalary')(e.target.value)} placeholder="0.00" style={{ fontSize: '20px', fontWeight: 900, height: '56px', paddingInlineEnd: '16px', color: '#10b981', background: 'rgba(16,185,129,0.02)', borderColor: 'rgba(16,185,129,0.2)' }} />
+                                        <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontWeight: 800, color: '#64748b' }}>{cSymbol}</span>
                                     </div>
                                 </Field>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

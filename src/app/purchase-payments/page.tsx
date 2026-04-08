@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import {
@@ -24,6 +25,8 @@ interface Supplier { id: string; name: string; balance: number; }
 interface Treasury { id: string; name: string; type: string; balance: number; }
 
 export default function PurchasePaymentsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
@@ -76,7 +79,7 @@ export default function PurchasePaymentsPage() {
         };
 
         const html = `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir={isRtl ? 'rtl' : 'ltr'}>
 <head><meta charset="UTF-8"/><title>سند صرف - PMT-${String(voucherNumber).padStart(5, '0')}</title>
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
@@ -169,7 +172,7 @@ export default function PurchasePaymentsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '30px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px' }}>
                 <PageHeader
                     title="سندات الصرف"
                     subtitle="إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك"

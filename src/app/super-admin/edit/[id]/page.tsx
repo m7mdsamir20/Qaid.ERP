@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useRouter, useParams } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
 import {
@@ -110,6 +111,8 @@ const parseFeaturesFromRaw = (raw: any): Record<string, string[]> | null => {
 };
 
 export default function EditCompanyPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const params = useParams();
     const id = params.id as string;
@@ -319,7 +322,7 @@ export default function EditCompanyPage() {
     );
 
     return (
-        <div dir="rtl" style={{ minHeight: '100vh', background: C.bg, color: C.textPrimary, fontFamily: CAIRO }}>
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, color: C.textPrimary, fontFamily: CAIRO }}>
 
             {/* Header */}
             <div style={{ background: C.card, borderBottom: `1px solid ${C.border}`, padding: '0 32px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.5)' }}>
@@ -386,15 +389,15 @@ export default function EditCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>الاسم بالإنجليزية</label>
-                                <input type="text" value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER }} />
+                                <input type="text" value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
                                 <label style={LS}>رقم هاتف الشركة</label>
-                                <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone" style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER }} />
+                                <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
                                 <label style={LS}>البريد الإلكتروني للشركة</label>
-                                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER }} />
+                                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
                                 <label style={LS}>العنوان</label>
@@ -422,7 +425,7 @@ export default function EditCompanyPage() {
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '36px' }}>
                             <button onClick={() => { if (!form.name.trim()) { alert('اسم الشركة مطلوب'); return; } setStep(2); }}
                                 style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '50px', borderRadius: '14px' }}>
-                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginRight: '10px' }} />
+                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '10px' }} />
                             </button>
                         </div>
                     </div>
@@ -448,11 +451,11 @@ export default function EditCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>البريد الإلكتروني للمدير</label>
-                                <input type="email" value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER }} />
+                                <input type="email" value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
                                 <label style={LS}>رقم هاتف المدير</label>
-                                <input type="tel" value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="tel" style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER }} />
+                                <input type="tel" value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="tel" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
 
                             <div style={{ gridColumn: 'span 2', height: '1px', background: C.border, margin: '10px 0' }} />
@@ -466,10 +469,10 @@ export default function EditCompanyPage() {
                                         value={form.newPassword}
                                         onChange={e => setForm(f => ({ ...f, newPassword: e.target.value }))}
                                         onFocus={focusIn} onBlur={focusOut}
-                                        style={{ ...IS, paddingLeft: '44px', direction: 'ltr', textAlign: 'left', fontFamily: INTER }}
+                                        style={{ ...IS, paddingInlineStart: '44px', direction: 'ltr', textAlign: 'end', fontFamily: INTER }}
                                     />
                                     <button type="button" onClick={() => setShowPassword(!showPassword)}
-                                        style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted }}>
+                                        style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted }}>
                                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -482,7 +485,7 @@ export default function EditCompanyPage() {
                                     value={form.newPasswordConfirm}
                                     onChange={e => setForm(f => ({ ...f, newPasswordConfirm: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'left', fontFamily: INTER, borderColor: form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm ? C.danger : undefined }}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER, borderColor: form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm ? C.danger : undefined }}
                                 />
                                 {form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm && (
                                     <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700 }}>كلمات المرور غير متطابقة</p>
@@ -495,7 +498,7 @@ export default function EditCompanyPage() {
                                 السابق
                             </button>
                             <button onClick={() => setStep(3)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
-                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginRight: '10px' }} />
+                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '10px' }} />
                             </button>
                         </div>
                     </div>
@@ -558,7 +561,7 @@ export default function EditCompanyPage() {
                                 السابق
                             </button>
                             <button onClick={() => setStep(4)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
-                                التالي — الصلاحيات <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginRight: '10px' }} />
+                                التالي — الصلاحيات <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '10px' }} />
                             </button>
                         </div>
                     </div>
@@ -648,7 +651,7 @@ export default function EditCompanyPage() {
                                     const section = uniqueSections.find(s => s.featureKey === key);
                                     return (
                                         <span key={key} style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}20`, fontWeight: 800 }}>
-                                            {section?.title} <span style={{ opacity: 0.6, marginRight: '4px' }}>({pages.length})</span>
+                                            {section?.title} <span style={{ opacity: 0.6, marginInlineEnd: '4px' }}>({pages.length})</span>
                                         </span>
                                     );
                                 })}

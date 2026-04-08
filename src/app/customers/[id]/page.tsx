@@ -1,11 +1,14 @@
 'use client';
 import React, { useState, useEffect, useCallback, use } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { ArrowRight, Printer, ScrollText, Calendar, Loader2, TrendingUp, TrendingDown, History, FileText, User, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
 export default function CustomerLedgerPage({ params }: { params: Promise<{ id: string }> }) {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
@@ -77,7 +80,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '60px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px' }}>
                 {/* Header */}
                 <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
@@ -102,7 +105,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 {/* Print Branding (Hidden in Web) */}
                 <div className="print-only" style={{ display: 'none', textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: '30px', marginBottom: '30px' }}>
                     <h1 style={{ fontSize: '28px', color: '#000', margin: '0 0 10px 0' }}>كشف حساب تفصيلي</h1>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'rtl', textAlign: 'right', fontSize: '14px', color: '#000' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'rtl', textAlign: 'start', fontSize: '14px', color: '#000' }}>
                         <div><strong>اسم العميل:</strong> {customer.name}</div>
                         {customer.phone && <div><strong>رقم الهاتف:</strong> {customer.phone}</div>}
                         <div><strong>تاريخ الطباعة:</strong> {new Date().toLocaleDateString('ar-EG')}</div>
@@ -117,14 +120,14 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>تاريخ البداية</label>
                             <div style={{ position: 'relative' }}>
-                                <Calendar size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
+                                <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
                                 <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
                             </div>
                         </div>
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>تاريخ النهاية</label>
                             <div style={{ position: 'relative' }}>
-                                <Calendar size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
+                                <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
                                 <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
                             </div>
                         </div>
@@ -147,7 +150,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                 <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--text-muted)' }}>{card.label}</span>
                                 <div style={{ color: card.color, opacity: 0.8 }}>{card.icon}</div>
                             </div>
-                            <div style={{ fontSize: '20px', fontWeight: 950, color: 'var(--text-primary)', marginBottom: '4px', direction: 'ltr', textAlign: 'right' }}>
+                            <div style={{ fontSize: '20px', fontWeight: 950, color: 'var(--text-primary)', marginBottom: '4px', direction: 'ltr', textAlign: 'start' }}>
                                 {card.value.toLocaleString()} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>جم</span>
                             </div>
                             <div style={{ fontSize: '11px', fontWeight: 850, color: card.color, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -179,9 +182,9 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                         </td>
                                         <td style={{ padding: '16px 20px', textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600 }}>—</td>
                                         <td style={{ padding: '16px 20px', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 700 }}>إجمالي رصيد العميل ما قبل فترة البحث المحددة</td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'right', color: initialBalance > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 900, fontSize: '14px' }}>{initialBalance > 0 ? initialBalance.toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'right', color: initialBalance < 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 900, fontSize: '14px' }}>{initialBalance < 0 ? Math.abs(initialBalance).toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'right', fontWeight: 950, color: initialBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '15px' }}>{Math.abs(initialBalance).toLocaleString()}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'start', color: initialBalance > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 900, fontSize: '14px' }}>{initialBalance > 0 ? initialBalance.toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'start', color: initialBalance < 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 900, fontSize: '14px' }}>{initialBalance < 0 ? Math.abs(initialBalance).toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'start', fontWeight: 950, color: initialBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '15px' }}>{Math.abs(initialBalance).toLocaleString()}</td>
                                     </tr>
                                 )}
                                 
@@ -200,9 +203,9 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                             {row.ref ? <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 800, color: 'var(--text-primary)' }}>{row.ref}</span> : <span style={{ color: 'var(--text-muted)' }}>—</span>}
                                         </td>
                                         <td style={{ padding: '14px 20px', fontSize: '13px', color: 'var(--text-primary)', fontWeight: 650 }}>{row.description}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'right', color: row.debit > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 950, fontSize: '14px' }}>{row.debit > 0 ? row.debit.toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'right', color: row.credit > 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 950, fontSize: '14px' }}>{row.credit > 0 ? row.credit.toLocaleString() : '—'}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'right', fontWeight: 950, color: row.balance > 0 ? '#ef4444' : row.balance < 0 ? '#10b981' : 'var(--text-primary)', direction: 'ltr', fontSize: '15px' }}>{Math.abs(row.balance).toLocaleString()}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'start', color: row.debit > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 950, fontSize: '14px' }}>{row.debit > 0 ? row.debit.toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'start', color: row.credit > 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 950, fontSize: '14px' }}>{row.credit > 0 ? row.credit.toLocaleString() : '—'}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 950, color: row.balance > 0 ? '#ef4444' : row.balance < 0 ? '#10b981' : 'var(--text-primary)', direction: 'ltr', fontSize: '15px' }}>{Math.abs(row.balance).toLocaleString()}</td>
                                     </tr>
                                 ))}
 
@@ -218,10 +221,10 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                             </tbody>
                             <tfoot style={{ background: 'var(--surface-100)', borderTop: '2px solid var(--border-subtle)' }}>
                                 <tr style={{ fontWeight: 950 }}>
-                                    <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'right', fontSize: '16px', color: 'var(--text-primary)' }}>صافي إجمالي الحركات خلال الفترة</td>
-                                    <td style={{ padding: '20px 20px', textAlign: 'right', color: '#ef4444', fontSize: '16px' }}>{totalDebit.toLocaleString()}</td>
-                                    <td style={{ padding: '20px 20px', textAlign: 'right', color: '#10b981', fontSize: '16px' }}>{totalCredit.toLocaleString()}</td>
-                                    <td style={{ padding: '20px 24px', textAlign: 'right', color: finalBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '18px' }}>{Math.abs(totalDebit - totalCredit).toLocaleString()}</td>
+                                    <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'start', fontSize: '16px', color: 'var(--text-primary)' }}>صافي إجمالي الحركات خلال الفترة</td>
+                                    <td style={{ padding: '20px 20px', textAlign: 'start', color: '#ef4444', fontSize: '16px' }}>{totalDebit.toLocaleString()}</td>
+                                    <td style={{ padding: '20px 20px', textAlign: 'start', color: '#10b981', fontSize: '16px' }}>{totalCredit.toLocaleString()}</td>
+                                    <td style={{ padding: '20px 24px', textAlign: 'start', color: finalBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '18px' }}>{Math.abs(totalDebit - totalCredit).toLocaleString()}</td>
                                 </tr>
                             </tfoot>
                         </table>

@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { navSections } from '@/constants/navigation';
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -30,11 +31,13 @@ import DatabaseTab from './_tabs/DatabaseTab';
    MAIN PAGE
 ══════════════════════════════════════════ */
 export default function SettingsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     return (
         <Suspense fallback={
             <DashboardLayout>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
-                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> جاري تحميل الإعدادات...
+                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
                 </div>
             </DashboardLayout>
         }>
@@ -44,6 +47,8 @@ export default function SettingsPage() {
 }
 
 function SettingsContent() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [company, setCompany] = useState<any>(null);
     const [users, setUsers] = useState<any[]>([]);
     const [branches, setBranches] = useState<any[]>([]);
@@ -655,7 +660,7 @@ function SettingsContent() {
     if (loading) return (
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> جاري تحميل الإعدادات...
+                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
             </div>
             <style>{`
                 @keyframes spin{to{transform:rotate(360deg)}}
@@ -677,14 +682,14 @@ function SettingsContent() {
 
     // Filter tabs based on permissionHierarchy
     const filteredTabs = [
-        { id: 'company', icon: Building2, label: 'بيانات الشركة', featureKey: 'settings', pageId: '/settings/company' },
-        { id: 'general', icon: Globe, label: 'الإعدادات العامة', featureKey: 'settings', pageId: '/settings/general' },
-        { id: 'branches', icon: Store, label: 'الفروع', featureKey: 'settings', pageId: '/settings/branches' },
-        { id: 'notifications', icon: Bell, label: 'الإشعارات', featureKey: 'settings', pageId: '/settings/notifications' },
-        { id: 'tax', icon: Percent, label: 'الضريبة', featureKey: 'settings', pageId: '/settings/tax' },
-        { id: 'users', icon: Shield, label: 'المستخدمين والصلاحيات', featureKey: 'settings', pageId: '/settings/users' },
-        { id: 'subscription', icon: CreditCard, label: 'الاشتراك والخطة', featureKey: 'settings', pageId: '/settings/subscription' },
-        { id: 'database', icon: Database, label: 'قواعد البيانات', featureKey: 'settings', pageId: '/settings/database' },
+        { id: 'company', icon: Building2, label: t('بيانات الشركة'), featureKey: 'settings', pageId: '/settings/company' },
+        { id: 'general', icon: Globe, label: t('الإعدادات العامة'), featureKey: 'settings', pageId: '/settings/general' },
+        { id: 'branches', icon: Store, label: t('الفروع'), featureKey: 'settings', pageId: '/settings/branches' },
+        { id: 'notifications', icon: Bell, label: t('الإشعارات'), featureKey: 'settings', pageId: '/settings/notifications' },
+        { id: 'tax', icon: Percent, label: t('الضريبة'), featureKey: 'settings', pageId: '/settings/tax' },
+        { id: 'users', icon: Shield, label: t('المستخدمين والصلاحيات'), featureKey: 'settings', pageId: '/settings/users' },
+        { id: 'subscription', icon: CreditCard, label: t('الاشتراك والخطة'), featureKey: 'settings', pageId: '/settings/subscription' },
+        { id: 'database', icon: Database, label: t('قواعد البيانات'), featureKey: 'settings', pageId: '/settings/database' },
     ].filter(tab => hasPage(tab.featureKey, tab.pageId));
 
 
@@ -693,16 +698,16 @@ function SettingsContent() {
     ══════════════════════════════════════════ */
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader
-                    title="الإعدادات الشاملة للمؤسسة"
-                    subtitle="إدارة بيانات المنشأة، المستخدمين ونظام الصلاحيات العام وفترات العمل المالية"
+                    title={t("الإعدادات الشاملة للمؤسسة")}
+                    subtitle={t("إدارة بيانات المنشأة، المستخدمين ونظام الصلاحيات العام وفترات العمل المالية")}
                     icon={SettingsIcon}
                 />
 
                 {/* Toast */}
                 {toastMsg && (
-                    <div style={{ position: 'fixed', bottom: '24px', left: '24px', background: toastType === 'success' ? '#10b981' : '#ef4444', color: '#fff', padding: '12px 24px', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', gap: '10px', zIndex: 9999, fontSize: '14px', fontWeight: 600 }}>
+                    <div style={{ position: 'fixed', bottom: '24px', insetInlineStart: '24px', background: toastType === 'success' ? '#10b981' : '#ef4444', color: '#fff', padding: '12px 24px', borderRadius: '10px', boxShadow: '0 4px 16px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', gap: '10px', zIndex: 9999, fontSize: '14px', fontWeight: 600 }}>
                         {toastType === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />} {toastMsg}
                     </div>
                 )}
@@ -718,18 +723,18 @@ function SettingsContent() {
                             const Icon = tab.icon;
                             const active = activeTab === tab.id;
                             return (
-                                <button key={tab.id} onClick={() => {
-                                    setActiveTab(tab.id);
-                                    handleCancel();
-                                }}
-                                    style={{
-                                        width: '100%', textAlign: 'right', display: 'flex', alignItems: 'center', gap: '12px',
-                                        padding: '12px 16px', border: 'none', borderRadius: '12px', marginBottom: '4px',
-                                        background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
-                                        color: active ? C.primary : C.textSecondary,
-                                        fontWeight: active ? 900 : 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s',
-                                        fontFamily: CAIRO
+                                    <button key={tab.id} onClick={() => {
+                                        setActiveTab(tab.id);
+                                        handleCancel();
                                     }}
+                                        style={{
+                                            width: '100%', textAlign: 'start', display: 'flex', alignItems: 'center', gap: '12px',
+                                            padding: '12px 16px', border: 'none', borderRadius: '12px', marginBottom: '4px',
+                                            background: active ? 'rgba(37,106,244,0.1)' : 'transparent',
+                                            color: active ? C.primary : C.textSecondary,
+                                            fontWeight: active ? 900 : 700, fontSize: '13px', cursor: 'pointer', transition: 'all 0.2s',
+                                            fontFamily: CAIRO
+                                        }}
                                     onMouseEnter={e => {
                                         if (!active) {
                                             e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
@@ -751,8 +756,8 @@ function SettingsContent() {
                                     }}>
                                         <Icon size={16} />
                                     </div>
-                                    <span style={{ whiteSpace: 'nowrap' }}>{tab.label}</span>
-                                    {active && <div style={{ marginRight: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} />}
+                                        <span style={{ whiteSpace: 'nowrap' }}>{tab.label}</span>
+                                        {active && <div style={{ marginInlineStart: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: C.primary }} />}
                                 </button>
                             );
                         })}

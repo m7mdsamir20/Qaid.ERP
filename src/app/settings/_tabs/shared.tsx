@@ -25,14 +25,14 @@ export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSavi
                 !isEdit ? (
                     <button onClick={onEdit}
                         style={{ ...BTN_PRIMARY(false, false), width: 'auto', height: '36px', padding: '0 18px', fontSize: '12.5px' }}>
-                        <Pencil size={14} /> <span style={{ marginRight: '6px' }}>تعديل البيانات</span>
+                        <Pencil size={14} /> <span style={{ marginInlineEnd: '6px' }}>تعديل البيانات</span>
                     </button>
                 ) : (
                     <div style={{ display: 'flex', gap: '8px' }}>
                         <button onClick={onSave} disabled={isSaving} form={form} type={form ? 'submit' : 'button'}
                             style={{ ...BTN_PRIMARY(false, isSaving), width: 'auto', height: '36px', padding: '0 18px', fontSize: '12.5px' }}>
                             {isSaving ? <Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> : <Save size={14} />}
-                            <span style={{ marginRight: '6px' }}>حفظ التغييرات</span>
+                            <span style={{ marginInlineEnd: '6px' }}>حفظ التغييرات</span>
                         </button>
                         <button type="button" onClick={onCancel}
                             style={{

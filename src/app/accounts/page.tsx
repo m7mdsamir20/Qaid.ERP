@@ -51,6 +51,8 @@ const typeColors: Record<string, string> = {
    MAIN PAGE
 ══════════════════════════════════════════ */
 export default function AccountsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const { symbol: currencySymbol } = useCurrency();
@@ -282,7 +284,7 @@ export default function AccountsPage() {
                     </span>
 
                     {/* Balance */}
-                    <div style={{ textAlign: 'left', minWidth: '160px', flexShrink: 0 }}>
+                    <div style={{ textAlign: 'end', minWidth: '160px', flexShrink: 0 }}>
                         <span style={{ 
                             fontFamily: INTER, fontSize: '15px', fontWeight: 900, 
                             color: (node.balance || 0) < 0 ? C.danger : C.success,
@@ -290,11 +292,11 @@ export default function AccountsPage() {
                         }}>
                             {(node.balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </span>
-                        <span style={{ fontSize: '10px', color: C.textMuted, marginRight: '6px', fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
+                        <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '6px', fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
 
                     {/* Badges */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, marginLeft: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, marginInlineStart: '12px' }}>
                         {/* Category badge */}
                         <div style={{
                             fontSize: '10px', fontWeight: 800, padding: '4px 10px', borderRadius: '8px',
@@ -328,7 +330,7 @@ export default function AccountsPage() {
                     </div>
 
                     {/* Actions */}
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, marginRight: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0, marginInlineEnd: '12px' }}>
                         {canEdit && (
                             <button onClick={e => { e.stopPropagation(); openEdit(node); }} 
                                 style={TABLE_STYLE.actionBtn()}
@@ -350,7 +352,7 @@ export default function AccountsPage() {
 
                 {/* Children */}
                 {isExpanded && hasChildren && (
-                    <div style={{ borderRight: `1px solid ${C.border}`, marginRight: `${24 + depth * 32 + 11}px`, animation: 'fadeIn 0.3s ease' }}>
+                    <div style={{ borderInlineEnd: `1px solid ${C.border}`, marginInlineEnd: `${24 + depth * 32 + 11}px`, animation: 'fadeIn 0.3s ease' }}>
                         {renderTree(node.children, depth + 1)}
                     </div>
                 )}
@@ -455,7 +457,7 @@ export default function AccountsPage() {
 
                 {/* ── Search (Standard ERP Design) ── */}
                 <div style={{ position: 'relative', marginBottom: '16px' }}>
-                    <div style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none', display: 'flex' }}>
+                    <div style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none', display: 'flex' }}>
                         <Search size={14} />
                     </div>
                     <input 
@@ -464,7 +466,7 @@ export default function AccountsPage() {
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                         style={{ 
-                            ...IS, height: '36px', paddingRight: '40px', 
+                            ...IS, height: '36px', paddingInlineEnd: '40px', 
                             fontSize: '13px', borderRadius: '6px', 
                             background: C.card, border: `1px solid ${C.border}`,
                             width: '100%', outline: 'none', transition: 'all 0.2s',
@@ -505,7 +507,7 @@ export default function AccountsPage() {
             {/* ── Modal ── */}
             {showModal && (
                 <div onClick={() => setShowModal(false)} style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', animation: 'fadeIn 0.2s ease' }}>
-                    <div onClick={e => e.stopPropagation()} dir="rtl"
+                    <div onClick={e => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'}
                         style={{ width: 560, background: '#0a0a0b', border: `1px solid ${C.border}`, borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.8)', overflow: 'hidden', animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1)' }}>
 
                         {/* Header */}
@@ -537,9 +539,9 @@ export default function AccountsPage() {
                                     <label style={LS}>كود الحساب <span style={{ color: C.danger }}>*</span></label>
                                     <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                         <input required value={form.code} readOnly disabled
-                                            style={{ ...IS, paddingLeft: '40px', direction: 'ltr', textAlign: 'left', fontFamily: INTER, fontWeight: 900, background: 'rgba(255,255,255,0.02)', color: C.textMuted, cursor: 'not-allowed' }}
+                                            style={{ ...IS, paddingInlineStart: '40px', direction: 'ltr', textAlign: 'end', fontFamily: INTER, fontWeight: 900, background: 'rgba(255,255,255,0.02)', color: C.textMuted, cursor: 'not-allowed' }}
                                         />
-                                        <Lock size={14} style={{ position: 'absolute', left: '12px', color: C.textMuted, opacity: 0.4 }} />
+                                        <Lock size={14} style={{ position: 'absolute', insetInlineStart: '12px', color: C.textMuted, opacity: 0.4 }} />
                                     </div>
                                 </div>
                                 <div>
@@ -601,7 +603,7 @@ export default function AccountsPage() {
                                             .map(a => ({
                                                 value: a.id,
                                                 label: `${a.code} — ${a.name}`,
-                                                style: { paddingRight: `${(a.level || 0) * 16 + 12}px` }
+                                                style: { paddingInlineEnd: `${(a.level || 0) * 16 + 12}px` }
                                             }))}
                                     />
                                 </div>

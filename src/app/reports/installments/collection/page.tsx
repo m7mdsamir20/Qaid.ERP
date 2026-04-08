@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -20,7 +21,7 @@ const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const IS: React.CSSProperties = {
-    height: '38px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+    height: '38px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
     borderRadius: '8px', border: `1px solid ${C.border}`,
     background: 'rgba(255,255,255,0.04)', color: '#e2e8f0',
     fontSize: '12px', outline: 'none', boxSizing: 'border-box',
@@ -31,6 +32,8 @@ const LS: React.CSSProperties = {
 };
 
 export default function CollectionReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -55,7 +58,7 @@ export default function CollectionReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <style>{`
                     .print-only { display: none; }
                     @media print {
@@ -85,11 +88,11 @@ export default function CollectionReportPage() {
                     alignItems: 'end'
                 }}>
                     <div style={{ position: 'relative' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>من تاريخ:</label>
+                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>من تاريخ:</label>
                         <input type="date" value={form.from}
                             onChange={e => setForm(f => ({ ...f, from: e.target.value }))}
                             style={{ 
-                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                 borderRadius: '12px', border: `1px solid ${C.border}`,
                                 background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                 fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -98,11 +101,11 @@ export default function CollectionReportPage() {
                     </div>
                     
                     <div style={{ position: 'relative' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>إلى تاريخ:</label>
+                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>إلى تاريخ:</label>
                         <input type="date" value={form.to}
                             onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
                             style={{ 
-                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                 borderRadius: '12px', border: `1px solid ${C.border}`,
                                 background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                 fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -141,7 +144,7 @@ export default function CollectionReportPage() {
                         <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
                             <div className="print-only">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
                                         {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>}
                                     </div>
@@ -149,7 +152,7 @@ export default function CollectionReportPage() {
                                         <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>تقرير تحصيل الأقساط</h3>
                                         <div style={{ fontSize: '11px', color: '#000', fontFamily: CAIRO }}>من: {form.from} إلى: {form.to}</div>
                                     </div>
-                                    <div style={{ maxWidth: '150px', textAlign: 'left' }}>
+                                    <div style={{ maxWidth: '150px', textAlign: 'end' }}>
                                         {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
                                     </div>
                                 </div>
@@ -166,7 +169,7 @@ export default function CollectionReportPage() {
                                         background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                         padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                     }}>
-                                        <div style={{ textAlign: 'right' }}>
+                                        <div style={{ textAlign: 'start' }}>
                                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -190,7 +193,7 @@ export default function CollectionReportPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             {['تاريخ التحصيل', 'العميل', 'رقم الخطة', 'القسط', 'المبلغ المحصّل'].map((h, i) => (
-                                                <th key={i} style={{ padding: '20px', textAlign: 'right', fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                <th key={i} style={{ padding: '20px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>

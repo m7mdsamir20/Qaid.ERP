@@ -281,7 +281,7 @@ export default function OpeningBalancesPage() {
                                     alignItems: 'center', 
                                     justifyContent: 'space-between' 
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                                             <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -407,14 +407,14 @@ export default function OpeningBalancesPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary, textAlign: 'right', fontFamily: CAIRO }}>إجمالي الأرصدة الختامية</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>إجمالي الأرصدة الختامية</td>
                                         <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.success, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalDebit)}</td>
                                         <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.danger, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
-                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 800, color: C.warning, textAlign: 'right', fontFamily: CAIRO }}>
-                                                <AlertTriangle size={14} style={{ display: 'inline', marginLeft: '6px' }} /> يرجى مراجعة المدخلات - القيد غير متوازن
+                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 800, color: C.warning, textAlign: 'start', fontFamily: CAIRO }}>
+                                                <AlertTriangle size={14} style={{ display: 'inline', marginInlineStart: '6px' }} /> يرجى مراجعة المدخلات - القيد غير متوازن
                                             </td>
                                             <td colSpan={2} style={{ padding: '10px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.warning, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(Math.abs(difference))}</td>
                                         </tr>
@@ -447,7 +447,7 @@ export default function OpeningBalancesPage() {
                 <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                     <button onClick={handleCarryForward} disabled={carrying} style={{ ...BTN_PRIMARY(carrying, false), flex: 1.5, height: '46px' }}>
                         {carrying ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
-                        <span style={{ marginRight: '8px' }}>تأكيد الترحيل الآن</span>
+                        <span style={{ marginInlineEnd: '8px' }}>تأكيد الترحيل الآن</span>
                     </button>
                     <button onClick={() => setShowCarryModal(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', flex: 1, fontFamily: CAIRO }}>
                         تراجع

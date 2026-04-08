@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 
 export default function ChangePasswordPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const [isSaving, setIsSaving] = useState(false);
     const [toast, setToast] = useState<{ msg: string; type: 'success' | 'error' } | null>(null);
@@ -66,7 +68,7 @@ export default function ChangePasswordPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ maxWidth: '600px', margin: '0 auto', padding: '20px 0', fontFamily: "'Cairo', sans-serif" }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ maxWidth: '600px', margin: '0 auto', padding: '20px 0', fontFamily: "'Cairo', sans-serif" }}>
 
                 {/* Header */}
                 <div style={{ marginBottom: '30px' }}>
@@ -85,7 +87,7 @@ export default function ChangePasswordPage() {
                     <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingRight: '4px' }}>كلمة المرور الحالية</label>
+                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>كلمة المرور الحالية</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.old ? 'text' : 'password'}
@@ -96,7 +98,7 @@ export default function ChangePasswordPage() {
                                     onFocus={e => e.currentTarget.style.borderColor = '#6366f1'}
                                     onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
                                 />
-                                <button type="button" onClick={() => togglePass('old')} style={{ position: 'absolute', top: '13px', left: '14px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
+                                <button type="button" onClick={() => togglePass('old')} style={{ position: 'absolute', top: '13px', insetInlineStart: '14px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
                                     {showPasswords.old ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
@@ -105,7 +107,7 @@ export default function ChangePasswordPage() {
                         <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '5px 0' }} />
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingRight: '4px' }}>كلمة المرور الجديدة</label>
+                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>كلمة المرور الجديدة</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.new ? 'text' : 'password'}
@@ -116,14 +118,14 @@ export default function ChangePasswordPage() {
                                     onFocus={e => e.currentTarget.style.borderColor = '#6366f1'}
                                     onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
                                 />
-                                <button type="button" onClick={() => togglePass('new')} style={{ position: 'absolute', top: '13px', left: '14px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
+                                <button type="button" onClick={() => togglePass('new')} style={{ position: 'absolute', top: '13px', insetInlineStart: '14px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
                                     {showPasswords.new ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingRight: '4px' }}>تأكيد كلمة المرور الجديدة</label>
+                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>تأكيد كلمة المرور الجديدة</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.confirm ? 'text' : 'password'}
@@ -134,7 +136,7 @@ export default function ChangePasswordPage() {
                                     onFocus={e => e.currentTarget.style.borderColor = '#6366f1'}
                                     onBlur={e => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
                                 />
-                                <button type="button" onClick={() => togglePass('confirm')} style={{ position: 'absolute', top: '13px', left: '14px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
+                                <button type="button" onClick={() => togglePass('confirm')} style={{ position: 'absolute', top: '13px', insetInlineStart: '14px', background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}>
                                     {showPasswords.confirm ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </button>
                             </div>
@@ -164,7 +166,7 @@ export default function ChangePasswordPage() {
 
                 {/* Toast Notification */}
                 {toast && (
-                    <div style={{ position: 'fixed', bottom: '30px', left: '30px', padding: '12px 24px', borderRadius: '12px', background: toast.type === 'success' ? '#10b981' : '#ef4444', color: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: '10px', zIndex: 2000 }}>
+                    <div style={{ position: 'fixed', bottom: '30px', insetInlineStart: '30px', padding: '12px 24px', borderRadius: '12px', background: toast.type === 'success' ? '#10b981' : '#ef4444', color: '#fff', boxShadow: '0 10px 30px rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', gap: '10px', zIndex: 2000 }}>
                         {toast.type === 'success' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
                         {toast.msg}
                     </div>

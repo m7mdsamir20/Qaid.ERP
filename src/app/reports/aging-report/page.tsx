@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -26,6 +27,8 @@ interface AgingInvoice {
 }
 
 export default function AgingReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -78,7 +81,7 @@ export default function AgingReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="تقرير أعمار الديون"
                     subtitle="تحليل المديونيات المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل."
@@ -102,7 +105,7 @@ export default function AgingReportPage() {
                                 padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 transition: 'all 0.2s', boxShadow: '0 2px 8px -4px rgba(0,0,0,0.1)'
                             }}>
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                         <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value.toLocaleString('en-US')}</span>
@@ -120,7 +123,7 @@ export default function AgingReportPage() {
 
                 <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
                     <div style={{ position: 'relative', flex: 1 }}>
-                        <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: q ? C.primary : C.textMuted, zIndex: 10 }} />
+                        <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: q ? C.primary : C.textMuted, zIndex: 10 }} />
                         <input
                             placeholder="ابحث باسم العميل أو رقم الفاتورة للفلترة السريعة..."
                             value={q} onChange={e => setQ(e.target.value)}

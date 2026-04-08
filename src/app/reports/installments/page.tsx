@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -18,6 +19,8 @@ const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function InstallmentReportsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -67,7 +70,7 @@ export default function InstallmentReportsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 {/* Print Styles */}
                 <style dangerouslySetInnerHTML={{ __html: `
@@ -99,7 +102,7 @@ export default function InstallmentReportsPage() {
                                     padding: '16px', borderRadius: '16px', border: `1px solid ${active ? C.primaryBorder : C.border}`,
                                     background: active ? 'linear-gradient(135deg, rgba(37,106,244,0.1), rgba(37,106,244,0.05))' : C.card,
                                     color: active ? C.primary : C.textSecondary, transition: 'all 0.2s', cursor: 'pointer',
-                                    display: 'flex', alignItems: 'center', gap: '14px', textAlign: 'right'
+                                    display: 'flex', alignItems: 'center', gap: '14px', textAlign: 'start'
                                 }}>
                                 <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: active ? C.primaryBg : 'rgba(255,255,255,0.02)', color: active ? C.primary : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <t.icon size={22} />
@@ -124,15 +127,15 @@ export default function InstallmentReportsPage() {
                                 <div style={{ minWidth: '200px' }}>
                                     <label style={LS}>من تاريخ</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Calendar size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
-                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingRight: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                        <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                                 <div style={{ minWidth: '200px' }}>
                                     <label style={LS}>إلى تاريخ</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Calendar size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
-                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingRight: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                        <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                             </>
@@ -210,7 +213,7 @@ export default function InstallmentReportsPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'left' }}>
+                                        <div style={{ textAlign: 'end' }}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>عدد العمليات الصالحة</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>
@@ -223,7 +226,7 @@ export default function InstallmentReportsPage() {
                                                 <thead>
                                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                         {['تاريخ العملية', 'العميل', 'البيان', 'رقم الخطة', 'المبلغ المحصّل'].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
@@ -258,7 +261,7 @@ export default function InstallmentReportsPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'left' }}>
+                                        <div style={{ textAlign: 'end' }}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>إجمالي الأقساط المتعثرة</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.danger, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>
@@ -271,7 +274,7 @@ export default function InstallmentReportsPage() {
                                                 <thead>
                                                     <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                         {['العميل', 'رقم الخطة', 'القسط', 'موعد الاستحقاق', 'أيام التأخير', 'المبلغ المتبقي'].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px', textAlign: 'right', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
@@ -342,7 +345,7 @@ export default function InstallmentReportsPage() {
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
                                                                 {['م', 'تاريخ الاستحقاق', 'مبلغ القسط', 'القيمة المحصلة', 'المتبقي', 'الحالة'].map((h, i) => (
-                                                                    <th key={i} style={{ padding: '12px 24px', textAlign: 'right', fontSize: '11px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
+                                                                    <th key={i} style={{ padding: '12px 24px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
                                                                 ))}
                                                             </tr>
                                                         </thead>

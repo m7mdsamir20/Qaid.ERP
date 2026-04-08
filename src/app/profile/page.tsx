@@ -13,6 +13,8 @@ import {
 import { Avatar, AVATAR_OPTIONS } from '@/components/UserAvatar';
 
 export default function ProfilePage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session, update } = useSession();
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -102,7 +104,7 @@ export default function ProfilePage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ maxWidth: '900px', margin: '0 auto', padding: '20px 0', fontFamily: "'Cairo', sans-serif" }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ maxWidth: '900px', margin: '0 auto', padding: '20px 0', fontFamily: "'Cairo', sans-serif" }}>
 
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -118,7 +120,7 @@ export default function ProfilePage() {
                     {/* Cover Photo Placeholder */}
                     <div style={{ height: '140px', background: 'linear-gradient(135deg, #1e1b4b 0%, #312e81 100%)', position: 'relative' }}>
                         {/* Avatar */}
-                        <div style={{ position: 'absolute', bottom: '-40px', right: '40px', width: '110px', height: '110px', borderRadius: '30px', background: '#0f172a', border: '5px solid #0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
+                        <div style={{ position: 'absolute', bottom: '-40px', insetInlineEnd: '40px', width: '110px', height: '110px', borderRadius: '30px', background: '#0f172a', border: '5px solid #0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', boxShadow: '0 10px 40px rgba(0,0,0,0.5)' }}>
                             <Avatar id={form.avatar} size={110} />
                         </div>
                     </div>
@@ -147,9 +149,9 @@ export default function ProfilePage() {
                             {/* Form side */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingRight: '4px' }}>الاسم الكامل</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>الاسم الكامل</label>
                                     <div style={{ position: 'relative' }}>
-                                        <User size={16} style={{ position: 'absolute', top: '12px', right: '14px', color: '#6366f1' }} />
+                                        <User size={16} style={{ position: 'absolute', top: '12px', insetInlineEnd: '14px', color: '#6366f1' }} />
                                         <input
                                             readOnly={!isEditMode}
                                             value={form.name}
@@ -160,9 +162,9 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingRight: '4px' }}>البريد الإلكتروني</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>البريد الإلكتروني</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Mail size={16} style={{ position: 'absolute', top: '12px', right: '14px', color: '#6366f1' }} />
+                                        <Mail size={16} style={{ position: 'absolute', top: '12px', insetInlineEnd: '14px', color: '#6366f1' }} />
                                         <input
                                             readOnly={!isEditMode}
                                             value={form.email}
@@ -173,9 +175,9 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingRight: '4px' }}>رقم الهاتف</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>رقم الهاتف</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Phone size={16} style={{ position: 'absolute', top: '12px', right: '14px', color: '#6366f1' }} />
+                                        <Phone size={16} style={{ position: 'absolute', top: '12px', insetInlineEnd: '14px', color: '#6366f1' }} />
                                         <input
                                             readOnly={!isEditMode}
                                             value={form.phone}
@@ -231,7 +233,7 @@ export default function ProfilePage() {
                                                 }}
                                             />
                                             {form.avatar === opt.id && (
-                                                <div style={{ position: 'absolute', top: '-4px', left: '-4px', background: '#10b981', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #0f172a' }}>
+                                                <div style={{ position: 'absolute', top: '-4px', insetInlineStart: '-4px', background: '#10b981', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #0f172a' }}>
                                                     <Check size={10} color="#fff" />
                                                 </div>
                                             )}
@@ -263,7 +265,7 @@ export default function ProfilePage() {
 
                 {/* Toast Notification */}
                 {toast && (
-                    <div style={{ position: 'fixed', bottom: '30px', left: '30px', padding: '14px 28px', borderRadius: '15px', background: toast.type === 'success' ? '#10b981' : '#ef4444', color: '#fff', boxShadow: '0 10px 40px rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 2000, animation: 'fadeLeft 0.3s ease' }}>
+                    <div style={{ position: 'fixed', bottom: '30px', insetInlineStart: '30px', padding: '14px 28px', borderRadius: '15px', background: toast.type === 'success' ? '#10b981' : '#ef4444', color: '#fff', boxShadow: '0 10px 40px rgba(0,0,0,0.4)', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 2000, animation: 'fadeLeft 0.3s ease' }}>
                         {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
                         <span style={{ fontWeight: 700 }}>{toast.msg}</span>
                     </div>

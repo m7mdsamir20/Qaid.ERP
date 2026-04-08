@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, INTER, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
@@ -33,6 +34,8 @@ interface ReportData {
 const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function EmployeesAdvancesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
     const [data, setData] = useState<ReportData | null>(null);
@@ -58,7 +61,7 @@ export default function EmployeesAdvancesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="تقرير سلف ومديونيات الموظفين"
                     subtitle="متابعة دقيقة لجميع السلف الممنوحة للموظفين، المبالغ المسددة، والأرصدة القائمة."
@@ -86,8 +89,8 @@ export default function EmployeesAdvancesPage() {
                 </div>
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '20px' }}>
-                    <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                    <input placeholder="ابحث باسم الموظف..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingRight: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                    <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                    <input placeholder="ابحث باسم الموظف..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineEnd: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                 </div>
 
                 {loading ? (

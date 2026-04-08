@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import AppModal from '@/components/AppModal';
 import PageHeader from '@/components/PageHeader';
@@ -25,6 +26,8 @@ interface Category {
 }
 
 export default function CategoriesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
@@ -111,7 +114,7 @@ export default function CategoriesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 {/* Page Header */}
                 <PageHeader 
@@ -128,12 +131,12 @@ export default function CategoriesPage() {
                 {/* Independent Search Header */}
                 <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             placeholder="ابحث باسم التصنيف..."
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingRight: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
+                            style={{ ...IS, width: '100%', paddingInlineEnd: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>

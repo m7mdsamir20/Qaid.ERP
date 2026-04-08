@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -17,6 +18,8 @@ const getCurrencyName = (code: string) => {
 interface Customer { id: string; name: string; balance: number; createdAt: string; }
 
 export default function CustomerStatementPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -95,7 +98,7 @@ export default function CustomerStatementPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="كشف حساب عميل تفصيلي"
                     subtitle="استخراج بيان بكافة مبيعات، مدفوعات، ومرتجعات عميل محدد خلال فترة زمنية مختارة."
@@ -130,7 +133,7 @@ export default function CustomerStatementPage() {
                         <div style={{ width: '170px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -141,7 +144,7 @@ export default function CustomerStatementPage() {
                         <div style={{ width: '170px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -187,7 +190,7 @@ export default function CustomerStatementPage() {
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     transition: 'all 0.2s'
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value.toLocaleString('en-US')}</span>

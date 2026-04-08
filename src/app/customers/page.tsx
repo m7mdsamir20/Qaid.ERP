@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { 
     Users, Plus, Trash2, Search, Phone, MapPin, Edit3, 
@@ -28,6 +29,8 @@ interface Customer {
 }
 
 export default function CustomersPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
 
@@ -163,21 +166,21 @@ export default function CustomersPage() {
     };
 
     const stats = [
-        { label: 'إجمالي العملاء', value: customers.length, icon: <Users size={18} />, color: '#3b82f6', suffix: 'عميل' },
-        { label: 'مديونيات العملاء', value: customers.filter(c => c.balance > 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingUp size={18} />, color: '#10b981', suffix: cSymbol },
-        { label: 'أرصدة مقدمة', value: customers.filter(c => c.balance < 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingDown size={18} />, color: '#fb7185', suffix: cSymbol },
+        { label: t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#3b82f6', suffix: t('عميل') },
+        { label: t('مديونيات العملاء'), value: customers.filter(c => c.balance > 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingUp size={18} />, color: '#10b981', suffix: cSymbol },
+        { label: t('أرصدة مقدمة'), value: customers.filter(c => c.balance < 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingDown size={18} />, color: '#fb7185', suffix: cSymbol },
     ];
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title="العملاء"
-                    subtitle="إدارة بيانات العملاء والشركات والمستحقات"
+                    title={t("العملاء")}
+                    subtitle={t("إدارة بيانات العملاء والشركات والمستحقات")}
                     icon={Users}
                     primaryButton={{
-                        label: "إضافة عميل",
+                        label: t("إضافة عميل"),
                         onClick: () => { 
                             setEditingId(null); 
                             setForm({ 
@@ -202,7 +205,7 @@ export default function CustomersPage() {
                         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                         onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                             <div style={{ textAlign: 'right' }}>
+                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.value)}</span>
@@ -219,12 +222,12 @@ export default function CustomersPage() {
                 {/* Toolbar - Search & Status Filters */}
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
-                            placeholder="ابحث باسم العميل أو رقم الهاتف..."
+                            placeholder={t("ابحث باسم العميل أو رقم الهاتف...")}
                             style={{ 
-                                ...IS, paddingRight: '40px', height: '40px', fontSize: '13px', 
+                                ...IS, paddingInlineEnd: '40px', height: '40px', fontSize: '13px', 
                                 background: C.card,
                                 borderRadius: '12px'
                             }}
@@ -237,9 +240,9 @@ export default function CustomersPage() {
                     
                     <div style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
                         {[
-                            { id: 'all', label: 'الكل' },
-                            { id: 'debit', label: 'المدينين' },
-                            { id: 'credit', label: 'الدائنين' },
+                            { id: 'all', label: t('الكل') },
+                            { id: 'debit', label: t('المدينين') },
+                            { id: 'credit', label: t('الدائنين') },
                         ].map(f => (
                             <button
                                 key={f.id}
@@ -267,18 +270,18 @@ export default function CustomersPage() {
                     ) : filteredAll.length === 0 ? (
                         <div style={{ padding: '70px', textAlign: 'center' }}>
                             <UserX size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{search ? 'لا توجد نتائج بحث مطابقة' : 'لا يوجد عملاء مضافين حالياً'}</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عملاء مضافين حالياً')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>العميل</th>
-                                        <th style={TABLE_STYLE.th(false)}>رقم الهاتف</th>
-                                        <th style={TABLE_STYLE.th(false)}>العنوان</th>
-                                        <th style={TABLE_STYLE.th(false)}>الرصيد الحالي</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('العميل')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('العنوان')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الرصيد الحالي')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -307,9 +310,9 @@ export default function CustomersPage() {
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
                                                     background: c.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : (c.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
                                                     color: c.balance < 0 ? '#fb7185' : (c.balance > 0 ? '#4ade80' : C.textMuted),
-                                                    border: `1px solid ${c.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : (c.balance > 0 ? 'rgba(74,222,128,0.22)' : C.border)}`,
+                                                     border: `1px solid ${c.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : (c.balance > 0 ? 'rgba(74,222,128,0.22)' : C.border)}`,
                                                 }}>
-                                                    <span style={{ fontFamily: CAIRO }}>{c.balance < 0 ? 'له عندنا' : (c.balance > 0 ? 'عليه لنا' : 'متزن')}</span>
+                                                    <span style={{ fontFamily: CAIRO }}>{c.balance < 0 ? t('له عندنا') : (c.balance > 0 ? t('عليه لنا') : t('متزن'))}</span>
                                                     <span style={{ fontFamily: INTER, fontSize: '13px', fontWeight: 800 }}>{fmt(Math.abs(c.balance))} <span style={{ fontFamily: CAIRO, fontSize: '10px', opacity: 0.8 }}>{cSymbol}</span></span>
                                                 </span>
                                             </td>
@@ -334,14 +337,14 @@ export default function CustomersPage() {
                 </div>
 
                 {/* ── Modal (REVERTED TO FAVORITE PREMIUM DESIGN) ── */}
-                <AppModal show={showModal} onClose={() => setShowModal(false)} title={editingId ? 'تعديل بيانات العميل' : 'إضافة عميل جديد'} icon={UserPlus} maxWidth="520px">
+                <AppModal show={showModal} onClose={() => setShowModal(false)} title={editingId ? t('تعديل بيانات العميل') : t('إضافة عميل جديد')} icon={UserPlus} maxWidth="520px">
                     <form onSubmit={handleSubmit}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                             {isServices ? (
                                 <>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.8fr) 1.2fr', gap: '12px' }}>
                                         <div>
-                                            <label style={LS}>نوع العميل <span style={{ color: C.danger }}>*</span></label>
+                                            <label style={LS}>{t('نوع العميل')} <span style={{ color: C.danger }}>*</span></label>
                                             <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                                 <button 
                                                     type="button" 
@@ -360,23 +363,23 @@ export default function CustomersPage() {
                                                         background: form.type === 'company' ? C.primary : 'transparent',
                                                         color: form.type === 'company' ? '#fff' : C.textSecondary
                                                     }}
-                                                >شركة</button>
+                                                >{t('شركة')}</button>
                                             </div>
                                         </div>
                                         <div>
-                                            <label style={LS}>اسم العميل / الشركة <span style={{ color: C.danger }}>*</span></label>
-                                            <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder="مثال: أحمد محمد التاجر" />
+                                            <label style={LS}>{t('اسم العميل / الشركة')} <span style={{ color: C.danger }}>*</span></label>
+                                            <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("مثال: أحمد محمد التاجر")} />
                                         </div>
                                     </div>
 
                                     {form.type === 'company' && (
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
                                             <div>
-                                                <label style={LS}>الرقم الضريبي</label>
+                                                <label style={LS}>{t('الرقم الضريبي')}</label>
                                                 <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="100XXXXXXX" />
                                             </div>
                                             <div>
-                                                <label style={LS}>السجل التجاري</label>
+                                                <label style={LS}>{t('السجل التجاري')}</label>
                                                 <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="403XXXXXXX" />
                                             </div>
                                         </div>
@@ -384,22 +387,22 @@ export default function CustomersPage() {
                                 </>
                             ) : (
                                 <div>
-                                    <label style={LS}>اسم العميل <span style={{ color: C.danger }}>*</span></label>
-                                    <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder="ادخل اسم العميل" />
+                                    <label style={LS}>{t('اسم العميل')} <span style={{ color: C.danger }}>*</span></label>
+                                    <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("ادخل اسم العميل")} />
                                 </div>
                             )}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
-                                    <label style={LS}>رقم الهاتف</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'left', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="01XXXXXXXXX" />
+                                    <label style={LS}>{t('رقم الهاتف')}</label>
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="01XXXXXXXXX" />
                                 </div>
                                 <div>
-                                    <label style={{ ...LS }}>العنوان</label>
-                                    <input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder="المدينة، المنطقة" />
+                                    <label style={{ ...LS }}>{t('العنوان')}</label>
+                                    <input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("المدينة، المنطقة")} />
                                 </div>
                             </div>
                             <div>
-                                <label style={LS}>الحد الائتماني المسموح (اختياري)</label>
+                                <label style={LS}>{t('الحد الائتماني المسموح (اختياري)')}</label>
                                 <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                     {/* Digital Zero Watermark */}
                                     {!form.creditLimit && (
@@ -419,15 +422,15 @@ export default function CustomersPage() {
                                         style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
-                                    <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             {!editingId && (
                                 <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    <label style={{ ...LS, marginBottom: 0 }}>الرصيد الافتتاحي (عند بداية التعامل)</label>
+                                    <label style={{ ...LS, marginBottom: 0 }}>{t('الرصيد الافتتاحي (عند بداية التعامل)')}</label>
                                     <div style={{ display: 'flex', gap: '8px' }}>
-                                        <button type="button" onClick={() => setForm({ ...form, balanceType: 'debit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'debit' ? '#4ade80' : C.border}`, background: form.balanceType === 'debit' ? 'rgba(74,222,128,0.1)' : 'transparent', color: form.balanceType === 'debit' ? '#4ade80' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>عليه (مدين)</button>
-                                        <button type="button" onClick={() => setForm({ ...form, balanceType: 'credit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'credit' ? '#fb7185' : C.border}`, background: form.balanceType === 'credit' ? 'rgba(251,113,133,0.1)' : 'transparent', color: form.balanceType === 'credit' ? '#fb7185' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>له (دائن)</button>
+                                        <button type="button" onClick={() => setForm({ ...form, balanceType: 'debit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'debit' ? '#4ade80' : C.border}`, background: form.balanceType === 'debit' ? 'rgba(74,222,128,0.1)' : 'transparent', color: form.balanceType === 'debit' ? '#4ade80' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>{t('عليه (مدين)')}</button>
+                                        <button type="button" onClick={() => setForm({ ...form, balanceType: 'credit' })} style={{ flex: 1, height: '38px', borderRadius: '8px', border: `1px solid ${form.balanceType === 'credit' ? '#fb7185' : C.border}`, background: form.balanceType === 'credit' ? 'rgba(251,113,133,0.1)' : 'transparent', color: form.balanceType === 'credit' ? '#fb7185' : C.textSecondary, fontWeight: 700, fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>{t('له (دائن)')}</button>
                                     </div>
                                     <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                         {/* Digital Zero Watermark */}
@@ -445,17 +448,17 @@ export default function CustomersPage() {
                                                 if ((v.match(/\./g) || []).length > 1) return;
                                                 setForm({ ...form, openingBalance: v });
                                             }} 
-                                            style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
+                                             style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
                                             onFocus={focusIn} onBlur={focusOut} 
                                         />
-                                        <span style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                        <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             )}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
-                            <button type="submit" disabled={submitting} style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 800, fontSize: '14px', fontFamily: CAIRO, cursor: submitting ? 'not-allowed' : 'pointer' }}>{submitting ? 'جاري الحفظ...' : (editingId ? 'حفظ التغييرات' : 'إضافة العميل الآن')}</button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
+                            <button type="submit" disabled={submitting} style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 800, fontSize: '14px', fontFamily: CAIRO, cursor: submitting ? 'not-allowed' : 'pointer' }}>{submitting ? t('جاري الحفظ...') : (editingId ? t('حفظ التغييرات') : t('إضافة العميل الآن'))}</button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>
@@ -464,7 +467,7 @@ export default function CustomersPage() {
                     show={!!deleteItem}
                     onClose={() => { setDeleteItem(null); setDeleteError(''); }}
                     isDelete={true}
-                    title="تأكيد حذف العميل"
+                    title={t("تأكيد حذف العميل")}
                     itemName={deleteItem?.name}
                     onConfirm={handleDelete}
                     isSubmitting={submitting}

@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
@@ -41,6 +42,8 @@ const STATUS_MAP: Record<string, { bg: string; color: string; label: string }> =
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function FixedAssetsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
     const isAdmin = (session?.user as any)?.role === 'admin';
@@ -153,7 +156,7 @@ export default function FixedAssetsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
                     title="الرصيد الدفتري للأصول"
@@ -179,11 +182,11 @@ export default function FixedAssetsPage() {
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                 padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                             }}>
-                                <div style={{ textAlign: 'right' }}>
+                                <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                         <span>{s.val.toLocaleString('en-US')}</span>
-                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginLeft: '4px' }}>ج.م</span>}
+                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>ج.م</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -231,7 +234,7 @@ export default function FixedAssetsPage() {
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                 {['كود الأصل', 'اسم الأصل', 'الفئة الضريبية', 'تاريخ الاقتناء', 'تكلفة الشراء', 'مجمع الإهلاك', 'الصافي الدفتري', 'الحالة', 'خيارات'].map((h, i) => (
-                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'right', fontFamily: CAIRO }}>{h}</th>
+                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -323,7 +326,7 @@ export default function FixedAssetsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1.5, height: '48px' }}>
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Plus size={18} />}
-                                <span style={{ marginRight: '8px' }}>حفظ التعديلات</span>
+                                <span style={{ marginInlineEnd: '8px' }}>حفظ التعديلات</span>
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
                         </div>

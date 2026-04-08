@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import {
@@ -25,6 +26,8 @@ interface Customer { id: string; name: string; balance: number; }
 interface Treasury { id: string; name: string; type: string; balance: number; bankName?: string; }
 
 export default function ReceiptVouchersPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
@@ -75,7 +78,7 @@ export default function ReceiptVouchersPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '30px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px' }}>
                 <PageHeader
                     title="سندات القبض"
                     subtitle="إدارة المتحصلات النقدية والبنكية من العملاء — تتبع التوريدات للخزينة والبنوك"

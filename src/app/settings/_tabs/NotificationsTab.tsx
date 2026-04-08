@@ -45,7 +45,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', marginBottom: '24px' }}>
                             {/* تفعيل */}
                             <div style={{ display: 'flex', alignItems: 'center', borderBottom: notificationsForm.lowStock?.enabled ? `1px solid ${C.border}` : 'none' }}>
-                                <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                     <div style={{ color: notificationsForm.lowStock?.enabled ? '#f59e0b' : C.textMuted }}>
                                         <Package size={16} />
                                     </div>
@@ -66,7 +66,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                             {/* حد التنبيه */}
                             {notificationsForm.lowStock?.enabled && (
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: isEditMode ? C.primary : C.textMuted }}><AlertCircle size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>حد التنبيه</span>
                                     </div>
@@ -87,7 +87,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                                         </button>
                                                     ))}
                                                 </div>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginLeft: 'auto' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginInlineStart: 'auto' }}>
                                                     <input type="number" min={1}
                                                         value={notificationsForm.lowStock?.threshold || 10}
                                                         onChange={e => setNotificationsForm((p: any) => ({ ...p, lowStock: { ...p.lowStock, threshold: +e.target.value } }))}
@@ -120,7 +120,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                 },
                             ].map((item, i, arr) => (
                                 <div key={item.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: notificationsForm[item.key]?.enabled ? item.activeColor : C.textMuted }}>
                                             {item.icon}
                                         </div>

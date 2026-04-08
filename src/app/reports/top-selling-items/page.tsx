@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from '@/lib/i18n';
 
 import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
@@ -24,6 +25,8 @@ interface TopSellingItem {
 }
 
 export default function TopSellingReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
@@ -50,7 +53,7 @@ export default function TopSellingReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title={isServices ? "تحليل الخدمات الأكثر طلباً" : "تحليل الأصناف الأكثر مبيعاً"}
                     subtitle={isServices ? "نظرة شاملة على الخدمات الأعلى حركة وطلباً في نشاطك." : "نظرة شاملة على المنتجات الأعلى حركة وكفاءة ربحية في محفظة مبيعاتك."}
@@ -63,7 +66,7 @@ export default function TopSellingReportPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
                             <div style={{ position: 'relative', flex: 1 }}>
-                                <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                                <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                                 <input
                                     placeholder="ابحث بالاسم، الكود، أو التصنيف..."
                                     value={q} onChange={e => setQ(e.target.value)}
@@ -96,11 +99,11 @@ export default function TopSellingReportPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'right', fontWeight: 800, fontFamily: CAIRO }}>#</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'right', fontWeight: 800, fontFamily: CAIRO }}>{isServices ? "بيانات الخدمة" : "بيانات الصنف"}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>#</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{isServices ? "بيانات الخدمة" : "بيانات الصنف"}</th>
                                             <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>الكمية</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'left', fontWeight: 800, fontFamily: CAIRO }}>القيمة</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'left', fontWeight: 800, fontFamily: CAIRO }}>الربح التقديري</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>القيمة</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>الربح التقديري</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -116,12 +119,12 @@ export default function TopSellingReportPage() {
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{item.totalQuantity.toLocaleString('en-US')}</span>
-                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginRight: '4px', fontFamily: CAIRO }}>{item.unit}</span>
+                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{item.unit}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'left', fontWeight: 900, color: C.primary, fontSize: '13.5px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.primary, fontSize: '13.5px', fontFamily: INTER }}>
                                                     {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'left' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end' }}>
                                                     <span style={{ 
                                                         color: '#10b981', background: 'rgba(16,185,129,0.08)', 
                                                         padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',

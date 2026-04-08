@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useSession } from 'next-auth/react';
@@ -30,6 +31,8 @@ interface IncomeStatementData {
 }
 
 export default function IncomeStatementPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = (session?.user as any)?.currency || 'EGP';
 
@@ -56,7 +59,7 @@ export default function IncomeStatementPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="قائمة الدخل"
                     subtitle="ملخص الإيرادات والمصروفات لتحديد صافي الربح أو الخسارة عن الفترة المالية."
@@ -91,7 +94,7 @@ export default function IncomeStatementPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
                                     padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -109,7 +112,7 @@ export default function IncomeStatementPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr>
-                                        <th colSpan={3} style={{ padding: '16px 24px', background: 'rgba(16, 185, 129, 0.05)', color: '#10b981', fontSize: '14px', fontWeight: 900, textAlign: 'right', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO }}>
+                                        <th colSpan={3} style={{ padding: '16px 24px', background: 'rgba(16, 185, 129, 0.05)', color: '#10b981', fontSize: '14px', fontWeight: 900, textAlign: 'start', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO }}>
                                             تفصيل الإيرادات والمبيعات (Revenues)
                                         </th>
                                     </tr>
@@ -119,7 +122,7 @@ export default function IncomeStatementPage() {
                                         <tr key={rev.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: INTER, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{rev.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 700, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{rev.name}</td>
-                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'right', fontWeight: 800, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>{fmt(rev.balance)}</td>
+                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 800, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>{fmt(rev.balance)}</td>
                                         </tr>
                                     ))}
                                     {data.revenues.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>لا توجد حركات إيرادات مسجلة</td></tr>}
@@ -127,7 +130,7 @@ export default function IncomeStatementPage() {
 
                                 <thead>
                                     <tr>
-                                        <th colSpan={3} style={{ padding: '16px 24px', background: 'rgba(251, 113, 133, 0.05)', color: '#fb7185', fontSize: '14px', fontWeight: 900, textAlign: 'right', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO }}>
+                                        <th colSpan={3} style={{ padding: '16px 24px', background: 'rgba(251, 113, 133, 0.05)', color: '#fb7185', fontSize: '14px', fontWeight: 900, textAlign: 'start', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO }}>
                                             تفصيل المصروفات والتكاليف (Expenses)
                                         </th>
                                     </tr>
@@ -137,7 +140,7 @@ export default function IncomeStatementPage() {
                                         <tr key={exp.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: INTER, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{exp.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 700, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{exp.name}</td>
-                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'right', fontWeight: 800, color: '#fb7185', fontSize: '14px', fontFamily: INTER }}>{fmt(exp.balance)}</td>
+                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 800, color: '#fb7185', fontSize: '14px', fontFamily: INTER }}>{fmt(exp.balance)}</td>
                                         </tr>
                                     ))}
                                     {data.expenses.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>لا توجد حركات مصروفات مسجلة</td></tr>}
@@ -148,7 +151,7 @@ export default function IncomeStatementPage() {
                                         <td colSpan={2} style={{ padding: '16px 24px', fontWeight: 950, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>
                                             نتيجة النشاط: <span style={{ color: data.netIncome >= 0 ? '#10b981' : '#fb7185' }}>{data.netIncome >= 0 ? 'صافي الربح' : 'صافي الخسارة'}</span>
                                         </td>
-                                        <td dir="ltr" style={{ padding: '16px 24px', textAlign: 'right', fontWeight: 950, fontSize: '16px', color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontFamily: INTER }}>
+                                        <td dir="ltr" style={{ padding: '16px 24px', textAlign: 'start', fontWeight: 950, fontSize: '16px', color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontFamily: INTER }}>
                                             {fmt(data.netIncome)} <span style={{ fontSize: '12px', opacity: 0.8, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </td>
                                     </tr>

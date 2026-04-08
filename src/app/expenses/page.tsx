@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
@@ -17,6 +18,8 @@ import {
 } from '@/constants/theme';
 
 export default function ExpensesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { symbol: currencySign } = useCurrency();
     const { data: session } = useSession();
     const [entries, setEntries] = useState<any[]>([]);
@@ -93,7 +96,7 @@ export default function ExpensesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader 
                     title="المصروفات" 
                     subtitle="متابعة وتسجيل كافة المصروفات التشغيلية والإدارية والعمومية" 
@@ -175,7 +178,7 @@ export default function ExpensesPage() {
                                         <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>
                                                 {(debitLine?.debit || 0).toLocaleString('en-US')}
-                                                <small style={{ fontSize: '11px', marginRight: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
+                                                <small style={{ fontSize: '11px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
                                             </span>
                                         </td>
                                     </tr>
@@ -240,7 +243,7 @@ export default function ExpensesPage() {
                                         outline: 'none', fontFamily: INTER 
                                     }} 
                                 />
-                                <span style={{ position: 'absolute', left: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{currencySign}</span>
+                                <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{currencySign}</span>
                             </div>
                         </div>
 

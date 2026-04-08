@@ -24,6 +24,8 @@ interface ReportLink {
 }
 
 export default function ReportsHubPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const router = useRouter();
 
@@ -273,7 +275,7 @@ export default function ReportsHubPage() {
                                 {report.title.includes('(') ? (
                                     <>
                                         {report.title.split('(')[0]}
-                                        <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, marginRight: '4px' }}>
+                                        <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, marginInlineEnd: '4px' }}>
                                             ({report.title.split('(')[1]}
                                         </span>
                                     </>
@@ -289,7 +291,7 @@ export default function ReportsHubPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader
                     title="التقارير الشاملة"
                     subtitle="الواجهة المركزية لمنظومة تقارير النظام. تصفح وحلل كافة البيانات المالية والإدارية بدقة عالية."

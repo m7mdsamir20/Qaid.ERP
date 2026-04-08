@@ -57,7 +57,7 @@ export default function GeneralTab({
 
                     {/* ── العملة ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Coins size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>العملة الأساسية</span>
                         </div>
@@ -107,11 +107,11 @@ export default function GeneralTab({
                                         }[generalForm.currency] || `أخرى (${generalForm.currency})`}</span>
                                     </button>
                                     {openDropdown === 'currency' && (
-                                        <div style={{ position: 'absolute', top: '44px', right: 20, zIndex: 999, width: '280px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                                        <div style={{ position: 'absolute', top: '44px', insetInlineEnd: 20, zIndex: 999, width: '280px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
                                             {/* Search Box */}
                                             <div style={{ padding: '8px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
                                                 <div style={{ position: 'relative' }}>
-                                                    <Search size={14} style={{ position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                                    <Search size={14} style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
                                                     <input
                                                         autoFocus
                                                         placeholder="بحث عن عملة..."
@@ -155,7 +155,7 @@ export default function GeneralTab({
                                                                 setOpenDropdown(null);
                                                                 setCurrencySearch('');
                                                             }}
-                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', textAlign: 'right', fontFamily: CAIRO }}>
+                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', textAlign: 'start', fontFamily: CAIRO }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                                 <span style={{ fontSize: '11px', color: selected ? C.primary : C.textMuted, fontFamily: INTER, opacity: 0.7 }}>{opt.code}</span>
                                                                 <span>{opt.label}</span>
@@ -174,7 +174,7 @@ export default function GeneralTab({
                                         <div style={{ marginTop: '12px' }}>
                                             <input
                                                 placeholder="اكتب كود العملة هنا (مثال: KWD)"
-                                                style={{ width: '280px', height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 16px', fontSize: '13px', fontWeight: 600, direction: 'ltr', textAlign: 'left', outline: 'none' }}
+                                                style={{ width: '280px', height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 16px', fontSize: '13px', fontWeight: 600, direction: 'ltr', textAlign: 'end', outline: 'none' }}
                                                 value={generalForm.customCurrency}
                                                 onChange={e => setGeneralForm((p: any) => ({ ...p, customCurrency: e.target.value.toUpperCase() }))}
                                             />
@@ -188,13 +188,13 @@ export default function GeneralTab({
 
                     {/* ── المنطقة الزمنية ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Globe size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>المنطقة الزمنية</span>
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', position: 'relative' }} className="custom-dropdown">
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', textAlign: 'right', fontFamily: INTER }}>
+                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', textAlign: 'start', fontFamily: INTER }}>
                                     {generalForm.timezone}
                                 </div>
                             ) : (
@@ -206,13 +206,13 @@ export default function GeneralTab({
                                         <span>{generalForm.timezone}</span>
                                     </button>
                                     {openDropdown === 'timezone' && (
-                                        <div style={{ position: 'absolute', top: '44px', right: 20, zIndex: 999, width: '280px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                                        <div style={{ position: 'absolute', top: '44px', insetInlineEnd: 20, zIndex: 999, width: '280px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
                                             {['Africa/Cairo', 'Asia/Riyadh', 'Asia/Dubai', 'Europe/London'].map((tz, i, arr) => {
                                                 const selected = generalForm.timezone === tz;
                                                 return (
                                                     <button key={tz} type="button"
                                                         onClick={() => { setGeneralForm((p: any) => ({ ...p, timezone: tz })); setOpenDropdown(null); }}
-                                                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', direction: 'ltr', textAlign: 'left', fontFamily: INTER }}>
+                                                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', direction: 'ltr', textAlign: 'end', fontFamily: INTER }}>
                                                         <Check size={14} style={{ color: C.primary, opacity: selected ? 1 : 0 }} />
                                                         <span>{tz}</span>
                                                     </button>
@@ -227,7 +227,7 @@ export default function GeneralTab({
 
                     {/* ── نوع التقويم ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Calendar size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>نوع التقويم</span>
                         </div>
@@ -253,7 +253,7 @@ export default function GeneralTab({
 
                     {/* ── تنسيق التاريخ ── */}
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Clock size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>تنسيق التاريخ</span>
                         </div>

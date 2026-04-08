@@ -25,6 +25,8 @@ interface Unit {
 }
 
 export default function UnitsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [units, setUnits] = useState<Unit[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -119,7 +121,7 @@ export default function UnitsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 {/* Page Header (Consolidated Design) */}
                 <PageHeader 
@@ -136,12 +138,12 @@ export default function UnitsPage() {
                 {/* Independent Search Header (Sales Style - Expanded) */}
                 <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', right: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             placeholder="ابحث باسم الوحدة أو الكود..."
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingRight: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
+                            style={{ ...IS, width: '100%', paddingInlineEnd: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
@@ -247,9 +249,9 @@ export default function UnitsPage() {
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type="text" readOnly disabled value={form.code}
-                                    style={{ ...IS, paddingLeft: '42px', color: C.textMuted, cursor: 'not-allowed', background: 'rgba(255,255,255,0.01)', fontFamily: INTER }}
+                                    style={{ ...IS, paddingInlineStart: '42px', color: C.textMuted, cursor: 'not-allowed', background: 'rgba(255,255,255,0.01)', fontFamily: INTER }}
                                 />
-                                <Lock size={14} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                <Lock size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
                             </div>
                         </div>
 

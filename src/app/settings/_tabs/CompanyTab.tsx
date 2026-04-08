@@ -49,15 +49,15 @@ export default function CompanyTab({
                             { label: 'اسم الشركة (EN)', key: 'nameEn', dir: 'ltr', icon: <AlignRight size={15} />, placeholder: 'Enter name in English' },
                         ].map((f, i) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                                <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                     <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}>{f.icon}</div>
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{f.label}</span>
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'right', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'right', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
                                     )}
                                 </div>
                             </div>
@@ -65,7 +65,7 @@ export default function CompanyTab({
 
                         {/* Row 3: Logo */}
                         <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', gap: '20px' }}>
-                            <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', borderLeft: `1px solid ${C.border}` }}>
+                            <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', borderInlineStart: `1px solid ${C.border}` }}>
                                 <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}><UploadCloud size={15} /></div>
                                 <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>شعار المؤسسة</span>
                             </div>
@@ -212,15 +212,15 @@ export default function CompanyTab({
                             { label: 'الموقع الإلكتروني', key: 'website', dir: 'ltr', icon: <Globe size={15} />, placeholder: 'www.company.com' },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', gap: '0', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                     <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}>{f.icon}</div>
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{f.label}</span>
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'right', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'right', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
                                     )}
                                 </div>
                             </div>
@@ -239,15 +239,15 @@ export default function CompanyTab({
                             { label: 'السجل التجاري', key: 'commercialRegister', dir: 'ltr', icon: <FileText size={15} />, placeholder: '000000' },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                     <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}>{f.icon}</div>
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{f.label}</span>
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'right', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'right', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || 'لم يُضف بعد'}</div>
                                     )}
                                 </div>
                             </div>

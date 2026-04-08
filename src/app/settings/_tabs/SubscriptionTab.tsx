@@ -53,7 +53,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                             <div style={{ background: C.card, border: `1px solid ${planColor}30`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', flex: 1 }}>
                                 {/* اسم الباقة */}
                                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: planColor }}><CreditCard size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>الباقة الحالية</span>
                                     </div>
@@ -66,44 +66,44 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
 
                                 {/* حالة الاشتراك */}
                                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: isExpired ? C.danger : '#10b981' }}><AlertCircle size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>حالة الاشتراك</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                         <span style={{ fontSize: '14px', fontWeight: 900, color: isExpired ? C.danger : '#10b981', fontFamily: CAIRO }}>
                                             {isExpired ? 'غير مفعّلة / منتهية' : 'مفعّلة ونشطة'}
-                                            {isTrial && !isExpired && <span style={{ marginRight: '10px', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: 'rgba(59,130,246,0.1)', color: C.primary, border: `1px solid ${C.primary}30` }}>(نسخة تجريبية)</span>}
+                                            {isTrial && !isExpired && <span style={{ marginInlineEnd: '10px', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: 'rgba(59,130,246,0.1)', color: C.primary, border: `1px solid ${C.primary}30` }}>(نسخة تجريبية)</span>}
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* تاريخ البداية */}
                                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: C.textMuted }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>تاريخ البداية</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER, direction: 'ltr', textAlign: 'right' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER, direction: 'ltr', textAlign: 'start' }}>
                                         {new Date(sub.startDate).toLocaleDateString('en-GB')}
                                     </div>
                                 </div>
 
                                 {/* تاريخ الانتهاء */}
                                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: isExpired ? C.danger : C.textMuted }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>تاريخ الانتهاء</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: isExpired ? C.danger : C.textPrimary, fontFamily: INTER, direction: 'ltr', textAlign: 'right' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: isExpired ? C.danger : C.textPrimary, fontFamily: INTER, direction: 'ltr', textAlign: 'start' }}>
                                         {new Date(sub.endDate).toLocaleDateString('en-GB')}
-                                        {isExpired && <span style={{ fontSize: '11px', color: C.danger, marginRight: '12px', padding: '2px 8px', borderRadius: '4px', background: `${C.danger}15`, fontWeight: 900, fontFamily: CAIRO }}>انتهى الاشتراك</span>}
+                                        {isExpired && <span style={{ fontSize: '11px', color: C.danger, marginInlineEnd: '12px', padding: '2px 8px', borderRadius: '4px', background: `${C.danger}15`, fontWeight: 900, fontFamily: CAIRO }}>انتهى الاشتراك</span>}
                                     </div>
                                 </div>
 
                                 {/* عدد المستخدمين */}
                                 <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: C.textMuted }}><Users size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>عدد المستخدمين</span>
                                     </div>
@@ -114,7 +114,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
 
                                 {/* Progress */}
                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderLeft: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                         <div style={{ color: barColor }}><Clock size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>الأيام المتبقية</span>
                                     </div>
@@ -180,7 +180,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                                 <div style={{ flex: 1, background: '#000' }} />
                                             </div>
                                         </div>
-                                        <a href="tel:+201090943033" style={{ textDecoration: 'none', color: C.textPrimary, fontSize: '14px', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '0.5px', marginLeft: 'auto', direction: 'ltr' }}>
+                                        <a href="tel:+201090943033" style={{ textDecoration: 'none', color: C.textPrimary, fontSize: '14px', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '0.5px', marginInlineStart: 'auto', direction: 'ltr' }}>
                                             +20 109 094 3033
                                         </a>
                                         <div style={{ padding: '6px', borderRadius: '8px', background: `${C.primary}15`, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

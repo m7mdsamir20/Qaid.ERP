@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import {
@@ -30,6 +31,8 @@ const fmt = (d: string) => new Date(d).toLocaleDateString('ar-EG', { year: 'nume
 const daysLeft = (endDate: string) => Math.ceil((new Date(endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 
 export default function SuperAdminPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session, status } = useSession();
     const router = useRouter();
     const [authorized, setAuthorized] = useState(false);
@@ -129,7 +132,7 @@ export default function SuperAdminPage() {
     );
 
     return (
-        <div dir="rtl" style={{ minHeight: '100vh', background: C.bg, padding: '24px', color: C.textPrimary, fontFamily: CAIRO }}>
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, padding: '24px', color: C.textPrimary, fontFamily: CAIRO }}>
 
             <PageHeader
                 title="نظام الإدارة الشامل (Super Admin)"
@@ -158,7 +161,7 @@ export default function SuperAdminPage() {
                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                     >
-                         <div style={{ textAlign: 'right' }}>
+                         <div style={{ textAlign: 'start' }}>
                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                 <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -175,12 +178,12 @@ export default function SuperAdminPage() {
             {/* Filter Section */}
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}` }}>
                 <div style={{ flex: 1, position: 'relative' }}>
-                    <Search size={18} style={{ position: 'absolute', right: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.7, pointerEvents: 'none' }} />
+                    <Search size={18} style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.7, pointerEvents: 'none' }} />
                     <input
                         type="text"
                         placeholder="ابحث باسم الشركة، البريد الإلكتروني، أو نوع النشاط..."
                         style={{
-                            ...IS, paddingRight: '48px', height: '48px', fontSize: '14px',
+                            ...IS, paddingInlineEnd: '48px', height: '48px', fontSize: '14px',
                             background: 'rgba(255,255,255,0.02)',
                             borderRadius: '12px',
                             border: `1px solid ${C.border}`
@@ -311,7 +314,7 @@ export default function SuperAdminPage() {
             {deleteTarget && (
                 <div onClick={() => !deleting && setDeleteTarget(null)}
                     style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)' }}>
-                    <div onClick={e => e.stopPropagation()} dir="rtl"
+                    <div onClick={e => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'}
                         style={{ width: '100%', maxWidth: '440px', background: C.bg, border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
 
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: `${C.danger}15`, border: `1px solid ${C.danger}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: C.danger }}>

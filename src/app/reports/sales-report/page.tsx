@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -37,6 +38,8 @@ interface ReportData {
 const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function SalesReportPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
@@ -75,7 +78,7 @@ export default function SalesReportPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title={isServices ? "تقرير مبيعات الخدمات" : "تقرير المبيعات"}
                     subtitle={isServices ? "تحليل تفصيلي لجميع فواتير الخدمات الصادرة." : "تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية."}
@@ -91,7 +94,7 @@ export default function SalesReportPage() {
                         <div style={{ width: '170px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -102,7 +105,7 @@ export default function SalesReportPage() {
                         <div style={{ width: '170px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'right', direction: 'rtl',
+                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                     fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -162,7 +165,7 @@ export default function SalesReportPage() {
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     transition: 'all 0.2s'
                                 }}>
-                                    <div style={{ textAlign: 'right' }}>
+                                    <div style={{ textAlign: 'start' }}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -177,12 +180,12 @@ export default function SalesReportPage() {
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                            <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
                                 placeholder="ابحث برقم الفاتورة أو اسم العميل..."
                                 value={q} onChange={e => setQ(e.target.value)}
                                 style={{ 
-                                    ...IS, paddingRight: '45px', height: '42px', fontSize: '13.5px', 
+                                    ...IS, paddingInlineEnd: '45px', height: '42px', fontSize: '13.5px', 
                                     background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
                                     fontWeight: 500
                                 }}

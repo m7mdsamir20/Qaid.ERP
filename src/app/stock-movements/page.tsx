@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import {
     Activity, ArrowDownRight, ArrowUpRight, Search, FileText, Loader2, Filter, ArrowRightLeft, Package, Warehouse
@@ -21,6 +22,8 @@ interface StockMovement {
 }
 
 export default function StockMovementsPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const [movements, setMovements] = useState<StockMovement[]>([]);
     const [loading, setLoading] = useState(true);
@@ -59,7 +62,7 @@ export default function StockMovementsPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
                     title="حركات المخزون"
                     subtitle="سجل كامل لجميع العمليات الصادرة والواردة، التحويلات الداخلية، وتسويات الجرد."
@@ -70,7 +73,7 @@ export default function StockMovementsPage() {
                 {/* Header للطباعة فقط */}
                 <div className="print-only">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                        <div style={{ textAlign: 'right' }}>
+                        <div style={{ textAlign: 'start' }}>
                             <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
                             {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>}
                             {(session?.user as any)?.commercialRegister && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>السجل التجاري: {(session?.user as any)?.commercialRegister}</div>}
@@ -79,7 +82,7 @@ export default function StockMovementsPage() {
                         <div style={{ textAlign: 'center' }}>
                             <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>سجل حركات المخزون الشامل</h3>
                         </div>
-                        <div style={{ maxWidth: '150px', textAlign: 'left' }}>
+                        <div style={{ maxWidth: '150px', textAlign: 'end' }}>
                             {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
                         </div>
                     </div>
@@ -87,7 +90,7 @@ export default function StockMovementsPage() {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                     <div style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                        <Search size={18} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                        <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
                             placeholder="ابحث باسم الصنف، رقم المرجع، أو المخزن..."
                             value={searchTerm}

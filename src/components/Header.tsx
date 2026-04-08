@@ -111,7 +111,7 @@ function SearchBox() {
 
             {open && results.length > 0 && (
                 <div style={{
-                    position: 'absolute', top: 'calc(100% + 8px)', right: 0, width: '100%',
+                    position: 'absolute', top: 'calc(100% + 8px)', insetInlineEnd: 0, width: '100%',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px',
                     boxShadow: '0 20px 40px rgba(0,0,0,0.3)', zIndex: 1000, overflow: 'hidden',
                     animation: 'fadeDown 0.2s ease'
@@ -218,7 +218,7 @@ function Actions() {
                     <Bell size={18} />
                     {notifs.some(n => !n.read) && (
                         <span style={{
-                            position: 'absolute', top: '8px', right: '8px', width: '8px',
+                            position: 'absolute', top: '8px', insetInlineEnd: '8px', width: '8px',
                             height: '8px', background: C.danger, borderRadius: '50%',
                             border: `2px solid ${C.card}`
                         }} />
@@ -227,7 +227,7 @@ function Actions() {
 
                 {openNotif && (
                     <div style={{
-                        position: 'absolute', top: 'calc(100% + 15px)', right: '-142px', width: '320px',
+                        position: 'absolute', top: 'calc(100% + 15px)', insetInlineEnd: '-142px', width: '320px',
                         background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px',
                         boxShadow: '0 30px 60px rgba(0,0,0,0.6)', zIndex: 1000, overflow: 'hidden',
                         animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
@@ -274,7 +274,7 @@ function Actions() {
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
-                    <div style={{ textAlign: 'right' }}>
+                    <div style={{ textAlign: 'start' }}>
                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
                             {sessionStatus === 'loading' ? '...' : (session?.user?.name || 'المستخدم')}
                         </div>
@@ -399,7 +399,7 @@ function BranchSwitcher() {
     const activeBranch = branches.find(b => b.id === activeBranchId);
 
     return (
-        <div ref={ref} style={{ position: 'relative', marginLeft: '12px' }}>
+        <div ref={ref} style={{ position: 'relative', marginInlineStart: '12px' }}>
             <button onClick={() => setOpen(!open)}
                 style={{
                     display: 'flex', alignItems: 'center', gap: '8px',
@@ -416,7 +416,7 @@ function BranchSwitcher() {
 
             {open && (
                 <div style={{
-                    position: 'absolute', top: 'calc(100% + 12px)', right: 0, width: '240px',
+                    position: 'absolute', top: 'calc(100% + 12px)', insetInlineEnd: 0, width: '240px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
                     animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
@@ -430,7 +430,7 @@ function BranchSwitcher() {
                                 style={{
                                     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
                                     padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'right', boxSizing: 'border-box',
+                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box',
                                     background: !activeBranchId || activeBranchId === 'all' ? `${C.primary}15` : 'transparent',
                                     color: !activeBranchId || activeBranchId === 'all' ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: (!activeBranchId || activeBranchId === 'all') ? 800 : 600
@@ -446,7 +446,7 @@ function BranchSwitcher() {
                                 style={{
                                     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
                                     padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'right', boxSizing: 'border-box',
+                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box',
                                     background: activeBranchId === b.id ? `${C.primary}15` : 'transparent',
                                     color: activeBranchId === b.id ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: activeBranchId === b.id ? 800 : 500

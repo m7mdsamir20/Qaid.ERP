@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { Printer, X, Info, Receipt, TrendingDown, Plus, Search, ChevronDown, Lock, Loader2, UserCheck, Building2, Banknote, CheckCircle2, ArrowRight, Trash2, Eye } from 'lucide-react';
@@ -25,6 +26,8 @@ interface Treasury { id: string; name: string; type: string; balance: number; }
 
 /* ── List Page ── */
 export default function PaymentVouchersPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { symbol: cSymbol } = useCurrency();
     const { data: session } = useSession();
     const router = useRouter();
@@ -80,7 +83,7 @@ export default function PaymentVouchersPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
                     title="سندات الصرف"
                     subtitle="إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك"
@@ -157,12 +160,12 @@ export default function PaymentVouchersPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '14px', minWidth: '1000px' }}>
                                     <thead>
                                         <tr style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO, width: '120px' }}>رقم السند</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO, width: '120px' }}>رقم السند</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>التاريخ</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>المورد</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>المورد</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>طريقة الدفع</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>الخزينة / البنك</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'right', fontFamily: CAIRO }}>البيان</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>الخزينة / البنك</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>البيان</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>المبلغ</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>إجراءات</th>
                                         </tr>
@@ -175,11 +178,11 @@ export default function PaymentVouchersPage() {
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
                                                 >
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right', fontWeight: 500, fontSize: '11px', color: 'rgba(59, 130, 246, 0.65)', fontFamily: CAIRO, width: '120px' }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start', fontWeight: 500, fontSize: '11px', color: 'rgba(59, 130, 246, 0.65)', fontFamily: CAIRO, width: '120px' }}>
                                                         PMT-{String(v.voucherNumber).padStart(5, '0')}
                                                     </td>
                                                     <td style={{ padding: '11px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right', color: 'rgba(255,255,255,0.92)', fontFamily: CAIRO }}>{v.supplier?.name || '—'}</td>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start', color: 'rgba(255,255,255,0.92)', fontFamily: CAIRO }}>{v.supplier?.name || '—'}</td>
                                                     <td style={{ padding: '11px 16px' }}>
                                                         <div style={{
                                                             display: 'inline-flex', alignItems: 'center', gap: '5px',
@@ -191,8 +194,8 @@ export default function PaymentVouchersPage() {
                                                             {v.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{v.treasury?.name || '—'}</td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'right', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.description || '—'}</td>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{v.treasury?.name || '—'}</td>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'start', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.description || '—'}</td>
                                                     <td style={{ padding: '11px 16px', fontWeight: 500, color: '#fb7185', fontFamily: CAIRO }}>
                                                         {fmt(v.amount)} <span style={{ fontSize: '11px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                     </td>

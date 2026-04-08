@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
 import { 
@@ -51,6 +52,8 @@ const fmt = (n: number) => {
 
 /* ══════════════════════════════════════════ */
 export default function ClosingEntriesPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
 
     const [years, setYears] = useState<FinancialYear[]>([]);
     const [selectedYear, setSelectedYear] = useState<string>('');
@@ -188,13 +191,13 @@ export default function ClosingEntriesPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
                 
                 {/* Custom Confirmation Modal */}
                 {showConfirm && (
                     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)' }}>
                         <div style={{ background: '#0e172a', border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', maxWidth: '460px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', position: 'relative' }}>
-                            <button onClick={() => setShowConfirm(false)} style={{ position: 'absolute', top: '16px', left: '16px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', width: '32px', height: '32px', color: C.textSecondary, cursor: 'pointer' }}><X size={18} /></button>
+                            <button onClick={() => setShowConfirm(false)} style={{ position: 'absolute', top: '16px', insetInlineStart: '16px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', width: '32px', height: '32px', color: C.textSecondary, cursor: 'pointer' }}><X size={18} /></button>
                             <div style={{ width: '64px', height: '64px', background: 'rgba(59,130,246,0.15)', color: '#3b82f6', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <ShieldCheck size={32} />
                             </div>
@@ -320,7 +323,7 @@ export default function ClosingEntriesPage() {
                                 <h2 style={{ fontSize: '24px', fontWeight: 900, color: '#fff', marginBottom: '12px' }}>السنة المالية مقفلة محاسبياً</h2>
                                 <p style={{ fontSize: '15px', color: C.textMuted, marginBottom: '40px' }}>
                                     تم تدوير الأرصدة وإصدار قيد الإقفال بنجاح 
-                                    {closingInfo?.date && <span style={{ color: '#5286ed', fontWeight: 800, marginRight: '8px' }}>#{new Date(closingInfo.date).toLocaleDateString('en-GB')}</span>}
+                                    {closingInfo?.date && <span style={{ color: '#5286ed', fontWeight: 800, marginInlineEnd: '8px' }}>#{new Date(closingInfo.date).toLocaleDateString('en-GB')}</span>}
                                 </p>
                                 
                                 <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
@@ -437,7 +440,7 @@ function StatCard({ label, value, color, icon: Icon, compact }: any) {
                 <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 800 }}>{label}</span>
                 {Icon && <div style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px' }}><Icon size={16} style={{ color, opacity: 0.8 }} /></div>}
             </div>
-            <div style={{ fontSize: compact ? '22px' : '26px', fontWeight: 900, color, fontFamily: INTER, direction: 'ltr', textAlign: 'right' }}>{fmt(value)}</div>
+            <div style={{ fontSize: compact ? '22px' : '26px', fontWeight: 900, color, fontFamily: INTER, direction: 'ltr', textAlign: 'start' }}>{fmt(value)}</div>
             <div style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.03 }}>
                 {Icon && <Icon size={80} />}
             </div>
@@ -464,7 +467,7 @@ function DetailTable({ title, accounts, color }: any) {
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: '#f1f5f9' }}>{acc.name}</div>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, fontWeight: 600 }}>{acc.code}</div>
                                 </td>
-                                <td style={{ padding: '14px 20px', textAlign: 'left', fontSize: '14px', fontWeight: 900, color, direction: 'ltr', fontFamily: INTER }}>
+                                <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 900, color, direction: 'ltr', fontFamily: INTER }}>
                                     {fmt(acc.balance)}
                                 </td>
                             </tr>

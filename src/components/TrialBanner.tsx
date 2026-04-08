@@ -51,7 +51,7 @@ export default function TrialBanner() {
                         : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`
                     }
                 </span>
-                <span style={{ fontSize: '12px', color: '#64748b', marginRight: '8px' }}>
+                <span style={{ fontSize: '12px', color: '#64748b', marginInlineEnd: '8px' }}>
                     قم بترقية اشتراكك للاستمرار في استخدام النظام
                 </span>
             </div>

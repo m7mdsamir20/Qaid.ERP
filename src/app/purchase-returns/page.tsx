@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { RotateCcw, Plus, Printer, Loader2, Search, ChevronDown, Package, CheckCircle2, Clock, AlertCircle, Trash2, Eye } from 'lucide-react';
@@ -22,6 +23,8 @@ interface PurchaseReturn {
 
 
 export default function PurchaseReturnsListPage() {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const { symbol: cSymbol } = useCurrency();
     const router = useRouter();
     const { data: session } = useSession();
@@ -86,7 +89,7 @@ export default function PurchaseReturnsListPage() {
 
     return (
         <DashboardLayout>
-            <div dir="rtl" style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader 
                     title="مرتجعات المشتريات" 
                     subtitle="إدارة المرتجعات للموردين — رد الأصناف المشتراة وتسوية المديونيات" 

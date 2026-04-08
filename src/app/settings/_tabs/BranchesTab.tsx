@@ -75,13 +75,13 @@ export default function BranchesTab({
                             </div>
                             <div>
                                 <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>
-                                    {b.name} {b.isMain && <span style={{ fontSize: '11px', background: C.primary + '20', color: C.primary, padding: '2px 8px', borderRadius: '20px', marginRight: '6px' }}>رئيسي</span>}
+                                    {b.name} {b.isMain && <span style={{ fontSize: '11px', background: C.primary + '20', color: C.primary, padding: '2px 8px', borderRadius: '20px', marginInlineEnd: '6px' }}>رئيسي</span>}
                                 </div>
                                 <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>
-                                    {b.code && <span style={{ marginLeft: '12px' }}>كود: {b.code}</span>}
-                                    {b.address && <span style={{ marginLeft: '12px' }}>{b.address}</span>}
+                                    {b.code && <span style={{ marginInlineStart: '12px' }}>كود: {b.code}</span>}
+                                    {b.address && <span style={{ marginInlineStart: '12px' }}>{b.address}</span>}
                                     {b.phone && <span>{b.phone}</span>}
-                                    <span style={{ marginRight: '12px' }}>
+                                    <span style={{ marginInlineEnd: '12px' }}>
                                         {b._count?.warehouses || 0} مخزن · {b._count?.treasuries || 0} خزينة · {b._count?.employees || 0} موظف
                                     </span>
                                 </div>
