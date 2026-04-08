@@ -481,13 +481,19 @@ function BranchSwitcher() {
 }
 
 export default function Header() {
+    const { lang } = useTranslation();
+    const isRtl = lang === 'ar';
+
     return (
         <header style={{
-            height: '64px', position: 'fixed', top: 0, right: '260px', left: 0, zIndex: 800,
+            height: '64px', position: 'fixed', top: 0, 
+            [isRtl ? 'right' : 'left']: '260px', 
+            [isRtl ? 'left' : 'right']: 0, 
+            zIndex: 800,
             background: 'rgba(7, 13, 26, 0.7)', backdropFilter: 'blur(12px)',
             borderBottom: `1px solid ${C.border}`, display: 'flex',
             alignItems: 'center', padding: '0 24px'
-        }} dir="rtl">
+        }} dir={isRtl ? 'rtl' : 'ltr'}>
 
             {/* Right: Branch Switcher */}
             <div style={{ display: 'flex', alignItems: 'center' }}>

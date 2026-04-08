@@ -7,6 +7,7 @@ import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import TrialBanner from '@/components/TrialBanner';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
+import { useTranslation } from '@/lib/i18n';
 
 export default function DashboardLayout({
     children,
@@ -55,6 +56,9 @@ export default function DashboardLayout({
         );
     }
 
+    const { lang } = useTranslation();
+    const isRtl = lang === 'ar';
+
     return (
         <div style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
             <div className="print-hide">
@@ -62,7 +66,7 @@ export default function DashboardLayout({
             </div>
             <div className="dashboard-content" style={{
                 flex: 1, display: 'flex', flexDirection: 'column',
-                marginRight: '260px', // Sidebar width
+                [isRtl ? 'marginRight' : 'marginLeft']: '260px', // Sidebar width dynamically
                 paddingTop: '64px',
                 transition: 'all 0.3s ease'
             }}>
