@@ -60,13 +60,16 @@ export default function DashboardLayout({
     const isRtl = lang === 'ar';
 
     return (
-        <div style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
+        <div style={{ display: 'flex', minHeight: '100vh', background: C.bg, direction: isRtl ? 'rtl' : 'ltr' }}>
             <div className="print-hide">
                 <Sidebar />
             </div>
             <div className="dashboard-content" style={{
-                flex: 1, display: 'flex', flexDirection: 'column',
+                flex: 1, 
+                display: 'flex', 
+                flexDirection: 'column',
                 marginInlineStart: '260px',
+                width: 'calc(100% - 260px)',
                 paddingTop: '64px',
                 transition: 'all 0.3s ease'
             }}>
