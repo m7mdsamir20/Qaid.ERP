@@ -408,7 +408,8 @@ function BranchSwitcher() {
                     display: 'flex', alignItems: 'center', gap: '8px',
                     height: '36px', padding: '0 12px', borderRadius: '10px',
                     background: `${C.primary}10`, border: `1px solid ${C.primary}30`,
-                    cursor: 'pointer', transition: '0.2s'
+                    cursor: 'pointer', transition: '0.2s',
+                    flexDirection: isRtl ? 'row-reverse' : 'row'
                 }}>
                 <GitBranch size={14} color={C.primary} />
                  <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
@@ -436,12 +437,13 @@ function BranchSwitcher() {
                                     fontFamily: CAIRO, fontSize: '13.5px', textAlign: isRtl ? 'right' : 'left', boxSizing: 'border-box',
                                     background: !activeBranchId || activeBranchId === 'all' ? `${C.primary}15` : 'transparent',
                                     color: !activeBranchId || activeBranchId === 'all' ? C.primary : C.textSecondary,
-                                    transition: '0.15s', fontWeight: (!activeBranchId || activeBranchId === 'all') ? 800 : 600
+                                    transition: '0.15s', fontWeight: (!activeBranchId || activeBranchId === 'all') ? 800 : 600,
+                                    flexDirection: isRtl ? 'row-reverse' : 'row'
                                 }}
                                 onMouseEnter={e => { if (activeBranchId) e.currentTarget.style.background = C.hover; }}
                                 onMouseLeave={e => { if (activeBranchId) e.currentTarget.style.background = 'transparent'; }}>
-                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
-                                {t('كل الفروع')}
+                                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor', flexShrink: 0 }} />
+                                <span style={{ flex: 1 }}>{t('كل الفروع')}</span>
                             </button>
                         )}
                         {branches.map(b => (
@@ -453,7 +455,7 @@ function BranchSwitcher() {
                                     background: activeBranchId === b.id ? `${C.primary}15` : 'transparent',
                                     color: activeBranchId === b.id ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: activeBranchId === b.id ? 800 : 500,
-                                    flexDirection: isRtl ? 'row' : 'row'
+                                    flexDirection: isRtl ? 'row-reverse' : 'row'
                                 }}
                                 onMouseEnter={e => { if (activeBranchId !== b.id) e.currentTarget.style.background = C.hover; }}
                                 onMouseLeave={e => { if (activeBranchId !== b.id) e.currentTarget.style.background = 'transparent'; }}>
