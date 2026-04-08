@@ -409,7 +409,7 @@ function BranchSwitcher() {
                     height: '36px', padding: '0 12px', borderRadius: '10px',
                     background: `${C.primary}10`, border: `1px solid ${C.primary}30`,
                     cursor: 'pointer', transition: '0.2s',
-                    flexDirection: isRtl ? 'row-reverse' : 'row'
+                    flexDirection: isRtl ? 'row' : 'row'
                 }}>
                 <GitBranch size={14} color={C.primary} />
                  <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: CAIRO }}>
@@ -420,7 +420,9 @@ function BranchSwitcher() {
 
             {open && (
                 <div style={{
-                    position: 'absolute', top: 'calc(100% + 12px)', insetInlineEnd: 0, width: '240px',
+                    position: 'absolute', top: 'calc(100% + 12px)',
+                    [isRtl ? 'insetInlineStart' : 'insetInlineEnd']: 0,
+                    width: '240px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px',
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden',
                     animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}`
