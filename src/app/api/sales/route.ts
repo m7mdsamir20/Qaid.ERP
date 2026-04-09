@@ -30,10 +30,32 @@ export const GET = withProtection(async (request, session) => {
             });
 
             if (invoice) {
-                // Calculate balance up to this invoice (including this invoice debt/payment)
                 const party = invoice.customer || invoice.supplier;
                 if (party && (party as any).accountId) {
                     const partyAccId = (party as any).accountId;
+                    
+                    // 1. Get the financial year for this invoice date
+                    const finYear = await prisma.financialYear.findFirst({
+                        where: {
+                            companyId,
+                            startDate: { lte: invoice.date },
+                            endDate: { gte: invoice.date }
+                        }
+                    });
+
+                    let balance = 0;
+
+                    // 2. Add Opening Balance for that year if exists
+                    if (finYear) {
+                        const opBal = await prisma.openingBalance.findUnique({
+                            where: { accountId_financialYearId: { accountId: partyAccId, financialYearId: finYear.id } }
+                        });
+                        if (opBal) {
+                            balance = Number(opBal.debit) - Number(opBal.credit);
+                        }
+                    }
+
+                    // 3. Sum journal entries strictly BEFORE this invoice within that year or all time
                     const lines = await prisma.journalEntryLine.findMany({
                         where: {
                             accountId: partyAccId,
@@ -45,15 +67,19 @@ export const GET = withProtection(async (request, session) => {
                         select: { debit: true, credit: true }
                     });
                     
-                    let balance = 0;
-                    const isCustomer = !!invoice.customerId;
-                    
                     lines.forEach(l => {
-                        if (isCustomer) balance += (Number(l.debit) - Number(l.credit));
-                        else balance += (Number(l.credit) - Number(l.debit));
+                        balance += (Number(l.debit) - Number(l.credit));
                     });
 
-                    (invoice as any).partyBalanceAtTime = balance;
+                    // For customers: Positive balance = debt (عليه), Negative = credit (له)
+                    // For suppliers: We usually invert this in UI, but keep raw ledger balance here
+                    const isCustomer = !!invoice.customerId;
+                    if (isCustomer) {
+                        (invoice as any).partyBalanceAtTime = balance;
+                    } else {
+                        // For suppliers, ledger standard is usually Credit-Debit (Positive = they have money)
+                        (invoice as any).partyBalanceAtTime = -balance; 
+                    }
                 }
             }
             return NextResponse.json(invoice);
