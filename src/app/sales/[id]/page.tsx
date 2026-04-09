@@ -114,7 +114,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title={`تفاصيل ${invLabel} ${invNumFmt}`}
+                    title={`تفاصيل ${invLabel}`}
                     subtitle={`تاريخ الفاتورة: ${new Date(invoice.date).toLocaleDateString('ar-EG')} — سجل العميل والتحصيل المالي`}
                     icon={Receipt}
                     backUrl="/sales"
@@ -207,34 +207,46 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         
                         {/* ── Metadata Icons ── */}
-                        <div style={{ ...SC, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
+                        <div style={{ ...SC, display: 'grid', gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: '15px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <User size={20} />
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <User size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>العميل / المستلم</p>
-                                    <p style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>العميل / المستلم</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
                                 </div>
                             </div>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Receipt size={20} />
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Receipt size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>رقم الفاتورة</p>
-                                    <div style={{ color: C.primary, fontWeight: 900, fontSize: '15px', fontFamily: INTER, marginBottom: '2px' }}>{invNumFmt}</div>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>رقم الفاتورة</p>
+                                    <div style={{ color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{invNumFmt}</div>
                                 </div>
                             </div>
 
+                            {!isServices && (
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                        <Building2 size={18} />
+                                    </div>
+                                    <div>
+                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>المستودع / المخزن</p>
+                                        <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
+                                    </div>
+                                </div>
+                            )}
+
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: status.bg, color: status.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <status.icon size={20} />
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: status.bg, color: status.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <status.icon size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>حالة التحصيل</p>
-                                    <p style={{ fontSize: '14px', fontWeight: 800, color: status.color, margin: 0 }}>{status.label}</p>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>حالة التحصيل</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 800, color: status.color, margin: 0 }}>{status.label}</p>
                                 </div>
                             </div>
                         </div>
