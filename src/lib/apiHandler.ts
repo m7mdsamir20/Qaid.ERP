@@ -33,7 +33,7 @@ export function withProtection(handler: Handler, options: {
 
         if (!options.isPublic) {
             // 2. Authentication
-            const { session: s, error: authError } = await requireAuth();
+            const { session: s, error: authError } = await requireAuth(request);
             if (authError) return authError;
             session = s;
 

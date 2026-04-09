@@ -1,8 +1,8 @@
+import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
-import { NextResponse } from 'next/server';
 
-export async function requireAuth() {
+export async function requireAuth(request?: NextRequest) {
     const session = await getServerSession(authOptions);
 
     if (!session?.user) {
@@ -18,7 +18,7 @@ export async function requireAuth() {
     // التحقق من انتهاء الاشتراك / الفترة التجريبية
     if (sub && !isSuperAdmin) {
         const isExpired = new Date(sub.endDate).getTime() < Date.now();
-        if (isExpired || !sub.isActive) {
+        if ((isExpired || !sub.isActive) && request?.method !== 'GET') {
             return {
                 error: NextResponse.json({
                     error: 'لقد انتهت صلاحية الاشتراك أو الفترة التجريبية. يرجى تجديد الاشتراك للاستمرار.',
