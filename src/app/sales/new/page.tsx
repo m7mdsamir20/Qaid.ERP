@@ -374,6 +374,26 @@ export default function NewSalePage() {
                 }),
             });
             if (res.ok) {
+                const savedInvoice = await res.json();
+                if (andPrint) {
+                    const co: CompanyInfo = {
+                        name: (session?.user as any)?.companyName,
+                        address: (session?.user as any)?.companyAddress,
+                        phone: (session?.user as any)?.companyPhone,
+                        taxNumber: (session?.user as any)?.taxNumber,
+                        commercialRegister: (session?.user as any)?.commercialRegister,
+                        logo: (session?.user as any)?.logo,
+                        currency: (session?.user as any)?.currency,
+                        businessType: (session?.user as any)?.businessType
+                    };
+                    
+                    // Fetch full data including customer Object for printing
+                    const printRes = await fetch(`/api/sales?id=${savedInvoice.id}`);
+                    if (printRes.ok) {
+                        const fullInv = await printRes.json();
+                        printSaleInvoice(fullInv, fullInv.customer, fullInv.invoiceNumber, fullInv, co);
+                    }
+                }
                 router.push('/sales');
             } else {
                 const data = await res.json();

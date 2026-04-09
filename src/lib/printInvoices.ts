@@ -83,8 +83,13 @@ export function printA4Invoice(
 
     const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
 
-    // تحديد ما إذا كان النشاط خدمياً بناءً على وجود أوصاف في البنود
-    const isServicesLine = lines.some((l: any) => l.description || (l.item?.businessType?.toUpperCase() === 'SERVICES'));
+    // تحديد ما إذا كان النشاط خدمياً
+    const isServicesLine = company.businessType?.toUpperCase() === 'SERVICES' || lines.some((l: any) => l.description || (l.item?.businessType?.toUpperCase() === 'SERVICES'));
+
+    // ضريبة على مستوى الفاتورة
+    const invoiceTaxRate   = Number(invoice.taxRate   || 0);
+    const invoiceTaxAmount = Number(invoice.taxAmount || 0);
+    const taxInclusive     = invoice.taxInclusive || false;
 
     const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -192,9 +197,14 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
             const unit = l.item?.unit?.name || l.unit?.name || l.unit || '—';
             const name = l.item?.name || l.itemName || l.name || 'صنف غير معروف';
             const desc = l.description || '';
-            const taxAmountValue = Number(l.taxAmount || 0);
-            const lineTotal = Number(l.total || (Number(l.quantity || 0) * Number(l.price || 0)));
-            
+            const qty   = Number(l.quantity || 0);
+            const price = Number(l.price || 0);
+            const lineBase = qty * price;
+            // per-line tax: use line's own taxAmount if set, otherwise distribute invoice tax rate
+            const lineTaxRate   = Number(l.taxRate || 0) || invoiceTaxRate;
+            const lineTaxAmount = Number(l.taxAmount || 0) || (taxInclusive ? 0 : parseFloat((lineBase * lineTaxRate / 100).toFixed(2)));
+            const lineTotal = taxInclusive ? lineBase : lineBase + lineTaxAmount;
+
             return `<tr>
                 <td>${i + 1}</td>
                 <td style="text-align:right">
@@ -202,12 +212,12 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
                     ${desc ? `<div style="font-size:10px;color:#666;margin-top:2px">${desc}</div>` : ''}
                 </td>
                 ${!isServicesLine ? `<td>${unit}</td>` : ''}
-                <td><strong>${Number(l.quantity || 0).toLocaleString()}</strong></td>
-                <td>${Number(l.price || 0).toLocaleString()} ${sym}</td>
-                ${isServicesLine ? `
-                    <td>${(l.taxRate || 0)}%</td>
-                    <td>${Number(l.taxAmount || 0).toLocaleString()} ${sym}</td>
-                ` : (lines.some((lx: any) => (lx.taxAmount || 0) > 0) ? `<td>${taxAmountValue > 0 ? taxAmountValue.toLocaleString() + ' ' + sym : '—'}</td>` : '')}
+                <td><strong>${qty.toLocaleString()}</strong></td>
+                <td>${price.toLocaleString()} ${sym}</td>
+                ${isServicesLine && invoiceTaxRate > 0 ? `
+                    <td>${lineTaxRate}%</td>
+                    <td>${lineTaxAmount.toLocaleString()} ${sym}</td>
+                ` : (!isServicesLine && lines.some((lx: any) => (lx.taxAmount || 0) > 0) ? `<td>${lineTaxAmount > 0 ? lineTaxAmount.toLocaleString() + ' ' + sym : '—'}</td>` : '')}
                 <td><strong>${lineTotal.toLocaleString()} ${sym}</strong></td>
             </tr>`;
         }).join('')}
@@ -235,11 +245,15 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
             <span>-${discount.toLocaleString()} ${sym}</span>
         </div>` : ''}
 
-        ${lines.reduce((acc: number, l: any) => acc + (Number(l.taxAmount) || 0), 0) > 0 ? `
-        <div class="t-row">
-            <span>ضريبة القيمة المضافة</span>
-            <span>${lines.reduce((acc: number, l: any) => acc + (Number(l.taxAmount) || 0), 0).toLocaleString()} ${sym}</span>
-        </div>` : ''}
+        ${invoiceTaxAmount > 0 || (invoiceTaxRate > 0 && !taxInclusive) ? (() => {
+            const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+                : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity||0) * Number(l.price||0) * invoiceTaxRate / 100), 0).toFixed(2));
+            return `
+        <div class="t-row" style="background:#fffbe6;font-weight:800">
+            <span>إجمالي الضريبة (${invoiceTaxRate}%)</span>
+            <span>${displayTax.toLocaleString()} ${sym}</span>
+        </div>`;
+        })() : ''}
 
         ${partyBalance !== null ? (() => {
             const currentTransaction = isSale ? (total - paid) : (paid - total);
