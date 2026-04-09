@@ -150,7 +150,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
     </div>
     <div class="header-center">
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
-        <div class="inv-num">${prefix}-${invoiceNum}</div>
+        <div class="inv-num">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</div>
     </div>
     <div class="logo-block">
         ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
@@ -164,9 +164,11 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
         ${party?.phone ? `<div class="info-row"><span class="ik">الهاتف:</span><span class="iv">${party.phone}</span></div>` : ''}
     </div>
     <div class="info-col">
-        <div class="info-row"><span class="ik">رقم الفاتورة:</span><span class="iv">${prefix}-${invoiceNum}</span></div>
+        <div class="info-row"><span class="ik">رقم الفاتورة:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
         <div class="info-row"><span class="ik">التاريخ:</span><span class="iv">${date}</span></div>
         ${invoice.dueDate ? `<div class="info-row"><span class="ik">تاريخ الاستحقاق:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}</span></div>` : ''}
+        ${party?.taxNumber ? `<div class="info-row"><span class="ik">الرقم الضريبي:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
+        ${party?.commercialRegister ? `<div class="info-row"><span class="ik">السجل التجاري:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
     </div>
 </div>
 

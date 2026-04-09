@@ -278,7 +278,7 @@ export default function SalesPage() {
                                                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
                                             >
                                                 <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: isRtl ? 'right' : 'left' }}>
-                                                    SAL-{String(inv.invoiceNumber).padStart(5, '0')}
+                                                    {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: isRtl ? 'right' : 'left' }}>{inv.customer ? inv.customer.name : t("عميل نقدي")}</td>

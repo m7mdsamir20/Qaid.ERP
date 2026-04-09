@@ -487,7 +487,7 @@ export default function NewSalePage() {
                         {/* Basic Data */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: isServices ? '100px 1.8fr 140px 140px' : '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الفاتورة')}</label>
@@ -525,28 +525,10 @@ export default function NewSalePage() {
                                         <InlineError field="customerId" />
                                     </div>
                                     {selectedPartner && (
-                                        <div style={{
-                                            marginTop: '10px',
-                                            padding: '6px 14px',
-                                            borderRadius: '24px',
-                                            fontSize: '12px',
-                                            fontWeight: 700,
-                                            display: 'inline-flex',
-                                            alignItems: 'center',
-                                            gap: '6px',
-                                            background: (selectedPartner?.partnerType === 'supplier'
-                                                ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
-                                                : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
-                                            ),
-                                            color: (selectedPartner?.partnerType === 'supplier'
-                                                ? selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
-                                                : selectedPartner.balance < 0 ? '#f87171' : selectedPartner.balance > 0 ? '#34d399' : '#475569'
-                                            ),
-                                            border: `1px solid ${
-                                                selectedPartner?.partnerType === 'supplier'
-                                                ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                                : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                            }`,
+                                        <div style={{ 
+                                            marginTop: '6px', fontSize: '10px', fontWeight: 700, 
+                                            color: selectedPartner.balance > 0 ? '#fb7185' : selectedPartner.balance < 0 ? '#4ade80' : '#94a3b8',
+                                            display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.02)', padding: '4px 8px', borderRadius: '6px', width: 'fit-content'
                                         }}>
                                             <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                             {selectedPartner?.partnerType === 'supplier'
@@ -594,93 +576,88 @@ export default function NewSalePage() {
 
                         {/* Items */}
                         <div style={SC}>
-                                <div style={{ ...STitle, color: '#3b82f6' }}>
-                                    <Package size={12} /> {t('اضافة الاصناف')}
-                                </div>
+                            <div style={{ ...STitle, color: '#3b82f6' }}>
+                                <Package size={12} /> {t('اضافة الاصناف')}
+                            </div>
 
-                            {/* Entry Row */}
+                            {/* Entry Row - Direct without nested box */}
                             <div style={{ 
-                                background: 'rgba(255,255,255,0.01)', 
-                                borderRadius: '12px', 
-                                padding: '14px', 
-                                marginBottom: '16px', 
-                                display: 'flex',
-                                flexDirection: 'column',
-                                gap: '14px', 
-                                border: `1px solid ${C.border}`,
+                                display: 'grid', 
+                                gridTemplateColumns: isServices ? '1.5fr 110px 110px 110px 60px' : '1fr 90px 110px 60px', 
+                                gap: '12px', 
+                                alignItems: 'end',
+                                marginBottom: '20px'
                             }}>
-                                <div style={{ 
-                                    display: 'grid', 
-                                    gridTemplateColumns: isServices ? '1fr 110px 110px 110px 60px' : '1fr 90px 110px 60px', 
-                                    gap: '12px', 
-                                    alignItems: 'end' 
-                                }}>
-                                    <div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                            <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? t("اسم الخدمة") : t("الصنف")} {((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) && t('(اختر الفرع أولاً)')}</label>
-                                            {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && entryItemId && entryStock !== null && (
-                                                <span style={{ fontSize: '10px', fontWeight: 800, color: (entryStock || 0) > 0 ? '#10b981' : '#ef4444' }}>
-                                                    {t('متاح:')} {entryStock}
-                                                </span>
-                                            )}
-                                        </div>
-                                        <div style={{ pointerEvents: ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) ? 'none' : 'auto', opacity: ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId) ? 0.6 : 1, position: 'relative' }}>
-                                            <CustomSelect ref={itemSelectRef} value={entryItemId} onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} icon={Search} placeholder={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? t("اختر الخدمة...") : t("اختر الصنف...")} options={items.map(i => ({ value: i.id, label: i.name }))} />
-                                        </div>
+                                <div>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'start' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect 
+                                            ref={itemSelectRef}
+                                            value={entryItemId} 
+                                            onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} 
+                                            icon={Search} 
+                                            placeholder={isServices ? t("اختر الخدمة...") : t("اختر الصنف...")} 
+                                            options={items.map(i => ({ value: i.id, label: i.name }))} 
+                                        />
+                                        <InlineError field="entryItemId" />
                                     </div>
-                                    <div>
-                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)}
-                                                disabled={!entryItemId}
-                                                onChange={e => {
-                                                    const v = e.target.value.replace(/,/g, '');
-                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
-                                                        setEntryQty(v === '' ? '' : v as any);
-                                                        clearError('entryQty');
-                                                    }
-                                                }}
-                                                onKeyDown={e => e.key === 'Enter' && addLine()}
-                                                style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
-                                                onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
-                                            <InlineError field="entryQty" />
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
-                                                disabled={!entryItemId}
-                                                onChange={e => {
-                                                    const v = e.target.value.replace(/,/g, '');
-                                                    if (v === '' || !isNaN(Number(v)) || v === '.') {
-                                                        setEntryPrice(v === '' ? '' : v as any);
-                                                        clearError('entryPrice');
-                                                    }
-                                                }}
-                                                onKeyDown={e => e.key === 'Enter' && addLine()}
-                                                style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }}
-                                                onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
-                                            <InlineError field="entryPrice" />
-                                        </div>
-                                    </div>
-                                    <button onClick={addLine} disabled={!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)}
-                                        style={{
-                                            height: '38px', borderRadius: '10px', border: 'none',
-                                            background: (!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)) ? 'rgba(37,106,244,0.3)' : C.primary,
-                                            color: '#fff', cursor: (!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)) ? 'not-allowed' : 'pointer',
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            transition: 'all 0.15s',
-                                            width: '60px',
-                                            flexShrink: 0
-                                        }}>
-                                        {/* @ts-ignore */}
-                                        <Plus size={22} />
-                                    </button>
                                 </div>
+                                {!isServices && (
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('متاح:')}</label>
+                                        <div style={{ ...IS, height: '38px', background: 'rgba(255,255,255,0.03)', color: (entryStock || 0) <= 0 ? C.danger : C.success, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontFamily: INTER }}>
+                                            {entryStock !== null ? entryStock : '—'}
+                                        </div>
+                                    </div>
+                                )}
+                                <div>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)}
+                                            disabled={!entryItemId}
+                                            onChange={e => {
+                                                const v = e.target.value.replace(/,/g, '');
+                                                if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                    setEntryQty(v === '' ? '' : v as any); clearError('entryQty');
+                                                }
+                                            }}
+                                            onKeyDown={e => e.key === 'Enter' && addLine()}
+                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                            onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <InlineError field="entryQty" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
+                                    <div style={{ position: 'relative' }}>
+                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
+                                            disabled={!entryItemId}
+                                            onChange={e => {
+                                                const v = e.target.value.replace(/,/g, '');
+                                                if (v === '' || !isNaN(Number(v)) || v === '.') {
+                                                    setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice');
+                                                }
+                                            }}
+                                            onKeyDown={e => e.key === 'Enter' && addLine()}
+                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                            onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <InlineError field="entryPrice" />
+                                    </div>
+                                </div>
+                                <button onClick={addLine} disabled={!entryItemId || (!isServices && !form.warehouseId)}
+                                    style={{
+                                        height: '38px', borderRadius: '10px', border: 'none',
+                                        background: (!entryItemId || (!isServices && !form.warehouseId)) ? 'rgba(59,130,246,0.3)' : C.primary,
+                                        color: '#fff', cursor: (!entryItemId || (!isServices && !form.warehouseId)) ? 'not-allowed' : 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s', width: '60px', flexShrink: 0
+                                    }}
+                                >
+                                    <Plus size={22} />
+                                </button>
+                            </div>
 
                                 {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && entryItemId && (
-                                    <div style={{ animation: 'slideDown 0.2s ease' }}>
+                                    <div style={{ animation: 'slideDown 0.2s ease', marginTop: '14px' }}>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('الوصف (يتم سحبه تلقائياً ويمكن التعديل)')}</label>
                                         <textarea
                                             value={entryDescription}
@@ -691,7 +668,6 @@ export default function NewSalePage() {
                                         />
                                     </div>
                                 )}
-                            </div>
 
                             {/* Lines Table */}
                             <div className="table-container">

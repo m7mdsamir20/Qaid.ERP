@@ -114,7 +114,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title={`تفاصيل ${invLabel} #${invNumFmt}`}
+                    title={`تفاصيل ${invLabel} ${invNumFmt}`}
                     subtitle={`تاريخ الفاتورة: ${new Date(invoice.date).toLocaleDateString('ar-EG')} — سجل العميل والتحصيل المالي`}
                     icon={Receipt}
                     backUrl="/sales"
@@ -224,7 +224,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>رقم الفاتورة</p>
-                                    <p style={{ fontSize: '14px', fontWeight: 800, color: '#3b82f6', margin: 0 }}>#{invNumFmt}</p>
+                                    <div style={{ color: C.primary, fontWeight: 900, fontSize: '15px', fontFamily: INTER, marginBottom: '2px' }}>{invNumFmt}</div>
                                 </div>
                             </div>
 
@@ -252,12 +252,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         {!isServices && <th style={TABLE_STYLE.th(false)}>الوحدة</th>}
                                         <th style={TABLE_STYLE.th(false)}>الكمية</th>
                                         <th style={TABLE_STYLE.th(false)}>{isServices ? 'سعر الخدمة' : 'سعر البيع'}</th>
-                                        {isServices && (
-                                            <>
-                                                <th style={TABLE_STYLE.th(false)}>الضريبة %</th>
-                                                <th style={TABLE_STYLE.th(false)}>قيمة الضريبة</th>
-                                            </>
-                                        )}
+                                        <th style={TABLE_STYLE.th(false)}>الضريبة</th>
                                         <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
                                     </tr>
                                 </thead>
@@ -273,12 +268,9 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                            {isServices && (
-                                                <>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: '#60a5fa', fontWeight: 700 }}>{l.taxRate || 0}%</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: '#f87171', fontWeight: 700 }}>{fmt(l.taxAmount || 0)}</td>
-                                                </>
-                                            )}
+                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
+                                                {l.taxAmount ? l.taxAmount.toLocaleString() : '0.00'} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate || 0}%)</span>
+                                            </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
@@ -376,23 +368,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                             </div>
                         </div>
-
-                        <button 
-                            onClick={() => router.push('/sales')}
-                            style={{ 
-                                height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`,
-                                background: 'transparent', color: C.textSecondary, fontWeight: 700,
-                                cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-                                transition: 'all 0.2s', marginTop: '10px'
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                        >
-                            <ArrowRight size={16} /> العودة للقائمة
-                        </button>
                     </div>
                 </div>
-
             </div>
             <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } `}</style>
         </DashboardLayout>
