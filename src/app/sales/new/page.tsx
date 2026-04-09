@@ -583,7 +583,7 @@ export default function NewSalePage() {
                             {/* Entry Row - Direct without nested box */}
                             <div style={{ 
                                 display: 'grid', 
-                                gridTemplateColumns: isServices ? '1.5fr 110px 110px 110px 60px' : '1fr 90px 110px 60px', 
+                                gridTemplateColumns: isServices ? '1fr 110px 110px 60px' : '1fr 110px 110px 60px', 
                                 gap: '12px', 
                                 alignItems: 'end',
                                 marginBottom: '20px'
@@ -597,19 +597,19 @@ export default function NewSalePage() {
                                             onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} 
                                             icon={Search} 
                                             placeholder={isServices ? t("اختر الخدمة...") : t("اختر الصنف...")} 
-                                            options={items.map(i => ({ value: i.id, label: i.name }))} 
+                                            options={items.map(i => {
+                                                const s = isServices ? null : (i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0);
+                                                return { 
+                                                    value: i.id, 
+                                                    label: i.name,
+                                                    sub: s !== null ? `${t('متاح:')} ${s}` : undefined,
+                                                    style: s !== null && s <= 0 ? { opacity: 0.6, color: C.danger } : undefined
+                                                };
+                                            })} 
                                         />
                                         <InlineError field="entryItemId" />
                                     </div>
                                 </div>
-                                {!isServices && (
-                                    <div>
-                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('متاح:')}</label>
-                                        <div style={{ ...IS, height: '38px', background: 'rgba(255,255,255,0.03)', color: (entryStock || 0) <= 0 ? C.danger : C.success, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontFamily: INTER }}>
-                                            {entryStock !== null ? entryStock : '—'}
-                                        </div>
-                                    </div>
-                                )}
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
