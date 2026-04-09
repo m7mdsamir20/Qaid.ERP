@@ -29,7 +29,6 @@ export default function TrialBanner() {
     const textColor   = isExpired ? '#ef4444'              : isUrgent ? '#f87171'                 : isWarn ? '#f59e0b'                 : '#818cf8';
     const icon        = isExpired ? '🛑' : isUrgent ? '🚨' : isWarn ? '⚠️' : '🎯';
     const subPlan     = (session?.user as any)?.subscription?.plan || 'trial';
-    const WHATSAPP_URL = "https://wa.me/201010101010"; // Placeholder
 
     return (
         <div className="print-hide" style={{
@@ -78,16 +77,9 @@ export default function TrialBanner() {
             )}
 
             <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-                {isExpired && (
-                    <a href={WHATSAPP_URL} target="_blank" rel="noreferrer"
-                        style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: '1px solid #25D366', background: 'rgba(37, 211, 102, 0.1)', color: '#25D366', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
-                        واتساب الدعم الفني
-                    </a>
-                )}
-                
                 <Link href="/settings?tab=subscription"
                     style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: 'none', background: textColor, color: '#fff', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
-                    <Crown size={12} /> {isExpired ? 'تجديد الاشتراك' : 'ترقية الآن'}
+                    <Crown size={12} /> {isExpired ? 'تجديد الاشتراك الآن' : 'ترقية الآن'}
                 </Link>
 
                 {!isExpired && (

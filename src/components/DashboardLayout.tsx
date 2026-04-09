@@ -57,8 +57,13 @@ export default function DashboardLayout({
     const isLockoutActive = isExpired && !isSuperAdmin;
     const isAllowedTab = pathname === '/settings' && typeof window !== 'undefined' && window.location.search.includes('tab=subscription');
 
-    // WhatsApp Link
-    const WHATSAPP_URL = "https://wa.me/201010101010"; // Placeholder, replace with actual support number
+    if (status === 'loading') {
+        return (
+            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
+                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
+            </div>
+        );
+    }
 
     return (
         <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
@@ -74,18 +79,18 @@ export default function DashboardLayout({
                 paddingTop: '64px',
                 transition: 'all 0.3s ease'
             }}>
-                <div className="print-hide" style={{ opacity: isLockoutActive ? 0.6 : 1, pointerEvents: isLockoutActive ? 'none' : 'auto' }}>
+                <div className="print-hide">
                     <Header />
                 </div>
                 <main style={{ flex: 1, padding: '24px 24px 24px', position: 'relative' }}>
                     <div style={{ width: '100%', maxWidth: '1600px', margin: '0 auto' }}>
-                        {/* Lockout Overlay Layer */}
+                        {/* Lockout Overlay Layer - Covers internal scrollable content only */}
                         {isLockoutActive && !isAllowedTab && (
                             <div style={{
                                 position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                                zIndex: 900, background: 'rgba(255,255,255, 0.05)',
+                                zIndex: 900, background: 'rgba(255,255,255, 0.02)',
                                 cursor: 'not-allowed'
-                            }} onClick={(e) => e.stopPropagation()} />
+                            }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
                         )}
 
                         {noFY && !loadingFY && !pathname.includes('/financial-years') && (
