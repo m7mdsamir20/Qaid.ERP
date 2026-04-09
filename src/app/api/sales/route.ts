@@ -28,6 +28,34 @@ export const GET = withProtection(async (request, session) => {
                     lines: { include: { item: { include: { unit: true } } } },
                 }
             });
+
+            if (invoice) {
+                // Calculate balance up to this invoice (including this invoice debt/payment)
+                const party = invoice.customer || invoice.supplier;
+                if (party && (party as any).accountId) {
+                    const partyAccId = (party as any).accountId;
+                    const lines = await prisma.journalEntryLine.findMany({
+                        where: {
+                            accountId: partyAccId,
+                            journalEntry: {
+                                companyId,
+                                createdAt: { lte: invoice.createdAt }
+                            }
+                        },
+                        select: { debit: true, credit: true }
+                    });
+                    
+                    let balance = 0;
+                    const isCustomer = !!invoice.customerId;
+                    
+                    lines.forEach(l => {
+                        if (isCustomer) balance += (Number(l.debit) - Number(l.credit));
+                        else balance += (Number(l.credit) - Number(l.debit));
+                    });
+
+                    (invoice as any).partyBalanceAtTime = balance;
+                }
+            }
             return NextResponse.json(invoice);
         }
 

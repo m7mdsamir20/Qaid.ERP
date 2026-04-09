@@ -76,7 +76,7 @@ export function printA4Invoice(
     const total = Number(invoice.total || subtotal - discount);
     const paid = Number(invoice.paidAmount || 0);
     const remaining = Math.max(0, total - paid);
-    const partyBalance = options.partyBalance ?? null;
+    const partyBalance    = invoice.partyBalanceAtTime !== undefined ? invoice.partyBalanceAtTime : (party?.balance ?? null);
 
     const date = new Date(invoice.date || new Date())
         .toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
