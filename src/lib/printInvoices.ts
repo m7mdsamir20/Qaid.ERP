@@ -69,14 +69,14 @@ export function printA4Invoice(
     // Ensure lines is always an array and try to find it in common properties
     const rawLines = invoice.lines || invoice.InvoiceLine || invoice.items || [];
     const lines = Array.isArray(rawLines) ? rawLines : [];
-    
+
     // Recalculate subtotal from lines to be sure
     const subtotal = lines.reduce((s: number, l: any) => s + Number(l.total || (Number(l.quantity || 0) * Number(l.price || 0)) || 0), 0);
     const discount = Number(invoice.discount || 0);
     const total = Number(invoice.total || subtotal - discount);
     const paid = Number(invoice.paidAmount || 0);
     const remaining = Math.max(0, total - paid);
-    const partyBalance    = invoice.partyBalanceAtTime !== undefined ? invoice.partyBalanceAtTime : (party?.balance ?? null);
+    const partyBalance = options.partyBalance ?? null;
 
     const date = new Date(invoice.date || new Date())
         .toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -87,9 +87,9 @@ export function printA4Invoice(
     const isServicesLine = company.businessType?.toUpperCase() === 'SERVICES' || lines.some((l: any) => l.description || (l.item?.businessType?.toUpperCase() === 'SERVICES'));
 
     // ضريبة على مستوى الفاتورة
-    const invoiceTaxRate   = Number(invoice.taxRate   || 0);
+    const invoiceTaxRate = Number(invoice.taxRate || 0);
     const invoiceTaxAmount = Number(invoice.taxAmount || 0);
-    const taxInclusive     = invoice.taxInclusive || false;
+    const taxInclusive = invoice.taxInclusive || false;
 
     const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -148,10 +148,10 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 <div class="header">
     <div class="co-block">
         <div class="co-name">${co.name}</div>
-        ${co.addr  ? `<div class="co-line">${co.addr}</div>` : ''}
+        ${co.addr ? `<div class="co-line">${co.addr}</div>` : ''}
         ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
-        ${co.tax    ? `<div class="co-line">الرقم الضريبي: <strong>${co.tax}</strong></div>` : ''}
-        ${co.cr     ? `<div class="co-line">السجل التجاري: <strong>${co.cr}</strong></div>` : ''}
+        ${co.tax ? `<div class="co-line">الرقم الضريبي: <strong>${co.tax}</strong></div>` : ''}
+        ${co.cr ? `<div class="co-line">السجل التجاري: <strong>${co.cr}</strong></div>` : ''}
     </div>
     <div class="header-center">
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
@@ -194,18 +194,18 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
     </thead>
     <tbody>
         ${lines.length === 0 ? '<tr><td colspan="10" style="padding:20px;color:#999">لا توجد بنود في هذه الفاتورة</td></tr>' : lines.map((l: any, i: number) => {
-            const unit = l.item?.unit?.name || l.unit?.name || l.unit || '—';
-            const name = l.item?.name || l.itemName || l.name || 'صنف غير معروف';
-            const desc = l.description || '';
-            const qty   = Number(l.quantity || 0);
-            const price = Number(l.price || 0);
-            const lineBase = qty * price;
-            // per-line tax: use line's own taxAmount if set, otherwise distribute invoice tax rate
-            const lineTaxRate   = Number(l.taxRate || 0) || invoiceTaxRate;
-            const lineTaxAmount = Number(l.taxAmount || 0) || (taxInclusive ? 0 : parseFloat((lineBase * lineTaxRate / 100).toFixed(2)));
-            const lineTotal = taxInclusive ? lineBase : lineBase + lineTaxAmount;
+        const unit = l.item?.unit?.name || l.unit?.name || l.unit || '—';
+        const name = l.item?.name || l.itemName || l.name || 'صنف غير معروف';
+        const desc = l.description || '';
+        const qty = Number(l.quantity || 0);
+        const price = Number(l.price || 0);
+        const lineBase = qty * price;
+        // per-line tax: use line's own taxAmount if set, otherwise distribute invoice tax rate
+        const lineTaxRate = Number(l.taxRate || 0) || invoiceTaxRate;
+        const lineTaxAmount = Number(l.taxAmount || 0) || (taxInclusive ? 0 : parseFloat((lineBase * lineTaxRate / 100).toFixed(2)));
+        const lineTotal = taxInclusive ? lineBase : lineBase + lineTaxAmount;
 
-            return `<tr>
+        return `<tr>
                 <td>${i + 1}</td>
                 <td style="text-align:right">
                     <div class="item-name">${name}</div>
@@ -220,7 +220,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
                 ` : (!isServicesLine && lines.some((lx: any) => (lx.taxAmount || 0) > 0) ? `<td>${lineTaxAmount > 0 ? lineTaxAmount.toLocaleString() + ' ' + sym : '—'}</td>` : '')}
                 <td><strong>${lineTotal.toLocaleString()} ${sym}</strong></td>
             </tr>`;
-        }).join('')}
+    }).join('')}
     </tbody>
 </table>
 
@@ -247,7 +247,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 
         ${invoiceTaxAmount > 0 || (invoiceTaxRate > 0 && !taxInclusive) ? (() => {
             const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
-                : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity||0) * Number(l.price||0) * invoiceTaxRate / 100), 0).toFixed(2));
+                : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
             return `
         <div class="t-row" style="background:#fffbe6;font-weight:800">
             <span>إجمالي الضريبة (${invoiceTaxRate}%)</span>
@@ -260,9 +260,9 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
             const oldBalance = Number(partyBalance) - currentTransaction;
             const formatBal = (val: number) => {
                 const abs = Math.abs(val).toLocaleString();
-                const suffix = isSale 
+                const suffix = isSale
                     ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
-                    : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : ''); 
+                    : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
                 return `${abs} ${sym}${suffix}`;
             };
             return `
@@ -288,7 +288,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
         ${partyBalance !== null ? (() => {
             const formatBal = (val: number) => {
                 const abs = Math.abs(val).toLocaleString();
-                const suffix = isSale 
+                const suffix = isSale
                     ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
                     : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
                 return `${abs} ${sym}${suffix}`;

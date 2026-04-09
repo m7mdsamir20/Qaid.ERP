@@ -5,58 +5,12 @@ import { withProtection } from '@/lib/apiHandler';
 export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
-        const url = new URL(request.url);
-        const id = url.searchParams.get('id');
-        if (id) {
-            const invoice = await prisma.invoice.findUnique({
-                where: { id, companyId },
-                include: {
-                    customer: true,
-                    lines: { include: { item: { include: { unit: true } } } },
-                }
-            });
-
-            if (invoice) {
-                const party = invoice.customer;
-                if (party && (party as any).accountId) {
-                    const partyAccId = (party as any).accountId;
-                    const finYear = await prisma.financialYear.findFirst({
-                        where: { companyId, startDate: { lte: invoice.date }, endDate: { gte: invoice.date } }
-                    });
-                    let balance = 0;
-                    if (finYear) {
-                        const opBal = await prisma.openingBalance.findUnique({
-                            where: { accountId_financialYearId: { accountId: partyAccId, financialYearId: finYear.id } }
-                        });
-                        if (opBal) balance = Number(opBal.debit) - Number(opBal.credit);
-                    }
-                    const lines = await prisma.journalEntryLine.findMany({
-                        where: {
-                            accountId: partyAccId,
-                            OR: [
-                                { customerId: invoice.customerId || undefined },
-                                { supplierId: invoice.supplierId || undefined }
-                            ],
-                            journalEntry: { companyId, createdAt: { lt: invoice.createdAt } }
-                        } as any,
-                        select: { debit: true, credit: true }
-                    });
-                    lines.forEach(l => { balance += (Number(l.debit) - Number(l.credit)); });
-                    
-                    const isSupplier = !!invoice.supplierId;
-                    if (isSupplier) (invoice as any).partyBalanceAtTime = -balance; 
-                    else (invoice as any).partyBalanceAtTime = balance;
-                }
-            }
-            return NextResponse.json(invoice);
-        }
 
         const invoices = await prisma.invoice.findMany({
             where: { companyId, type: 'sale_return' },
             orderBy: { createdAt: 'desc' },
             include: {
                 customer: true,
-                supplier: true,
                 lines: { include: { item: { include: { unit: true } } } },
             },
         });

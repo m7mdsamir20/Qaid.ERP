@@ -19,39 +19,6 @@ export const GET = withProtection(async (request, session) => {
                     lines: { include: { item: { include: { category: true, unit: true } } } },
                 }
             });
-
-            if (invoice) {
-                const party = invoice.supplier || invoice.customer;
-                if (party && (party as any).accountId) {
-                    const partyAccId = (party as any).accountId;
-                    const finYear = await prisma.financialYear.findFirst({
-                        where: { companyId, startDate: { lte: invoice.date }, endDate: { gte: invoice.date } }
-                    });
-                    let balance = 0;
-                    if (finYear) {
-                        const opBal = await prisma.openingBalance.findUnique({
-                            where: { accountId_financialYearId: { accountId: partyAccId, financialYearId: finYear.id } }
-                        });
-                        if (opBal) balance = Number(opBal.debit) - Number(opBal.credit);
-                    }
-                    const lines = await prisma.journalEntryLine.findMany({
-                        where: {
-                            accountId: partyAccId,
-                            OR: [
-                                { customerId: invoice.customerId || undefined },
-                                { supplierId: invoice.supplierId || undefined }
-                            ],
-                            journalEntry: { companyId, createdAt: { lt: invoice.createdAt } }
-                        } as any,
-                        select: { debit: true, credit: true }
-                    });
-                    lines.forEach(l => { balance += (Number(l.debit) - Number(l.credit)); });
-                    
-                    const isSupplier = !!invoice.supplierId;
-                    if (isSupplier) (invoice as any).partyBalanceAtTime = -balance; 
-                    else (invoice as any).partyBalanceAtTime = balance;
-                }
-            }
             return NextResponse.json(invoice);
         }
 
@@ -105,8 +72,8 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json({ error: 'النشاط الخدمي لا يدعم فواتير المشتريات' }, { status: 403 });
     try {
         const companyId = (session.user as any).companyId;
-        const { 
-            supplierId, customerId, warehouseId, lines, 
+        const {
+            supplierId, customerId, warehouseId, lines,
             discount, paidAmount, notes, treasuryId, bankId,
             taxRate, taxAmount
         } = body;
@@ -257,18 +224,18 @@ export const POST = withProtection(async (request, session, body) => {
 
             if (financialYear) {
                 const journalLines: any[] = [];
-                const paid      = paidAmount || 0;
+                const paid = paidAmount || 0;
                 const remainingAmt = total - paid;
-                const netCost   = total - (taxAmount || 0);
+                const netCost = total - (taxAmount || 0);
 
                 const inventoryAccount = await tx.account.findFirst({
                     where: {
                         companyId, accountCategory: 'detail',
                         OR: [
                             { code: '1131' },
-                            { type: 'asset', name: { contains: 'مخزون'   } },
-                            { type: 'asset', name: { contains: 'بضاعة'   } },
-                            { type: 'asset', name: { contains: 'بضائع'   } },
+                            { type: 'asset', name: { contains: 'مخزون' } },
+                            { type: 'asset', name: { contains: 'بضاعة' } },
+                            { type: 'asset', name: { contains: 'بضائع' } },
                             { type: 'asset', name: { contains: 'مشتريات' } },
                         ],
                     },
@@ -280,9 +247,9 @@ export const POST = withProtection(async (request, session, body) => {
                         companyId, accountCategory: 'detail',
                         OR: [
                             { code: '2111' },
-                            { type: 'liability', name: { contains: 'موردين'    } },
-                            { type: 'liability', name: { contains: 'مورد'      } },
-                            { type: 'liability', name: { contains: 'دائنون'    } },
+                            { type: 'liability', name: { contains: 'موردين' } },
+                            { type: 'liability', name: { contains: 'مورد' } },
+                            { type: 'liability', name: { contains: 'دائنون' } },
                             { type: 'liability', name: { contains: 'ذمم دائنة' } },
                         ],
                     },
@@ -313,44 +280,36 @@ export const POST = withProtection(async (request, session, body) => {
 
                 if (inventoryAccount) {
                     journalLines.push({
-                        accountId:   inventoryAccount.id,
-                        debit:       netCost,
-                        credit:      0,
+                        accountId: inventoryAccount.id,
+                        debit: netCost,
+                        credit: 0,
                         description: `فاتورة مشتريات رقم ${invoiceNumber}`,
-                        customerId:  customerId || null,
-                        supplierId:  supplierId || null,
                     });
 
                     if ((taxAmount || 0) > 0 && taxAccount) {
                         journalLines.push({
-                            accountId:   taxAccount.id,
-                            debit:       taxAmount,
-                            credit:      0,
+                            accountId: taxAccount.id,
+                            debit: taxAmount,
+                            credit: 0,
                             description: `ضريبة مدخلات — فاتورة ${invoiceNumber}`,
-                            customerId:  customerId || null,
-                            supplierId:  supplierId || null,
                         });
                     }
 
                     if (paid > 0 && treasuryAccountId) {
                         journalLines.push({
-                            accountId:   treasuryAccountId,
-                            debit:       0,
-                            credit:      paid,
+                            accountId: treasuryAccountId,
+                            debit: 0,
+                            credit: paid,
                             description: `دفعة فورية — فاتورة مشتريات ${invoiceNumber}`,
-                            customerId:  customerId || null,
-                            supplierId:  supplierId || null,
                         });
                     }
 
                     if (remainingAmt > 0 && supplierAccount) {
                         journalLines.push({
-                            accountId:   supplierAccount.id,
-                            debit:       0,
-                            credit:      remainingAmt,
+                            accountId: supplierAccount.id,
+                            debit: 0,
+                            credit: remainingAmt,
                             description: `مستحقات مورد — فاتورة مشتريات ${invoiceNumber}`,
-                            customerId:  customerId || null,
-                            supplierId:  supplierId || null,
                         });
                     }
 
@@ -358,14 +317,14 @@ export const POST = withProtection(async (request, session, body) => {
                         await tx.journalEntry.create({
                             data: {
                                 entryNumber,
-                                date:           new Date(),
-                                description:    `قيد فاتورة مشتريات رقم ${invoiceNumber}`,
-                                reference:      `PUR-${invoiceNumber}`,
-                                referenceType:  'invoice',
-                                referenceId:    invoice.id,
+                                date: new Date(),
+                                description: `قيد فاتورة مشتريات رقم ${invoiceNumber}`,
+                                reference: `PUR-${invoiceNumber}`,
+                                referenceType: 'invoice',
+                                referenceId: invoice.id,
                                 financialYearId: financialYear.id,
                                 companyId,
-                                isPosted:       true,
+                                isPosted: true,
                                 lines: { create: journalLines },
                             },
                         });

@@ -5,57 +5,14 @@ import { withProtection } from '@/lib/apiHandler';
 export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
-        const url = new URL(request.url);
-        const id = url.searchParams.get('id');
-        if (id) {
-            const invoice = await prisma.invoice.findUnique({
-                where: { id, companyId },
-                include: { supplier: true, customer: true, lines: { include: { item: { include: { unit: true } } } } },
-            });
-
-            if (invoice) {
-                const party = invoice.supplier || invoice.customer;
-                if (party && (party as any).accountId) {
-                    const partyAccId = (party as any).accountId;
-                    const finYear = await prisma.financialYear.findFirst({
-                        where: { companyId, startDate: { lte: invoice.date }, endDate: { gte: invoice.date } }
-                    });
-                    let balance = 0;
-                    if (finYear) {
-                        const lines = await prisma.journalEntryLine.findMany({
-                            where: {
-                                accountId: partyAccId,
-                                OR: [
-                                    { customerId: invoice.customerId || undefined },
-                                    { supplierId: invoice.supplierId || undefined }
-                                ],
-                                journalEntry: { companyId, createdAt: { lt: invoice.createdAt } }
-                            } as any,
-                            select: { debit: true, credit: true }
-                        });
-                        lines.forEach(l => { balance += (Number(l.debit) - Number(l.credit)); });
-                    }
-                    
-                    const isSupplier = !!invoice.supplierId;
-                    if (isSupplier) (invoice as any).partyBalanceAtTime = -balance; 
-                    else (invoice as any).partyBalanceAtTime = balance;
-                }
-            }
-            return NextResponse.json(invoice);
-        }
-
         const invoices = await prisma.invoice.findMany({
             where: { companyId, type: 'purchase_return' },
             orderBy: { createdAt: 'desc' },
-            include: {
-                customer: true,
-                supplier: true,
-                lines: { include: { item: { include: { unit: true } } } },
-            },
+            include: { supplier: true, customer: true, lines: { include: { item: { include: { unit: true } } } } },
         });
-        return NextResponse.json({ returns: invoices });
+        return NextResponse.json(invoices);
     } catch {
-        return NextResponse.json({ returns: [] }, { status: 500 });
+        return NextResponse.json([], { status: 500 });
     }
 });
 
@@ -154,14 +111,14 @@ export const POST = withProtection(async (request, session, body) => {
             const movingAmount = total - (paidAmount || 0); // Amount to adjust on balance
             if (movingAmount > 0) {
                 if (supplierId) {
-                    await tx.supplier.update({ 
-                        where: { id: supplierId, companyId }, 
-                        data: { balance: { decrement: movingAmount } } 
+                    await tx.supplier.update({
+                        where: { id: supplierId, companyId },
+                        data: { balance: { decrement: movingAmount } }
                     });
                 } else if (customerId) {
-                    await tx.customer.update({ 
-                        where: { id: customerId, companyId }, 
-                        data: { balance: { increment: movingAmount } } 
+                    await tx.customer.update({
+                        where: { id: customerId, companyId },
+                        data: { balance: { increment: movingAmount } }
                     });
                 }
             }
@@ -181,8 +138,8 @@ export const POST = withProtection(async (request, session, body) => {
                         companyId, accountCategory: 'detail',
                         OR: [
                             { code: '2111' },
-                            { type: 'liability', name: { contains: 'موردين'    } },
-                            { type: 'liability', name: { contains: 'دائنون'    } },
+                            { type: 'liability', name: { contains: 'موردين' } },
+                            { type: 'liability', name: { contains: 'دائنون' } },
                             { type: 'liability', name: { contains: 'ذمم دائنة' } },
                         ],
                     },
@@ -192,8 +149,8 @@ export const POST = withProtection(async (request, session, body) => {
                         companyId, accountCategory: 'detail',
                         OR: [
                             { code: '1121' },
-                            { type: 'asset', name: { contains: 'عملاء'     } },
-                            { type: 'asset', name: { contains: 'مدينون'    } },
+                            { type: 'asset', name: { contains: 'عملاء' } },
+                            { type: 'asset', name: { contains: 'مدينون' } },
                             { type: 'asset', name: { contains: 'ذمم مدينة' } },
                         ],
                     },
@@ -205,9 +162,9 @@ export const POST = withProtection(async (request, session, body) => {
                         companyId, accountCategory: 'detail',
                         OR: [
                             { code: '1131' },
-                            { type: 'asset', name: { contains: 'مخزون'   } },
-                            { type: 'asset', name: { contains: 'بضاعة'   } },
-                            { type: 'asset', name: { contains: 'بضائع'   } },
+                            { type: 'asset', name: { contains: 'مخزون' } },
+                            { type: 'asset', name: { contains: 'بضاعة' } },
+                            { type: 'asset', name: { contains: 'بضائع' } },
                             { type: 'asset', name: { contains: 'مشتريات' } },
                         ],
                     },
@@ -298,5 +255,8 @@ export const POST = withProtection(async (request, session, body) => {
     } catch (error: any) {
         console.error('Purchase return error:', error);
         return NextResponse.json({ error: 'فشل في إنشاء مرتجع المشتريات', details: error.message }, { status: 500 });
+    }
+});
+return NextResponse.json({ error: 'فشل في إنشاء مرتجع المشتريات', details: error.message }, { status: 500 });
     }
 });

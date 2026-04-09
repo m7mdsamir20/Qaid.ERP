@@ -162,22 +162,8 @@ export const POST = withProtection(async (request, session, body) => {
                                 financialYearId: financialYear.id, companyId, isPosted: true,
                                 lines: {
                                     create: [
-                                        { 
-                                            accountId: treasury.accountId, 
-                                            debit: parseFloat(amount), 
-                                            credit: 0, 
-                                            description: `قبض من ${partyName}`,
-                                            customerId: customerId || null,
-                                            supplierId: supplierId || null,
-                                        } as any,
-                                        { 
-                                            accountId: targetAccountId, 
-                                            debit: 0, 
-                                            credit: parseFloat(amount), 
-                                            description: `سداد سند قبض رقم RCP-${String(voucherNumber).padStart(5, '0')}`,
-                                            customerId: customerId || null,
-                                            supplierId: supplierId || null,
-                                        } as any,
+                                        { accountId: treasury.accountId, debit: parseFloat(amount), credit: 0, description: `قبض من ${partyName}` },
+                                        { accountId: targetAccountId, debit: 0, credit: parseFloat(amount), description: `سداد سند قبض رقم RCP-${String(voucherNumber).padStart(5, '0')}` },
                                     ],
                                 },
                             },
@@ -192,22 +178,8 @@ export const POST = withProtection(async (request, session, body) => {
                                 financialYearId: financialYear.id, companyId, isPosted: true,
                                 lines: {
                                     create: [
-                                        { 
-                                            accountId: targetAccountId, 
-                                            debit: parseFloat(amount), 
-                                            credit: 0, 
-                                            description: `سداد لـ ${partyName}`,
-                                            customerId: customerId || null,
-                                            supplierId: supplierId || null,
-                                        } as any,
-                                        { 
-                                            accountId: treasury.accountId, 
-                                            debit: 0, 
-                                            credit: parseFloat(amount), 
-                                            description: `سند صرف رقم PMT-${String(voucherNumber).padStart(5, '0')}`,
-                                            customerId: customerId || null,
-                                            supplierId: supplierId || null,
-                                        } as any,
+                                        { accountId: targetAccountId, debit: parseFloat(amount), credit: 0, description: `سداد لـ ${partyName}` },
+                                        { accountId: treasury.accountId, debit: 0, credit: parseFloat(amount), description: `سند صرف رقم PMT-${String(voucherNumber).padStart(5, '0')}` },
                                     ],
                                 },
                             },

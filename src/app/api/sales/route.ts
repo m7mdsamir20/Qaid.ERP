@@ -7,7 +7,7 @@ export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
         const url = new URL(request.url);
-        
+
         if (url.searchParams.get('justNextNum') === 'true') {
             const lastInvoice = await prisma.invoice.findFirst({
                 where: { companyId, type: 'sale' },
@@ -28,61 +28,6 @@ export const GET = withProtection(async (request, session) => {
                     lines: { include: { item: { include: { unit: true } } } },
                 }
             });
-
-            if (invoice) {
-                const party = invoice.customer || invoice.supplier;
-                if (party && (party as any).accountId) {
-                    const partyAccId = (party as any).accountId;
-                    
-                    // 1. Get the financial year for this invoice date
-                    const finYear = await prisma.financialYear.findFirst({
-                        where: {
-                            companyId,
-                            startDate: { lte: invoice.date },
-                            endDate: { gte: invoice.date }
-                        }
-                    });
-
-                    let balance = 0;
-
-                    // 2. Add Opening Balance for that year if exists
-                    if (finYear) {
-                        const opBal = await prisma.openingBalance.findUnique({
-                            where: { accountId_financialYearId: { accountId: partyAccId, financialYearId: finYear.id } }
-                        });
-                        if (opBal) {
-                            balance = Number(opBal.debit) - Number(opBal.credit);
-                        }
-                    }
-
-                    // 3. Sum journal entries strictly BEFORE this invoice for THIS PARTY specifically
-                    const isCustomer = !!invoice.customerId;
-                    const lines = await prisma.journalEntryLine.findMany({
-                        where: {
-                            accountId: partyAccId,
-                            OR: [
-                                { customerId: invoice.customerId || undefined },
-                                { supplierId: invoice.supplierId || undefined }
-                            ],
-                            journalEntry: {
-                                companyId,
-                                createdAt: { lt: invoice.createdAt }
-                            }
-                        } as any,
-                        select: { debit: true, credit: true }
-                    });
-                    
-                    lines.forEach(l => {
-                        balance += (Number(l.debit) - Number(l.credit));
-                    });
-
-                    if (isCustomer) {
-                        (invoice as any).partyBalanceAtTime = balance;
-                    } else {
-                        (invoice as any).partyBalanceAtTime = -balance; 
-                    }
-                }
-            }
             return NextResponse.json(invoice);
         }
 
@@ -137,7 +82,7 @@ export const POST = withProtection(async (request, session, body) => {
         const {
             date, customerId, supplierId, taxRate, taxInclusive, taxLabel,
             paidAmount, warehouseId, notes, attachments,
-            financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount 
+            financialYearId, dueDate, lines, discount, treasuryId, bankId, taxAmount
         } = body;
 
         // Use bankId if treasuryId is missing
@@ -173,7 +118,7 @@ export const POST = withProtection(async (request, session, body) => {
         // Calculate totals
         const subtotal = lines.reduce((s: number, l: any) => s + (l.quantity * l.price - (l.discount || 0)), 0);
         const afterDiscount = subtotal - (discount || 0);
-        
+
         // Logic for Tax: 
         // If inclusive: total = afterDiscount (tax is hidden inside)
         // If exclusive: total = afterDiscount + taxAmount
@@ -233,17 +178,17 @@ export const POST = withProtection(async (request, session, body) => {
                 branchId: body.branchId || (session.user as any).activeBranchId || null,
                 lines: {
                     create: lines.map((line: any) => ({
-                        itemId:   line.itemId,
+                        itemId: line.itemId,
                         quantity: line.quantity,
-                        price:    line.price,
+                        price: line.price,
                         discount: line.discount || 0,
-                        total:    (line.quantity * line.price) - (line.discount || 0) + (line.taxAmount || 0),
-                        unit:     line.unit || null,
+                        total: (line.quantity * line.price) - (line.discount || 0) + (line.taxAmount || 0),
+                        unit: line.unit || null,
                         netPrice: line.price - ((line.discount || 0) / line.quantity),
                         unitCost: line.unitCost || 0,
                         description: line.description || null,
-                        taxRate:     line.taxRate || 0,
-                        taxAmount:   line.taxAmount || 0,
+                        taxRate: line.taxRate || 0,
+                        taxAmount: line.taxAmount || 0,
                     })),
                 },
             };
@@ -280,7 +225,7 @@ export const POST = withProtection(async (request, session, body) => {
             }
 
             // Update item selling prices to the latest price used in the invoice
-            await Promise.all(lines.map((line: any) => 
+            await Promise.all(lines.map((line: any) =>
                 tx.item.update({
                     where: { id: line.itemId, companyId },
                     data: { sellPrice: Number(line.price) }
@@ -354,53 +299,45 @@ export const POST = withProtection(async (request, session, body) => {
 
                 if (salesAccount) {
                     const journalLines: any[] = [];
-                    const paid      = paidAmount || 0;
+                    const paid = paidAmount || 0;
                     const remaining = total - paid;
                     const netRevenue = taxInclusive ? (total - (taxAmount || 0)) : afterDiscount;
 
                     // مدين: الصندوق/البنك لو في دفع فوري
                     if (paid > 0 && treasuryAccountId) {
                         journalLines.push({
-                            accountId:   treasuryAccountId,
-                            debit:       paid,
-                            credit:      0,
+                            accountId: treasuryAccountId,
+                            debit: paid,
+                            credit: 0,
                             description: `مبلغ مقبوض — فاتورة ${invoiceNumber}`,
-                            customerId:  customerId || null,
-                            supplierId:  supplierId || null,
                         });
                     }
 
                     // مدين: ذمم العملاء لو في باقي
                     if (remaining > 0 && receivablesAccount) {
                         journalLines.push({
-                            accountId:   receivablesAccount.id,
-                            debit:       remaining,
-                            credit:      0,
+                            accountId: receivablesAccount.id,
+                            debit: remaining,
+                            credit: 0,
                             description: `ذمم عميل — فاتورة ${invoiceNumber}`,
-                            customerId:  customerId || null,
-                            supplierId:  supplierId || null,
                         });
                     }
 
                     // دائن: إيرادات المبيعات
                     journalLines.push({
-                        accountId:   salesAccount.id,
-                        debit:       0,
-                        credit:      netRevenue,
+                        accountId: salesAccount.id,
+                        debit: 0,
+                        credit: netRevenue,
                         description: `فاتورة مبيعات رقم ${invoiceNumber}`,
-                        customerId:  customerId || null,
-                        supplierId:  supplierId || null,
                     });
 
                     // دائن: الضريبة
                     if ((taxAmount || 0) > 0 && taxAccount) {
                         journalLines.push({
-                            accountId:   taxAccount.id,
-                            debit:       0,
-                            credit:      taxAmount,
+                            accountId: taxAccount.id,
+                            debit: 0,
+                            credit: taxAmount,
                             description: `ضريبة القيمة المضافة — فاتورة ${invoiceNumber}`,
-                            customerId:  customerId || null,
-                            supplierId:  supplierId || null,
                         });
                     }
 
@@ -442,15 +379,15 @@ export const POST = withProtection(async (request, session, body) => {
 
                             if (totalCost > 0) {
                                 journalLines.push({
-                                    accountId:   cogsAccount.id,
-                                    debit:       totalCost,
-                                    credit:      0,
+                                    accountId: cogsAccount.id,
+                                    debit: totalCost,
+                                    credit: 0,
                                     description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
                                 });
                                 journalLines.push({
-                                    accountId:   inventoryAccount.id,
-                                    debit:       0,
-                                    credit:      totalCost,
+                                    accountId: inventoryAccount.id,
+                                    debit: 0,
+                                    credit: totalCost,
                                     description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
                                 });
                             }
@@ -461,14 +398,14 @@ export const POST = withProtection(async (request, session, body) => {
                         await tx.journalEntry.create({
                             data: {
                                 entryNumber,
-                                date:           new Date(),
-                                description:    `قيد فاتورة مبيعات رقم ${invoiceNumber}`,
-                                reference:      `SAL-${invoiceNumber}`,
-                                referenceType:  'invoice',
-                                referenceId:    invoice.id,
+                                date: new Date(),
+                                description: `قيد فاتورة مبيعات رقم ${invoiceNumber}`,
+                                reference: `SAL-${invoiceNumber}`,
+                                referenceType: 'invoice',
+                                referenceId: invoice.id,
                                 financialYearId: financialYear.id,
                                 companyId,
-                                isPosted:       true,
+                                isPosted: true,
                                 lines: { create: journalLines },
                             },
                         });
