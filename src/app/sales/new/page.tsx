@@ -647,7 +647,7 @@ export default function NewSalePage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر (يُكتب يدوي)')}</label>
+                                        <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
                                                 disabled={!entryItemId}
@@ -664,24 +664,6 @@ export default function NewSalePage() {
                                             <InlineError field="entryPrice" />
                                         </div>
                                     </div>
-                                    {isServices && (
-                                        <div>
-                                            <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الضريبة %')}</label>
-                                            <div style={{ position: 'relative' }}>
-                                                <input type="text" inputMode="decimal" value={entryTaxRate === '' ? '0' : fmt(entryTaxRate)}
-                                                    disabled={!entryItemId}
-                                                    onChange={e => {
-                                                        const v = e.target.value.replace(/,/g, '');
-                                                        if (v === '' || !isNaN(Number(v)) || v === '.') {
-                                                            setEntryTaxRate(v === '' ? '' : v as any);
-                                                        }
-                                                    }}
-                                                    onKeyDown={e => e.key === 'Enter' && addLine()}
-                                                    style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
-                                                    onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
-                                            </div>
-                                        </div>
-                                    )}
                                     <button onClick={addLine} disabled={!entryItemId || ((session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && !form.warehouseId)}
                                         style={{
                                             height: '38px', borderRadius: '10px', border: 'none',

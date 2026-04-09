@@ -34,6 +34,8 @@ interface SaleInvoice {
     paidAmount: number;
     remaining: number;
     paymentMethod: 'cash' | 'bank' | 'credit';
+    taxAmount?: number;
+    taxRate?: number;
     notes?: string;
     lines: {
         id: string;
@@ -41,6 +43,8 @@ interface SaleInvoice {
         quantity: number;
         price: number;
         total: number;
+        taxRate?: number;
+        taxAmount?: number;
     }[];
     returnInvoices?: ReturnInvoice[];
 }
@@ -62,7 +66,10 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                 fetch(`/api/sales/${params.id}`),
                 fetch('/api/company')
             ]);
-            if (invR.ok) setInvoice(await invR.json());
+            if (invR.ok) {
+                const data = await invR.json();
+                setInvoice(data);
+            }
             if (coR.ok) setCompany(await coR.json());
         } catch (error) {
             console.error(error);
@@ -97,12 +104,17 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     const status = getStatus();
 
+    const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
+    const invLabel = isServices ? 'فاتورة خدمات' : 'فاتورة مبيعات';
+    const invPrefix = isServices ? 'SRV' : 'SAL';
+    const invNumFmt = `${invPrefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title={`تفاصيل فاتورة مبيعات #${invoice.invoiceNumber}`}
+                    title={`تفاصيل ${invLabel} #${invNumFmt}`}
                     subtitle={`تاريخ الفاتورة: ${new Date(invoice.date).toLocaleDateString('ar-EG')} — سجل العميل والتحصيل المالي`}
                     icon={Receipt}
                     backUrl="/sales"
@@ -183,7 +195,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 return;
                             }
 
-                            printA4Invoice(invoice, 'sale', { ...company, branchName }, { partyBalance: invoice.customer?.balance });
+                             const bizType = (session?.user as any)?.businessType || company.businessType;
+                             printA4Invoice(invoice, 'sale', { ...company, branchName, businessType: bizType }, { partyBalance: invoice.customer?.balance });
                         },
                         icon: Printer
                     }}
@@ -206,12 +219,12 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             </div>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <Building2 size={20} />
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Receipt size={20} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>صرف من مخزن</p>
-                                    <p style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
+                                    <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>رقم الفاتورة</p>
+                                    <p style={{ fontSize: '14px', fontWeight: 800, color: '#3b82f6', margin: 0 }}>#{invNumFmt}</p>
                                 </div>
                             </div>
 
@@ -235,10 +248,16 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>الصنف</th>
-                                        <th style={TABLE_STYLE.th(false)}>الوحدة</th>
+                                        <th style={TABLE_STYLE.th(true)}>{isServices ? 'الخدمة' : 'الصنف'}</th>
+                                        {!isServices && <th style={TABLE_STYLE.th(false)}>الوحدة</th>}
                                         <th style={TABLE_STYLE.th(false)}>الكمية</th>
-                                        <th style={TABLE_STYLE.th(false)}>سعر البيع</th>
+                                        <th style={TABLE_STYLE.th(false)}>{isServices ? 'سعر الخدمة' : 'سعر البيع'}</th>
+                                        {isServices && (
+                                            <>
+                                                <th style={TABLE_STYLE.th(false)}>الضريبة %</th>
+                                                <th style={TABLE_STYLE.th(false)}>قيمة الضريبة</th>
+                                            </>
+                                        )}
                                         <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
                                     </tr>
                                 </thead>
@@ -249,9 +268,17 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || 'حبة'}</td>
+                                            {!isServices && (
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || 'حبة'}</td>
+                                            )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                            {isServices && (
+                                                <>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: '#60a5fa', fontWeight: 700 }}>{l.taxRate || 0}%</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: '#f87171', fontWeight: 700 }}>{fmt(l.taxAmount || 0)}</td>
+                                                </>
+                                            )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
@@ -316,6 +343,12 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <span style={{ color: C.textSecondary }}>إجمالي الخصم</span>
                                     <span style={{ fontWeight: 700, fontFamily: INTER, color: C.danger }}>- {fmt(invoice.discount)} {cSymbol}</span>
                                 </div>
+                                { (invoice.taxAmount || 0) > 0 && (
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                        <span style={{ color: C.textSecondary }}>إجمالي الضريبة</span>
+                                        <span style={{ fontWeight: 700, fontFamily: INTER, color: '#f87171' }}>+ {fmt(invoice.taxAmount || 0)} {cSymbol}</span>
+                                    </div>
+                                )}
                                 <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
                                     <span style={{ fontWeight: 800, fontSize: '12px' }}>صافي الفاتورة</span>
