@@ -845,5 +845,3 @@ model QuotationLine {
   item        Item      @relation(fields: [itemId], references: [id])
   quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
 }
-  quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
-}
