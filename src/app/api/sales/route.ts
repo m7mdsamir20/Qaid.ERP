@@ -39,7 +39,7 @@ export const GET = withProtection(async (request, session) => {
                             accountId: partyAccId,
                             journalEntry: {
                                 companyId,
-                                createdAt: { lte: invoice.createdAt }
+                                createdAt: { lt: invoice.createdAt }
                             }
                         },
                         select: { debit: true, credit: true }
