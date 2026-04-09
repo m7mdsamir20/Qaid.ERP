@@ -83,51 +83,26 @@ export default function DashboardLayout({
                     <Header />
                 </div>
                 <main style={{ flex: 1, padding: '24px 24px 24px', position: 'relative' }}>
-                    <div style={{ width: '100%', maxWidth: '1600px', margin: '0 auto' }}>
-                        {/* Lockout Overlay Layer - Covers internal scrollable content only */}
-                        {isLockoutActive && !isAllowedTab && (
-                            <div style={{
-                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
-                                zIndex: 900, background: 'rgba(255,255,255, 0.02)',
-                                cursor: 'not-allowed'
-                            }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
-                        )}
-
-                        {noFY && !loadingFY && !pathname.includes('/financial-years') && (
-                            <div style={{
-                                background: C.warningBg, border: `1px solid ${C.warningBorder}`, color: C.warning,
-                                padding: '16px 20px', borderRadius: '14px', marginBottom: '24px', fontFamily: CAIRO,
-                                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
-                            }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <AlertTriangle size={24} />
-                                    <div>
-                                        <div style={{ fontWeight: 900, fontSize: '15px', marginBottom: '4px' }}>السنة المالية مغلقة!</div>
-                                        <div style={{ fontSize: '13px', opacity: 0.9 }}>يجب الاستمرار بفتح سنة مالية جديدة للتمكن من إضافة فواتير وحركات.</div>
-                                    </div>
-                                </div>
-                                <button onClick={() => router.push('/financial-years')}
-                                    style={{
-                                        padding: '10px 16px', borderRadius: '10px', border: 'none',
-                                        background: C.warning, color: '#fff', fontSize: '13px', fontWeight: 800,
-                                        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px',
-                                        fontFamily: CAIRO
-                                    }}>
-                                    <Calendar size={16} /> فتح سنة مالية
-                                </button>
-                            </div>
-                        )}
                         <TrialBanner />
                         
-                        <div style={{ 
-                            opacity: (noFY && !pathname.includes('/financial-years')) || (isLockoutActive && !isAllowedTab) ? 0.4 : 1, 
-                            pointerEvents: (noFY && !pathname.includes('/financial-years')) || (isLockoutActive && !isAllowedTab) ? 'none' : 'auto', 
-                            transition: 'all 0.3s ease' 
-                        }}>
-                            {children}
+                        <div style={{ position: 'relative' }}>
+                            {/* Lockout Overlay Layer - Covers internal scrollable content only */}
+                            {isLockoutActive && !isAllowedTab && (
+                                <div style={{
+                                    position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                                    zIndex: 900, background: 'transparent',
+                                    cursor: 'not-allowed'
+                                }} onClick={(e) => { e.preventDefault(); e.stopPropagation(); }} />
+                            )}
+
+                            <div style={{ 
+                                opacity: (noFY && !pathname.includes('/financial-years')) || (isLockoutActive && !isAllowedTab) ? 0.4 : 1, 
+                                pointerEvents: (noFY && !pathname.includes('/financial-years')) || (isLockoutActive && !isAllowedTab) ? 'none' : 'auto', 
+                                transition: 'all 0.3s ease' 
+                            }}>
+                                {children}
+                            </div>
                         </div>
-                    </div>
                 </main>
             </div>
 
