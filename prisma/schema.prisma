@@ -302,6 +302,10 @@ model JournalEntryLine {
   credit         Float        @default(0)
   description    String?
   costCenterId   String?
+  customerId     String?
+  supplierId     String?
+  customer       Customer?    @relation(fields: [customerId], references: [id])
+  supplier       Supplier?    @relation(fields: [supplierId], references: [id])
   costCenter     CostCenter?  @relation(fields: [costCenterId], references: [id])
   account        Account      @relation(fields: [accountId], references: [id])
   journalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
@@ -506,6 +510,7 @@ model Customer {
   invoices         Invoice[]
   vouchers         Voucher[]
   quotations       Quotation[]
+  journalEntryLines JournalEntryLine[]
 }
 
 model Supplier {
@@ -522,6 +527,7 @@ model Supplier {
   invoices  Invoice[]
   company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   vouchers  Voucher[]
+  journalEntryLines JournalEntryLine[]
 }
 
 model Treasury {

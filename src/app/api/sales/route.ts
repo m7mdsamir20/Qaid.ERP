@@ -364,6 +364,8 @@ export const POST = withProtection(async (request, session, body) => {
                             debit:       paid,
                             credit:      0,
                             description: `مبلغ مقبوض — فاتورة ${invoiceNumber}`,
+                            customerId:  customerId || null,
+                            supplierId:  supplierId || null,
                         });
                     }
 
@@ -374,6 +376,8 @@ export const POST = withProtection(async (request, session, body) => {
                             debit:       remaining,
                             credit:      0,
                             description: `ذمم عميل — فاتورة ${invoiceNumber}`,
+                            customerId:  customerId || null,
+                            supplierId:  supplierId || null,
                         });
                     }
 
@@ -383,6 +387,8 @@ export const POST = withProtection(async (request, session, body) => {
                         debit:       0,
                         credit:      netRevenue,
                         description: `فاتورة مبيعات رقم ${invoiceNumber}`,
+                        customerId:  customerId || null,
+                        supplierId:  supplierId || null,
                     });
 
                     // دائن: الضريبة
@@ -392,6 +398,8 @@ export const POST = withProtection(async (request, session, body) => {
                             debit:       0,
                             credit:      taxAmount,
                             description: `ضريبة القيمة المضافة — فاتورة ${invoiceNumber}`,
+                            customerId:  customerId || null,
+                            supplierId:  supplierId || null,
                         });
                     }
 

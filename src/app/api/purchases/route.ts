@@ -310,6 +310,8 @@ export const POST = withProtection(async (request, session, body) => {
                         debit:       netCost,
                         credit:      0,
                         description: `فاتورة مشتريات رقم ${invoiceNumber}`,
+                        customerId:  customerId || null,
+                        supplierId:  supplierId || null,
                     });
 
                     if ((taxAmount || 0) > 0 && taxAccount) {
@@ -318,6 +320,8 @@ export const POST = withProtection(async (request, session, body) => {
                             debit:       taxAmount,
                             credit:      0,
                             description: `ضريبة مدخلات — فاتورة ${invoiceNumber}`,
+                            customerId:  customerId || null,
+                            supplierId:  supplierId || null,
                         });
                     }
 
@@ -327,6 +331,8 @@ export const POST = withProtection(async (request, session, body) => {
                             debit:       0,
                             credit:      paid,
                             description: `دفعة فورية — فاتورة مشتريات ${invoiceNumber}`,
+                            customerId:  customerId || null,
+                            supplierId:  supplierId || null,
                         });
                     }
 
@@ -336,6 +342,8 @@ export const POST = withProtection(async (request, session, body) => {
                             debit:       0,
                             credit:      remainingAmt,
                             description: `مستحقات مورد — فاتورة مشتريات ${invoiceNumber}`,
+                            customerId:  customerId || null,
+                            supplierId:  supplierId || null,
                         });
                     }
 
