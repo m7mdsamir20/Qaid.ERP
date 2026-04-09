@@ -55,15 +55,20 @@ export const GET = withProtection(async (request, session) => {
                         }
                     }
 
-                    // 3. Sum journal entries strictly BEFORE this invoice within that year or all time
+                    // 3. Sum journal entries strictly BEFORE this invoice for THIS PARTY specifically
+                    const isCustomer = !!invoice.customerId;
                     const lines = await prisma.journalEntryLine.findMany({
                         where: {
                             accountId: partyAccId,
+                            OR: [
+                                { customerId: invoice.customerId || undefined },
+                                { supplierId: invoice.supplierId || undefined }
+                            ],
                             journalEntry: {
                                 companyId,
                                 createdAt: { lt: invoice.createdAt }
                             }
-                        },
+                        } as any,
                         select: { debit: true, credit: true }
                     });
                     
@@ -71,13 +76,9 @@ export const GET = withProtection(async (request, session) => {
                         balance += (Number(l.debit) - Number(l.credit));
                     });
 
-                    // For customers: Positive balance = debt (عليه), Negative = credit (له)
-                    // For suppliers: We usually invert this in UI, but keep raw ledger balance here
-                    const isCustomer = !!invoice.customerId;
                     if (isCustomer) {
                         (invoice as any).partyBalanceAtTime = balance;
                     } else {
-                        // For suppliers, ledger standard is usually Credit-Debit (Positive = they have money)
                         (invoice as any).partyBalanceAtTime = -balance; 
                     }
                 }

@@ -22,16 +22,19 @@ export const GET = withProtection(async (request, session) => {
                     });
                     let balance = 0;
                     if (finYear) {
-                        const opBal = await prisma.openingBalance.findUnique({
-                            where: { accountId_financialYearId: { accountId: partyAccId, financialYearId: finYear.id } }
+                        const lines = await prisma.journalEntryLine.findMany({
+                            where: {
+                                accountId: partyAccId,
+                                OR: [
+                                    { customerId: invoice.customerId || undefined },
+                                    { supplierId: invoice.supplierId || undefined }
+                                ],
+                                journalEntry: { companyId, createdAt: { lt: invoice.createdAt } }
+                            } as any,
+                            select: { debit: true, credit: true }
                         });
-                        if (opBal) balance = Number(opBal.debit) - Number(opBal.credit);
+                        lines.forEach(l => { balance += (Number(l.debit) - Number(l.credit)); });
                     }
-                    const lines = await prisma.journalEntryLine.findMany({
-                        where: { accountId: partyAccId, journalEntry: { companyId, createdAt: { lt: invoice.createdAt } } },
-                        select: { debit: true, credit: true }
-                    });
-                    lines.forEach(l => { balance += (Number(l.debit) - Number(l.credit)); });
                     
                     const isSupplier = !!invoice.supplierId;
                     if (isSupplier) (invoice as any).partyBalanceAtTime = -balance; 

@@ -31,11 +31,21 @@ export const GET = withProtection(async (request, session) => {
                         if (opBal) balance = Number(opBal.debit) - Number(opBal.credit);
                     }
                     const lines = await prisma.journalEntryLine.findMany({
-                        where: { accountId: partyAccId, journalEntry: { companyId, createdAt: { lt: invoice.createdAt } } },
+                        where: {
+                            accountId: partyAccId,
+                            OR: [
+                                { customerId: invoice.customerId || undefined },
+                                { supplierId: invoice.supplierId || undefined }
+                            ],
+                            journalEntry: { companyId, createdAt: { lt: invoice.createdAt } }
+                        } as any,
                         select: { debit: true, credit: true }
                     });
                     lines.forEach(l => { balance += (Number(l.debit) - Number(l.credit)); });
-                    (invoice as any).partyBalanceAtTime = balance;
+                    
+                    const isSupplier = !!invoice.supplierId;
+                    if (isSupplier) (invoice as any).partyBalanceAtTime = -balance; 
+                    else (invoice as any).partyBalanceAtTime = balance;
                 }
             }
             return NextResponse.json(invoice);
