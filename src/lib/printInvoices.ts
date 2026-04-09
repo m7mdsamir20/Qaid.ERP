@@ -11,6 +11,7 @@ export interface CompanyInfo {
     logo?: string;
     currency?: string;
     branchName?: string;
+    businessType?: string;
 }
 
 type InvoiceType = 'sale' | 'purchase' | 'sale-return' | 'purchase-return';
@@ -60,6 +61,7 @@ export function printA4Invoice(
     const prefix = PREFIXES[type];
     const isReturn = type.includes('return');
     const isSale = type === 'sale' || type === 'sale-return';
+    const isTrading = company.businessType?.toUpperCase() === 'TRADING';
 
     const party = isSale ? (invoice.customer || null) : (invoice.supplier || null);
     const partyLabel = isSale ? 'العميل' : 'المورد';
@@ -147,7 +149,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
         ${co.cr     ? `<div class="co-line">السجل التجاري: <strong>${co.cr}</strong></div>` : ''}
     </div>
     <div class="header-center">
-        <div class="inv-title">${title}</div>
+        <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
         <div class="inv-num">${prefix}-${invoiceNum}</div>
     </div>
     <div class="logo-block">
@@ -158,7 +160,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 <div class="info-section">
     <div style="grid-column: span 2; background: #f8f9fa; padding: 6px 18px; border-bottom: 1px solid #e0e0e0; font-weight: 900; font-size: 11px">بيانات الفاتورة</div>
     <div class="info-col">
-        <div class="info-row"><span class="ik">العميل / المورد:</span><span class="iv">${party?.name || '— عميل نقدي'}</span></div>
+        <div class="info-row"><span class="ik">بيانات ${partyLabel}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
         ${party?.phone ? `<div class="info-row"><span class="ik">الهاتف:</span><span class="iv">${party.phone}</span></div>` : ''}
     </div>
     <div class="info-col">

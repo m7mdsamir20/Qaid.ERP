@@ -118,7 +118,11 @@ export const POST = withProtection(async (request, session, body) => {
         // Calculate totals
         const subtotal = lines.reduce((s: number, l: any) => s + (l.quantity * l.price - (l.discount || 0)), 0);
         const afterDiscount = subtotal - (discount || 0);
-        const total = afterDiscount + (taxAmount || 0); // taxAmount is 0 if inclusive or disabled
+        
+        // Logic for Tax: 
+        // If inclusive: total = afterDiscount (tax is hidden inside)
+        // If exclusive: total = afterDiscount + taxAmount
+        const total = taxInclusive ? afterDiscount : afterDiscount + (taxAmount || 0);
         const remaining = total - (paidAmount || 0);
 
         // Get the open financial year
@@ -161,6 +165,7 @@ export const POST = withProtection(async (request, session, body) => {
                 taxRate: taxRate || 0,
                 taxAmount: taxAmount || 0,
                 taxEnabled: (taxAmount || 0) > 0,
+                taxInclusive: taxInclusive || false,
                 total,
                 paidAmount: paidAmount || 0,
                 remaining,
@@ -296,7 +301,7 @@ export const POST = withProtection(async (request, session, body) => {
                     const journalLines: any[] = [];
                     const paid      = paidAmount || 0;
                     const remaining = total - paid;
-                    const netRevenue = total - (taxAmount || 0);
+                    const netRevenue = taxInclusive ? (total - (taxAmount || 0)) : afterDiscount;
 
                     // مدين: الصندوق/البنك لو في دفع فوري
                     if (paid > 0 && treasuryAccountId) {

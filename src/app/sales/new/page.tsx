@@ -369,6 +369,7 @@ export default function NewSalePage() {
                     notes: form.notes, attachments,
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
+                    taxInclusive: taxSettings?.isInclusive || false,
                     lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price) })),
                 }),
             });
