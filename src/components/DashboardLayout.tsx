@@ -55,37 +55,14 @@ export default function DashboardLayout({
     const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
     const isExpired = sub ? (new Date(sub.endDate).getTime() < Date.now() || !sub.isActive) : false;
     const isLockoutActive = isExpired && !isSuperAdmin;
-    const isSubscriptionPage = pathname === '/settings' || pathname.includes('tab=subscription');
+    const isAllowedTab = pathname === '/settings' && typeof window !== 'undefined' && window.location.search.includes('tab=subscription');
 
-    if (isLockoutActive && !isSubscriptionPage) {
-        return (
-            <div style={{ height: '100vh', width: '100vw', background: 'rgba(7, 13, 26, 0.95)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'fixed', top: 0, left: 0, zIndex: 9999, color: '#fff', textAlign: 'center', padding: '20px' }}>
-                <div style={{ maxWidth: '500px', animation: 'slideUp 0.4s ease' }}>
-                    <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                        <AlertTriangle size={40} color="#ef4444" />
-                    </div>
-                    <h1 style={{ fontFamily: CAIRO, fontSize: '28px', fontWeight: 900, marginBottom: '16px' }}>{t('انتهت صلاحية الاشتراك!')}</h1>
-                    <p style={{ fontFamily: CAIRO, fontSize: '16px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '32px' }}>
-                        {t('عفواً، لقد انتهت الفترة التجريبية أو صلاحية الاشتراك الحالي للنظام. يرجى تجديد الاشتراك لتتمكن من الوصول إلى البيانات والخدمات مرة أخرى.')}
-                    </p>
-                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                        <button onClick={() => router.push('/settings?tab=subscription')} 
-                            style={{ padding: '12px 24px', borderRadius: '12px', background: C.primary, color: '#fff', border: 'none', fontWeight: 800, fontFamily: CAIRO, cursor: 'pointer', boxShadow: `0 10px 20px ${C.primary}30` }}>
-                            {t('تجديد الاشتراك الآن')}
-                        </button>
-                        <button onClick={() => router.push('/login')} 
-                            style={{ padding: '12px 24px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 800, fontFamily: CAIRO, cursor: 'pointer' }}>
-                            {t('تسجيل الخروج')}
-                        </button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
+    // WhatsApp Link
+    const WHATSAPP_URL = "https://wa.me/201010101010"; // Placeholder, replace with actual support number
 
     return (
         <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
-            <div className="print-hide">
+            <div className="print-hide" style={{ opacity: isLockoutActive ? 0.6 : 1, pointerEvents: isLockoutActive ? 'none' : 'auto' }}>
                 <Sidebar />
             </div>
             <div className="dashboard-content" style={{
@@ -97,11 +74,20 @@ export default function DashboardLayout({
                 paddingTop: '64px',
                 transition: 'all 0.3s ease'
             }}>
-                <div className="print-hide">
+                <div className="print-hide" style={{ opacity: isLockoutActive ? 0.6 : 1, pointerEvents: isLockoutActive ? 'none' : 'auto' }}>
                     <Header />
                 </div>
-                <main style={{ flex: 1, padding: '24px 24px 24px' }}>
+                <main style={{ flex: 1, padding: '24px 24px 24px', position: 'relative' }}>
                     <div style={{ width: '100%', maxWidth: '1600px', margin: '0 auto' }}>
+                        {/* Lockout Overlay Layer */}
+                        {isLockoutActive && !isAllowedTab && (
+                            <div style={{
+                                position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                                zIndex: 900, background: 'rgba(255,255,255, 0.05)',
+                                cursor: 'not-allowed'
+                            }} onClick={(e) => e.stopPropagation()} />
+                        )}
+
                         {noFY && !loadingFY && !pathname.includes('/financial-years') && (
                             <div style={{
                                 background: C.warningBg, border: `1px solid ${C.warningBorder}`, color: C.warning,
@@ -128,7 +114,12 @@ export default function DashboardLayout({
                             </div>
                         )}
                         <TrialBanner />
-                        <div style={{ opacity: noFY && !pathname.includes('/financial-years') ? 0.6 : 1, pointerEvents: noFY && !pathname.includes('/financial-years') ? 'none' : 'auto', transition: 'all 0.3s ease' }}>
+                        
+                        <div style={{ 
+                            opacity: (noFY && !pathname.includes('/financial-years')) || (isLockoutActive && !isAllowedTab) ? 0.4 : 1, 
+                            pointerEvents: (noFY && !pathname.includes('/financial-years')) || (isLockoutActive && !isAllowedTab) ? 'none' : 'auto', 
+                            transition: 'all 0.3s ease' 
+                        }}>
                             {children}
                         </div>
                     </div>
