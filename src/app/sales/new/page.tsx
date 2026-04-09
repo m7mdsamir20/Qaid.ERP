@@ -201,8 +201,6 @@ export default function NewSalePage() {
         setFieldErrors({});
         const errors: Record<string, string> = {};
 
-        const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
-
         if (!isServices && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
         if (!form.customerId) errors.customerId = t('يرجى اختيار العميل أولاً');
         if (!entryItemId) errors.entryItemId = t('يرجى اختيار الخدمة');
@@ -279,7 +277,7 @@ export default function NewSalePage() {
         setEntryTaxRate(0);
         setEntryStock(null);
         setTimeout(() => itemSelectRef.current?.focus(), 50);
-    }, [entryItemId, entryQty, entryPrice, items, form.warehouseId, form.customerId]);
+    }, [entryItemId, entryQty, entryPrice, items, form.warehouseId, form.customerId, isServices]);
 
     const removeLine = (i: number) => setLines(prev => prev.filter((_, idx) => idx !== i));
     const editLine   = (i: number) => {
@@ -306,7 +304,7 @@ export default function NewSalePage() {
     };
 
     const handleSubmit = async (andPrint = false) => {
-        const isServicesBusiness = (session?.user as any)?.businessType === 'SERVICES';
+        const isServicesBusiness = isServices; // use component-level var (already .toUpperCase())
         setErrorMsg('');
         setFieldErrors({});
         const errors: Record<string, string> = {};

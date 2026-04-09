@@ -88,7 +88,7 @@ export const POST = withProtection(async (request, session, body) => {
         // Use bankId if treasuryId is missing
         const effectiveTreasuryId = treasuryId || bankId;
 
-        const isServices = (session.user as any).businessType === 'SERVICES';
+        const isServices = (session.user as any).businessType?.toUpperCase() === 'SERVICES';
 
         // ① منع المخزون السالب — تحقق قبل إنشاء الفاتورة (query واحد بدل N)
         if (!isServices && warehouseId) {
