@@ -7,14 +7,13 @@ const globalForPrisma = globalThis as unknown as {
 const getDatabaseUrl = () => {
     let url = process.env.DATABASE_URL || '';
     
-    // If using Supabase or common cloud poolers, enforce strict single-connection pooling
+    // We need to be careful with pgbouncer=true as it can break Prisma transactions ($transaction)
+    // if the pooler is in 'Statement' mode. We will keep connection_limit=1 for stability
+    // but remove pgbouncer=true if it was added manually by our logic to restore Save functionality.
     if (url.includes('pooler.supabase.com')) {
-        const hasParams = url.includes('?');
-        if (!url.includes('pgbouncer=true')) {
-            url += (hasParams ? '&' : '?') + 'pgbouncer=true';
-        }
         if (!url.includes('connection_limit=')) {
-            url += '&connection_limit=1';
+            const hasParams = url.includes('?');
+            url += (hasParams ? '&' : '?') + 'connection_limit=1';
         }
     }
     return url;
@@ -22,9 +21,8 @@ const getDatabaseUrl = () => {
 
 const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
 
-// Definitive export with casting to avoid "possibly null" errors in the rest of the app
 export const prisma = (globalForPrisma.prisma ?? (isBuild ? null : new PrismaClient({
-    log: ['error'], // Keep logs minimal to save overhead
+    log: ['error'],
     datasources: {
         db: {
             url: getDatabaseUrl(),
