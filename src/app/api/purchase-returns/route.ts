@@ -257,6 +257,3 @@ export const POST = withProtection(async (request, session, body) => {
         return NextResponse.json({ error: 'فشل في إنشاء مرتجع المشتريات', details: error.message }, { status: 500 });
     }
 });
-return NextResponse.json({ error: 'فشل في إنشاء مرتجع المشتريات', details: error.message }, { status: 500 });
-    }
-});
