@@ -12,23 +12,34 @@ export default function TrialBanner() {
 
     useEffect(() => {
         const sub = (session?.user as any)?.subscription;
-        if (!sub || sub.plan !== 'trial') return;
+        if (!sub || sub.plan !== 'trial') {
+            setDaysLeft(null);
+            return;
+        }
+
+        const end = new Date(sub.endDate);
+        if (isNaN(end.getTime())) {
+            setDaysLeft(null);
+            return;
+        }
 
         const days = Math.ceil(
-            (new Date(sub.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+            (end.getTime() - Date.now()) / (1000 * 60 * 60 * 24)
         );
         setDaysLeft(days);
     }, [session]);
 
-    const isExpired = daysLeft !== null && daysLeft < 0;
-    const isUrgent = daysLeft !== null && daysLeft >= 0 && daysLeft <= 3;
-    const isWarn   = daysLeft !== null && daysLeft > 3 && daysLeft <= 7;
+    const subPlan = (session?.user as any)?.subscription?.plan || '';
+    if (dismissed || !session || subPlan !== 'trial' || daysLeft === null) return null;
+
+    const isExpired = daysLeft < 0;
+    const isUrgent = daysLeft >= 0 && daysLeft <= 3;
+    const isWarn   = daysLeft > 3 && daysLeft <= 7;
 
     const bgColor     = isExpired ? 'rgba(239,68,68,0.15)' : isUrgent ? 'rgba(239,68,68,0.1)'    : isWarn ? 'rgba(245,158,11,0.08)'   : 'rgba(99,102,241,0.08)';
     const borderColor = isExpired ? 'rgba(239,68,68,0.4)'  : isUrgent ? 'rgba(239,68,68,0.3)'    : isWarn ? 'rgba(245,158,11,0.25)'   : 'rgba(99,102,241,0.2)';
     const textColor   = isExpired ? '#ef4444'              : isUrgent ? '#f87171'                 : isWarn ? '#f59e0b'                 : '#818cf8';
     const icon        = isExpired ? '🛑' : isUrgent ? '🚨' : isWarn ? '⚠️' : '🎯';
-    const subPlan     = (session?.user as any)?.subscription?.plan || 'trial';
 
     return (
         <div className="print-hide" style={{
