@@ -12,13 +12,21 @@ export async function requireAuth() {
         };
     }
 
-    const companyId = (session.user as any)?.companyId;
-    const isSuperAdminUser = !!(session.user as any)?.isSuperAdmin;
-    if (!companyId && !isSuperAdminUser && (session.user as any)?.role !== 'superadmin') {
-        return {
-            error: NextResponse.json({ error: 'لا يوجد شركة مرتبطة بهذا الحساب' }, { status: 403 }),
-            session: null
-        };
+    const sub = (session.user as any)?.subscription;
+    const isSuperAdmin = !!(session.user as any)?.isSuperAdmin || (session.user as any)?.role === 'superadmin';
+
+    // التحقق من انتهاء الاشتراك / الفترة التجريبية
+    if (sub && !isSuperAdmin) {
+        const isExpired = new Date(sub.endDate).getTime() < Date.now();
+        if (isExpired || !sub.isActive) {
+            return {
+                error: NextResponse.json({
+                    error: 'لقد انتهت صلاحية الاشتراك أو الفترة التجريبية. يرجى تجديد الاشتراك للاستمرار.',
+                    code: 'SUBSCRIPTION_EXPIRED'
+                }, { status: 402 }),
+                session: null
+            };
+        }
     }
 
     return { error: null, session };

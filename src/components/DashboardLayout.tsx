@@ -48,16 +48,40 @@ export default function DashboardLayout({
             .finally(() => setLoadingFY(false));
     }, [status, session, pathname]);
 
-    if (status === 'loading') {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
+
+    const sub = (session?.user as any)?.subscription;
+    const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
+    const isExpired = sub ? (new Date(sub.endDate).getTime() < Date.now() || !sub.isActive) : false;
+    const isLockoutActive = isExpired && !isSuperAdmin;
+    const isSubscriptionPage = pathname === '/settings' || pathname.includes('tab=subscription');
+
+    if (isLockoutActive && !isSubscriptionPage) {
         return (
-            <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: C.bg }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
+            <div style={{ height: '100vh', width: '100vw', background: 'rgba(7, 13, 26, 0.95)', backdropFilter: 'blur(10px)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'fixed', top: 0, left: 0, zIndex: 9999, color: '#fff', textAlign: 'center', padding: '20px' }}>
+                <div style={{ maxWidth: '500px', animation: 'slideUp 0.4s ease' }}>
+                    <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239, 68, 68, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
+                        <AlertTriangle size={40} color="#ef4444" />
+                    </div>
+                    <h1 style={{ fontFamily: CAIRO, fontSize: '28px', fontWeight: 900, marginBottom: '16px' }}>{t('انتهت صلاحية الاشتراك!')}</h1>
+                    <p style={{ fontFamily: CAIRO, fontSize: '16px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '32px' }}>
+                        {t('عفواً، لقد انتهت الفترة التجريبية أو صلاحية الاشتراك الحالي للنظام. يرجى تجديد الاشتراك لتتمكن من الوصول إلى البيانات والخدمات مرة أخرى.')}
+                    </p>
+                    <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                        <button onClick={() => router.push('/settings?tab=subscription')} 
+                            style={{ padding: '12px 24px', borderRadius: '12px', background: C.primary, color: '#fff', border: 'none', fontWeight: 800, fontFamily: CAIRO, cursor: 'pointer', boxShadow: `0 10px 20px ${C.primary}30` }}>
+                            {t('تجديد الاشتراك الآن')}
+                        </button>
+                        <button onClick={() => router.push('/login')} 
+                            style={{ padding: '12px 24px', borderRadius: '12px', background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', fontWeight: 800, fontFamily: CAIRO, cursor: 'pointer' }}>
+                            {t('تسجيل الخروج')}
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }
-
-    const { lang } = useTranslation();
-    const isRtl = lang === 'ar';
 
     return (
         <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
