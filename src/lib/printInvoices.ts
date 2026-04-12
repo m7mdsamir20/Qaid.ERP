@@ -120,8 +120,8 @@ export function printA4Invoice(
     const partyBalance = options.partyBalance ?? null;
 
     const invoiceDate = new Date(invoice.date || new Date());
-    const date = invoiceDate.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
-    const dateEn = invoiceDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const date = invoiceDate.toLocaleDateString('en-GB');
+    const dateEn = '';
     const dateISO = invoiceDate.toISOString();
 
     const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
@@ -234,8 +234,8 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     </div>
     <div class="info-col">
         <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
-        <div class="info-row"><span class="ik">${blInline('التاريخ', 'Date')}:</span><span class="iv">${date}${isBilingual ? ` <span class="en-sub">${dateEn}</span>` : ''}</span></div>
-        ${invoice.dueDate ? `<div class="info-row"><span class="ik">${blInline('تاريخ الاستحقاق', 'Due Date')}:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}</span></div>` : ''}
+        <div class="info-row"><span class="ik">${blInline('التاريخ', 'Date')}:</span><span class="iv">${date}</span></div>
+        ${invoice.dueDate ? `<div class="info-row"><span class="ik">${blInline('تاريخ الاستحقاق', 'Due Date')}:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('en-GB')}</span></div>` : ''}
         ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
         ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
     </div>
@@ -448,7 +448,7 @@ export function printQuotation(
     const taxAmt = Number(quotation.taxAmount || 0);
     const total = Number(quotation.total || subtotal + taxAmt);
     const date = new Date(quotation.date || new Date())
-        .toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+        .toLocaleDateString('en-GB');
 
     const quoNum = String(quotation.quotationNumber || 1).padStart(5, '0');
 

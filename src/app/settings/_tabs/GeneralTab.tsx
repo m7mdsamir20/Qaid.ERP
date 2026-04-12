@@ -297,17 +297,19 @@ export default function GeneralTab({
                                     </button>
                                     {openDropdown === 'timezone' && (
                                         <div style={{ position: 'absolute', top: '44px', insetInlineEnd: 20, zIndex: 999, width: '280px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-                                            {['Africa/Cairo', 'Asia/Riyadh', 'Asia/Dubai', 'Asia/Kuwait', 'Asia/Qatar', 'Asia/Bahrain', 'Asia/Muscat', 'Asia/Amman', 'Africa/Tripoli', 'Asia/Baghdad', 'Asia/Beirut', 'Asia/Damascus', 'Asia/Aden', 'Africa/Tunis', 'Africa/Algiers', 'Africa/Casablanca', 'Africa/Khartoum', 'Europe/Istanbul', 'Europe/London'].map((tz, i, arr) => {
-                                                const selected = generalForm.timezone === tz;
-                                                return (
-                                                    <button key={tz} type="button"
-                                                        onClick={() => { setGeneralForm((p: any) => ({ ...p, timezone: tz })); setOpenDropdown(null); }}
-                                                        style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', direction: 'ltr', textAlign: 'end', fontFamily: INTER }}>
-                                                        <Check size={14} style={{ color: C.primary, opacity: selected ? 1 : 0 }} />
-                                                        <span>{tz}</span>
-                                                    </button>
-                                                );
-                                            })}
+                                            <div style={{ maxHeight: '200px', overflowY: 'auto' }} className="custom-scrollbar">
+                                                {['Africa/Cairo', 'Asia/Riyadh', 'Asia/Dubai', 'Asia/Kuwait', 'Asia/Qatar', 'Asia/Bahrain', 'Asia/Muscat', 'Asia/Amman', 'Africa/Tripoli', 'Asia/Baghdad', 'Asia/Beirut', 'Asia/Damascus', 'Asia/Aden', 'Africa/Tunis', 'Africa/Algiers', 'Africa/Casablanca', 'Africa/Khartoum', 'Europe/Istanbul', 'Europe/London'].map((tz, i, arr) => {
+                                                    const selected = generalForm.timezone === tz;
+                                                    return (
+                                                        <button key={tz} type="button"
+                                                            onClick={() => { setGeneralForm((p: any) => ({ ...p, timezone: tz })); setOpenDropdown(null); }}
+                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', direction: 'ltr', textAlign: 'end', fontFamily: INTER }}>
+                                                            <Check size={14} style={{ color: C.primary, opacity: selected ? 1 : 0 }} />
+                                                            <span>{tz}</span>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
                                         </div>
                                     )}
                                 </>
