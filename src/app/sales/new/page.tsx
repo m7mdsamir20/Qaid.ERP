@@ -60,6 +60,7 @@ export default function NewSalePage() {
 
     const itemSelectRef = useRef<any>(null);
     const qtyRef = useRef<HTMLInputElement>(null);
+    const priceRef = useRef<HTMLInputElement>(null);
     const [entryItemId, setEntryItemId] = useState('');
     const [entryDescription, setEntryDescription] = useState('');
     const [entryQty, setEntryQty] = useState<number | ''>(1);
@@ -191,7 +192,7 @@ export default function NewSalePage() {
         if (entryItemId) {
             const item = items.find(i => i.id === entryItemId);
             if (item) {
-                setEntryPrice(isServices ? '' : item.sellPrice);
+                setEntryPrice(isServices ? 0 : item.sellPrice);
                 setTimeout(() => qtyRef.current?.focus(), 50);
             }
         }
@@ -273,7 +274,7 @@ export default function NewSalePage() {
         setEntryItemId('');
         setEntryDescription('');
         setEntryQty(1);
-        setEntryPrice('');
+        setEntryPrice(0);
         setEntryTaxRate(0);
         setEntryStock(null);
         setTimeout(() => itemSelectRef.current?.focus(), 50);
@@ -640,7 +641,7 @@ export default function NewSalePage() {
                                                     setEntryQty(v === '' ? '' : v as any); clearError('entryQty');
                                                 }
                                             }}
-                                            onKeyDown={e => e.key === 'Enter' && addLine()}
+                                            onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()}
                                             style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
@@ -649,7 +650,7 @@ export default function NewSalePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
+                                        <input ref={priceRef} type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
                                             disabled={!entryItemId}
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
