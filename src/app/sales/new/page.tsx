@@ -45,33 +45,32 @@ export default function NewSalePage() {
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
     const { symbol: cSymbol } = useCurrency();
-    const [customers,  setCustomers]  = useState<Customer[]>([]);
-    const [suppliers,  setSuppliers]  = useState<any[]>([]);
+    const [customers, setCustomers] = useState<Customer[]>([]);
+    const [suppliers, setSuppliers] = useState<any[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
-    const [items,      setItems]      = useState<Item[]>([]);
-    const [company,    setCompany]    = useState<CompanyInfo>({});
-    const [nextNum,    setNextNum]    = useState(1);
-    const [loading,    setLoading]    = useState(true);
+    const [items, setItems] = useState<Item[]>([]);
+    const [company, setCompany] = useState<CompanyInfo>({});
+    const [nextNum, setNextNum] = useState(1);
+    const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [submitting, setSubmitting] = useState(false);
-    const [showAddCust,setShowAddCust]= useState(false);
+    const [showAddCust, setShowAddCust] = useState(false);
     const [newPartnerType, setNewPartnerType] = useState<'customer' | 'supplier'>('customer');
 
     const itemSelectRef = useRef<any>(null);
-    const qtyRef     = useRef<HTMLInputElement>(null);
-    const priceRef   = useRef<HTMLInputElement>(null);
-    const [entryItemId,  setEntryItemId]  = useState('');
+    const qtyRef = useRef<HTMLInputElement>(null);
+    const [entryItemId, setEntryItemId] = useState('');
     const [entryDescription, setEntryDescription] = useState('');
-    const [entryQty,     setEntryQty]     = useState<number | ''>(1);
-    const [entryPrice,   setEntryPrice]   = useState<number | ''>('');
+    const [entryQty, setEntryQty] = useState<number | ''>(1);
+    const [entryPrice, setEntryPrice] = useState<number | ''>('');
     const [entryTaxRate, setEntryTaxRate] = useState<number | ''>(0);
-    const [entryStock,   setEntryStock]   = useState<number | null>(null);
-    
-    const [lines,        setLines]        = useState<InvoiceLine[]>([]);
-    const [attachments,  setAttachments]  = useState<{ name: string; type: string; data: string }[]>([]);
-    const [taxSettings,  setTaxSettings]  = useState<any>(null);
-    const [fieldErrors,  setFieldErrors]  = useState<Record<string, string>>({});
+    const [entryStock, setEntryStock] = useState<number | null>(null);
+
+    const [lines, setLines] = useState<InvoiceLine[]>([]);
+    const [attachments, setAttachments] = useState<{ name: string; type: string; data: string }[]>([]);
+    const [taxSettings, setTaxSettings] = useState<any>(null);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const clearError = (field: string) => {
         if (fieldErrors[field]) setFieldErrors(prev => {
@@ -90,10 +89,10 @@ export default function NewSalePage() {
         taxAmount: 0,
     });
 
-    const subtotal   = lines.reduce((s, l) => s + l.total, 0);
-    const afterDisc  = Math.max(0, subtotal - (form.discountAmt || 0));
-    
-    const isTrading = businessType === 'TRADING';
+    const subtotal = lines.reduce((s, l) => s + l.total, 0);
+    const afterDisc = Math.max(0, subtotal - (form.discountAmt || 0));
+
+    // Automatically update taxAmount when afterDisc or taxRate changes
     useEffect(() => {
         if (taxSettings?.enabled) {
             let amt = 0;
@@ -108,16 +107,16 @@ export default function NewSalePage() {
         }
     }, [afterDisc, form.taxRate, taxSettings?.enabled, taxSettings?.isInclusive]);
 
-    const netTotal   = afterDisc + (taxSettings?.isInclusive ? 0 : form.taxAmount);
-    const diff       = netTotal - (form.paidAmount || 0);
-    const remaining  = Math.max(0, diff);
-    const overpaid   = Math.max(0, (form.paidAmount || 0) - netTotal);
+    const netTotal = afterDisc + (taxSettings?.isInclusive ? 0 : form.taxAmount);
+    const diff = netTotal - (form.paidAmount || 0);
+    const remaining = Math.max(0, diff);
+    const overpaid = Math.max(0, (form.paidAmount || 0) - netTotal);
 
     const partners = [
         ...(Array.isArray(customers) ? customers.map(c => ({ ...c, partnerType: 'customer' })) : []),
         ...(Array.isArray(suppliers) ? suppliers.map(s => ({ ...s, partnerType: 'supplier' })) : [])
     ];
-    const selectedPartner= partners.find(p => p.id === form.customerId);
+    const selectedPartner = partners.find(p => p.id === form.customerId);
 
     const loadData = useCallback(async () => {
         try {
@@ -128,19 +127,19 @@ export default function NewSalePage() {
             ]);
             const nextNumData = await invR.json();
             setNextNum(nextNumData.nextNum || 1);
-            
+
             const cusData = await custR.json();
             const cus = Array.isArray(cusData) ? cusData : [];
-            
+
             const supsData = await supR.json();
             const sups = Array.isArray(supsData) ? supsData : [];
-            
+
             const whsData = await whR.json();
             const whs = Array.isArray(whsData) ? whsData : [];
-            
+
             const trsData = await trR.json();
             const trs = Array.isArray(trsData) ? trsData : [];
-            
+
             const itsData = await itemR.json();
             const its = Array.isArray(itsData) ? itsData : (itsData.items || []);
 
@@ -165,10 +164,10 @@ export default function NewSalePage() {
             const lastWh = localStorage.getItem('last_warehouse_id');
             const defaultWh = (lastWh && whs.some((w: any) => w.id === lastWh)) ? lastWh : (whs.length > 0 ? whs[0].id : '');
             if (defaultWh) setForm((f: any) => ({ ...f, warehouseId: defaultWh }));
-            
+
             const firstCash = trs.find((t: any) => t.type !== 'bank');
             if (firstCash) setForm((f: any) => ({ ...f, treasuryId: firstCash.id }));
-            
+
             const firstBank = trs.find((t: any) => t.type === 'bank');
             if (firstBank) setForm((f: any) => ({ ...f, bankId: firstBank.id }));
 
@@ -191,42 +190,12 @@ export default function NewSalePage() {
     useEffect(() => {
         if (entryItemId) {
             const item = items.find(i => i.id === entryItemId);
-            if (item) { 
-                setEntryPrice(isServices ? '' : item.sellPrice); 
-                setTimeout(() => {
-                    qtyRef.current?.focus();
-                    qtyRef.current?.select();
-                }, 50);
+            if (item) {
+                setEntryPrice(isServices ? '' : item.sellPrice);
+                setTimeout(() => qtyRef.current?.focus(), 50);
             }
         }
     }, [entryItemId, items, isServices]);
-
-    const onCreateItem = async (name: string) => {
-        try {
-            const res = await fetch('/api/items', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    name, 
-                    sellPrice: 0,
-                    costPrice: 0,
-                    status: 'active'
-                })
-            });
-            if (res.ok) {
-                const newItem = await res.json();
-                setItems(prev => [newItem, ...prev]);
-                setEntryItemId(newItem.id);
-                // focus quantity after creation
-                setTimeout(() => {
-                    qtyRef.current?.focus();
-                    qtyRef.current?.select();
-                }, 100);
-            }
-        } catch (err) {
-            console.error("Failed to create item on the fly:", err);
-        }
-    };
 
     const addLine = useCallback(() => {
         setFieldErrors({});
@@ -269,31 +238,31 @@ export default function NewSalePage() {
             const idx = prev.findIndex(l => l.itemId === entryItemId);
             if (idx >= 0) {
                 const updated = [...prev];
-                const newQty  = updated[idx].quantity + qty;
+                const newQty = updated[idx].quantity + qty;
                 if (!isServices && newQty > stock) {
                     setFieldErrors(prevE => ({ ...prevE, entryQty: `${t('تجاوز المتاح')} (${stock})` }));
                     return prev;
                 }
                 const newTaxAmt = (newQty * price) * (taxRate / 100);
-                updated[idx] = { 
-                    ...updated[idx], 
-                    quantity: newQty, 
+                updated[idx] = {
+                    ...updated[idx],
+                    quantity: newQty,
                     price: price,
                     taxRate: taxRate,
                     taxAmount: newTaxAmt,
-                    total: (newQty * price) + newTaxAmt 
+                    total: (newQty * price) + newTaxAmt
                 };
                 return updated;
             }
 
             return [...prev, {
-                itemId:   item.id,
+                itemId: item.id,
                 itemCode: item.code,
                 itemName: item.name,
-                unit:     getUnitName(item.unit),
+                unit: getUnitName(item.unit),
                 quantity: qty,
                 price,
-                total:    (qty * price) + taxAmountValue,
+                total: (qty * price) + taxAmountValue,
                 stock,
                 description: entryDescription,
                 taxRate: taxRate,
@@ -311,10 +280,10 @@ export default function NewSalePage() {
     }, [entryItemId, entryQty, entryPrice, items, form.warehouseId, form.customerId, isServices]);
 
     const removeLine = (i: number) => setLines(prev => prev.filter((_, idx) => idx !== i));
-    const editLine   = (i: number) => {
+    const editLine = (i: number) => {
         const l = lines[i];
-        setEntryItemId(l.itemId); 
-        setEntryQty(l.quantity); 
+        setEntryItemId(l.itemId);
+        setEntryQty(l.quantity);
         setEntryPrice(l.price);
         setEntryDescription(l.description || '');
         setEntryTaxRate(l.taxRate || 0);
@@ -342,7 +311,7 @@ export default function NewSalePage() {
 
         if (!form.customerId) errors.customerId = t('يرجى اختيار العميل أولاً');
         if (!isServicesBusiness && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن أولاً');
-        
+
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
             setErrorMsg(t('يرجى استكمال البيانات المطلوبة'));
@@ -390,25 +359,18 @@ export default function NewSalePage() {
                 body: JSON.stringify({
                     date: form.date,
                     warehouseId: form.warehouseId,
-                    customerId:  selectedPartner?.partnerType === 'customer' ? form.customerId : undefined,
-                    supplierId:  selectedPartner?.partnerType === 'supplier' ? form.customerId : undefined,
-                    discount: Number(form.discountAmt || 0), 
+                    customerId: selectedPartner?.partnerType === 'customer' ? form.customerId : undefined,
+                    supplierId: selectedPartner?.partnerType === 'supplier' ? form.customerId : undefined,
+                    discount: Number(form.discountAmt || 0),
                     paidAmount: Number(form.paidAmount || 0),
                     paymentType: form.paymentType,
-                    treasuryId:  form.paymentType === 'cash' ? form.treasuryId : undefined,
-                    bankId:      form.paymentType === 'bank' ? form.bankId     : undefined,
+                    treasuryId: form.paymentType === 'cash' ? form.treasuryId : undefined,
+                    bankId: form.paymentType === 'bank' ? form.bankId : undefined,
                     notes: form.notes, attachments,
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
                     taxInclusive: taxSettings?.isInclusive || false,
-                    lines: lines.map(l => ({ 
-                        itemId: l.itemId, 
-                        quantity: Number(l.quantity), 
-                        price: Number(l.price),
-                        description: l.description,
-                        taxRate: Number(l.taxRate || 0),
-                        taxAmount: Number(l.taxAmount || 0)
-                    })),
+                    lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price) })),
                 }),
             });
             if (res.ok) {
@@ -424,7 +386,7 @@ export default function NewSalePage() {
                         currency: (session?.user as any)?.currency,
                         businessType: (session?.user as any)?.businessType
                     };
-                    
+
                     // Fetch full data including customer Object for printing
                     const printRes = await fetch(`/api/sales?id=${savedInvoice.id}`);
                     if (printRes.ok) {
@@ -569,22 +531,22 @@ export default function NewSalePage() {
                                         <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ {t('عميل جديد')}</button>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <CustomSelect 
-                                            value={form.customerId} 
-                                            onChange={v => { setForm((f: any) => ({ ...f, customerId: v })); clearError('customerId'); }} 
-                                            icon={Search} 
-                                            placeholder={t("ابحث واختر...")} 
-                                            options={partners.map(p => ({ 
-                                                value: p.id, 
+                                        <CustomSelect
+                                            value={form.customerId}
+                                            onChange={v => { setForm((f: any) => ({ ...f, customerId: v })); clearError('customerId'); }}
+                                            icon={Search}
+                                            placeholder={t("ابحث واختر...")}
+                                            options={partners.map(p => ({
+                                                value: p.id,
                                                 label: p.name,
                                                 sub: p.partnerType === 'supplier' ? t('مورد') : t('عميل')
-                                            }))} 
+                                            }))}
                                         />
                                         <InlineError field="customerId" />
                                     </div>
                                     {selectedPartner && (
-                                        <div style={{ 
-                                            marginTop: '6px', fontSize: '11px', fontWeight: 700, 
+                                        <div style={{
+                                            marginTop: '6px', fontSize: '11px', fontWeight: 700,
                                             color: selectedPartner.balance < 0 ? '#fb7185' : selectedPartner.balance > 0 ? '#4ade80' : '#94a3b8',
                                             background: selectedPartner.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : selectedPartner.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)',
                                             border: `1px solid ${selectedPartner.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : selectedPartner.balance > 0 ? 'rgba(74,222,128,0.22)' : 'var(--border-color)'}`,
@@ -595,7 +557,7 @@ export default function NewSalePage() {
                                         </div>
                                     )}
                                 </div>
-                                { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
+                                {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
                                     <div>
                                         <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                             <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مخزن الصرف')}</label>
@@ -638,32 +600,31 @@ export default function NewSalePage() {
                             </div>
 
                             {/* Entry Row - Direct without nested box */}
-                            <div style={{ 
-                                display: 'grid', 
-                                gridTemplateColumns: isServices ? '1fr 110px 110px 60px' : '1fr 110px 110px 60px', 
-                                gap: '12px', 
+                            <div style={{
+                                display: 'grid',
+                                gridTemplateColumns: isServices ? '1fr 110px 110px 60px' : '1fr 110px 110px 60px',
+                                gap: '12px',
                                 alignItems: 'end',
                                 marginBottom: '20px'
                             }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'start' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <CustomSelect 
+                                        <CustomSelect
                                             ref={itemSelectRef}
-                                            value={entryItemId} 
-                                            onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} 
-                                            onCreate={onCreateItem}
-                                            icon={Search} 
-                                            placeholder={isServices ? t("اختر الخدمة...") : t("اختر الصنف...")} 
+                                            value={entryItemId}
+                                            onChange={v => { setEntryItemId(v); clearError('entryItemId'); }}
+                                            icon={Search}
+                                            placeholder={isServices ? t("اختر الخدمة...") : t("اختر الصنف...")}
                                             options={items.map(i => {
                                                 const s = isServices ? null : (i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0);
-                                                return { 
-                                                    value: i.id, 
+                                                return {
+                                                    value: i.id,
                                                     label: i.name,
                                                     sub: s !== null ? `${t('متاح:')} ${s}` : undefined,
                                                     style: s !== null && s <= 0 ? { opacity: 0.6, color: C.danger } : undefined
                                                 };
-                                            })} 
+                                            })}
                                         />
                                         <InlineError field="entryItemId" />
                                     </div>
@@ -671,26 +632,15 @@ export default function NewSalePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '' : fmt(entryQty)}
+                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)}
                                             disabled={!entryItemId}
-                                            placeholder="1"
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
                                                 if (v === '' || !isNaN(Number(v)) || v === '.') {
                                                     setEntryQty(v === '' ? '' : v as any); clearError('entryQty');
                                                 }
                                             }}
-                                            onKeyDown={e => {
-                                                if (e.key === 'Enter') {
-                                                    if (entryPrice === '') {
-                                                        priceRef.current?.focus();
-                                                        priceRef.current?.select();
-                                                    } else {
-                                                        addLine();
-                                                    }
-                                                }
-                                            }}
-
+                                            onKeyDown={e => e.key === 'Enter' && addLine()}
                                             style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
@@ -699,9 +649,8 @@ export default function NewSalePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={priceRef} type="text" inputMode="decimal" value={entryPrice === '' ? '' : fmt(entryPrice)}
+                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
                                             disabled={!entryItemId}
-                                            placeholder="0.00"
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
                                                 if (v === '' || !isNaN(Number(v)) || v === '.') {
@@ -726,56 +675,31 @@ export default function NewSalePage() {
                                 </button>
                             </div>
 
-                                {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && entryItemId && (
-                                    <div style={{ animation: 'slideDown 0.2s ease', marginTop: '14px' }}>
-                                        <label style={{ ...LS, fontSize: '11px' }}>{t('الوصف (يتم سحبه تلقائياً ويمكن التعديل)')}</label>
-                                        <textarea
-                                            value={entryDescription}
-                                            onChange={e => setEntryDescription(e.target.value)}
-                                            placeholder={t("اكتب وصف الخدمة التفصيلي هنا...")}
-                                            style={{ ...IS, height: '60px', padding: '10px 12px', fontSize: '13px', lineHeight: '1.5', resize: 'none' }}
-                                            onFocus={focusIn} onBlur={focusOut}
-                                        />
-                                    </div>
-                                )}
+                            {(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' && entryItemId && (
+                                <div style={{ animation: 'slideDown 0.2s ease', marginTop: '14px' }}>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('الوصف (يتم سحبه تلقائياً ويمكن التعديل)')}</label>
+                                    <textarea
+                                        value={entryDescription}
+                                        onChange={e => setEntryDescription(e.target.value)}
+                                        placeholder={t("اكتب وصف الخدمة التفصيلي هنا...")}
+                                        style={{ ...IS, height: '60px', padding: '10px 12px', fontSize: '13px', lineHeight: '1.5', resize: 'none' }}
+                                        onFocus={focusIn} onBlur={focusOut}
+                                    />
+                                </div>
+                            )}
 
                             {/* Lines Table */}
-                            <div className="table-container" style={{ width: '100%', overflowX: 'auto', marginTop: '10px' }}>
-                                <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <div className="table-container">
+                                <table className="table">
                                     <thead>
-                                        <tr style={{ background: 'transparent', borderBottom: `1px solid ${C.border}` }}>
+                                        <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
-                                                [
-                                                    { label: t('الخدمة / الوصف التفصيلي'), width: 'auto' },
-                                                    { label: t('الكمية'), width: '100px' },
-                                                    { label: t('السعر'), width: '120px' },
-                                                    { label: t('الإجمالي'), width: '150px' },
-                                                    { label: '', width: '80px' }
-                                                ].map((col, i) => (
-                                                    <th key={i} style={{ 
-                                                        textAlign: i === 0 ? 'start' : 'center', 
-                                                        padding: '14px 12px', fontSize: '11px', fontWeight: 800, 
-                                                        color: C.textPrimary, fontFamily: CAIRO,
-                                                        width: col.width,
-                                                        borderBottom: `2px solid ${C.border}`
-                                                    }}>{col.label}</th>
+                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الضريبة'), t('الإجمالي'), ''].map((h, i) => (
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             ) : (
-                                                [
-                                                    { label: t('الصنف'), width: 'auto' },
-                                                    { label: t('الوحدة'), width: '80px' },
-                                                    { label: t('الكمية'), width: '80px' },
-                                                    { label: t('السعر'), width: '100px' },
-                                                    { label: t('الإجمالي'), width: '120px' },
-                                                    { label: '', width: '60px' }
-                                                ].map((col, i) => (
-                                                    <th key={i} style={{ 
-                                                        textAlign: i === 0 ? 'start' : 'center', 
-                                                        padding: '14px 12px', fontSize: '11px', fontWeight: 800, 
-                                                        color: C.textPrimary, fontFamily: CAIRO,
-                                                        width: col.width,
-                                                        borderBottom: `2px solid ${C.border}`
-                                                    }}>{col.label}</th>
+                                                [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             )}
                                         </tr>
@@ -785,18 +709,19 @@ export default function NewSalePage() {
                                             <tr key={i} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
                                                     <div>{l.itemName}</div>
-                                                    {(l as any).description && (
-                                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 500, whiteSpace: 'pre-wrap' }}>
-                                                            {(l as any).description}
-                                                        </div>
-                                                    )}
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontWeight: 400 }}>{l.description}</div>}
                                                 </td>
-                                                { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
+                                                {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
                                                     <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
-                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: CAIRO }}>{l.total.toLocaleString()}</td>
+                                                {isServices && (
+                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
+                                                        {l.taxAmount?.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate}%)</span>
+                                                    </td>
+                                                )}
+                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -811,11 +736,11 @@ export default function NewSalePage() {
                                     </tbody>
                                     {lines.length > 0 && (
                                         <tfoot>
-                                            <tr style={{ background: 'rgba(37,106,244,0.06)', borderTop: `1px solid ${C.border}` }}>
-                                                <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
+                                            <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
+                                                <td colSpan={isServices ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '18px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>
                                                     {subtotal.toLocaleString()} {cSymbol}
                                                 </td>
                                                 <td />
@@ -830,11 +755,11 @@ export default function NewSalePage() {
                         <div style={SC}>
                             <div style={{ ...STitle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> {t('المرفقات')}</div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <div style={{ 
+                                <div style={{
                                     flex: 1,
-                                    border: '1px dashed var(--border-color)', 
-                                    borderRadius: '8px', 
-                                    padding: '8px', 
+                                    border: '1px dashed var(--border-color)',
+                                    borderRadius: '8px',
+                                    padding: '8px',
                                     textAlign: 'center',
                                     position: 'relative',
                                     cursor: 'pointer',
@@ -854,14 +779,14 @@ export default function NewSalePage() {
                             {attachments.length > 0 && (
                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px' }}>
                                     {attachments.map((file, idx) => (
-                                        <div key={idx} style={{ 
-                                            background: 'var(--surface-850)', 
-                                            border: '1px solid var(--border-color)', 
-                                            borderRadius: '6px', 
-                                            padding: '4px 8px', 
-                                            fontSize: '10px', 
-                                            display: 'flex', 
-                                            alignItems: 'center', 
+                                        <div key={idx} style={{
+                                            background: 'var(--surface-850)',
+                                            border: '1px solid var(--border-color)',
+                                            borderRadius: '6px',
+                                            padding: '4px 8px',
+                                            fontSize: '10px',
+                                            display: 'flex',
+                                            alignItems: 'center',
                                             gap: '6px',
                                             color: 'var(--text-secondary)'
                                         }}>
@@ -1005,10 +930,11 @@ export default function NewSalePage() {
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
                                         {(['cash', 'bank', 'credit'] as const).map(tType => (
                                             <button key={tType} onClick={() => setForm((f: any) => ({ ...f, paymentType: tType, paidAmount: tType === 'credit' ? 0 : f.paidAmount }))}
-                                                style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO,
+                                                style={{
+                                                    height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO,
                                                     borderColor: form.paymentType === tType ? C.primary : C.border,
-                                                    background:  form.paymentType === tType ? C.primaryBg : 'transparent',
-                                                    color:       form.paymentType === tType ? C.primary : C.textSecondary,
+                                                    background: form.paymentType === tType ? C.primaryBg : 'transparent',
+                                                    color: form.paymentType === tType ? C.primary : C.textSecondary,
                                                     fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
                                                 }}>
                                                 {tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}
@@ -1089,19 +1015,18 @@ export default function NewSalePage() {
                                         background: diff > 0
                                             ? 'rgba(239,68,68,0.07)'
                                             : diff < 0
-                                            ? 'rgba(99,102,241,0.07)'
-                                            : 'rgba(52,211,153,0.07)',
+                                                ? 'rgba(99,102,241,0.07)'
+                                                : 'rgba(52,211,153,0.07)',
                                         color: diff > 0 ? '#f87171' : diff < 0 ? '#818cf8' : '#34d399',
-                                        border: `1px solid ${
-                                            diff > 0 ? 'rgba(239,68,68,0.15)'
-                                            : diff < 0 ? 'rgba(99,102,241,0.15)'
-                                            : 'rgba(52,211,153,0.15)'
-                                        }`,
+                                        border: `1px solid ${diff > 0 ? 'rgba(239,68,68,0.15)'
+                                                : diff < 0 ? 'rgba(99,102,241,0.15)'
+                                                    : 'rgba(52,211,153,0.15)'
+                                            }`,
                                     }}>
                                         <span>
                                             {diff > 0 ? `${t('متبقي:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}`
-                                            : diff < 0 ? `${t('زيادة:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}`
-                                            : t('تم السداد بالكامل ✓')}
+                                                : diff < 0 ? `${t('زيادة:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}`
+                                                    : t('تم السداد بالكامل ✓')}
                                         </span>
                                         {diff !== 0 && (
                                             <span style={{ fontSize: '10px', opacity: 0.7 }}>
@@ -1116,12 +1041,12 @@ export default function NewSalePage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                             <button onClick={() => handleSubmit(false)} disabled={submitting}
                                 className="btn btn-primary"
-                                style={{ 
-                                    width: '100%', 
-                                    height: '52px', 
-                                    fontSize: '16px', 
-                                    fontWeight: 900, 
-                                    gap: '12px', 
+                                style={{
+                                    width: '100%',
+                                    height: '52px',
+                                    fontSize: '16px',
+                                    fontWeight: 900,
+                                    gap: '12px',
                                     background: C.primary,
                                     boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)',
                                     border: 'none',
@@ -1160,74 +1085,74 @@ export default function NewSalePage() {
                         </div>
                     </div>
                 </div>
-        </div>
-    {/* End Page Content */}
-                {/* Unified Add Customer Modal */}
-                <AppModal
-                    show={showAddCust}
-                    onClose={() => setShowAddCust(false)}
-                    title={newPartnerType === 'customer' ? t('إضافة عميل جديد') : t('إضافة مورد جديد')}
-                    icon={UserPlus}
-                    maxWidth="440px"
-                >
-                    <form onSubmit={async (e) => {
-                        e.preventDefault();
-                        const name = (e.currentTarget.elements.namedItem('pName') as HTMLInputElement).value;
-                        const phone = (e.currentTarget.elements.namedItem('pPhone') as HTMLInputElement).value;
-                        
-                        if (!name) return;
-                        setSubmitting(true);
-                        try {
-                            const targetApi = newPartnerType === 'customer' ? '/api/customers' : '/api/suppliers';
-                            const res = await fetch(targetApi, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ name, phone }),
-                            });
-                            if (res.ok) {
-                                const newP = await res.json();
-                                if (newPartnerType === 'customer') setCustomers(prev => [...prev, newP]);
-                                else setSuppliers(prev => [...prev, newP]);
-                                
-                                setForm((f: any) => ({ ...f, customerId: newP.id }));
-                                setShowAddCust(false);
-                            } else alert(t('فشل في الإضافة'));
-                        } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
-                    }}>
-                        <div style={{ marginBottom: '16px', display: 'flex', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '4px' }}>
-                            <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
-                            <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
-                        </div>
+            </div>
+            {/* End Page Content */}
+            {/* Unified Add Customer Modal */}
+            <AppModal
+                show={showAddCust}
+                onClose={() => setShowAddCust(false)}
+                title={newPartnerType === 'customer' ? t('إضافة عميل جديد') : t('إضافة مورد جديد')}
+                icon={UserPlus}
+                maxWidth="440px"
+            >
+                <form onSubmit={async (e) => {
+                    e.preventDefault();
+                    const name = (e.currentTarget.elements.namedItem('pName') as HTMLInputElement).value;
+                    const phone = (e.currentTarget.elements.namedItem('pPhone') as HTMLInputElement).value;
 
-                        <div style={{ marginBottom: '16px' }}>
-                            <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
-                            <div style={{ position: 'relative' }}>
-                                <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                <input name="pName" required placeholder={newPartnerType === 'customer' ? t('اسم العميل...') : t('اسم المورد...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
-                            </div>
-                        </div>
+                    if (!name) return;
+                    setSubmitting(true);
+                    try {
+                        const targetApi = newPartnerType === 'customer' ? '/api/customers' : '/api/suppliers';
+                        const res = await fetch(targetApi, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ name, phone }),
+                        });
+                        if (res.ok) {
+                            const newP = await res.json();
+                            if (newPartnerType === 'customer') setCustomers(prev => [...prev, newP]);
+                            else setSuppliers(prev => [...prev, newP]);
 
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>{t('رقم الجوال')}</label>
-                            <div style={{ position: 'relative' }}>
-                                <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
-                            </div>
-                        </div>
+                            setForm((f: any) => ({ ...f, customerId: newP.id }));
+                            setShowAddCust(false);
+                        } else alert(t('فشل في الإضافة'));
+                    } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
+                }}>
+                    <div style={{ marginBottom: '16px', display: 'flex', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '4px' }}>
+                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
+                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
+                    </div>
 
-                        <div style={{ display: 'flex', gap: '10px' }}>
-                            <button type="submit" disabled={submitting} style={{ 
-                                flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
-                            }}>
-                                {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
-                            </button>
-                            <button type="button" onClick={() => setShowAddCust(false)} style={{ 
-                                flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
-                                background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
-                            }}>{t('إلغاء')}</button>
+                    <div style={{ marginBottom: '16px' }}>
+                        <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
+                        <div style={{ position: 'relative' }}>
+                            <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                            <input name="pName" required placeholder={newPartnerType === 'customer' ? t('اسم العميل...') : t('اسم المورد...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                         </div>
-                    </form>
-                </AppModal>
+                    </div>
+
+                    <div style={{ marginBottom: '24px' }}>
+                        <label style={LS}>{t('رقم الجوال')}</label>
+                        <div style={{ position: 'relative' }}>
+                            <Phone size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                            <input name="pPhone" placeholder="01x xxxx xxxx" style={{ ...IS, height: '42px', paddingInlineEnd: '40px', direction: 'ltr', textAlign: 'start' }} onFocus={focusIn} onBlur={focusOut} />
+                        </div>
+                    </div>
+
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                        <button type="submit" disabled={submitting} style={{
+                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
+                        }}>
+                            {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
+                        </button>
+                        <button type="button" onClick={() => setShowAddCust(false)} style={{
+                            flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
+                            background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
+                        }}>{t('إلغاء')}</button>
+                    </div>
+                </form>
+            </AppModal>
             <style jsx global>{`
                 @keyframes spin { to { transform: rotate(360deg); } }
                 @keyframes errorSlideDown {
@@ -1252,13 +1177,22 @@ export default function NewSalePage() {
                 }
                 input[type=number] { -moz-appearance: textfield; }
             `}</style>
-            <script dangerouslySetInnerHTML={{ __html: `
+            <script dangerouslySetInnerHTML={{
+                __html: `
                 document.addEventListener('wheel', function(e) {
                     if (document.activeElement.type === 'number') {
                         document.activeElement.blur();
                     }
                 }, { passive: false });
             `}} />
+        </DashboardLayout>
+    );
+}
+if (document.activeElement.type === 'number') {
+    document.activeElement.blur();
+}
+                }, { passive: false });
+`}} />
         </DashboardLayout>
     );
 }

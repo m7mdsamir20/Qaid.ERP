@@ -95,7 +95,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     );
 
     const fmt = (v: number) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    
+
     const getStatus = () => {
         if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
         if (invoice.paidAmount > 0) return { label: t('تحصيل جزئي'), color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
@@ -112,8 +112,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
-                
-                <PageHeader 
+
+                <PageHeader
                     title={`${t('تفاصيل')} ${invLabel}`}
                     subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')} — ${t('سجل العميل والتحصيل المالي')}`}
                     icon={Receipt}
@@ -123,33 +123,11 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                         onClick: () => {
                             const branches = (session?.user as any)?.branches || [];
                             const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
-                            
+
                             if (invoice.notes?.includes('POS الكاشير السريع')) {
                                 const printWindow = window.open('', '_blank', 'width=350,height=600');
                                 if (printWindow) {
                                     const receiptDate = new Date(invoice.date).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
-                                    const isSaudi = company.countryCode === 'SA';
-                                    const blInline = (ar: string, en: string) => isRtl ? ar : en;
-                                    const totalTaxAmount = invoice.taxAmount || 0;
-                                    const dateISO = new Date(invoice.date).toISOString();
-                                    
-                                    const generateZatcaTLV = (name: string, vat: string, date: string, total: string, tax: string) => {
-                                        const hex = (tag: number, val: string) => {
-                                            const bytes = new TextEncoder().encode(val);
-                                            return String.fromCharCode(tag) + String.fromCharCode(bytes.length) + val;
-                                        };
-                                        const tlv = hex(1, name) + hex(2, vat) + hex(3, date) + hex(4, total) + hex(5, tax);
-                                        return btoa(tlv);
-                                    };
-
-                                    const zatcaQR = isSaudi ? generateZatcaTLV(
-                                        company.name || 'Company',
-                                        company.taxNumber || '000000000000000',
-                                        dateISO,
-                                        invoice.total.toFixed(2),
-                                        totalTaxAmount.toFixed(2)
-                                    ) : btoa(`${company.name}|${invNumFmt}|${invoice.total}|${invoice.date}`);
-
                                     printWindow.document.write(`
                                         <html>
                                         <head>
@@ -161,31 +139,19 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 .header p { margin: 2px 0; font-size: 12px; }
                                                 .divider { border-bottom: 1px dashed #000; margin: 10px 0; }
                                                 .item-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; text-align: right; }
-                                                .item-name { flex: 1; padding-inline-start: 5px; }
+                                                .item-name { flex: 1; padding-insetInlineStart: 5px; }
                                                 .item-qty { width: 30px; text-align: center; }
                                                 .item-total { width: 70px; text-align: left; }
                                                 .totals-row { display: flex; justify-content: space-between; font-size: 14px; margin-top: 5px; font-weight: bold; }
                                                 .footer { font-size: 12px; margin-top: 15px; text-align: center; }
                                             </style>
-                                            <script>
-                                                window.onload = () => {
-                                                    setTimeout(() => {
-                                                        window.print();
-                                                        setTimeout(() => window.close(), 500);
-                                                    }, 500);
-                                                };
-                                            </script>
                                         </head>
-                                        <body>
+                                        <body onload="window.print(); window.close();">
                                             <div class="receipt-container">
                                                 <div class="header">
                                                     ${company.logo ? `<img src="${company.logo}" style="max-height: 60px; max-width: 120px; object-fit: contain; margin: 0 auto 5px;" alt="Logo" />` : ''}
                                                     <h2>${company.name || 'الشركة للأنظمة'}</h2>
-                                                    <div class="qr-box" style="margin-top:12px">
-                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(zatcaQR)}" style="width:120px;height:120px;margin:0 auto;display:block;" alt="QR" />
-                                                        <div class="qr-label">${blInline('رمز الفاتورة', 'Invoice QR Code')}</div>
-                                                    </div>
-                                                    <p>${isServices ? 'فاتورة خدمات' : 'فاتورة كاشير POS'}</p>
+                                                    <p>فاتورة كاشير POS</p>
                                                     <p>رقم الفاتورة: #${invoice.invoiceNumber}</p>
                                                     <p>تاريخ: ${receiptDate}</p>
                                                 </div>
@@ -229,17 +195,17 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 return;
                             }
 
-                             const bizType = (session?.user as any)?.businessType || company.businessType;
-                             printA4Invoice(invoice, 'sale', { ...company, branchName, businessType: bizType }, { partyBalance: invoice.customer?.balance });
+                            const bizType = (session?.user as any)?.businessType || company.businessType;
+                            printA4Invoice(invoice, 'sale', { ...company, branchName, businessType: bizType }, { partyBalance: invoice.customer?.balance });
                         },
                         icon: Printer
                     }}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '20px' }}>
-                    
+
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        
+
                         {/* ── Metadata Icons ── */}
                         <div style={{ ...SC, display: 'grid', gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: '15px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -294,9 +260,11 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
+                                        <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
                                         {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
                                         <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الضريبة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
@@ -305,32 +273,20 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
-                                                {(l.item.code && !isServices) && <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>}
-                                                {(l as any).description && (
-                                                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 500, whiteSpace: 'pre-wrap' }}>
-                                                        {(l as any).description}
-                                                    </div>
-                                                )}
+                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
                                             </td>
                                             {!isServices && (
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                             )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
+                                                {l.taxAmount ? l.taxAmount.toLocaleString() : '0.00'} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate || 0}%)</span>
+                                            </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
-                                <tfoot>
-                                    <tr style={{ background: 'rgba(37,106,244,0.06)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
-                                            {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
-                                        </td>
-                                        <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
-                                            {fmt(invoice.subtotal)} {cSymbol}
-                                        </td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
 
@@ -349,7 +305,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
-                                        <tr style={{ ...TABLE_STYLE.thead, background: 'transparent', borderBottom: `1px solid ${C.border}` }}>
+                                        <tr style={TABLE_STYLE.thead}>
                                             <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
                                             <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
                                             <th style={TABLE_STYLE.th(false)}>{t('قيمة المرتجع')}</th>
@@ -381,7 +337,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         <div style={SC}>
                             <div style={STitle}><Wallet size={14} /> {t('ملخص الحساب')}</div>
-                            
+
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('إجمالي القيمة')}</span>
@@ -391,7 +347,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <span style={{ color: C.textSecondary }}>{t('إجمالي الخصم')}</span>
                                     <span style={{ fontWeight: 700, fontFamily: INTER, color: C.danger }}>- {fmt(invoice.discount)} {cSymbol}</span>
                                 </div>
-                                { (invoice.taxAmount || 0) > 0 && (
+                                {(invoice.taxAmount || 0) > 0 && (
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: C.textSecondary }}>{t('إجمالي الضريبة')}</span>
                                         <span style={{ fontWeight: 700, fontFamily: INTER, color: '#f87171' }}>+ {fmt(invoice.taxAmount || 0)} {cSymbol}</span>
