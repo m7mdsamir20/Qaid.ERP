@@ -26,7 +26,20 @@ import PageHeader from '@/components/PageHeader';
 import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 import { useTranslation } from '@/lib/i18n';
 
+const toEnDigits = (str: string) => str.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
 const fmt = (n: number) => n.toLocaleString('en-US');
+
+const getInvoicePrefix = (type: string) => {
+  switch (type) {
+    case 'sale': return 'SAL-';
+    case 'purchase': return 'PUR-';
+    case 'receipt': return 'REC-';
+    case 'payment': return 'PAY-';
+    case 'sale_return': return 'SRET-';
+    case 'purchase_return': return 'PRET-';
+    default: return 'INV-';
+  }
+};
 
 const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
   sale: { label: 'مبيعات', color: C.success, bg: C.successBg },
@@ -369,7 +382,8 @@ export default function DashboardPage() {
             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
               {(() => {
                 const d = new Date();
-                return d.toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                const str = d.toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                return toEnDigits(str);
               })()}
               <span style={{ margin: '0 8px', color: C.border }}>|</span>
               <span style={{ color: C.textSecondary, fontFamily: INTER }}>{time}</span>
@@ -567,7 +581,7 @@ export default function DashboardPage() {
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                       {['التاريخ والطرف', 'القيمة', 'النوع', 'رقم'].map((h, i) => (
-                        <th key={h} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 3 ? (isRtl ? 'left' : 'right') : (isRtl ? 'right' : 'left') }}>{t(h)}</th>
+                        <th key={h} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 0 ? (isRtl ? 'right' : 'left') : 'center' }}>{t(h)}</th>
                       ))}
                     </tr>
                   </thead>
@@ -588,13 +602,15 @@ export default function DashboardPage() {
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <td style={{ padding: '14px 16px' }}>
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
-                              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>
+                              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: isRtl ? 'right' : 'left' }}>{renderCurrency(inv.total, '14px', 800)}</td>
-                            <td style={{ padding: '14px 16px', textAlign: isRtl ? 'right' : 'left' }}>
+                            <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: 'center' }}>{renderCurrency(inv.total, '14px', 800)}</td>
+                            <td style={{ padding: '14px 16px', textAlign: 'center' }}>
                               <span style={{ fontSize: '11px', fontWeight: 800, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20` }}>{t(s.label)}</span>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: INTER, textAlign: isRtl ? 'left' : 'right' }}>#{inv.invoiceNumber}</td>
+                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: INTER, textAlign: 'center' }}>
+                              {getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}
+                            </td>
                           </tr>
                         );
                       })}

@@ -546,15 +546,14 @@ export default function NewSalePage() {
                                     </div>
                                     {selectedPartner && (
                                         <div style={{ 
-                                            marginTop: '6px', fontSize: '10px', fontWeight: 700, 
-                                            color: selectedPartner.balance > 0 ? '#fb7185' : selectedPartner.balance < 0 ? '#4ade80' : '#94a3b8',
-                                            display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(255,255,255,0.02)', padding: '4px 8px', borderRadius: '6px', width: 'fit-content'
+                                            marginTop: '6px', fontSize: '11px', fontWeight: 700, 
+                                            color: selectedPartner.balance < 0 ? '#fb7185' : selectedPartner.balance > 0 ? '#4ade80' : '#94a3b8',
+                                            background: selectedPartner.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : selectedPartner.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)',
+                                            border: `1px solid ${selectedPartner.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : selectedPartner.balance > 0 ? 'rgba(74,222,128,0.22)' : 'var(--border-color)'}`,
+                                            display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '30px', width: 'fit-content'
                                         }}>
-                                            <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
-                                            {selectedPartner?.partnerType === 'supplier'
-                                                ? (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
-                                                : (selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
-                                            }
+                                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
+                                            {selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('متزن')}
                                         </div>
                                     )}
                                 </div>

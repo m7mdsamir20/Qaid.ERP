@@ -464,26 +464,13 @@ export default function NewPurchasePage() {
                                     </div>
                                     {selectedPartner && (
                                         <div style={{
-                                            marginTop: '10px', padding: '6px 14px', borderRadius: '24px', fontSize: '12px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px',
-                                            background: (selectedPartner.partnerType === 'customer' 
-                                                ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.08)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.08)' : 'rgba(255,255,255,0.03)'
-                                                : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
-                                            ),
-                                            color: (selectedPartner.partnerType === 'customer'
-                                                ? selectedPartner.balance > 0 ? '#34d399' : selectedPartner.balance < 0 ? '#f87171' : '#475569'
-                                                : selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d394' : '#475569'
-                                            ),
-                                            border: `1px solid ${
-                                                selectedPartner.partnerType === 'customer'
-                                                ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'
-                                                : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                            }`,
+                                            marginTop: '10px', padding: '6px 14px', borderRadius: '30px', fontSize: '11px', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '6px',
+                                            background: selectedPartner.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : selectedPartner.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)',
+                                            color: selectedPartner.balance < 0 ? '#fb7185' : selectedPartner.balance > 0 ? '#4ade80' : '#94a3b8',
+                                            border: `1px solid ${selectedPartner.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : selectedPartner.balance > 0 ? 'rgba(74,222,128,0.22)' : 'var(--border-color)'}`,
                                         }}>
-                                            <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
-                                            {selectedPartner.partnerType === 'customer'
-                                                ? (selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
-                                                : (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
-                                            }
+                                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
+                                            {selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('متزن')}
                                         </div>
                                     )}
                                 </div>
