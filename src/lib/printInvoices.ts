@@ -249,10 +249,10 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
             ${!isServicesLine ? `<th style="width:10%">${bl('الوحدة', 'Unit')}</th>` : ''}
             <th style="width:10%">${bl('الكمية', 'Qty')}</th>
             <th style="width:10%">${bl('السعر', 'Price')}</th>
-            ${isServicesLine ? `
+            ${invoiceTaxRate > 0 ? `
                 <th style="width:8%">${bl('نسبة الضريبة', 'Tax %')}</th>
                 <th style="width:10%">${bl('قيمة الضريبة', 'Tax Amt')}</th>
-            ` : (lines.some((l: any) => (l.taxAmount || 0) > 0) ? `<th style="width:10%">${bl('الضريبة', 'Tax')}</th>` : '')}
+            ` : ''}
             <th style="width:10%">${bl('الإجمالي', 'Total')}</th>
         </tr>
     </thead>
@@ -273,15 +273,15 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
                 <td>${i + 1}</td>
                 <td style="text-align:right">
                     <div class="item-name">${name}</div>
-                    ${desc ? `<div style="font-size:10px;color:#666;margin-top:2px">${desc}</div>` : ''}
+                    ${desc ? `<div style="font-size:11px;color:#444;margin-top:2px;font-weight:700">${desc}</div>` : ''}
                 </td>
                 ${!isServicesLine ? `<td>${unit}</td>` : ''}
                 <td><strong>${qty.toLocaleString()}</strong></td>
                 <td>${price.toLocaleString()} ${sym}</td>
-                ${isServicesLine && invoiceTaxRate > 0 ? `
+                ${invoiceTaxRate > 0 ? `
                     <td>${lineTaxRate}%</td>
                     <td>${lineTaxAmount.toLocaleString()} ${sym}</td>
-                ` : (!isServicesLine && lines.some((lx: any) => (lx.taxAmount || 0) > 0) ? `<td>${lineTaxAmount > 0 ? lineTaxAmount.toLocaleString() + ' ' + sym : '—'}</td>` : '')}
+                ` : ''}
                 <td><strong>${lineTotal.toLocaleString()} ${sym}</strong></td>
             </tr>`;
     }).join('')}
