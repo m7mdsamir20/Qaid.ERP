@@ -83,13 +83,33 @@ export default function AccountsPage() {
         nature: 'debit'
     });
 
+    const buildTree = (list: any[]) => {
+        const map: Record<string, any> = {};
+        const tree: any[] = [];
+        
+        list.forEach(acc => {
+            map[acc.id] = { ...acc, children: [] };
+        });
+        
+        list.forEach(acc => {
+            if (acc.parentId && map[acc.parentId]) {
+                map[acc.parentId].children.push(map[acc.id]);
+            } else {
+                tree.push(map[acc.id]);
+            }
+        });
+        
+        return tree;
+    };
+
     const fetchAccounts = useCallback(async () => {
         setLoading(true);
         try {
             const res = await fetch('/api/accounts');
             if (res.ok) {
                 const data = await res.json();
-                setAccounts(data);
+                const treeData = buildTree(data);
+                setAccounts(treeData);
                 // Expand first level by default
                 const firstLevelIds = data.filter((a: Account) => !a.parentId).map((a: Account) => a.id);
                 setExpandedIds(new Set(firstLevelIds));
