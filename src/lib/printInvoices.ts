@@ -143,7 +143,7 @@ export function printA4Invoice(
         dateISO,
         total.toFixed(2),
         totalTaxAmount.toFixed(2)
-    ) : btoa(`${co.name}|${isServicesLine ? 'SRV' : prefix}-${invoiceNum}|${total}|${date}`);
+    ) : '';
 
     // Bilingual helper
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
@@ -294,13 +294,10 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-top:10px">
             <strong>${blInline('ملاحظات', 'Notes')}: </strong>${invoice.notes}
         </div>` : ''}
-        ${!isSaudi ? `<div class="qr-box" style="margin-top:12px">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(zatcaQR)}" style="width:120px;height:120px;margin:0 auto;display:block;" alt="Invoice QR" />
-            <div class="qr-label">${blInline('رمز الفاتورة', 'Invoice QR Code')}</div>
-        </div>` : `<div class="qr-box" style="margin-top:12px">
+        ${isSaudi ? `<div class="qr-box" style="margin-top:12px">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(zatcaQR)}" style="width:120px;height:120px;margin:0 auto;display:block;" alt="ZATCA QR" />
             <div class="qr-label">${blInline('رمز الفاتورة الضريبية', 'Tax Invoice QR Code')}</div>
-        </div>`}
+        </div>` : ''}
     </div>
     
     <div class="totals">
@@ -389,14 +386,12 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     </div>
 </div>
 </div>
+${isSaudi ? `
 <script>
 window.onload = () => {
-    setTimeout(() => {
-        window.print();
-        setTimeout(() => window.close(), 500);
-    }, 500);
+    setTimeout(() => window.print(), 500);
 };
-</script>
+</script>` : '<script>window.onload=()=>window.print();</script>'}
 </body>
 </html>`;
 

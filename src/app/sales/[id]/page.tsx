@@ -298,7 +298,14 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
                                         <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الضريبة')}</th>
+                                        {isServices ? (
+                                            <>
+                                                <th style={TABLE_STYLE.th(false)}>{t('نسبة الضريبة')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('قيمة الضريبة')}</th>
+                                            </>
+                                        ) : (
+                                            <th style={TABLE_STYLE.th(false)}>{t('الضريبة')}</th>
+                                        )}
                                         <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
@@ -308,16 +315,31 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                 {(l.item.code && !isServices) && <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>}
-                                                {(l as any).description && <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 500 }}>{(l as any).description}</div>}
+                                                {(l as any).description && (
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 500, whiteSpace: 'pre-wrap' }}>
+                                                        {(l as any).description}
+                                                    </div>
+                                                )}
                                             </td>
                                             {!isServices && (
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                             )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
-                                                {l.taxAmount ? l.taxAmount.toLocaleString() : '0.00'} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate || 0}%)</span>
-                                            </td>
+                                            {isServices ? (
+                                                <>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontFamily: INTER }}>
+                                                        {l.taxRate || 0}%
+                                                    </td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: '#fb7185', fontWeight: 600, fontFamily: INTER }}>
+                                                        {l.taxAmount ? fmt(l.taxAmount) : '0.00'}
+                                                    </td>
+                                                </>
+                                            ) : (
+                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
+                                                    {l.taxAmount ? l.taxAmount.toLocaleString() : '0.00'} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate || 0}%)</span>
+                                                </td>
+                                            )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}

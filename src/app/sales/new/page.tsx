@@ -401,7 +401,14 @@ export default function NewSalePage() {
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
                     taxInclusive: taxSettings?.isInclusive || false,
-                    lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price) })),
+                    lines: lines.map(l => ({ 
+                        itemId: l.itemId, 
+                        quantity: Number(l.quantity), 
+                        price: Number(l.price),
+                        description: l.description,
+                        taxRate: Number(l.taxRate || 0),
+                        taxAmount: Number(l.taxAmount || 0)
+                    })),
                 }),
             });
             if (res.ok) {
@@ -733,10 +740,10 @@ export default function NewSalePage() {
                                 )}
 
                             {/* Lines Table */}
-                            <div className="table-container" style={{ width: '100%', overflowX: 'auto' }}>
-                                <table className="table" style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 4px', tableLayout: 'fixed' }}>
+                            <div className="table-container" style={{ width: '100%', overflowX: 'auto', marginTop: '10px' }}>
+                                <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
+                                        <tr style={{ background: 'rgba(255,255,255,0.05)', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
                                                 [
                                                     { label: t('الخدمة / الوصف التفصيلي'), width: 'auto' },
@@ -747,14 +754,29 @@ export default function NewSalePage() {
                                                 ].map((col, i) => (
                                                     <th key={i} style={{ 
                                                         textAlign: i === 0 ? 'start' : 'center', 
-                                                        padding: '12px', fontSize: '11px', fontWeight: 800, 
-                                                        color: C.textMuted, fontFamily: CAIRO,
-                                                        width: col.width
+                                                        padding: '14px 12px', fontSize: '12px', fontWeight: 800, 
+                                                        color: C.textPrimary, fontFamily: CAIRO,
+                                                        width: col.width,
+                                                        borderBottom: `2px solid ${C.border}`
                                                     }}>{col.label}</th>
                                                 ))
                                             ) : (
-                                                [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الضريبة'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                [
+                                                    { label: t('الصنف'), width: 'auto' },
+                                                    { label: t('الوحدة'), width: '80px' },
+                                                    { label: t('الكمية'), width: '80px' },
+                                                    { label: t('السعر'), width: '100px' },
+                                                    { label: t('الضريبة'), width: '100px' },
+                                                    { label: t('الإجمالي'), width: '120px' },
+                                                    { label: '', width: '60px' }
+                                                ].map((col, i) => (
+                                                    <th key={i} style={{ 
+                                                        textAlign: i === 0 ? 'start' : 'center', 
+                                                        padding: '14px 12px', fontSize: '11px', fontWeight: 800, 
+                                                        color: C.textPrimary, fontFamily: CAIRO,
+                                                        width: col.width,
+                                                        borderBottom: `2px solid ${C.border}`
+                                                    }}>{col.label}</th>
                                                 ))
                                             )}
                                         </tr>
@@ -764,13 +786,20 @@ export default function NewSalePage() {
                                             <tr key={i} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
                                                     <div>{l.itemName}</div>
-                                                    {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontWeight: 400 }}>{l.description}</div>}
+                                                    {(l as any).description && (
+                                                        <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 500, whiteSpace: 'pre-wrap' }}>
+                                                            {(l as any).description}
+                                                        </div>
+                                                    )}
                                                 </td>
                                                 { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
                                                     <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
+                                                { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
+                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{((l as any).taxAmount || 0).toLocaleString()}</td>
+                                                )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: CAIRO }}>{l.total.toLocaleString()}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
