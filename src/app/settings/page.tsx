@@ -788,6 +788,7 @@ function SettingsContent() {
 
                         {activeTab === 'company' && (
                             <CompanyTab
+                                countryCode={generalForm.countryCode}
                                 isEditMode={isEditMode}
                                 setIsEditMode={setIsEditMode}
                                 companyForm={companyForm}

@@ -15,6 +15,7 @@ import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol } from '@/lib/currency';
+import { getCountryPlaceholders } from '@/lib/placeholders';
 import Link from 'next/link';
 
 interface Supplier {
@@ -31,6 +32,7 @@ export default function SuppliersPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
+    const ph = getCountryPlaceholders((session?.user as any)?.countryCode);
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -299,11 +301,11 @@ export default function SuppliersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>رقم الهاتف</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, width: '100%', boxSizing: 'border-box', textAlign: 'end', direction: 'ltr' }} placeholder="01XXXXXXXXX" onFocus={focusIn} onBlur={focusOut} />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, width: '100%', boxSizing: 'border-box', textAlign: 'end', direction: 'ltr' }} placeholder={ph.phone} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <div>
                                     <label style={LS}>العنوان</label>
-                                    <input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={{ ...IS, width: '100%', boxSizing: 'border-box' }} placeholder="المدينة، المنطقة" onFocus={focusIn} onBlur={focusOut} />
+                                    <input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={{ ...IS, width: '100%', boxSizing: 'border-box' }} placeholder={ph.address} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
                             {!editingId && (

@@ -7,8 +7,10 @@ import {
     UploadCloud
 } from 'lucide-react';
 import { TabHeader } from './shared';
+import { getCountryPlaceholders } from '@/lib/placeholders';
 
 interface CompanyTabProps {
+    countryCode: string;
     isEditMode: boolean;
     setIsEditMode: (v: boolean) => void;
     companyForm: {
@@ -23,10 +25,11 @@ interface CompanyTabProps {
 }
 
 export default function CompanyTab({
-    isEditMode, setIsEditMode, companyForm, setCompanyForm,
+    countryCode, isEditMode, setIsEditMode, companyForm, setCompanyForm,
     isSaving, handleCancel, saveSettings, showToast
 }: CompanyTabProps) {
     const { t } = useTranslation();
+    const ph = getCountryPlaceholders(countryCode);
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
             <TabHeader
@@ -209,9 +212,9 @@ export default function CompanyTab({
                     </div>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: t('رقم الهاتف'), key: 'phone', dir: 'ltr', icon: <Phone size={15} />, placeholder: '+20 100 000 0000' },
+                            { label: t('رقم الهاتف'), key: 'phone', dir: 'ltr', icon: <Phone size={15} />, placeholder: ph.phone },
                             { label: t('البريد الإلكتروني'), key: 'email', dir: 'ltr', icon: <Mail size={15} />, placeholder: 'info@company.com' },
-                            { label: t('العنوان'), key: 'address', dir: 'rtl', icon: <MapPin size={15} />, placeholder: t('القاهرة، مصر') },
+                            { label: t('العنوان'), key: 'address', dir: 'rtl', icon: <MapPin size={15} />, placeholder: ph.address },
                             { label: t('الموقع الإلكتروني'), key: 'website', dir: 'ltr', icon: <Globe size={15} />, placeholder: 'www.company.com' },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', gap: '0', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
@@ -238,8 +241,8 @@ export default function CompanyTab({
                     </div>
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {[
-                            { label: t('الرقم الضريبي'), key: 'taxNumber', dir: 'ltr', icon: <Percent size={15} />, placeholder: '000-000-000' },
-                            { label: t('السجل التجاري'), key: 'commercialRegister', dir: 'ltr', icon: <FileText size={15} />, placeholder: '000000' },
+                            { label: t('الرقم الضريبي'), key: 'taxNumber', dir: 'ltr', icon: <Percent size={15} />, placeholder: ph.taxNumber },
+                            { label: t('السجل التجاري'), key: 'commercialRegister', dir: 'ltr', icon: <FileText size={15} />, placeholder: ph.cr },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                 <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>

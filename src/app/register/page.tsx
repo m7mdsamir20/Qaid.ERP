@@ -4,8 +4,9 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2, ChevronDown, Search } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ChevronDown, Search, Check } from 'lucide-react';
 import { C, CAIRO, IS, LS, focusIn, focusOut, THEME } from '@/constants/theme';
+import { getCountryPlaceholders } from '@/lib/placeholders';
 
 const COUNTRIES = [
     { code: 'EG', dial: '+20', name: 'مصر', flag: '🇪🇬', currency: 'EGP', timezone: 'Africa/Cairo' },
@@ -262,7 +263,7 @@ export default function RegisterPage() {
                                     type="tel" required
                                     value={form.phone}
                                     onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
-                                    placeholder="رقم الهاتف"
+                                    placeholder={getCountryPlaceholders(selectedCountry.code).phone}
                                     style={{ ...IS, height: '44px', flex: 1, direction: 'ltr', textAlign: 'start' }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}

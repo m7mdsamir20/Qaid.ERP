@@ -14,6 +14,7 @@ import AppModal from '@/components/AppModal';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
+import { getCountryPlaceholders } from '@/lib/placeholders';
 
 interface Customer {
   id: string;
@@ -33,9 +34,9 @@ export default function CustomersPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
-
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
+    const ph = getCountryPlaceholders((session?.user as any)?.countryCode);
     
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState(true);
@@ -376,11 +377,11 @@ export default function CustomersPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
                                             <div>
                                                 <label style={LS}>{t('الرقم الضريبي')}</label>
-                                                <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="100XXXXXXX" />
+                                                <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
                                             </div>
                                             <div>
                                                 <label style={LS}>{t('السجل التجاري')}</label>
-                                                <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="403XXXXXXX" />
+                                                <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
                                             </div>
                                         </div>
                                     )}
@@ -394,11 +395,11 @@ export default function CustomersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="01XXXXXXXXX" />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
                                 </div>
                                 <div>
                                     <label style={{ ...LS }}>{t('العنوان')}</label>
-                                    <input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("المدينة، المنطقة")} />
+                                    <input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={ph.address} />
                                 </div>
                             </div>
                             <div>
