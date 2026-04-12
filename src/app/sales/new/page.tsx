@@ -60,6 +60,7 @@ export default function NewSalePage() {
 
     const itemSelectRef = useRef<any>(null);
     const qtyRef     = useRef<HTMLInputElement>(null);
+    const priceRef   = useRef<HTMLInputElement>(null);
     const [entryItemId,  setEntryItemId]  = useState('');
     const [entryDescription, setEntryDescription] = useState('');
     const [entryQty,     setEntryQty]     = useState<number | ''>(1);
@@ -92,7 +93,7 @@ export default function NewSalePage() {
     const subtotal   = lines.reduce((s, l) => s + l.total, 0);
     const afterDisc  = Math.max(0, subtotal - (form.discountAmt || 0));
     
-    // Automatically update taxAmount when afterDisc or taxRate changes
+    const isTrading = businessType === 'TRADING';
     useEffect(() => {
         if (taxSettings?.enabled) {
             let amt = 0;
@@ -192,10 +193,40 @@ export default function NewSalePage() {
             const item = items.find(i => i.id === entryItemId);
             if (item) { 
                 setEntryPrice(isServices ? '' : item.sellPrice); 
-                setTimeout(() => qtyRef.current?.focus(), 50);
+                setTimeout(() => {
+                    if (isServices && entryPrice === '') {
+                        priceRef.current?.focus();
+                    } else {
+                        qtyRef.current?.focus();
+                    }
+                }, 50);
             }
         }
     }, [entryItemId, items, isServices]);
+
+    const onCreateItem = async (name: string) => {
+        try {
+            const res = await fetch('/api/items', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    name, 
+                    sellPrice: 0,
+                    costPrice: 0,
+                    status: 'active'
+                })
+            });
+            if (res.ok) {
+                const newItem = await res.json();
+                setItems(prev => [newItem, ...prev]);
+                setEntryItemId(newItem.id);
+                // focus price after creation so user can type price and press enter to add
+                setTimeout(() => priceRef.current?.focus(), 100);
+            }
+        } catch (err) {
+            console.error("Failed to create item on the fly:", err);
+        }
+    };
 
     const addLine = useCallback(() => {
         setFieldErrors({});
@@ -614,6 +645,7 @@ export default function NewSalePage() {
                                             ref={itemSelectRef}
                                             value={entryItemId} 
                                             onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} 
+                                            onCreate={onCreateItem}
                                             icon={Search} 
                                             placeholder={isServices ? t("اختر الخدمة...") : t("اختر الصنف...")} 
                                             options={items.map(i => {
@@ -632,8 +664,9 @@ export default function NewSalePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)}
+                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '' : fmt(entryQty)}
                                             disabled={!entryItemId}
+                                            placeholder="1"
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
                                                 if (v === '' || !isNaN(Number(v)) || v === '.') {
@@ -649,8 +682,9 @@ export default function NewSalePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
+                                        <input ref={priceRef} type="text" inputMode="decimal" value={entryPrice === '' ? '' : fmt(entryPrice)}
                                             disabled={!entryItemId}
+                                            placeholder="0.00"
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
                                                 if (v === '' || !isNaN(Number(v)) || v === '.') {
@@ -694,11 +728,11 @@ export default function NewSalePage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
-                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الضريبة'), t('الإجمالي'), ''].map((h, i) => (
+                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
                                                     <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             ) : (
-                                                [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
+                                                [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الضريبة'), t('الإجمالي'), ''].map((h, i) => (
                                                     <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             )}
@@ -716,12 +750,7 @@ export default function NewSalePage() {
                                                 )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
-                                                {isServices && (
-                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
-                                                        {l.taxAmount?.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate}%)</span>
-                                                    </td>
-                                                )}
-                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: CAIRO }}>{l.total.toLocaleString()}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -740,7 +769,7 @@ export default function NewSalePage() {
                                                 <td colSpan={isServices ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
                                                     {subtotal.toLocaleString()} {cSymbol}
                                                 </td>
                                                 <td />
