@@ -84,6 +84,7 @@ export const authOptions: AuthOptions = {
                     avatar: user.avatar || 'm1',
                     permissions,
                     currency: user.company?.currency || 'EGP',
+                    countryCode: user.company?.countryCode || 'EG',
                     companyName: user.company?.name || '',
                     companyLogo: '', // Removed from token to prevent oversized JWT cookie crash
                     taxNumber: user.company?.taxNumber || '',
@@ -120,6 +121,8 @@ export const authOptions: AuthOptions = {
                 if (u.email) token.email = u.email;
                 if (u.gender) token.gender = u.gender;
                 if (u.avatar) token.avatar = u.avatar;
+                if (u.currency) token.currency = u.currency;
+                if (u.countryCode) token.countryCode = u.countryCode;
             }
 
             // مكرر: تحديث البيانات مع قاعدة البيانات عند كل ريفريش لضمان تفعيل الصلاحيات فوراً
@@ -141,7 +144,9 @@ export const authOptions: AuthOptions = {
                                     name: true,
                                     businessType: true,
                                     subscription: true,
-                                    branches: { where: { isActive: true }, orderBy: { isMain: 'desc' } }
+                                    branches: { where: { isActive: true }, orderBy: { isMain: 'desc' } },
+                                    currency: true,
+                                    countryCode: true,
                                 }
                             }
                         }
@@ -172,6 +177,8 @@ export const authOptions: AuthOptions = {
 
                         if (dbUser.company?.name) token.companyName = dbUser.company.name;
                         if (dbUser.company?.address) token.address = dbUser.company.address;
+                        if (dbUser.company?.currency) token.currency = dbUser.company.currency;
+                        if (dbUser.company?.countryCode) token.countryCode = dbUser.company.countryCode;
 
                         // تحديث الفروع تلقائياً لما تُضاف فروع جديدة
                         if (dbUser.company?.branches) {
@@ -209,6 +216,7 @@ export const authOptions: AuthOptions = {
                 u.avatar = token.avatar || 'm1';
                 u.permissions = token.permissions || {};
                 u.currency = token.currency || 'EGP';
+                u.countryCode = token.countryCode || 'EG';
                 u.companyName = token.companyName || '';
                 u.companyLogo = token.companyLogo || '';
                 u.taxNumber = token.taxNumber || '';
