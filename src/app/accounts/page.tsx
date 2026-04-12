@@ -303,7 +303,7 @@ export default function AccountsPage() {
 
                     <div style={{ width: '100px', fontFamily: INTER, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'center' }}>{acc.code}</div>
 
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                         <div style={{
                             width: '32px', height: '32px', borderRadius: '8px',
                             background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color
@@ -321,10 +321,20 @@ export default function AccountsPage() {
                             {accountTypes.find(t => t.value === acc.type)?.label || acc.type}
                         </span>
                         <div style={{ display: 'flex', gap: '4px' }}>
-                            <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '5px', background: 'rgba(255,255,255,0.05)', color: C.textMuted, fontWeight: 700 }}>
+                            <span style={{ 
+                                fontSize: '9px', padding: '2px 6px', borderRadius: '5px', 
+                                background: acc.accountCategory === 'summary' ? 'rgba(59,130,246,0.1)' : 'rgba(167,139,240,0.1)', 
+                                color: acc.accountCategory === 'summary' ? '#60a5fa' : '#a78bfa', 
+                                fontWeight: 800 
+                            }}>
                                 {acc.accountCategory === 'summary' ? t('إجمالي') : t('تحليلي')}
                             </span>
-                            <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '5px', background: acc.nature === 'debit' ? 'rgba(16,185,129,0.1)' : 'rgba(248,113,113,0.1)', color: acc.nature === 'debit' ? '#10b981' : '#f87171', fontWeight: 700 }}>
+                            <span style={{ 
+                                fontSize: '9px', padding: '2px 6px', borderRadius: '5px', 
+                                background: acc.nature === 'debit' ? 'rgba(16,185,129,0.1)' : 'rgba(239, 68, 68, 0.1)', 
+                                color: acc.nature === 'debit' ? '#10b981' : '#f87171', 
+                                fontWeight: 800 
+                            }}>
                                 {acc.nature === 'debit' ? t('مدين') : t('دائن')}
                             </span>
                         </div>
@@ -473,11 +483,11 @@ export default function AccountsPage() {
                             fontSize: '11px', fontWeight: 800, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
                         }}>
                             <div style={{ width: '32px' }}></div>
-                            <div style={{ width: '100px' }}>{t('الكود')}</div>
-                            <div style={{ flex: 1 }}>{t('اسم الحساب')}</div>
+                            <div style={{ width: '100px', textAlign: 'center' }}>{t('الكود')}</div>
+                            <div style={{ flex: 1, textAlign: 'center' }}>{t('اسم الحساب')}</div>
                             <div style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
                             <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
-                            <div style={{ width: '100px', textAlign: 'end' }}>{t('إجراءات')}</div>
+                            <div style={{ width: '100px', textAlign: 'center' }}>{t('إجراءات')}</div>
                         </div>
 
                         <div style={{ padding: '8px', maxHeight: '70vh', overflowY: 'auto' }}>
