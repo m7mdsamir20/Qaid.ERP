@@ -783,7 +783,15 @@ export const dictionaries = {
         "حقوق ملكية": "Equity",
         "أصول": "Assets",
         "خصوم": "Liabilities",
-        "إيرادات": "Revenues"
+        "إيرادات": "Revenues",
+        "إعادة تهيئة": "Reset",
+        "تمت إعادة التهيئة بنجاح": "Reset successful",
+        "فشل في إعادة التهيئة": "Reset failed",
+        "إعادة تهيئة دليل المحاسبات": "Reset Chart of Accounts",
+        "هل أنت متأكد من إعادة التهيئة؟": "Are you sure you want to reset?",
+        "سيتم حذف شجرة الحسابات الحالية بالكامل وإعادة بناء الشجرة الافتتاحية الأساسية للنظام.": "The current chart of accounts will be completely deleted and the system's opening chart will be rebuilt.",
+        "تنبيه: لا يمكن التراجع عن هذه الخطوة، وستفشل العملية إذا كان هناك قيود مالية مسجلة.": "Warning: This step cannot be undone, and the process will fail if there are recorded financial entries.",
+        "تأكيد إعادة التهيئة": "Confirm Reset"
     }
 };
 

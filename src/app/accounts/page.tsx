@@ -68,7 +68,8 @@ export default function AccountsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [viewMode, setViewMode] = useState<'tree' | 'table'>('tree');
 
-    // Account Form State
+    const [showResetModal, setShowResetModal] = useState(false);
+    const [isResetting, setIsResetting] = useState(false);
     const [form, setForm] = useState({
         id: '',
         code: '',
@@ -164,6 +165,25 @@ export default function AccountsPage() {
             alert(t('خطأ في الاتصال'));
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const handleReset = async () => {
+        setIsResetting(true);
+        try {
+            const res = await fetch('/api/accounts/seed?force=true', { method: 'POST' });
+            const data = await res.json();
+            if (res.ok) {
+                alert(data.message || t('تمت إعادة التهيئة بنجاح'));
+                await fetchAccounts();
+                setShowResetModal(false);
+            } else {
+                alert(data.error || t('فشل في إعادة التهيئة'));
+            }
+        } catch (error) {
+            alert(t('خطأ في الاتصال'));
+        } finally {
+            setIsResetting(false);
         }
     };
 
@@ -270,6 +290,19 @@ export default function AccountsPage() {
                         icon: Plus,
                         onClick: () => router.push('/accounts/new')
                     }}
+                    actions={[
+                        <button key="reset" onClick={() => setShowResetModal(true)} style={{
+                            display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
+                            borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444',
+                            border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '13px', fontWeight: 800,
+                            cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'}
+                        >
+                            <RefreshCcw size={15} /> {t('إعادة تهيئة')}
+                        </button>
+                    ]}
                 />
 
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
@@ -395,6 +428,48 @@ export default function AccountsPage() {
 
             {/* Delete Confirmation */}
             <AppModal isDelete show={!!deleteAccount} onClose={() => setDeleteAccount(null)} onConfirm={confirmDelete} itemName={deleteAccount?.name} title={t("تأكيد حذف الحساب")} isSubmitting={isSaving} />
+
+            {/* Reset Confirmation */}
+            <AppModal
+                show={showResetModal}
+                onClose={() => !isResetting && setShowResetModal(false)}
+                title={t("إعادة تهيئة دليل المحاسبات")}
+                icon={RefreshCcw}
+                maxWidth="500px"
+            >
+                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                    <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                        <AlertTriangle size={32} />
+                    </div>
+                    <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#fff', marginBottom: '12px', fontFamily: CAIRO }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
+                    <p style={{ fontSize: '14px', color: C.textMuted, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px' }}>
+                        {t('سيتم حذف شجرة الحسابات الحالية بالكامل وإعادة بناء الشجرة الافتتاحية الأساسية للنظام.')}
+                        <br />
+                        <span style={{ color: '#ef4444', fontWeight: 800 }}>{t('تنبيه: لا يمكن التراجع عن هذه الخطوة، وستفشل العملية إذا كان هناك قيود مالية مسجلة.')}</span>
+                    </p>
+
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <button
+                            onClick={handleReset}
+                            disabled={isResetting}
+                            style={{
+                                flex: 2, height: '46px', borderRadius: '12px', border: 'none',
+                                background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff',
+                                fontSize: '14px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO,
+                                boxShadow: '0 10px 20px -5px rgba(239,68,68,0.3)', display: 'flex',
+                                alignItems: 'center', justifyContent: 'center', gap: '8px'
+                            }}>
+                            {isResetting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('تأكيد إعادة التهيئة')}
+                        </button>
+                        <button
+                            disabled={isResetting}
+                            onClick={() => setShowResetModal(false)}
+                            style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                            {t('إلغاء')}
+                        </button>
+                    </div>
+                </div>
+            </AppModal>
 
             <style jsx global>{`
                 .account-row-hover:hover { background: rgba(59,130,246,0.05) !important; }
