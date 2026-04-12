@@ -6,7 +6,8 @@ import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import {
     BookOpen, Plus, ChevronRight, FolderOpen, FileText, X, Pencil, Trash2,
-    AlertTriangle, Loader2, Lock, RefreshCcw, LayoutGrid, Search, MoreHorizontal
+    AlertTriangle, Loader2, Lock, RefreshCcw, LayoutGrid, Search, MoreHorizontal,
+    PieChart, Layers, Wallet, CreditCard, TrendingUp, TrendingDown, Activity, Book
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -66,6 +67,7 @@ export default function AccountsPage() {
     const [isSaving, setIsSaving] = useState(false);
     const [deleteAccount, setDeleteAccount] = useState<Account | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
+    const [typeFilter, setTypeFilter] = useState<'all' | string>('all');
     const [viewMode, setViewMode] = useState<'tree' | 'table'>('tree');
 
     const [showResetModal, setShowResetModal] = useState(false);
@@ -199,33 +201,64 @@ export default function AccountsPage() {
         return flat;
     };
 
-    const filteredAccounts = searchQuery.trim()
-        ? getFlattenedAccounts(accounts).filter(a =>
-            a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            a.code.includes(searchQuery) ||
-            (a.nameEn && a.nameEn.toLowerCase().includes(searchQuery.toLowerCase()))
-        )
+    const filteredAccounts = searchQuery.trim() || typeFilter !== 'all'
+        ? getFlattenedAccounts(accounts).filter(a => {
+            const matchesSearch = searchQuery.trim() === '' || 
+                a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                a.code.includes(searchQuery) ||
+                (a.nameEn && a.nameEn.toLowerCase().includes(searchQuery.toLowerCase()));
+            
+            const matchesType = typeFilter === 'all' || a.type === typeFilter;
+            
+            return matchesSearch && matchesType;
+        })
         : accounts;
+
+    const flatAll = getFlattenedAccounts(accounts);
+    const stats = [
+        { label: t('الحسابات'), value: flatAll.length, icon: <BookOpen size={16} />, color: '#3b82f6' },
+        { label: t('تحليلية'), value: flatAll.filter(a => a.accountCategory === 'detail').length, icon: <Layers size={16} />, color: '#6366f1' },
+        { label: t('أصول'), value: flatAll.filter(a => a.type === 'asset').length, icon: <Wallet size={16} />, color: '#10b981' },
+        { label: t('خصوم'), value: flatAll.filter(a => a.type === 'liability').length, icon: <CreditCard size={16} />, color: '#f87171' },
+        { label: t('حقوق ملكية'), value: flatAll.filter(a => a.type === 'equity').length, icon: <PieChart size={16} />, color: '#a78bfa' },
+        { label: t('إيرادات'), value: flatAll.filter(a => a.type === 'revenue').length, icon: <TrendingUp size={16} />, color: '#60a5fa' },
+        { label: t('مصروفات'), value: flatAll.filter(a => a.type === 'expense').length, icon: <TrendingDown size={16} />, color: '#fb923c' },
+    ];
+
+    const displayAccounts = (viewMode === 'tree' && !searchQuery && typeFilter === 'all')
+        ? accounts
+        : getFlattenedAccounts(accounts).filter(a => {
+            const matchesSearch = searchQuery.trim() === '' || 
+                a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                a.code.includes(searchQuery) ||
+                (a.nameEn && a.nameEn.toLowerCase().includes(searchQuery.toLowerCase()));
+            
+            const matchesType = typeFilter === 'all' || a.type === typeFilter;
+            
+            return matchesSearch && matchesType;
+        });
 
     const renderAccountRow = (acc: Account, depth = 0) => {
         const isExpanded = expandedIds.has(acc.id);
         const hasChildren = acc.children && acc.children.length > 0;
         const color = typeColors[acc.type] || C.primary;
+        const isTableMode = viewMode === 'table' || searchQuery.trim() !== '';
+        const effectiveDepth = isTableMode ? 0 : depth;
 
         return (
             <React.Fragment key={acc.id}>
                 <div style={{
                     display: 'flex', alignItems: 'center', padding: '10px 16px',
                     borderBottom: `1px solid ${C.border}30`,
-                    background: depth === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                    background: effectiveDepth === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
                     cursor: 'default', transition: '0.15s',
-                    marginLeft: !isRtl ? `${depth * 28}px` : '0',
-                    marginRight: isRtl ? `${depth * 28}px` : '0',
+                    marginLeft: (!isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
+                    marginRight: (isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
                     borderRadius: '8px', marginBottom: '2px'
                 }} className="account-row-hover">
 
                     <div style={{ width: '32px', display: 'flex', justifyContent: 'center' }}>
-                        {hasChildren ? (
+                        {hasChildren && !isTableMode ? (
                             <button onClick={(e) => toggleExpand(acc.id, e)} style={{
                                 background: 'transparent', border: 'none', color: C.textMuted,
                                 cursor: 'pointer', transition: '0.2s',
@@ -252,10 +285,10 @@ export default function AccountsPage() {
 
                     <div style={{ width: '120px', textAlign: 'center' }}>
                         <span style={{
-                            fontSize: '10px', padding: '2px 8px', borderRadius: '6px', fontWeight: 800, fontFamily: INTER,
-                            background: `${color}15`, color: color, textTransform: 'uppercase'
+                            fontSize: '11px', padding: '3px 10px', borderRadius: '8px', fontWeight: 800, fontFamily: CAIRO,
+                            background: `${color}15`, color: color
                         }}>
-                            {acc.type}
+                            {accountTypes.find(t => t.value === acc.type)?.label || acc.type}
                         </span>
                     </div>
 
@@ -267,13 +300,13 @@ export default function AccountsPage() {
                         <button onClick={() => handleEdit(acc)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
                             <Pencil size={14} />
                         </button>
-                        <button onClick={() => setDeleteAccount(acc)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')} disabled={hasChildren}>
+                        <button onClick={() => setDeleteAccount(acc)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')} disabled={hasChildren && !isTableMode}>
                             <Trash2 size={14} />
                         </button>
                     </div>
                 </div>
 
-                {isExpanded && hasChildren && acc.children.map(child => renderAccountRow(child, depth + 1))}
+                {!isTableMode && isExpanded && hasChildren && acc.children.map(child => renderAccountRow(child, depth + 1))}
             </React.Fragment>
         );
     };
@@ -305,32 +338,83 @@ export default function AccountsPage() {
                     ]}
                 />
 
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
+                {/* Summary Cards */}
+                <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', 
+                    gap: '12px', 
+                    marginBottom: '20px' 
+                }}>
+                    {stats.map((s, i) => (
+                        <div key={i} style={{
+                            background: `${s.color}08`, border: `1px solid ${s.color}22`, borderRadius: '12px',
+                            padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '10px',
+                            transition: 'all 0.2s', position: 'relative'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                        onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                        >
+                            <div style={{ 
+                                width: '32px', height: '32px', borderRadius: '8px', 
+                                background: `${s.color}15`, border: `1px solid ${s.color}20`, 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color 
+                            }}>
+                                {s.icon}
+                            </div>
+                            <div style={{ textAlign: 'start' }}>
+                                <p style={{ fontSize: '10px', fontWeight: 700, color: C.textMuted, margin: '0 0 2px', fontFamily: CAIRO }}>{s.label}</p>
+                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             placeholder={t("ابحث بكود الحساب أو الاسم...")}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{
-                                width: '100%', height: '44px', padding: '0 40px',
-                                background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`,
-                                borderRadius: '12px', color: '#fff', outline: 'none', fontFamily: CAIRO, fontSize: '14px'
+                            style={{ 
+                                ...IS, paddingInlineEnd: '40px', height: '40px', fontSize: '13px', 
+                                background: C.card, borderRadius: '12px'
                             }}
+                            onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '4px', border: `1px solid ${C.border}` }}>
+
+                    <div style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
+                        <button onClick={() => setTypeFilter('all')} style={{
+                            padding: '0 12px', height: '32px', borderRadius: '8px', border: 'none',
+                            background: typeFilter === 'all' ? C.primary : 'transparent', color: typeFilter === 'all' ? '#fff' : C.textMuted,
+                            cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
+                        }}>
+                            {t('الكل')}
+                        </button>
+                        {accountTypes.map(type => (
+                            <button key={type.value} onClick={() => setTypeFilter(type.value)} style={{
+                                padding: '0 12px', height: '32px', borderRadius: '8px', border: 'none',
+                                background: typeFilter === type.value ? C.primary : 'transparent', color: typeFilter === type.value ? '#fff' : C.textMuted,
+                                cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
+                            }}>
+                                {type.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <div style={{ display: 'flex', background: C.card, borderRadius: '12px', padding: '4px', border: `1px solid ${C.border}` }}>
                         <button onClick={() => setViewMode('tree')} style={{
                             padding: '6px 12px', borderRadius: '8px', border: 'none',
                             background: viewMode === 'tree' ? C.primary : 'transparent', color: viewMode === 'tree' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
                         }}>
                             <RefreshCcw size={14} /> {t('شجرة')}
                         </button>
                         <button onClick={() => setViewMode('table')} style={{
                             padding: '6px 12px', borderRadius: '8px', border: 'none',
                             background: viewMode === 'table' ? C.primary : 'transparent', color: viewMode === 'table' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
                         }}>
                             <LayoutGrid size={14} /> {t('جدول')}
                         </button>
@@ -359,11 +443,13 @@ export default function AccountsPage() {
                         </div>
 
                         <div style={{ padding: '8px', maxHeight: '70vh', overflowY: 'auto' }}>
-                            {filteredAccounts.length > 0 ? (
-                                viewMode === 'tree' && !searchQuery ? (
-                                    filteredAccounts.map(acc => renderAccountRow(acc))
+                            {displayAccounts.length > 0 ? (
+                                (viewMode === 'tree' && !searchQuery && typeFilter === 'all') ? (
+                                    displayAccounts.map(acc => renderAccountRow(acc))
                                 ) : (
-                                    getFlattenedAccounts(filteredAccounts).map(acc => renderAccountRow(acc, 0))
+                                    (viewMode === 'tree' && searchQuery === '' && typeFilter !== 'all') 
+                                        ? accounts.filter(a => a.type === typeFilter).map(acc => renderAccountRow(acc))
+                                        : displayAccounts.map(acc => renderAccountRow(acc, 0))
                                 )
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
