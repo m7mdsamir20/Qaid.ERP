@@ -82,7 +82,7 @@ export default function SaleReturnDetailsPage() {
             <DashboardLayout>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '14px', color: '#475569' }}>
                     <Loader2 size={36} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span style={{ fontSize: '14px', fontWeight: 600 }}>جاري استرجاع تفاصيل المرتجع...</span>
+                    <span style={{ fontSize: '14px', fontWeight: 600 }}>{t('جاري استرجاع تفاصيل المرتجع...')}</span>
                 </div>
                 <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </DashboardLayout>
@@ -94,10 +94,10 @@ export default function SaleReturnDetailsPage() {
             <DashboardLayout>
                 <div style={{ textAlign: 'center', padding: '100px 20px', color: '#f87171' }}>
                     <AlertCircle size={56} style={{ margin: '0 auto 16px', opacity: 0.3 }} />
-                    <h3 style={{ fontSize: '20px', fontWeight: 700, margin: '0 0 10px' }}>خطأ في التحميل</h3>
-                    <p style={{ opacity: 0.8, marginBottom: '20px' }}>{error || 'لم نتمكن من العثور على المرتجع المطلوب'}</p>
+                    <h3 style={{ fontSize: '20px', fontWeight: 700, margin: '0 0 10px' }}>{t('خطأ في التحميل')}</h3>
+                    <p style={{ opacity: 0.8, marginBottom: '20px' }}>{error || t('لم نتمكن من العثور على المرتجع المطلوب')}</p>
                     <button onClick={() => router.push('/sale-returns')} className="btn btn-ghost" style={{ gap: '8px' }}>
-                        <ChevronRight size={16} /> العودة للمرتجعات
+                        <ChevronRight size={16} /> {t('العودة للمرتجعات')}
                     </button>
                 </div>
             </DashboardLayout>
@@ -133,14 +133,14 @@ export default function SaleReturnDetailsPage() {
                             <ArrowRight size={20} />
                         </button>
                         <div>
-                            <h1 className="page-title">{isServices ? "تفاصيل إلغاء الخدمة / المرتجع" : "تفاصيل مرتجع المبيعات"}</h1>
-                            <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{isServices ? "تفاصيل الخدمات الملغاة وتأثيرها المالي على حساب العميل" : "تفاصيل العمليات المرتجعة وتأثيرها المالي على حساب العميل"}</p>
+                            <h1 className="page-title">{isServices ? t("تفاصيل إلغاء الخدمة / المرتجع") : t("تفاصيل مرتجع المبيعات")}</h1>
+                            <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{isServices ? t("تفاصيل الخدمات الملغاة وتأثيرها المالي على حساب العميل") : t("تفاصيل العمليات المرتجعة وتأثيرها المالي على حساب العميل")}</p>
                         </div>
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <button onClick={handlePrint} className="btn btn-ghost" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)', fontWeight: 700, height: '38px', padding: '0 18px', borderRadius: '9px', fontSize: '13px' }}>
-                            <Printer size={16} /> طباعة المرتجع
+                            <Printer size={16} /> {t('طباعة المرتجع')}
                         </button>
                     </div>
                 </div>
@@ -148,18 +148,18 @@ export default function SaleReturnDetailsPage() {
                 {/* 2. Info Bar 1: Return Details */}
                 <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '12px 20px', marginBottom: '8px', display: 'flex', gap: '24px', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
-                        <span style={{ fontWeight: 600 }}>رقم المرتجع:</span>
+                        <span style={{ fontWeight: 600 }}>{t('رقم المرتجع:')}</span>
                         <span style={{ color: '#3b82f6', fontWeight: 800, fontFamily: 'monospace' }}>RET-{String(ret.invoiceNumber).padStart(5, '0')}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         <Calendar size={14} style={{ color: '#3b82f6' }} />
-                        <span style={{ fontWeight: 600 }}>تاريخ المرتجع:</span>
-                        <span style={{ color: 'var(--text-primary)' }}>{new Date(ret.date).toLocaleDateString('ar-EG', { dateStyle: 'long' })}</span>
+                        <span style={{ fontWeight: 600 }}>{t('تاريخ المرتجع:')}</span>
+                        <span style={{ color: 'var(--text-primary)' }}>{new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { dateStyle: 'long' })}</span>
                     </div>
                     {ret.originalInvoice && (
                         <div onClick={() => router.push('/sales/' + ret.originalInvoiceId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#3b82f6', cursor: 'pointer', background: 'rgba(59,130,246,0.05)', padding: '2px 10px', borderRadius: '6px' }}>
                             <ShoppingBag size={14} />
-                            <span style={{ fontWeight: 600 }}>{isServices ? "مرجع فاتورة الخدمة:" : "مرجع فاتورة البيع:"}</span>
+                            <span style={{ fontWeight: 600 }}>{isServices ? t("مرجع فاتورة الخدمة:") : t("مرجع فاتورة البيع:")}</span>
                             <span style={{ fontWeight: 800 }}>SRV-{String(ret.originalInvoice.invoiceNumber).padStart(5, '0')}</span>
                         </div>
                     )}
@@ -172,7 +172,7 @@ export default function SaleReturnDetailsPage() {
                             <User size={16} />
                         </div>
                         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>{customer?.name || 'عميل عام (نقدي)'}</div>
+                            <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>{customer?.name || t('عميل عام (نقدي)')}</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
                                 <Phone size={13} />
                                 <span>{customer?.phone || ''}</span>
@@ -182,9 +182,9 @@ export default function SaleReturnDetailsPage() {
 
                     {customer && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>رصيد العميل الحالي:</div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('رصيد العميل الحالي:')}</div>
                             <div style={{ fontSize: '14px', fontWeight: 800, color: customer.balance > 0 ? '#f87171' : '#10b981' }}>
-                                <span style={{ fontSize: '11px', marginInlineStart: '4px' }}>{customer.balance > 0 ? 'عليه' : 'له'}</span>
+                                <span style={{ fontSize: '11px', marginInlineStart: '4px' }}>{customer.balance > 0 ? t('عليه') : t('له')}</span>
                                 {Math.abs(customer.balance).toLocaleString()}
                             </div>
                         </div>
@@ -199,18 +199,18 @@ export default function SaleReturnDetailsPage() {
                         <div className="table-container" style={{ borderRadius: '18px', overflow: 'hidden' }}>
                             <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
                                 <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
-                                    <Package size={13} color="#3b82f6" strokeWidth={3} /> {isServices ? "الخدمات الملغاة" : "الأصناف المرتجعة"}
+                                    <Package size={13} color="#3b82f6" strokeWidth={3} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
                                 </h3>
-                                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{ret.lines.length} {isServices ? "خدمة" : "صنف"}</span>
+                                <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{ret.lines.length} {isServices ? t("خدمة") : t("صنف")}</span>
                             </div>
                             <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
-                                        <th style={{ padding: '12px 16px', textAlign: 'start', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "الخدمة" : "الصنف"}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "الحالة/الوصف" : "الوحدة"}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "الكمية الملغاة" : "الكمية المرتجعة"}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? "سعر الخدمة" : "سعر الوحدة"}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>الإجمالي</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'start', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الخدمة") : t("الصنف")}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الحالة/الوصف") : t("الوحدة")}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الكمية الملغاة") : t("الكمية المرتجعة")}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("سعر الخدمة") : t("سعر الوحدة")}</th>
+                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -234,7 +234,7 @@ export default function SaleReturnDetailsPage() {
                             <div style={{ background: 'rgba(148,163,184,0.03)', border: '1px solid rgba(148,163,184,0.1)', borderRadius: '16px', padding: '16px', display: 'flex', gap: '12px', marginBottom: '16px' }}>
                                 <FileText size={18} color="var(--text-muted)" style={{ flexShrink: 0 }} />
                                 <div>
-                                    <div style={{ fontSize: '11px', fontWeight: 700, marginBottom: '4px', color: 'var(--text-primary)' }}>{isServices ? "سبب الإلغاء / ملاحظات" : "الملاحظات / سبب المرتجع"}</div>
+                                    <div style={{ fontSize: '11px', fontWeight: 700, marginBottom: '4px', color: 'var(--text-primary)' }}>{isServices ? t("سبب الإلغاء / ملاحظات") : t("الملاحظات / سبب المرتجع")}</div>
                                     <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>{ret.notes}</p>
                                 </div>
                             </div>
@@ -243,17 +243,17 @@ export default function SaleReturnDetailsPage() {
                         {/* Breakdown Summary - Reverted to vertical style for consistency */}
                         <div style={{ padding: '16px', background: 'rgba(255,255,255,0.01)', border: '1px solid var(--border-subtle)', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                                <span style={{ color: 'var(--text-muted)' }}>{isServices ? "إجمالي الملغي:" : "إجمالي المرتجع:"}</span>
-                                <span style={{ color: '#f87171' }}>{ret.total.toLocaleString()} جم</span>
+                                <span style={{ color: 'var(--text-muted)' }}>{isServices ? t("إجمالي الملغي:") : t("إجمالي المرتجع:")}</span>
+                                <span style={{ color: '#f87171' }}>{ret.total.toLocaleString()}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                                <span style={{ color: 'var(--text-muted)' }}>{isServices ? "رصيد مسترد:" : "رد نقدي مباشر:"}</span>
-                                <span style={{ color: '#10b981' }}>{ret.paidAmount.toLocaleString()} جم</span>
+                                <span style={{ color: 'var(--text-muted)' }}>{isServices ? t("رصيد مسترد:") : t("رد نقدي مباشر:")}</span>
+                                <span style={{ color: '#10b981' }}>{ret.paidAmount.toLocaleString()}</span>
                             </div>
                             <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '4px 0' }} />
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontWeight: 800 }}>
-                                <span>{isServices ? "صافي التسوية:" : "صافي التسوية:"}</span>
-                                <span style={{ color: '#3b82f6', fontSize: '18px' }}>{ret.remaining.toLocaleString()} جم</span>
+                                <span>{isServices ? t("صافي التسوية:") : t("صافي التسوية:")}</span>
+                                <span style={{ color: '#3b82f6', fontSize: '18px' }}>{ret.remaining.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
@@ -266,8 +266,8 @@ export default function SaleReturnDetailsPage() {
                                 <RotateCcw size={18} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{isServices ? "إجمالي الملغي" : "إجمالي المرتجع"}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#ef4444' }}>{ret.total.toLocaleString()} <span style={{ fontSize: '11px' }}>جم</span></div>
+                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{isServices ? t("إجمالي الملغي") : t("إجمالي المرتجع")}</div>
+                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#ef4444' }}>{ret.total.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
@@ -276,8 +276,8 @@ export default function SaleReturnDetailsPage() {
                                 <ArrowLeftRight size={18} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>رد نقدي مباشر</div>
-                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#10b981' }}>{ret.paidAmount.toLocaleString()} <span style={{ fontSize: '11px' }}>ج.م</span></div>
+                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('رد نقدي مباشر')}</div>
+                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#10b981' }}>{ret.paidAmount.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
@@ -286,20 +286,20 @@ export default function SaleReturnDetailsPage() {
                                 <ShoppingBag size={18} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>تسوية رصيد</div>
-                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#3b82f6' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}>ج.م</span></div>
+                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('تسوية رصيد')}</div>
+                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#3b82f6' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
                         {/* Payment Method Item */}
                         {ret.paymentMethod && (
                             <div style={{ padding: '16px', border: '1px solid var(--border-subtle)', borderRadius: '14px', background: 'rgba(255,255,255,0.02)', borderStyle: 'dashed' }}>
-                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>آلية المرتجع</div>
+                                <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>{t('آلية المرتجع')}</div>
                                 <div style={{ fontSize: '14px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
                                     <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <CreditCard size={14} />
                                     </div>
-                                    {ret.paymentMethod === 'bank' ? 'رد بنكي' : ret.paymentMethod === 'credit' ? 'تسوية مديونية' : 'صرف نقدي'}
+                                    {ret.paymentMethod === 'bank' ? t('رد بنكي') : ret.paymentMethod === 'credit' ? t('تسوية مديونية') : t('صرف نقدي')}
                                 </div>
                             </div>
                         )}

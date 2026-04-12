@@ -41,7 +41,7 @@ export default function DeductionDetailPage() {
                 const res = await fetch(`/api/deductions/${id}`);
                 if (res.ok) setDeduction(await res.json());
                 else {
-                    alert('عذراً، تعذر العثور على بيانات الخصم');
+                    alert(t('عذراً، تعذر العثور على بيانات الخصم'));
                     router.push('/deductions');
                 }
             } catch (e) { console.error(e); }
@@ -59,7 +59,7 @@ export default function DeductionDetailPage() {
                 body: JSON.stringify({ status: newStatus }),
             });
             if (res.ok) setDeduction(await res.json());
-            else alert('فشل في تحديث حالة الخصم');
+            else alert(t('فشل في تحديث حالة الخصم'));
         } catch (e) { console.error(e); }
         finally { setIsUpdating(false); }
     };
@@ -72,7 +72,7 @@ export default function DeductionDetailPage() {
                 setShowDeleteModal(false);
                 router.push('/deductions');
             } else {
-                alert('فشل في حذف الخصم');
+                alert(t('فشل في حذف الخصم'));
             }
         } catch (e) { 
             console.error(e); 
@@ -103,8 +103,8 @@ export default function DeductionDetailPage() {
                             <ArrowRight size={18} />
                         </button>
                         <div>
-                            <h1 className="page-title">تفاصيل الخصم / الجزاء</h1>
-                            <p className="page-subtitle">عرض وتحليل بيانات الخصم الإداري المسجل على الموظف</p>
+                            <h1 className="page-title">{t('تفاصيل الخصم / الجزاء')}</h1>
+                            <p className="page-subtitle">{t('عرض وتحليل بيانات الخصم الإداري المسجل على الموظف')}</p>
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -116,11 +116,11 @@ export default function DeductionDetailPage() {
                                 onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
                                 onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                             >
-                                {isUpdating ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />} اعتماد الخصم
+                                {isUpdating ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />} {t('اعتماد الخصم')}
                             </button>
                         )}
                         <button onClick={() => setShowDeleteModal(true)} disabled={isDeleting} style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '8px', border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', fontSize: '12px', fontWeight: 700, cursor: isDeleting ? 'wait' : 'pointer' }}>
-                            {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />} حذف الخصم
+                            {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />} {t('حذف الخصم')}
                         </button>
                     </div>
                 </div>
@@ -130,25 +130,25 @@ export default function DeductionDetailPage() {
                         <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                                 <div style={{ color: '#3b82f6' }}><ShieldAlert size={20} /></div>
-                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>بيانات الخصم</h3>
+                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>{t('بيانات الخصم')}</h3>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                 <div>
-                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>تاريخ الخصم</label>
+                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('تاريخ الخصم')}</label>
                                     <div style={{ fontSize: '14px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Calendar size={14} style={{ color: '#94a3b8' }} /> {new Date(deduction.date).toLocaleDateString('en-GB')}
+                                        <Calendar size={14} style={{ color: '#94a3b8' }} /> {new Date(deduction.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>مبلغ الخصم</label>
+                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('مبلغ الخصم')}</label>
                                     <div style={{ fontSize: '18px', fontWeight: 900, color: '#3b82f6' }} dir="ltr">
-                                        {deduction.amount.toLocaleString('en-US')} <span style={{ fontSize: '12px' }}>جم</span>
+                                        {deduction.amount.toLocaleString('en-US')} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ gridColumn: 'span 2', marginTop: '10px' }}>
-                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>السبب / الملاحظات</label>
+                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('السبب / الملاحظات')}</label>
                                     <div style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                                        {deduction.reason || 'لا يوجد سبب مسجل'}
+                                        {deduction.reason || t('لا يوجد سبب مسجل')}
                                     </div>
                                 </div>
                             </div>
@@ -164,7 +164,7 @@ export default function DeductionDetailPage() {
                             <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6366f1', fontWeight: 700 }}>{deduction.employee.code}</p>
                             <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.05)', margin: '16px 0' }} />
                             <button onClick={() => router.push(`/employees/${deduction.employee.id}`)} style={{ width: '100%', height: '40px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '12px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#f1f5f9'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}>
-                                عرض ملف الموظف
+                                {t('عرض ملف الموظف')}
                             </button>
                         </div>
                     </div>
@@ -175,8 +175,8 @@ export default function DeductionDetailPage() {
                 show={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleDelete}
-                title="تأكيد حذف الخصم"
-                itemName={`هذا الخصم الخاص بـ ${deduction.employee.name}`}
+                title={t("تأكيد حذف الخصم")}
+                itemName={`${t('هذا الخصم الخاص بـ')} ${deduction.employee.name}`}
                 isDelete={true}
                 isSubmitting={isDeleting}
             />

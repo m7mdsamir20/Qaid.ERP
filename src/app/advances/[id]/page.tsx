@@ -43,7 +43,7 @@ export default function AdvanceDetailPage() {
                 const res = await fetch(`/api/advances/${id}`);
                 if (res.ok) setAdvance(await res.json());
                 else {
-                    alert('عذراً، تعذر العثور على بيانات السلفة');
+                    alert(t('عذراً، تعذر العثور على بيانات السلفة'));
                     router.push('/advances');
                 }
             } catch (e) { console.error(e); }
@@ -61,7 +61,7 @@ export default function AdvanceDetailPage() {
                 body: JSON.stringify({ status: newStatus }),
             });
             if (res.ok) setAdvance(await res.json());
-            else alert('فشل في تحديث حالة السلفة');
+            else alert(t('فشل في تحديث حالة السلفة'));
         } catch (e) { console.error(e); }
         finally { setIsUpdating(false); }
     };
@@ -74,7 +74,7 @@ export default function AdvanceDetailPage() {
                 setShowDeleteModal(false);
                 router.push('/advances');
             } else {
-                alert('فشل في حذف السلفة');
+                alert(t('فشل في حذف السلفة'));
             }
         } catch (e) { 
             console.error(e); 
@@ -105,8 +105,8 @@ export default function AdvanceDetailPage() {
                             <ArrowRight size={18} />
                         </button>
                         <div>
-                            <h1 className="page-title">تفاصيل سلفة الموظف</h1>
-                            <p className="page-subtitle">عرض وتحليل بيانات السلفة والأقساط الشهرية</p>
+                            <h1 className="page-title">{t('تفاصيل سلفة الموظف')}</h1>
+                            <p className="page-subtitle">{t('عرض وتحليل بيانات السلفة والأقساط الشهرية')}</p>
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -118,11 +118,11 @@ export default function AdvanceDetailPage() {
                                 onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
                                 onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                             >
-                                {isUpdating ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />} اعتماد وصرف السلفة
+                                {isUpdating ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />} {t('اعتماد وصرف السلفة')}
                             </button>
                         )}
                         <button onClick={() => setShowDeleteModal(true)} disabled={isDeleting} style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '8px', border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', fontSize: '12px', fontWeight: 700, cursor: isDeleting ? 'wait' : 'pointer' }}>
-                            {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />} حذف السلفة
+                            {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />} {t('حذف السلفة')}
                         </button>
                     </div>
                 </div>
@@ -132,25 +132,25 @@ export default function AdvanceDetailPage() {
                         <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                                 <div style={{ color: '#3b82f6' }}><Receipt size={20} /></div>
-                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>البيانات الأساسية</h3>
+                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>{t('البيانات الأساسية')}</h3>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                 <div>
-                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>تاريخ الصرف</label>
+                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('تاريخ الصرف')}</label>
                                     <div style={{ fontSize: '14px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Calendar size={14} style={{ color: '#94a3b8' }} /> {new Date(advance.date).toLocaleDateString('en-GB')}
+                                        <Calendar size={14} style={{ color: '#94a3b8' }} /> {new Date(advance.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>المبلغ الإجمالي</label>
+                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('المبلغ الإجمالي')}</label>
                                     <div style={{ fontSize: '18px', fontWeight: 900, color: '#10b981' }} dir="ltr">
-                                        {advance.amount.toLocaleString('en-US')} <span style={{ fontSize: '12px' }}>جم</span>
+                                        {advance.amount.toLocaleString('en-US')} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ gridColumn: 'span 2' }}>
-                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>البيان / الملاحظات</label>
+                                    <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('البيان / الملاحظات')}</label>
                                     <div style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                                        {advance.notes || 'لا توجد ملاحظات مسجلة'}
+                                        {advance.notes || t('لا توجد ملاحظات مسجلة')}
                                     </div>
                                 </div>
                             </div>
@@ -159,23 +159,23 @@ export default function AdvanceDetailPage() {
                         <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                                 <div style={{ color: '#8b5cf6' }}><FileText size={20} /></div>
-                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>تفاصيل الأقساط</h3>
+                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>{t('تفاصيل الأقساط')}</h3>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '6px' }}>عدد الأقساط</div>
+                                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '6px' }}>{t('عدد الأقساط')}</div>
                                     <div style={{ fontSize: '20px', fontWeight: 900, color: '#f1f5f9' }}>{advance.installmentCount}</div>
                                 </div>
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.1)', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '11px', color: '#8b5cf6', fontWeight: 700, marginBottom: '6px' }}>القسط الشهري</div>
+                                    <div style={{ fontSize: '11px', color: '#8b5cf6', fontWeight: 700, marginBottom: '6px' }}>{t('القسط الشهري')}</div>
                                     <div style={{ fontSize: '20px', fontWeight: 900, color: '#8b5cf6' }} dir="ltr">
-                                        {advance.monthlyAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px' }}>جم</span>
+                                        {advance.monthlyAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, marginBottom: '6px' }}>الحالة الحالية</div>
+                                    <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, marginBottom: '6px' }}>{t('الحالة الحالية')}</div>
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: advance.status === 'pending' ? '#f59e0b' : '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '100%' }}>
-                                        {advance.status === 'pending' ? <><Clock size={14} /> قيد الانتظار</> : <><CheckCircle2 size={14} /> تم الخصم</>}
+                                        {advance.status === 'pending' ? <><Clock size={14} /> {t('قيد الانتظار')}</> : <><CheckCircle2 size={14} /> {t('تم الخصم')}</>}
                                     </div>
                                 </div>
                             </div>
@@ -191,7 +191,7 @@ export default function AdvanceDetailPage() {
                             <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6366f1', fontWeight: 700 }}>{advance.employee.code}</p>
                             <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.05)', margin: '16px 0' }} />
                             <button onClick={() => router.push(`/employees/${advance.employee.id}`)} style={{ width: '100%', height: '40px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
-                                عرض ملف الموظف
+                                {t('عرض ملف الموظف')}
                             </button>
                         </div>
                     </div>
@@ -202,8 +202,8 @@ export default function AdvanceDetailPage() {
                 show={showDeleteModal}
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleDelete}
-                title="تأكيد حذف السلفة"
-                itemName={`سلفة الموظف ${advance.employee.name} بقيمة ${advance.amount.toLocaleString('en-US')} جم`}
+                title={t("تأكيد حذف السلفة")}
+                itemName={`${t('سلفة الموظف')} ${advance.employee.name} ${t('بقيمة')} ${advance.amount.toLocaleString('en-US')} `}
                 isDelete={true}
                 isSubmitting={isDeleting}
             />

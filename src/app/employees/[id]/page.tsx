@@ -53,7 +53,7 @@ export default function EmployeeDetailPage() {
                 const res = await fetch(`/api/employees/${id}`);
                 if (res.ok) setEmployee(await res.json());
                 else {
-                    alert('عذراً، تعذر العثور على بيانات الموظف');
+                    alert(t('عذراً، تعذر العثور على بيانات الموظف'));
                     router.push('/employees');
                 }
             } catch (e) {
@@ -71,7 +71,7 @@ export default function EmployeeDetailPage() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textMuted }}>
                     <div style={{ textAlign: 'center' }}>
                         <div style={{ width: '48px', height: '48px', border: `4px solid ${C.primaryBg}`, borderTopColor: C.primary, borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 20px' }} />
-                        <span style={{ fontSize: '15px', fontWeight: 800 }}>جاري استرجاع الملف الشخصي للموظف...</span>
+                        <span style={{ fontSize: '15px', fontWeight: 800 }}>{t('جاري استرجاع الملف الشخصي للموظف...')}</span>
                     </div>
                 </div>
                 <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
@@ -91,12 +91,12 @@ export default function EmployeeDetailPage() {
                 
                 {/* Custom Page Header */}
                 <PageHeader 
-                    title="ملف الموظف" 
-                    subtitle={`عرض البيانات الوظيفية للموظف: ${employee.name}`}
+                    title={t("ملف الموظف")}
+                    subtitle={`${t('عرض البيانات الوظيفية للموظف:')} ${employee.name}`}
                     icon={User}
                     backUrl="/employees"
                     primaryButton={{
-                        label: 'تعديل الملف',
+                        label: t('تعديل الملف'),
                         onClick: () => router.push(`/employees/${id}/edit`),
                         icon: Pencil
                     }}
@@ -108,7 +108,7 @@ export default function EmployeeDetailPage() {
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#fff'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.color = C.textSecondary; }}
                         >
-                            <Printer size={18} /> طباعة
+                            <Printer size={18} /> {t('طباعة')}
                         </button>
                     ]}
                 />
@@ -120,28 +120,28 @@ export default function EmployeeDetailPage() {
                         
                         {/* Summary Stats Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
-                            <StatCard icon={ShieldCheck} label="كود الموظف" value={employee.code} color={C.primary} family={INTER} />
-                            <StatCard icon={Briefcase} label="المسمى الوظيفي" value={employee.position || '—'} color="#8b5cf6" />
-                            <StatCard icon={Building2} label="القسم الإداري" value={employee.department?.name || 'غير محدد'} color="#f59e0b" />
+                            <StatCard icon={ShieldCheck} label={t("كود الموظف")} value={employee.code} color={C.primary} family={INTER} />
+                            <StatCard icon={Briefcase} label={t("المسمى الوظيفي")} value={employee.position || '—'} color="#8b5cf6" />
+                            <StatCard icon={Building2} label={t("القسم الإداري")} value={employee.department?.name || t('غير محدد')} color="#f59e0b" />
                         </div>
 
                         {/* Personal Details */}
-                        <ProfileSection title="البيانات الشخصية" icon={User} color={C.primary}>
+                        <ProfileSection title={t("البيانات الشخصية")} icon={User} color={C.primary}>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
-                                <InfoItem label="الرقم القومي" value={employee.nationalId} icon={ShieldCheck} family={INTER} />
-                                <InfoItem label="تاريخ الميلاد" value={employee.birthDate ? new Date(employee.birthDate).toLocaleDateString('en-GB') : '—'} icon={Calendar} />
-                                <InfoItem label="الجنس" value={employee.gender === 'male' ? 'ذكر' : employee.gender === 'female' ? 'أنثى' : '—'} icon={User} />
-                                <InfoItem label="تاريخ التعيين" value={new Date(employee.hireDate).toLocaleDateString('en-GB')} icon={FileText} />
-                                <InfoItem label="رقم الهاتف" value={employee.phone} icon={Phone} family={INTER} />
-                                <InfoItem label="البريد الإلكتروني" value={employee.email} icon={Mail} family={INTER} />
+                                <InfoItem label={t("الرقم القومي")} value={employee.nationalId} icon={ShieldCheck} family={INTER} />
+                                <InfoItem label={t("تاريخ الميلاد")} value={employee.birthDate ? new Date(employee.birthDate).toLocaleDateString('en-GB') : '—'} icon={Calendar} />
+                                <InfoItem label={t("الجنس")} value={employee.gender === 'male' ? t('ذكر') : employee.gender === 'female' ? t('أنثى') : '—'} icon={User} />
+                                <InfoItem label={t("تاريخ التعيين")} value={new Date(employee.hireDate).toLocaleDateString('en-GB')} icon={FileText} />
+                                <InfoItem label={t("رقم الهاتف")} value={employee.phone} icon={Phone} family={INTER} />
+                                <InfoItem label={t("البريد الإلكتروني")} value={employee.email} icon={Mail} family={INTER} />
                                 <div style={{ gridColumn: '1 / -1' }}>
-                                    <InfoItem label="العنوان السكني" value={employee.address} icon={MapPin} />
+                                    <InfoItem label={t("العنوان السكني")} value={employee.address} icon={MapPin} />
                                 </div>
                             </div>
                         </ProfileSection>
 
                         {/* Finance & Salary */}
-                        <ProfileSection title="الأجور والبيانات المالية" icon={CreditCard} color="#10b981">
+                        <ProfileSection title={t("الأجور والبيانات المالية")} icon={CreditCard} color="#10b981">
                             <div style={{ 
                                 background: 'linear-gradient(135deg, rgba(16,185,129,0.08) 0%, rgba(16,185,129,0.02) 100%)', 
                                 border: '1px solid rgba(16,185,129,0.15)', 
@@ -155,7 +155,7 @@ export default function EmployeeDetailPage() {
                                 overflow: 'hidden' 
                             }}>
                                 <div>
-                                    <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '8px', opacity: 0.8 }}>صافي الراتب المتوقع</div>
+                                    <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '8px', opacity: 0.8 }}>{t('صافي الراتب المتوقع')}</div>
                                     <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: INTER }} dir="ltr">
                                         <span style={{ fontSize: '16px', color: C.textMuted, marginInlineEnd: '8px' }}>{currencySymbol}</span>
                                         {net.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -163,16 +163,16 @@ export default function EmployeeDetailPage() {
                                 </div>
                                 <div style={{ textAlign: 'end', zIndex: 1 }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                                        <SummaryRow label="الراتب الأساسي" value={employee.basicSalary} color={C.textPrimary} unit={currencySymbol} />
-                                        <SummaryRow label="إجمالي البدلات" value={allowances} color="#10b981" prefix="+" unit={currencySymbol} />
-                                        <SummaryRow label="إجمالي الاستقطاعات" value={deductions} color={THEME.colors.danger} prefix="-" unit={currencySymbol} />
+                                        <SummaryRow label={t("الراتب الأساسي")} value={employee.basicSalary} color={C.textPrimary} unit={currencySymbol} />
+                                        <SummaryRow label={t("إجمالي البدلات")} value={allowances} color="#10b981" prefix="+" unit={currencySymbol} />
+                                        <SummaryRow label={t("إجمالي الاستقطاعات")} value={deductions} color={THEME.colors.danger} prefix="-" unit={currencySymbol} />
                                     </div>
                                 </div>
                                 <CreditCard size={120} style={{ position: 'absolute', left: -20, top: -20, opacity: 0.04, transform: 'rotate(-15deg)', pointerEvents: 'none' }} />
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                                <InfoItem label="البنك المعتمد" value={employee.bankName} icon={Landmark} />
-                                <InfoItem label="رقم الحساب / IBAN" value={employee.bankAccount} icon={CreditCard} family={INTER} />
+                                <InfoItem label={t("البنك المعتمد")} value={employee.bankName} icon={Landmark} />
+                                <InfoItem label={t("رقم الحساب / IBAN")} value={employee.bankAccount} icon={CreditCard} family={INTER} />
                             </div>
                         </ProfileSection>
                     </div>
@@ -192,13 +192,13 @@ export default function EmployeeDetailPage() {
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>الحالة الوظيفية</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{t('الحالة الوظيفية')}</span>
                                     <span style={{ padding: '4px 12px', borderRadius: '20px', background: 'rgba(16,185,129,0.1)', color: '#10b981', fontSize: '11px', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }} /> نشط
+                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }} /> {t('نشط')}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>تاريخ الانضمام</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{t('تاريخ الانضمام')}</span>
                                     <span style={{ fontSize: '12px', color: '#fff', fontWeight: 800, fontFamily: INTER }}>{new Date(employee.hireDate).getFullYear()}</span>
                                 </div>
                             </div>
@@ -208,7 +208,7 @@ export default function EmployeeDetailPage() {
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
                                 <Paperclip size={18} style={{ color: C.blue }} />
-                                <span style={{ fontSize: '14px', fontWeight: 900, color: '#fff' }}>ملف المرفقات</span>
+                                <span style={{ fontSize: '14px', fontWeight: 900, color: '#fff' }}>{t('ملف المرفقات')}</span>
                             </div>
                             {employee.attachments?.length > 0 ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -230,7 +230,7 @@ export default function EmployeeDetailPage() {
                                 </div>
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '24px', color: C.textMuted, background: 'rgba(255,255,255,0.01)', borderRadius: '16px', border: `1px dashed ${C.border}` }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 700 }}>لا توجد مرفقات</div>
+                                    <div style={{ fontSize: '12px', fontWeight: 700 }}>{t('لا توجد مرفقات')}</div>
                                 </div>
                             )}
                         </div>

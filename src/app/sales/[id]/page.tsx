@@ -90,22 +90,22 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     if (!invoice) return (
         <DashboardLayout>
-            <div style={{ textAlign: 'center', padding: '100px', color: C.danger }}>الفاتورة غير موجودة أو تم حذفها</div>
+            <div style={{ textAlign: 'center', padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
         </DashboardLayout>
     );
 
     const fmt = (v: number) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     
     const getStatus = () => {
-        if (invoice.paidAmount >= invoice.total) return { label: 'مدفوعة بالكامل', color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
-        if (invoice.paidAmount > 0) return { label: 'تحصيل جزئي', color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
-        return { label: 'غير مدفوعة (آجل)', color: C.danger, icon: AlertCircle, bg: 'rgba(239,68,68,0.1)' };
+        if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };
+        if (invoice.paidAmount > 0) return { label: t('تحصيل جزئي'), color: '#fbbf24', icon: Clock, bg: 'rgba(251,191,36,0.1)' };
+        return { label: t('غير مدفوعة (آجل)'), color: C.danger, icon: AlertCircle, bg: 'rgba(239,68,68,0.1)' };
     };
 
     const status = getStatus();
 
     const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
-    const invLabel = isServices ? 'فاتورة خدمات' : 'فاتورة مبيعات';
+    const invLabel = isServices ? t('فاتورة خدمات') : t('فاتورة مبيعات');
     const invPrefix = isServices ? 'SRV' : 'SAL';
     const invNumFmt = `${invPrefix}-${String(invoice.invoiceNumber).padStart(5, '0')}`;
 
@@ -114,12 +114,12 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title={`تفاصيل ${invLabel}`}
-                    subtitle={`تاريخ الفاتورة: ${new Date(invoice.date).toLocaleDateString('ar-EG')} — سجل العميل والتحصيل المالي`}
+                    title={`${t('تفاصيل')} ${invLabel}`}
+                    subtitle={`${t('تاريخ الفاتورة:')} ${new Date(invoice.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')} — ${t('سجل العميل والتحصيل المالي')}`}
                     icon={Receipt}
                     backUrl="/sales"
                     primaryButton={{
-                        label: 'طباعة الفاتورة',
+                        label: t('طباعة الفاتورة'),
                         onClick: () => {
                             const branches = (session?.user as any)?.branches || [];
                             const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
@@ -213,7 +213,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <User size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>العميل / المستلم</p>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('العميل / المستلم')}</p>
                                     <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
                                 </div>
                             </div>
@@ -223,7 +223,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <Receipt size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>رقم الفاتورة</p>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('رقم الفاتورة')}</p>
                                     <div style={{ color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{invNumFmt}</div>
                                 </div>
                             </div>
@@ -234,7 +234,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         <Building2 size={18} />
                                     </div>
                                     <div>
-                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>المستودع / المخزن</p>
+                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('المستودع / المخزن')}</p>
                                         <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
                                     </div>
                                 </div>
@@ -245,7 +245,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <status.icon size={18} />
                                 </div>
                                 <div>
-                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>حالة التحصيل</p>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('حالة التحصيل')}</p>
                                     <p style={{ fontSize: '13px', fontWeight: 800, color: status.color, margin: 0 }}>{status.label}</p>
                                 </div>
                             </div>
@@ -254,18 +254,18 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                         {/* ── Items Table ── */}
                         <div style={TABLE_STYLE.container}>
                             <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
-                                <div style={STitle}><Package size={14} /> بنود الفاتورة</div>
-                                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} عناصر</div>
+                                <div style={STitle}><Package size={14} /> {t('بنود الفاتورة')}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} {t('عناصر')}</div>
                             </div>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{isServices ? 'الخدمة' : 'الصنف'}</th>
-                                        {!isServices && <th style={TABLE_STYLE.th(false)}>الوحدة</th>}
-                                        <th style={TABLE_STYLE.th(false)}>الكمية</th>
-                                        <th style={TABLE_STYLE.th(false)}>{isServices ? 'سعر الخدمة' : 'سعر البيع'}</th>
-                                        <th style={TABLE_STYLE.th(false)}>الضريبة</th>
-                                        <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
+                                        <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                        {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
+                                        <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الضريبة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -276,7 +276,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
                                             </td>
                                             {!isServices && (
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || 'حبة'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                             )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
@@ -292,7 +292,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
                         {invoice.notes && (
                             <div style={{ ...SC, background: 'rgba(255,255,255,0.02)' }}>
-                                <div style={{ ...STitle, fontSize: '11px', color: C.textMuted }}><Info size={12} /> ملاحظات</div>
+                                <div style={{ ...STitle, fontSize: '11px', color: C.textMuted }}><Info size={12} /> {t('ملاحظات')}</div>
                                 <p style={{ fontSize: '13px', color: C.textSecondary, margin: '8px 0 0', lineHeight: 1.6 }}>{invoice.notes}</p>
                             </div>
                         )}
@@ -300,15 +300,15 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                         {invoice.returnInvoices && invoice.returnInvoices.length > 0 && (
                             <div style={TABLE_STYLE.container}>
                                 <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(239,68,68,0.04)' }}>
-                                    <div style={{ ...STitle, color: C.danger }}><RotateCcw size={14} /> مرتجعات هذه الفاتورة</div>
-                                    <div style={{ fontSize: '12px', fontWeight: 700, color: C.danger }}>{invoice.returnInvoices.length} مرتجع</div>
+                                    <div style={{ ...STitle, color: C.danger }}><RotateCcw size={14} /> {t('مرتجعات هذه الفاتورة')}</div>
+                                    <div style={{ fontSize: '12px', fontWeight: 700, color: C.danger }}>{invoice.returnInvoices.length} {t('مرتجع')}</div>
                                 </div>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
-                                            <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
-                                            <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                            <th style={TABLE_STYLE.th(false)}>قيمة المرتجع</th>
+                                            <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('قيمة المرتجع')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -320,7 +320,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>
-                                                    {new Date(ret.date).toLocaleDateString('ar-EG')}
+                                                    {new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 900, color: C.danger }}>
                                                     {fmt(ret.total)} {cSymbol}
@@ -336,46 +336,46 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                     {/* ── Side Summary ── */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                         <div style={SC}>
-                            <div style={STitle}><Wallet size={14} /> ملخص الحساب</div>
+                            <div style={STitle}><Wallet size={14} /> {t('ملخص الحساب')}</div>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>إجمالي القيمة</span>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي القيمة')}</span>
                                     <span style={{ fontWeight: 700, fontFamily: INTER }}>{fmt(invoice.subtotal)} {cSymbol}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>إجمالي الخصم</span>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الخصم')}</span>
                                     <span style={{ fontWeight: 700, fontFamily: INTER, color: C.danger }}>- {fmt(invoice.discount)} {cSymbol}</span>
                                 </div>
                                 { (invoice.taxAmount || 0) > 0 && (
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                        <span style={{ color: C.textSecondary }}>إجمالي الضريبة</span>
+                                        <span style={{ color: C.textSecondary }}>{t('إجمالي الضريبة')}</span>
                                         <span style={{ fontWeight: 700, fontFamily: INTER, color: '#f87171' }}>+ {fmt(invoice.taxAmount || 0)} {cSymbol}</span>
                                     </div>
                                 )}
                                 <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
-                                    <span style={{ fontWeight: 800, fontSize: '12px' }}>صافي الفاتورة</span>
+                                    <span style={{ fontWeight: 800, fontSize: '12px' }}>{t('صافي الفاتورة')}</span>
                                     <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: INTER }}>{fmt(invoice.total)} {cSymbol}</span>
                                 </div>
                             </div>
                         </div>
 
                         <div style={SC}>
-                            <div style={STitle}><CreditCard size={14} /> تفاصيل السداد</div>
+                            <div style={STitle}><CreditCard size={14} /> {t('تفاصيل السداد')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>نوع البيع</span>
+                                    <span style={{ color: C.textSecondary }}>{t('نوع البيع')}</span>
                                     <span style={{ fontWeight: 800, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
-                                        {invoice.paymentMethod === 'cash' ? 'نقدي' : invoice.paymentMethod === 'bank' ? 'بنكي' : 'آجل'}
+                                        {invoice.paymentMethod === 'cash' ? t('نقدي') : invoice.paymentMethod === 'bank' ? t('بنكي') : t('آجل')}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>المقبوض فعلياً</span>
+                                    <span style={{ color: C.textSecondary }}>{t('المقبوض فعلياً')}</span>
                                     <span style={{ fontWeight: 800, color: C.success, fontFamily: INTER }}>{fmt(invoice.paidAmount)} {cSymbol}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
-                                    <span style={{ color: C.textSecondary }}>المتبقي (مدين)</span>
+                                    <span style={{ color: C.textSecondary }}>{t('المتبقي (مدين)')}</span>
                                     <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: INTER }}>{fmt(invoice.remaining)} {cSymbol}</span>
                                 </div>
                             </div>

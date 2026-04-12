@@ -54,16 +54,16 @@ export default function CostCenterDetails() {
         let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
         csvContent += `${t('التاريخ')},${t('البيان')},${t('المبلغ')},${t('المصدر')}\n`;
         data.journalLines.forEach((line: any) => {
-            const date = new Date(line.journalEntry.date).toLocaleDateString('en-GB');
-            const desc = line.description || line.journalEntry.description || 'بدون بيان';
+            const date = new Date(line.journalEntry.date).toLocaleDateString((t('en-GB') === 'en-GB' ? 'en-US' : 'ar-EG') );
+            const desc = line.description || line.journalEntry.description || t('بدون بيان');
             const amount = line.debit;
-            const source = line.journalEntry.referenceType || 'قيد يومية';
+            const source = line.journalEntry.referenceType || t('قيد يومية');
             csvContent += `${date},"${desc}",${amount},"${source}"\n`;
         });
         const encodedUri = encodeURI(csvContent);
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
-        link.setAttribute("download", `معاملات_${data.name}.csv`);
+        link.setAttribute("download", `${t('معاملات_')}${data.name}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

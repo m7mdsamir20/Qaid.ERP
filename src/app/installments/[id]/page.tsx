@@ -80,7 +80,7 @@ export default function InstallmentDetailPage() {
                 fetchData();
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل التحصيل');
+                alert(d.error || t('فشل التحصيل'));
             }
         } finally { setCollecting(false); }
     };
@@ -98,7 +98,7 @@ export default function InstallmentDetailPage() {
                 }),
             });
             if (res.ok) { setShowCancel(false); fetchData(); }
-            else { const d = await res.json(); alert(d.error || 'فشل'); }
+            else { const d = await res.json(); alert(d.error || t('فشل')); }
         } finally { setCancelling(false); }
     };
 
@@ -118,7 +118,7 @@ export default function InstallmentDetailPage() {
                 }),
             });
             if (res.ok) { setShowSettle(false); fetchData(); }
-            else { const d = await res.json(); alert(d.error || 'فشل التكييش'); }
+            else { const d = await res.json(); alert(d.error || t('فشل التكييش')); }
         } finally { setSettling(false); }
     };
 
@@ -171,8 +171,8 @@ export default function InstallmentDetailPage() {
         <DashboardLayout>
             <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                 <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                <p style={{ fontSize: '18px', fontWeight: 600 }}>عذراً، الخطة غير موجودة</p>
-                <button onClick={() => router.push('/installments')} style={{ marginTop: '20px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>العودة للقائمة</button>
+                <p style={{ fontSize: '18px', fontWeight: 600 }}>{t('عذراً، الخطة غير موجودة')}</p>
+                <button onClick={() => router.push('/installments')} style={{ marginTop: '20px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>{t('العودة للقائمة')}</button>
             </div>
         </DashboardLayout>
     );
@@ -210,10 +210,10 @@ export default function InstallmentDetailPage() {
                         </div>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <h1 style={{ fontSize: '16px', fontWeight: 600, margin: 0, color: C.textPrimary }}>خطة تقسيط <span style={{ color: '#5286ed' }}>#{plan.planNumber}</span></h1>
-                                {isCancelled && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: 'rgba(239,68,68,0.1)', color: C.danger, border: `1px solid ${C.danger}20`, fontWeight: 800 }}>ملغاة</span>}
+                                <h1 style={{ fontSize: '16px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('خطة تقسيط')} <span style={{ color: '#5286ed' }}>#{plan.planNumber}</span></h1>
+                                {isCancelled && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: 'rgba(239,68,68,0.1)', color: C.danger, border: `1px solid ${C.danger}20`, fontWeight: 800 }}>{t('ملغاة')}</span>}
                             </div>
-                            <p style={{ fontSize: '13px', color: C.textMuted, margin: '2px 0 0', fontWeight: 600 }}>تتبع دورة التحصيل وعمليات السداد للخطة</p>
+                            <p style={{ fontSize: '13px', color: C.textMuted, margin: '2px 0 0', fontWeight: 600 }}>{t('تتبع دورة التحصيل وعمليات السداد للخطة')}</p>
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: '12px' }}>
@@ -222,19 +222,19 @@ export default function InstallmentDetailPage() {
                                 <button onClick={() => {
                                     const remPrinc = (plan.installments || []).filter((i:any)=>i.status !== 'paid').reduce((s:number,i:any)=>s+i.principal, 0);
                                     const firstCash = treasuries.find(t => t.type === 'cash') || treasuries[0];
-                                    setSettleForm({ amount: remPrinc.toFixed(2), treasuryId: firstCash?.id || '', notes: 'سداد مبلغ الأصل المتبقي (تكييش)' });
+                                    setSettleForm({ amount: remPrinc.toFixed(2), treasuryId: firstCash?.id || '', notes: t('سداد مبلغ الأصل المتبقي (تكييش)') });
                                     setShowSettle(true);
                                 }} 
                                 style={{ ...BTN_PRIMARY(false, false), height: '42px', width: 'auto', padding: '0 20px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none' }}>
-                                    <DollarSign size={16} /> تكييش الخطة
+                                    <DollarSign size={16} /> {t('تكييش الخطة')}
                                 </button>
                                 <button onClick={() => setShowCancel(true)} style={{ ...BTN_DANGER(false, false), height: '42px', width: 'auto', padding: '0 20px', fontSize: '13px' }}>
-                                    <X size={16} /> إلغاء الخطة
+                                    <X size={16} /> {t('إلغاء الخطة')}
                                 </button>
                             </>
                         )}
                         <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 20px', fontSize: '13px' }}>
-                            <Printer size={16} /> طباعة الجدول
+                            <Printer size={16} /> {t('طباعة الجدول')}
                         </button>
                     </div>
                 </div>
@@ -250,10 +250,10 @@ export default function InstallmentDetailPage() {
                             <div style={{ ...SC, background: 'linear-gradient(135deg, rgba(37,106,244,0.05), rgba(37,106,244,0.02))', border: `1px solid ${C.primaryBorder}` }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: C.primary, fontWeight: 800, fontSize: '14px' }}>
-                                        <TrendingUp size={16} /> مؤشر تقدم التحصيل
+                                        <TrendingUp size={16} /> {t('مؤشر تقدم التحصيل')}
                                     </div>
                                     <div style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
-                                        <span style={{ color: C.textPrimary }}>{paidCount}</span> / <span style={{ color: C.textMuted }}>{plan.monthsCount}</span> قسط مدفوع
+                                        <span style={{ color: C.textPrimary }}>{paidCount}</span> / <span style={{ color: C.textMuted }}>{plan.monthsCount}</span> {t('قسط مدفوع')}
                                     </div>
                                 </div>
                                 <div style={{ height: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
@@ -265,8 +265,8 @@ export default function InstallmentDetailPage() {
                                     }} />
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '11px', color: C.textMuted, fontWeight: 700 }}>
-                                    <span>{progressPct.toFixed(1)}% مكتمل</span>
-                                    <span>المتبقي {plan.monthsCount - paidCount} شهر</span>
+                                    <span>{progressPct.toFixed(1)}% {t('مكتمل')}</span>
+                                    <span>{t('المتبقي')} {plan.monthsCount - paidCount} {t('شهر')}</span>
                                 </div>
                             </div>
                         )}
@@ -313,7 +313,7 @@ export default function InstallmentDetailPage() {
                                                             padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 800,
                                                             background: st.bg, color: st.color, border: `1px solid ${st.color}20`
                                                         }}>
-                                                            {st.label}
+                                                            {t(st.label)}
                                                         </div>
                                                     </td>
                                                     <td style={{ padding: '16px' }}>
@@ -334,7 +334,7 @@ export default function InstallmentDetailPage() {
                                                                 onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
                                                                 onMouseLeave={e => e.currentTarget.style.background = C.primary}
                                                             >
-                                                                تحصيل القسط
+                                                                {t('تحصيل القسط')}
                                                             </button>
                                                         )}
                                                     </td>
@@ -352,35 +352,35 @@ export default function InstallmentDetailPage() {
                         
                         {/* Plan Details */}
                         <div style={SC}>
-                            <div style={{ ...STitle, fontSize: '12.5px' }}><Info size={14} /> بيانات العقد</div>
+                            <div style={{ ...STitle, fontSize: '12.5px' }}><Info size={14} /> {t('بيانات العقد')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12.5px' }}>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', paddingBottom: '10px', borderBottom: `1px solid ${C.border}`, marginBottom: '2px' }}>
-                                        <span style={{ color: C.textMuted }}>صاحب التعاقد :</span>
+                                        <span style={{ color: C.textMuted }}>{t('صاحب التعاقد :')}</span>
                                         <span style={{ color: C.primary, fontWeight: 900, fontSize: '14px' }}>{plan.customer?.name}</span>
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                        <span style={{ color: C.textMuted }}>تاريخ البداية :</span>
+                                        <span style={{ color: C.textMuted }}>{t('تاريخ البداية :')}</span>
                                         <span style={{ color: C.textPrimary, fontWeight: 700, fontFamily: INTER }}>{fmt(plan.startDate)}</span>
                                     </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <span style={{ color: C.textMuted }}>المنتج :</span>
+                                    <span style={{ color: C.textMuted }}>{t('المنتج :')}</span>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.primary, fontWeight: 800 }}>
                                         <Package size={13} /> {plan.productName || '—'}
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <span style={{ color: C.textMuted }}>القسط الشهري :</span>
+                                    <span style={{ color: C.textMuted }}>{t('القسط الشهري :')}</span>
                                     <span style={{ color: C.primary, fontWeight: 900, fontSize: '14.5px', fontFamily: INTER }}>
                                         {fmtN(plan.installmentAmount)} {cSymbol}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                                    <span style={{ color: C.textMuted }}>نسبة الفائدة :</span>
+                                    <span style={{ color: C.textMuted }}>{t('نسبة الفائدة :')}</span>
                                     <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{plan.interestRate || 0}%</span>
                                 </div>
                                 {plan.notes && (
                                     <div style={{ marginTop: '8px', padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}`, fontSize: '11.5px', color: C.textSecondary, lineHeight: 1.5 }}>
-                                        <strong>ملاحظات:</strong> {plan.notes}
+                                        <strong>{t('ملاحظات:')}</strong> {plan.notes}
                                     </div>
                                 )}
                             </div>
@@ -388,16 +388,16 @@ export default function InstallmentDetailPage() {
 
                         {/* Summary Cards */}
                         <div style={SC}>
-                            <div style={{ ...STitle, fontSize: '12.5px' }}><TrendingUp size={14} /> الخلاصة المالية</div>
+                            <div style={{ ...STitle, fontSize: '12.5px' }}><TrendingUp size={14} /> {t('الخلاصة المالية')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 {[
-                                    { label: 'قيمة المنتج الإجمالية :', value: plan.totalAmount, color: C.textPrimary, icon: Package },
-                                    { label: 'الدفعة المقدمة :', value: plan.downPayment, color: '#10b981', icon: Banknote },
-                                    { label: 'المتبقي بعد المقدم :', value: (plan.totalAmount - (plan.downPayment || 0)), color: C.textSecondary, icon: CreditCard },
-                                    { label: 'إجمالي مبلغ الخطة :', value: plan.grandTotal, color: C.textPrimary, icon: DollarSign },
-                                    { label: 'إجمالي ما تم تحصيله :', value: totalPaid, color: '#10b981', icon: CheckCircle2 },
-                                    { label: 'المتبقي تحت التحصيل :', value: totalRemain, color: C.warning, icon: Wallet },
-                                    { label: 'متأخرات حالية :', value: overdueCount, color: C.danger, icon: AlertTriangle, unit: 'قسط' },
+                                    { label: t('قيمة المنتج الإجمالية :'), value: plan.totalAmount, color: C.textPrimary, icon: Package },
+                                    { label: t('الدفعة المقدمة :'), value: plan.downPayment, color: '#10b981', icon: Banknote },
+                                    { label: t('المتبقي بعد المقدم :'), value: (plan.totalAmount - (plan.downPayment || 0)), color: C.textSecondary, icon: CreditCard },
+                                    { label: t('إجمالي مبلغ الخطة :'), value: plan.grandTotal, color: C.textPrimary, icon: DollarSign },
+                                    { label: t('إجمالي ما تم تحصيله :'), value: totalPaid, color: '#10b981', icon: CheckCircle2 },
+                                    { label: t('المتبقي تحت التحصيل :'), value: totalRemain, color: C.warning, icon: Wallet },
+                                    { label: t('متأخرات حالية :'), value: overdueCount, color: C.danger, icon: AlertTriangle, unit: t('قسط') },
                                 ].map((s, i) => (
                                     <div key={i} style={{ 
                                         padding: '10px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.015)', 
@@ -425,26 +425,26 @@ export default function InstallmentDetailPage() {
                 <AppModal
                     show={!!collectTarget}
                     onClose={() => setCollectTarget(null)}
-                    title={collectTarget ? `تحصيل القسط #${collectTarget.installmentNo}` : 'تحصيل قسط'}
+                    title={collectTarget ? `${t('تحصيل القسط')} #${collectTarget.installmentNo}` : t('تحصيل قسط')}
                     maxWidth="440px"
                 >
                     {collectTarget && (
                         <form onSubmit={handleCollect}>
                             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>العميل:</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل:')}</span>
                                     <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800 }}>{plan.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>المقرر تحصيله:</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر تحصيله:')}</span>
                                     <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: INTER }}>
-                                        {fmtN(collectTarget.remaining || collectTarget.amount)} {cSymbol}
+                                        {fmtN(collectTarget.remaining || collectTarget.amount)} <span style={{ fontSize: '10px', fontWeight: 400 }}>{cSymbol}</span>
                                     </span>
                                 </div>
                             </div>
 
                             <div style={{ marginBottom: '16px' }}>
-                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>المبلغ المحصّل <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>{t('المبلغ المحصّل')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
@@ -456,13 +456,13 @@ export default function InstallmentDetailPage() {
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '10px', display: 'block' }}>جهة التحصيل (خزينة/بنك) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '10px', display: 'block' }}>{t('جهة التحصيل (خزينة/بنك)')} <span style={{ color: C.danger }}>*</span></label>
                                 
                                 {/* Step 1: Selection Type */}
                                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                                     {[
-                                        { id: 'cash', label: 'خزينة نقدية', icon: Wallet },
-                                        { id: 'bank', label: 'حساب بنكي', icon: Banknote },
+                                        { id: 'cash', label: t('خزينة نقدية'), icon: Wallet },
+                                        { id: 'bank', label: t('حساب بنكي'), icon: Banknote },
                                     ].map(t => {
                                         const typeMatch = treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === t.id;
                                         const isSelectedType = (collectForm as any).selectedType === t.id || typeMatch;
@@ -499,7 +499,7 @@ export default function InstallmentDetailPage() {
                                                     .filter(t => t.type === ((collectForm as any).selectedType || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type))
                                                     .map(t => ({ value: t.id, label: t.name }))
                                                 }
-                                                placeholder="اختر من القائمة..."
+                                                placeholder={t("اختر من القائمة...")}
                                                 style={{ height: '40px' }}
                                             />
                                         </div>
@@ -508,9 +508,9 @@ export default function InstallmentDetailPage() {
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>ملاحظات التحصيل (اختياري)</label>
+                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>{t('ملاحظات التحصيل (اختياري)')}</label>
                                 <textarea 
-                                    placeholder="اكتب أي ملاحظات هنا..." 
+                                    placeholder={t("اكتب أي ملاحظات هنا...")}
                                     value={collectForm.notes} 
                                     onChange={e => setCollectForm(f => ({ ...f, notes: e.target.value }))} 
                                     style={{ ...IS, height: '62px', padding: '10px 14px', resize: 'none', background: C.inputBg, fontSize: '12px' }} 
@@ -521,7 +521,7 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={collecting} 
                                     style={{ ...BTN_PRIMARY(false, collecting), flex: 1.5, height: '46px', borderRadius: '12px', fontSize: '14px' }}>
-                                    {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> تأكيد التحصيل</>}
+                                    {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> {t('تأكيد التحصيل')}</>}
                                 </button>
                                 <button type="button" onClick={() => setCollectTarget(null)} 
                                     style={{ 
@@ -532,7 +532,7 @@ export default function InstallmentDetailPage() {
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                 >
-                                    إلغاء
+                                    {t('إلغاء')}
                                 </button>
                             </div>
                         </form>
@@ -543,7 +543,7 @@ export default function InstallmentDetailPage() {
                 <AppModal
                     show={showSettle}
                     onClose={() => !settling && setShowSettle(false)}
-                    title="تكييش خطة التقسيط (سداد معجل)"
+                    title={t("تكييش خطة التقسيط (سداد معجل)")}
                     icon={DollarSign}
                     maxWidth="500px"
                 >
@@ -551,18 +551,18 @@ export default function InstallmentDetailPage() {
                         <form onSubmit={handleSettle}>
                             <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                                 <p style={{ fontSize: '14px', color: C.textSecondary, marginBottom: '10px' }}>
-                                    سيتم إغلاق الخطة بالكامل وتحصيل مبلغ الأصل المتبقي فقط.
+                                    {t('سيتم إغلاق الخطة بالكامل وتحصيل مبلغ الأصل المتبقي فقط.')}
                                 </p>
                                 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}` }}>
                                     <div>
-                                        <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px' }}>الأصل المتبقي</div>
+                                        <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px' }}>{t('الأصل المتبقي')}</div>
                                         <div style={{ fontSize: '16px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>
                                             {fmtN((plan.installments || []).filter((i:any)=>i.status !== 'paid').reduce((s:number,i:any)=>s+i.principal, 0))} <span style={{ fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px' }}>الفوائد المتبقية</div>
+                                        <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px' }}>{t('الفوائد المتبقية')}</div>
                                         <div style={{ fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>
                                             {fmtN((plan.installments || []).filter((i:any)=>i.status !== 'paid').reduce((s:number,i:any)=>s+i.interest, 0))} <span style={{ fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
@@ -571,7 +571,7 @@ export default function InstallmentDetailPage() {
                             </div>
 
                             <div style={{ marginBottom: '15px' }}>
-                                <label style={LS}>مبلغ السداد الحالي (الأصل)</label>
+                                <label style={LS}>{t('مبلغ السداد الحالي (الأصل)')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={settleForm.amount} 
                                         onChange={e => setSettleForm(f => ({ ...f, amount: e.target.value }))}
@@ -579,34 +579,34 @@ export default function InstallmentDetailPage() {
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
-                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '5px', textAlign: 'center' }}>💡 سيتم التنازل عن الفوائد المتبقية للعميل عند التكييش.</p>
+                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '5px', textAlign: 'center' }}>💡 {t('سيتم التنازل عن الفوائد المتبقية للعميل عند التكييش.')}</p>
                             </div>
 
                             <div style={{ marginBottom: '15px' }}>
-                                <label style={LS}>خزينة التحصيل</label>
+                                <label style={LS}>{t('خزينة التحصيل')}</label>
                                 <CustomSelect 
                                     value={settleForm.treasuryId}
                                     onChange={v => setSettleForm(f => ({ ...f, treasuryId: v }))}
-                                    options={treasuries.map(t => ({ value: t.id, label: t.name, sub: t.type === 'bank' ? 'حساب بنكي' : 'خزينة نقدية' }))}
-                                    placeholder="اختر الخزينة..."
+                                    options={treasuries.map(t_tr => ({ value: t_tr.id, label: t_tr.name, sub: t_tr.type === 'bank' ? t('حساب بنكي') : t('خزينة نقدية') }))}
+                                    placeholder={t("اختر الخزينة...")}
                                 />
                             </div>
 
                             <div style={{ marginBottom: '25px' }}>
-                                <label style={LS}>ملاحظات</label>
+                                <label style={LS}>{t('ملاحظات')}</label>
                                 <textarea 
                                     value={settleForm.notes}
                                     onChange={e => setSettleForm(f => ({ ...f, notes: e.target.value }))}
                                     style={{ ...IS, height: '60px', padding: '10px' }}
-                                    placeholder="ملاحظات اختيارية..."
+                                    placeholder={t("ملاحظات اختيارية...")}
                                 />
                             </div>
 
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <button type="submit" disabled={settling} style={{ ...BTN_PRIMARY(false, settling), flex: 1.5, height: '48px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none' }}>
-                                    {settling ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : 'تأكيد التكييش وإغلاق الخطة'}
+                                    {settling ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : t('تأكيد التكييش وإغلاق الخطة')}
                                 </button>
-                                <button type="button" onClick={() => setShowSettle(false)} style={{ flex: 1, borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700 }}>إلغاء</button>
+                                <button type="button" onClick={() => setShowSettle(false)} style={{ flex: 1, borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700 }}>{t('إلغاء')}</button>
                             </div>
                         </form>
                     )}
@@ -620,17 +620,17 @@ export default function InstallmentDetailPage() {
                                 <div style={{ width: 64, height: 64, borderRadius: '20px', background: `${C.danger}15`, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                                     <AlertTriangle size={32} />
                                 </div>
-                                <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 900, color: C.textPrimary }}>إلغاء وإسقاط خطة التقسيط</h3>
-                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>رقم الخطة: <span style={{ color: '#5286ed', fontWeight: 700 }}>#{plan.planNumber}</span> — للعميل: {plan.customer?.name}</p>
+                                <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 900, color: C.textPrimary }}>{t('إلغاء وإسقاط خطة التقسيط')}</h3>
+                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>{t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>#{plan.planNumber}</span> — {t('للعميل:')} {plan.customer?.name}</p>
                             </div>
 
                             <div style={{ background: 'rgba(251,113,133,0.05)', border: `1px solid ${C.danger}20`, borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                     {[
-                                        { label: 'إجمالي الخطة', value: fmtN(plan.grandTotal), color: C.textPrimary },
-                                        { label: 'المحصّل فعلياً', value: fmtN(totalPaid), color: '#10b981' },
-                                        { label: 'المبلغ المتبقي', value: fmtN(plan.grandTotal - totalPaid), color: C.danger },
-                                        { label: 'أقساط قادمة للغلق', value: (plan.monthsCount - paidCount), color: C.textPrimary, unit: 'قسط' },
+                                        { label: t('إجمالي الخطة'), value: fmtN(plan.grandTotal), color: C.textPrimary },
+                                        { label: t('المحصّل فعلياً'), value: fmtN(totalPaid), color: '#10b981' },
+                                        { label: t('المبلغ المتبقي'), value: fmtN(plan.grandTotal - totalPaid), color: C.danger },
+                                        { label: t('أقساط قادمة للغلق'), value: (plan.monthsCount - paidCount), color: C.textPrimary, unit: t('قسط') },
                                     ].map((item, i) => (
                                         <div key={i} style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', textAlign: 'center', border: `1px solid ${C.border}` }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
@@ -643,28 +643,28 @@ export default function InstallmentDetailPage() {
                             <form onSubmit={handleCancel}>
                                 {totalPaid > 0 ? (
                                     <div style={{ marginBottom: '20px' }}>
-                                        <label style={LS}>جهة رد المبالغ المحصّلة ({fmtN(totalPaid)} {cSymbol})</label>
+                                        <label style={LS}>{t('جهة رد المبالغ المحصّلة')} ({fmtN(totalPaid)} {cSymbol})</label>
                                         <CustomSelect 
                                             value={cancelForm.refundTreasuryId} 
                                             onChange={v => setCancelForm(f => ({ ...f, refundTreasuryId: v }))}
                                             options={[
-                                                { value: '', label: '-- تحويل المبلغ لرصيد دائن للعميل (بدون رد نقدي) --' },
-                                                ...treasuries.map(t => ({ value: t.id, label: t.name, sub: `رصيد متاح للفاتورة: ${fmtN(t.balance)} ${cSymbol}` }))
+                                                { value: '', label: t('-- تحويل المبلغ لرصيد دائن للعميل (بدون رد نقدي) --') },
+                                                ...treasuries.map(t_tr => ({ value: t_tr.id, label: t_tr.name, sub: `${t('رصيد متاح للفاتورة:')} ${fmtN(t_tr.balance)} ${cSymbol}` }))
                                             ]}
-                                            placeholder="اختر الخزينة للرد النقدي..."
+                                            placeholder={t("اختر الخزينة للرد النقدي...")}
                                             icon={Wallet}
                                         />
-                                        <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '8px', lineHeight: 1.5 }}>⚠️ إذا لم تختر خزينة، سيتم تحويل الإجمالي المدفوع إلى رصيد دائن في حساب العميل.</div>
+                                        <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '8px', lineHeight: 1.5 }}>⚠️ {t('إذا لم تختر خزينة، سيتم تحويل الإجمالي المدفوع إلى رصيد دائن في حساب العميل.')}</div>
                                     </div>
                                 ) : (
                                     <div style={{ marginBottom: '20px', padding: '12px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '12px', fontSize: '12px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <CheckCircle2 size={16} /> لا توجد مبالغ مدفوعة — سيتم إغلاق الخطة مباشرة.
+                                        <CheckCircle2 size={16} /> {t('لا توجد مبالغ مدفوعة — سيتم إغلاق الخطة مباشرة.')}
                                     </div>
                                 )}
 
                                 <div style={{ display: 'flex', gap: '12px' }}>
                                     <button type="submit" disabled={cancelling} style={{ ...BTN_DANGER(false, cancelling), flex: 1.5 }}>
-                                        {cancelling ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><X size={18} /> تأكيد الإلغاء النهائي</>}
+                                        {cancelling ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><X size={18} /> {t('تأكيد الإلغاء النهائي')}</>}
                                     </button>
                                     <button type="button" onClick={() => setShowCancel(false)} disabled={cancelling} style={{ 
                                         flex: 1, height: '52px', borderRadius: '14px', 
@@ -680,7 +680,7 @@ export default function InstallmentDetailPage() {
                                         e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
                                         e.currentTarget.style.color = C.textSecondary;
                                     }}
-                                    >تراجع</button>
+                                    >{t('تراجع')}</button>
                                 </div>
                             </form>
                         </div>

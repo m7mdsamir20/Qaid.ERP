@@ -54,7 +54,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
             <DashboardLayout>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '16px' }}>
                     <Loader2 size={42} style={{ animation: 'spin 1.5s linear infinite', color: 'var(--primary)' }} />
-                    <p style={{ color: 'var(--text-secondary)', fontWeight: 800 }}>جاري تحليل كشف حساب العميل وعرض الحركات...</p>
+                    <p style={{ color: 'var(--text-secondary)', fontWeight: 800 }}>{t('جاري تحليل كشف حساب العميل وعرض الحركات...')}</p>
                 </div>
             </DashboardLayout>
         );
@@ -65,9 +65,9 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
             <DashboardLayout>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '20px', textAlign: 'center' }}>
                     <div style={{ width: 64, height: 64, borderRadius: '20px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}><ScrollText size={32} /></div>
-                    <p style={{ color: 'var(--text-primary)', fontWeight: 800, fontSize: '18px' }}>{error || 'لا تتوفر بيانات لهذا العميل حالياً'}</p>
+                    <p style={{ color: 'var(--text-primary)', fontWeight: 800, fontSize: '18px' }}>{error || t('لا تتوفر بيانات لهذا العميل حالياً')}</p>
                     <Link href="/customers" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: 'var(--surface-100)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 700, transition: 'all 0.2s' }}>
-                        <ArrowRight size={18} /> العودة لقائمة العملاء
+                        <ArrowRight size={18} /> {t('العودة لقائمة العملاء')}
                     </Link>
                 </div>
             </DashboardLayout>
@@ -89,28 +89,28 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                         </Link>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
-                                <h1 className="page-title" style={{ margin: 0 }}>{isServices ? 'كشف خدمات العميل' : 'كشف حركة العميل'}</h1>
+                                <h1 className="page-title" style={{ margin: 0 }}>{isServices ? t('كشف خدمات العميل') : t('كشف حركة العميل')}</h1>
                                 <span style={{ padding: '4px 10px', borderRadius: '8px', background: 'var(--primary-light)', color: 'var(--primary)', fontSize: '11px', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '4px' }}><User size={12} /> {customer.name}</span>
                             </div>
-                            <p className="page-subtitle">{isServices ? 'عرض تفصيلي لجميع الخدمات، المدفوعات، ومرتجع الخدمات الخاصة بالعميل' : 'عرض تفصيلي لجميع المبيعات، المدفوعات، والمرتجعات الخاصة بالعميل'}</p>
+                            <p className="page-subtitle">{isServices ? t('عرض تفصيلي لجميع الخدمات، المدفوعات، ومرتجع الخدمات الخاصة بالعميل') : t('عرض تفصيلي لجميع المبيعات، المدفوعات، والمرتجعات الخاصة بالعميل')}</p>
                         </div>
                     </div>
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button onClick={() => window.print()} style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '42px', padding: '0 20px', borderRadius: '10px', border: '1px solid var(--border-subtle)', background: 'var(--surface-50)', color: 'var(--text-primary)', fontSize: '14px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>
-                            <Printer size={18} /> طباعة التقرير
+                            <Printer size={18} /> {t('طباعة التقرير')}
                         </button>
                     </div>
                 </div>
 
                 {/* Print Branding (Hidden in Web) */}
                 <div className="print-only" style={{ display: 'none', textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: '30px', marginBottom: '30px' }}>
-                    <h1 style={{ fontSize: '28px', color: '#000', margin: '0 0 10px 0' }}>كشف حساب تفصيلي</h1>
+                    <h1 style={{ fontSize: '28px', color: '#000', margin: '0 0 10px 0' }}>{t('كشف حساب تفصيلي')}</h1>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'rtl', textAlign: 'start', fontSize: '14px', color: '#000' }}>
-                        <div><strong>اسم العميل:</strong> {customer.name}</div>
-                        {customer.phone && <div><strong>رقم الهاتف:</strong> {customer.phone}</div>}
-                        <div><strong>تاريخ الطباعة:</strong> {new Date().toLocaleDateString('ar-EG')}</div>
-                        {dateFrom && <div><strong>الفترة من:</strong> {new Date(dateFrom).toLocaleDateString('ar-EG')}</div>}
-                        {dateTo && <div><strong>إلى تاريخ:</strong> {new Date(dateTo).toLocaleDateString('ar-EG')}</div>}
+                        <div><strong>{t('اسم العميل:')}</strong> {customer.name}</div>
+                        {customer.phone && <div><strong>{t('رقم الهاتف:')}</strong> {customer.phone}</div>}
+                        <div><strong>{t('تاريخ الطباعة:')}</strong> {new Date().toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>
+                        {dateFrom && <div><strong>{t('الفترة من:')}</strong> {new Date(dateFrom).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>}
+                        {dateTo && <div><strong>{t('إلى تاريخ:')}</strong> {new Date(dateTo).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>}
                     </div>
                 </div>
 
@@ -118,21 +118,21 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 <div className="no-print" style={{ background: 'var(--surface-50)', border: '1px solid var(--border-subtle)', borderRadius: '24px', padding: '24px', marginBottom: '24px', boxShadow: 'var(--shadow-sm)' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 150px', gap: '20px', alignItems: 'flex-end' }}>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>تاريخ البداية</label>
+                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>{t('تاريخ البداية')}</label>
                             <div style={{ position: 'relative' }}>
                                 <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
                                 <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
                             </div>
                         </div>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>تاريخ النهاية</label>
+                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>{t('تاريخ النهاية')}</label>
                             <div style={{ position: 'relative' }}>
                                 <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
                                 <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
                             </div>
                         </div>
                         <button onClick={fetchLedger} style={{ height: '44px', borderRadius: '12px', border: 'none', background: 'var(--primary)', color: '#fff', fontWeight: 950, fontSize: '14px', cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'} onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
-                            تحديث البيانات
+                            {t('تحديث البيانات')}
                         </button>
                     </div>
                 </div>
@@ -140,10 +140,10 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 {/* Statistics Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '24px' }}>
                     {[
-                        { label: 'رصيد سابق للفترة', value: Math.abs(initialBalance), sign: initialBalance >= 0 ? 'مدين' : 'دائن', color: initialBalance >= 0 ? '#ef4444' : '#10b981', icon: <History size={18} /> },
-                        { label: 'إجمالي الحركات المدينة', value: totalDebit, sign: 'عليه', color: '#ef4444', icon: <TrendingDown size={18} /> },
-                        { label: 'إجمالي الحركات الدائنة', value: totalCredit, sign: 'له', color: '#10b981', icon: <TrendingUp size={18} /> },
-                        { label: 'الرصيد الصافي النهائي', value: Math.abs(finalBalance), sign: finalBalance >= 0 ? 'مدين' : 'دائن', color: finalBalance >= 0 ? '#ef4444' : '#10b981', icon: <FileText size={18} />, highlight: true },
+                        { label: t('رصيد سابق للفترة'), value: Math.abs(initialBalance), sign: initialBalance >= 0 ? t('مدين') : t('دائن'), color: initialBalance >= 0 ? '#ef4444' : '#10b981', icon: <History size={18} /> },
+                        { label: t('إجمالي الحركات المدينة'), value: totalDebit, sign: t('عليه'), color: '#ef4444', icon: <TrendingDown size={18} /> },
+                        { label: t('إجمالي الحركات الدائنة'), value: totalCredit, sign: t('له'), color: '#10b981', icon: <TrendingUp size={18} /> },
+                        { label: t('الرصيد الصافي النهائي'), value: Math.abs(finalBalance), sign: finalBalance >= 0 ? t('مدين') : t('دائن'), color: finalBalance >= 0 ? '#ef4444' : '#10b981', icon: <FileText size={18} />, highlight: true },
                     ].map((card, i) => (
                         <div key={i} style={{ background: 'var(--surface-50)', border: '1px solid var(--border-subtle)', borderRadius: '20px', padding: '20px', boxShadow: card.highlight ? 'var(--shadow-md)' : 'none', position: 'relative', overflow: 'hidden' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
@@ -151,10 +151,10 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                 <div style={{ color: card.color, opacity: 0.8 }}>{card.icon}</div>
                             </div>
                             <div style={{ fontSize: '20px', fontWeight: 950, color: 'var(--text-primary)', marginBottom: '4px', direction: 'ltr', textAlign: 'start' }}>
-                                {card.value.toLocaleString()} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>جم</span>
+                                {card.value.toLocaleString()} <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}></span>
                             </div>
                             <div style={{ fontSize: '11px', fontWeight: 850, color: card.color, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                {card.sign === 'مدين' || card.sign === 'عليه' ? <TrendingDown size={12} /> : <TrendingUp size={12} />}
+                                {card.sign === t('مدين') || card.sign === t('عليه') ? <TrendingDown size={12} /> : <TrendingUp size={12} />}
                                 {card.sign}
                             </div>
                         </div>
@@ -164,11 +164,11 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 {/* Ledger Table */}
                 <div style={{ background: 'var(--surface-50)', border: '1px solid var(--border-subtle)', borderRadius: '24px', overflow: 'hidden', boxShadow: 'var(--shadow-sm)' }}>
                     <div style={{ overflowX: 'auto' }}>
-                        <table style={{ width: '100%', minWidth: '900px', borderCollapse: 'collapse', direction: 'rtl' }}>
+                        <table style={{ width: '100%', minWidth: '900px', borderCollapse: 'collapse', direction: isRtl ? 'rtl' : 'ltr' }}>
                             <thead>
                                 <tr style={{ background: 'var(--surface-100)', borderBottom: '2px solid var(--border-subtle)' }}>
-                                    {['تاريخ العملية', 'نوع الحركة', 'المـرجع', 'تفاصيل البيان التوضيحي', 'مديـن (+)', 'دائـن (-)', 'الرصيد'].map((h, i) => (
-                                        <th key={i} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: 'var(--text-secondary)', textAlign: (i === 3 || i === 4 || i === 5 || i === 6) ? 'right' : 'center' }}>{h}</th>
+                                    {[t('تاريخ العملية'), t('نوع الحركة'), t('المـرجع'), t('تفاصيل البيان التوضيحي'), t('مديـن (+)'), t('دائـن (-)'), t('الرصيد')].map((h, i) => (
+                                        <th key={i} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: 'var(--text-secondary)', textAlign: (i === 3 || i === 4 || i === 5 || i === 6) ? (isRtl ? 'right' : 'left') : 'center' }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -178,10 +178,10 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                     <tr style={{ background: 'var(--surface-100)', borderBottom: '1px solid var(--border-subtle)' }}>
                                         <td style={{ padding: '16px 20px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px', fontWeight: 700 }}>—</td>
                                         <td style={{ padding: '16px 20px', textAlign: 'center' }}>
-                                            <span style={{ padding: '3px 10px', borderRadius: '6px', background: 'var(--surface-200)', color: 'var(--text-primary)', fontSize: '11px', fontWeight: 850 }}>رصيد افتتاحي</span>
+                                            <span style={{ padding: '3px 10px', borderRadius: '6px', background: 'var(--surface-200)', color: 'var(--text-primary)', fontSize: '11px', fontWeight: 850 }}>{t('رصيد افتتاحي')}</span>
                                         </td>
                                         <td style={{ padding: '16px 20px', textAlign: 'center', color: 'var(--text-muted)', fontWeight: 600 }}>—</td>
-                                        <td style={{ padding: '16px 20px', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 700 }}>إجمالي رصيد العميل ما قبل فترة البحث المحددة</td>
+                                        <td style={{ padding: '16px 20px', fontSize: '13px', color: 'var(--text-secondary)', fontWeight: 700 }}>{t('إجمالي رصيد العميل ما قبل فترة البحث المحددة')}</td>
                                         <td style={{ padding: '16px 20px', textAlign: 'start', color: initialBalance > 0 ? '#ef4444' : 'var(--text-muted)', fontWeight: 900, fontSize: '14px' }}>{initialBalance > 0 ? initialBalance.toLocaleString() : '—'}</td>
                                         <td style={{ padding: '16px 20px', textAlign: 'start', color: initialBalance < 0 ? '#10b981' : 'var(--text-muted)', fontWeight: 900, fontSize: '14px' }}>{initialBalance < 0 ? Math.abs(initialBalance).toLocaleString() : '—'}</td>
                                         <td style={{ padding: '16px 20px', textAlign: 'start', fontWeight: 950, color: initialBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '15px' }}>{Math.abs(initialBalance).toLocaleString()}</td>
@@ -192,11 +192,11 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                 {ledger.map((row: any, i: number) => (
                                     <tr key={row.id + i} style={{ borderBottom: i < ledger.length - 1 ? '1px solid var(--border-subtle)' : 'none', transition: 'background 0.15s' }} onMouseEnter={e => e.currentTarget.style.background = 'var(--surface-100)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ padding: '14px 20px', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '12px', fontWeight: 800 }}>
-                                            {new Date(row.date).toLocaleDateString('ar-EG', { year: '2-digit', month: '2-digit', day: '2-digit' })}
+                                            {new Date(row.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                                         </td>
                                         <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                             <span style={{ padding: '4px 10px', borderRadius: '8px', background: row.type === 'invoice' ? 'rgba(59,130,246,0.1)' : row.type === 'receipt' ? 'rgba(16,185,129,0.1)' : 'var(--surface-200)', color: row.type === 'invoice' ? 'var(--primary)' : row.type === 'receipt' ? '#10b981' : 'var(--text-secondary)', fontSize: '11px', fontWeight: 900 }}>
-                                                {row.type === 'invoice' ? (isServices ? 'فاتورة خدمة' : 'فاتورة مبيعات') : row.type === 'receipt' ? 'سند تحصيل' : row.type === 'return' ? (isServices ? 'مرتجع خدمة' : 'مرتجع بيع') : row.type === 'payment' ? 'سند صرف' : row.type === 'refund' ? 'استرداد' : 'حركة محاسبية'}
+                                                {row.type === 'invoice' ? (isServices ? t('فاتورة خدمة') : t('فاتورة مبيعات')) : row.type === 'receipt' ? t('سند تحصيل') : row.type === 'return' ? (isServices ? t('مرتجع خدمة') : t('مرتجع بيع')) : row.type === 'payment' ? t('سند صرف') : row.type === 'refund' ? t('استرداد') : t('حركة محاسبية')}
                                             </span>
                                         </td>
                                         <td style={{ padding: '14px 20px', textAlign: 'center' }}>
@@ -214,14 +214,14 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                     <tr>
                                         <td colSpan={7} style={{ textAlign: 'center', padding: '100px 24px', color: 'var(--text-muted)', fontWeight: 800, fontSize: '15px' }}>
                                             <ScrollText size={48} style={{ display: 'block', margin: '0 auto 16px', opacity: 0.2 }} />
-                                            لا توجد حركات مسجلة لهذا العميل في الفترة المحددة
+                                            {t('لا توجد حركات مسجلة لهذا العميل في الفترة المحددة')}
                                         </td>
                                     </tr>
                                 )}
                             </tbody>
                             <tfoot style={{ background: 'var(--surface-100)', borderTop: '2px solid var(--border-subtle)' }}>
                                 <tr style={{ fontWeight: 950 }}>
-                                    <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'start', fontSize: '16px', color: 'var(--text-primary)' }}>صافي إجمالي الحركات خلال الفترة</td>
+                                    <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'start', fontSize: '16px', color: 'var(--text-primary)' }}>{t('صافي إجمالي الحركات خلال الفترة')}</td>
                                     <td style={{ padding: '20px 20px', textAlign: 'start', color: '#ef4444', fontSize: '16px' }}>{totalDebit.toLocaleString()}</td>
                                     <td style={{ padding: '20px 20px', textAlign: 'start', color: '#10b981', fontSize: '16px' }}>{totalCredit.toLocaleString()}</td>
                                     <td style={{ padding: '20px 24px', textAlign: 'start', color: finalBalance > 0 ? '#ef4444' : '#10b981', direction: 'ltr', fontSize: '18px' }}>{Math.abs(totalDebit - totalCredit).toLocaleString()}</td>

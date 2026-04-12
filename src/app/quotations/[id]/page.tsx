@@ -41,7 +41,7 @@ export default function QuotationViewPage() {
     useEffect(() => { fetchData(); }, [fetchData]);
 
     const handleConvert = async () => {
-        if (!confirm('هل تريد تحويل عرض السعر هذا إلى فاتورة مبيعات نهائية؟\nسيتم نسخ كافة البيانات وإنشاء فاتورة جديدة.')) return;
+        if (!confirm(t('هل تريد تحويل عرض السعر هذا إلى فاتورة مبيعات نهائية؟\nسيتم نسخ كافة البيانات وإنشاء فاتورة جديدة.'))) return;
         setConverting(true);
         try {
             const res = await fetch('/api/quotations/convert', {
@@ -54,10 +54,10 @@ export default function QuotationViewPage() {
                 router.push(`/sales/${data.invoiceId}`);
             } else {
                 const err = await res.json();
-                alert(err.error || 'فشل تحويل عرض السعر');
+                alert(err.error || t('فشل تحويل عرض السعر'));
             }
         } catch (error) {
-            alert('خطأ في الاتصال بالسيرفر');
+            alert(t('خطأ في الاتصال بالسيرفر'));
         } finally {
             setConverting(false);
         }
@@ -75,7 +75,7 @@ export default function QuotationViewPage() {
         <DashboardLayout>
             <div style={{ padding: '60px', textAlign: 'center' }}>
                 <X size={48} style={{ color: C.danger, opacity: 0.3 }} />
-                <p>عذراً، لم يتم العثور على عرض السعر المطلوب</p>
+                <p>{t('عذراً، لم يتم العثور على عرض السعر المطلوب')}</p>
             </div>
         </DashboardLayout>
     );
@@ -86,12 +86,12 @@ export default function QuotationViewPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
                 <PageHeader 
-                    title={`عرض سعر #${quotation.quotationNumber}`}
-                    subtitle={`بتاريخ ${new Date(quotation.date).toLocaleDateString('ar-EG')}`}
+                    title={`${t('عرض سعر')} #${quotation.quotationNumber}`}
+                    subtitle={`${t('بتاريخ')} ${new Date(quotation.date).toLocaleDateString((isRtl ? 'ar-EG' : 'en-US'))}`}
                     icon={FileText}
                     backUrl="/quotations"
                     primaryButton={{
-                        label: "طباعة العرض",
+                        label: t("طباعة العرض"),
                         onClick: () => printQuotation(quotation, company),
                         icon: Printer
                     }}
@@ -108,7 +108,7 @@ export default function QuotationViewPage() {
                         }}>
                             {quotation.status === 'converted' ? <CheckCircle size={20} /> : <FileText size={20} />}
                             <span style={{ fontWeight: 800, fontSize: '15px' }}>
-                                {quotation.status === 'converted' ? 'تم تحويل عرض السعر هذا إلى فاتورة بنجاح' : (quotation.status === 'cancelled' ? 'هذا العرض ملغي' : 'هذا العرض قيد الانتظار لموافقة العميل')}
+                                {quotation.status === 'converted' ? t('تم تحويل عرض السعر هذا إلى فاتورة بنجاح') : (quotation.status === 'cancelled' ? t('هذا العرض ملغي') : t('هذا العرض قيد الانتظار لموافقة العميل'))}
                             </span>
                         </div>
 
@@ -116,22 +116,22 @@ export default function QuotationViewPage() {
                         <div style={{ background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '24px' }}>
                             <div style={{ display: 'flex', gap: '30px' }}>
                                 <div style={{ flex: 1 }}>
-                                    <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>معلومات العميل</h4>
-                                    <div style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary }}>{quotation.customer?.name || 'عميل نقدي'}</div>
-                                    <div style={{ color: C.textSecondary, fontSize: '14px', marginTop: '4px' }}>{quotation.customer?.phone || 'بدون رقم هاتف'}</div>
-                                    <div style={{ color: C.textMuted, fontSize: '13px', marginTop: '2px' }}>{quotation.customer?.address || 'بدون عنوان مسجل'}</div>
+                                    <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>{t('معلومات العميل')}</h4>
+                                    <div style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary }}>{quotation.customer?.name || t('عميل نقدي')}</div>
+                                    <div style={{ color: C.textSecondary, fontSize: '14px', marginTop: '4px' }}>{quotation.customer?.phone || t('بدون رقم هاتف')}</div>
+                                    <div style={{ color: C.textMuted, fontSize: '13px', marginTop: '2px' }}>{quotation.customer?.address || t('بدون عنوان مسجل')}</div>
                                 </div>
                                 <div style={{ width: '1px', background: C.border }} />
                                 <div style={{ flex: 1 }}>
-                                    <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>تفاصيل العرض</h4>
+                                    <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>{t('تفاصيل العرض')}</h4>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                         <div style={{ display: 'flex', gap: '10px' }}>
-                                            <span style={{ color: C.textSecondary, minWidth: '90px' }}>رقم العرض:</span>
+                                            <span style={{ color: C.textSecondary, minWidth: '90px' }}>{t('رقم العرض:')}</span>
                                             <span style={{ fontWeight: 800, fontFamily: INTER }}>#{quotation.quotationNumber}</span>
                                         </div>
                                         <div style={{ display: 'flex', gap: '10px' }}>
-                                            <span style={{ color: C.textSecondary, minWidth: '90px' }}>تاريخ العرض:</span>
-                                            <span style={{ fontWeight: 700, fontFamily: INTER }}>{new Date(quotation.date).toLocaleDateString('ar-EG')}</span>
+                                            <span style={{ color: C.textSecondary, minWidth: '90px' }}>{t('تاريخ العرض:')}</span>
+                                            <span style={{ fontWeight: 700, fontFamily: INTER }}>{new Date(quotation.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -143,17 +143,17 @@ export default function QuotationViewPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '15px 20px', textAlign: 'start', fontSize: '13px', color: C.textMuted }}>الخدمة / الصنف</th>
-                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '80px' }}>الكمية</th>
-                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>السعر</th>
-                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>الإجمالي</th>
+                                        <th style={{ padding: '15px 20px', textAlign: 'start', fontSize: '13px', color: C.textMuted }}>{t('الخدمة / الصنف')}</th>
+                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '80px' }}>{t('الكمية')}</th>
+                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>{t('السعر')}</th>
+                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {quotation.lines?.map((l: any, idx: number) => (
                                         <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44` }}>
                                             <td style={{ padding: '15px 20px' }}>
-                                                <div style={{ fontWeight: 700, color: C.textPrimary }}>{l.item?.name || 'خدمة / صنف'}</div>
+                                                <div style={{ fontWeight: 700, color: C.textPrimary }}>{l.item?.name || t('خدمة / صنف')}</div>
                                                 <div style={{ fontSize: '11px', color: C.textMuted }}>{l.item?.code || ''}</div>
                                             </td>
                                             <td style={{ padding: '15px 20px', textAlign: 'center', fontFamily: INTER, fontWeight: 600 }}>{l.quantity}</td>
@@ -169,16 +169,16 @@ export default function QuotationViewPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         {/* Summary Card */}
                         <div style={{ background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '24px' }}>
-                            <h3 style={{ margin: '0 0 20px', fontSize: '16px', fontWeight: 800, color: C.textPrimary, borderBottom: `1px solid ${C.border}`, paddingBottom: '12px' }}>ملخص الحساب</h3>
+                            <h3 style={{ margin: '0 0 20px', fontSize: '16px', fontWeight: 800, color: C.textPrimary, borderBottom: `1px solid ${C.border}`, paddingBottom: '12px' }}>{t('ملخص الحساب')}</h3>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary }}>
-                                    <span>المجموع الفرعي:</span>
+                                    <span>{t('المجموع الفرعي:')}</span>
                                     <span style={{ fontWeight: 700, fontFamily: INTER }}>{fmt(quotation.subtotal)}</span>
                                 </div>
                                 {quotation.discount > 0 && (
                                     <div style={{ display: 'flex', justifyContent: 'space-between', color: C.danger }}>
-                                        <span>خصم العرض:</span>
+                                        <span>{t('خصم العرض:')}</span>
                                         <span style={{ fontWeight: 700, fontFamily: INTER }}>- {fmt(quotation.discount)}</span>
                                     </div>
                                 )}
@@ -189,7 +189,7 @@ export default function QuotationViewPage() {
                                     </div>
                                 )}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '22px', fontWeight: 900, color: C.primary, marginTop: '10px', paddingTop: '15px', borderTop: `1px solid ${C.border}` }}>
-                                    <span>الإجمالي:</span>
+                                    <span>{t('الإجمالي:')}</span>
                                     <span style={{ fontFamily: INTER }}>{fmt(quotation.total)} {cSymbol}</span>
                                 </div>
                             </div>
@@ -208,7 +208,7 @@ export default function QuotationViewPage() {
                                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                                 >
                                     {converting ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
-                                    تحويل لفاتورة مبيعات
+                                    {t('تحويل لفاتورة مبيعات')}
                                 </button>
                             )}
 
@@ -222,14 +222,14 @@ export default function QuotationViewPage() {
                                     }}
                                 >
                                     <Eye size={18} />
-                                    عرض الفاتورة المسجلة
+                                    {t('عرض الفاتورة المسجلة')}
                                 </button>
                             )}
                         </div>
 
                         {quotation.notes && (
                             <div style={{ background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '20px' }}>
-                                <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>ملاحظات العرض</h4>
+                                <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>{t('ملاحظات العرض')}</h4>
                                 <p style={{ fontSize: '13px', lineHeight: '1.6', color: C.textSecondary, margin: 0 }}>{quotation.notes}</p>
                             </div>
                         )}
