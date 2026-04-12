@@ -64,7 +64,7 @@ export default function NewSalePage() {
     const [entryItemId, setEntryItemId] = useState('');
     const [entryDescription, setEntryDescription] = useState('');
     const [entryQty, setEntryQty] = useState<number | ''>(1);
-    const [entryPrice, setEntryPrice] = useState<number | ''>('');
+    const [entryPrice, setEntryPrice] = useState<number | ''>(0);
     const [entryTaxRate, setEntryTaxRate] = useState<number | ''>(0);
     const [entryStock, setEntryStock] = useState<number | null>(null);
 
@@ -657,8 +657,8 @@ export default function NewSalePage() {
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <input ref={priceRef} type="text" inputMode="decimal"
-                                            value={entryPrice === '' ? '0.00' : (entryPrice === 0 ? '' : fmt(entryPrice))}
-                                            placeholder="0.00"
+                                            value={entryPrice === '' ? '0' : fmt(entryPrice)}
+                                            placeholder="0"
                                             disabled={!entryItemId}
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
