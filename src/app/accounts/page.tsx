@@ -110,9 +110,8 @@ export default function AccountsPage() {
                 const data = await res.json();
                 const treeData = buildTree(data);
                 setAccounts(treeData);
-                // Expand first level by default
-                const firstLevelIds = data.filter((a: Account) => !a.parentId).map((a: Account) => a.id);
-                setExpandedIds(new Set(firstLevelIds));
+                // Tree is collapsed by default now
+                setExpandedIds(new Set());
             }
         } catch (err) {
             console.error("Fetch accounts error:", err);
@@ -302,7 +301,7 @@ export default function AccountsPage() {
                         )}
                     </div>
 
-                    <div style={{ width: '100px', fontFamily: INTER, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8 }}>{acc.code}</div>
+                    <div style={{ width: '100px', fontFamily: INTER, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'center' }}>{acc.code}</div>
 
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <div style={{
@@ -314,13 +313,21 @@ export default function AccountsPage() {
                         <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '14px', fontFamily: CAIRO }}>{acc.name}</span>
                     </div>
 
-                    <div style={{ width: '120px', textAlign: 'center' }}>
+                    <div style={{ width: '120px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                         <span style={{
                             fontSize: '11px', padding: '3px 10px', borderRadius: '8px', fontWeight: 800, fontFamily: CAIRO,
-                            background: `${color}15`, color: color
+                            background: `${color}15`, color: color, width: 'fit-content'
                         }}>
                             {accountTypes.find(t => t.value === acc.type)?.label || acc.type}
                         </span>
+                        <div style={{ display: 'flex', gap: '4px' }}>
+                            <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '5px', background: 'rgba(255,255,255,0.05)', color: C.textMuted, fontWeight: 700 }}>
+                                {acc.accountCategory === 'summary' ? t('إجمالي') : t('تحليلي')}
+                            </span>
+                            <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: '5px', background: acc.nature === 'debit' ? 'rgba(16,185,129,0.1)' : 'rgba(248,113,113,0.1)', color: acc.nature === 'debit' ? '#10b981' : '#f87171', fontWeight: 700 }}>
+                                {acc.nature === 'debit' ? t('مدين') : t('دائن')}
+                            </span>
+                        </div>
                     </div>
 
                     <div style={{ width: '150px', textAlign: 'center', fontFamily: INTER, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success }}>
