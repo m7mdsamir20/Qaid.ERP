@@ -225,8 +225,10 @@ export default function AccountsPage() {
         { label: t('مصروفات'), value: flatAll.filter(a => a.type === 'expense').length, icon: <TrendingDown size={16} />, color: '#fb923c' },
     ];
 
-    const displayAccounts = (viewMode === 'tree' && !searchQuery && typeFilter === 'all')
-        ? accounts
+    const displayAccounts = viewMode === 'tree'
+        ? (typeFilter === 'all' 
+            ? accounts 
+            : accounts.filter(a => a.type === typeFilter))
         : getFlattenedAccounts(accounts).filter(a => {
             const matchesSearch = searchQuery.trim() === '' || 
                 a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -237,6 +239,15 @@ export default function AccountsPage() {
             
             return matchesSearch && matchesType;
         });
+
+    // If searching, always force flat view regardless of viewMode state
+    const effectiveAccounts = searchQuery.trim() !== '' 
+        ? getFlattenedAccounts(accounts).filter(a => 
+            a.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            a.code.includes(searchQuery) ||
+            (a.nameEn && a.nameEn.toLowerCase().includes(searchQuery.toLowerCase()))
+          )
+        : displayAccounts;
 
     const renderAccountRow = (acc: Account, depth = 0) => {
         const isExpanded = expandedIds.has(acc.id);
@@ -341,7 +352,7 @@ export default function AccountsPage() {
                 {/* Summary Cards */}
                 <div style={{ 
                     display: 'grid', 
-                    gridTemplateColumns: 'repeat(auto-fill, minmax(130px, 1fr))', 
+                    gridTemplateColumns: 'repeat(7, 1fr)', 
                     gap: '12px', 
                     marginBottom: '20px' 
                 }}>
@@ -371,13 +382,13 @@ export default function AccountsPage() {
 
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             placeholder={t("ابحث بكود الحساب أو الاسم...")}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             style={{ 
-                                ...IS, paddingInlineEnd: '40px', height: '40px', fontSize: '13px', 
+                                ...IS, paddingInlineStart: '40px', height: '40px', fontSize: '13px', 
                                 background: C.card, borderRadius: '12px'
                             }}
                             onFocus={focusIn} onBlur={focusOut}
@@ -443,13 +454,11 @@ export default function AccountsPage() {
                         </div>
 
                         <div style={{ padding: '8px', maxHeight: '70vh', overflowY: 'auto' }}>
-                            {displayAccounts.length > 0 ? (
-                                (viewMode === 'tree' && !searchQuery && typeFilter === 'all') ? (
-                                    displayAccounts.map(acc => renderAccountRow(acc))
+                            {effectiveAccounts.length > 0 ? (
+                                (viewMode === 'tree' && searchQuery === '') ? (
+                                    effectiveAccounts.map(acc => renderAccountRow(acc))
                                 ) : (
-                                    (viewMode === 'tree' && searchQuery === '' && typeFilter !== 'all') 
-                                        ? accounts.filter(a => a.type === typeFilter).map(acc => renderAccountRow(acc))
-                                        : displayAccounts.map(acc => renderAccountRow(acc, 0))
+                                    effectiveAccounts.map(acc => renderAccountRow(acc, 0))
                                 )
                             ) : (
                                 <div style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
