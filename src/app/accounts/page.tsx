@@ -66,7 +66,6 @@ export default function AccountsPage() {
     const [isSaving, setIsSaving] = useState(false);
     const [deleteAccount, setDeleteAccount] = useState<Account | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [viewMode, setViewMode] = useState<'tree' | 'table'>('tree');
 
     // Account Form State
     const [form, setForm] = useState({
@@ -167,6 +166,23 @@ export default function AccountsPage() {
         }
     };
 
+    const handleRebuild = async () => {
+        if (!confirm(t('هل أنت متأكد من إعادة تهيئة دليل الحسابات؟ سيؤدي هذا إلى مسح الدليل الحالي وإعادة بنائه.'))) return;
+        setLoading(true);
+        try {
+            const res = await fetch('/api/accounts/seed', { method: 'POST' });
+            if (res.ok) {
+                await fetchAccounts();
+            } else {
+                alert(t('فشل إعادة التهيئة'));
+            }
+        } catch {
+            alert(t('خطأ في الاتصال'));
+        } finally {
+            setLoading(false);
+        }
+    };
+
     /* ── Search Logic ── */
     const getFlattenedAccounts = (accs: Account[]): Account[] => {
         let flat: Account[] = [];
@@ -179,77 +195,115 @@ export default function AccountsPage() {
         return flat;
     };
 
+    const allFlattened = getFlattenedAccounts(accounts);
+    
     const filteredAccounts = searchQuery.trim() 
-        ? getFlattenedAccounts(accounts).filter(a => 
+        ? allFlattened.filter(a => 
             a.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
             a.code.includes(searchQuery) ||
             (a.nameEn && a.nameEn.toLowerCase().includes(searchQuery.toLowerCase()))
           )
         : accounts;
 
+    // Stats Calculation
+    const stats = {
+        total: allFlattened.length,
+        analytical: allFlattened.filter(a => a.accountCategory === 'detail').length,
+        assets: allFlattened.filter(a => a.type === 'asset').length,
+        liabilities: allFlattened.filter(a => a.type === 'liability').length,
+        equity: allFlattened.filter(a => a.type === 'equity').length,
+        revenue: allFlattened.filter(a => a.type === 'revenue').length,
+        expenses: allFlattened.filter(a => a.type === 'expense').length,
+    };
+
+    const StatCard = ({ label, value, icon: Icon, color }: any) => (
+        <div style={{
+            flex: 1, minWidth: '120px', background: 'rgba(255,255,255,0.02)', 
+            border: `1px solid ${C.border}30`, borderRadius: '16px', padding: '16px',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+            gap: '8px', transition: '0.2s'
+        }}>
+            <div style={{ color: color, opacity: 0.8 }}><Icon size={20} /></div>
+            <div style={{ fontSize: '24px', fontWeight: 900, fontFamily: INTER, color: '#fff' }}>{value}</div>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{label}</div>
+        </div>
+    );
+
     const renderAccountRow = (acc: Account, depth = 0) => {
         const isExpanded = expandedIds.has(acc.id);
         const hasChildren = acc.children && acc.children.length > 0;
-        const color = typeColors[acc.type] || C.primary;
+        const typeInfo = accountTypes.find(t => t.value === acc.type) || accountTypes[0];
+        const color = typeInfo.color;
 
         return (
             <React.Fragment key={acc.id}>
                 <div style={{
-                    display: 'flex', alignItems: 'center', padding: '10px 16px',
-                    borderBottom: `1px solid ${C.border}30`,
-                    background: depth === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                    display: 'flex', alignItems: 'center', padding: '12px 20px',
+                    borderBottom: `1px solid ${C.border}20`,
+                    background: 'transparent',
                     cursor: 'default', transition: '0.15s',
-                    marginLeft: !isRtl ? `${depth * 28}px` : '0',
-                    marginRight: isRtl ? `${depth * 28}px` : '0',
-                    borderRadius: '8px', marginBottom: '2px'
+                    marginTop: '4px'
                 }} className="account-row-hover">
                     
-                    <div style={{ width: '32px', display: 'flex', justifyContent: 'center' }}>
-                        {hasChildren ? (
-                            <button onClick={(e) => toggleExpand(acc.id, e)} style={{
-                                background: 'transparent', border: 'none', color: C.textMuted,
-                                cursor: 'pointer', transition: '0.2s',
-                                transform: isExpanded ? 'rotate(90deg)' : (isRtl ? 'rotate(180deg)' : 'none')
-                            }}>
-                                <ChevronRight size={18} />
-                            </button>
-                        ) : (
-                            <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: `${color}40` }}></div>
-                        )}
+                    {/* Left Actions */}
+                    <div style={{ display: 'flex', gap: '8px', width: '80px', flexShrink: 0 }}>
+                        <button onClick={() => setDeleteAccount(acc)} style={{ ...TABLE_STYLE.actionBtn(C.danger), width: '32px', height: '32px' }} disabled={hasChildren}>
+                            <Trash2 size={14} />
+                        </button>
+                        <button onClick={() => handleEdit(acc)} style={{ ...TABLE_STYLE.actionBtn(C.textSecondary), width: '32px', height: '32px' }}>
+                            <Pencil size={14} />
+                        </button>
                     </div>
 
-                    <div style={{ width: '100px', fontFamily: INTER, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8 }}>{acc.code}</div>
-                    
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <div style={{ 
-                            width: '32px', height: '32px', borderRadius: '8px', 
-                            background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color
+                    {/* Tags */}
+                    <div style={{ display: 'flex', gap: '8px', flex: 1.5, justifyContent: 'flex-start', paddingInlineStart: '20px', overflow: 'hidden' }}>
+                         <span style={{ 
+                            fontSize: '10px', padding: '4px 12px', borderRadius: '8px', fontWeight: 800,
+                            background: `${color}15`, color: color, whiteSpace: 'nowrap'
                         }}>
-                            {acc.accountCategory === 'summary' ? <FolderOpen size={16} /> : <FileText size={16} />}
-                        </div>
-                        <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '14px', fontFamily: CAIRO }}>{acc.name}</span>
-                    </div>
-
-                    <div style={{ width: '120px', textAlign: 'center' }}>
+                            {typeInfo.label}
+                        </span>
+                         <span style={{ 
+                            fontSize: '10px', padding: '4px 12px', borderRadius: '8px', fontWeight: 800,
+                            background: acc.nature === 'debit' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', 
+                            color: acc.nature === 'debit' ? '#10b981' : '#ef4444', whiteSpace: 'nowrap'
+                        }}>
+                            {acc.nature === 'debit' ? t('مدين') : t('دائن')}
+                        </span>
                         <span style={{ 
-                            fontSize: '10px', padding: '2px 8px', borderRadius: '6px', fontWeight: 800, fontFamily: INTER,
-                            background: `${color}15`, color: color, textTransform: 'uppercase'
+                            fontSize: '10px', padding: '4px 12px', borderRadius: '8px', fontWeight: 800,
+                            background: 'rgba(59,130,246,0.1)', color: '#3b82f6', whiteSpace: 'nowrap'
                         }}>
-                            {acc.type}
+                            {acc.accountCategory === 'summary' ? t('إجمالي') : t('تحليلي')}
                         </span>
                     </div>
 
-                    <div style={{ width: '150px', textAlign: 'center', fontFamily: INTER, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success }}>
-                        {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span>
+                    {/* Balance */}
+                    <div style={{ width: '200px', flexShrink: 0, textAlign: isRtl ? 'left' : 'right', fontFamily: INTER, fontWeight: 900, color: (acc.balance || 0) < 0 ? '#ef4444' : '#10b981', fontSize: '16px' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginInlineEnd: '4px' }}>{currencySymbol}</span>
+                        {acc.balance !== undefined ? (acc.balance).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '0.00'}
                     </div>
 
-                    <div style={{ width: '100px', display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
-                        <button onClick={() => handleEdit(acc)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
-                            <Pencil size={14} />
-                        </button>
-                        <button onClick={() => setDeleteAccount(acc)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')} disabled={hasChildren}>
-                            <Trash2 size={14} />
-                        </button>
+                    {/* Name & Code & Icon & Arrow (Right Group) */}
+                    <div style={{ flex: 3, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '20px', paddingInlineStart: `${depth * 30}px`, flexDirection: 'row-reverse' }}>
+                        
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flex: 1, justifyContent: 'flex-end' }}>
+                            <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '15px', fontFamily: CAIRO }}>{acc.name}</span>
+                            <span style={{ fontFamily: INTER, fontSize: '14px', fontWeight: 700, color: color, width: '60px', textAlign: 'center' }}>{acc.code}</span>
+                            
+                            <div style={{ color: color, opacity: 0.6 }}>
+                                {acc.accountCategory === 'summary' ? <FolderOpen size={20} /> : <FileText size={20} />}
+                            </div>
+
+                            <button onClick={(e) => hasChildren && toggleExpand(acc.id, e)} style={{
+                                background: 'transparent', border: 'none', color: hasChildren ? C.textMuted : 'transparent',
+                                cursor: hasChildren ? 'pointer' : 'default', transition: '0.2s',
+                                transform: isExpanded ? 'rotate(90deg)' : (isRtl ? 'rotate(180deg)' : 'none'),
+                                display: 'flex', alignItems: 'center', justifyContent: 'center'
+                            }}>
+                                <ChevronRight size={20} />
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -260,87 +314,102 @@ export default function AccountsPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? "rtl" : "ltr"} style={PAGE_BASE}>
-                <PageHeader
-                    title={t("دليل الحسابات")}
-                    subtitle={t("إدارة شجرة الحسابات، تصنيفها، وتتبع الأرصدة الافتتاحية والحالية")}
-                    icon={BookOpen}
-                    primaryButton={{
-                        label: t("إضافة حساب"),
-                        icon: Plus,
-                        onClick: () => router.push('/accounts/new')
-                    }}
-                />
-
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
-                    <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                        <input
-                            placeholder={t("ابحث بكود الحساب أو الاسم...")}
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            style={{ 
-                                width: '100%', height: '44px', padding: '0 40px', 
-                                background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`,
-                                borderRadius: '12px', color: '#fff', outline: 'none', fontFamily: CAIRO, fontSize: '14px'
-                            }}
-                        />
+            <div dir={isRtl ? "rtl" : "ltr"} style={{ ...PAGE_BASE, maxWidth: '1400px', margin: '0 auto' }}>
+                
+                {/* Header */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '30px' }}>
+                    <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
+                         <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
+                            <BookOpen size={24} />
+                        </div>
+                        <div>
+                            <h1 style={{ fontSize: '22px', fontWeight: 900, color: '#fff', marginBottom: '4px', fontFamily: CAIRO }}>{t("دليل الحسابات")}</h1>
+                            <p style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{t("شجرة الحسابات المحاسبية متكررة المستويات - تنظيم وتصريف المركز المالي ونتيجة الأعمال")}</p>
+                        </div>
                     </div>
-                    <div style={{ display: 'flex', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', padding: '4px', border: `1px solid ${C.border}` }}>
-                        <button onClick={() => setViewMode('tree')} style={{ 
-                            padding: '6px 12px', borderRadius: '8px', border: 'none', 
-                            background: viewMode === 'tree' ? C.primary : 'transparent', color: viewMode === 'tree' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
+                    
+                    <div style={{ display: 'flex', gap: '12px' }}>
+                        <button onClick={handleRebuild} style={{ 
+                            height: '44px', padding: '0 20px', borderRadius: '10px', border: '1px solid #fbbf2440',
+                            background: 'rgba(251,191,36,0.05)', color: '#fbbf24', fontWeight: 800, fontSize: '13px',
+                            display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO
                         }}>
-                            <RefreshCcw size={14} /> {t('شجرة')}
+                            <RefreshCcw size={16} /> {t('إعادة التهيئة')}
                         </button>
-                        <button onClick={() => setViewMode('table')} style={{ 
-                            padding: '6px 12px', borderRadius: '8px', border: 'none', 
-                            background: viewMode === 'table' ? C.primary : 'transparent', color: viewMode === 'table' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO
+                        <button onClick={() => router.push('/accounts/new')} style={{ 
+                            height: '44px', padding: '0 20px', borderRadius: '10px', border: 'none',
+                            background: '#2563eb', color: '#fff', fontWeight: 800, fontSize: '13px',
+                            display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO,
+                            boxShadow: '0 4px 15px rgba(37,99,235,0.3)'
                         }}>
-                            <LayoutGrid size={14} /> {t('جدول')}
+                            <Plus size={18} /> {t('حساب جديد')}
                         </button>
                     </div>
                 </div>
 
-                {loading ? (
-                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 700 }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
-                    </div>
-                ) : (
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
-                        {/* Table Header */}
-                        <div style={{ 
-                            display: 'flex', alignItems: 'center', padding: '14px 16px', 
-                            background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`,
-                            fontSize: '11px', fontWeight: 800, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
-                        }}>
-                            <div style={{ width: '32px' }}></div>
-                            <div style={{ width: '100px' }}>{t('الكود')}</div>
-                            <div style={{ flex: 1 }}>{t('اسم الحساب')}</div>
-                            <div style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
-                            <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
-                            <div style={{ width: '100px', textAlign: 'end' }}>{t('إجراءات')}</div>
-                        </div>
+                {/* Stats Cards */}
+                <div style={{ display: 'flex', gap: '16px', marginBottom: '30px', overflowX: 'auto', paddingBottom: '10px' }}>
+                    <StatCard label={t('إجمالي الحسابات')} value={stats.total} icon={LayoutGrid} color={C.primary} />
+                    <StatCard label={t('حسابات تحليلية')} value={stats.analytical} icon={FileText} color="#10b981" />
+                    <StatCard label={t('أصول')} value={stats.assets} icon={FolderOpen} color="#10b981" />
+                    <StatCard label={t('خصوم')} value={stats.liabilities} icon={FolderOpen} color="#f87171" />
+                    <StatCard label={t('حقوق ملكية')} value={stats.equity} icon={FolderOpen} color="#a78bfa" />
+                    <StatCard label={t('إيرادات')} value={stats.revenue} icon={FolderOpen} color="#60a5fa" />
+                    <StatCard label={t('مصروفات')} value={stats.expenses} icon={FolderOpen} color="#fb923c" />
+                </div>
 
-                        <div style={{ padding: '8px', maxHeight: '70vh', overflowY: 'auto' }}>
-                            {filteredAccounts.length > 0 ? (
-                                viewMode === 'tree' && !searchQuery ? (
-                                    filteredAccounts.map(acc => renderAccountRow(acc))
-                                ) : (
-                                    getFlattenedAccounts(filteredAccounts).map(acc => renderAccountRow(acc, 0))
-                                )
-                            ) : (
-                                <div style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
-                                    <AlertTriangle size={48} style={{ margin: '0 auto 16px', opacity: 0.1 }} />
-                                    <p style={{ fontWeight: 700 }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
-                                </div>
-                            )}
-                        </div>
+                {/* Search */}
+                <div style={{ position: 'relative', marginBottom: '20px' }}>
+                    <Search size={20} style={{ position: 'absolute', insetInlineStart: '20px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, opacity: 0.5 }} />
+                    <input
+                        placeholder={t("البحث السريع في دليل الحسابات (اسم الحساب أو الكود)...")}
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        style={{ 
+                            width: '100%', height: '54px', padding: '0 54px', 
+                            background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}40`,
+                            borderRadius: '12px', color: '#fff', outline: 'none', fontFamily: CAIRO, fontSize: '15px',
+                            boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
+                        }}
+                    />
+                </div>
+
+                {/* List Container */}
+                <div style={{ background: 'rgba(15, 23, 42, 0.4)', border: `1px solid ${C.border}40`, borderRadius: '16px', overflow: 'hidden' }}>
+                    {/* List Info Header */}
+                    <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}20`, display: 'flex', justifyContent: 'flex-end' }}>
+                        <span style={{ fontSize: '14px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
+                           {stats.total} {t('حساب')} — {stats.analytical} {t('تحليلي')}
+                        </span>
                     </div>
-                )}
+
+                    <div style={{ padding: '10px 0', minHeight: '400px' }}>
+                        {loading ? (
+                             <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
+                                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
+                                <p style={{ fontWeight: 700 }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
+                            </div>
+                        ) : (
+                            <div style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                                {filteredAccounts.length > 0 ? (
+                                    !searchQuery ? (
+                                        filteredAccounts.map(acc => renderAccountRow(acc))
+                                    ) : (
+                                        allFlattened.filter(a => 
+                                            a.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                            a.code.includes(searchQuery)
+                                        ).map(acc => renderAccountRow(acc, 0))
+                                    )
+                                ) : (
+                                    <div style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
+                                        <AlertTriangle size={48} style={{ margin: '0 auto 16px', opacity: 0.1 }} />
+                                        <p style={{ fontWeight: 700 }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
             </div>
 
             {/* Edit Modal */}
@@ -397,7 +466,7 @@ export default function AccountsPage() {
             <AppModal isDelete show={!!deleteAccount} onClose={() => setDeleteAccount(null)} onConfirm={confirmDelete} itemName={deleteAccount?.name} title={t("تأكيد حذف الحساب")} isSubmitting={isSaving} />
 
             <style jsx global>{`
-                .account-row-hover:hover { background: rgba(59,130,246,0.05) !important; }
+                .account-row-hover:hover { background: rgba(59,130,246,0.04) !important; }
                 @keyframes spin { to { transform: rotate(360deg); } }
             `}</style>
         </DashboardLayout>
