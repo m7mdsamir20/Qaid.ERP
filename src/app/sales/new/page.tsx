@@ -370,7 +370,7 @@ export default function NewSalePage() {
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
                     taxInclusive: taxSettings?.isInclusive || false,
-                    lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price) })),
+                    lines: lines.map(l => ({ itemId: l.itemId, quantity: Number(l.quantity), price: Number(l.price), description: l.description })),
                 }),
             });
             if (res.ok) {
@@ -596,7 +596,7 @@ export default function NewSalePage() {
                         {/* Items */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}>
-                                <Package size={12} /> {t('اضافة الاصناف')}
+                                <Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}
                             </div>
 
                             {/* Entry Row - Direct without nested box */}
@@ -694,7 +694,7 @@ export default function NewSalePage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
-                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الضريبة'), t('الإجمالي'), ''].map((h, i) => (
+                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
                                                     <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             ) : (
@@ -716,11 +716,7 @@ export default function NewSalePage() {
                                                 )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
-                                                {isServices && (
-                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
-                                                        {l.taxAmount?.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate}%)</span>
-                                                    </td>
-                                                )}
+
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
@@ -731,13 +727,13 @@ export default function NewSalePage() {
                                             </tr>
                                         ))}
                                         {lines.length === 0 && (
-                                            <tr><td colSpan={(session?.user as any)?.businessType?.toUpperCase() === 'SERVICES' ? 6 : 6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>
+                                            <tr><td colSpan={isServices ? 5 : 6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>
                                         )}
                                     </tbody>
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={isServices ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
+                                                <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
                                                 <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>

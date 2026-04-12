@@ -45,6 +45,7 @@ interface SaleInvoice {
         total: number;
         taxRate?: number;
         taxAmount?: number;
+        description?: string;
     }[];
     returnInvoices?: ReturnInvoice[];
 }
@@ -163,7 +164,10 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 </div>
                                                 ${invoice.lines.map(line => `
                                                     <div class="item-row">
-                                                        <span class="item-name">${line.item?.name || 'صنف'}</span>
+                                                        <span class="item-name">
+                                                            ${line.item?.name || 'صنف'}
+                                                            ${line.description ? `<br/><small style="font-size: 10px; opacity: 0.8; font-weight: normal">${line.description}</small>` : ''}
+                                                        </span>
                                                         <span class="item-qty">${line.quantity}</span>
                                                         <span class="item-total">${fmt(line.total)}</span>
                                                     </div>
@@ -273,6 +277,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
+                                                {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontWeight: 400 }}>{l.description}</div>}
                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
                                             </td>
                                             {!isServices && (
