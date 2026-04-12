@@ -43,10 +43,11 @@ export const GET = withProtection(async (request, session) => {
         ]);
 
         // Calculate System Opening Balance (Current Balance - Net Transactions)
+        // نستخدم inv.total الكامل لأن المدفوع (paidAmount) يظهر كسند قبض منفصل
         let totalNetTransacted = 0;
         allInvoices.forEach(inv => {
-            if (inv.type === 'sale') totalNetTransacted += (inv.total - inv.paidAmount);
-            if (inv.type === 'sale_return') totalNetTransacted -= (inv.total - inv.paidAmount);
+            if (inv.type === 'sale') totalNetTransacted += inv.total;
+            if (inv.type === 'sale_return') totalNetTransacted -= inv.total;
         });
         allVouchers.forEach(v => {
             if (v.type === 'receipt') totalNetTransacted -= v.amount;
@@ -59,8 +60,8 @@ export const GET = withProtection(async (request, session) => {
         if (dateFrom) {
             const df = new Date(dateFrom);
             allInvoices.filter(i => new Date(i.date) < df).forEach(inv => {
-                if (inv.type === 'sale') balanceAtStartOfPeriod += (inv.total - inv.paidAmount);
-                if (inv.type === 'sale_return') balanceAtStartOfPeriod -= (inv.total - inv.paidAmount);
+                if (inv.type === 'sale') balanceAtStartOfPeriod += inv.total;
+                if (inv.type === 'sale_return') balanceAtStartOfPeriod -= inv.total;
             });
             allVouchers.filter(v => new Date(v.date) < df).forEach(v => {
                 if (v.type === 'receipt') balanceAtStartOfPeriod -= v.amount;

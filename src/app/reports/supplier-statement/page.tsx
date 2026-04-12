@@ -221,12 +221,9 @@ export default function SupplierStatementPage() {
                                     </thead>
                                     <tbody>
                                         {data.initialBalance !== 0 && (
-                                            (!dateFrom || new Date(data.supplier.createdAt) >= new Date(dateFrom)) &&
-                                            (!dateTo || new Date(data.supplier.createdAt) <= new Date(new Date(dateTo).setHours(23, 59, 59, 999)))
-                                        ) && (
                                             <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted, fontSize: '11.5px', fontFamily: INTER }}>
-                                                    {data.supplier?.createdAt ? new Date(data.supplier.createdAt).toLocaleDateString('en-GB') : '—'}
+                                                    {dateFrom || (data.supplier?.createdAt ? new Date(data.supplier.createdAt).toLocaleDateString('en-GB') : '—')}
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     <span style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, fontSize: '11px', fontWeight: 900, fontFamily: CAIRO }}>رصيد افتتاحي</span>

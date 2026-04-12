@@ -43,10 +43,11 @@ export const GET = withProtection(async (request, session) => {
         ]);
 
         // Calculate System Opening Balance
+        // نستخدم inv.total الكامل لأن المدفوع (paidAmount) يظهر كسند صرف منفصل
         let totalNetTransacted = 0;
         allInvoices.forEach(inv => {
-            if (inv.type === 'purchase') totalNetTransacted += (inv.total - inv.paidAmount);
-            if (inv.type === 'purchase_return') totalNetTransacted -= (inv.total - inv.paidAmount);
+            if (inv.type === 'purchase') totalNetTransacted += inv.total;
+            if (inv.type === 'purchase_return') totalNetTransacted -= inv.total;
         });
         allVouchers.forEach(v => {
             if (v.type === 'receipt') totalNetTransacted += v.amount;
@@ -60,8 +61,8 @@ export const GET = withProtection(async (request, session) => {
         if (dateFrom) {
             const fromDate = new Date(dateFrom);
             allInvoices.filter(inv => new Date(inv.date) < fromDate).forEach(inv => {
-                if (inv.type === 'purchase') balanceAtStartOfPeriod += (inv.total - inv.paidAmount);
-                if (inv.type === 'purchase_return') balanceAtStartOfPeriod -= (inv.total - inv.paidAmount);
+                if (inv.type === 'purchase') balanceAtStartOfPeriod += inv.total;
+                if (inv.type === 'purchase_return') balanceAtStartOfPeriod -= inv.total;
             });
             allVouchers.filter(v => new Date(v.date) < fromDate).forEach(v => {
                 if (v.type === 'receipt') balanceAtStartOfPeriod += v.amount;

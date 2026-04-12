@@ -67,7 +67,7 @@ export default function CustomerStatementPage() {
     const handlePrint = () => window.print();
 
     const exportToExcel = () => {
-        if (!data || !data.ledger.length) return;
+        if (!data || !data.statement.length) return;
         const excelData = data.statement.map((row: any) => ({
             'التاريخ': new Date(row.date).toLocaleDateString('en-GB'),
             'طبيعة الحركة': row.type,
@@ -221,12 +221,9 @@ export default function CustomerStatementPage() {
                                     </thead>
                                     <tbody>
                                         {data.initialBalance !== 0 && (
-                                            (!dateFrom || new Date(data.customer.createdAt) >= new Date(dateFrom)) &&
-                                            (!dateTo || new Date(data.customer.createdAt) <= new Date(new Date(dateTo).setHours(23, 59, 59, 999)))
-                                        ) && (
                                             <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted, fontSize: '11.5px', fontFamily: INTER }}>
-                                                    {data.customer?.createdAt ? new Date(data.customer.createdAt).toLocaleDateString('en-GB') : '—'}
+                                                    {dateFrom || (data.customer?.createdAt ? new Date(data.customer.createdAt).toLocaleDateString('en-GB') : '—')}
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     <span style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, fontSize: '11px', fontWeight: 900, fontFamily: CAIRO }}>رصيد افتتاحي</span>
