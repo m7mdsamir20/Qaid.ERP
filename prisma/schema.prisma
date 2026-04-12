@@ -21,6 +21,7 @@ model Company {
   website              String?
   logo                 String?
   currency             String               @default("EGP")
+  countryCode          String               @default("EG")
   timezone             String               @default("Africa/Cairo")
   calendarType         String               @default("Gregorian")
   dateFormat           String               @default("DD/MM/YYYY")

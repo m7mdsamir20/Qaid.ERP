@@ -6,7 +6,7 @@ import { withProtection } from '@/lib/apiHandler';
 
 export const POST = withProtection(async (request, session, body) => {
     try {
-        const { name, username, email, phone, password, companyName, businessType = 'TRADING' } = body;
+        const { name, username, email, phone, password, companyName, businessType = 'TRADING', countryCode, currency, timezone } = body;
 
         if (!name || !username || !email || !phone || !password || !companyName)
             return NextResponse.json({ error: 'جميع الحقول مطلوبة' }, { status: 400 });
@@ -17,6 +17,10 @@ export const POST = withProtection(async (request, session, body) => {
         };
 
         const activeModules = MODULES_MAP[businessType] || MODULES_MAP['TRADING'];
+
+        // ✅ تحديد العملة والمنطقة الزمنية تلقائياً من كود الدولة
+        const companyCurrency = currency || 'EGP';
+        const companyTimezone = timezone || 'Africa/Cairo';
 
         // تحقق من عدم التكرار
         const existing = await prisma.user.findFirst({
@@ -29,12 +33,15 @@ export const POST = withProtection(async (request, session, body) => {
 
         // إنشاء البيانات في عملية واحدة لضمان السلامة
         const result = await prisma.$transaction(async (tx) => {
-            // إنشاء الشركة
+            // إنشاء الشركة مع العملة والمنطقة الزمنية المحددة من الدولة
             const company = await tx.company.create({
                 data: {
                     name: companyName,
                     businessType,
                     activeModules: JSON.stringify(activeModules),
+                    currency: companyCurrency,
+                    countryCode: countryCode || 'EG',
+                    timezone: companyTimezone,
                     isActive: true,
                     maxUsers: 5
                 }

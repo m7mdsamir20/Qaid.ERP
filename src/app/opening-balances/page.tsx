@@ -14,6 +14,7 @@ import {
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useTranslation } from '@/lib/i18n';
+import { getCurrencySymbol } from '@/lib/currency';
 
 interface FinancialYear { id: string; name: string; isOpen: boolean; openingBalancesLocked: boolean; startDate: string; }
 interface Account { id: string; code: string; name: string; nature: string; type: string; isParent: boolean; accountCategory?: string; }
@@ -24,7 +25,7 @@ const fmtDisplay = (n: number) => n.toLocaleString('en-US', { minimumFractionDig
 
 export default function OpeningBalancesPage() {
     const { data: session } = useSession();
-    const { t } = useTranslation();
+    const { lang, t } = useTranslation();
 
     const typeLabels: Record<string, string> = {
         asset: t('أصول'), liability: t('خصوم'), equity: t('حقوق ملكية'),
@@ -67,8 +68,7 @@ export default function OpeningBalancesPage() {
         fetch('/api/settings').then(r => r.json()).then(data => {
             const cur = data?.company?.currency;
             if (cur) {
-                const maps: any = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'USD': 'دولار', 'AED': 'د.إ', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب' };
-                setCurrencySymbol(maps[cur] || cur);
+                setCurrencySymbol(getCurrencySymbol(cur, lang));
             }
         }).catch(() => {});
     }, []);
@@ -105,19 +105,35 @@ export default function OpeningBalancesPage() {
     const handleSave = async () => {
         if (isReadlyOnly) return;
         setSaving(true);
-        const promises: Promise<Response>[] = [];
-        balances.forEach((val, accountId) => {
-            if (val.debit > 0 || val.credit > 0) {
-                promises.push(fetch('/api/opening-balances', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ accountId, financialYearId: selectedYear, debit: val.debit, credit: val.credit }),
-                }));
+        try {
+            // Collect all non-zero balances into a single batch
+            const batchBalances: { accountId: string; debit: number; credit: number }[] = [];
+            balances.forEach((val, accountId) => {
+                if (val.debit > 0 || val.credit > 0) {
+                    batchBalances.push({ accountId, debit: val.debit, credit: val.credit });
+                }
+            });
+
+            // Send a single batch request instead of parallel individual requests
+            const res = await fetch('/api/opening-balances', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    batch: true,
+                    financialYearId: selectedYear,
+                    balances: batchBalances,
+                }),
+            });
+
+            if (res.ok) {
+                setSaved(true);
+                setTimeout(() => setSaved(false), 3000);
             }
-        });
-        await Promise.all(promises);
-        setSaving(false); setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+        } catch (e) {
+            console.error('Save error:', e);
+        } finally {
+            setSaving(false);
+        }
     };
 
     const handleCarryForward = async () => {

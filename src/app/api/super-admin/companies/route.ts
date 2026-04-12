@@ -28,7 +28,7 @@ export const POST = withProtection(async (request, session, body) => {
     try {
         const {
             // بيانات الشركة
-            name, nameEn, phone, email, address,
+            name, nameEn, phone, email, address, countryCode,
             // بيانات المدير
             adminName, adminUsername, adminEmail, adminPhone, adminPassword,
             // بيانات الاشتراك
@@ -51,6 +51,7 @@ export const POST = withProtection(async (request, session, body) => {
                     phone:    phone    || null,
                     email:    email    || null,
                     address:  address  || null,
+                    countryCode: countryCode || 'EG',
                     isActive: true,
                     maxUsers: parseInt(maxUsers) || 3,
                 },

@@ -8,26 +8,26 @@ import { Eye, EyeOff, Loader2, ChevronDown, Search } from 'lucide-react';
 import { C, CAIRO, IS, LS, focusIn, focusOut, THEME } from '@/constants/theme';
 
 const COUNTRIES = [
-    { code: 'EG', dial: '+20', name: 'مصر', flag: '🇪🇬' },
-    { code: 'SA', dial: '+966', name: 'السعودية', flag: '🇸🇦' },
-    { code: 'AE', dial: '+971', name: 'الإمارات', flag: '🇦🇪' },
-    { code: 'KW', dial: '+965', name: 'الكويت', flag: '🇰🇼' },
-    { code: 'QA', dial: '+974', name: 'قطر', flag: '🇶🇦' },
-    { code: 'BH', dial: '+973', name: 'البحرين', flag: '🇧🇭' },
-    { code: 'OM', dial: '+968', name: 'عُمان', flag: '🇴🇲' },
-    { code: 'JO', dial: '+962', name: 'الأردن', flag: '🇯🇴' },
-    { code: 'LB', dial: '+961', name: 'لبنان', flag: '🇱🇧' },
-    { code: 'IQ', dial: '+964', name: 'العراق', flag: '🇮🇶' },
-    { code: 'SY', dial: '+963', name: 'سوريا', flag: '🇸🇾' },
-    { code: 'YE', dial: '+967', name: 'اليمن', flag: '🇾🇪' },
-    { code: 'LY', dial: '+218', name: 'ليبيا', flag: '🇱🇾' },
-    { code: 'TN', dial: '+216', name: 'تونس', flag: '🇹🇳' },
-    { code: 'DZ', dial: '+213', name: 'الجزائر', flag: '🇩🇿' },
-    { code: 'MA', dial: '+212', name: 'المغرب', flag: '🇲🇦' },
-    { code: 'SD', dial: '+249', name: 'السودان', flag: '🇸🇩' },
-    { code: 'US', dial: '+1', name: 'أمريكا', flag: '🇺🇸' },
-    { code: 'GB', dial: '+44', name: 'بريطانيا', flag: '🇬🇧' },
-    { code: 'TR', dial: '+90', name: 'تركيا', flag: '🇹🇷' },
+    { code: 'EG', dial: '+20', name: 'مصر', flag: '🇪🇬', currency: 'EGP', timezone: 'Africa/Cairo' },
+    { code: 'SA', dial: '+966', name: 'السعودية', flag: '🇸🇦', currency: 'SAR', timezone: 'Asia/Riyadh' },
+    { code: 'AE', dial: '+971', name: 'الإمارات', flag: '🇦🇪', currency: 'AED', timezone: 'Asia/Dubai' },
+    { code: 'KW', dial: '+965', name: 'الكويت', flag: '🇰🇼', currency: 'KWD', timezone: 'Asia/Kuwait' },
+    { code: 'QA', dial: '+974', name: 'قطر', flag: '🇶🇦', currency: 'QAR', timezone: 'Asia/Qatar' },
+    { code: 'BH', dial: '+973', name: 'البحرين', flag: '🇧🇭', currency: 'BHD', timezone: 'Asia/Bahrain' },
+    { code: 'OM', dial: '+968', name: 'عُمان', flag: '🇴🇲', currency: 'OMR', timezone: 'Asia/Muscat' },
+    { code: 'JO', dial: '+962', name: 'الأردن', flag: '🇯🇴', currency: 'JOD', timezone: 'Asia/Amman' },
+    { code: 'LB', dial: '+961', name: 'لبنان', flag: '🇱🇧', currency: 'LBP', timezone: 'Asia/Beirut' },
+    { code: 'IQ', dial: '+964', name: 'العراق', flag: '🇮🇶', currency: 'IQD', timezone: 'Asia/Baghdad' },
+    { code: 'SY', dial: '+963', name: 'سوريا', flag: '🇸🇾', currency: 'SYP', timezone: 'Asia/Damascus' },
+    { code: 'YE', dial: '+967', name: 'اليمن', flag: '🇾🇪', currency: 'YER', timezone: 'Asia/Aden' },
+    { code: 'LY', dial: '+218', name: 'ليبيا', flag: '🇱🇾', currency: 'LYD', timezone: 'Africa/Tripoli' },
+    { code: 'TN', dial: '+216', name: 'تونس', flag: '🇹🇳', currency: 'TND', timezone: 'Africa/Tunis' },
+    { code: 'DZ', dial: '+213', name: 'الجزائر', flag: '🇩🇿', currency: 'DZD', timezone: 'Africa/Algiers' },
+    { code: 'MA', dial: '+212', name: 'المغرب', flag: '🇲🇦', currency: 'MAD', timezone: 'Africa/Casablanca' },
+    { code: 'SD', dial: '+249', name: 'السودان', flag: '🇸🇩', currency: 'SDG', timezone: 'Africa/Khartoum' },
+    { code: 'US', dial: '+1', name: 'أمريكا', flag: '🇺🇸', currency: 'USD', timezone: 'America/New_York' },
+    { code: 'GB', dial: '+44', name: 'بريطانيا', flag: '🇬🇧', currency: 'GBP', timezone: 'Europe/London' },
+    { code: 'TR', dial: '+90', name: 'تركيا', flag: '🇹🇷', currency: 'TRY', timezone: 'Europe/Istanbul' },
 ];
 
 const BUSINESS_TYPES = [
@@ -89,7 +89,13 @@ export default function RegisterPage() {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...form, phone: fullPhone }),
+                body: JSON.stringify({
+                    ...form,
+                    phone: fullPhone,
+                    countryCode: selectedCountry.code,
+                    currency: selectedCountry.currency,
+                    timezone: selectedCountry.timezone,
+                }),
             });
             const data = await res.json();
             if (!res.ok) { setError(data.error); setLoading(false); return; }

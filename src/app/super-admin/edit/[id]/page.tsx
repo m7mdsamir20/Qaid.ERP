@@ -125,7 +125,7 @@ export default function EditCompanyPage() {
 
     const [form, setForm] = useState({
         // الشركة
-        name: '', nameEn: '', phone: '', email: '', address: '', businessType: 'TRADING',
+        name: '', nameEn: '', phone: '', email: '', address: '', businessType: 'TRADING', countryCode: 'EG',
         isActive: true,
         // المدير
         adminName: '', adminEmail: '', adminPhone: '',
@@ -223,6 +223,7 @@ export default function EditCompanyPage() {
                     email: c.email || '',
                     address: c.address || '',
                     businessType: bType,
+                    countryCode: c.countryCode || 'EG',
                     isActive: c.isActive ?? true,
                     adminName: admin?.name || '',
                     adminEmail: admin?.email || '',
@@ -283,6 +284,7 @@ export default function EditCompanyPage() {
                     email: form.email,
                     address: form.address,
                     businessType: form.businessType,
+                    countryCode: form.countryCode,
                     isActive: form.isActive,
                     adminName: form.adminName,
                     adminEmail: form.adminEmail,
@@ -402,6 +404,46 @@ export default function EditCompanyPage() {
                             <div>
                                 <label style={LS}>العنوان</label>
                                 <input type="text" value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={IS} />
+                            </div>
+                            <div style={{ gridColumn: 'span 2' }}>
+                                <label style={LS}>الدولة <span style={{ color: C.danger }}>*</span></label>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+                                    {[
+                                        { code: 'EG', name: 'مصر', flag: '🇪🇬' },
+                                        { code: 'SA', name: 'السعودية', flag: '🇸🇦' },
+                                        { code: 'AE', name: 'الإمارات', flag: '🇦🇪' },
+                                        { code: 'KW', name: 'الكويت', flag: '🇰🇼' },
+                                        { code: 'QA', name: 'قطر', flag: '🇶🇦' },
+                                        { code: 'BH', name: 'البحرين', flag: '🇧🇭' },
+                                        { code: 'OM', name: 'عمان', flag: '🇴🇲' },
+                                        { code: 'JO', name: 'الأردن', flag: '🇯🇴' },
+                                        { code: 'IQ', name: 'العراق', flag: '🇮🇶' },
+                                        { code: 'LY', name: 'ليبيا', flag: '🇱🇾' },
+                                        { code: 'SD', name: 'السودان', flag: '🇸🇩' },
+                                        { code: 'LB', name: 'لبنان', flag: '🇱🇧' },
+                                        { code: 'SY', name: 'سوريا', flag: '🇸🇾' },
+                                        { code: 'YE', name: 'اليمن', flag: '🇾🇪' },
+                                        { code: 'TN', name: 'تونس', flag: '🇹🇳' },
+                                        { code: 'DZ', name: 'الجزائر', flag: '🇩🇿' },
+                                        { code: 'MA', name: 'المغرب', flag: '🇲🇦' },
+                                        { code: 'TR', name: 'تركيا', flag: '🇹🇷' },
+                                        { code: 'US', name: 'أمريكا', flag: '🇺🇸' },
+                                        { code: 'GB', name: 'بريطانيا', flag: '🇬🇧' },
+                                    ].map(c => (
+                                        <button key={c.code} type="button" onClick={() => setForm(f => ({ ...f, countryCode: c.code }))}
+                                            style={{
+                                                height: '44px', borderRadius: '10px',
+                                                border: `1px solid ${form.countryCode === c.code ? C.primary : 'rgba(255,255,255,0.06)'}`,
+                                                background: form.countryCode === c.code ? `${C.primary}15` : 'rgba(255,255,255,0.02)',
+                                                color: form.countryCode === c.code ? C.primary : C.textSecondary,
+                                                fontSize: '12px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
+                                            }}>
+                                            <span style={{ fontSize: '16px' }}>{c.flag}</span>
+                                            {c.name}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
                                 <label style={LS}>نوع النشاط <span style={{ color: C.danger }}>*</span></label>

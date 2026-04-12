@@ -3,18 +3,18 @@
 import { useTranslation } from '@/lib/i18n';
 import { useState } from 'react';
 import { C, CAIRO, INTER } from '@/constants/theme';
-import { Globe, Coins, Calendar, Clock, ChevronDown, Check, Search } from 'lucide-react';
+import { Globe, Coins, Calendar, Clock, ChevronDown, Check, Search, MapPin } from 'lucide-react';
 import { TabHeader } from './shared';
 
 interface GeneralTabProps {
     isEditMode: boolean;
     setIsEditMode: (v: boolean) => void;
     generalForm: {
-        currency: string; timezone: string; calendarType: string; dateFormat: string; customCurrency: string;
+        currency: string; timezone: string; calendarType: string; dateFormat: string; customCurrency: string; countryCode: string;
     };
     setGeneralForm: (updater: any) => void;
     savedGeneral: {
-        currency: string; timezone: string; calendarType: string; dateFormat: string; customCurrency: string;
+        currency: string; timezone: string; calendarType: string; dateFormat: string; customCurrency: string; countryCode: string;
     };
     isSaving: boolean;
     handleCancel: () => void;
@@ -45,8 +45,40 @@ export default function GeneralTab({
         TRY: t('الليرة التركية (TRY)'),
         EUR: t('اليورو (EUR)'),
         GBP: t('الجنيه الإسترليني (GBP)'),
+        LBP: t('الليرة اللبنانية (LBP)'),
+        SYP: t('الليرة السورية (SYP)'),
+        YER: t('الريال اليمني (YER)'),
+        TND: t('الدينار التونسي (TND)'),
+        DZD: t('الدينار الجزائري (DZD)'),
+        MAD: t('الدرهم المغربي (MAD)'),
+        SDG: t('الجنيه السوداني (SDG)'),
         OTHER: t('أخرى (من اختيارك)')
     };
+
+    const COUNTRY_OPTIONS = [
+        { code: 'EG', name: t('مصر'), flag: '🇪🇬', currency: 'EGP', timezone: 'Africa/Cairo' },
+        { code: 'SA', name: t('السعودية'), flag: '🇸🇦', currency: 'SAR', timezone: 'Asia/Riyadh' },
+        { code: 'AE', name: t('الإمارات'), flag: '🇦🇪', currency: 'AED', timezone: 'Asia/Dubai' },
+        { code: 'KW', name: t('الكويت'), flag: '🇰🇼', currency: 'KWD', timezone: 'Asia/Kuwait' },
+        { code: 'QA', name: t('قطر'), flag: '🇶🇦', currency: 'QAR', timezone: 'Asia/Qatar' },
+        { code: 'BH', name: t('البحرين'), flag: '🇧🇭', currency: 'BHD', timezone: 'Asia/Bahrain' },
+        { code: 'OM', name: t('عمان'), flag: '🇴🇲', currency: 'OMR', timezone: 'Asia/Muscat' },
+        { code: 'JO', name: t('الأردن'), flag: '🇯🇴', currency: 'JOD', timezone: 'Asia/Amman' },
+        { code: 'IQ', name: t('العراق'), flag: '🇮🇶', currency: 'IQD', timezone: 'Asia/Baghdad' },
+        { code: 'LY', name: t('ليبيا'), flag: '🇱🇾', currency: 'LYD', timezone: 'Africa/Tripoli' },
+        { code: 'SD', name: t('السودان'), flag: '🇸🇩', currency: 'SDG', timezone: 'Africa/Khartoum' },
+        { code: 'LB', name: t('لبنان'), flag: '🇱🇧', currency: 'LBP', timezone: 'Asia/Beirut' },
+        { code: 'SY', name: t('سوريا'), flag: '🇸🇾', currency: 'SYP', timezone: 'Asia/Damascus' },
+        { code: 'YE', name: t('اليمن'), flag: '🇾🇪', currency: 'YER', timezone: 'Asia/Aden' },
+        { code: 'TN', name: t('تونس'), flag: '🇹🇳', currency: 'TND', timezone: 'Africa/Tunis' },
+        { code: 'DZ', name: t('الجزائر'), flag: '🇩🇿', currency: 'DZD', timezone: 'Africa/Algiers' },
+        { code: 'MA', name: t('المغرب'), flag: '🇲🇦', currency: 'MAD', timezone: 'Africa/Casablanca' },
+        { code: 'TR', name: t('تركيا'), flag: '🇹🇷', currency: 'TRY', timezone: 'Europe/Istanbul' },
+        { code: 'US', name: t('أمريكا'), flag: '🇺🇸', currency: 'USD', timezone: 'America/New_York' },
+        { code: 'GB', name: t('بريطانيا'), flag: '🇬🇧', currency: 'GBP', timezone: 'Europe/London' },
+    ];
+
+    const selectedCountry = COUNTRY_OPTIONS.find(c => c.code === generalForm.countryCode) || COUNTRY_OPTIONS[0];
 
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
@@ -75,6 +107,68 @@ export default function GeneralTab({
                 </div>
 
                 <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', marginBottom: '24px' }}>
+
+                    {/* ── الدولة ── */}
+                    <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                            <div style={{ color: isEditMode ? C.primary : C.textMuted }}><MapPin size={15} /></div>
+                            <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الدولة')}</span>
+                        </div>
+                        <div style={{ flex: 1, padding: '12px 20px', position: 'relative' }} className="custom-dropdown">
+                            {!isEditMode ? (
+                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{ fontSize: '18px' }}>{selectedCountry.flag}</span>
+                                    {selectedCountry.name}
+                                </div>
+                            ) : (
+                                <>
+                                    <button type="button"
+                                        onClick={() => setOpenDropdown(openDropdown === 'country' ? null : 'country')}
+                                        style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '280px', height: '40px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.primary}40`, background: `${C.primary}10`, color: C.textPrimary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                                        <ChevronDown size={16} style={{ color: C.primary, transform: openDropdown === 'country' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
+                                        <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                            <span style={{ fontSize: '16px' }}>{selectedCountry.flag}</span>
+                                            {selectedCountry.name}
+                                        </span>
+                                    </button>
+                                    {openDropdown === 'country' && (
+                                        <div style={{ position: 'absolute', top: '44px', insetInlineEnd: 20, zIndex: 999, width: '280px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                                            <div style={{ maxHeight: '220px', overflowY: 'auto' }} className="custom-scrollbar">
+                                                {COUNTRY_OPTIONS.map((opt, i, arr) => {
+                                                    const selected = generalForm.countryCode === opt.code;
+                                                    return (
+                                                        <button key={opt.code} type="button"
+                                                            onClick={() => {
+                                                                setGeneralForm((p: any) => ({
+                                                                    ...p,
+                                                                    countryCode: opt.code,
+                                                                    currency: opt.currency,
+                                                                    timezone: opt.timezone
+                                                                }));
+                                                                setOpenDropdown(null);
+                                                            }}
+                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', textAlign: 'start', fontFamily: CAIRO }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                                <span style={{ fontSize: '16px' }}>{opt.flag}</span>
+                                                                <span>{opt.name}</span>
+                                                            </div>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                                <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: INTER }}>{opt.code}</span>
+                                                                {selected && <Check size={14} style={{ color: C.primary }} />}
+                                                            </div>
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
+                                    <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '6px', fontFamily: CAIRO }}>
+                                        {t('تغيير الدولة سيغيّر العملة والمنطقة الزمنية تلقائياً')}
+                                    </div>
+                                </>
+                            )}
+                        </div>
+                    </div>
 
                     {/* ── العملة ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
@@ -127,6 +221,13 @@ export default function GeneralTab({
                                                     { value: 'TRY', label: t('الليرة التركية'), code: 'TRY' },
                                                     { value: 'EUR', label: t('اليورو'), code: 'EUR' },
                                                     { value: 'GBP', label: t('الجنيه الإسترليني'), code: 'GBP' },
+                                                    { value: 'LBP', label: t('الليرة اللبنانية'), code: 'LBP' },
+                                                    { value: 'SYP', label: t('الليرة السورية'), code: 'SYP' },
+                                                    { value: 'YER', label: t('الريال اليمني'), code: 'YER' },
+                                                    { value: 'TND', label: t('الدينار التونسي'), code: 'TND' },
+                                                    { value: 'DZD', label: t('الدينار الجزائري'), code: 'DZD' },
+                                                    { value: 'MAD', label: t('الدرهم المغربي'), code: 'MAD' },
+                                                    { value: 'SDG', label: t('الجنيه السوداني'), code: 'SDG' },
                                                     { value: 'OTHER', label: t('عملة أخرى (كتابة يدوية)'), code: '???' },
                                                 ].filter(opt =>
                                                     opt.label.includes(currencySearch) ||
@@ -196,7 +297,7 @@ export default function GeneralTab({
                                     </button>
                                     {openDropdown === 'timezone' && (
                                         <div style={{ position: 'absolute', top: '44px', insetInlineEnd: 20, zIndex: 999, width: '280px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-                                            {['Africa/Cairo', 'Asia/Riyadh', 'Asia/Dubai', 'Europe/London'].map((tz, i, arr) => {
+                                            {['Africa/Cairo', 'Asia/Riyadh', 'Asia/Dubai', 'Asia/Kuwait', 'Asia/Qatar', 'Asia/Bahrain', 'Asia/Muscat', 'Asia/Amman', 'Africa/Tripoli', 'Asia/Baghdad', 'Asia/Beirut', 'Asia/Damascus', 'Asia/Aden', 'Africa/Tunis', 'Africa/Algiers', 'Africa/Casablanca', 'Africa/Khartoum', 'Europe/Istanbul', 'Europe/London'].map((tz, i, arr) => {
                                                 const selected = generalForm.timezone === tz;
                                                 return (
                                                     <button key={tz} type="button"

@@ -213,8 +213,8 @@ export const DELETE = withProtection(async (request, session) => {
         // ② صنف عنده حركات مخزنية: تحويلات أو جرد (ممنوع الحذف)
         const linkedTransfers = await prisma.warehouseTransferLine.count({ where: { itemId: id } });
         const linkedStocktakings = await prisma.stocktakingLine.count({ where: { itemId: id } });
-        const otherMovements = await prisma.stockMovement.count({ 
-            where: { itemId: id, type: { notIn: ['opening'] } } 
+        const otherMovements = await prisma.stockMovement.count({
+            where: { itemId: id, type: { notIn: ['opening'] } }
         });
 
         if (linkedTransfers > 0 || linkedStocktakings > 0 || otherMovements > 0) {
@@ -224,7 +224,7 @@ export const DELETE = withProtection(async (request, session) => {
         }
 
         // ③ جيب بيانات الصنف للتحقق من الرصيد الافتتاحي
-        const item = await prisma.item.findFirst({ 
+        const item = await prisma.item.findFirst({
             where: { id, companyId },
             include: { stocks: true }
         });

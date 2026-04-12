@@ -80,11 +80,11 @@ function SettingsContent() {
     });
     const [generalForm, setGeneralForm] = useState({
         currency: 'EGP', timezone: 'Africa/Cairo', calendarType: 'Gregorian', dateFormat: 'DD/MM/YYYY',
-        customCurrency: ''
+        customCurrency: '', countryCode: 'EG'
     });
     const [savedGeneral, setSavedGeneral] = useState({
         currency: 'EGP', timezone: 'Africa/Cairo', calendarType: 'Gregorian', dateFormat: 'DD/MM/YYYY',
-        customCurrency: ''
+        customCurrency: '', countryCode: 'EG'
     });
     const [savedCompanyForm, setSavedCompanyForm] = useState({
         name: '', nameEn: '', phone: '', email: '', address: '',
@@ -507,7 +507,7 @@ function SettingsContent() {
                 if (data.company) {
                     const cForm = { name: data.company.name || '', nameEn: data.company.nameEn || '', phone: data.company.phone || '', email: data.company.email || '', address: data.company.address || '', taxNumber: data.company.taxNumber || '', commercialRegister: data.company.commercialRegister || '', website: data.company.website || '', logo: data.company.logo || '' };
 
-                    const standardCurrencies = ['EGP', 'SAR', 'AED', 'KWD', 'USD', 'QAR', 'BHD', 'OMR', 'JOD', 'LYD', 'IQD', 'TRY', 'EUR', 'GBP'];
+                    const standardCurrencies = ['EGP', 'SAR', 'AED', 'KWD', 'USD', 'QAR', 'BHD', 'OMR', 'JOD', 'LYD', 'IQD', 'TRY', 'EUR', 'GBP', 'LBP', 'SYP', 'YER', 'TND', 'DZD', 'MAD', 'SDG'];
                     const isCustom = data.company.currency && !standardCurrencies.includes(data.company.currency);
 
                     const gForm = {
@@ -515,7 +515,8 @@ function SettingsContent() {
                         timezone: data.company.timezone || 'Africa/Cairo',
                         calendarType: data.company.calendarType || 'Gregorian',
                         dateFormat: data.company.dateFormat || 'DD/MM/YYYY',
-                        customCurrency: data.company.currency || ''
+                        customCurrency: data.company.currency || '',
+                        countryCode: data.company.countryCode || 'EG'
                     };
                     setCompanyForm(cForm);
                     setSavedCompanyForm(cForm);

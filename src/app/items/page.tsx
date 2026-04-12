@@ -74,7 +74,7 @@ export default function ItemsPage() {
                 fetch('/api/units'),
                 fetch('/api/settings')
             ]);
-            
+
             if (iRes.ok) {
                 const data = await iRes.json();
                 setItems(Array.isArray(data) ? data : (data.items || []));
@@ -97,9 +97,9 @@ export default function ItemsPage() {
         id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active'
     });
 
-    useEffect(() => { 
+    useEffect(() => {
         setIsMounted(true);
-        fetchData(); 
+        fetchData();
     }, [fetchData]);
 
     const formatWithCommas = (val: string | number) => {
@@ -131,8 +131,8 @@ export default function ItemsPage() {
 
             setForm({
                 id: '', code: nextCode, barcode: '', imageUrl: '', name: '', description: '', categoryId: '',
-                unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, 
-                warehouseId: localStorage.getItem('last_warehouse_id') || '', 
+                unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0,
+                warehouseId: localStorage.getItem('last_warehouse_id') || '',
                 initialQuantity: 0, status: 'active'
             });
             setEditingId(null);
@@ -173,7 +173,7 @@ export default function ItemsPage() {
 
     const handleCreateCategory = async (e: React.FormEvent) => {
         e.preventDefault();
-        if(!newCatName.trim()) return;
+        if (!newCatName.trim()) return;
         setIsSavingSub(true);
         try {
             const res = await fetch('/api/categories', {
@@ -181,19 +181,19 @@ export default function ItemsPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: newCatName })
             });
-            if(res.ok) {
+            if (res.ok) {
                 const data = await res.json();
                 setNewCatName('');
                 setShowAddCat(false);
                 await fetchData();
                 setForm(prev => ({ ...prev, categoryId: data.id }));
             }
-        } catch {} finally { setIsSavingSub(false); }
+        } catch { } finally { setIsSavingSub(false); }
     };
 
     const handleCreateUnit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if(!newUnitName.trim()) return;
+        if (!newUnitName.trim()) return;
         setIsSavingSub(true);
         try {
             const res = await fetch('/api/units', {
@@ -201,14 +201,14 @@ export default function ItemsPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: newUnitName })
             });
-            if(res.ok) {
+            if (res.ok) {
                 const data = await res.json();
                 setNewUnitName('');
                 setShowAddUnit(false);
                 await fetchData();
                 setForm(prev => ({ ...prev, unitId: data.id }));
             }
-        } catch {} finally { setIsSavingSub(false); }
+        } catch { } finally { setIsSavingSub(false); }
     };
 
     const confirmDelete = async () => {
@@ -443,7 +443,7 @@ export default function ItemsPage() {
                     maxWidth="640px"
                 >
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        
+
                         <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'SERVICES' || !usesBarcode) ? '140px 1fr' : '120px 160px 1fr', gap: '14px' }}>
                             <div>
                                 <label style={LS}>{companyBusinessType === 'SERVICES' ? t('كود الخدمة') : t('كود الصنف')}</label>
@@ -452,7 +452,7 @@ export default function ItemsPage() {
                                     <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
                                 </div>
                             </div>
-                            
+
                             {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                 <div>
                                     <label style={LS}>{t('الباركود الإضافي')}</label>
@@ -485,13 +485,13 @@ export default function ItemsPage() {
                             {companyBusinessType === 'SERVICES' ? (
                                 <div>
                                     <label style={LS}>{t('حالة الخدمة')}</label>
-                                    <CustomSelect 
-                                        value={form.status} 
-                                        onChange={v => setForm({ ...form, status: v })} 
+                                    <CustomSelect
+                                        value={form.status}
+                                        onChange={v => setForm({ ...form, status: v })}
                                         options={[
                                             { value: 'active', label: t('نشط'), icon: Check },
                                             { value: 'inactive', label: t('غير نشط'), icon: X }
-                                        ]} 
+                                        ]}
                                     />
                                 </div>
                             ) : (
@@ -516,9 +516,9 @@ export default function ItemsPage() {
                         {companyBusinessType === 'SERVICES' ? (
                             <div>
                                 <label style={LS}>{t('وصف الخدمة')}</label>
-                                <textarea 
-                                    value={form.description} 
-                                    onChange={e => setForm({ ...form, description: e.target.value })} 
+                                <textarea
+                                    value={form.description}
+                                    onChange={e => setForm({ ...form, description: e.target.value })}
                                     placeholder={t("اكتب تفاصيل الخدمة هنا ليتم سحبها في الفاتورة...")}
                                     style={{ ...IS, height: '100px', padding: '10px', resize: 'none' }}
                                     onFocus={focusIn} onBlur={focusOut}
@@ -608,11 +608,11 @@ export default function ItemsPage() {
                             <div id="barcode-svg-container" style={{ display: 'none' }}>
                                 <Barcode value={printBarcodeItem.barcode || printBarcodeItem.code} width={1.5} height={40} fontSize={12} displayValue={true} background="transparent" margin={0} />
                             </div>
-                            
+
                             <div style={{ background: '#fff', padding: '20px 15px', borderRadius: '16px', boxShadow: `0 8px 30px rgba(0,0,0,0.15)`, border: `1px solid ${C.border}` }}>
                                 <Barcode value={printBarcodeItem.barcode || printBarcodeItem.code} width={1.8} height={50} fontSize={14} displayValue={true} background="#fff" margin={0} />
                             </div>
-                            
+
                             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 <label style={{ ...LS, textAlign: 'center' }}>عدد النسخ المراد طباعتها</label>
                                 <div style={{ display: 'flex', gap: '10px' }}>
@@ -628,23 +628,23 @@ export default function ItemsPage() {
                                 const svgContainer = document.getElementById('barcode-svg-container');
                                 const svgElement = svgContainer ? svgContainer.innerHTML : '';
                                 const barcodeName = printBarcodeItem.name;
-                                
+
                                 let htmlString = `<!DOCTYPE html><html dir="${isRtl ? 'rtl' : 'ltr'}"><head><title>طباعة باركود</title>`;
                                 htmlString += '<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }';
                                 htmlString += '.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }';
                                 htmlString += '.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }';
                                 htmlString += 'svg { max-width: 100%; height: auto; }</style></head>';
                                 htmlString += '<body onload="setTimeout(() => { window.print(); window.close(); }, 300)">';
-                                
+
                                 for (let i = 0; i < barcodeCopies; i++) {
                                     htmlString += '<div class="barcode-ticket">';
                                     htmlString += '<div class="barcode-name">' + barcodeName + '</div>';
                                     htmlString += svgElement || '';
                                     htmlString += '</div>';
                                 }
-                                
+
                                 htmlString += '</body></html>';
-                                
+
                                 printWindow.document.write(htmlString);
                                 printWindow.document.close();
                             }} style={{ ...BTN_PRIMARY(false, false), width: '100%', height: '48px', marginTop: '10px' }}>

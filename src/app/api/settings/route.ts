@@ -104,7 +104,7 @@ export const PUT = withProtection(async (request, session, body) => {
         if (action === 'update_general') {
             const updated = await prisma.company.update({
                 where: { id: companyId },
-                data: { currency: data.currency, timezone: data.timezone, calendarType: data.calendarType, dateFormat: data.dateFormat }
+                data: { currency: data.currency, timezone: data.timezone, calendarType: data.calendarType, dateFormat: data.dateFormat, countryCode: data.countryCode }
             });
             return NextResponse.json(updated);
         }

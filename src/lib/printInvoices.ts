@@ -10,6 +10,7 @@ export interface CompanyInfo {
     address?: string;
     logo?: string;
     currency?: string;
+    countryCode?: string;
     branchName?: string;
     businessType?: string;
 }
@@ -24,12 +25,46 @@ const TITLES: Record<InvoiceType, string> = {
     'purchase-return': 'مرتجع مشتريات',
 };
 
+const TITLES_EN: Record<InvoiceType, string> = {
+    'sale': 'Sales Invoice',
+    'purchase': 'Purchase Invoice',
+    'sale-return': 'Sales Return',
+    'purchase-return': 'Purchase Return',
+};
+
 const PREFIXES: Record<InvoiceType, string> = {
     'sale': 'SAL',
     'purchase': 'PUR',
     'sale-return': 'SLR',
     'purchase-return': 'PRR',
 };
+
+// ═══════════════════════════════════════════════
+//  ZATCA QR Code TLV Generator (Saudi Arabia)
+// ═══════════════════════════════════════════════
+function generateZatcaTLV(sellerName: string, vatNumber: string, timestamp: string, totalWithVat: string, vatAmount: string): string {
+    const encoder = new TextEncoder();
+    const tlvBuffers: Uint8Array[] = [];
+    const values = [sellerName, vatNumber, timestamp, totalWithVat, vatAmount];
+    values.forEach((val, idx) => {
+        const tag = idx + 1;
+        const encoded = encoder.encode(val);
+        const len = encoded.length;
+        const buf = new Uint8Array(2 + len);
+        buf[0] = tag;
+        buf[1] = len;
+        buf.set(encoded, 2);
+        tlvBuffers.push(buf);
+    });
+    const totalLen = tlvBuffers.reduce((s, b) => s + b.length, 0);
+    const result = new Uint8Array(totalLen);
+    let offset = 0;
+    tlvBuffers.forEach(buf => { result.set(buf, offset); offset += buf.length; });
+    // Convert to base64
+    let binary = '';
+    result.forEach(byte => binary += String.fromCharCode(byte));
+    return btoa(binary);
+}
 
 // ═══════════════════════════════════════════════
 //  A4 INVOICE (مبيعات / مشتريات / مرتجعات)
@@ -46,8 +81,12 @@ export function printA4Invoice(
     } = {}
 ) {
     const sym = getCurrencySymbol(company.currency || 'EGP');
+    const country = (company.countryCode || 'EG').toUpperCase();
+    const isSaudi = country === 'SA';
+    const isBilingual = country !== 'EG'; // كل الدول العربية ماعدا مصر
     const co = {
         name: company.name || 'اسم الشركة',
+        nameEn: company.nameEn || '',
         addr: company.address || '',
         phone: company.phone || '',
         email: company.email || '',
@@ -58,6 +97,7 @@ export function printA4Invoice(
     };
 
     const title = TITLES[type];
+    const titleEn = TITLES_EN[type];
     const prefix = PREFIXES[type];
     const isReturn = type.includes('return');
     const isSale = type === 'sale' || type === 'sale-return';
@@ -65,6 +105,7 @@ export function printA4Invoice(
 
     const party = isSale ? (invoice.customer || null) : (invoice.supplier || null);
     const partyLabel = isSale ? 'العميل' : 'المورد';
+    const partyLabelEn = isSale ? 'Customer' : 'Supplier';
 
     // Ensure lines is always an array and try to find it in common properties
     const rawLines = invoice.lines || invoice.InvoiceLine || invoice.items || [];
@@ -78,8 +119,10 @@ export function printA4Invoice(
     const remaining = Math.max(0, total - paid);
     const partyBalance = options.partyBalance ?? null;
 
-    const date = new Date(invoice.date || new Date())
-        .toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+    const invoiceDate = new Date(invoice.date || new Date());
+    const date = invoiceDate.toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+    const dateEn = invoiceDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    const dateISO = invoiceDate.toISOString();
 
     const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
 
@@ -91,12 +134,28 @@ export function printA4Invoice(
     const invoiceTaxAmount = Number(invoice.taxAmount || 0);
     const taxInclusive = invoice.taxInclusive || false;
 
+    // ZATCA QR Code for Saudi Arabia
+    const totalTaxAmount = invoiceTaxAmount > 0 ? invoiceTaxAmount
+        : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+    const zatcaQR = isSaudi ? generateZatcaTLV(
+        co.name,
+        co.tax || '000000000000000',
+        dateISO,
+        total.toFixed(2),
+        totalTaxAmount.toFixed(2)
+    ) : '';
+
+    // Bilingual helper
+    const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:9px;color:#555;font-family:sans-serif">${en}</span>` : ar;
+    const blInline = (ar: string, en: string) => isBilingual ? `${ar} / ${en}` : ar;
+
     const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
 <title>${title} - ${prefix}-${invoiceNum}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+${isSaudi ? '<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>' : ''}
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;direction:rtl}
@@ -105,28 +164,27 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 /* ── HEADER ── */
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;border-bottom:2px solid #111;margin-bottom:5px}
 .co-block{flex:1;text-align:right}
-.co-name{font-size:18px;font-weight:900;color:#111;margin-bottom:4px}
+.co-name{font-size:18px;font-weight:900;color:#111;margin-bottom:2px}
+.co-name-en{font-size:13px;font-weight:700;color:#555;margin-bottom:4px;font-family:sans-serif}
 .co-line{font-size:10.5px;color:#444;line-height:1.5}
 .header-center{flex:1;text-align:center}
-.inv-title{font-size:24px;font-weight:900;color:#111;background:#f5f5f5;padding:6px 24px;border-radius:8px;display:inline-block;border:1.5px solid #ccc}
-.inv-num{font-size:13px;color:#333;margin-top:8px;font-family:monospace;font-weight:700}
+.inv-title{font-size:22px;font-weight:900;color:#111;background:#f5f5f5;padding:6px 24px;border-radius:8px;display:inline-block;border:1.5px solid #ccc}
+.inv-title-en{font-size:13px;font-weight:700;color:#555;margin-top:4px;font-family:sans-serif}
+.inv-num{font-size:13px;color:#333;margin-top:6px;font-family:monospace;font-weight:700}
 .logo-block{flex:1;text-align:left}
 .logo-block img{max-height:85px;max-width:140px;object-fit:contain}
-.logo-letter{width:72px;height:72px;border-radius:12px;background:#f5f5f5;border:1.5px solid #e0e0e0;display:flex;align-items:center;justify-content:center;font-size:30px;font-weight:900}
 
 /* ── TABLES ── */
 .info-section{border:1px solid #e0e0e0;border-radius:10px;overflow:hidden;box-shadow:0 2px 4px rgba(0,0,0,0.02);display:grid;grid-template-columns:1fr 1fr}
 .info-col{padding:12px 18px}
 .info-col:first-child{border-left:1px solid #e0e0e0}
-.info-head{font-size:11px;font-weight:900;color:#111;margin-bottom:8px;padding-bottom:5px;border-bottom:1px dashed #ddd}
 .info-row{font-size:11.5px;margin-bottom:4px}
 .ik{color:#777;min-width:90px;display:inline-block}
 .iv{color:#111;font-weight:800}
 
-.section-title{font-size:12px;font-weight:900;padding:6px 12px;margin-bottom:8px;margin-top:8px;border-right: 4px solid #111;background:#f8f9fa;width: fit-content}
 table{width:100%;border-collapse:collapse;border:1.5px solid #333}
 thead{background:#f0f0f0}
-thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333}
+thead th{padding:10px 12px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333;line-height:1.6}
 tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:1px solid #666;vertical-align:middle}
 .item-name{font-weight:800;font-size:13px}
 
@@ -141,6 +199,10 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 .sig-box{text-align:center;min-width:140px}
 .sig-label{font-size:11px;font-weight:800;color:#333;margin-bottom:40px}
 .sig-line{border-top:1px solid #111;padding-top:6px;font-size:11px;font-weight:800}
+.qr-box{text-align:center;padding:8px}
+.qr-box canvas{display:block;margin:0 auto}
+.qr-label{font-size:9px;color:#666;margin-top:4px}
+.en-sub{font-size:9px;color:#555;font-family:sans-serif;display:block}
 </style>
 </head>
 <body>
@@ -148,13 +210,16 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 <div class="header">
     <div class="co-block">
         <div class="co-name">${co.name}</div>
+        ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
         ${co.addr ? `<div class="co-line">${co.addr}</div>` : ''}
         ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
-        ${co.tax ? `<div class="co-line">الرقم الضريبي: <strong>${co.tax}</strong></div>` : ''}
-        ${co.cr ? `<div class="co-line">السجل التجاري: <strong>${co.cr}</strong></div>` : ''}
+        ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
+        ${co.cr ? `<div class="co-line">${blInline('السجل التجاري', 'C.R.')}: <strong>${co.cr}</strong></div>` : ''}
     </div>
     <div class="header-center">
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
+        ${isBilingual ? `<div class="inv-title-en">${!isTrading || isServicesLine ? (isSale ? 'Service Invoice' : 'Purchase Service Invoice') : titleEn}</div>` : ''}
+        ${isSaudi ? `<div style="font-size:10px;color:#888;margin-top:2px">فاتورة ضريبية مبسطة / Simplified Tax Invoice</div>` : ''}
         <div class="inv-num">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</div>
     </div>
     <div class="logo-block">
@@ -163,33 +228,33 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 </div>
 
 <div class="info-section">
-    <div style="grid-column: span 2; background: #f8f9fa; padding: 6px 18px; border-bottom: 1px solid #e0e0e0; font-weight: 900; font-size: 11px">بيانات الفاتورة</div>
+    <div style="grid-column: span 2; background: #f8f9fa; padding: 6px 18px; border-bottom: 1px solid #e0e0e0; font-weight: 900; font-size: 11px">${blInline('بيانات الفاتورة', 'Invoice Details')}</div>
     <div class="info-col">
-        <div class="info-row"><span class="ik">بيانات ${partyLabel}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
-        ${party?.phone ? `<div class="info-row"><span class="ik">الهاتف:</span><span class="iv">${party.phone}</span></div>` : ''}
+        <div class="info-row"><span class="ik">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
+        ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
     </div>
     <div class="info-col">
-        <div class="info-row"><span class="ik">رقم الفاتورة:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
-        <div class="info-row"><span class="ik">التاريخ:</span><span class="iv">${date}</span></div>
-        ${invoice.dueDate ? `<div class="info-row"><span class="ik">تاريخ الاستحقاق:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}</span></div>` : ''}
-        ${party?.taxNumber ? `<div class="info-row"><span class="ik">الرقم الضريبي:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
-        ${party?.commercialRegister ? `<div class="info-row"><span class="ik">السجل التجاري:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
+        <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
+        <div class="info-row"><span class="ik">${blInline('التاريخ', 'Date')}:</span><span class="iv">${date}${isBilingual ? ` <span class="en-sub">${dateEn}</span>` : ''}</span></div>
+        ${invoice.dueDate ? `<div class="info-row"><span class="ik">${blInline('تاريخ الاستحقاق', 'Due Date')}:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' })}</span></div>` : ''}
+        ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
+        ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
     </div>
 </div>
 
 <table>
     <thead>
         <tr>
-            <th style="width:5%">م</th>
-            <th style="width:45%;text-align:right">${isServicesLine ? 'الخدمة / الوصف' : 'الصنف'}</th>
-            ${!isServicesLine ? '<th style="width:10%">الوحدة</th>' : ''}
-            <th style="width:10%">الكمية</th>
-            <th style="width:10%">السعر</th>
+            <th style="width:5%">${bl('م', '#')}</th>
+            <th style="width:45%;text-align:right">${isServicesLine ? bl('الخدمة / الوصف', 'Service / Description') : bl('الصنف', 'Item')}</th>
+            ${!isServicesLine ? `<th style="width:10%">${bl('الوحدة', 'Unit')}</th>` : ''}
+            <th style="width:10%">${bl('الكمية', 'Qty')}</th>
+            <th style="width:10%">${bl('السعر', 'Price')}</th>
             ${isServicesLine ? `
-                <th style="width:8%">نسبة الضريبة</th>
-                <th style="width:10%">قيمة الضريبة</th>
-            ` : (lines.some((l: any) => (l.taxAmount || 0) > 0) ? '<th style="width:10%">الضريبة</th>' : '')}
-            <th style="width:10%">الإجمالي</th>
+                <th style="width:8%">${bl('نسبة الضريبة', 'Tax %')}</th>
+                <th style="width:10%">${bl('قيمة الضريبة', 'Tax Amt')}</th>
+            ` : (lines.some((l: any) => (l.taxAmount || 0) > 0) ? `<th style="width:10%">${bl('الضريبة', 'Tax')}</th>` : '')}
+            <th style="width:10%">${bl('الإجمالي', 'Total')}</th>
         </tr>
     </thead>
     <tbody>
@@ -228,20 +293,21 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
     <div style="flex:1">
         ${invoice.notes ? `
         <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-top:10px">
-            <strong>ملاحظات: </strong>${invoice.notes}
+            <strong>${blInline('ملاحظات', 'Notes')}: </strong>${invoice.notes}
         </div>` : ''}
+        ${isSaudi ? `<div id="qr-container" class="qr-box" style="margin-top:12px"><div class="qr-label">${blInline('رمز الفاتورة الضريبية', 'Tax Invoice QR Code')}</div></div>` : ''}
     </div>
     
     <div class="totals">
         ${(discount > 0 || lines.some((l: any) => (l.taxAmount || 0) > 0)) ? `
         <div class="t-row">
-            <span>الإجمالي (قبل الخصم)</span>
+            <span>${bl('الإجمالي (قبل الخصم)', 'Subtotal')}</span>
             <span>${subtotal.toLocaleString()} ${sym}</span>
         </div>` : ''}
         
         ${discount > 0 ? `
         <div class="t-row">
-            <span>الخصم</span>
+            <span>${bl('الخصم', 'Discount')}</span>
             <span>-${discount.toLocaleString()} ${sym}</span>
         </div>` : ''}
 
@@ -250,7 +316,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
                 : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
             return `
         <div class="t-row" style="background:#fffbe6;font-weight:800">
-            <span>إجمالي الضريبة (${invoiceTaxRate}%)</span>
+            <span>${bl('إجمالي الضريبة', 'Total VAT')} (${invoiceTaxRate}%)</span>
             <span>${displayTax.toLocaleString()} ${sym}</span>
         </div>`;
         })() : ''}
@@ -267,21 +333,21 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
             };
             return `
             <div class="t-row t-subtotal">
-                <span>الرصيد السابق لـ ${partyLabel}</span>
+                <span>${bl('الرصيد السابق لـ ' + partyLabel, 'Previous Balance')}</span>
                 <span>${formatBal(oldBalance)}</span>
             </div>`;
         })() : ''}
 
         <div class="t-main t-row">
-            <span>صافي هذه الفاتورة</span>
+            <span>${bl('صافي هذه الفاتورة', 'Net Invoice')}</span>
             <span>${total.toLocaleString()} ${sym}</span>
         </div>
         <div class="t-row">
-            <span>المبلغ المدفوع حـالياً</span>
+            <span>${bl('المبلغ المدفوع حالياً', 'Amount Paid')}</span>
             <span>${paid.toLocaleString()} ${sym}</span>
         </div>
         <div class="t-row">
-            <span>متبقي من هذه الفاتورة</span>
+            <span>${bl('متبقي من هذه الفاتورة', 'Remaining')}</span>
             <span>${remaining.toLocaleString()} ${sym}</span>
         </div>
 
@@ -295,7 +361,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
             };
             return `
             <div class="t-row t-main" style="border-top: 1.5px solid #888; border-bottom: none">
-                <span>إجمالي رصيد ${partyLabel} نهائياً</span>
+                <span>${bl('إجمالي رصيد ' + partyLabel + ' نهائياً', 'Total ' + partyLabelEn + ' Balance')}</span>
                 <span>${formatBal(Number(partyBalance))}</span>
             </div>`;
         })() : ''}
@@ -305,20 +371,38 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 <div class="footer">
     <div class="footer-inner">
         <div class="sig-box">
-            <div class="sig-label">توقيع ${partyLabel}</div>
-            <div class="sig-line">الاسم والتوقيع</div>
+            <div class="sig-label">${bl('توقيع ' + partyLabel, partyLabelEn + ' Signature')}</div>
+            <div class="sig-line">${bl('الاسم والتوقيع', 'Name & Signature')}</div>
         </div>
         <div style="text-align:center;font-size:10px;color:#666">
-            شكراً لتعاملكم معنا
+            ${blInline('شكراً لتعاملكم معنا', 'Thank you for your business')}
         </div>
         <div class="sig-box">
-            <div class="sig-label">توقيع المسؤول</div>
-            <div class="sig-line">الختم والتوقيع</div>
+            <div class="sig-label">${bl('توقيع المسؤول', 'Authorized Signature')}</div>
+            <div class="sig-line">${bl('الختم والتوقيع', 'Stamp & Signature')}</div>
         </div>
     </div>
 </div>
 </div>
-<script>window.onload=()=>window.print();</script>
+${isSaudi ? `
+<script>
+window.onload = () => {
+    try {
+        var qr = qrcode(0, 'M');
+        qr.addData('${zatcaQR}');
+        qr.make();
+        var container = document.getElementById('qr-container');
+        if (container) {
+            var img = document.createElement('img');
+            img.src = qr.createDataURL(4, 0);
+            img.style.width = '120px';
+            img.style.height = '120px';
+            container.insertBefore(img, container.firstChild);
+        }
+    } catch(e) { console.error('QR Error:', e); }
+    setTimeout(() => window.print(), 300);
+};
+</script>` : '<script>window.onload=()=>window.print();</script>'}
 </body>
 </html>`;
 

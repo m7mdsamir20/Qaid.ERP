@@ -6,7 +6,7 @@ export const GET = withProtection(async (request, session) => {
     try {
         const company = await prisma.company.findUnique({
             where: { id: (session.user as any).companyId },
-            select: { name: true, nameEn: true, phone: true, email: true, taxNumber: true, commercialRegister: true, address: true, logo: true, currency: true, businessType: true },
+            select: { name: true, nameEn: true, phone: true, email: true, taxNumber: true, commercialRegister: true, address: true, logo: true, currency: true, countryCode: true, businessType: true },
         });
         return NextResponse.json(company || {});
     } catch {
