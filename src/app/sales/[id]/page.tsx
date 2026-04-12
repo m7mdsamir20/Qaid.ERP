@@ -128,6 +128,28 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 const printWindow = window.open('', '_blank', 'width=350,height=600');
                                 if (printWindow) {
                                     const receiptDate = new Date(invoice.date).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
+                                    const isSaudi = company.countryCode === 'SA';
+                                    const blInline = (ar: string, en: string) => isRtl ? ar : en;
+                                    const totalTaxAmount = invoice.taxAmount || 0;
+                                    const dateISO = new Date(invoice.date).toISOString();
+                                    
+                                    const generateZatcaTLV = (name: string, vat: string, date: string, total: string, tax: string) => {
+                                        const hex = (tag: number, val: string) => {
+                                            const bytes = new TextEncoder().encode(val);
+                                            return String.fromCharCode(tag) + String.fromCharCode(bytes.length) + val;
+                                        };
+                                        const tlv = hex(1, name) + hex(2, vat) + hex(3, date) + hex(4, total) + hex(5, tax);
+                                        return btoa(tlv);
+                                    };
+
+                                    const zatcaQR = isSaudi ? generateZatcaTLV(
+                                        company.name || 'Company',
+                                        company.taxNumber || '000000000000000',
+                                        dateISO,
+                                        invoice.total.toFixed(2),
+                                        totalTaxAmount.toFixed(2)
+                                    ) : btoa(`${company.name}|${invNumFmt}|${invoice.total}|${invoice.date}`);
+
                                     printWindow.document.write(`
                                         <html>
                                         <head>
@@ -139,19 +161,31 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 .header p { margin: 2px 0; font-size: 12px; }
                                                 .divider { border-bottom: 1px dashed #000; margin: 10px 0; }
                                                 .item-row { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; text-align: right; }
-                                                .item-name { flex: 1; padding-insetInlineStart: 5px; }
+                                                .item-name { flex: 1; padding-inline-start: 5px; }
                                                 .item-qty { width: 30px; text-align: center; }
                                                 .item-total { width: 70px; text-align: left; }
                                                 .totals-row { display: flex; justify-content: space-between; font-size: 14px; margin-top: 5px; font-weight: bold; }
                                                 .footer { font-size: 12px; margin-top: 15px; text-align: center; }
                                             </style>
+                                            <script>
+                                                window.onload = () => {
+                                                    setTimeout(() => {
+                                                        window.print();
+                                                        setTimeout(() => window.close(), 500);
+                                                    }, 500);
+                                                };
+                                            </script>
                                         </head>
-                                        <body onload="window.print(); window.close();">
+                                        <body>
                                             <div class="receipt-container">
                                                 <div class="header">
                                                     ${company.logo ? `<img src="${company.logo}" style="max-height: 60px; max-width: 120px; object-fit: contain; margin: 0 auto 5px;" alt="Logo" />` : ''}
                                                     <h2>${company.name || 'الشركة للأنظمة'}</h2>
-                                                    <p>فاتورة كاشير POS</p>
+                                                    <div class="qr-box" style="margin-top:12px">
+                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(zatcaQR)}" style="width:120px;height:120px;margin:0 auto;display:block;" alt="QR" />
+                                                        <div class="qr-label">${blInline('رمز الفاتورة', 'Invoice QR Code')}</div>
+                                                    </div>
+                                                    <p>${isServices ? 'فاتورة خدمات' : 'فاتورة كاشير POS'}</p>
                                                     <p>رقم الفاتورة: #${invoice.invoiceNumber}</p>
                                                     <p>تاريخ: ${receiptDate}</p>
                                                 </div>
@@ -273,7 +307,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
-                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
+                                                {(l.item.code && !isServices) && <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>}
+                                                {(l as any).description && <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 500 }}>{(l as any).description}</div>}
                                             </td>
                                             {!isServices && (
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>

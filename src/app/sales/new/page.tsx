@@ -194,11 +194,8 @@ export default function NewSalePage() {
             if (item) { 
                 setEntryPrice(isServices ? '' : item.sellPrice); 
                 setTimeout(() => {
-                    if (isServices && entryPrice === '') {
-                        priceRef.current?.focus();
-                    } else {
-                        qtyRef.current?.focus();
-                    }
+                    qtyRef.current?.focus();
+                    qtyRef.current?.select();
                 }, 50);
             }
         }
@@ -220,8 +217,11 @@ export default function NewSalePage() {
                 const newItem = await res.json();
                 setItems(prev => [newItem, ...prev]);
                 setEntryItemId(newItem.id);
-                // focus price after creation so user can type price and press enter to add
-                setTimeout(() => priceRef.current?.focus(), 100);
+                // focus quantity after creation
+                setTimeout(() => {
+                    qtyRef.current?.focus();
+                    qtyRef.current?.select();
+                }, 100);
             }
         } catch (err) {
             console.error("Failed to create item on the fly:", err);
@@ -673,7 +673,17 @@ export default function NewSalePage() {
                                                     setEntryQty(v === '' ? '' : v as any); clearError('entryQty');
                                                 }
                                             }}
-                                            onKeyDown={e => e.key === 'Enter' && addLine()}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter') {
+                                                    if (entryPrice === '') {
+                                                        priceRef.current?.focus();
+                                                        priceRef.current?.select();
+                                                    } else {
+                                                        addLine();
+                                                    }
+                                                }
+                                            }}
+
                                             style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
@@ -723,13 +733,24 @@ export default function NewSalePage() {
                                 )}
 
                             {/* Lines Table */}
-                            <div className="table-container">
-                                <table className="table">
+                            <div className="table-container" style={{ width: '100%', overflowX: 'auto' }}>
+                                <table className="table" style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 4px', tableLayout: 'fixed' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
-                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                [
+                                                    { label: t('الخدمة / الوصف التفصيلي'), width: 'auto' },
+                                                    { label: t('الكمية'), width: '100px' },
+                                                    { label: t('السعر'), width: '120px' },
+                                                    { label: t('الإجمالي'), width: '150px' },
+                                                    { label: '', width: '80px' }
+                                                ].map((col, i) => (
+                                                    <th key={i} style={{ 
+                                                        textAlign: i === 0 ? 'start' : 'center', 
+                                                        padding: '12px', fontSize: '11px', fontWeight: 800, 
+                                                        color: C.textMuted, fontFamily: CAIRO,
+                                                        width: col.width
+                                                    }}>{col.label}</th>
                                                 ))
                                             ) : (
                                                 [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الضريبة'), t('الإجمالي'), ''].map((h, i) => (
@@ -766,9 +787,11 @@ export default function NewSalePage() {
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={isServices ? 4 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
+                                                <td style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start' }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
+                                                <td />
+                                                <td />
                                                 <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
                                                     {subtotal.toLocaleString()} {cSymbol}
                                                 </td>
