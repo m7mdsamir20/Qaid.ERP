@@ -743,7 +743,7 @@ export default function NewSalePage() {
                             <div className="table-container" style={{ width: '100%', overflowX: 'auto', marginTop: '10px' }}>
                                 <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.05)', borderBottom: `1px solid ${C.border}` }}>
+                                        <tr style={{ background: 'transparent', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
                                                 [
                                                     { label: t('الخدمة / الوصف التفصيلي'), width: 'auto' },
@@ -754,7 +754,7 @@ export default function NewSalePage() {
                                                 ].map((col, i) => (
                                                     <th key={i} style={{ 
                                                         textAlign: i === 0 ? 'start' : 'center', 
-                                                        padding: '14px 12px', fontSize: '12px', fontWeight: 800, 
+                                                        padding: '14px 12px', fontSize: '11px', fontWeight: 800, 
                                                         color: C.textPrimary, fontFamily: CAIRO,
                                                         width: col.width,
                                                         borderBottom: `2px solid ${C.border}`
@@ -766,7 +766,6 @@ export default function NewSalePage() {
                                                     { label: t('الوحدة'), width: '80px' },
                                                     { label: t('الكمية'), width: '80px' },
                                                     { label: t('السعر'), width: '100px' },
-                                                    { label: t('الضريبة'), width: '100px' },
                                                     { label: t('الإجمالي'), width: '120px' },
                                                     { label: '', width: '60px' }
                                                 ].map((col, i) => (
@@ -797,9 +796,6 @@ export default function NewSalePage() {
                                                 )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
-                                                { (session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
-                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{((l as any).taxAmount || 0).toLocaleString()}</td>
-                                                )}
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: CAIRO }}>{l.total.toLocaleString()}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
@@ -815,13 +811,11 @@ export default function NewSalePage() {
                                     </tbody>
                                     {lines.length > 0 && (
                                         <tfoot>
-                                            <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start' }}>
+                                            <tr style={{ background: 'rgba(37,106,244,0.06)', borderTop: `1px solid ${C.border}` }}>
+                                                <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
-                                                <td />
-                                                <td />
-                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '18px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
                                                     {subtotal.toLocaleString()} {cSymbol}
                                                 </td>
                                                 <td />

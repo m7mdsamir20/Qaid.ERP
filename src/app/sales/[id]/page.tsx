@@ -294,18 +294,9 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
                                         {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
                                         <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {isServices ? (
-                                            <>
-                                                <th style={TABLE_STYLE.th(false)}>{t('نسبة الضريبة')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('قيمة الضريبة')}</th>
-                                            </>
-                                        ) : (
-                                            <th style={TABLE_STYLE.th(false)}>{t('الضريبة')}</th>
-                                        )}
                                         <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
@@ -326,24 +317,20 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                            {isServices ? (
-                                                <>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontFamily: INTER }}>
-                                                        {l.taxRate || 0}%
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: '#fb7185', fontWeight: 600, fontFamily: INTER }}>
-                                                        {l.taxAmount ? fmt(l.taxAmount) : '0.00'}
-                                                    </td>
-                                                </>
-                                            ) : (
-                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
-                                                    {l.taxAmount ? l.taxAmount.toLocaleString() : '0.00'} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate || 0}%)</span>
-                                                </td>
-                                            )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
+                                <tfoot>
+                                    <tr style={{ background: 'rgba(37,106,244,0.06)', borderTop: `1px solid ${C.border}` }}>
+                                        <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
+                                            {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
+                                        </td>
+                                        <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
+                                            {fmt(invoice.subtotal)} {cSymbol}
+                                        </td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
 
@@ -362,7 +349,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
-                                        <tr style={TABLE_STYLE.thead}>
+                                        <tr style={{ ...TABLE_STYLE.thead, background: 'transparent', borderBottom: `1px solid ${C.border}` }}>
                                             <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
                                             <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
                                             <th style={TABLE_STYLE.th(false)}>{t('قيمة المرتجع')}</th>
