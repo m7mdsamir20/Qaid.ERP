@@ -278,7 +278,7 @@ export default function NewSalePage() {
         setEntryTaxRate(0);
         setEntryStock(null);
         setTimeout(() => itemSelectRef.current?.focus(), 50);
-    }, [entryItemId, entryQty, entryPrice, items, form.warehouseId, form.customerId, isServices]);
+    }, [entryItemId, entryQty, entryPrice, entryDescription, items, form.warehouseId, form.customerId, isServices]);
 
     const removeLine = (i: number) => setLines(prev => prev.filter((_, idx) => idx !== i));
     const editLine = (i: number) => {
@@ -377,18 +377,11 @@ export default function NewSalePage() {
             if (res.ok) {
                 const savedInvoice = await res.json();
                 if (andPrint) {
-                    const co: CompanyInfo = {
-                        name: (session?.user as any)?.companyName,
-                        address: (session?.user as any)?.companyAddress,
-                        phone: (session?.user as any)?.companyPhone,
-                        taxNumber: (session?.user as any)?.taxNumber,
-                        commercialRegister: (session?.user as any)?.commercialRegister,
-                        logo: (session?.user as any)?.logo,
-                        currency: (session?.user as any)?.currency,
-                        businessType: (session?.user as any)?.businessType
-                    };
+                    // Use the same company object fetched on load (identical to details/list print)
+                    const branches = (session?.user as any)?.branches || [];
+                    const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
+                    const co: CompanyInfo = { ...company, branchName, businessType: (session?.user as any)?.businessType || company.businessType };
 
-                    // Fetch full data including customer Object for printing
                     const printRes = await fetch(`/api/sales?id=${savedInvoice.id}`);
                     if (printRes.ok) {
                         const fullInv = await printRes.json();

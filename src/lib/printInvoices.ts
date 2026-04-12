@@ -391,7 +391,7 @@ ${isSaudi ? `
 window.onload = () => {
     setTimeout(() => window.print(), 500);
 };
-</script>` : '<script>window.onload=()=>window.print();</script>'}
+</script>` : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;
 

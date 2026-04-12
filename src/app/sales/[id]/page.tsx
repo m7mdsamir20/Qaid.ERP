@@ -268,7 +268,14 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
                                         <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الضريبة')}</th>
+                                        {isServices && (invoice.taxRate || 0) > 0 ? (
+                                            <>
+                                                <th style={TABLE_STYLE.th(false)}>{t('نسبة الضريبة')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('قيمة الضريبة')}</th>
+                                            </>
+                                        ) : (
+                                            <th style={TABLE_STYLE.th(false)}>{t('الضريبة')}</th>
+                                        )}
                                         <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
@@ -285,9 +292,23 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             )}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
-                                                {l.taxAmount ? l.taxAmount.toLocaleString() : '0.00'} <span style={{ fontSize: '10px', opacity: 0.7 }}>({l.taxRate || 0}%)</span>
-                                            </td>
+                                            {(() => {
+                                                const invTaxRate = invoice.taxRate || 0;
+                                                const lineTaxRate = l.taxRate || invTaxRate;
+                                                const lineBase = l.quantity * l.price;
+                                                const lineTaxAmt = l.taxAmount || (lineTaxRate > 0 ? parseFloat((lineBase * lineTaxRate / 100).toFixed(2)) : 0);
+                                                if (isServices && invTaxRate > 0) return (
+                                                    <>
+                                                        <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{lineTaxRate}%</td>
+                                                        <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>{lineTaxAmt.toLocaleString()}</td>
+                                                    </>
+                                                );
+                                                return (
+                                                    <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>
+                                                        {lineTaxAmt > 0 ? lineTaxAmt.toLocaleString() : '—'} <span style={{ fontSize: '10px', opacity: 0.7 }}>({lineTaxRate}%)</span>
+                                                    </td>
+                                                );
+                                            })()}
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
