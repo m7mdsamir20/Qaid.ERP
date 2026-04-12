@@ -1188,11 +1188,3 @@ export default function NewSalePage() {
         </DashboardLayout>
     );
 }
-if (document.activeElement.type === 'number') {
-    document.activeElement.blur();
-}
-                }, { passive: false });
-`}} />
-        </DashboardLayout>
-    );
-}
