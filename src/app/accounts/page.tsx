@@ -277,15 +277,17 @@ export default function AccountsPage() {
 
         return (
             <React.Fragment key={acc.id}>
-                <div style={{
-                    display: 'flex', alignItems: 'center', padding: '10px 16px',
-                    borderBottom: `1px solid ${C.border}30`,
-                    background: effectiveDepth === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
-                    cursor: 'default', transition: '0.15s',
-                    marginLeft: (!isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
-                    marginRight: (isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
-                    borderRadius: '8px', marginBottom: '2px'
-                }} className="account-row-hover">
+                <div 
+                    onClick={(e) => hasChildren && !isTableMode && toggleExpand(acc.id, e)}
+                    style={{
+                        display: 'flex', alignItems: 'center', padding: '10px 16px',
+                        borderBottom: `1px solid ${C.border}30`,
+                        background: effectiveDepth === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                        cursor: (hasChildren && !isTableMode) ? 'pointer' : 'default', transition: '0.15s',
+                        marginLeft: (!isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
+                        marginRight: (isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
+                        borderRadius: '8px', marginBottom: '2px'
+                    }} className="account-row-hover">
 
                     <div style={{ width: '32px', display: 'flex', justifyContent: 'center' }}>
                         {hasChildren && !isTableMode ? (
@@ -301,9 +303,9 @@ export default function AccountsPage() {
                         )}
                     </div>
 
-                    <div style={{ width: '100px', fontFamily: INTER, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'center' }}>{acc.code}</div>
+                    <div style={{ width: '100px', fontFamily: INTER, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'start' }}>{acc.code}</div>
 
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
                         <div style={{
                             width: '32px', height: '32px', borderRadius: '8px',
                             background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color
@@ -345,10 +347,10 @@ export default function AccountsPage() {
                     </div>
 
                     <div style={{ width: '100px', display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
-                        <button onClick={() => handleEdit(acc)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
+                        <button onClick={(e) => { e.stopPropagation(); handleEdit(acc); }} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
                             <Pencil size={14} />
                         </button>
-                        <button onClick={() => setDeleteAccount(acc)} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')} disabled={hasChildren && !isTableMode}>
+                        <button onClick={(e) => { e.stopPropagation(); setDeleteAccount(acc); }} style={TABLE_STYLE.actionBtn(C.danger)} title={t('حذف')} disabled={hasChildren && !isTableMode}>
                             <Trash2 size={14} />
                         </button>
                     </div>
@@ -483,8 +485,8 @@ export default function AccountsPage() {
                             fontSize: '11px', fontWeight: 800, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
                         }}>
                             <div style={{ width: '32px' }}></div>
-                            <div style={{ width: '100px', textAlign: 'center' }}>{t('الكود')}</div>
-                            <div style={{ flex: 1, textAlign: 'center' }}>{t('اسم الحساب')}</div>
+                            <div style={{ width: '100px', textAlign: 'start' }}>{t('الكود')}</div>
+                            <div style={{ flex: 1, textAlign: 'start' }}>{t('اسم الحساب')}</div>
                             <div style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
                             <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
                             <div style={{ width: '100px', textAlign: 'center' }}>{t('إجراءات')}</div>
