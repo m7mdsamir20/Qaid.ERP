@@ -155,7 +155,6 @@ export function printA4Invoice(
 <meta charset="UTF-8"/>
 <title>${title} - ${prefix}-${invoiceNum}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
-${isSaudi ? '<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>' : ''}
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;direction:rtl}
@@ -295,7 +294,10 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
         <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-top:10px">
             <strong>${blInline('ملاحظات', 'Notes')}: </strong>${invoice.notes}
         </div>` : ''}
-        ${isSaudi ? `<div id="qr-container" class="qr-box" style="margin-top:12px"><div class="qr-label">${blInline('رمز الفاتورة الضريبية', 'Tax Invoice QR Code')}</div></div>` : ''}
+        ${isSaudi ? `<div class="qr-box" style="margin-top:12px">
+            <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(zatcaQR)}" style="width:120px;height:120px;margin:0 auto;display:block;" alt="ZATCA QR" />
+            <div class="qr-label">${blInline('رمز الفاتورة الضريبية', 'Tax Invoice QR Code')}</div>
+        </div>` : ''}
     </div>
     
     <div class="totals">
@@ -387,20 +389,7 @@ tbody td{padding:9px 12px;font-size:12px;color:#1a1a1a;text-align:center;border:
 ${isSaudi ? `
 <script>
 window.onload = () => {
-    try {
-        var qr = qrcode(0, 'M');
-        qr.addData('${zatcaQR}');
-        qr.make();
-        var container = document.getElementById('qr-container');
-        if (container) {
-            var img = document.createElement('img');
-            img.src = qr.createDataURL(4, 0);
-            img.style.width = '120px';
-            img.style.height = '120px';
-            container.insertBefore(img, container.firstChild);
-        }
-    } catch(e) { console.error('QR Error:', e); }
-    setTimeout(() => window.print(), 300);
+    setTimeout(() => window.print(), 500);
 };
 </script>` : '<script>window.onload=()=>window.print();</script>'}
 </body>
