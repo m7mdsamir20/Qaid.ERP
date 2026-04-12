@@ -641,7 +641,7 @@ export default function NewSalePage() {
                                                     setEntryQty(v === '' ? '' : v as any); clearError('entryQty');
                                                 }
                                             }}
-                                            onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()}
+                                            onKeyDown={e => e.key === 'Enter' && (isServices ? addLine() : priceRef.current?.focus())}
                                             style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
@@ -652,6 +652,7 @@ export default function NewSalePage() {
                                     <div style={{ position: 'relative' }}>
                                         <input ref={priceRef} type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)}
                                             disabled={!entryItemId}
+                                            readOnly={isServices}
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
                                                 if (v === '' || !isNaN(Number(v)) || v === '.') {
@@ -659,7 +660,7 @@ export default function NewSalePage() {
                                                 }
                                             }}
                                             onKeyDown={e => e.key === 'Enter' && addLine()}
-                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: (!entryItemId || isServices) ? 0.5 : 1, fontFamily: INTER }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryPrice" />
                                     </div>
