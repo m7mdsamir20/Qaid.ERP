@@ -107,7 +107,7 @@ export default function QuotationViewPage() {
                     }}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', padding: '0 20px', alignItems: 'start' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
 
                     {/* ── Left Column ── */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

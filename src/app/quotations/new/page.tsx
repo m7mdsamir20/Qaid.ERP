@@ -228,7 +228,7 @@ export default function NewQuotationPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px', paddingTop: THEME.header.pt }}>
                 <PageHeader 
                     title={t("إنشاء عرض سعر")}
                     subtitle={t("قم بإنشاء عرض سعر احترافي لعملائك بسهولة وبخطوات سريعة")}
@@ -236,21 +236,21 @@ export default function NewQuotationPage() {
                     backUrl="/quotations"
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', padding: '0 20px', alignItems: 'start' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         
                         {/* Basic Info */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 150px', gap: '15px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
                                 <div>
-                                    <label style={LS}>{t('رقم العرض')}</label>
-                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, color: C.primary, letterSpacing: '0.5px' }}>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
                                         QUO-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
-                                <div>
-                                    <label style={LS}>{t('العميل')}</label>
+                                <div style={{ flex: 1 }}>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('العميل')}</label>
                                     <CustomSelect 
                                         options={customers.map(c => ({ value: c.id, label: c.name }))}
                                         placeholder={t("اختر عميل...")}
@@ -259,9 +259,9 @@ export default function NewQuotationPage() {
                                         icon={Search}
                                     />
                                 </div>
-                                <div>
-                                    <label style={LS}>{t('التاريخ')}</label>
-                                    <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                <div style={{ width: '100%' }}>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ العرض')}</label>
+                                    <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} style={{ ...IS, fontFamily: INTER, fontSize: '13px', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
                         </div>
@@ -269,7 +269,7 @@ export default function NewQuotationPage() {
                         {/* Items Selection */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}</div>
-                            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 60px', gap: '12px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ ...LS, fontSize: '11px' }}>{isServices ? t("اسم الخدمة") : t("اسم الصنف")}</label>
                                     <CustomSelect 
@@ -301,14 +301,14 @@ export default function NewQuotationPage() {
                                         } : undefined}
                                     />
                                 </div>
-                                <div style={{ width: '100px' }}>
+                                <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <input ref={qtyRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryQty === '' ? '1' : fmt(entryQty)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryQty(v === '' ? '' : v as any);
                                     }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: INTER, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
-                                <div style={{ width: '120px' }}>
+                                <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                     <input ref={priceRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryPrice === '' ? '0' : fmt(entryPrice)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
@@ -365,38 +365,38 @@ export default function NewQuotationPage() {
 
                     {/* Summary Sidebar */}
                     <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        <div style={SC}>
+                        <div style={{ ...SC, padding: '12px' }}>
                             <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
                                 <Info size={12} /> {t('ملخص عرض السعر')}
                             </div>
                             
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px', padding: '0 5px' }}>
-                                    <span style={{ color: C.textMuted, fontWeight: 700 }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}:</span>
-                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: C.textPrimary }}>{fmt(subtotal)} <small style={{fontFamily: CAIRO}}>{cSymbol}</small> </span>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
+                                    <span style={{ color: '#64748b' }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
+                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: '#e2e8f0' }}>{fmt(subtotal)} <small style={{fontFamily: CAIRO, fontSize: '10px'}}>{cSymbol}</small> </span>
                                 </div>
 
                                 {/* Discount Section */}
                                 <div style={{ 
-                                    background: 'rgba(255,255,255,0.03)', 
-                                    borderRadius: '15px', 
-                                    padding: '15px', 
-                                    border: `1px solid ${C.border}` 
+                                    background: 'rgba(255,255,255,0.02)', 
+                                    borderRadius: '10px', 
+                                    padding: '8px 12px', 
+                                    border: `1px solid rgba(255,255,255,0.06)` 
                                 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{t('الخصم')}</label>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: '#64748b' }}>{t('الخصم')}</label>
                                     </div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={form.discountAmt === 0 ? '' : fmt(form.discountAmt)} 
                                                 onChange={e => {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }} 
-                                                style={{ ...IS, height: '40px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px' }} 
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }} 
                                                 placeholder="0.00"
                                             />
-                                            <span style={{ position: 'absolute', bottom: '11px', insetInlineEnd: '12px', fontSize: '10px', color: C.textMuted }}>{cSymbol}</span>
+                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
                                         </div>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={form.discountPct === 0 ? '' : fmt(form.discountPct)} 
@@ -404,10 +404,10 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
                                                 }} 
-                                                style={{ ...IS, height: '40px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px' }} 
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }} 
                                                 placeholder="0"
                                             />
-                                            <span style={{ position: 'absolute', bottom: '11px', insetInlineStart: '12px', fontSize: '14px', color: C.primary, fontWeight: 900 }}>%</span>
+                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -415,28 +415,28 @@ export default function NewQuotationPage() {
                                 {/* Tax Section */}
                                 {taxSettings?.enabled && (
                                     <div style={{ 
-                                        borderRadius: '15px', 
-                                        padding: '15px', 
+                                        borderRadius: '10px', 
+                                        padding: '8px 12px', 
                                         border: `1px dashed ${C.border}`,
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        gap: '10px',
-                                        background: 'rgba(255,255,255,0.01)'
+                                        gap: '8px',
+                                        background: 'rgba(255,255,255,0.02)'
                                     }}>
                                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>
+                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: '#64748b' }}>
                                                 {taxSettings.label || 'VAT'}
                                             </label>
                                         </div>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                             <div style={{ 
-                                                height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, 
-                                                background: 'rgba(0,0,0,0.2)', color: C.primary,
+                                                height: '34px', borderRadius: '8px', border: `1px solid ${C.border}`, 
+                                                background: 'rgba(0,0,0,0.1)', color: '#60a5fa',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                fontFamily: INTER, fontSize: '15px', fontWeight: 800, position: 'relative'
+                                                fontFamily: INTER, fontSize: '13px', fontWeight: 800, position: 'relative'
                                             }}>
                                                 {fmt(taxAmount)}
-                                                <small style={{position: 'absolute', bottom: '11px', insetInlineEnd: '12px', fontSize: '10px', fontWeight: 400, color: C.textMuted}}>{cSymbol}</small>
+                                                <small style={{position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '9px', fontWeight: 400, color: '#64748b'}}>{cSymbol}</small>
                                             </div>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" value={form.taxRate === 0 ? '' : fmt(form.taxRate)} 
@@ -444,9 +444,9 @@ export default function NewQuotationPage() {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }} 
-                                                    style={{ ...IS, height: '40px', textAlign: 'center', fontFamily: INTER, fontSize: '15px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px' }} 
+                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }} 
                                                 />
-                                                <span style={{ position: 'absolute', bottom: '11px', insetInlineStart: '12px', fontSize: '14px', color: C.primary, fontWeight: 900 }}>%</span>
+                                                <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
                                         </div>
                                     </div>
@@ -466,9 +466,8 @@ export default function NewQuotationPage() {
                                 </div>
                             </div>
 
-                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #256af4 0%, #1e40af 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '16px', marginTop: '14px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(37,106,244,0.4)' }}>
-                                {submitting ? <Loader2 className="animate-spin" /> : <Printer size={20} />}
-                                {submitting ? t('جاري الحفظ...') : t('حفظ وطباعة العرض')}
+                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '52px', background: C.primary, color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 900, fontSize: '16px', marginTop: '14px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', transition: 'all 0.2s', boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)', fontFamily: CAIRO }}>
+                                {submitting ? <Loader2 className="animate-spin" /> : <>{t('حفظ وطباعة العرض')} <Printer size={20} /></>}
                             </button>
                         </div>
                     </div>
