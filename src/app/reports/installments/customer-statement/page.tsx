@@ -93,7 +93,7 @@ function CustomerStatementReportContent() {
                 title="كشف حساب أقساط عميل"
                 subtitle="تقرير تفصيلي بجميع خطط التقسيط، الدفعات المسددة، والمبالغ المتبقية لعميل محدد"
                 backTab="installments"
-                onExportPdf={() => window.print()}
+                
             />
 
             <div className="no-print" style={{ 

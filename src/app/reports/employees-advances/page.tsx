@@ -66,7 +66,7 @@ export default function EmployeesAdvancesPage() {
                     title="تقرير سلف ومديونيات الموظفين"
                     subtitle="متابعة دقيقة لجميع السلف الممنوحة للموظفين، المبالغ المسددة، والأرصدة القائمة."
                     backTab="hr"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>

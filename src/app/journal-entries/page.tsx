@@ -478,7 +478,7 @@ export default function JournalEntriesPage() {
                                             {form.lines.map((line, idx) => (
                                                 <tr key={idx} style={{ borderBottom: idx < form.lines.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                     <td style={{ padding: '12px 8px' }}>
-                                                        <CustomSelect value={line.accountId} onChange={val => updateLine(idx, 'accountId', val)} placeholder="ابحث واختر الحساب..."
+                                                        <CustomSelect value={line.accountId} onChange={val => updateLine(idx, 'accountId', val)} placeholder={t("ابحث واختر الحساب...")}
                                                             style={{ height: '40px' }}
                                                             options={accounts.map(a => ({
                                                                 value: a.id,
@@ -487,12 +487,12 @@ export default function JournalEntriesPage() {
                                                             }))} />
                                                     </td>
                                                     <td style={{ padding: '12px 8px' }}>
-                                                        <CustomSelect value={line.costCenterId || ''} onChange={val => updateLine(idx, 'costCenterId', val)} placeholder="— مركز التكلفة —"
+                                                        <CustomSelect value={line.costCenterId || ''} onChange={val => updateLine(idx, 'costCenterId', val)} placeholder={t("— مركز التكلفة —")}
                                                             style={{ height: '40px' }}
-                                                            options={[{ value: '', label: '— بدون مركز —' }, ...costCenters.map(cc => ({ value: cc.id, label: cc.name }))]} />
+                                                            options={[{ value: '', label: t('— بدون مركز —') }, ...costCenters.map(cc => ({ value: cc.id, label: cc.name }))]} />
                                                     </td>
                                                     <td style={{ padding: '12px 8px' }}>
-                                                        <input value={line.description} onChange={e => updateLine(idx, 'description', e.target.value)} placeholder="وصف خاص بهذا السطر..." style={{ ...IS, height: '40px', fontSize: '13px', fontFamily: CAIRO }} />
+                                                        <input value={line.description} onChange={e => updateLine(idx, 'description', e.target.value)} placeholder={t("وصف خاص بهذا السطر...")} style={{ ...IS, height: '40px', fontSize: '13px', fontFamily: CAIRO }} />
                                                     </td>
                                                     <td style={{ padding: '12px 8px' }}>
                                                         <input type="number" value={line.debit || ''} onChange={e => updateLine(idx, 'debit', e.target.value)} disabled={line.credit > 0} 

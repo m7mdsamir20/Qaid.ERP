@@ -85,25 +85,25 @@ export default function NewTransferPage() {
         
         // 1. Basic validation
         if (!form.fromWarehouseId || !form.toWarehouseId || lines.length === 0) {
-            alert('يرجى اختيار المخازن وإضافة صنف واحد على الأقل');
+            alert(t('يرجى اختيار المخازن وإضافة صنف واحد على الأقل'));
             return;
         }
 
         if (form.fromWarehouseId === form.toWarehouseId) {
-            alert('لا يمكن التحويل لنفس المخزن');
+            alert(t('لا يمكن التحويل لنفس المخزن'));
             return;
         }
 
         // 2. Stock validation
         for (const line of lines) {
             if (!line.itemId) {
-                alert('يرجى اختيار الصنف لجميع السطور');
+                alert(t('يرجى اختيار الصنف لجميع السطور'));
                 return;
             }
             const available = getAvailableStock(line.itemId, form.fromWarehouseId);
             if (line.quantity > available) {
                 const item = items.find(i => i.id === line.itemId);
-                alert(`الكمية المطلوبة للصنف (${item?.name}) غير متوفرة. المتاح حالياً: ${available}`);
+                alert(t('الكمية المطلوبة للصنف') + ` (${item?.name}) ` + t('غير متوفرة. المتاح حالياً:') + ` ${available}`);
                 return;
             }
         }
@@ -120,11 +120,11 @@ export default function NewTransferPage() {
                 router.push('/warehouse-transfers');
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل حفظ التحويل');
+                alert(data.error || t('فشل حفظ التحويل'));
                 setIsSubmitting(false);
             }
         } catch {
-            alert('حدث خطأ أثناء الاتصال بالخادم');
+            alert(t('حدث خطأ أثناء الاتصال بالخادم'));
             setIsSubmitting(false);
         }
     };
@@ -135,7 +135,7 @@ export default function NewTransferPage() {
                 <div style={PAGE_BASE}>
                     <div style={{ textAlign: 'center', padding: '100px 0', color: C.textMuted }}>
                         <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
-                        <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>جاري تهيئة نموذج التحويل...</p>
+                        <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تهيئة نموذج التحويل...')}</p>
                     </div>
                 </div>
             </DashboardLayout>
@@ -146,8 +146,8 @@ export default function NewTransferPage() {
         <DashboardLayout>
             <div style={PAGE_BASE}>
                 <PageHeader 
-                    title="تحويل مخزني جديد" 
-                    subtitle="نقل البضائع والأصناف من مخزن لآخر مع توثيق العملية وتحديث الأرصدة" 
+                    title={t("تحويل مخزني جديد")} 
+                    subtitle={t("نقل البضائع والأصناف من مخزن لآخر مع توثيق العملية وتحديث الأرصدة")} 
                     icon={ArrowRightLeft} 
                     backUrl="/warehouse-transfers"
                 />
@@ -158,7 +158,7 @@ export default function NewTransferPage() {
                         {/* Session Header Fields */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 1fr) 1fr 1fr 1fr', gap: '16px' }}>
                             <div>
-                                <label style={{ ...LS, fontSize: '11px' }}>رقم التحويل</label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('رقم التحويل')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type="text" readOnly disabled value={form.code} dir="ltr"
@@ -168,7 +168,7 @@ export default function NewTransferPage() {
                                 </div>
                             </div>
                             <div>
-                                <label style={{ ...LS, fontSize: '11px' }}>تاريخ التحويل <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ التحويل')} <span style={{ color: C.danger }}>*</span></label>
                                 <input
                                     type="date" required
                                     value={form.date}
@@ -178,22 +178,22 @@ export default function NewTransferPage() {
                                 />
                             </div>
                             <div>
-                                <label style={{ ...LS, fontSize: '11px' }}>من مخزن (الصرف) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('من مخزن (الصرف)')} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect
                                     value={form.fromWarehouseId}
                                     onChange={v => { setForm({ ...form, fromWarehouseId: v }); localStorage.setItem('last_warehouse_id', v); }}
                                     icon={Building2}
-                                    placeholder="اختر المخزن المصدر"
+                                    placeholder={t("اختر المخزن المصدر")}
                                     options={warehouses.map(w => ({ value: w.id, label: w.name }))}
                                 />
                             </div>
                             <div>
-                                <label style={{ ...LS, fontSize: '11px' }}>إلى مخزن (الاستلام) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('إلى مخزن (الاستلام)')} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect
                                     value={form.toWarehouseId}
                                     onChange={v => { setForm({ ...form, toWarehouseId: v }); localStorage.setItem('last_warehouse_id', v); }}
                                     icon={Building2}
-                                    placeholder="اختر المخزن المستقبل"
+                                    placeholder={t("اختر المخزن المستقبل")}
                                     options={warehouses.map(w => ({ value: w.id, label: w.name }))}
                                 />
                             </div>
@@ -204,7 +204,7 @@ export default function NewTransferPage() {
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <Package size={18} style={{ color: C.primary }} />
-                                    <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>الأصناف المحولة</h4>
+                                    <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الأصناف المحولة')}</h4>
                                 </div>
                                 <button
                                     type="button" onClick={addLine}
@@ -212,7 +212,7 @@ export default function NewTransferPage() {
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(37,106,244,0.15)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(37,106,244,0.1)'}
                                 >
-                                    <Plus size={14} /> إضافة صنف جديد
+                                    <Plus size={14} /> {t('إضافة صنف جديد')}
                                 </button>
                             </div>
 
@@ -220,17 +220,17 @@ export default function NewTransferPage() {
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
-                                            <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>الصنف</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '120px' }}>الرصيد المتاح</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '150px' }}>الكمية المحولة</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '60px' }}>إجراء</th>
+                                            <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>{t('الصنف')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '120px' }}>{t('الرصيد المتاح')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '150px' }}>{t('الكمية المحولة')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '60px' }}>{t('إجراء')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {lines.length === 0 ? (
                                             <tr>
                                                 <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: C.textMuted }}>
-                                                    <p style={{ fontSize: '12px', fontWeight: 600 }}>لم يتم إضافة أصناف بعد. اضغط على أضف صنف للبدء.</p>
+                                                    <p style={{ fontSize: '12px', fontWeight: 600 }}>{t('لم يتم إضافة أصناف بعد. اضغط على أضف صنف للبدء.')}</p>
                                                 </td>
                                             </tr>
                                         ) : lines.map((line, index) => {
@@ -243,7 +243,7 @@ export default function NewTransferPage() {
                                                         <CustomSelect
                                                             value={line.itemId}
                                                             onChange={v => updateLine(index, 'itemId', v)}
-                                                            placeholder="اختر الصنف من القائمة..."
+                                                            placeholder={t("اختر الصنف من القائمة...")}
                                                             options={items.map(i => ({ value: i.id, label: i.name }))}
                                                         />
                                                     </td>
@@ -296,10 +296,10 @@ export default function NewTransferPage() {
 
                         {/* Notes Section */}
                         <div>
-                            <label style={{ ...LS, fontSize: '11px' }}>ملاحظات التحويل</label>
+                            <label style={{ ...LS, fontSize: '11px' }}>{t('ملاحظات التحويل')}</label>
                             <input
                                 type="text"
-                                placeholder="أدخل أي ملاحظات إضافية بخصوص هذه العملية..."
+                                placeholder={t("أدخل أي ملاحظات إضافية بخصوص هذه العملية...")}
                                 value={form.notes}
                                 onChange={e => setForm({ ...form, notes: e.target.value })}
                                 style={{ ...IS, fontSize: '12px', height: '38px' }}
@@ -320,7 +320,7 @@ export default function NewTransferPage() {
                                 {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                                         <Save size={18} />
-                                        تأكيد عملية التحويل وتحديث الأرصدة
+                                        {t('تأكيد عملية التحويل وتحديث الأرصدة')}
                                     </div>
                                 )}
                             </button>

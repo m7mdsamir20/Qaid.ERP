@@ -55,8 +55,8 @@ export default function OpeningBalancesPage() {
     const isLocked = curYear?.openingBalancesLocked || false;
     
     const role = session?.user?.role;
-    const canUnlock = role === 'admin' || role === 'accounts_manager' || role === 'مدير النظام' || role === 'مدير الحسابات';
-    const isAccountantOnly = (role === 'accountant' || role === 'محاسب') && !canUnlock;
+    const canUnlock = role === 'admin' || role === 'accounts_manager' || role === t('مدير النظام') || role === t('مدير الحسابات');
+    const isAccountantOnly = (role === 'accountant' || role === t('محاسب')) && !canUnlock;
     const isReadlyOnly = isLocked && isAccountantOnly;
 
     useEffect(() => {
@@ -153,7 +153,7 @@ export default function OpeningBalancesPage() {
                 alert(data.error || t('فشل الترحيل'));
             }
         } catch {
-            alert('حدث خطأ أثناء الترحيل');
+            alert(t('حدث خطأ أثناء الترحيل'));
         } finally {
             setCarrying(false);
         }

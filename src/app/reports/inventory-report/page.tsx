@@ -58,20 +58,20 @@ export default function InventoryReportPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={isServices ? "قائمة أسعار الخدمات" : "تقرير أرصدة المخزون"}
-                    subtitle={isServices ? "عرض قائمة بجميع الخدمات المسجلة وأسعار البيع المقترحة." : "عرض أرصدة جميع الأصناف في كل مخزن مع القيمة الإجمالية والتكلفة."}
+                    title={isServices ? t("قائمة أسعار الخدمات") : t("تقرير أرصدة المخزون")}
+                    subtitle={isServices ? t("عرض قائمة بجميع الخدمات المسجلة وأسعار البيع المقترحة.") : t("عرض أرصدة جميع الأصناف في كل مخزن مع القيمة الإجمالية والتكلفة.")}
                     backTab="inventory"
-                    onExportPdf={() => window.print()}
-                    printTitle={isServices ? "قائمة أسعار الخدمات" : "جرد المخازن (Inventory Statement)"}
+                    
+                    printTitle={isServices ? t("قائمة أسعار الخدمات") : t("جرد المخازن (Inventory Statement)")}
                 />
 
                 {data && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                         {[
-                            { label: isServices ? 'عدد الخدمات' : 'عدد الأصناف', value: data.totalItems.toLocaleString('en-US'), color: '#3b82f6', icon: <Package size={20} /> },
+                            { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#3b82f6', icon: <Package size={20} /> },
                             ...(!isServices ? [
-                                { label: 'إجمالي الكميات', value: data.totalQuantity.toLocaleString('en-US'), color: '#10b981', icon: <Box size={20} /> },
-                                { label: 'قيمة المخزون (تكلفة)', value: data.totalValue.toLocaleString('en-US'), color: '#f59e0b', icon: <DollarSign size={20} /> },
+                                { label: t('إجمالي الكميات'), value: data.totalQuantity.toLocaleString('en-US'), color: '#10b981', icon: <Box size={20} /> },
+                                { label: t('قيمة المخزون (تكلفة)'), value: data.totalValue.toLocaleString('en-US'), color: '#f59e0b', icon: <DollarSign size={20} /> },
                             ] : [])
                         ].map((s, i) => (
                             <div key={i} style={{
@@ -97,7 +97,7 @@ export default function InventoryReportPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={isServices ? "ابحث باسم الخدمة أو الكود..." : "ابحث باسم الصنف أو الكود أو المخزن..."}
+                            placeholder={isServices ? t("ابحث باسم الخدمة أو الكود...") : t("ابحث باسم الصنف أو الكود أو المخزن...")}
                             value={search} onChange={e => setSearch(e.target.value)}
                             style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
@@ -108,13 +108,13 @@ export default function InventoryReportPage() {
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? "جاري تحميل قائمة الخدمات..." : "جاري تحميل بيانات المخزون..."}</span>
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? t("جاري تحميل قائمة الخدمات...") : t("جاري تحميل بيانات المخزون...")}</span>
                     </div>
                 ) : filtered.length === 0 ? (
                     <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد بيانات مخزون</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>لم يتم العثور على نتائج تطابق معايير البحث الحالية.</p>
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات مخزون')}</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على نتائج تطابق معايير البحث الحالية.')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -123,11 +123,11 @@ export default function InventoryReportPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         {isServices ? (
-                                            ['كود الخدمة', 'اسم الخدمة', 'الوصف/الفئة', 'سعر الخدمة'].map((h, i) => (
+                                            [t('كود الخدمة'), t('اسم الخدمة'), t('الوصف/الفئة'), t('سعر الخدمة')].map((h, i) => (
                                                 <th key={i} style={TABLE_STYLE.th(i === 0 || i === 1)}>{h}</th>
                                             ))
                                         ) : (
-                                            ['كود الصنف', 'اسم الصنف', 'الوحدة', 'المخزن', 'الكمية', 'التكلفة', 'سعر البيع', 'القيمة الإجمالية'].map((h, i) => (
+                                            [t('كود الصنف'), t('اسم الصنف'), t('الوحدة'), t('المخزن'), t('الكمية'), t('التكلفة'), t('سعر البيع'), t('القيمة الإجمالية')].map((h, i) => (
                                                 <th key={i} style={TABLE_STYLE.th(i === 0 || i === 1)}>{h}</th>
                                             ))
                                         )}
@@ -140,12 +140,12 @@ export default function InventoryReportPage() {
                                                 <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>{st.item?.code || '-'}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
-                                                <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? 'خدمة غير معرفة' : 'صنف غير معرف')}</div>
+                                                <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{st.item?.unit || '-'}</span></td>
                                             {!isServices && (
                                                 <>
-                                                    <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{st.warehouse?.name || 'مخزن غير معرف'}</span></td>
+                                                    <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{st.warehouse?.name || t('مخزن غير معرف')}</span></td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <span style={{ 
                                                             fontSize: '13px', fontWeight: 900, color: st.quantity <= 0 ? '#ef4444' : st.quantity <= 10 ? '#f59e0b' : '#10b981', 

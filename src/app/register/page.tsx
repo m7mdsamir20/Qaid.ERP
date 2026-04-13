@@ -26,14 +26,11 @@ const COUNTRIES = [
     { code: 'DZ', dial: '+213', name: 'الجزائر', flag: '🇩🇿', currency: 'DZD', timezone: 'Africa/Algiers' },
     { code: 'MA', dial: '+212', name: 'المغرب', flag: '🇲🇦', currency: 'MAD', timezone: 'Africa/Casablanca' },
     { code: 'SD', dial: '+249', name: 'السودان', flag: '🇸🇩', currency: 'SDG', timezone: 'Africa/Khartoum' },
-    { code: 'US', dial: '+1', name: 'أمريكا', flag: '🇺🇸', currency: 'USD', timezone: 'America/New_York' },
-    { code: 'GB', dial: '+44', name: 'بريطانيا', flag: '🇬🇧', currency: 'GBP', timezone: 'Europe/London' },
-    { code: 'TR', dial: '+90', name: 'تركيا', flag: '🇹🇷', currency: 'TRY', timezone: 'Europe/Istanbul' },
 ];
 
 const BUSINESS_TYPES = [
-    { value: "TRADING", label: "نشاط تجاري (جملة وتجزئة)" },
-    { value: "SERVICES", label: "نشاط خدمات (استشارات، صيانة، إلخ)" },
+    { value: "TRADING", label: 'نشاط تجاري (جملة وتجزئة)' },
+    { value: "SERVICES", label: 'نشاط خدمات (استشارات، صيانة، إلخ)' },
 ];
 
 export default function RegisterPage() {
@@ -60,7 +57,7 @@ export default function RegisterPage() {
     const businessTypeRef = useRef<HTMLDivElement>(null);
 
     const filteredCountries = COUNTRIES.filter(c =>
-        c.name.includes(countrySearch) || c.dial.includes(countrySearch)
+        t(c.name).includes(countrySearch) || c.dial.includes(countrySearch)
     );
 
     useEffect(() => {
@@ -80,7 +77,7 @@ export default function RegisterPage() {
         setError('');
 
         if (form.password !== form.confirmPassword) {
-            setError('كلمتا المرور غير متطابقتين، يرجى التأكد');
+            setError(t('كلمتا المرور غير متطابقتين، يرجى التأكد'));
             setLoading(false);
             return;
         }
@@ -114,7 +111,7 @@ export default function RegisterPage() {
 
             router.push(`/verify?email=${encodeURIComponent(form.email)}`);
         } catch {
-            setError('حدث خطأ، حاول مرة أخرى');
+            setError(t('حدث خطأ، حاول مرة أخرى'));
             setLoading(false);
         }
     };
@@ -135,7 +132,7 @@ export default function RegisterPage() {
         </div>
     );
 
-    const BRAND_NAME = 'قيد المطور';
+    const BRAND_NAME = t('قيد المطور');
     const BRAND_LOGO = '/logo-system.png'; // لوجو النظام الموحد (قيد المطور)
 
     return (
@@ -203,12 +200,12 @@ export default function RegisterPage() {
                             <span style={{ fontSize: '24px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, letterSpacing: '0.5px' }}>{BRAND_NAME}</span>
                         </div>
                     )}
-                    <p style={{ marginTop: '14px', color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>إنشاء حساب جديد</p>
+                    <p style={{ marginTop: '14px', color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{t('إنشاء حساب جديد')}</p>
                 </div>
 
                 {/* كارت التسجيل */}
                 <div style={{ ...THEME.glass.card, borderRadius: '24px', padding: '24px', boxShadow: THEME.shadows.premium }}>
-                    <h2 style={{ margin: '0 0 16px', fontSize: '20px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>إنشاء الحساب</h2>
+                    <h2 style={{ margin: '0 0 16px', fontSize: '20px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>{t('إنشاء الحساب')}</h2>
 
                     {error && (
                         <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', textAlign: 'center', fontWeight: 600 }}>{error}</div>
@@ -216,19 +213,19 @@ export default function RegisterPage() {
 
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            {F('الاسم الكامل', 'name', 'محمد أحمد')}
-                            {F('اسم المستخدم', 'username', 'mohamed123')}
+                            {F(t('الاسم الكامل'), 'name', t('محمد أحمد'))}
+                            {F(t('اسم المستخدم'), 'username', 'mohamed123')}
                         </div>
 
                         <div>
-                            <label style={LS}>رقم الهاتف</label>
+                            <label style={LS}>{t('رقم الهاتف')}</label>
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
                                     <button type="button" onClick={() => setShowCountries(!showCountries)}
                                         style={{ height: '44px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
-                                        <img src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`} alt={selectedCountry.name} style={{ width: 22, height: 16, objectFit: 'cover', borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }} />
+                                        <img src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`} alt={t(selectedCountry.name)} style={{ width: 22, height: 16, objectFit: 'cover', borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }} />
                                         <span style={{ fontSize: '12px', direction: 'ltr', color: C.textSecondary, fontWeight: 700 }}>{selectedCountry.dial}</span>
                                         <ChevronDown size={14} color={C.textMuted} style={{ transform: showCountries ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                                     </button>
@@ -237,7 +234,7 @@ export default function RegisterPage() {
                                         <div style={{ position: 'absolute', top: 'calc(100% + 12px)', insetInlineEnd: 0, width: '240px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden', animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}` }}>
                                             <div style={{ padding: '12px', borderBottom: `1px solid ${C.border}`, position: 'relative', background: 'rgba(255,255,255,0.01)' }}>
                                                 <Search size={14} style={{ position: 'absolute', insetInlineEnd: '22px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                                                <input placeholder="ابحث عن الدولة..." value={countrySearch} onChange={e => setCountrySearch(e.target.value)}
+                                                <input placeholder={t("ابحث عن الدولة...")} value={countrySearch} onChange={e => setCountrySearch(e.target.value)}
                                                     style={{ width: '100%', height: '36px', padding: '0 32px 0 10px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '12.5px', outline: 'none', fontFamily: CAIRO, direction: 'rtl', boxSizing: 'border-box' }}
                                                     autoFocus
                                                 />
@@ -249,8 +246,8 @@ export default function RegisterPage() {
                                                         style={{ width: '100%', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: '10px', background: selectedCountry.code === c.code ? `${C.primary}15` : 'transparent', border: 'none', cursor: 'pointer', transition: '0.15s', borderRadius: '10px', textAlign: 'start', color: selectedCountry.code === c.code ? C.primary : C.textSecondary, fontWeight: selectedCountry.code === c.code ? 800 : 500 }}
                                                         onMouseEnter={e => { if (selectedCountry.code !== c.code) e.currentTarget.style.background = C.hover; }}
                                                         onMouseLeave={e => { if (selectedCountry.code !== c.code) e.currentTarget.style.background = 'transparent'; }}>
-                                                        <img src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`} alt={c.name} style={{ width: 22, height: 16, objectFit: 'cover', borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
-                                                        <span style={{ fontSize: '13.5px', fontFamily: CAIRO, flex: 1, textAlign: 'start' }}>{c.name}</span>
+                                                        <img src={`https://flagcdn.com/w20/${c.code.toLowerCase()}.png`} alt={t(c.name)} style={{ width: 22, height: 16, objectFit: 'cover', borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+                                                        <span style={{ fontSize: '13.5px', fontFamily: CAIRO, flex: 1, textAlign: 'start' }}>{t(c.name)}</span>
                                                         <span style={{ fontSize: '13px', direction: 'ltr', opacity: 0.8 }}>{c.dial}</span>
                                                     </button>
                                                 ))}
@@ -273,18 +270,18 @@ export default function RegisterPage() {
                             </div>
                         </div>
 
-                        {F('البريد الإلكتروني', 'email', 'email@example.com', 'email')}
+                        {F(t('البريد الإلكتروني'), 'email', 'email@example.com', 'email')}
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                            {F('اسم الشركة / النشاط', 'companyName', 'مثلاً: شركة الحلول التقنية')}
+                            {F(t('اسم الشركة / النشاط'), 'companyName', t('مثلاً: شركة الحلول التقنية'))}
                             <div>
-                                <label style={LS}>نوع النشاط</label>
+                                <label style={LS}>{t('نوع النشاط')}</label>
                                 <div ref={businessTypeRef} style={{ position: 'relative' }}>
                                     <button type="button" onClick={() => setShowBusinessTypes(!showBusinessTypes)}
                                         style={{ width: '100%', height: '44px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
-                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : `${C.textMuted}90` }}>{form.businessType ? BUSINESS_TYPES.find(b => b.value === form.businessType)?.label : 'اختر نوع النشاط'}</span>
+                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : `${C.textMuted}90` }}>{form.businessType ? t(BUSINESS_TYPES.find(b => b.value === form.businessType)?.label || '') : t('اختر نوع النشاط')}</span>
                                         <ChevronDown size={14} color={C.textMuted} style={{ transform: showBusinessTypes ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                                     </button>
 
@@ -300,7 +297,7 @@ export default function RegisterPage() {
                                                         style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box', background: form.businessType === b.value ? `${C.primary}15` : 'transparent', color: form.businessType === b.value ? C.primary : C.textSecondary, transition: '0.15s', fontWeight: form.businessType === b.value ? 800 : 500 }}
                                                         onMouseEnter={e => { if (form.businessType !== b.value) e.currentTarget.style.background = C.hover; }}
                                                         onMouseLeave={e => { if (form.businessType !== b.value) e.currentTarget.style.background = 'transparent'; }}>
-                                                        <span style={{ flex: 1, textAlign: 'start' }}>{b.label}</span>
+                                                        <span style={{ flex: 1, textAlign: 'start' }}>{t(b.label)}</span>
                                                     </button>
                                                 ))}
                                             </div>
@@ -312,12 +309,12 @@ export default function RegisterPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                             <div>
-                                <label style={LS}>كلمة المرور</label>
+                                <label style={LS}>{t('كلمة المرور')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type={showPass ? 'text' : 'password'} required minLength={8}
                                         value={form.password}
                                         onChange={e => setForm({ ...form, password: e.target.value })}
-                                        placeholder="8 أحرف على الأقل"
+                                        placeholder={t("8 أحرف على الأقل")}
                                         style={{ ...IS, height: '44px', paddingInlineStart: '44px', direction: 'ltr', textAlign: 'start' }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
@@ -330,12 +327,12 @@ export default function RegisterPage() {
                             </div>
 
                             <div>
-                                <label style={LS}>تأكيد المرور</label>
+                                <label style={LS}>{t('تأكيد المرور')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type={showConfirmPass ? 'text' : 'password'} required minLength={8}
                                         value={form.confirmPassword}
                                         onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
-                                        placeholder="إعادة الكلمة"
+                                        placeholder={t("إعادة الكلمة")}
                                         style={{ ...IS, height: '44px', paddingInlineStart: '44px', direction: 'ltr', textAlign: 'start' }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
@@ -352,13 +349,13 @@ export default function RegisterPage() {
                             style={{ height: '48px', borderRadius: '12px', border: 'none', background: loading ? C.primaryBg : C.primary, color: '#fff', fontSize: '15px', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO, marginTop: '4px', boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}40`, transition: 'all 0.2s' }}
                             onMouseEnter={e => { if (!loading) e.currentTarget.style.background = C.primaryHover; }}
                             onMouseLeave={e => { if (!loading) e.currentTarget.style.background = C.primary; }}>
-                            {loading ? <><Loader2 size={18} style={{ animationName: 'spin', animationDuration: '1s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} /> جاري الإنشاء...</> : 'إنشاء الحساب'}
+                            {loading ? <><Loader2 size={18} style={{ animationName: 'spin', animationDuration: '1s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} /> {t('جاري الإنشاء...')}</> : t('إنشاء الحساب')}
                         </button>
                     </form>
 
                     <p style={{ textAlign: 'center', marginTop: '16px', fontSize: '13px', color: C.textSecondary }}>
-                        لديك حساب بالفعل؟{' '}
-                        <Link href="/login" style={{ color: C.primary, fontWeight: 800, textDecoration: 'none' }}>تسجيل الدخول</Link>
+                        {t('لديك حساب بالفعل؟')}{' '}
+                        <Link href="/login" style={{ color: C.primary, fontWeight: 800, textDecoration: 'none' }}>{t('تسجيل الدخول')}</Link>
                     </p>
                 </div>
             </div>

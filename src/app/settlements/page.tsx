@@ -23,6 +23,7 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
     disabled?: boolean;
     labelIcon?: any;
 }) {
+    const { t } = useTranslation();
     const [open, setOpen] = useState(false);
     const [q, setQ] = useState('');
     const ref = useRef<HTMLDivElement>(null);
@@ -57,13 +58,13 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
                     <div style={{ padding: '10px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ position: 'relative' }}>
                             <Search size={14} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
-                            <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder="ابحث في القائمة..."
+                            <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder={t("ابحث في القائمة...")}
                                 style={{ ...IS, height: '36px', paddingInlineEnd: '36px', fontSize: '12px' }} />
                         </div>
                     </div>
                     <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
                         {filtered.length === 0
-                            ? <div style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontWeight: 600 }}>لا توجد خيارات مطابقة</div>
+                            ? <div style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontWeight: 600 }}>{t('لا توجد خيارات مطابقة')}</div>
                             : filtered.map(opt => (
                                 <div key={opt.id} onClick={() => { onChange(opt.id); setOpen(false); setQ(''); }}
                                     style={{ padding: '10px 16px', cursor: 'pointer', background: opt.id === value ? C.primaryBg : 'transparent', borderInlineEnd: opt.id === value ? `3px solid ${C.primary}` : '3px solid transparent', transition: 'all 0.1s' }}
@@ -84,7 +85,7 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
 }
 
 function Modal({ isOpen, onClose, title, icon, children, maxWidth = '800px' }: { isOpen: boolean; onClose: () => void; title: string; icon: React.ReactNode; children: React.ReactNode; maxWidth?: string; }) {
-    const { lang } = useTranslation();
+    const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     useEffect(() => {
         const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
@@ -100,7 +101,7 @@ function Modal({ isOpen, onClose, title, icon, children, maxWidth = '800px' }: {
                         <div style={{ width: 40, height: 40, borderRadius: '10px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
                         <div>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{title}</h2>
-                            <p style={{ margin: '2px 0 0', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>قم بإدخال بيانات التسوية بدقة لتحديث أرصدة الحسابات</p>
+                            <p style={{ margin: '2px 0 0', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{t('قم بإدخال بيانات التسوية بدقة لتحديث أرصدة الحسابات')}</p>
                         </div>
                     </div>
                     <button type="button" onClick={onClose} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textMuted, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = C.dangerBg; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}><X size={20} /></button>
@@ -161,7 +162,7 @@ export default function ComprehensiveSettlementPage() {
 
     const handleSave = async () => {
         const amt = form.amount.replace(/,/g, '');
-        if (!form.fromId || !form.toId || !amt) { alert('يرجى ملء كافة الحقول الإجبارية'); return; }
+        if (!form.fromId || !form.toId || !amt) { alert(t('يرجى ملء كافة الحقول الإجبارية')); return; }
         setSubmitting(true);
         try {
             const res = await fetch('/api/sales/debt-settlement', { 
@@ -174,20 +175,20 @@ export default function ComprehensiveSettlementPage() {
                 setShowForm(false);
                 fetchData();
             } else {
-                const d = await res.json(); alert(d.error || 'فشل في حفظ عملية التسوية');
+                const d = await res.json(); alert(d.error || t('فشل في حفظ عملية التسوية'));
             }
-        } catch { alert('خطأ في الاتصال بالخادم'); } finally { setSubmitting(false); }
+        } catch { alert(t('خطأ في الاتصال بالخادم')); } finally { setSubmitting(false); }
     };
 
     const getOptions = (type: string) => {
-        if (type === 'customer') return customers.map((c: any) => ({ id: c.id, label: c.name, sub: `رصيد متاح: ${c.balance.toLocaleString()} ${currencySign}`, balance: c.balance }));
-        if (type === 'supplier') return suppliers.map((s: any) => ({ id: s.id, label: s.name, sub: `رصيد متاح: ${s.balance.toLocaleString()} ${currencySign}`, balance: s.balance }));
-        if (type === 'bank') return banks.map((b: any) => ({ id: b.id, label: b.name, sub: `رصيد متاح: ${b.balance.toLocaleString()} ${currencySign}`, balance: b.balance }));
+        if (type === 'customer') return customers.map((c: any) => ({ id: c.id, label: c.name, sub: t('رصيد متاح:') + ` ${c.balance.toLocaleString()} ${currencySign}`, balance: c.balance }));
+        if (type === 'supplier') return suppliers.map((s: any) => ({ id: s.id, label: s.name, sub: t('رصيد متاح:') + ` ${s.balance.toLocaleString()} ${currencySign}`, balance: s.balance }));
+        if (type === 'bank') return banks.map((b: any) => ({ id: b.id, label: b.name, sub: t('رصيد متاح:') + ` ${b.balance.toLocaleString()} ${currencySign}`, balance: b.balance }));
         return [];
     };
 
-    const fromLabel = form.fromType === 'customer' ? 'العميل' : form.fromType === 'supplier' ? 'المورد' : 'الخزينة / البنك';
-    const toLabel = form.toType === 'customer' ? 'العميل' : form.toType === 'supplier' ? 'المورد' : 'الخزينة / البنك';
+    const fromLabel = form.fromType === 'customer' ? t('العميل') : form.fromType === 'supplier' ? t('المورد') : t('الخزينة / البنك');
+    const toLabel = form.toType === 'customer' ? t('العميل') : form.toType === 'supplier' ? t('المورد') : t('الخزينة / البنك');
 
 
     return (
@@ -208,8 +209,8 @@ export default function ComprehensiveSettlementPage() {
                             <ArrowRightLeft size={THEME.header.iconSize} />
                         </div>
                         <div>
-                            <h1 style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>تسوية ديون</h1>
-                            <p style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>إدارة ومراجعة التحويلات المالية وتسوية الأرصدة</p>
+                            <h1 style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{t('تسوية ديون')}</h1>
+                            <p style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>{t('إدارة ومراجعة التحويلات المالية وتسوية الأرصدة')}</p>
                         </div>
                     </div>
 
@@ -225,7 +226,7 @@ export default function ComprehensiveSettlementPage() {
                         onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
                         onMouseLeave={e => e.currentTarget.style.background = C.primary}
                     >
-                        <Plus size={14} /> تسجيل تسوية جديدة
+                        <Plus size={14} /> {t('تسجيل تسوية جديدة')}
                     </button>
                 </div>
 
@@ -233,7 +234,7 @@ export default function ComprehensiveSettlementPage() {
                 <div style={{ position: 'relative', marginBottom: '14px' }}>
                     <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                     <input
-                        placeholder="ابحث برقم القيد أو تفاصيل العملية..."
+                        placeholder={t("ابحث برقم القيد أو تفاصيل العملية...")}
                         value={settlementSearch}
                         onChange={e => setSettlementSearch(e.target.value)}
                         style={{
@@ -251,7 +252,7 @@ export default function ComprehensiveSettlementPage() {
                 {loading ? (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '60px', textAlign: 'center' }}>
                         <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, display: 'block', margin: '0 auto' }} />
-                        <p style={{ marginTop: '10px', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>جاري تحميل البيانات...</p>
+                        <p style={{ marginTop: '10px', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
                     </div>
                 ) : (
                     <>
@@ -263,7 +264,7 @@ export default function ComprehensiveSettlementPage() {
                                             <div style={{ padding: '8px', borderRadius: '8px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 <ArrowRightLeft size={16} />
                                             </div>
-                                            <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>تسجيل تسوية ديون</h2>
+                                            <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تسجيل تسوية ديون')}</h2>
                                         </div>
                                         <button onClick={() => setShowForm(false)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: 30, height: 30, borderRadius: '6px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textMuted, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = C.dangerBg; }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; }}><X size={16} /></button>
                                     </div>
@@ -271,7 +272,7 @@ export default function ComprehensiveSettlementPage() {
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
                                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                                 <div>
-                                                    <label style={LS}>تاريخ العملية</label>
+                                                    <label style={LS}>{t('تاريخ العملية')}</label>
                                                     <div style={{ position: 'relative' }}>
                                                         <input 
                                                             type="date" 
@@ -284,7 +285,7 @@ export default function ComprehensiveSettlementPage() {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <label style={LS}>المبلغ المراد تسويته</label>
+                                                    <label style={LS}>{t('المبلغ المراد تسويته')}</label>
                                                     <div style={{ position: 'relative' }}>
                                                         <input 
                                                             type="text" 
@@ -306,49 +307,49 @@ export default function ComprehensiveSettlementPage() {
                                             </div>
 
                                             <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                                                <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>الطرف المحوّل منه (المصدر)</div>
+                                                <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>{t('الطرف المحوّل منه (المصدر)')}</div>
                                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
                                                     {[
-                                                        { id: 'customer', name: 'عميل' },
-                                                        { id: 'supplier', name: 'مورد' },
-                                                        { id: 'bank', name: 'خزينة / بنك' }
-                                                    ].map(t => (
-                                                        <button key={t.id} onClick={() => setForm(f => ({ ...f, fromType: t.id as any, fromId: '' }))}
-                                                            style={{ height: '34px', borderRadius: '6px', border: `1px solid ${form.fromType === t.id ? C.primary : C.border}`, background: form.fromType === t.id ? C.primaryBg : 'transparent', color: form.fromType === t.id ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                            {t.name}
+                                                        { id: 'customer', name: t('عميل') },
+                                                        { id: 'supplier', name: t('مورد') },
+                                                        { id: 'bank', name: t('خزينة / بنك') }
+                                                    ].map(tType => (
+                                                        <button key={tType.id} onClick={() => setForm(f => ({ ...f, fromType: tType.id as any, fromId: '' }))}
+                                                            style={{ height: '34px', borderRadius: '6px', border: `1px solid ${form.fromType === tType.id ? C.primary : C.border}`, background: form.fromType === tType.id ? C.primaryBg : 'transparent', color: form.fromType === tType.id ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
+                                                            {tType.name}
                                                         </button>
                                                     ))}
                                                 </div>
-                                                <SearchableSelect options={getOptions(form.fromType)} value={form.fromId} onChange={v => setForm(f => ({ ...f, fromId: v }))} placeholder={`ابحث عن ${fromLabel}...`} labelIcon={UserMinus} />
+                                                <SearchableSelect options={getOptions(form.fromType)} value={form.fromId} onChange={v => setForm(f => ({ ...f, fromId: v }))} placeholder={t('ابحث عن') + ` ${fromLabel}...`} labelIcon={UserMinus} />
                                             </div>
 
                                             <div style={{ padding: '16px', borderRadius: '10px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                                                <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>الطرف المحوّل إليه (المستلم)</div>
+                                                <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>{t('الطرف المحوّل إليه (المستلم)')}</div>
                                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
                                                     {[
-                                                        { id: 'customer', name: 'عميل' },
-                                                        { id: 'supplier', name: 'مورد' },
-                                                        { id: 'bank', name: 'خزينة / بنك' }
-                                                    ].map(t => (
-                                                        <button key={t.id} onClick={() => setForm(f => ({ ...f, toType: t.id as any, toId: '' }))}
-                                                            style={{ height: '34px', borderRadius: '6px', border: `1px solid ${form.toType === t.id ? C.primary : C.border}`, background: form.toType === t.id ? C.primaryBg : 'transparent', color: form.toType === t.id ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                            {t.name}
+                                                        { id: 'customer', name: t('عميل') },
+                                                        { id: 'supplier', name: t('مورد') },
+                                                        { id: 'bank', name: t('خزينة / بنك') }
+                                                    ].map(tType => (
+                                                        <button key={tType.id} onClick={() => setForm(f => ({ ...f, toType: tType.id as any, toId: '' }))}
+                                                            style={{ height: '34px', borderRadius: '6px', border: `1px solid ${form.toType === tType.id ? C.primary : C.border}`, background: form.toType === tType.id ? C.primaryBg : 'transparent', color: form.toType === tType.id ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
+                                                            {tType.name}
                                                         </button>
                                                     ))}
                                                 </div>
-                                                <SearchableSelect options={getOptions(form.toType)} value={form.toId} onChange={v => setForm(f => ({ ...f, toId: v }))} placeholder={`ابحث عن ${toLabel}...`} labelIcon={UserPlus} />
+                                                <SearchableSelect options={getOptions(form.toType)} value={form.toId} onChange={v => setForm(f => ({ ...f, toId: v }))} placeholder={t('ابحث عن') + ` ${toLabel}...`} labelIcon={UserPlus} />
                                             </div>
 
 
                                             <div>
-                                                <label style={LS}>ملاحظات التسوية</label>
-                                                <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} style={{ ...IS, height: '60px', paddingTop: '8px', resize: 'none' }} onFocus={focusIn} onBlur={focusOut} placeholder="اكتب بياناً توضيحياً..." />
+                                                <label style={LS}>{t('ملاحظات التسوية')}</label>
+                                                <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} style={{ ...IS, height: '60px', paddingTop: '8px', resize: 'none' }} onFocus={focusIn} onBlur={focusOut} placeholder={t("اكتب بياناً توضيحياً...")} />
                                             </div>
 
                                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '10px', marginTop: '10px' }}>
-                                                <button onClick={() => setShowForm(false)} style={{ height: '42px', borderRadius: '10px', background: C.inputBg, color: C.textSecondary, border: `1px solid ${C.border}`, fontSize: '14px', fontWeight: 500, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                                                <button onClick={() => setShowForm(false)} style={{ height: '42px', borderRadius: '10px', background: C.inputBg, color: C.textSecondary, border: `1px solid ${C.border}`, fontSize: '14px', fontWeight: 500, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                                                 <button onClick={handleSave} disabled={submitting || !form.amount} style={{ height: '42px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontSize: '14px', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: (submitting || !form.amount) ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                                    {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={16} /> حفظ التسوية</>}
+                                                    {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={16} /> {t('حفظ التسوية')}</>}
                                                 </button>
                                             </div>
                                         </div>
@@ -360,8 +361,8 @@ export default function ComprehensiveSettlementPage() {
                         {filteredSettlements.length === 0 ? (
                             <div style={{ textAlign: 'center', padding: '100px 20px', background: C.card, border: `1px dashed ${C.border}`, borderRadius: '32px' }}>
                                 <div style={{ width: 80, height: 80, borderRadius: '50%', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}><ArrowRightLeft size={36} opacity={0.5} /></div>
-                                <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 800, margin: '0 0 10px', fontFamily: CAIRO }}>{settlementSearch ? 'لم نجد أي مطابقات' : 'سجل التسويات فارغ'}</h3>
-                                <p style={{ color: C.textSecondary, fontSize: '14px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.</p>
+                                <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 800, margin: '0 0 10px', fontFamily: CAIRO }}>{settlementSearch ? t('لم نجد أي مطابقات') : t('سجل التسويات فارغ')}</h3>
+                                <p style={{ color: C.textSecondary, fontSize: '14px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>
                             </div>
                         ) : (
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', overflow: 'hidden' }}>
@@ -370,13 +371,13 @@ export default function ComprehensiveSettlementPage() {
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                 {[
-                                                    { label: 'التاريخ', width: '12%' },
-                                                    { label: 'رقم القيد', width: '10%' },
-                                                    { label: 'المصدر (من)', width: '22%' },
-                                                    { label: 'المستلم (إليه)', width: '22%' },
-                                                    { label: 'البيان', width: 'auto' },
-                                                    { label: 'المبلغ', width: '14%' },
-                                                    { label: 'إجراء', width: '6%' }
+                                                    { label: t('التاريخ'), width: '12%' },
+                                                    { label: t('رقم القيد'), width: '10%' },
+                                                    { label: t('المصدر (من)'), width: '22%' },
+                                                    { label: t('المستلم (إليه)'), width: '22%' },
+                                                    { label: t('البيان'), width: 'auto' },
+                                                    { label: t('المبلغ'), width: '14%' },
+                                                    { label: t('إجراء'), width: '6%' }
                                                 ].map((h, i) => (
                                                     <th key={i} style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', width: h.width, fontFamily: CAIRO }}>{h.label}</th>
                                                 ))}
@@ -438,7 +439,7 @@ export default function ComprehensiveSettlementPage() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 <div style={{ padding: '8px', borderRadius: '8px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><History size={16} /></div>
                                 <div dir={isRtl ? 'rtl' : 'ltr'}>
-                                    <h3 style={{ margin: 0, color: C.textPrimary, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>مراجعة سند التسوية</h3>
+                                    <h3 style={{ margin: 0, color: C.textPrimary, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{t('مراجعة سند التسوية')}</h3>
                                 </div>
                             </div>
                             <button onClick={() => setDetailsModal(null)} style={{ background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textMuted, cursor: 'pointer', width: 30, height: 30, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.color = C.danger; e.currentTarget.style.background = C.dangerBg }} onMouseLeave={e => { e.currentTarget.style.color = C.textMuted; e.currentTarget.style.background = 'rgba(255,255,255,0.03)' }}><X size={16} /></button>
@@ -446,11 +447,11 @@ export default function ComprehensiveSettlementPage() {
                         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '22px' }}>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '22px' }}>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>تاريخ التسجيل</div>
-                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: INTER }}>{new Date(detailsModal.date).toLocaleDateString('ar-EG-u-nu-latn', { dateStyle: 'full' })}</div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>{t('تاريخ التسجيل')}</div>
+                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: INTER }}>{new Date(detailsModal.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { dateStyle: 'full' })}</div>
                                 </div>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>إجمالي القيد</div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>{t('إجمالي القيد')}</div>
                                     <div style={{ fontSize: '18px', color: C.success, fontWeight: 900, fontFamily: INTER }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.7 }}>{currencySign}</span></div>
                                 </div>
                             </div>
@@ -459,9 +460,9 @@ export default function ComprehensiveSettlementPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                                         <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '10px 16px', textAlign: 'start', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>الحساب المتأثر</th>
-                                            <th style={{ padding: '10px 16px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>مدين (+)</th>
-                                            <th style={{ padding: '10px 16px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>دائن (-)</th>
+                                            <th style={{ padding: '10px 16px', textAlign: 'start', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>{t('الحساب المتأثر')}</th>
+                                            <th style={{ padding: '10px 16px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>{t('مدين (+)')}</th>
+                                            <th style={{ padding: '10px 16px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>{t('دائن (-)')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -477,7 +478,7 @@ export default function ComprehensiveSettlementPage() {
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `1px solid ${C.border}` }}>
                                         <tr>
-                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>إجمالي القيد</td>
+                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي القيد')}</td>
                                             <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800, textAlign: 'center', fontFamily: INTER }}>{detailsModal.amount.toLocaleString()}</td>
                                             <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800, textAlign: 'center', fontFamily: INTER }}>{detailsModal.amount.toLocaleString()}</td>
                                         </tr>

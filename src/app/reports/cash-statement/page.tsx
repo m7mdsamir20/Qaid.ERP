@@ -59,7 +59,7 @@ interface SummaryCard {
 }
 
 export default function CashStatementPage() {
-    const { lang } = useTranslation();
+    const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
@@ -118,28 +118,28 @@ export default function CashStatementPage() {
         if (!data || !movements.length) return;
         const excelData = [
             {
-                'التاريخ': '—',
-                'البيان / الجهة': 'رصيد افتتاحي (قبل الفترة)',
-                'الرصيد قبل': '—',
-                'وارد (+)': '—',
-                'صادر (-)': '—',
-                'الرصيد بعد': data.openingBalance
+                [t('التاريخ')]: '—',
+                [t('البيان / الجهة')]: t('رصيد افتتاحي (قبل الفترة)'),
+                [t('الرصيد قبل')]: '—',
+                [t('وارد (+)')]: '—',
+                [t('صادر (-)')]: '—',
+                [t('الرصيد بعد')]: data.openingBalance
             },
             ...movements.map((m) => ({
-                'التاريخ': new Date(m.date).toLocaleDateString('en-GB'),
-                'البيان / الجهة': `${m.party} - ${m.description}`,
-                'الرصيد قبل': m.balanceBefore,
-                'وارد (+)': m.type === 'receipt' ? m.amount : 0,
-                'صادر (-)': m.type === 'payment' ? m.amount : 0,
-                'الرصيد بعد': m.balanceAfter
+                [t('التاريخ')]: new Date(m.date).toLocaleDateString('en-GB'),
+                [t('البيان / الجهة')]: `${m.party} - ${m.description}`,
+                [t('الرصيد قبل')]: m.balanceBefore,
+                [t('وارد (+)')]: m.type === 'receipt' ? m.amount : 0,
+                [t('صادر (-)')]: m.type === 'payment' ? m.amount : 0,
+                [t('الرصيد بعد')]: m.balanceAfter
             }))
         ];
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'كشف حركة الخزينة');
+        XLSX.utils.book_append_sheet(wb, ws, t('كشف حركة الخزينة'));
         XLSX.writeFile(
             wb,
-            `كشف_حركة_الخزينة_${data.treasuryName || 'cash'}_${new Date().toLocaleDateString('en-GB')}.xlsx`
+            `${t('كشف_حركة_الخزينة')}_${data.treasuryName || 'cash'}_${new Date().toLocaleDateString('en-GB')}.xlsx`
         );
     };
 
@@ -147,10 +147,10 @@ export default function CashStatementPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader 
-                    title="كشف حركة الخزينة" 
-                    subtitle="بيان تفصيلي بجميع المقبوضات والمدفوعات النقدية مع رصيد تراكمي لحظي." 
+                    title={t("كشف حركة الخزينة")} 
+                    subtitle={t("بيان تفصيلي بجميع المقبوضات والمدفوعات النقدية مع رصيد تراكمي لحظي.")} 
                     backTab="treasury-bank"
-                    onExportPdf={() => window.print()}
+                    
                     onExportExcel={exportToExcel}
                 />
 
@@ -160,9 +160,9 @@ export default function CashStatementPage() {
                         <CustomSelect
                             value={selectedId}
                             onChange={val => { setSelectedId(val); fetchReport(val); }}
-                            placeholder="اختر الخزينة لمتابعة حركتها..."
+                            placeholder={t("اختر الخزينة لمتابعة حركتها...")}
                             options={[
-                                { value: '', label: '-- اختر الخزينة من القائمة --' },
+                                { value: '', label: `-- ${t('اختر الخزينة من القائمة')} --` },
                                 ...treasuries.map(t => ({ value: t.id, label: t.name }))
                             ]}
                             style={{ 
@@ -175,7 +175,7 @@ export default function CashStatementPage() {
                     </div>
                     
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
+                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{ 
@@ -186,7 +186,7 @@ export default function CashStatementPage() {
                                 }}
                             />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
+                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{ 
@@ -205,7 +205,7 @@ export default function CashStatementPage() {
                             boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                         }}>
                             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
-                            تحديث التقرير
+                            {t('تحديث التقرير')}
                         </button>
                     </div>
                 </div>
@@ -213,23 +213,23 @@ export default function CashStatementPage() {
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري سحب كشف الحركة...</span>
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري سحب كشف الحركة...')}</span>
                     </div>
                 ) : !data ? (
                     <div style={{ padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Wallet size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>بانتظار اختيار الخزينة</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>يرجى اختيار الخزينة وتحديد الفترة الزمنية لعرض كشف الحركة التفصيلي.</p>
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار الخزينة')}</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('يرجى اختيار الخزينة وتحديد الفترة الزمنية لعرض كشف الحركة التفصيلي.')}</p>
                     </div>
                 ) : (
                     <>
                         {/* Summary Stats Cards */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: 'رصيد أول المدة', value: data.openingBalance, color: '#3b82f6', icon: <History size={20} />, sign: 'منقول من السابق' },
-                                { label: 'إجمالي المقبوضات', value: totalReceipts, color: SC, icon: <TrendingUp size={20} />, sign: 'وارد للخزينة (+)' },
-                                { label: 'إجمالي المدفوعات', value: totalPayments, color: DC, icon: <TrendingDown size={20} />, sign: 'صادر من الخزينة (-)' },
-                                { label: 'الرصيد النهائي الآن', value: data.currentBalance, color: data.currentBalance >= 0 ? SC : DC, icon: <FileText size={20} />, sign: 'الرصيد الدفتري الحالي' },
+                                { label: t('رصيد أول المدة'), value: data.openingBalance, color: '#3b82f6', icon: <History size={20} />, sign: t('منقول من السابق') },
+                                { label: t('إجمالي المقبوضات'), value: totalReceipts, color: SC, icon: <TrendingUp size={20} />, sign: t('وارد للخزينة (+)') },
+                                { label: t('إجمالي المدفوعات'), value: totalPayments, color: DC, icon: <TrendingDown size={20} />, sign: t('صادر من الخزينة (-)') },
+                                { label: t('الرصيد النهائي الآن'), value: data.currentBalance, color: data.currentBalance >= 0 ? SC : DC, icon: <FileText size={20} />, sign: t('الرصيد الدفتري الحالي') },
                             ].map((s: SummaryCard, i: number) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -256,7 +256,7 @@ export default function CashStatementPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            {['التاريخ', 'البيان والتفاصيل', 'الرصيد قبل', 'وارد (+)', 'صادر (-)', 'الرصيد بعد'].map((h, i) => (
+                                            {[t('التاريخ'), t('البيان والتفاصيل'), t('الرصيد قبل'), t('وارد (+)'), t('صادر (-)'), t('الرصيد بعد')].map((h, i) => (
                                                 <th key={i} style={{ 
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                     textAlign: 'center', 
@@ -267,7 +267,7 @@ export default function CashStatementPage() {
                                     </thead>
                                     <tbody>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'start', fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>رصيد افتتاحي (قبل الفترة المحددة)</td>
+                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'start', fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد افتتاحي (قبل الفترة المحددة)')}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
@@ -294,7 +294,7 @@ export default function CashStatementPage() {
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <td colSpan={3} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>إجمالي حركة التداول والتحويلات</td>
+                                            <td colSpan={3} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي حركة التداول والتحويلات')}</td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>+{totalReceipts.toLocaleString('en-US')}</td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>-{totalPayments.toLocaleString('en-US')}</td>
                                             <td style={{ padding: '20px 24px', textAlign: 'center', color: C.textPrimary, fontSize: '16px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>{data.currentBalance.toLocaleString('en-US')}</td>

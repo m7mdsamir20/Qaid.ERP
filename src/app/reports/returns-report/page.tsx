@@ -66,19 +66,19 @@ export default function ReturnsReportPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="تقرير مرتجعات البيع والشراء"
-                    subtitle="متابعة دقيقة لكافة عمليات المرتجع الصادرة والواردة وتأثيرها المالي على المخزون."
+                    title={t("تقرير مرتجعات البيع والشراء")}
+                    subtitle={t("متابعة دقيقة لكافة عمليات المرتجع الصادرة والواردة وتأثيرها المالي على المخزون.")}
                     backTab="sales-purchases"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'إجمالي مرتجع البيع', value: fmt(stats.totalSaleReturns), color: '#ef4444', icon: <TrendingDown size={20} /> },
-                        { label: 'إجمالي مرتجع الشراء', value: fmt(stats.totalPurchaseReturns), color: '#3b82f6', icon: <TrendingUp size={20} /> },
-                        { label: 'إجمالي عدد الفواتير', value: data.length.toLocaleString('en-US'), color: '#a78bfa', icon: <FileText size={20} /> },
-                        { label: 'متوسط قيمة العملية', value: fmt(data.length ? (stats.totalSaleReturns + stats.totalPurchaseReturns) / data.length : 0), color: '#10b981', icon: <Activity size={20} /> },
+                        { label: t('إجمالي مرتجع البيع'), value: fmt(stats.totalSaleReturns), color: '#ef4444', icon: <TrendingDown size={20} /> },
+                        { label: t('إجمالي مرتجع الشراء'), value: fmt(stats.totalPurchaseReturns), color: '#3b82f6', icon: <TrendingUp size={20} /> },
+                        { label: t('إجمالي عدد الفواتير'), value: data.length.toLocaleString('en-US'), color: '#a78bfa', icon: <FileText size={20} /> },
+                        { label: t('متوسط قيمة العملية'), value: fmt(data.length ? (stats.totalSaleReturns + stats.totalPurchaseReturns) / data.length : 0), color: '#10b981', icon: <Activity size={20} /> },
                     ].map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -103,7 +103,7 @@ export default function ReturnsReportPage() {
                         <div style={{ position: 'relative', flex: 1 }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
-                                placeholder="ابحث برقم الفاتورة أو الطرف الآخر..."
+                                placeholder={t("ابحث برقم الفاتورة أو الطرف الآخر...")}
                                 value={q} onChange={e => setQ(e.target.value)}
                                 style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px',
@@ -117,9 +117,9 @@ export default function ReturnsReportPage() {
                             <CustomSelect
                                 value={branchId}
                                 onChange={v => setBranchId(v)}
-                                placeholder="كل الفروع"
+                                placeholder={t("كل الفروع")}
                                 options={[
-                                    { value: 'all', label: 'كل الفروع' },
+                                    { value: 'all', label: t('كل الفروع') },
                                     ...branches.map((b: any) => ({ value: b.id, label: b.name }))
                                 ]}
                             />
@@ -129,20 +129,20 @@ export default function ReturnsReportPage() {
                     {loading ? (
                         <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                             <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                            <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري استرجاع بيانات المرتجعات...</span>
+                            <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري استرجاع بيانات المرتجعات...')}</span>
                         </div>
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <ArrowRightLeft size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد مرتجعات مسجلة</h3>
-                            <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.</p>
+                            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مرتجعات مسجلة')}</h3>
+                            <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.')}</p>
                         </div>
                     ) : (
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {['رقم الفاتورة', 'التاريخ', 'نوع المرتجع', 'الطرف الآخر', 'الأصناف', 'القيمة الإجمالية'].map((h, i) => (
+                                        {[t('رقم الفاتورة'), t('التاريخ'), t('نوع المرتجع'), t('الطرف الآخر'), t('الأصناف'), t('القيمة الإجمالية')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                 textAlign: i === 5 ? 'left' : (i === 4 ? 'center' : 'right'), 
@@ -168,11 +168,11 @@ export default function ReturnsReportPage() {
                                                     color: r.type === 'sale_return' ? '#ef4444' : '#3b82f6',
                                                     border: `1px solid ${r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.2)'}`
                                                 }}>
-                                                    {r.type === 'sale_return' ? 'مرتجع مبيعات' : 'مرتجع مشتريات'}
+                                                    {r.type === 'sale_return' ? t('مرتجع مبيعات') : t('مرتجع مشتريات')}
                                                 </span>
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} صنف</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.textPrimary, fontSize: '13.5px', fontFamily: INTER }}>
                                                 {fmt(r.total)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>

@@ -65,10 +65,10 @@ export default function StocktakingsPage() {
                 fetchData();
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل الحذف');
+                alert(data.error || t('فشل الحذف'));
             }
         } catch {
-            alert('حدث خطأ');
+            alert(t('حدث خطأ'));
         } finally {
             setIsDeleting(false);
         }
@@ -86,7 +86,7 @@ export default function StocktakingsPage() {
             <html dir={isRtl ? 'rtl' : 'ltr'} lang="ar">
             <head>
                 <meta charset="utf-8">
-                <title>طباعة جرد المخزون</title>
+                <title>${t('طباعة جرد المخزون')}</title>
                 <style>
                     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
                     body { font-family: 'Cairo', sans-serif; padding: 40px; color: #1e293b; background: #fff; }
@@ -109,29 +109,29 @@ export default function StocktakingsPage() {
             </head>
             <body>
                 <div class="header">
-                    <h1>نموذج جرد مخزون</h1>
+                    <h1>${t('نموذج جرد مخزون')}</h1>
                     <div style="font-size:14px; color:#64748b;">(${printNumber})</div>
                 </div>
                 <div class="details">
                     <div class="detail-item">
-                        <span class="detail-label">التاريخ:</span>
+                        <span class="detail-label">${t('التاريخ')}:</span>
                         <span class="detail-value">${printDate}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label">المخزن:</span>
+                        <span class="detail-label">${t('المخزن')}:</span>
                         <span class="detail-value">${printWarehouse}</span>
                     </div>
                 </div>
-                ${printNotes ? `<div style="margin-bottom:20px; font-size:14px;"><strong>ملاحظات:</strong> ${printNotes}</div>` : ''}
+                ${printNotes ? `<div style="margin-bottom:20px; font-size:14px;"><strong>${t('ملاحظات')}:</strong> ${printNotes}</div>` : ''}
                 
                 <table>
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th>الصنف</th>
-                            <th style="width: 120px; text-align: center;">الرصيد الدفتري</th>
-                            <th style="width: 120px; text-align: center;">الرصيد الفعلي</th>
-                            <th style="width: 150px; text-align: center;">ملاحظات</th>
+                            <th>${t('الصنف')}</th>
+                            <th style="width: 120px; text-align: center;">${t('الرصيد الدفتري')}</th>
+                            <th style="width: 120px; text-align: center;">${t('الرصيد الفعلي')}</th>
+                            <th style="width: 150px; text-align: center;">${t('ملاحظات')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -147,8 +147,8 @@ export default function StocktakingsPage() {
                     </tbody>
                 </table>
                 <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 14px;">
-                    <div>توقيع أمين المخزن: _____________________</div>
-                    <div>توقيع المراجع: _____________________</div>
+                    <div>${t('توقيع أمين المخزن')}: _____________________</div>
+                    <div>${t('توقيع المراجع')}: _____________________</div>
                 </div>
             </body>
             </html>
@@ -170,11 +170,11 @@ export default function StocktakingsPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title="جرد المخازن" 
-                    subtitle="متابعة عمليات جرد المخزون، تسوية الأرصدة الفعلية مع السجلات الدفتيرية" 
+                    title={t("جرد المخازن")} 
+                    subtitle={t("متابعة عمليات جرد المخزون، تسوية الأرصدة الفعلية مع السجلات الدفتيرية")} 
                     icon={ClipboardList} 
                     primaryButton={{
-                        label: "جلسة جرد جديدة",
+                        label: t("جلسة جرد جديدة"),
                         onClick: () => router.push('/stocktakings/new'),
                         icon: Plus
                     }}
@@ -184,12 +184,12 @@ export default function StocktakingsPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>جاري تحميل سجلات الجرد...</p>
+                        <p style={{ fontWeight: 600 }}>{t('جاري تحميل سجلات الجرد...')}</p>
                     </div>
                 ) : stocktakings.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <ClipboardList size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>لا توجد سجلات جرد مسجلة حالياً</p>
+                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{t('لا توجد سجلات جرد مسجلة حالياً')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -197,13 +197,13 @@ export default function StocktakingsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم الجرد</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>المخزن</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>التعديلات</th>
-                                        <th style={TABLE_STYLE.th(false)}>ملاحظات</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراء</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('رقم الجرد')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المخزن')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التعديلات')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('ملاحظات')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجراء')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -230,14 +230,14 @@ export default function StocktakingsPage() {
                                                         display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
                                                         background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', color: '#34d399', fontSize: '11px', fontWeight: 800 
                                                     }}>
-                                                        <CheckCircle2 size={12} /> مُطبق
+                                                        <CheckCircle2 size={12} /> {t('مُطبق')}
                                                     </span>
                                                 ) : (
                                                     <span style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
                                                         background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#fbbf24', fontSize: '11px', fontWeight: 800 
                                                     }}>
-                                                        <FileText size={12} /> مسودة
+                                                        <FileText size={12} /> {t('مسودة')}
                                                     </span>
                                                 )}
                                             </td>
@@ -253,7 +253,7 @@ export default function StocktakingsPage() {
                                                         }}>
                                                             {l.item?.name} ({l.difference > 0 ? '+' : ''}{l.difference})
                                                         </div>
-                                                    )) : <span style={{ color: C.textMuted, fontSize: '11px' }}>لا يوجد فروقات</span>}
+                                                    )) : <span style={{ color: C.textMuted, fontSize: '11px' }}>{t('لا يوجد فروقات')}</span>}
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontSize: '12px', fontWeight: 500, maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
@@ -269,7 +269,7 @@ export default function StocktakingsPage() {
                                                         }}
                                                         onMouseEnter={e => e.currentTarget.style.color = C.blue}
                                                         onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
-                                                        title="طباعة نموذج الجرد"
+                                                        title={t("طباعة نموذج الجرد")}
                                                     >
                                                         <Printer size={15} />
                                                     </button>
@@ -282,7 +282,7 @@ export default function StocktakingsPage() {
                                                             }}
                                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(251,113,133,0.15)'}
                                                             onMouseLeave={e => e.currentTarget.style.background = 'rgba(251,113,133,0.05)'}
-                                                            title="حذف المسودة"
+                                                            title={t("حذف المسودة")}
                                                         >
                                                             <Trash2 size={15} />
                                                         </button>
@@ -301,7 +301,7 @@ export default function StocktakingsPage() {
                 <AppModal
                     show={!!deleteItem}
                     onClose={() => setDeleteItem(null)}
-                    title="حذف مسودة الجرد"
+                    title={t("حذف مسودة الجرد")}
                     icon={Trash2}
                     variant="danger"
                     maxWidth="400px"
@@ -313,19 +313,19 @@ export default function StocktakingsPage() {
                         }}>
                             <AlertCircle size={32} />
                         </div>
-                        <h3 style={{ margin: '0 0 8px', color: C.textPrimary }}>هل أنت متأكد؟</h3>
+                        <h3 style={{ margin: '0 0 8px', color: C.textPrimary }}>{t('هل أنت متأكد؟')}</h3>
                         <p style={{ margin: 0, color: C.textSecondary, fontSize: '14px', lineHeight: 1.6 }}>
-                            سيتم حذف مسودة الجرد رقم <strong>"STK-{deleteItem?.stocktakingNum}"</strong> نهائياً. لا يمكن التراجع عن هذا الإجراء.
+                            {t('سيتم حذف مسودة الجرد رقم')} <strong>"STK-{deleteItem?.stocktakingNum}"</strong> {t('نهائياً. لا يمكن التراجع عن هذا الإجراء.')}
                         </p>
 
                         <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                             <button onClick={handleDeleteDraft} disabled={isDeleting} 
                                 style={{ flex: 1.5, height: '45px', borderRadius: '10px', border: 'none', background: '#ef4444', color: '#fff', fontWeight: 700, cursor: 'pointer' }}>
-                                {isDeleting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : 'نعم، احذف المسودة'}
+                                {isDeleting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('نعم، احذف المسودة')}
                             </button>
                             <button type="button" onClick={() => setDeleteItem(null)} 
                                 style={{ flex: 1, height: '45px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer' }}>
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                         </div>
                     </div>

@@ -66,7 +66,7 @@ export default function DuePage() {
                 fetchData();
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل التحصيل');
+                alert(d.error || t('فشل التحصيل'));
             }
         } finally { setCollecting(false); }
     };
@@ -79,8 +79,8 @@ export default function DuePage() {
 
                 {/* Header Section */}
                 <PageHeader
-                    title="الأقساط المستحقة"
-                    subtitle="متابعة وجدولة عمليات التحصيل القادمة والجارية — تتبع المواعيد"
+                    title={t("الأقساط المستحقة")}
+                    subtitle={t("متابعة وجدولة عمليات التحصيل القادمة والجارية — تتبع المواعيد")}
                     icon={Clock}
                 />
 
@@ -90,9 +90,9 @@ export default function DuePage() {
                         {/* Filters */}
                         <div style={{ display: 'flex', background: 'rgba(15,23,42,0.4)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
                             {[
-                                { id: 'current', label: 'الشهر الحالي', icon: <Calendar size={14} /> },
-                                { id: 'next', label: 'الشهر القادم', icon: <ArrowLeftCircle size={14} /> },
-                                { id: 'all', label: 'كافة الأقساط', icon: <ListFilter size={14} /> },
+                                { id: 'current', label: t('الشهر الحالي'), icon: <Calendar size={14} /> },
+                                { id: 'next', label: t('الشهر القادم'), icon: <ArrowLeftCircle size={14} /> },
+                                { id: 'all', label: t('كافة الأقساط'), icon: <ListFilter size={14} /> },
                             ].map(t => (
                                 <button key={t.id} onClick={() => setMonthFilter(t.id)}
                                     style={{
@@ -116,7 +116,7 @@ export default function DuePage() {
                                 <Wallet size={16} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>إجمالي المستحق حالياً</div>
+                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>{t('إجمالي المستحق حالياً')}</div>
                                 <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                     {fmtN(totalDue)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
@@ -127,7 +127,7 @@ export default function DuePage() {
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                            <p style={{ fontWeight: 600 }}>جاري جلب بيانات الأقساط...</p>
+                            <p style={{ fontWeight: 600 }}>{t('جاري جلب بيانات الأقساط...')}</p>
                         </div>
                     ) : (
                         <div style={TABLE_STYLE.container}>
@@ -135,7 +135,16 @@ export default function DuePage() {
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
-                                            {['العميل المستفيد', 'رقم الخطة', 'رقم القسط', 'تاريخ الاستحقاق', 'المبلغ المقرر', 'المتبقي', 'الحالة', 'إجراء'].map((h, i) => (
+                                            {[
+                                                t('العميل المستفيد'), 
+                                                t('رقم الخطة'), 
+                                                t('رقم القسط'), 
+                                                t('تاريخ الاستحقاق'), 
+                                                t('المبلغ المقرر'), 
+                                                t('المتبقي'), 
+                                                t('الحالة'), 
+                                                t('إجراء')
+                                            ].map((h, i) => (
                                                 <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
                                             ))}
                                         </tr>
@@ -177,7 +186,7 @@ export default function DuePage() {
                                                             color: isOverdue ? C.danger : C.warning, border: `1px solid ${isOverdue ? 'rgba(239,68,68,0.22)' : 'rgba(245,158,11,0.22)'}`
                                                         }}>
                                                             {isOverdue ? <AlertTriangle size={10} /> : <Clock size={10} />}
-                                                            {isOverdue ? 'متأخر' : 'قادم'}
+                                                            {isOverdue ? t('متأخر') : t('قادم')}
                                                         </div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)} onClick={e => e.stopPropagation()}>
@@ -205,7 +214,7 @@ export default function DuePage() {
                                                                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
                                                                 onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                                                             >
-                                                                تحصيل
+                                                                {t('تحصيل')}
                                                             </button>
                                                             <button onClick={() => router.push(`/installments/${inst.plan?.id}`)}
                                                                 style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' }}
@@ -224,7 +233,7 @@ export default function DuePage() {
                                 {installments.length === 0 && (
                                     <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
                                         <Clock size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                                        <p style={{ fontSize: '15px' }}>لا توجد أقساط مستحقة للفترة المختارة</p>
+                                        <p style={{ fontSize: '15px' }}>{t('لا توجد أقساط مستحقة للفترة المختارة')}</p>
                                     </div>
                                 )}
                             </div>
@@ -236,18 +245,18 @@ export default function DuePage() {
                 <AppModal
                     show={!!collectTarget}
                     onClose={() => setCollectTarget(null)}
-                    title={collectTarget ? `تحصيل القسط #${collectTarget.installmentNo}` : 'تحصيل قسط'}
+                    title={collectTarget ? `${t('تحصيل القسط')} #${collectTarget.installmentNo}` : t('تحصيل قسط')}
                     maxWidth="440px"
                 >
                     {collectTarget && (
                         <form onSubmit={handleCollect}>
                             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>العميل:</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل')}:</span>
                                     <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800 }}>{collectTarget.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>المقرر سداده:</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر سداده')}:</span>
                                     <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: INTER }}>
                                         {fmtN(collectTarget.remaining || collectTarget.amount)} {cSymbol}
                                     </span>
@@ -255,7 +264,7 @@ export default function DuePage() {
                             </div>
 
                             <div style={{ marginBottom: '16px' }}>
-                                <label style={{ ...LS, fontSize: '12px' }}>المبلغ المحصّل <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '12px' }}>{t('المبلغ المحصّل')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount}
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))}
@@ -267,13 +276,13 @@ export default function DuePage() {
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '12px', marginBottom: '10px', display: 'block' }}>جهة التحصيل (خزينة/بنك) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '12px', marginBottom: '10px', display: 'block' }}>{t('جهة التحصيل (خزينة/بنك)')} <span style={{ color: C.danger }}>*</span></label>
 
                                 {/* Step 1: Selection Type (Cash or Bank) */}
                                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                                     {[
-                                        { id: 'cash', label: 'خزينة نقدية', icon: Wallet },
-                                        { id: 'bank', label: 'حساب بنكي', icon: Banknote },
+                                        { id: 'cash', label: t('خزينة نقدية'), icon: Wallet },
+                                        { id: 'bank', label: t('حساب بنكي'), icon: Banknote },
                                     ].map(t => {
                                         const typeMatch = treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === t.id;
                                         const isSelectedType = (collectForm as any).selectedType === t.id || typeMatch;
@@ -303,7 +312,7 @@ export default function DuePage() {
                                 {((collectForm as any).selectedType || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type) && (
                                     <div style={{ animation: 'fadeIn 0.2s' }}>
                                         <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>
-                                            {(collectForm as any).selectedType === 'bank' || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === 'bank' ? 'اختر البنك المقرر الإيداع فيه' : 'اختر الخزينة النقدية المستلمة'}
+                                            {(collectForm as any).selectedType === 'bank' || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === 'bank' ? t('اختر البنك المقرر الإيداع فيه') : t('اختر الخزينة النقدية المستلمة')}
                                         </label>
                                         <div style={{ position: 'relative', '--surface-50': '#1e293b', '--surface-100': C.inputBg, '--border-subtle': 'rgba(255,255,255,0.1)' } as any}>
                                             <CustomSelect
@@ -313,7 +322,7 @@ export default function DuePage() {
                                                     .filter(t => t.type === ((collectForm as any).selectedType || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type))
                                                     .map(t => ({ value: t.id, label: t.name }))
                                                 }
-                                                placeholder="اضغط لاختيار الجهة..."
+                                                placeholder={t("اضغط لاختيار الجهة...")}
                                                 style={{ height: '40px' }}
                                             />
                                         </div>
@@ -322,9 +331,9 @@ export default function DuePage() {
                             </div>
 
                             <div style={{ marginBottom: '20px' }}>
-                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>ملاحظات إضافية (اختياري)</label>
+                                <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>{t('ملاحظات إضافية (اختياري)')}</label>
                                 <textarea
-                                    placeholder="اكتب أي ملاحظات هنا..."
+                                    placeholder={t("اكتب أي ملاحظات هنا...")}
                                     value={collectForm.notes}
                                     onChange={e => setCollectForm(f => ({ ...f, notes: e.target.value }))}
                                     style={{ ...IS, height: '62px', padding: '10px 14px', resize: 'none', background: C.inputBg, fontSize: '12px' }}
@@ -335,7 +344,7 @@ export default function DuePage() {
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={collecting}
                                     style={{ ...BTN_PRIMARY(false, collecting), flex: 1.5, height: '46px', borderRadius: '12px', fontSize: '14px' }}>
-                                    {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> تأكيد التحصيل</>}
+                                    {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> {t('تأكيد التحصيل')}</>}
                                 </button>
                                 <button type="button" onClick={() => setCollectTarget(null)}
                                     style={{
@@ -346,7 +355,7 @@ export default function DuePage() {
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                 >
-                                    إلغاء
+                                    {t('إلغاء')}
                                 </button>
                             </div>
                         </form>

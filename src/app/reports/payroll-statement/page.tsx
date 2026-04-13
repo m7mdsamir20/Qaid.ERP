@@ -69,15 +69,15 @@ export default function PayrollStatementPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="كشف رواتب الموظفين التفصيلي"
-                    subtitle="مراجعة شاملة لمسيرات الرواتب، الحوافز، الاستقطاعات، وصافي المستحقات لفترة محددة."
+                    title={t("كشف رواتب الموظفين التفصيلي")}
+                    subtitle={t("مراجعة شاملة لمسيرات الرواتب، الحوافز، الاستقطاعات، وصافي المستحقات لفترة محددة.")}
                     backTab="hr"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>اختر الشهر:</span>
+                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('اختر الشهر:')}</span>
                         <input type="month" value={month} onChange={e => setMonth(e.target.value)}
                             style={{
                                 ...IS, height: '42px', padding: '0 12px', textAlign: 'center',
@@ -94,17 +94,17 @@ export default function PayrollStatementPage() {
                 ) : !data || data.records.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <DollarSign size={60} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد مسيرات رواتب لهذا الشهر</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>تأكد من اختيار الشهر الصحيح أو ترحيل الرواتب أولاً.</p>
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مسيرات رواتب لهذا الشهر')}</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{t('تأكد من اختيار الشهر الصحيح أو ترحيل الرواتب أولاً.')}</p>
                     </div>
                 ) : (
                     <>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: 'إجمالي الأجور الأساسية', value: fmt(data.summary.totalSalaries), color: '#3b82f6', icon: <Users size={18} /> },
-                                { label: 'إجمالي البدلات', value: fmt(data.summary.totalAllowances), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                                { label: 'إجمالي الاستقطاعات', value: fmt(data.summary.totalDiscounts), color: '#f59e0b', icon: <TrendingDown size={18} /> },
-                                { label: 'صافي المنصرف', value: fmt(data.summary.netTotal), color: C.primary, icon: <Wallet size={18} /> },
+                                { label: t('إجمالي الأجور الأساسية'), value: fmt(data.summary.totalSalaries), color: '#3b82f6', icon: <Users size={18} /> },
+                                { label: t('إجمالي البدلات'), value: fmt(data.summary.totalAllowances), color: '#10b981', icon: <ArrowUpRight size={18} /> },
+                                { label: t('إجمالي الاستقطاعات'), value: fmt(data.summary.totalDiscounts), color: '#f59e0b', icon: <TrendingDown size={18} /> },
+                                { label: t('صافي المنصرف'), value: fmt(data.summary.netTotal), color: C.primary, icon: <Wallet size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}22`, borderRadius: '12px',
@@ -124,14 +124,14 @@ export default function PayrollStatementPage() {
 
                         <div style={{ position: 'relative', marginBottom: '20px' }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                            <input placeholder="ابحث باسم الموظف..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineEnd: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                            <input placeholder={t("ابحث باسم الموظف...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineEnd: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                         </div>
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {['الموظف', 'الراتب الأساسي', 'البدلات', 'الاستقطاعات', 'الصافي'].map((h, i) => (
+                                        {[t('الموظف'), t('الراتب الأساسي'), t('البدلات'), t('الاستقطاعات'), t('الصافي')].map((h, i) => (
                                             <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i >= 1 ? 'center' : 'right', fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>

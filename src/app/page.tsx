@@ -42,10 +42,10 @@ const getInvoicePrefix = (type: string) => {
 };
 
 const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
-  sale: { label: 'مبيعات', color: C.success, bg: C.successBg },
-  purchase: { label: 'مشتريات', color: C.warning, bg: C.warningBg },
-  sale_return: { label: 'مرتجع بيع', color: C.danger, bg: C.dangerBg },
-  purchase_return: { label: 'مرتجع شراء', color: C.danger, bg: C.dangerBg },
+  sale: { label: 'sales', color: C.success, bg: C.successBg },
+  purchase: { label: 'purchases', color: C.warning, bg: C.warningBg },
+  sale_return: { label: 'sale_return', color: C.danger, bg: C.dangerBg },
+  purchase_return: { label: 'purchase_return', color: C.danger, bg: C.dangerBg },
 };
 
 function KpiCard({
@@ -259,7 +259,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const h = new Date().getHours();
-    setGreeting(h < 12 ? 'صباح الخير' : h < 17 ? 'مساء الخير' : 'مساء النور');
+    setGreeting(h < 12 ? t('صباح الخير') : h < 17 ? t('مساء الخير') : t('مساء النور'));
     const tick = () => {
       const d = new Date();
       setTime(d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
@@ -279,7 +279,7 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-        <p style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>جاري تحميل البيانات...</p>
+        <p style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
       </div>
     </DashboardLayout>
   );
@@ -291,8 +291,8 @@ export default function DashboardPage() {
           <AlertTriangle size={40} />
         </div>
         <div style={{ textAlign: 'center' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', marginBottom: '8px', fontFamily: CAIRO }}>فشل في تحميل الإحصائيات</h2>
-          <p style={{ color: C.textSecondary, fontSize: '14px', fontFamily: CAIRO, marginBottom: '24px' }}>حدث خطأ أثناء جلب البيانات من الخادم، يرجى التحقق من الاتصال والمحاولة مرة أخرى.</p>
+          <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', marginBottom: '8px', fontFamily: CAIRO }}>{t('فشل في تحميل الإحصائيات')}</h2>
+          <p style={{ color: C.textSecondary, fontSize: '14px', fontFamily: CAIRO, marginBottom: '24px' }}>{t('حدث خطأ أثناء جلب البيانات من الخادم، يرجى التحقق من الاتصال والمحاولة مرة أخرى.')}</p>
           <button
             onClick={() => loadStats(true)}
             style={{
@@ -300,7 +300,7 @@ export default function DashboardPage() {
               fontSize: '14px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto'
             }}
           >
-            <RefreshCw size={18} /> تحديث الصفحة
+            <RefreshCw size={18} /> {t('تحديث الصفحة')}
           </button>
         </div>
       </div>
@@ -311,7 +311,7 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
-        <p style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>جاري تحضير لوحة التحكم...</p>
+        <p style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('جاري تحضير لوحة التحكم...')}</p>
       </div>
     </DashboardLayout>
   );
@@ -328,7 +328,7 @@ export default function DashboardPage() {
     <DashboardLayout>
       <div style={{ height: '80vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '15px' }}>
         <Shield size={32} style={{ color: C.danger }} />
-        <p style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>عذراً، ليس لديك صلاحية للوصول للوحة التحكم.</p>
+        <p style={{ color: C.textSecondary, fontSize: '15px', fontFamily: CAIRO }}>{t('عذراً، ليس لديك صلاحية للوصول للوحة التحكم.')}</p>
       </div>
     </DashboardLayout>
   );
@@ -336,28 +336,28 @@ export default function DashboardPage() {
 
   const getVisibleActions = () => {
     const serviceActions = [
-      { id: '/customers', featureKey: 'sales', href: '/customers', label: 'العملاء', icon: Users, color: 'rgba(6, 182, 212, 0.12)', iconColor: '#06b6d4' },
-      { id: '/sales', featureKey: 'sales', href: '/sales/new', label: 'فاتورة خدمات', icon: Receipt, color: C.primaryBg, iconColor: C.primary },
-      { id: '/receipts', featureKey: 'sales', href: '/receipts/new', label: 'سند قبض', icon: TrendingUp, color: C.successBg, iconColor: C.success },
-      { id: '/expenses', featureKey: 'treasury', href: '/expenses', label: 'المصروفات', icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
-      { id: '/other-income', featureKey: 'treasury', href: '/other-income', label: 'الإيرادات', icon: TrendingUp, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
-      { id: '/payrolls', featureKey: 'hr', href: '/payrolls', label: 'مسير الرواتب', icon: DollarSign, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
+      { id: '/customers', featureKey: 'sales', href: '/customers', label: t('العملاء'), icon: Users, color: 'rgba(6, 182, 212, 0.12)', iconColor: '#06b6d4' },
+      { id: '/sales', featureKey: 'sales', href: '/sales/new', label: t('فاتورة خدمات'), icon: Receipt, color: C.primaryBg, iconColor: C.primary },
+      { id: '/receipts', featureKey: 'sales', href: '/receipts/new', label: t('سند قبض'), icon: TrendingUp, color: C.successBg, iconColor: C.success },
+      { id: '/expenses', featureKey: 'treasury', href: '/expenses', label: t('المصروفات'), icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
+      { id: '/other-income', featureKey: 'treasury', href: '/other-income', label: t('الإيرادات'), icon: TrendingUp, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
+      { id: '/payrolls', featureKey: 'hr', href: '/payrolls', label: t('مسير الرواتب'), icon: DollarSign, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
       
-      { id: '/accounts', featureKey: 'accounting', href: '/accounts', label: 'شجرة الحسابات', icon: Landmark, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
-      { id: '/reports', featureKey: 'dashboard', href: '/reports', label: 'التقارير الإحصائية', icon: BarChart2, color: 'rgba(234, 179, 8, 0.12)', iconColor: '#eab308' },
-      { id: '/settings', featureKey: 'dashboard', href: '/settings', label: 'إعدادات النظام', icon: LayoutDashboard, color: 'rgba(75, 85, 99, 0.12)', iconColor: '#4b5563' },
+      { id: '/accounts', featureKey: 'accounting', href: '/accounts', label: t('شجرة الحسابات'), icon: Landmark, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
+      { id: '/reports', featureKey: 'dashboard', href: '/reports', label: t('التقارير الإحصائية'), icon: BarChart2, color: 'rgba(234, 179, 8, 0.12)', iconColor: '#eab308' },
+      { id: '/settings', featureKey: 'dashboard', href: '/settings', label: t('إعدادات النظام'), icon: LayoutDashboard, color: 'rgba(75, 85, 99, 0.2)', iconColor: '#4b5563' },
     ];
 
     const tradingActions = [
-      { id: '/sales', featureKey: 'sales', href: '/sales/new', label: 'فاتورة مبيعات', icon: Receipt, color: C.primaryBg, iconColor: C.primary },
-      { id: '/purchases', featureKey: 'purchases', href: '/purchases/new', label: 'فاتورة مشتريات', icon: ShoppingCart, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
-      { id: '/receipts', featureKey: 'sales', href: '/receipts/new', label: 'سند قبض', icon: TrendingUp, color: C.successBg, iconColor: C.success },
-      { id: '/purchase-payments', featureKey: 'purchases', href: '/purchase-payments/new', label: 'سند صرف', icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
-      { id: '/customers', featureKey: 'sales', href: '/customers', label: 'العملاء', icon: Users, color: 'rgba(6, 182, 212, 0.12)', iconColor: '#06b6d4' },
-      { id: '/suppliers', featureKey: 'purchases', href: '/suppliers', label: 'الموردين', icon: Truck, color: 'rgba(244, 63, 94, 0.12)', iconColor: '#f43f5e' },
+      { id: '/sales', featureKey: 'sales', href: '/sales/new', label: t('فاتورة مبيعات'), icon: Receipt, color: C.primaryBg, iconColor: C.primary },
+      { id: '/purchases', featureKey: 'purchases', href: '/purchases/new', label: t('فاتورة مشتريات'), icon: ShoppingCart, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
+      { id: '/receipts', featureKey: 'sales', href: '/receipts/new', label: t('سند قبض'), icon: TrendingUp, color: C.successBg, iconColor: C.success },
+      { id: '/purchase-payments', featureKey: 'purchases', href: '/purchase-payments/new', label: t('سند صرف'), icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
+      { id: '/customers', featureKey: 'sales', href: '/customers', label: t('العملاء'), icon: Users, color: 'rgba(6, 182, 212, 0.12)', iconColor: '#06b6d4' },
+      { id: '/suppliers', featureKey: 'purchases', href: '/suppliers', label: t('الموردين'), icon: Truck, color: 'rgba(244, 63, 94, 0.12)', iconColor: '#f43f5e' },
       
-      { id: '/items', featureKey: 'inventory', href: '/items', label: 'الأصناف', icon: Package, color: 'rgba(139, 92, 246, 0.12)', iconColor: '#8b5cf6' },
-      { id: '/accounts', featureKey: 'accounting', href: '/accounts', label: 'شجرة الحسابات', icon: Landmark, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
+      { id: '/items', featureKey: 'inventory', href: '/items', label: t('الأصناف'), icon: Package, color: 'rgba(139, 92, 246, 0.12)', iconColor: '#8b5cf6' },
+      { id: '/accounts', featureKey: 'accounting', href: '/accounts', label: t('شجرة الحسابات'), icon: Landmark, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
     ];
 
     const currentActions = isServices ? serviceActions : tradingActions;
@@ -471,7 +471,7 @@ export default function DashboardPage() {
                     }}>
                       <action.icon size={20} />
                     </div>
-                    <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, textAlign: 'center', fontFamily: CAIRO }}>{t(action.label)}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, textAlign: 'center', fontFamily: CAIRO }}>{action.label}</span>
                   </div>
                 </Link>
               ))}

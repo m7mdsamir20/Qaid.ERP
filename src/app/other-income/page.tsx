@@ -60,7 +60,7 @@ export default function OtherIncomePage() {
     const handleSave = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!form.amount || !form.accountId || !form.treasuryId) {
-            alert('يرجى ملء كافة البيانات الأساسية'); return;
+            alert(t('يرجى ملء كافة البيانات الأساسية')); return;
         }
         setSubmitting(true);
         try {
@@ -75,9 +75,9 @@ export default function OtherIncomePage() {
                 fetchData();
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل الحفظ');
+                alert(d.error || t('فشل الحفظ'));
             }
-        } catch { alert('خطأ في الاتصال بالخادم'); }
+        } catch { alert(t('خطأ في الاتصال بالخادم')); }
         finally { setSubmitting(false); }
     };
 
@@ -99,11 +99,11 @@ export default function OtherIncomePage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader 
-                    title="الإيرادات" 
-                    subtitle="إدارة وتحصيل الإيرادات المتنوعة وغير المرتبطة بالمبيعات المباشرة"
+                    title={t("الإيرادات")} 
+                    subtitle={t("إدارة وتحصيل الإيرادات المتنوعة وغير المرتبطة بالمبيعات المباشرة")}
                     icon={TrendingUp}
                     primaryButton={{
-                        label: "إضافة إيراد جديد",
+                        label: t("إضافة إيراد جديد"),
                         onClick: () => setShowForm(true),
                         icon: Plus
                     }}
@@ -114,7 +114,7 @@ export default function OtherIncomePage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="البحث في قيود الإيرادات، البند، أو الوصف..." 
+                            placeholder={t("البحث في قيود الإيرادات، البند، أو الوصف...")} 
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                             style={SEARCH_STYLE.input} 
@@ -128,19 +128,19 @@ export default function OtherIncomePage() {
                     <table style={TABLE_STYLE.table}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
-                                <th style={TABLE_STYLE.th(true)}>التاريخ</th>
-                                <th style={TABLE_STYLE.th(false)}>رقم القيد</th>
-                                <th style={TABLE_STYLE.th(false)}>بند الإيراد</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>الخزينة / البنك</th>
-                                <th style={TABLE_STYLE.th(false)}>البيان / التفاصيل</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>المبلغ</th>
+                                <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('بند الإيراد')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الخزينة / البنك')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('البيان / التفاصيل')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center' }}><Loader2 size={32} className="animate-spin" style={{ color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filteredAll.length === 0 ? (
-                                <tr><td colSpan={6} style={{ padding: '80px', textAlign: 'center', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>لا توجد بيانات مسجلة مطابقة للبحث</td></tr>
+                                <tr><td colSpan={6} style={{ padding: '80px', textAlign: 'center', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد بيانات مسجلة مطابقة للبحث')}</td></tr>
                             ) : paginated.map((e, idx) => {
                                 const creditLine = e.lines.find((l: any) => l.credit > 0);
                                 const debitLine = e.lines.find((l: any) => l.debit > 0);
@@ -168,7 +168,7 @@ export default function OtherIncomePage() {
                                                     color: e.sourceType === 'bank' ? '#60a5fa' : '#34d399',
                                                     fontFamily: CAIRO
                                                 }}>
-                                                    {e.sourceType === 'bank' ? 'تحويل بنكي' : 'نقدية / خزينة'}
+                                                    {e.sourceType === 'bank' ? t('تحويل بنكي') : t('نقدية / خزينة')}
                                                 </div>
                                             </div>
                                         </td>
@@ -198,7 +198,7 @@ export default function OtherIncomePage() {
                 <AppModal 
                     show={showForm} 
                     onClose={() => setShowForm(false)} 
-                    title="تسجيل إيراد متنوع" 
+                    title={t("تسجيل إيراد متنوع")} 
                     icon={TrendingUp} 
                     maxWidth="500px"
                     footer={
@@ -206,19 +206,19 @@ export default function OtherIncomePage() {
                             style={{ ...BTN_PRIMARY(false, submitting), height: '48px', margin: 0 }}
                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
                             onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
-                            {submitting ? <Loader2 size={24} className="animate-spin" /> : <>حفظ العملية وتأكيد القيد</>}
+                            {submitting ? <Loader2 size={24} className="animate-spin" /> : <>{t('حفظ العملية وتأكيد القيد')}</>}
                         </button>
                     }
                 >
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: '10px 0 0 0' }}>
                         <div>
-                            <label style={LS}>تاريخ التحصيل</label>
+                            <label style={LS}>{t('تاريخ التحصيل')}</label>
                             <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
                                 style={{ ...IS, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
 
                         <div>
-                            <label style={LS}>المبلغ المحصل</label>
+                            <label style={LS}>{t('المبلغ المحصل')}</label>
                             <div 
                                 style={{ 
                                     position: 'relative', 
@@ -248,21 +248,21 @@ export default function OtherIncomePage() {
                         </div>
 
                         <div>
-                            <label style={LS}>الخزينة / البنك</label>
+                            <label style={LS}>{t('الخزينة / البنك')}</label>
                             <CustomSelect options={treasuries.map(t => ({ value: t.id, label: t.name, sub: t.balance.toLocaleString() }))}
-                                value={form.treasuryId} onChange={v => setForm(f => ({ ...f, treasuryId: v }))} placeholder="وجهة الاستلام..." icon={Banknote} />
+                                value={form.treasuryId} onChange={v => setForm(f => ({ ...f, treasuryId: v }))} placeholder={t("وجهة الاستلام...")} icon={Banknote} />
                         </div>
 
                         <div>
-                            <label style={LS}>بند الإيراد</label>
+                            <label style={LS}>{t('بند الإيراد')}</label>
                             <CustomSelect options={accounts.map(a => ({ value: a.id, label: a.name, sub: a.code }))}
                                 value={form.accountId} onChange={v => setForm(f => ({ ...f, accountId: v }))} 
-                                placeholder="اختر البند..." icon={Tag} openUp={true} />
+                                placeholder={t("اختر البند...")} icon={Tag} openUp={true} />
                         </div>
 
                         <div>
-                            <label style={LS}>البيان / التفاصيل</label>
-                            <textarea rows={2} placeholder="وصف العملية..." value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                            <label style={LS}>{t('البيان / التفاصيل')}</label>
+                            <textarea rows={2} placeholder={t("وصف العملية...")} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                                 style={{ ...IS, height: '54px', padding: '8px 12px', resize: 'none', fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>

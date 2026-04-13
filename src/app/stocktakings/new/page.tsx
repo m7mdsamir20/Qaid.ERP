@@ -108,11 +108,11 @@ export default function NewStocktakingPage() {
             if (res.ok) {
                 router.push('/stocktakings');
             } else {
-                alert('فشل حفظ تسوية الجرد');
+                alert(t('فشل حفظ تسوية الجرد'));
                 setIsSubmitting(false);
             }
         } catch {
-            alert('حدث خطأ');
+            alert(t('حدث خطأ'));
             setIsSubmitting(false);
         }
     };
@@ -120,7 +120,7 @@ export default function NewStocktakingPage() {
     const printStocktaking = () => {
         const printWarehouse = warehouses.find(w => w.id === form.warehouseId)?.name || '—';
         const printDate = new Date(form.date).toLocaleDateString('en-GB');
-        const printNumber = 'مسودة جديدة';
+        const printNumber = t('مسودة جديدة');
         const printNotes = form.notes;
 
         const html = `
@@ -128,7 +128,7 @@ export default function NewStocktakingPage() {
             <html dir={isRtl ? 'rtl' : 'ltr'} lang="ar">
             <head>
                 <meta charset="utf-8">
-                <title>طباعة جرد المخزون</title>
+                <title>${t('طباعة جرد المخزون')}</title>
                 <style>
                     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap');
                     body { font-family: 'Cairo', sans-serif; padding: 40px; color: #1e293b; background: #fff; }
@@ -151,29 +151,29 @@ export default function NewStocktakingPage() {
             </head>
             <body>
                 <div class="header">
-                    <h1>نموذج جرد مخزون</h1>
+                    <h1>${t('نموذج جرد مخزون')}</h1>
                     <div style="font-size:14px; color:#64748b;">(${printNumber})</div>
                 </div>
                 <div class="details">
                     <div class="detail-item">
-                        <span class="detail-label">التاريخ:</span>
+                        <span class="detail-label">${t('التاريخ')}:</span>
                         <span class="detail-value">${printDate}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label">المخزن:</span>
+                        <span class="detail-label">${t('المخزن')}:</span>
                         <span class="detail-value">${printWarehouse}</span>
                     </div>
                 </div>
-                ${printNotes ? `<div style="margin-bottom:20px; font-size:14px;"><strong>ملاحظات:</strong> ${printNotes}</div>` : ''}
+                ${printNotes ? `<div style="margin-bottom:20px; font-size:14px;"><strong>${t('ملاحظات')}:</strong> ${printNotes}</div>` : ''}
                 
                 <table>
                     <thead>
                         <tr>
                             <th style="width: 50px;">#</th>
-                            <th>الصنف</th>
-                            <th style="width: 120px; text-align: center;">الرصيد الدفتري</th>
-                            <th style="width: 120px; text-align: center;">الرصيد الفعلي</th>
-                            <th style="width: 150px; text-align: center;">ملاحظات</th>
+                            <th>${t('الصنف')}</th>
+                            <th style="width: 120px; text-align: center;">${t('الرصيد الدفتري')}</th>
+                            <th style="width: 120px; text-align: center;">${t('الرصيد الفعلي')}</th>
+                            <th style="width: 150px; text-align: center;">${t('ملاحظات')}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -192,8 +192,8 @@ export default function NewStocktakingPage() {
                     </tbody>
                 </table>
                 <div style="margin-top: 50px; display: flex; justify-content: space-between; font-size: 14px;">
-                    <div>توقيع أمين المخزن: _____________________</div>
-                    <div>توقيع المراجع: _____________________</div>
+                    <div>${t('توقيع أمين المخزن')}: _____________________</div>
+                    <div>${t('توقيع المراجع')}: _____________________</div>
                 </div>
             </body>
             </html>
@@ -215,7 +215,7 @@ export default function NewStocktakingPage() {
             <DashboardLayout>
                 <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                    <p style={{ fontWeight: 600 }}>جاري استرجاع البيانات...</p>
+                    <p style={{ fontWeight: 600 }}>{t('جاري استرجاع البيانات...')}</p>
                 </div>
             </DashboardLayout>
         );
@@ -226,8 +226,8 @@ export default function NewStocktakingPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 
                 <PageHeader 
-                    title="جلسة جرد جديدة" 
-                    subtitle="بدء جلسة جرد لمستودع محدد وتوثيق الفروقات بين الرصيد الفعلي والدفتري" 
+                    title={t("جلسة جرد جديدة")} 
+                    subtitle={t("بدء جلسة جرد لمستودع محدد وتوثيق الفروقات بين الرصيد الفعلي والدفتري")} 
                     icon={ClipboardList} 
                     backUrl="/stocktakings"
                 />
@@ -244,7 +244,7 @@ export default function NewStocktakingPage() {
                         {/* Session Header Fields */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                             <div>
-                                <label style={{ ...LS, fontSize: '11px' }}>تاريخ الجرد <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ الجرد')} <span style={{ color: C.danger }}>*</span></label>
                                 <input 
                                     type="date" required 
                                     value={form.date} 
@@ -254,22 +254,22 @@ export default function NewStocktakingPage() {
                                 />
                             </div>
                             <div>
-                                <label style={{ ...LS, fontSize: '11px' }}>المخزن المُستهدف <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('المخزن المُستهدف')} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect
                                     value={form.warehouseId}
                                     onChange={handleWarehouseSelect}
-                                    placeholder="اختر المخزن للبدء..."
+                                    placeholder={t("اختر المخزن للبدء...")}
                                     options={warehouses.map(w => ({ value: w.id, label: w.name, icon: Building2 }))}
                                 />
                             </div>
                             <div>
-                                <label style={{ ...LS, fontSize: '11px' }}>إجراء التسوية</label>
+                                <label style={{ ...LS, fontSize: '11px' }}>{t('إجراء التسوية')}</label>
                                 <CustomSelect
                                     value={form.status}
                                     onChange={v => setForm({ ...form, status: v })}
                                     options={[
-                                        { value: 'draft', label: 'مسودة (حفظ فقط)', icon: FileText },
-                                        { value: 'applied', label: 'تسوية الأرصدة (تحديث المخزون)', icon: CheckCircle2 }
+                                        { value: 'draft', label: t('مسودة (حفظ فقط)'), icon: FileText },
+                                        { value: 'applied', label: t('تسوية الأرصدة (تحديث المخزون)'), icon: CheckCircle2 }
                                     ]}
                                 />
                             </div>
@@ -281,10 +281,10 @@ export default function NewStocktakingPage() {
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
-                                            <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>الصنف</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>الرصيد الدفتري</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>الرصيد الفعلي</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>الفارق</th>
+                                            <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>{t('الصنف')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>{t('الرصيد الدفتري')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>{t('الرصيد الفعلي')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>{t('الفارق')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -319,16 +319,16 @@ export default function NewStocktakingPage() {
                         {!form.warehouseId && (
                             <div style={{ textAlign: 'center', padding: '60px', background: 'rgba(255,255,255,0.01)', borderRadius: '16px', border: `1px dashed ${C.border}` }}>
                                 <Building2 size={40} style={{ color: C.textMuted, opacity: 0.3, marginBottom: '16px' }} />
-                                <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600 }}>يرجى اختيار المخزن أولاً لعرض قائمة الأصناف الحالية</p>
+                                <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600 }}>{t('يرجى اختيار المخزن أولاً لعرض قائمة الأصناف الحالية')}</p>
                             </div>
                         )}
 
                         {/* Notes Section */}
                         <div>
-                            <label style={{ ...LS, fontSize: '11px' }}>ملاحظات الجرد</label>
+                            <label style={{ ...LS, fontSize: '11px' }}>{t('ملاحظات الجرد')}</label>
                             <input 
                                 type="text" 
-                                placeholder="أدخل أية ملاحظات إضافية حول هذه الجلسة..." 
+                                placeholder={t("أدخل أية ملاحظات إضافية حول هذه الجلسة...")} 
                                 value={form.notes} 
                                 onChange={e => setForm({ ...form, notes: e.target.value })} 
                                 style={{ ...IS, fontSize: '12px', height: '38px' }} 
@@ -349,7 +349,7 @@ export default function NewStocktakingPage() {
                                 {isSubmitting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : (
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'center' }}>
                                         {form.status === 'applied' ? <CheckCircle2 size={18} /> : <FileText size={18} />}
-                                        {form.status === 'applied' ? 'تسوية الأرصدة واحتساب الجرد' : 'حفظ جلسة الجرد كمسودة'}
+                                        {form.status === 'applied' ? t('تسوية الأرصدة واحتساب الجرد') : t('حفظ جلسة الجرد كمسودة')}
                                     </div>
                                 )}
                             </button>
@@ -362,7 +362,7 @@ export default function NewStocktakingPage() {
                                 onMouseEnter={e => { if(!e.currentTarget.disabled) { e.currentTarget.style.color = '#fff'; e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; } }}
                                 onMouseLeave={e => { if(!e.currentTarget.disabled) { e.currentTarget.style.color = 'rgba(255,255,255,0.6)'; e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; } }}
                             >
-                                <Printer size={16} /> طباعة الجرد
+                                <Printer size={16} /> {t('طباعة الجرد')}
                             </button>
                         </div>
                     </form>

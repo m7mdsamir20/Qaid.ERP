@@ -67,10 +67,10 @@ export default function UnitsPage() {
                 fetchUnits();
                 setUnitToDelete(null);
             } else { 
-                alert('فشل حذف الوحدة، قد تكون مرتبطة بأصناف مخزنية.'); 
+                alert(t('فشل حذف الوحدة، قد تكون مرتبطة بأصناف مخزنية.')); 
             }
         } catch (err) {
-            alert('خطأ في عملية الحذف');
+            alert(t('خطأ في عملية الحذف'));
         } finally {
             setIsDeleting(false);
         }
@@ -107,7 +107,7 @@ export default function UnitsPage() {
                 fetchUnits(); 
             } else { 
                 const d = await res.json(); 
-                alert(d.error || 'فشل في الحفظ'); 
+                alert(d.error || t('فشل في الحفظ')); 
             }
         } finally {
             setIsSubmitting(false);
@@ -126,11 +126,11 @@ export default function UnitsPage() {
                 
                 {/* Page Header (Consolidated Design) */}
                 <PageHeader 
-                    title="وحدات القياس" 
-                    subtitle="إدارة وحدات قياس الأصناف المخزنية (قطعة، كرتونة، لتر، إلخ)" 
+                    title={t("وحدات القياس")} 
+                    subtitle={t("إدارة وحدات قياس الأصناف المخزنية (قطعة، كرتونة، لتر، إلخ)")} 
                     icon={Scale} 
                     primaryButton={canCreate ? {
-                        label: "إضافة وحدة جديدة",
+                        label: t("إضافة وحدة جديدة"),
                         onClick: openCreateModal,
                         icon: Plus
                     } : undefined}
@@ -141,7 +141,7 @@ export default function UnitsPage() {
                     <div style={{ flex: 1, position: 'relative' }}>
                         <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
-                            placeholder="ابحث باسم الوحدة أو الكود..."
+                            placeholder={t("ابحث باسم الوحدة أو الكود...")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{ ...IS, width: '100%', paddingInlineEnd: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
@@ -154,12 +154,12 @@ export default function UnitsPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>جاري استخراج البيانات...</p>
+                        <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filtered.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <Scale size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? 'لا توجد نتائج بحث تطابق استفسارك' : 'لا توجد وحدات قياس مسجلة حالياً'}</p>
+                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد وحدات قياس مسجلة حالياً')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -167,7 +167,7 @@ export default function UnitsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        {['الكود', 'اسم الوحدة', 'الحالة', 'إجراء'].map((h, i) => (
+                                        {[t('الكود'), t('اسم الوحدة'), t('الحالة'), t('إجراء')].map((h, i) => (
                                             <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
                                         ))}
                                     </tr>
@@ -193,7 +193,7 @@ export default function UnitsPage() {
                                                     border: `1px solid ${unit.status === 'active' ? 'rgba(74,222,128,0.22)' : 'rgba(251,113,133,0.22)'}`
                                                 }}>
                                                     {unit.status === 'active' ? <CheckCircle size={12} /> : <XCircle size={12} />}
-                                                    {unit.status === 'active' ? 'نشط' : 'متوقف'}
+                                                    {unit.status === 'active' ? t('نشط') : t('متوقف')}
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
@@ -202,13 +202,13 @@ export default function UnitsPage() {
                                                         <>
                                                             <button onClick={() => openEditModal(unit)}
                                                                 style={TABLE_STYLE.actionBtn()}
-                                                                title="تعديل"
+                                                                title={t("تعديل")}
                                                             >
                                                                  <Pencil size={TABLE_STYLE.actionIconSize} />
                                                             </button>
                                                             <button onClick={() => setUnitToDelete(unit)}
                                                                 style={TABLE_STYLE.actionBtn(C.danger)}
-                                                                title="حذف"
+                                                                title={t("حذف")}
                                                             >
                                                                  <Trash2 size={TABLE_STYLE.actionIconSize} />
                                                             </button>
@@ -229,7 +229,7 @@ export default function UnitsPage() {
                     show={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     icon={form.id ? Pencil : Plus}
-                    title={form.id ? 'تعديل بيانات وحدة القياس' : 'إضافة وحدة قياس جديدة'}
+                    title={form.id ? t('تعديل بيانات وحدة القياس') : t('إضافة وحدة قياس جديدة')}
                     maxWidth="440px"
                 >
                     <form onSubmit={handleSubmit}>
@@ -240,13 +240,13 @@ export default function UnitsPage() {
                         }}>
                             <Info size={16} style={{ color: C.primary, marginTop: '2px', flexShrink: 0 }} />
                             <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, lineHeight: 1.5, fontWeight: 600 }}>
-                                وحدات القياس تحدد دقة الكميات المتاحة للأصناف (مثل: قطعة، كرتونة، لتر). تأكد من إدخال اسم فريد.
+                                {t('وحدات القياس تحدد دقة الكميات المتاحة للأصناف (مثل: قطعة، كرتونة، لتر). تأكد من إدخال اسم فريد.')}
                             </p>
                         </div>
 
                         {/* Auto Code */}
                         <div style={{ marginBottom: '16px' }}>
-                            <label style={LS}>كود الوحدة النظامي</label>
+                            <label style={LS}>{t('كود الوحدة النظامي')}</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type="text" readOnly disabled value={form.code}
@@ -258,10 +258,10 @@ export default function UnitsPage() {
 
                         {/* Unit Name */}
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={LS}>اسم الوحدة <span style={{ color: C.danger }}>*</span></label>
+                            <label style={LS}>{t('اسم الوحدة')} <span style={{ color: C.danger }}>*</span></label>
                             <input
                                 type="text" required autoFocus
-                                placeholder="مثال: قطعة، كيلو"
+                                placeholder={t("مثال: قطعة، كيلو")}
                                 value={form.name}
                                 onChange={e => setForm({ ...form, name: e.target.value })}
                                 style={IS}
@@ -278,10 +278,10 @@ export default function UnitsPage() {
                             }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ ...LS, marginBottom: '2px', display: 'block', color: form.status === 'active' ? '#10b981' : '#fb7185', transition: '0.3s' }}>
-                                        {form.status === 'active' ? 'الوحدة نشطة' : 'الوحدة متوقفة'}
+                                        {form.status === 'active' ? t('الوحدة نشطة') : t('الوحدة متوقفة')}
                                     </label>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600 }}>
-                                        {form.status === 'active' ? 'سيتم عرض الوحدة في جميع قوائم الاختيار' : 'سيتم إخفاء الوحدة مؤقتاً من الفواتير'}
+                                        {form.status === 'active' ? t('سيتم عرض الوحدة في جميع قوائم الاختيار') : t('سيتم إخفاء الوحدة مؤقتاً من الفواتير')}
                                     </span>
                                 </div>
                                 
@@ -316,7 +316,7 @@ export default function UnitsPage() {
                         <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
                             <button type="submit" disabled={isSubmitting} 
                                 style={{ ...BTN_PRIMARY(false, isSubmitting), flex: 1.5, height: '48px', fontSize: '14px' }}>
-                                {isSubmitting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ البيانات'}
+                                {isSubmitting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ البيانات')}
                             </button>
                             <button type="button" onClick={() => setIsModalOpen(false)} 
                                 style={{ 
@@ -327,7 +327,7 @@ export default function UnitsPage() {
                                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textPrimary; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = C.textSecondary; }}
                             >
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                         </div>
                     </form>
@@ -337,7 +337,7 @@ export default function UnitsPage() {
                     show={!!unitToDelete}
                     onClose={() => setUnitToDelete(null)}
                     onConfirm={handleDelete}
-                    title="تأكيد حذف وحدة القياس"
+                    title={t("تأكيد حذف وحدة القياس")}
                     itemName={unitToDelete?.name || ''}
                     isDelete={true}
                     isSubmitting={isDeleting}

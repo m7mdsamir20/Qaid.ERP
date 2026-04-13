@@ -50,12 +50,12 @@ interface Advance {
     employee: Employee;
 }
 
-const formatCurrency = (code: string) => {
-    if (!code) return 'ج.م';
+const formatCurrency = (code: string, t: any) => {
+    if (!code) return t('ج.م');
     const mapping: {[key: string]: string} = {
-        'EGP': 'ج.م', 'SAR': 'ر.س', 'USD': 'دولار', 'EUR': 'يورو',
-        'AED': 'د.إ', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب',
-        'OMR': 'ر.ع', 'LYD': 'د.ل', 'JOD': 'د.أ', 'SYP': 'ل.س', 'YER': 'ر.ي'
+        'EGP': t('ج.م'), 'SAR': t('ر.س'), 'USD': t('دولار'), 'EUR': t('يورو'),
+        'AED': t('د.إ'), 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'),
+        'OMR': t('ر.ع'), 'LYD': t('د.ل'), 'JOD': t('د.أ'), 'SYP': t('ل.س'), 'YER': t('ر.ي')
     };
     return mapping[code.toUpperCase()] || code;
 };
@@ -109,7 +109,7 @@ export default function AdvancesPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.employeeId) {
-            alert('يرجى اختيار الموظف المستفيد أولاً');
+            alert(t('يرجى اختيار الموظف المستفيد أولاً'));
             return;
         }
         setIsSaving(true);
@@ -133,7 +133,7 @@ export default function AdvancesPage() {
                 fetchAll();
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل في الحفظ');
+                alert(data.error || t('فشل في الحفظ'));
             }
         } finally {
             setIsSaving(false);
@@ -149,7 +149,7 @@ export default function AdvancesPage() {
                 body: JSON.stringify({ status: newStatus }),
             });
             if (res.ok) fetchAll();
-            else alert('فشل في تحديث الحالة');
+            else alert(t('فشل في تحديث الحالة'));
         } finally {
             setIsActionLoading(null);
         }
@@ -167,7 +167,7 @@ export default function AdvancesPage() {
             if (res.ok) {
                 setDeleteItem(null);
                 fetchAll();
-            } else alert('فشل في حذف السلفة');
+            } else alert(t('فشل في حذف السلفة'));
         } finally {
             setIsActionLoading(null);
         }
@@ -188,11 +188,11 @@ export default function AdvancesPage() {
                 
                 {/* Header Section */}
                 <PageHeader
-                    title="سلف الموظفين"
-                    subtitle="تسجيل وإدارة السلف العهدية للموظفين لخصمها لاحقاً من مسير الرواتب"
+                    title={t("سلف الموظفين")}
+                    subtitle={t("تسجيل وإدارة السلف العهدية للموظفين لخصمها لاحقاً من مسير الرواتب")}
                     icon={Banknote}
                     primaryButton={{
-                        label: "صرف سلفة جديدة",
+                        label: t("صرف سلفة جديدة"),
                         onClick: () => setIsModalOpen(true),
                         icon: Plus
                     }}
@@ -202,9 +202,9 @@ export default function AdvancesPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي السلف الممنوحة', val: totalAdvances, color: C.primary, icon: Banknote },
-                            { label: 'سلف قيد الانتظار', val: pendingAdvances, color: C.danger, icon: Clock },
-                            { label: 'عدد طلبات السلف', val: advances.length, color: C.success, icon: TrendingUp, suffix: 'طلب' }
+                            { label: t('إجمالي السلف الممنوحة'), val: totalAdvances, color: C.primary, icon: Banknote },
+                            { label: t('سلف قيد الانتظار'), val: pendingAdvances, color: C.danger, icon: Clock },
+                            { label: t('عدد طلبات السلف'), val: advances.length, color: C.success, icon: TrendingUp, suffix: t('طلب') }
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -217,7 +217,7 @@ export default function AdvancesPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: INTER }} dir="ltr">
-                                        {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>}
+                                        {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>}
                                         <span>{s.val.toLocaleString('en-US')}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -235,7 +235,7 @@ export default function AdvancesPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder="ابحث باسم الموظف أو الكود أو البيان..."
+                            placeholder={t("ابحث باسم الموظف أو الكود أو البيان...")}
                             style={{ ...SEARCH_STYLE.input, height: '40px', borderRadius: '12px' }}
                             onFocus={focusIn}
                             onBlur={focusOut}
@@ -250,27 +250,27 @@ export default function AdvancesPage() {
                     {loading ? (
                         <div style={{ padding: '80px', textAlign: 'center', color: '#64748b' }}>
                             <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
-                            جاري التحميل...
+                            {t('جاري التحميل...')}
                         </div>
                     ) : filteredAdvances.length === 0 ? (
                         <div style={{ padding: '100px 20px', textAlign: 'center', color: '#475569' }}>
                             <Banknote size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
-                            <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? 'لا توجد نتائج مطابقة' : 'لا توجد سلف مسجلة'}</h3>
-                            <p style={{ fontSize: '14px', margin: 0 }}>{searchTerm ? 'جرب البحث بكلمات أخرى' : 'ابدأ بصرف أول سلفة من زر "صرف سلفة جديدة"'}</p>
+                            <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد سلف مسجلة')}</h3>
+                            <p style={{ fontSize: '14px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بصرف أول سلفة من زر "صرف سلفة جديدة"')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(false)}>تاريخ الصرف</th>
-                                        <th style={TABLE_STYLE.th(false)}>الموظف</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجمالي السلفة</th>
-                                        <th style={TABLE_STYLE.th(false)}>الأقساط</th>
-                                        <th style={TABLE_STYLE.th(false)}>القسط الشهري</th>
-                                        <th style={TABLE_STYLE.th(false)}>البيان</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('تاريخ الصرف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجمالي السلفة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الأقساط')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('القسط الشهري')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -278,7 +278,7 @@ export default function AdvancesPage() {
                                         <tr key={adv.id} style={TABLE_STYLE.row(idx === filteredAdvances.length - 1)}>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: INTER }} dir="ltr">
-                                                    {new Date(adv.date).toLocaleDateString('en-GB')}
+                                                    {new Date(adv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
@@ -289,7 +289,7 @@ export default function AdvancesPage() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: INTER }} dir="ltr">
-                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
+                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{adv.amount.toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
@@ -298,7 +298,7 @@ export default function AdvancesPage() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: C.danger, fontSize: '14px', fontFamily: INTER }} dir="ltr">
-                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
+                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{(adv.monthlyAmount || 0).toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
@@ -306,11 +306,11 @@ export default function AdvancesPage() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 {adv.status === 'pending' ? (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
-                                                        <Clock size={12} /> قيد الانتظار
+                                                        <Clock size={12} /> {t('قيد الانتظار')}
                                                     </span>
                                                 ) : (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
-                                                        تم الاعتماد <CheckCircle2 size={12} />
+                                                        {t('تم الاعتماد')} <CheckCircle2 size={12} />
                                                     </span>
                                                 )}
                                             </td>
@@ -321,6 +321,7 @@ export default function AdvancesPage() {
                                                             onClick={() => handleUpdateStatus(adv.id, 'deducted')}
                                                             disabled={isActionLoading === adv.id}
                                                             style={TABLE_STYLE.actionBtn('#10b981')}
+                                                            title={t('اعتماد')}
                                                         >
                                                             {isActionLoading === adv.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={13} />}
                                                         </button>
@@ -330,6 +331,7 @@ export default function AdvancesPage() {
                                                             onClick={() => handleDelete(adv)}
                                                             disabled={isActionLoading === adv.id}
                                                             style={TABLE_STYLE.actionBtn(C.danger)}
+                                                            title={t('حذف')}
                                                         >
                                                             {isActionLoading === adv.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Trash2 size={13} />}
                                                         </button>
@@ -348,44 +350,44 @@ export default function AdvancesPage() {
                 <AppModal
                     show={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    title="صرف سلفة لموظف"
+                    title={t("صرف سلفة لموظف")}
                     icon={Plus}
                 >
                     <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={LS}>الموظف المستفيد <span style={{ color: C.danger }}>*</span></label>
+                            <label style={LS}>{t('الموظف المستفيد')} <span style={{ color: C.danger }}>*</span></label>
                             <CustomSelect
                                 value={formData.employeeId}
                                 onChange={v => setFormData({ ...formData, employeeId: v })}
                                 style={{ background: C.inputBg }}
                                 icon={UsersIcon}
-                                placeholder="اختر الموظف..."
+                                placeholder={t("اختر الموظف...")}
                                 options={employees.map(emp => ({ value: emp.id, label: `${emp.code} - ${emp.name}` }))}
                             />
                         </div>
 
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={LS}>الخزينة المصرفة <span style={{ color: C.danger }}>*</span></label>
+                            <label style={LS}>{t('الخزينة المصرفة')} <span style={{ color: C.danger }}>*</span></label>
                             <CustomSelect
                                 value={formData.treasuryId}
                                 onChange={v => setFormData({ ...formData, treasuryId: v })}
                                 style={{ background: C.inputBg }}
                                 icon={Banknote}
-                                placeholder="اختر الخزينة..."
-                                options={treasuries.map(t => ({ 
-                                    value: t.id, 
-                                    label: `${t.name} — ${t.balance?.toLocaleString()} ${formatCurrency(company?.currency)}` 
+                                placeholder={t("اختر الخزينة...")}
+                                options={treasuries.map(tOption => ({ 
+                                    value: tOption.id, 
+                                    label: `${tOption.name} — ${tOption.balance?.toLocaleString()} ${formatCurrency(company?.currency, t)}` 
                                 }))}
                             />
                         </div>
 
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '20px' }}>
                                 <div>
-                                    <label style={LS}>تاريخ الصرف</label>
+                                    <label style={LS}>{t('تاريخ الصرف')}</label>
                                     <input type="date" style={IS} required value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <div>
-                                    <label style={LS}>إجمالي مبلغ السلفة</label>
+                                    <label style={LS}>{t('إجمالي مبلغ السلفة')}</label>
                                     <div style={{ position: 'relative', background: C.inputBg, borderRadius: '10px', border: `1px solid ${C.border}`, height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                                         {!formData.amount && (
                                             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: INTER }}>
@@ -413,7 +415,7 @@ export default function AdvancesPage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={LS}>عدد الأقساط</label>
+                                    <label style={LS}>{t('عدد الأقساط')}</label>
                                     <input type="number" min="1" style={{ ...IS, textAlign: 'center' }} required value={formData.installmentCount} onChange={e => {
                                         const inst = e.target.value;
                                         const amt = formData.amount;
@@ -425,7 +427,7 @@ export default function AdvancesPage() {
                                     }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <div>
-                                    <label style={LS}>مبلغ القسط الشهري</label>
+                                    <label style={LS}>{t('مبلغ القسط الشهري')}</label>
                                     <div style={{ position: 'relative', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: `1px solid ${C.border}`, height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                                         {!formData.monthlyAmount && (
                                             <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: INTER }}>
@@ -443,16 +445,16 @@ export default function AdvancesPage() {
                             </div>
 
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>ملاحظات</label>
-                            <textarea placeholder="سبب صرف السلفة أو أي تفاصيل أخرى..." style={{ ...IS, height: '60px', padding: '12px', resize: 'none' }} value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+                            <label style={LS}>{t('ملاحظات')}</label>
+                            <textarea placeholder={t("سبب صرف السلفة أو أي تفاصيل أخرى...")} style={{ ...IS, height: '60px', padding: '12px', resize: 'none' }} value={formData.notes} onChange={e => setFormData({ ...formData, notes: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), flex: 1, height: '46px' }}>
-                                {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : 'اعتماد وصرف السلفة'}
+                                {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : t('اعتماد وصرف السلفة')}
                             </button>
                             <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                         </div>
                     </form>
@@ -462,8 +464,8 @@ export default function AdvancesPage() {
                     show={!!deleteItem}
                     onClose={() => setDeleteItem(null)}
                     onConfirm={handleConfirmDelete}
-                    title="تأكيد حذف السلفة"
-                    itemName={`سلفة بقيمة ${deleteItem?.amount.toLocaleString()} للموظف ${deleteItem?.employee.name}`}
+                    title={t("تأكيد حذف السلفة")}
+                    itemName={`${t('سلفة بقيمة')} ${deleteItem?.amount.toLocaleString()} ${t('للموظف')} ${deleteItem?.employee.name}`}
                     isDelete={true}
                     isSubmitting={isActionLoading === deleteItem?.id}
                 />

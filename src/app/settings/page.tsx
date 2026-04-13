@@ -362,7 +362,7 @@ function SettingsContent() {
         }
 
         setImportLoading(false);
-        alert(`تم الانتهاء من الاستيراد.\nتمت إضافة: ${successCount}\nفشل: ${failCount}`);
+        alert(`${t('تم الانتهاء من الاستيراد.')}\n${t('تمت إضافة')}: ${successCount}\n${t('فشل')}: ${failCount}`);
         setShowImportModal(false);
         setImportData([]);
         setImportStep(1);
@@ -436,20 +436,20 @@ function SettingsContent() {
             // Apply services terminology to the permission tree
             if (isServices) {
                 if (section.featureKey === 'sales') {
-                    section.title = 'فواتير الخدمات';
+                    section.title = t('فواتير الخدمات');
                     section.links = section.links?.map((l: any) => {
-                        if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
-                        if (l.label === 'مرتجع مبيعات') return { ...l, label: 'إلغاء خدمات / مرتجع' };
+                        if (l.label === 'فواتير المبيعات') return { ...l, label: t('فواتير الخدمات') };
+                        if (l.label === 'مرتجع مبيعات') return { ...l, label: t('إلغاء خدمات / مرتجع') };
                         return l;
                     });
                 }
                 if (section.featureKey === 'inventory') {
-                    section.title = 'الخدمات';
+                    section.title = t('الخدمات');
                     section.links = [
-                        { id: '/categories', href: '/categories', label: 'تصنيفات الخدمات' },
-                        { id: '/items', href: '/items', label: 'قائمة الخدمات' },
-                        { id: '/units', href: '/units', label: 'الوحدات' },
-                        { id: '/warehouses', href: '/warehouses', label: 'الفروع / مواقع العمل' }
+                        { id: '/categories', href: '/categories', label: t('تصنيفات الخدمات') },
+                        { id: '/items', href: '/items', label: t('قائمة الخدمات') },
+                        { id: '/units', href: '/units', label: t('الوحدات') },
+                        { id: '/warehouses', href: '/warehouses', label: t('الفروع / مواقع العمل') }
                     ];
                 }
             }
@@ -543,7 +543,7 @@ function SettingsContent() {
         } catch (error) {
             console.error('Fetch error:', error);
             // Only show error toast if it's not a background refresh
-            if (loading) showToast('حدث خطأ في تحميل البيانات', 'error');
+            if (loading) showToast(t('حدث خطأ في تحميل البيانات'), 'error');
         } finally {
             setLoading(false);
         }
@@ -576,13 +576,13 @@ function SettingsContent() {
         try {
             const res = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, data }) });
             if (res.ok) {
-                showToast('تم الحفظ بنجاح ✓');
+                showToast(t('تم الحفظ بنجاح ✓'));
                 await fetchData(); // wait first so savedGeneral is updated before anything resets it
                 setIsEditMode(false);
                 // Force session update to pick up new currency/name
                 if (update) update();
             }
-            else { const e = await res.json(); showToast(e.error || 'فشل الحفظ', 'error'); }
+            else { const e = await res.json(); showToast(e.error || t('فشل الحفظ'), 'error'); }
         } finally { setIsSaving(false); }
     };
 
@@ -601,7 +601,7 @@ function SettingsContent() {
             });
 
             if (res.ok) {
-                showToast(editingUserId ? 'تم تحديث بيانات المستخدم ✓' : 'تم إضافة المستخدم ✓');
+                showToast(editingUserId ? t('تم تحديث بيانات المستخدم ✓') : t('تم إضافة المستخدم ✓'));
                 fetchData();
                 setEditingUserId(null);
                 setNewUserForm({
@@ -610,7 +610,7 @@ function SettingsContent() {
                     customPermissions: {}
                 });
             }
-            else { const e = await res.json(); showToast(e.error || 'فشل', 'error'); }
+            else { const e = await res.json(); showToast(e.error || t('فشل'), 'error'); }
         } finally { setIsSaving(false); }
     };
 
@@ -653,10 +653,10 @@ function SettingsContent() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete_user', data: { userId } })
             });
-            if (res.ok) { showToast('تم حذف المستخدم بنجاح'); fetchData(); }
-            else { const e = await res.json(); showToast(e.error || 'فشل الحذف', 'error'); }
+            if (res.ok) { showToast(t('تم حذف المستخدم بنجاح')); fetchData(); }
+            else { const e = await res.json(); showToast(e.error || t('فشل الحذف'), 'error'); }
         } catch (err) {
-            showToast('خطأ في الاتصال بالسيرفر', 'error');
+            showToast(t('خطأ في الاتصال بالسيرفر'), 'error');
         } finally {
             setIsDeleting(false);
             setConfirmDelete(null);
@@ -672,8 +672,8 @@ function SettingsContent() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'update_user_status', data: { userId, status: nextStatus } })
             });
-            if (res.ok) { showToast('تم تحديث حالة المستخدم ✓'); fetchData(); }
-            else { const e = await res.json(); showToast(e.error || 'فشل التحديث', 'error'); }
+            if (res.ok) { showToast(t('تم تحديث حالة المستخدم ✓')); fetchData(); }
+            else { const e = await res.json(); showToast(e.error || t('فشل التحديث'), 'error'); }
         } finally { setIsSaving(false); }
     };
 
@@ -926,21 +926,21 @@ function SettingsContent() {
                     isSubmitting={isDeleting}
                     isDelete={true}
                     title={
-                        confirmDelete?.type === 'user' ? 'حذف المستخدم' :
-                            confirmDelete?.type === 'branch' ? 'حذف الفرع' :
-                                confirmDelete?.type === 'closeYear' ? 'إغلاق السنة المالية' : 'تأكيد'
+                        confirmDelete?.type === 'user' ? t('حذف المستخدم') :
+                            confirmDelete?.type === 'branch' ? t('حذف الفرع') :
+                                confirmDelete?.type === 'closeYear' ? t('إغلاق السنة المالية') : t('تأكيد')
                     }
                     description={
                         confirmDelete?.type === 'user'
-                            ? `هل أنت متأكد من حذف المستخدم "${confirmDelete?.name}"؟ لا يمكن التراجع عن هذا الإجراء.`
+                            ? t('هل أنت متأكد من حذف المستخدم') + ` "${confirmDelete?.name}"؟ ` + t('لا يمكن التراجع عن هذا الإجراء.')
                             : confirmDelete?.type === 'branch'
-                                ? `هل أنت متأكد من حذف الفرع "${confirmDelete?.name}"؟ يجب أن يكون الفرع فارغاً من المخازن والموظفين والفواتير.`
+                                ? t('هل أنت متأكد من حذف الفرع') + ` "${confirmDelete?.name}"؟ ` + t('يجب أن يكون الفرع فارغاً من المخازن والموظفين والفواتير.')
                                 : confirmDelete?.type === 'closeYear'
-                                    ? `هل أنت متأكد من إغلاق "${confirmDelete?.name}"؟ سيتم تجميد كافة العمليات في هذه الفترة وفتح سنة جديدة تلقائياً.`
-                                    : 'هل أنت متأكد؟'
+                                    ? t('هل أنت متأكد من إغلاق') + ` "${confirmDelete?.name}"؟ ` + t('سيتم تجميد كافة العمليات في هذه الفترة وفتح سنة جديدة تلقائياً.')
+                                    : t('هل أنت متأكد؟')
                     }
                     confirmText={
-                        confirmDelete?.type === 'closeYear' ? 'نعم، أغلق السنة' : 'نعم، احذف الآن'
+                        confirmDelete?.type === 'closeYear' ? t('نعم، أغلق السنة') : t('نعم، احذف الآن')
                     }
                     onConfirm={async () => {
                         if (confirmDelete?.type === 'user') {
@@ -949,9 +949,9 @@ function SettingsContent() {
                             setIsDeleting(true);
                             try {
                                 const res = await fetch(`/api/branches?id=${confirmDelete.id}`, { method: 'DELETE' });
-                                if (res.ok) { showToast('تم حذف الفرع ✓'); fetchBranches(); }
-                                else { const d = await res.json(); showToast(d.error || 'فشل الحذف', 'error'); }
-                            } finally { setIsDeleting(false); setConfirmDelete(null); }
+                                if (res.ok) { showToast(t('تم حذف الفرع ✓')); fetchBranches(); }
+                                else { const d = await res.json(); showToast(d.error || t('فشل الحذف'), 'error'); }
+                            } finally { setIsDeleting(true); setConfirmDelete(null); }
                         } else if (confirmDelete?.type === 'closeYear') {
                             setIsDeleting(true);
                             const newEnd = (document.getElementById('closeEnd') as HTMLInputElement)?.value;

@@ -7,6 +7,7 @@ import Link from 'next/link';
 import { C, CAIRO, INTER, THEME, IS, LS, focusIn, focusOut } from '@/constants/theme';
 
 function VerifyContent() {
+    const { t } = useTranslation();
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get('email') || '';
@@ -48,7 +49,7 @@ function VerifyContent() {
 
     const handleVerify = async () => {
         const code = otp.join('');
-        if (code.length !== 6) { setError('أدخل الكود كاملاً'); return; }
+        if (code.length !== 6) { setError(t('أدخل الكود كاملاً')); return; }
         setLoading(true);
         setError('');
         try {
@@ -62,7 +63,7 @@ function VerifyContent() {
             setSuccess(true);
             setTimeout(() => router.push('/login'), 2000);
         } catch (err) {
-            setError('حدث خطأ أثناء التحقق');
+            setError(t('حدث خطأ أثناء التحقق'));
             setLoading(false);
         }
     };
@@ -85,7 +86,7 @@ function VerifyContent() {
                 setError(d.error || 'فشل إعادة إرسال الكود');
             }
         } catch (err) {
-            setError('فشل إعادة إرسال الكود');
+            setError(t('فشل إعادة إرسال الكود'));
         } finally {
             setResending(false);
         }
@@ -102,10 +103,10 @@ function VerifyContent() {
                         <CheckCircle2 size={40} color={C.success} style={{ filter: `drop-shadow(0 0 10px ${C.success}40)` }} />
                         <div style={{ position: 'absolute', inset: -4, borderRadius: '26px', border: `1px solid ${C.success}20`, animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }} />
                     </div>
-                    <h2 style={{ margin: '0 0 12px', color: C.textPrimary, fontSize: '24px', fontWeight: 900, fontFamily: CAIRO }}>تم التحقق بنجاح!</h2>
+                    <h2 style={{ margin: '0 0 12px', color: C.textPrimary, fontSize: '24px', fontWeight: 900, fontFamily: CAIRO }}>{t('تم التحقق بنجاح!')}</h2>
                     <p style={{ color: C.textSecondary, fontSize: '14px', lineHeight: 1.6, fontFamily: CAIRO }}>
-                        تمت عملية التحقق من هويتك بنجاح.<br />
-                        <span style={{ color: C.primary, fontWeight: 700 }}>جاري تحويلك لصفحة الدخول...</span>
+                        {t('تمت عملية التحقق من هويتك بنجاح.')}<br />
+                        <span style={{ color: C.primary, fontWeight: 700 }}>{t('جاري تحويلك لصفحة الدخول...')}</span>
                     </p>
                 </div>
             ) : (
@@ -114,9 +115,9 @@ function VerifyContent() {
                         <Mail size={32} color={C.primary} />
                     </div>
                     
-                    <h2 style={{ margin: '0 0 10px', color: C.textPrimary, fontSize: '22px', fontWeight: 900, fontFamily: CAIRO }}>تفعيل الحساب</h2>
+                    <h2 style={{ margin: '0 0 10px', color: C.textPrimary, fontSize: '22px', fontWeight: 900, fontFamily: CAIRO }}>{t('تفعيل الحساب')}</h2>
                     <p style={{ color: C.textSecondary, fontSize: '13.5px', margin: '0 0 32px', lineHeight: 1.8, fontFamily: CAIRO }}>
-                        أهلاً بك! لقد أرسلنا رمز التحقق المكون من 6 أرقام إلى بريدك الإلكتروني:<br />
+                        {t('أهلاً بك! لقد أرسلنا رمز التحقق المكون من 6 أرقام إلى بريدك الإلكتروني:')}<br />
                         <span style={{ color: C.primary, fontWeight: 800, fontSize: '14px', borderBottom: `1px dashed ${C.primary}50`, paddingBottom: '2px' }}>{email}</span>
                     </p>
 
@@ -162,26 +163,26 @@ function VerifyContent() {
                         onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
                     >
                         {loading ? <Loader2 size={20} style={{ animation: 'spin 1.5s linear infinite' }} /> : <ShieldCheck size={20} />}
-                        {loading ? 'جاري التحقق...' : 'تأكيد الرمز وتفعيل الحساب'}
+                        {loading ? t('جاري التحقق...') : t('تأكيد الرمز وتفعيل الحساب')}
                     </button>
 
                     <div style={{ marginTop: '28px', fontSize: '13.5px', color: C.textMuted, fontFamily: CAIRO }}>
-                        لم يصلك الرمز؟{' '}
+                        {t('لم يصلك الرمز؟')}{' '}
                         {countdown > 0 ? (
-                            <span style={{ color: C.textSecondary, fontWeight: 700 }}>إعادة الإرسال خلال {countdown} ثانية</span>
+                            <span style={{ color: C.textSecondary, fontWeight: 700 }}>{t('إعادة الإرسال خلال')} {countdown} {t('ثانية')}</span>
                         ) : (
                             <button onClick={handleResend} disabled={resending}
                                 style={{ background: 'none', border: 'none', color: C.primary, cursor: 'pointer', fontWeight: 800, fontSize: '13.5px', fontFamily: CAIRO, display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', borderRadius: '8px', transition: 'all 0.2s' }}
                                 onMouseEnter={e => { e.currentTarget.style.background = `${C.primary}10`; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'none'; }}
                             >
-                                <RefreshCw size={14} style={{ animation: resending ? 'spin 1s linear infinite' : 'none' }} /> إعادة إرسال الكود
+                                <RefreshCw size={14} style={{ animation: resending ? 'spin 1s linear infinite' : 'none' }} /> {t('إعادة إرسال الكود')}
                             </button>
                         )}
                     </div>
                     
                     <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: C.textMuted, textDecoration: 'none', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }} onMouseEnter={e => e.currentTarget.style.color = C.textSecondary} onMouseLeave={e => e.currentTarget.style.color = C.textMuted}>
-                        <ArrowRight size={14} /> العودة لإنشاء الحساب
+                        <ArrowRight size={14} /> {t('العودة لإنشاء الحساب')}
                     </Link>
                 </div>
             )}
@@ -227,7 +228,7 @@ export default function VerifyPage() {
                 <Suspense fallback={
                     <div style={{ ...THEME.glass.card, borderRadius: '24px', padding: '60px 40px', textAlign: 'center' }}>
                         <Loader2 size={40} style={{ color: C.primary, margin: '0 auto', animation: 'spin 1.5s linear infinite' }} />
-                        <p style={{ color: C.textSecondary, marginTop: '20px', fontFamily: CAIRO, fontWeight: 700 }}>جاري التحميل...</p>
+                        <p style={{ color: C.textSecondary, marginTop: '20px', fontFamily: CAIRO, fontWeight: 700 }}>{t('جاري التحميل...')}</p>
                     </div>
                 }>
                     <VerifyContent />
@@ -236,8 +237,8 @@ export default function VerifyPage() {
                 {/* تذييل الصفحة */}
                 <div style={{ textAlign: 'center', marginTop: '32px' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', opacity: 0.6 }}>
-                        <div style={{ width: 24, height: 24, borderRadius: '6px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 900, color: '#fff' }}>ق</div>
-                        <span style={{ fontSize: '14px', fontWeight: 800, color: C.textSecondary, letterSpacing: '0.5px' }}>قيد ERP — النظام المحاسبي المتكامل</span>
+                        <div style={{ width: 24, height: 24, borderRadius: '6px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 900, color: '#fff' }}>{t('ق')}</div>
+                        <span style={{ fontSize: '14px', fontWeight: 800, color: C.textSecondary, letterSpacing: '0.5px' }}>{t('قيد ERP — النظام المحاسبي المتكامل')}</span>
                     </div>
                 </div>
             </div>

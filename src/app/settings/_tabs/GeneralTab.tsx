@@ -73,9 +73,6 @@ export default function GeneralTab({
         { code: 'TN', name: t('تونس'), flag: '🇹🇳', currency: 'TND', timezone: 'Africa/Tunis' },
         { code: 'DZ', name: t('الجزائر'), flag: '🇩🇿', currency: 'DZD', timezone: 'Africa/Algiers' },
         { code: 'MA', name: t('المغرب'), flag: '🇲🇦', currency: 'MAD', timezone: 'Africa/Casablanca' },
-        { code: 'TR', name: t('تركيا'), flag: '🇹🇷', currency: 'TRY', timezone: 'Europe/Istanbul' },
-        { code: 'US', name: t('أمريكا'), flag: '🇺🇸', currency: 'USD', timezone: 'America/New_York' },
-        { code: 'GB', name: t('بريطانيا'), flag: '🇬🇧', currency: 'GBP', timezone: 'Europe/London' },
     ];
 
     const selectedCountry = COUNTRY_OPTIONS.find(c => c.code === generalForm.countryCode) || COUNTRY_OPTIONS[0];

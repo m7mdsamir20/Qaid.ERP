@@ -78,7 +78,7 @@ export default function EmployeesDeductionsPage() {
                     title="سجل الخصومات والجزاءات الفترية"
                     subtitle="تحليل مالي وإداري لجميع الخصومات المطبقة على الموظفين (تأخيرات، غياب، وجزاءات)."
                     backTab="hr"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>

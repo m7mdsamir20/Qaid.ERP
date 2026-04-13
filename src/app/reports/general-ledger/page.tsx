@@ -25,13 +25,6 @@ interface LedgerLine {
 /* ── Helpers ── */
 const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-const typeColors: Record<string, string> = {
-    asset: '#10b981', liability: '#f87171', equity: '#a78bfa', revenue: '#60a5fa', expense: '#fb923c',
-};
-const typeLabels: Record<string, string> = {
-    asset: 'أصول', liability: 'خصوم', equity: 'حقوق ملكية', revenue: 'إيرادات', expense: 'مصروفات',
-};
-
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
     return map[code] || code;
@@ -51,6 +44,13 @@ export default function GeneralLedgerPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
+
+    const typeColors: Record<string, string> = {
+        asset: '#10b981', liability: '#f87171', equity: '#a78bfa', revenue: '#60a5fa', expense: '#fb923c',
+    };
+    const typeLabels: Record<string, string> = {
+        asset: t('أصول'), liability: t('خصوم'), equity: t('حقوق ملكية'), revenue: t('إيرادات'), expense: t('مصروفات'),
+    };
 
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [selectedAccount, setSelectedAccount] = useState('');
@@ -126,17 +126,17 @@ export default function GeneralLedgerPage() {
             <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" async></script>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE} ref={reportRef}>
                 <ReportHeader
-                    title="كشف الحساب العام"
-                    subtitle="تحليل الحركات المالية والرصيد التفصيلي لأي حساب خلال فترة زمنية محددة."
+                    title={t("كشف الحساب العام")}
+                    subtitle={t("تحليل الحركات المالية والرصيد التفصيلي لأي حساب خلال فترة زمنية محددة.")}
                     backTab="financial"
-                    onExportPdf={exportToPDF}
+                    
                 />
 
                 <div className="no-print" style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <ScrollText size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={loadingAccounts ? 'جاري التحميل...' : 'ابحث عن الحساب بالاسم أو الكود...'}
+                            placeholder={loadingAccounts ? t('جاري التحميل...') : t('ابحث عن الحساب بالاسم أو الكود...')}
                             value={accountSearch}
                             onChange={e => { setAccountSearch(e.target.value); setShowAccountList(true); }}
                             onFocus={() => { setAccountSearch(''); setShowAccountList(true); }}
@@ -167,13 +167,13 @@ export default function GeneralLedgerPage() {
                     </div>
 
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
                                 style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }}
                             />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
                                 style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }}
@@ -187,23 +187,23 @@ export default function GeneralLedgerPage() {
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(59,130,246,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <ScrollText size={40} style={{ opacity: 0.1, color: '#3b82f6' }} />
                         </div>
-                        <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#e2e8f0', fontFamily: CAIRO }}>ابدأ بطلب كشف الحساب</h2>
-                        <p style={{ margin: '10px 0 0', fontSize: '12px', maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>اختر الحساب المطلوب والفترة الزمنية من الأعلى لعرض تفاصيل الحركات والرصيد الافتتاحي والختامي.</p>
+                        <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#e2e8f0', fontFamily: CAIRO }}>{t('ابدأ بطلب كشف الحساب')}</h2>
+                        <p style={{ margin: '10px 0 0', fontSize: '12px', maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('اختر الحساب المطلوب والفترة الزمنية من الأعلى لعرض تفاصيل الحركات والرصيد الافتتاحي والختامي.')}</p>
                     </div>
                 ) : loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '16px', color: '#475569' }}>
                         <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: '#3b82f6' }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO }}>جاري استعادة الحركات المالية...</span>
+                        <span style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استعادة الحركات المالية...')}</span>
                     </div>
                 ) : (
                     <>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[
-                                { label: 'الرصيد الافتتاحي', value: fmt(openingBalance), color: '#3b82f6', icon: <Wallet size={18} /> },
-                                { label: 'إجمالي مدين (+)', value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                                { label: 'إجمالي دائن (-)', value: fmt(totalCredit), color: '#fb7185', icon: <ArrowDownRight size={18} /> },
-                                { label: 'الرصيد الختامي', value: fmt(closingBalance), color: tColor, icon: <Activity size={18} /> },
+                                { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#3b82f6', icon: <Wallet size={18} /> },
+                                { label: t('إجمالي مدين (+)'), value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={18} /> },
+                                { label: t('إجمالي دائن (-)'), value: fmt(totalCredit), color: '#fb7185', icon: <ArrowDownRight size={18} /> },
+                                { label: t('الرصيد الختامي'), value: fmt(closingBalance), color: tColor, icon: <Activity size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -229,7 +229,7 @@ export default function GeneralLedgerPage() {
 
                         <div className="no-print" style={SEARCH_STYLE.container}>
                             <div style={SEARCH_STYLE.wrapper}>
-                                <input placeholder="البحث السريع في الوصف أو رقم القيد..." value={search}
+                                <input placeholder={t("البحث السريع في الوصف أو رقم القيد...")} value={search}
                                     onChange={e => setSearch(e.target.value)}
                                     style={SEARCH_STYLE.input} />
                                 <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.textMuted)} />
@@ -240,7 +240,7 @@ export default function GeneralLedgerPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr className="print-table-header" style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
-                                        {['التاريخ', 'رقم القيد', 'البيان الوصفي', 'مركز التكلفة', 'مدين (+)', 'دائن (-)', 'الرصيد'].map((h, i) => (
+                                        { [t('التاريخ'), t('رقم القيد'), t('البيان الوصفي'), t('مركز التكلفة'), t('مدين (+)'), t('دائن (-)'), t('الرصيد')].map((h, i) => (
                                             <th key={i} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i >= 4 ? 'center' : 'right', fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>
@@ -248,7 +248,7 @@ export default function GeneralLedgerPage() {
                                 <tbody>
                                     <tr style={{ background: 'rgba(59,130,246,0.03)', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
                                         <td colSpan={4} style={{ padding: '12px 16px', fontSize: '12px', fontWeight: 700, color: '#3b82f6', fontFamily: CAIRO }}>
-                                            {fromDate ? `رصيد مرحّل من الفترة السابقة (حتى ${new Date(fromDate).toLocaleDateString('en-GB')})` : 'الرصيد الافتتاحي'}
+                                            {fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي')}
                                         </td>
                                         <td colSpan={2} />
                                         <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 900, color: '#60a5fa', direction: 'ltr', background: 'rgba(59,130,246,0.05)', fontFamily: CAIRO }}>{fmt(openingBalance)}</td>
@@ -257,7 +257,7 @@ export default function GeneralLedgerPage() {
                                         <tr>
                                             <td colSpan={7} style={{ padding: '60px 20px', textAlign: 'center', color: '#475569' }}>
                                                 <div className="no-print" style={{ opacity: 0.3, marginBottom: '8px' }}><Search size={32} /></div>
-                                                <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>لا توجد حركات مالية مسجلة لهذه الفترة</p>
+                                                <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات مالية مسجلة لهذه الفترة')}</p>
                                             </td>
                                         </tr>
                                     ) : filtered.map((line, idx) => (
@@ -286,7 +286,7 @@ export default function GeneralLedgerPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.04)', borderTop: '2px solid rgba(255,255,255,0.08)' }}>
-                                        <td colSpan={4} style={{ padding: '16px', fontSize: '12px', fontWeight: 800, color: '#94a3b8', fontFamily: CAIRO }}>إجماليات الحركات والأرصدة</td>
+                                        <td colSpan={4} style={{ padding: '16px', fontSize: '12px', fontWeight: 800, color: '#94a3b8', fontFamily: CAIRO }}>{t('إجماليات الحركات والأرصدة')}</td>
                                         <td style={{ padding: '16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: '#34d399', direction: 'ltr', fontFamily: CAIRO }}>{fmt(totalDebit)}</td>
                                         <td style={{ padding: '16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: '#f87171', direction: 'ltr', fontFamily: CAIRO }}>{fmt(totalCredit)}</td>
                                         <td style={{ padding: '16px', textAlign: 'center', fontSize: '12px', fontWeight: 900, color: tColor, direction: 'ltr', background: 'rgba(255,255,255,0.02)', fontFamily: CAIRO }}>{fmt(closingBalance)}</td>

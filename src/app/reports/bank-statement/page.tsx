@@ -59,7 +59,7 @@ interface SummaryCard {
 }
 
 export default function BankStatementPage() {
-    const { lang } = useTranslation();
+    const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
@@ -118,28 +118,28 @@ export default function BankStatementPage() {
         if (!data || !movements.length) return;
         const excelData = [
             {
-                'التاريخ': '—',
-                'البيان / الجهة': 'رصيد بنكي منقول (قبل الفترة)',
-                'الرصيد قبل': '—',
-                'إيداع (+)': '—',
-                'سحب (-)': '—',
-                'الرصيد بعد': data.openingBalance
+                [t('التاريخ')]: '—',
+                [t('البيان / الجهة')]: t('رصيد بنكي منقول (قبل الفترة)'),
+                [t('الرصيد قبل')]: '—',
+                [t('إيداع (+)')]: '—',
+                [t('سحب (-)')]: '—',
+                [t('الرصيد بعد')]: data.openingBalance
             },
             ...movements.map((m) => ({
-                'التاريخ': new Date(m.date).toLocaleDateString('en-GB'),
-                'البيان / الجهة': `${m.party} - ${m.description}`,
-                'الرصيد قبل': m.balanceBefore,
-                'إيداع (+)': m.type === 'receipt' ? m.amount : 0,
-                'سحب (-)': m.type === 'payment' ? m.amount : 0,
-                'الرصيد بعد': m.balanceAfter
+                [t('التاريخ')]: new Date(m.date).toLocaleDateString('en-GB'),
+                [t('البيان / الجهة')]: `${m.party} - ${m.description}`,
+                [t('الرصيد قبل')]: m.balanceBefore,
+                [t('إيداع (+)')]: m.type === 'receipt' ? m.amount : 0,
+                [t('سحب (-)')]: m.type === 'payment' ? m.amount : 0,
+                [t('الرصيد بعد')]: m.balanceAfter
             }))
         ];
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'كشف حساب بنكي');
+        XLSX.utils.book_append_sheet(wb, ws, t('كشف حساب بنكي'));
         XLSX.writeFile(
             wb,
-            `كشف_حساب_بنكي_${data.treasuryName || 'bank'}_${new Date().toLocaleDateString('en-GB')}.xlsx`
+            `${t('كشف_حساب_بنكي')}_${data.treasuryName || 'bank'}_${new Date().toLocaleDateString('en-GB')}.xlsx`
         );
     };
 
@@ -147,10 +147,10 @@ export default function BankStatementPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader 
-                    title="كشف حساب بنكي" 
-                    subtitle="متابعة دقيقة لكافة العمليات البنكية، السحوبات، الإيداعات، والتحويلات المصرفية." 
+                    title={t("كشف حساب بنكي")} 
+                    subtitle={t("متابعة دقيقة لكافة العمليات البنكية، السحوبات، الإيداعات، والتحويلات المصرفية.")} 
                     backTab="treasury-bank"
-                    onExportPdf={() => window.print()}
+                    
                     onExportExcel={exportToExcel}
                 />
 
@@ -160,9 +160,9 @@ export default function BankStatementPage() {
                         <CustomSelect
                             value={selectedId}
                             onChange={val => { setSelectedId(val); fetchReport(val); }}
-                            placeholder="اختر الحساب البنكي لمتابعة حركته..."
+                            placeholder={t("اختر الحساب البنكي لمتابعة حركته...")}
                             options={[
-                                { value: '', label: '-- اختر الحساب البنكي من القائمة --' },
+                                { value: '', label: `-- ${t('اختر الحساب البنكي من القائمة')} --` },
                                 ...treasuries.map(t => ({ value: t.id, label: t.name }))
                             ]}
                             style={{ 
@@ -175,7 +175,7 @@ export default function BankStatementPage() {
                     </div>
                     
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
+                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{ 
@@ -186,7 +186,7 @@ export default function BankStatementPage() {
                                 }}
                             />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
+                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{ 
@@ -205,7 +205,7 @@ export default function BankStatementPage() {
                             boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                         }}>
                             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
-                            تحديث التقرير
+                            {t('تحديث التقرير')}
                         </button>
                     </div>
                 </div>
@@ -213,23 +213,23 @@ export default function BankStatementPage() {
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري سحب كشف الحساب البنكي...</span>
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري سحب كشف الحساب البنكي...')}</span>
                     </div>
                 ) : !data ? (
                     <div style={{ padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Landmark size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>بانتظار اختيار الحساب البنكي</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>يرجى اختيار الحساب البنكي وتحديد الفترة الزمنية لعرض كشف الحركة التفصيلي.</p>
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار الحساب البنكي')}</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('يرجى اختيار الحساب البنكي وتحديد الفترة الزمنية لعرض كشف الحركة التفصيلي.')}</p>
                     </div>
                 ) : (
                     <>
                         {/* Summary Stats Cards */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: 'رصيد مرحل (قبل)', value: data.openingBalance, color: '#3b82f6', icon: <History size={20} />, sign: 'الرصيد في بداية الفترة' },
-                                { label: 'إجمالي الإيداعات', value: totalReceipts, color: SC, icon: <TrendingUp size={20} />, sign: 'وارد للحساب (+)' },
-                                { label: 'إجمالي السحوبات', value: totalPayments, color: DC, icon: <TrendingDown size={20} />, sign: 'صادر من الحساب (-)' },
-                                { label: 'صافي الرصيد البنكي', value: data.currentBalance, color: data.currentBalance >= 0 ? SC : DC, icon: <FileText size={20} />, sign: 'الرصيد الدفتري الحالي' },
+                                { label: t('رصيد مرحل (قبل)'), value: data.openingBalance, color: '#3b82f6', icon: <History size={20} />, sign: t('الرصيد في بداية الفترة') },
+                                { label: t('إجمالي الإيداعات'), value: totalReceipts, color: SC, icon: <TrendingUp size={20} />, sign: t('وارد للحساب (+)') },
+                                { label: t('إجمالي السحوبات'), value: totalPayments, color: DC, icon: <TrendingDown size={20} />, sign: t('صادر من الحساب (-)') },
+                                { label: t('صافي الرصيد البنكي'), value: data.currentBalance, color: data.currentBalance >= 0 ? SC : DC, icon: <FileText size={20} />, sign: t('الرصيد الدفتري الحالي') },
                             ].map((s: SummaryCard, i: number) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -256,7 +256,7 @@ export default function BankStatementPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            {['التاريخ', 'بيان العملية / التحويل', 'الرصيد قبل', 'إيداع (+)', 'سحب (-)', 'الرصيد بعد'].map((h, i) => (
+                                            {[t('التاريخ'), t('بيان العملية / التحويل'), t('الرصيد قبل'), t('إيداع (+)'), t('سحب (-)'), t('الرصيد بعد')].map((h, i) => (
                                                 <th key={i} style={{ 
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                     textAlign: 'center', 
@@ -267,7 +267,7 @@ export default function BankStatementPage() {
                                     </thead>
                                     <tbody>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'start', fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>رصيد منقول (قبل الفترة المستعرضة)</td>
+                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'start', fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد منقول (قبل الفترة المستعرضة)')}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
@@ -294,7 +294,7 @@ export default function BankStatementPage() {
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <td colSpan={3} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>تحليل الحركة البنكية الكلية</td>
+                                            <td colSpan={3} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('تحليل الحركة البنكية الكلية')}</td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>+{totalReceipts.toLocaleString('en-US')}</td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>-{totalPayments.toLocaleString('en-US')}</td>
                                             <td style={{ padding: '20px 24px', textAlign: 'center', color: C.textPrimary, fontSize: '16px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>{data.currentBalance.toLocaleString('en-US')}</td>

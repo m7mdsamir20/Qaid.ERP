@@ -77,10 +77,10 @@ export default function DepartmentsPage() {
                 fetchDepartments();
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل في الحفظ');
+                alert(data.error || t('فشل في الحفظ'));
             }
         } catch (err) {
-            alert('حدث خطأ أثناء الحفظ');
+            alert(t('حدث خطأ أثناء الحفظ'));
         } finally {
             setIsSaving(false);
         }
@@ -88,7 +88,7 @@ export default function DepartmentsPage() {
 
     const handleDelete = (dept: Department) => {
         if (dept._count.employees > 0) {
-            alert('لا يمكن حذف القسم لوجود موظفين مرتبطين به. قم بنقل الموظفين أولاً.');
+            alert(t('لا يمكن حذف القسم لوجود موظفين مرتبطين به. قم بنقل الموظفين أولاً.'));
             return;
         }
         setDeptToDelete(dept);
@@ -104,10 +104,10 @@ export default function DepartmentsPage() {
                 fetchDepartments();
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل الحذف');
+                alert(data.error || t('فشل الحذف'));
             }
         } catch {
-            alert('حدث خطأ أثناء الحذف');
+            alert(t('حدث خطأ أثناء الحذف'));
         } finally {
             setIsDeleting(false);
         }
@@ -137,11 +137,11 @@ export default function DepartmentsPage() {
                 
                 {/* Header Section */}
                 <PageHeader
-                    title="الأقسام والوظائف"
-                    subtitle="إدارة الهيكل الإداري وتصنيف الموظفين"
+                    title={t("الأقسام والوظائف")}
+                    subtitle={t("إدارة الهيكل الإداري وتصنيف الموظفين")}
                     icon={BuildingIcon}
                     primaryButton={{
-                        label: "إضافة قسم جديد",
+                        label: t("إضافة قسم جديد"),
                         onClick: openCreateModal,
                         icon: Plus
                     }}
@@ -151,9 +151,9 @@ export default function DepartmentsPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي الأقسام', val: departments.length, color: C.primary, icon: BuildingIcon, suffix: 'قسم' },
-                            { label: 'الموظفين المصنفين', val: totalEmployees, color: '#818cf8', icon: Users, suffix: 'موظف' },
-                            { label: 'معدل التوزيع', val: departments.length > 0 ? (totalEmployees / departments.length).toFixed(1) : 0, color: '#10b981', icon: BriefcaseIcon, suffix: 'لكل قسم' },
+                            { label: t('إجمالي الأقسام'), val: departments.length, color: C.primary, icon: BuildingIcon, suffix: t('قسم') },
+                            { label: t('الموظفين المصنفين'), val: totalEmployees, color: '#818cf8', icon: Users, suffix: t('موظف') },
+                            { label: t('معدل التوزيع'), val: departments.length > 0 ? (totalEmployees / departments.length).toFixed(1) : 0, color: '#10b981', icon: BriefcaseIcon, suffix: t('لكل قسم') },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -183,7 +183,7 @@ export default function DepartmentsPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder="ابحث عن قسم..."
+                            placeholder={t("ابحث عن قسم...")}
                             style={{ ...SEARCH_STYLE.input, height: '40px', borderRadius: '12px', background: C.card }}
                             onFocus={focusIn}
                             onBlur={focusOut}
@@ -197,12 +197,12 @@ export default function DepartmentsPage() {
                 {loading ? (
                     <div style={{ padding: '60px', textAlign: 'center', color: '#64748b' }}>
                         <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
-                        <p style={{ fontSize: '13px', fontWeight: 800, fontFamily: CAIRO }}>جاري تحميل البيانات...</p>
+                        <p style={{ fontSize: '13px', fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
                     </div>
                 ) : filteredDepartments.length === 0 ? (
                     <div style={{ padding: '60px 20px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
                         <BuildingIcon size={40} style={{ color: '#475569', marginBottom: '12px', opacity: 0.3 }} />
-                        <h3 style={{ color: '#94a3b8', fontSize: '14px', margin: '0 0 6px', fontWeight: 800, fontFamily: CAIRO }}>لا توجد أقسام مطابقة</h3>
+                        <h3 style={{ color: '#94a3b8', fontSize: '14px', margin: '0 0 6px', fontWeight: 800, fontFamily: CAIRO }}>{t('لا توجد أقسام مطابقة')}</h3>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
@@ -218,14 +218,14 @@ export default function DepartmentsPage() {
                                             <div style={{ width: 24, height: 24, borderRadius: '6px', background: `${C.primary}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 <Users size={12} style={{ color: C.primary }} />
                                             </div>
-                                            <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 700, fontFamily: INTER }}>{dept._count.employees} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>موظف</span></span>
+                                            <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 700, fontFamily: INTER }}>{dept._count.employees} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{t('موظف')}</span></span>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '6px' }}>
-                                        <button onClick={() => openEditModal(dept)} style={{ ...TABLE_STYLE.actionBtn(), width: '32px', height: '32px' }} title="تعديل">
+                                        <button onClick={() => openEditModal(dept)} style={{ ...TABLE_STYLE.actionBtn(), width: '32px', height: '32px' }} title={t("تعديل")}>
                                             <Pencil size={14} />
                                         </button>
-                                        <button onClick={() => handleDelete(dept)} style={{ ...TABLE_STYLE.actionBtn(C.danger), width: '32px', height: '32px' }} title="حذف">
+                                        <button onClick={() => handleDelete(dept)} style={{ ...TABLE_STYLE.actionBtn(C.danger), width: '32px', height: '32px' }} title={t("حذف")}>
                                             <Trash2 size={14} />
                                         </button>
                                     </div>
@@ -242,16 +242,16 @@ export default function DepartmentsPage() {
                 <AppModal
                     show={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    title={editDept ? 'تعديل القسم' : 'إضافة قسم جديد'}
+                    title={editDept ? t('تعديل القسم') : t('إضافة قسم جديد')}
                     icon={BuildingIcon}
                 >
                     <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>اسم القسم *</label>
+                            <label style={LS}>{t('اسم القسم')} *</label>
                             <input
                                 type="text"
                                 required
-                                placeholder="مثال: قسم المبيعات..."
+                                placeholder={t("مثال: قسم المبيعات...")}
                                 style={IS}
                                 onFocus={focusIn}
                                 onBlur={focusOut}
@@ -263,10 +263,10 @@ export default function DepartmentsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), flex: 1, height: '46px' }}>
                                 {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Save size={18} />}
-                                <span style={{ marginInlineEnd: '8px' }}>{isSaving ? 'جاري الحفظ...' : (editDept ? 'تحديث البيانات' : 'حفظ القسم')}</span>
+                                <span style={{ marginInlineEnd: '8px' }}>{isSaving ? t('جاري الحفظ...') : (editDept ? t('تحديث البيانات') : t('حفظ القسم'))}</span>
                             </button>
                             <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                         </div>
                     </form>
@@ -277,7 +277,7 @@ export default function DepartmentsPage() {
                     show={!!deptToDelete}
                     onClose={() => setDeptToDelete(null)}
                     isDelete={true}
-                    title="تأكيد حذف القسم"
+                    title={t("تأكيد حذف القسم")}
                     itemName={deptToDelete?.name}
                     onConfirm={confirmDelete}
                     isSubmitting={isDeleting}

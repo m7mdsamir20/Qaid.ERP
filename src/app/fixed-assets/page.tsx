@@ -28,17 +28,6 @@ interface FixedAsset {
     depAccountId: string; accumAccountId: string; assetAccountId: string; notes?: string;
 }
 
-const CATEGORIES = ['مركبات', 'أجهزة وحاسبات', 'أراضي ومباني', 'أثاث ومفروشات', 'معدات وآلات', 'أخرى'];
-const DEP_METHODS = [
-    { value: 'straight',  label: 'قسط ثابت',   sub: 'التكلفة ÷ العمر الإنتاجي' },
-    { value: 'declining', label: 'قسط متناقص', sub: 'الصافي × المعدل' },
-];
-const STATUS_MAP: Record<string, { bg: string; color: string; label: string }> = {
-    active:    { bg: 'rgba(16,185,129,0.1)',  color: '#10b981', label: 'نشط' },
-    disposed:  { bg: `${C.danger}15`,   color: C.danger, label: 'مُستبعد' },
-    fully_dep: { bg: 'rgba(148,163,184,0.1)', color: '#94a3b8', label: 'مستهلك' },
-};
-
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function FixedAssetsPage() {
@@ -50,6 +39,13 @@ export default function FixedAssetsPage() {
     const canEdit   = isAdmin || (session?.user as any)?.permissions?.['/fixed-assets']?.edit;
     const canDelete = isAdmin || (session?.user as any)?.permissions?.['/fixed-assets']?.delete;
     const canCreate = isAdmin || (session?.user as any)?.permissions?.['/fixed-assets']?.create;
+
+    const CATEGORIES = [t('مركبات'), t('أجهزة وحاسبات'), t('أراضي ومباني'), t('أثاث ومفروشات'), t('معدات وآلات'), t('أخرى')];
+    const STATUS_MAP: Record<string, { bg: string; color: string; label: string }> = {
+        active:    { bg: 'rgba(16,185,129,0.1)',  color: '#10b981', label: t('نشط') },
+        disposed:  { bg: `${C.danger}15`,   color: C.danger, label: t('مُستبعد') },
+        fully_dep: { bg: 'rgba(148,163,184,0.1)', color: '#94a3b8', label: t('مستهلك') },
+    };
 
     const [assets, setAssets]       = useState<FixedAsset[]>([]);
     const [accounts, setAccounts]   = useState<Account[]>([]);
@@ -113,7 +109,7 @@ export default function FixedAssetsPage() {
         e.preventDefault();
         setError('');
         if (!form.name || !form.category || !form.purchaseDate || !form.purchaseCost || !form.depreciationRate) {
-            setError('يرجى تعبئة جميع الحقول المطلوبة'); return;
+            setError(t('يرجى تعبئة جميع الحقول المطلوبة')); return;
         }
         setSaving(true);
         try {
@@ -128,8 +124,8 @@ export default function FixedAssetsPage() {
             const method = editItem ? 'PUT' : 'POST';
             const res    = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
             if (res.ok) { setShowModal(false); fetchAssets(); }
-            else { const d = await res.json(); setError(d.error || 'فشل الحفظ'); }
-        } catch { setError('خطأ في الاتصال بالخادم'); }
+            else { const d = await res.json(); setError(d.error || t('فشل الحفظ')); }
+        } catch { setError(t('خطأ في الاتصال بالخادم')); }
         setSaving(false);
     };
 
@@ -139,8 +135,8 @@ export default function FixedAssetsPage() {
         try {
             const res = await fetch(`/api/fixed-assets/${deleteItem.id}`, { method: 'DELETE' });
             if (res.ok) { setDeleteItem(null); fetchAssets(); }
-            else { const d = await res.json(); alert(d.error || 'فشل الحذف'); }
-        } catch { alert('خطأ في الاتصال'); }
+            else { const d = await res.json(); alert(d.error || t('فشل الحذف')); }
+        } catch { alert(t('خطأ في الاتصال')); }
         setDeleting(false);
     };
 
@@ -159,11 +155,11 @@ export default function FixedAssetsPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
-                    title="الرصيد الدفتري للأصول"
-                    subtitle="إدارة وتبويب الأصول الثابتة، تتبع تكاليف الشراء والقيم الدفترية"
+                    title={t("الرصيد الدفتري للأصول")}
+                    subtitle={t("إدارة وتبويب الأصول الثابتة، تتبع تكاليف الشراء والقيم الدفترية")}
                     icon={Briefcase}
                     primaryButton={canCreate ? {
-                        label: "إضافة أصل جديد",
+                        label: t("إضافة أصل جديد"),
                         icon: Plus,
                         onClick: () => router.push('/fixed-assets/new')
                     } : undefined}
@@ -173,10 +169,10 @@ export default function FixedAssetsPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي تكلفة الأصول', val: totalCost, color: C.blue, icon: DollarSign },
-                            { label: 'مجمع الإهلاك المتراكم', val: totalAccum, color: C.danger, icon: TrendingDown },
-                            { label: 'الصافي الدفتري الحالي', val: totalNet, color: '#10b981', icon: Building2 },
-                            { label: 'الأصول النشطة', val: assets.filter(a => a.status === 'active').length, color: '#f59e0b', icon: ShieldCheck, isCount: true },
+                            { label: t('إجمالي تكلفة الأصول'), val: totalCost, color: C.blue, icon: DollarSign },
+                            { label: t('مجمع الإهلاك المتراكم'), val: totalAccum, color: C.danger, icon: TrendingDown },
+                            { label: t('الصافي الدفتري الحالي'), val: totalNet, color: '#10b981', icon: Building2 },
+                            { label: t('الأصول النشطة'), val: assets.filter(a => a.status === 'active').length, color: '#f59e0b', icon: ShieldCheck, isCount: true },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -186,7 +182,7 @@ export default function FixedAssetsPage() {
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                         <span>{s.val.toLocaleString('en-US')}</span>
-                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>ج.م</span>}
+                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -203,7 +199,7 @@ export default function FixedAssetsPage() {
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.textMuted)} />
                         <input 
                             value={search} onChange={e => setSearch(e.target.value)}
-                            placeholder="ابحث باسم الأصل أو الكود أو الفئة..."
+                            placeholder={t("ابحث باسم الأصل أو الكود أو الفئة...")}
                             style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
                         />
@@ -211,10 +207,10 @@ export default function FixedAssetsPage() {
                     
                     <div style={{ display: 'flex', gap: '8px', background: THEME.colors.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}`, height: SEARCH_STYLE.input.height, boxSizing: 'border-box', alignItems: 'center' }}>
                         {[
-                            { id: 'all', label: 'الكل', color: C.blue },
-                            { id: 'active', label: 'نشط', color: '#10b981' },
-                            { id: 'fully_dep', label: 'مستهلك ماليّاً', color: '#94a3b8' },
-                            { id: 'disposed', label: 'مُستبعد', color: C.danger },
+                            { id: 'all', label: t('الكل'), color: C.blue },
+                            { id: 'active', label: t('نشط'), color: '#10b981' },
+                            { id: 'fully_dep', label: t('مستهلك ماليّاً'), color: '#94a3b8' },
+                            { id: 'disposed', label: t('مُستبعد'), color: C.danger },
                         ].map(f => (
                             <button key={f.id} onClick={() => setStatusFilter(f.id)} style={{
                                 padding: '0 14px', height: '100%', borderRadius: '8px', border: 'none', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
@@ -233,7 +229,17 @@ export default function FixedAssetsPage() {
                     <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                {['كود الأصل', 'اسم الأصل', 'الفئة الضريبية', 'تاريخ الاقتناء', 'تكلفة الشراء', 'مجمع الإهلاك', 'الصافي الدفتري', 'الحالة', 'خيارات'].map((h, i) => (
+                                {[
+                                    t('كود الأصل'), 
+                                    t('اسم الأصل'), 
+                                    t('الفئة الضريبية'), 
+                                    t('تاريخ الاقتناء'), 
+                                    t('تكلفة الشراء'), 
+                                    t('مجمع الإهلاك'), 
+                                    t('الصافي الدفتري'), 
+                                    t('الحالة'), 
+                                    t('خيارات')
+                                ].map((h, i) => (
                                     <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                 ))}
                             </tr>
@@ -246,7 +252,7 @@ export default function FixedAssetsPage() {
                             ) : filtered.length === 0 ? (
                                 <tr><td colSpan={9} style={{ padding: '80px', textAlign: 'center', color: C.textMuted }}>
                                     <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
-                                    <div style={{ fontWeight: 800, fontFamily: CAIRO }}>لم يتم العثور على أصول مطابقة للبحث</div>
+                                    <div style={{ fontWeight: 800, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
                                 </td></tr>
                             ) : filtered.map((a, i) => {
                                 const st = STATUS_MAP[a.status];
@@ -271,8 +277,8 @@ export default function FixedAssetsPage() {
                                         </td>
                                         <td style={{ padding: '14px 16px' }}>
                                             <div style={{ display: 'flex', gap: '8px' }}>
-                                                {canEdit && <button onClick={() => openEdit(a)} style={TABLE_STYLE.actionBtn()} title="تعديل"><Pencil size={15} /></button>}
-                                                {canDelete && <button onClick={() => setDeleteItem(a)} style={TABLE_STYLE.actionBtn(C.danger)} title="حذف"><Trash2 size={15} /></button>}
+                                                {canEdit && <button onClick={() => openEdit(a)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}><Pencil size={15} /></button>}
+                                                {canDelete && <button onClick={() => setDeleteItem(a)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}><Trash2 size={15} /></button>}
                                             </div>
                                         </td>
                                     </tr>
@@ -283,52 +289,52 @@ export default function FixedAssetsPage() {
                 </div>
 
                 {/* Edit Modal */}
-                <AppModal show={showModal} onClose={() => setShowModal(false)} title="تعديل بيانات الأصل الثابت" icon={Briefcase}>
+                <AppModal show={showModal} onClose={() => setShowModal(false)} title={t("تعديل بيانات الأصل الثابت")} icon={Briefcase}>
                     <form onSubmit={handleSave}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
-                                <label style={LS}>كود الأصل</label>
+                                <label style={LS}>{t('كود الأصل')}</label>
                                 <input readOnly value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', color: C.textMuted, fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>اسم الأصل *</label>
+                                <label style={LS}>{t('اسم الأصل')} *</label>
                                 <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
-                                <label style={LS}>الفئة الضريبية *</label>
+                                <label style={LS}>{t('الفئة الضريبية')} *</label>
                                 <CustomSelect value={form.category} onChange={v => setForm(f => ({ ...f, category: v }))} options={CATEGORIES.map(c => ({ value: c, label: c }))} />
                             </div>
                             <div>
-                                <label style={LS}>تاريخ الشراء *</label>
+                                <label style={LS}>{t('تاريخ الشراء')} *</label>
                                 <input required type="date" value={form.purchaseDate} onChange={e => setForm(f => ({ ...f, purchaseDate: e.target.value }))} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '20px' }}>
                             <div>
-                                <label style={LS}>تكلفة الشراء</label>
+                                <label style={LS}>{t('تكلفة الشراء')}</label>
                                 <input type="number" step="0.01" value={form.purchaseCost} onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} style={{...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={LS}>قيمة الخردة</label>
+                                <label style={LS}>{t('قيمة الخردة')}</label>
                                 <input type="number" step="0.01" value={form.salvageValue} onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} style={{...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={LS}>معدل الإهلاك %</label>
+                                <label style={LS}>{t('معدل الإهلاك')} %</label>
                                 <input type="number" step="0.01" value={form.depreciationRate} onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))} style={{...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>ملاحظات</label>
+                            <label style={LS}>{t('ملاحظات')}</label>
                             <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} style={{ ...IS, height: 'auto', padding: '10px' } as any} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1.5, height: '48px' }}>
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Plus size={18} />}
-                                <span style={{ marginInlineEnd: '8px' }}>حفظ التعديلات</span>
+                                <span style={{ marginInlineEnd: '8px' }}>{t('حفظ التعديلات')}</span>
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>
@@ -338,7 +344,7 @@ export default function FixedAssetsPage() {
                     show={deleteItem !== null}
                     onClose={() => setDeleteItem(null)}
                     isDelete={true}
-                    title="تأكيد حذف أصل"
+                    title={t("تأكيد حذف أصل")}
                     itemName={deleteItem?.name}
                     onConfirm={handleDelete}
                     isSubmitting={deleting}

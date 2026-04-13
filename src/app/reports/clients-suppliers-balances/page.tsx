@@ -91,28 +91,28 @@ export default function ClientsSuppliersBalancesPage() {
                 else maden = Math.abs(p.balance);
             }
             return {
-                'النوع': p.type,
-                'الاسم': p.name,
-                'الهاتف': p.phone || '—',
-                'مدين (عليه)': maden,
-                'دائن (له)': daen,
-                'صافي الرصيد': p.balance
+                [t('النوع')]: p.type === 'عميل' ? t('عميل') : t('مورد'),
+                [t('الاسم')]: p.name,
+                [t('الهاتف')]: p.phone || '—',
+                [t('مدين (عليه)')]: maden,
+                [t('دائن (له)')]: daen,
+                [t('صافي الرصيد')]: p.balance
             };
         });
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'الأرصدة');
-        XLSX.writeFile(wb, `ارصدة_العملاء_والموردين_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.utils.book_append_sheet(wb, ws, t('الأرصدة'));
+        XLSX.writeFile(wb, `${t('ارصدة_العملاء_والموردين')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="أرصدة العملاء والموردين"
-                    subtitle="تقرير شامل يعرض جميع المستحقات (ما لنا وما علينا) لكل حساب."
+                    title={t("أرصدة العملاء والموردين")}
+                    subtitle={t("تقرير شامل يعرض جميع المستحقات (ما لنا وما علينا) لكل حساب.")}
                     backTab="partners"
-                    onExportPdf={() => window.print()}
+                    
                     onExportExcel={exportToExcel}
                 />
 
@@ -121,7 +121,7 @@ export default function ClientsSuppliersBalancesPage() {
                     <div style={{ position: 'relative', width: '100%' }}>
                         <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
-                            placeholder="ابحث باسم الحساب أو رقم الهاتف..."
+                            placeholder={t("ابحث باسم الحساب أو رقم الهاتف...")}
                             value={search} onChange={e => setSearch(e.target.value)}
                             style={{ 
                                 ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
@@ -134,26 +134,26 @@ export default function ClientsSuppliersBalancesPage() {
 
                     <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
                         {[
-                            { key: 'all', label: 'الكل', icon: UserCheck, color: C.primary },
-                            { key: 'customer', label: 'العملاء', icon: Users, color: '#3b82f6' },
-                            { key: 'supplier', label: 'الموردين', icon: Truck, color: '#fb923c' },
-                            { key: 'debtor', label: 'المدينون (عليهم)', icon: ArrowUpRight, color: '#ef4444' },
-                            { key: 'creditor', label: 'الدائنون (لهم)', icon: ArrowDownLeft, color: '#10b981' },
-                        ].map(t => (
+                            { key: 'all', label: t('الكل'), icon: UserCheck, color: C.primary },
+                            { key: 'customer', label: t('العملاء'), icon: Users, color: '#3b82f6' },
+                            { key: 'supplier', label: t('الموردين'), icon: Truck, color: '#fb923c' },
+                            { key: 'debtor', label: t('المدينون (عليهم)'), icon: ArrowUpRight, color: '#ef4444' },
+                            { key: 'creditor', label: t('الدائنون (لهم)'), icon: ArrowDownLeft, color: '#10b981' },
+                        ].map(t_btn => (
                             <button
-                                key={t.key}
-                                onClick={() => setFilter(t.key as 'all' | 'customer' | 'supplier' | 'debtor' | 'creditor')}
+                                key={t_btn.key}
+                                onClick={() => setFilter(t_btn.key as 'all' | 'customer' | 'supplier' | 'debtor' | 'creditor')}
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: '8px',
                                     padding: '8px 18px', borderRadius: '10px',
-                                    background: filter === t.key ? `${t.color}15` : C.card,
-                                    color: filter === t.key ? t.color : C.textSecondary,
-                                    border: `1px solid ${filter === t.key ? `${t.color}30` : C.border}`,
-                                    fontWeight: filter === t.key ? 800 : 700, fontSize: '13px',
+                                    background: filter === t_btn.key ? `${t_btn.color}15` : C.card,
+                                    color: filter === t_btn.key ? t_btn.color : C.textSecondary,
+                                    border: `1px solid ${filter === t_btn.key ? `${t_btn.color}30` : C.border}`,
+                                    fontWeight: filter === t_btn.key ? 800 : 700, fontSize: '13px',
                                     fontFamily: CAIRO, cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap'
                                 }}
                             >
-                                <t.icon size={16} /> {t.label}
+                                <t_btn.icon size={16} /> {t_btn.label}
                             </button>
                         ))}
                     </div>
@@ -162,14 +162,14 @@ export default function ClientsSuppliersBalancesPage() {
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري تحميل الأرصدة...</span>
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل الأرصدة...')}</span>
                     </div>
                 ) : (
                     <>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '16px', marginBottom: '24px' }}>
                             {[
-                                { label: 'إجمالي مديونيات الغير (أرصدة مدينة)', value: summaryMaden, color: '#ef4444' },
-                                { label: 'إجمالي التزامات الشركة (أرصدة دائنة)', value: summaryDaen, color: '#10b981' },
+                                { label: t('إجمالي مديونيات الغير (أرصدة مدينة)'), value: summaryMaden, color: '#ef4444' },
+                                { label: t('إجمالي التزامات الشركة (أرصدة دائنة)'), value: summaryDaen, color: '#10b981' },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}25`, borderRadius: '16px',
@@ -188,19 +188,19 @@ export default function ClientsSuppliersBalancesPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>النوع</th>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>الاسم</th>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>الهاتف</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('النوع')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('الاسم')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('الهاتف')}</th>
                                         
                                         {filter === 'all' ? (
                                             <>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>عليه (مدين)</th>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>له (دائن)</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('عليه (مدين)')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('له (دائن)')}</th>
                                             </>
                                         ) : (
                                             <>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>الوضع المالي</th>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>صافي الرصيد</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('الوضع المالي')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('صافي الرصيد')}</th>
                                             </>
                                         )}
                                     </tr>
@@ -231,7 +231,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                         background: p.partnerType === 'customer' ? 'rgba(59,130,246,0.1)' : 'rgba(245,158,11,0.1)',
                                                         color: p.partnerType === 'customer' ? '#3b82f6' : '#f59e0b'
                                                     }}>
-                                                        {p.type}
+                                                        {p.partnerType === 'customer' ? t('عميل') : t('مورد')}
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13.5px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{p.name}</td>
@@ -250,14 +250,14 @@ export default function ClientsSuppliersBalancesPage() {
                                                     <>
                                                         <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                             {p.balance === 0 ? (
-                                                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>رصيد صفري</span>
+                                                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('رصيد صفري')}</span>
                                                             ) : (
                                                                 <span style={{
                                                                     padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
                                                                     background: owesUs ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
-                                                                    color: owesUs ? '#ef4444' : '#10b981'
+                                                                    border: `1px solid ${owesUs ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}`
                                                                 }}>
-                                                                    {owesUs ? 'عليه (مدين لنا)' : 'له (دائن يطالبنا)'}
+                                                                    {owesUs ? t('عليه (مدين لنا)') : t('له (دائن يطالبنا)')}
                                                                 </span>
                                                             )}
                                                         </td>
@@ -270,7 +270,7 @@ export default function ClientsSuppliersBalancesPage() {
                                         );
                                     })}
                                     {filteredData.length === 0 && (
-                                        <tr><td colSpan={5} style={{ textAlign: 'center', padding: '100px', color: C.textMuted, fontFamily: CAIRO }}>لا توجد نتائج تطابق بحثك...</td></tr>
+                                        <tr><td colSpan={5} style={{ textAlign: 'center', padding: '100px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد نتائج تطابق بحثك...')}</td></tr>
                                     )}
                                 </tbody>
                             </table>

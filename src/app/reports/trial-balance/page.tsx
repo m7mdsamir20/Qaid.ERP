@@ -60,25 +60,25 @@ export default function TrialBalancePage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="ميزان المراجعة"
-                    subtitle="تقرير إجمالي حركة الحسابات وأرصدتها للسنة المالية النشطة للتأكد من اتزان القيود المزدوجة."
+                    title={t("ميزان المراجعة")}
+                    subtitle={t("تقرير إجمالي حركة الحسابات وأرصدتها للسنة المالية النشطة للتأكد من اتزان القيود المزدوجة.")}
                     backTab="financial"
-                    onExportPdf={exportToPDF}
-                    printTitle="ميزان المراجعة (بالمجاميع والأرصدة)"
+                    
+                    printTitle={t("ميزان المراجعة (بالمجاميع والأرصدة)")}
                 />
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>جاري توليد التقرير...</span>
+                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد التقرير...')}</span>
                     </div>
                 ) : report.length === 0 ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'center' }}>
                         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <FileBarChart2 size={40} style={{ opacity: 0.3, color: C.textMuted }} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد بيانات متاحة</h3>
-                        <p style={{ fontSize: '14px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>يجب ترحيل قيود يومية لظهور الحركات المحاسبية في الميزان المحاسبي</p>
+                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات متاحة')}</h3>
+                        <p style={{ fontSize: '14px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('يجب ترحيل قيود يومية لظهور الحركات المحاسبية في الميزان المحاسبي')}</p>
                     </div>
                 ) : (
                     <>
@@ -104,13 +104,13 @@ export default function TrialBalancePage() {
                                 gap: '10px'
                             }}>
                                 {isBalanced ? <CheckCircle2 size={18} color={C.success} /> : <AlertCircle size={18} color={C.danger} />}
-                                <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>حالة اتزان الميزان:</span>
+                                <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t('حالة اتزان الميزان:')}</span>
                                 <span style={{ color: isBalanced ? C.success : C.danger, fontWeight: 900, fontSize: '14px', fontFamily: CAIRO }}>
-                                    {isBalanced ? 'متزن محـاسبياً (المجاميع متطابقة)' : 'غير متزن (يوجد خلل في الترحيل)'}
+                                    {isBalanced ? t('متزن محـاسبياً (المجاميع متطابقة)') : t('غير متزن (يوجد خلل في الترحيل)')}
                                 </span>
                             </div>
                             <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
-                                إجمالي الحسابات المسجلة: <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{report.length}</span>
+                                {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{report.length}</span>
                             </div>
                         </div>
 
@@ -118,16 +118,16 @@ export default function TrialBalancePage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th rowSpan={2} style={{ padding: '16px', textAlign: 'start', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>رمز الحساب</th>
-                                        <th rowSpan={2} style={{ padding: '16px', textAlign: 'start', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>اسم الحساب</th>
-                                        <th colSpan={2} style={{ padding: '10px', textAlign: 'center', fontSize: '12px', fontWeight: 900, background: 'rgba(59, 130, 246, 0.05)', color: '#60a5fa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, borderInlineStart: `1px solid ${C.border}` }}>بالمجاميع (المعاملات)</th>
-                                        <th colSpan={2} style={{ padding: '10px', textAlign: 'center', fontSize: '12px', fontWeight: 900, background: 'rgba(139, 92, 246, 0.05)', color: '#a78bfa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}` }}>بالأرصدة (النهائي)</th>
+                                        <th rowSpan={2} style={{ padding: '16px', textAlign: 'start', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('رمز الحساب')}</th>
+                                        <th rowSpan={2} style={{ padding: '16px', textAlign: 'start', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('اسم الحساب')}</th>
+                                        <th colSpan={2} style={{ padding: '10px', textAlign: 'center', fontSize: '12px', fontWeight: 900, background: 'rgba(59, 130, 246, 0.05)', color: '#60a5fa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, borderInlineStart: `1px solid ${C.border}` }}>{t('بالمجاميع (المعاملات)')}</th>
+                                        <th colSpan={2} style={{ padding: '10px', textAlign: 'center', fontSize: '12px', fontWeight: 900, background: 'rgba(139, 92, 246, 0.05)', color: '#a78bfa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}` }}>{t('بالأرصدة (النهائي)')}</th>
                                     </tr>
                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>مدين</th>
-                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>دائن</th>
-                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>مدين</th>
-                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>دائن</th>
+                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('مدين')}</th>
+                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('دائن')}</th>
+                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('مدين')}</th>
+                                        <th style={{ padding: '10px', textAlign: 'center', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{t('دائن')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -146,7 +146,7 @@ export default function TrialBalancePage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(59, 130, 246, 0.05)', borderTop: `2px solid ${C.primary}44` }}>
                                     <tr>
-                                        <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950, textAlign: 'start', fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>الإجماليات الكلية للميزان</td>
+                                        <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950, textAlign: 'start', fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('الإجماليات الكلية للميزان')}</td>
                                         <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandTotalDebit)}</td>
                                         <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandTotalCredit)}</td>
                                         <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 950, color: C.success, fontSize: '14px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandBalanceDebit)}</td>

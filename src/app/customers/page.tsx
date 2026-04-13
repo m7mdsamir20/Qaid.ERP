@@ -15,6 +15,7 @@ import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import { getCountryPlaceholders } from '@/lib/placeholders';
+import { getAddressConfig, parseAddress, stringifyAddress, formatAddressInline, type AddressFields } from '@/lib/addressConfig';
 
 interface Customer {
   id: string;
@@ -24,10 +25,13 @@ interface Customer {
   type: string;
   taxNumber: string | null;
   crNumber: string | null;
+  contactPerson: string | null;
   balance: number;
   creditLimit: number | null;
   createdAt: string;
 }
+
+const EMPTY_ADDR: AddressFields = { f1: '', f2: '', f3: '', f4: '' };
 
 export default function CustomersPage() {
     const { lang, t } = useTranslation();
@@ -37,7 +41,9 @@ export default function CustomersPage() {
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const ph = getCountryPlaceholders((session?.user as any)?.countryCode);
-    
+    const countryCode = (session?.user as any)?.countryCode || 'EG';
+    const addrCfg = getAddressConfig(countryCode);
+
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
@@ -51,8 +57,9 @@ export default function CustomersPage() {
     const [deleteError, setDeleteError] = useState('');
 
     const [form, setForm] = useState({
-        name: '', phone: '', address: '',
-        type: 'individual', taxNumber: '', crNumber: '',
+        name: '', phone: '',
+        addr: { ...EMPTY_ADDR } as AddressFields,
+        type: 'individual', taxNumber: '', crNumber: '', contactPerson: '',
         openingBalance: '', balanceType: 'debit' as 'credit' | 'debit',
         creditLimit: ''
     });
@@ -86,25 +93,33 @@ export default function CustomersPage() {
             const method = editingId ? 'PUT' : 'POST';
             
             // Clean numeric fields
-            const cleanForm = {
-                ...form,
+            const payload = {
+                name:          form.name,
+                phone:         form.phone || null,
+                address:       stringifyAddress(form.addr),
+                type:          form.type,
+                taxNumber:     form.taxNumber || null,
+                crNumber:      form.crNumber  || null,
+                contactPerson: form.contactPerson || null,
                 openingBalance: parseFloat(form.openingBalance.replace(/,/g, '')) || 0,
-                creditLimit: parseFloat(form.creditLimit.replace(/,/g, '')) || 0
+                balanceType:   form.balanceType,
+                creditLimit:   parseFloat(form.creditLimit.replace(/,/g, '')) || 0,
+                ...(editingId ? { id: editingId } : {}),
             };
 
             const res = await fetch('/api/customers', {
                 method,
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(editingId ? { id: editingId, ...cleanForm } : cleanForm),
+                body: JSON.stringify(payload),
             });
             if (res.ok) {
                 setShowModal(false);
                 fetchData();
             } else {
-                alert('حدث خطأ أثناء الحفظ');
+                alert(t('حدث خطأ أثناء الحفظ'));
             }
         } catch (error) {
-            alert('خطأ في الاتصال بالسيرفر');
+            alert(t('خطأ في الاتصال بالسيرفر'));
         } finally {
             setSubmitting(false);
         }
@@ -121,10 +136,10 @@ export default function CustomersPage() {
                 fetchData();
             } else {
                 const errorData = await res.json();
-                setDeleteError(errorData.error || 'فشل في حذف العميل لوجود معاملات مرتبطة');
+                setDeleteError(errorData.error || t('فشل في حذف العميل لوجود معاملات مرتبطة'));
             }
         } catch (error) {
-            setDeleteError('خطأ في الاتصال بالسيرفر');
+            setDeleteError(t('خطأ في الاتصال بالسيرفر'));
         } finally {
             setSubmitting(false);
         }
@@ -132,16 +147,18 @@ export default function CustomersPage() {
 
     const openEdit = (c: Customer) => {
         setEditingId(c.id);
+        const parsed = parseAddress(c.address);
         setForm({
-            name: c.name,
-            phone: c.phone || '',
-            address: c.address || '',
-            type: c.type || 'individual',
-            taxNumber: c.taxNumber || '',
-            crNumber: c.crNumber || '',
-            openingBalance: '', 
-            balanceType: c.balance < 0 ? 'credit' : 'debit',
-            creditLimit: c.creditLimit ? String(c.creditLimit) : ''
+            name:          c.name,
+            phone:         c.phone         || '',
+            addr:          parsed ?? { ...EMPTY_ADDR },
+            type:          c.type          || 'individual',
+            taxNumber:     c.taxNumber     || '',
+            crNumber:      c.crNumber      || '',
+            contactPerson: c.contactPerson || '',
+            openingBalance: '',
+            balanceType:   c.balance < 0 ? 'credit' : 'debit',
+            creditLimit:   c.creditLimit ? String(c.creditLimit) : ''
         });
         setShowModal(true);
     };
@@ -182,14 +199,14 @@ export default function CustomersPage() {
                     icon={Users}
                     primaryButton={{
                         label: t("إضافة عميل"),
-                        onClick: () => { 
-                            setEditingId(null); 
-                            setForm({ 
-                                name: '', phone: '', address: '', 
-                                type: 'individual', taxNumber: '', crNumber: '',
-                                openingBalance: '', balanceType: 'debit', creditLimit: '' 
-                            }); 
-                            setShowModal(true); 
+                        onClick: () => {
+                            setEditingId(null);
+                            setForm({
+                                name: '', phone: '', addr: { ...EMPTY_ADDR },
+                                type: 'individual', taxNumber: '', crNumber: '', contactPerson: '',
+                                openingBalance: '', balanceType: 'debit', creditLimit: ''
+                            });
+                            setShowModal(true);
                         },
                         icon: UserPlus
                     }}
@@ -305,7 +322,7 @@ export default function CustomersPage() {
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{c.address || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddressInline(parseAddress(c.address)) || '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <span style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
@@ -341,65 +358,75 @@ export default function CustomersPage() {
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title={editingId ? t('تعديل بيانات العميل') : t('إضافة عميل جديد')} icon={UserPlus} maxWidth="520px">
                     <form onSubmit={handleSubmit}>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '18px' }}>
-                            {isServices ? (
-                                <>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.8fr) 1.2fr', gap: '12px' }}>
-                                        <div>
-                                            <label style={LS}>{t('نوع العميل')} <span style={{ color: C.danger }}>*</span></label>
-                                            <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => setForm({ ...form, type: 'individual' })}
-                                                    style={{ 
-                                                        flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
-                                                        background: form.type === 'individual' ? C.primary : 'transparent',
-                                                        color: form.type === 'individual' ? '#fff' : C.textSecondary
-                                                    }}
-                                                >فرد</button>
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => setForm({ ...form, type: 'company' })}
-                                                    style={{ 
-                                                        flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
-                                                        background: form.type === 'company' ? C.primary : 'transparent',
-                                                        color: form.type === 'company' ? '#fff' : C.textSecondary
-                                                    }}
-                                                >{t('شركة')}</button>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <label style={LS}>{t('اسم العميل / الشركة')} <span style={{ color: C.danger }}>*</span></label>
-                                            <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("مثال: أحمد محمد التاجر")} />
-                                        </div>
-                                    </div>
-
-                                    {form.type === 'company' && (
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
-                                            <div>
-                                                <label style={LS}>{t('الرقم الضريبي')}</label>
-                                                <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
-                                            </div>
-                                            <div>
-                                                <label style={LS}>{t('السجل التجاري')}</label>
-                                                <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
-                                            </div>
-                                        </div>
-                                    )}
-                                </>
-                            ) : (
+                            {/* النوع + الاسم */}
+                            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(140px, 0.8fr) 1.2fr', gap: '12px' }}>
                                 <div>
-                                    <label style={LS}>{t('اسم العميل')} <span style={{ color: C.danger }}>*</span></label>
-                                    <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("ادخل اسم العميل")} />
+                                    <label style={LS}>{t('نوع العميل')} <span style={{ color: C.danger }}>*</span></label>
+                                    <div style={{ display: 'flex', gap: '6px', background: 'rgba(255,255,255,0.03)', padding: '4px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                                        <button
+                                            type="button"
+                                            onClick={() => setForm({ ...form, type: 'individual' })}
+                                            style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                                background: form.type === 'individual' ? C.primary : 'transparent',
+                                                color: form.type === 'individual' ? '#fff' : C.textSecondary }}
+                                        >{t('فرد')}</button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setForm({ ...form, type: 'company' })}
+                                            style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                                background: form.type === 'company' ? C.primary : 'transparent',
+                                                color: form.type === 'company' ? '#fff' : C.textSecondary }}
+                                        >{t('شركة')}</button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style={LS}>{form.type === 'company' ? t('اسم الشركة') : t('اسم العميل')} <span style={{ color: C.danger }}>*</span></label>
+                                    <input required value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={form.type === 'company' ? t('مثال: شركة النور للتجارة') : t('مثال: أحمد محمد')} />
+                                </div>
+                            </div>
+
+                            {/* حقول الشركة */}
+                            {form.type === 'company' && (
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
+                                    <div>
+                                        <label style={LS}>{t('الرقم الضريبي')}</label>
+                                        <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
+                                    </div>
+                                    <div>
+                                        <label style={LS}>{t('السجل التجاري')}</label>
+                                        <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
+                                    </div>
+                                    <div>
+                                        <label style={LS}>{t('المسؤول / جهة الاتصال')}</label>
+                                        <input value={form.contactPerson} onChange={e => setForm({ ...form, contactPerson: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: محمد علي')} />
+                                    </div>
                                 </div>
                             )}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                                <div>
-                                    <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
-                                </div>
-                                <div>
-                                    <label style={{ ...LS }}>{t('العنوان')}</label>
-                                    <input value={form.address} onChange={e => setForm({ ...form, address: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={ph.address} />
+
+                            {/* هاتف */}
+                            <div>
+                                <label style={LS}>{t('رقم الهاتف')}</label>
+                                <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
+                            </div>
+
+                            {/* العنوان المقسم */}
+                            <div>
+                                <label style={LS}>{t('العنوان')}</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                    {([0, 1, 2, 3] as const).map(i => {
+                                        const key = `f${i + 1}` as keyof AddressFields;
+                                        return (
+                                            <input
+                                                key={i}
+                                                value={form.addr[key]}
+                                                onChange={e => setForm({ ...form, addr: { ...form.addr, [key]: e.target.value } })}
+                                                style={IS}
+                                                onFocus={focusIn}
+                                                onBlur={focusOut}
+                                                placeholder={addrCfg.placeholders[i]}
+                                            />
+                                        );
+                                    })}
                                 </div>
                             </div>
                             <div>

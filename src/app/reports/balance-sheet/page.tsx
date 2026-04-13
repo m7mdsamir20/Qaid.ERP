@@ -65,24 +65,24 @@ export default function BalanceSheetPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="المركز المالي (Balance Sheet)"
-                    subtitle="يعرض الموقف المالي للشركة من حيث الأصول، الخصوم، وحقوق الملكية في تاريخ محدد."
+                    title={t("المركز المالي (Balance Sheet)")}
+                    subtitle={t("يعرض الموقف المالي للشركة من حيث الأصول، الخصوم، وحقوق الملكية في تاريخ محدد.")}
                     backTab="financial"
-                    onExportPdf={exportToPDF}
+                    
                 />
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>جاري توليد المركز المالي...</span>
+                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد المركز المالي...')}</span>
                     </div>
                 ) : !data || (data.assets.length === 0 && data.liabilities.length === 0 && data.equities.length === 0) ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'center' }}>
                          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Scale size={40} style={{ opacity: 0.2, color: C.textMuted }} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد أرصدة متاحة</h3>
-                        <p style={{ fontSize: '14px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>المشروع بانتظار استكمال القيد الافتتاحي أو ترحيل الحركات التأسيسية</p>
+                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أرصدة متاحة')}</h3>
+                        <p style={{ fontSize: '14px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('المشروع بانتظار استكمال القيد الافتتاحي أو ترحيل الحركات التأسيسية')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -101,11 +101,11 @@ export default function BalanceSheetPage() {
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                 {isBalanced ? <CheckCircle2 size={18} color={C.success} /> : <AlertCircle size={18} color={C.danger} />}
                                 <span style={{ fontSize: '13px', fontWeight: 800, color: isBalanced ? C.success : C.danger, fontFamily: CAIRO }}>
-                                    {isBalanced ? 'معادلة المركز المالي متزنة' : 'يوجد خلل في توازن المركز المالي'}
+                                    {isBalanced ? t('معادلة المركز المالي متزنة') : t('يوجد خلل في توازن المركز المالي')}
                                 </span>
                             </div>
                             <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>
-                                الأصول = الخصوم + حقوق الملكية
+                                {t('الأصول = الخصوم + حقوق الملكية')}
                             </div>
                         </div>
 
@@ -114,7 +114,7 @@ export default function BalanceSheetPage() {
                             <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', display: 'flex', flexDirection: 'column' }}>
                                 <div style={{ padding: '20px 24px', background: 'rgba(59, 130, 246, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#3b82f6' }}>
                                     <Landmark size={20} />
-                                    <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, fontFamily: CAIRO }}>الأصول (Assets)</h3>
+                                    <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, fontFamily: CAIRO }}>{t('الأصول (Assets)')}</h3>
                                 </div>
                                 <div style={{ padding: '16px', flex: 1 }}>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -130,7 +130,7 @@ export default function BalanceSheetPage() {
                                     </div>
                                 </div>
                                 <div style={{ padding: '20px 24px', background: 'rgba(59, 130, 246, 0.08)', borderTop: `2px solid #3b82f633`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>إجمالي الأصول</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إجمالي الأصول')}</span>
                                     <span style={{ fontSize: '16px', fontWeight: 950, color: '#3b82f6', fontFamily: INTER }}>{fmt(data.totalAssets)} <small style={{fontSize: '10px', opacity: 0.7}}>{getCurrencyName(currency)}</small></span>
                                 </div>
                             </div>
@@ -141,7 +141,7 @@ export default function BalanceSheetPage() {
                                 <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
                                     <div style={{ padding: '16px 20px', background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#fb7185' }}>
                                         <Scale size={18} />
-                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>الخصوم (Liabilities)</h3>
+                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>{t('الخصوم (Liabilities)')}</h3>
                                     </div>
                                     <div style={{ padding: '12px' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -151,11 +151,11 @@ export default function BalanceSheetPage() {
                                                     <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(l.balance)}</span>
                                                 </div>
                                             ))}
-                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>لا توجد التزامات</div>}
+                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>إجمالي الخصوم</span>
+                                        <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي الخصوم')}</span>
                                         <span style={{ fontSize: '14px', fontWeight: 900, color: '#fb7185', fontFamily: INTER }}>{fmt(data.totalLiabilities)}</span>
                                     </div>
                                 </div>
@@ -164,7 +164,7 @@ export default function BalanceSheetPage() {
                                 <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
                                     <div style={{ padding: '16px 20px', background: 'rgba(16, 185, 129, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#10b981' }}>
                                         <Sigma size={18} />
-                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>حقوق الملكية (Equity)</h3>
+                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>{t('حقوق الملكية (Equity)')}</h3>
                                     </div>
                                     <div style={{ padding: '12px' }}>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -177,14 +177,14 @@ export default function BalanceSheetPage() {
                                             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 12px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '8px', border: '1px solid #3b82f633', marginTop: '4px' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                     <TrendingUp size={14} color="#3b82f6" />
-                                                    <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '11px', fontFamily: CAIRO }}>صافي دخل الفترة</span>
+                                                    <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '11px', fontFamily: CAIRO }}>{t('صافي دخل الفترة')}</span>
                                                 </div>
                                                 <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '12px', fontFamily: INTER }}>{fmt(data.netIncome)}</span>
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(16, 185, 129, 0.05)', borderTop: `1px solid #10b98133`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>إجمالي حقوق الملكية</span>
+                                        <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي حقوق الملكية')}</span>
                                         <span style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalEquities)}</span>
                                     </div>
                                 </div>
@@ -202,11 +202,11 @@ export default function BalanceSheetPage() {
                             alignItems: 'center'
                         }}>
                             <div>
-                                <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>إجمالي الخصوم وحقوق الملكية</p>
+                                <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</p>
                                 <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <small style={{fontSize: '14px'}}>{getCurrencyName(currency)}</small></h2>
                             </div>
                             <div className="no-print" style={{ textAlign: 'end' }}>
-                                <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontFamily: CAIRO }}>فرق التوازن</div>
+                                <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontFamily: CAIRO }}>{t('فرق التوازن')}</div>
                                 <div style={{ fontWeight: 800, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: INTER }}>{fmt(Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities))}</div>
                             </div>
                         </div>

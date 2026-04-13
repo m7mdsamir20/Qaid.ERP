@@ -1,4 +1,5 @@
 import { getCurrencySymbol } from './currency';
+import { formatAddressForInvoice } from './addressConfig';
 
 export interface CompanyInfo {
     name?: string;
@@ -88,7 +89,7 @@ function generateA4HTML(
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
-        addr: company.address || '',
+        addrLines: formatAddressForInvoice(company.address, company.countryCode || 'EG'),
         phone: company.phone || '',
         email: company.email || '',
         tax: company.taxNumber || '',
@@ -211,7 +212,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     <div class="co-block">
         <div class="co-name">${co.name}</div>
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
-        ${co.addr ? `<div class="co-line">${co.addr}</div>` : ''}
+        ${co.addrLines.map(l => `<div class="co-line">${l}</div>`).join('')}
         ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
         ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
         ${co.cr ? `<div class="co-line">${blInline('السجل التجاري', 'C.R.')}: <strong>${co.cr}</strong></div>` : ''}
@@ -505,7 +506,7 @@ export function printQuotation(
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
-        addr: company.address || '',
+        addrLines: formatAddressForInvoice(company.address, company.countryCode || 'EG'),
         phone: company.phone || '',
         email: company.email || '',
         tax: company.taxNumber || '',
@@ -571,8 +572,8 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div class="co-block">
             <div class="co-name">${co.name}</div>
             ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
-            <div class="co-line">${co.addr}</div>
-            <div class="co-line">${co.phone}</div>
+            ${co.addrLines.map(l => `<div class="co-line">${l}</div>`).join('')}
+            ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
             ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
         </div>
         <div class="header-center">

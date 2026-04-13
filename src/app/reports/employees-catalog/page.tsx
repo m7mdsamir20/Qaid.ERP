@@ -50,7 +50,7 @@ export default function EmployeesCatalogPage() {
                     title="دليل بيانات الموظفين"
                     subtitle="كشف تفصيلي ببيانات الموظفين، المسميات الوظيفية، الأقسام، وحالة العمل الحالية."
                     backTab="hr"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>

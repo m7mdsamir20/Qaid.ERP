@@ -1,5 +1,5 @@
 'use client';
- 
+
 import { useTranslation } from '@/lib/i18n';
 import { BTN_DANGER, C, CAIRO } from '@/constants/theme';
 import {
@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import { TabHeader } from './shared';
 import { getCountryPlaceholders } from '@/lib/placeholders';
+import { useState, useEffect } from 'react';
+import { getAddressConfig, parseAddress, stringifyAddress, type AddressFields } from '@/lib/addressConfig';
 
 interface CompanyTabProps {
     countryCode: string;
@@ -24,12 +26,30 @@ interface CompanyTabProps {
     showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
+const EMPTY_ADDR: AddressFields = { f1: '', f2: '', f3: '', f4: '' };
+
 export default function CompanyTab({
     countryCode, isEditMode, setIsEditMode, companyForm, setCompanyForm,
     isSaving, handleCancel, saveSettings, showToast
 }: CompanyTabProps) {
     const { t } = useTranslation();
     const ph = getCountryPlaceholders(countryCode);
+    const addrCfg = getAddressConfig(countryCode);
+
+    // Keep local split-address state, synced with companyForm.address (JSON)
+    const [addr, setAddr] = useState<AddressFields>(() => parseAddress(companyForm.address) ?? { ...EMPTY_ADDR });
+
+    // When companyForm.address changes from outside (on load), re-parse
+    useEffect(() => {
+        setAddr(parseAddress(companyForm.address) ?? { ...EMPTY_ADDR });
+    }, [companyForm.address]);
+
+    const updateAddr = (key: keyof AddressFields, val: string) => {
+        const next = { ...addr, [key]: val };
+        setAddr(next);
+        setCompanyForm((p: any) => ({ ...p, address: stringifyAddress(next) }));
+    };
+
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
             <TabHeader
@@ -115,7 +135,7 @@ export default function CompanyTab({
                                     {!companyForm.logo && (
                                         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', opacity: 0.2 }}>
                                             <Building2 size={24} style={{ color: C.textMuted }} />
-                                            <span style={{ fontSize: '8px', color: C.textMuted, fontWeight: 700 }}>Logo</span>
+                                            <span style={{ fontSize: '8px', color: C.textMuted, fontWeight: 700 }}>{t('الشعار')}</span>
                                         </div>
                                     )}
                                     {isSaving && (
@@ -188,10 +208,10 @@ export default function CompanyTab({
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                             <label style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t('أو ضع رابط الشعار المباشر هنا:')}</label>
                                             <input 
-                                                value={companyForm.logo?.startsWith('data:') ? 'صورة محفوظة ككود (Base64)' : companyForm.logo}
+                                                value={companyForm.logo?.startsWith('data:') ? t('صورة محفوظة ككود (Base64)') : companyForm.logo}
                                                 onChange={e => {
                                                     const val = e.target.value;
-                                                    if (val === 'صورة محفوظة ككود (Base64)') return;
+                                                    if (val === t('صورة محفوظة ككود (Base64)')) return;
                                                     setCompanyForm((p: any) => ({ ...p, logo: val }));
                                                 }}
                                                 placeholder="https://example.com/logo.png"
@@ -214,23 +234,57 @@ export default function CompanyTab({
                         {[
                             { label: t('رقم الهاتف'), key: 'phone', dir: 'ltr', icon: <Phone size={15} />, placeholder: ph.phone },
                             { label: t('البريد الإلكتروني'), key: 'email', dir: 'ltr', icon: <Mail size={15} />, placeholder: 'info@company.com' },
-                            { label: t('العنوان'), key: 'address', dir: 'rtl', icon: <MapPin size={15} />, placeholder: ph.address },
                             { label: t('الموقع الإلكتروني'), key: 'website', dir: 'ltr', icon: <Globe size={15} />, placeholder: 'www.company.com' },
                         ].map((f, i, arr) => (
-                            <div key={f.key} style={{ display: 'flex', alignItems: 'center', gap: '0', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                            <div key={f.key} style={{ display: 'flex', alignItems: 'center', gap: '0', borderBottom: `1px solid ${C.border}` }}>
                                 <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                     <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}>{f.icon}</div>
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{f.label}</span>
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {isEditMode ? (
-                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: 'rtl', textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
+                                        <input placeholder={f.placeholder} style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '14px', color: C.textPrimary, direction: f.dir as any, textAlign: 'start', padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} value={(companyForm as any)[f.key]} onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))} />
                                     ) : (
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: 'rtl', textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: (companyForm as any)[f.key] ? C.textPrimary : C.textMuted, direction: f.dir as any, textAlign: 'start', padding: '14px 0', fontStyle: (companyForm as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(companyForm as any)[f.key] || t('لم يُضف بعد')}</div>
                                     )}
                                 </div>
                             </div>
                         ))}
+
+                        {/* العنوان المقسم */}
+                        <div style={{ display: 'flex', alignItems: 'flex-start', borderBottom: 'none' }}>
+                            <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}><MapPin size={15} /></div>
+                                <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('العنوان')}</span>
+                            </div>
+                            <div style={{ flex: 1, padding: '12px 20px' }}>
+                                {isEditMode ? (
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                        {([0, 1, 2, 3] as const).map(i => {
+                                            const key = `f${i + 1}` as keyof AddressFields;
+                                            return (
+                                                <input
+                                                    key={i}
+                                                    value={addr[key]}
+                                                    onChange={e => updateAddr(key, e.target.value)}
+                                                    placeholder={addrCfg.labels[i]}
+                                                    style={{ width: '100%', height: '36px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 10px', fontSize: '13px', fontFamily: CAIRO, outline: 'none', boxSizing: 'border-box' }}
+                                                />
+                                            );
+                                        })}
+                                    </div>
+                                ) : (
+                                    <div style={{ fontSize: '14px', fontWeight: 700, color: companyForm.address ? C.textPrimary : C.textMuted, padding: '14px 0', fontStyle: companyForm.address ? 'normal' : 'italic', fontFamily: CAIRO }}>
+                                        {(() => {
+                                            const parsed = parseAddress(companyForm.address);
+                                            if (!parsed) return t('لم يُضف بعد');
+                                            const parts = [parsed.f1, parsed.f2, parsed.f3, parsed.f4].filter(Boolean);
+                                            return parts.length ? parts.join('، ') : t('لم يُضف بعد');
+                                        })()}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     </div>
                 </div>
 

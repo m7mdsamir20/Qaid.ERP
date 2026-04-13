@@ -96,7 +96,7 @@ export default function FixedAssetsReportPage() {
                     title="تقرير الأصول الثابتة"
                     subtitle="كشف تفصيلي بالأصول — التكلفة التاريخية ومجمع الإهلاك والقيمة الدفترية"
                     backTab="financial"
-                    onExportPdf={exportToPDF}
+                    
                 />
 
                 {loading ? (

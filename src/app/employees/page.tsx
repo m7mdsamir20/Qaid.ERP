@@ -74,10 +74,10 @@ export default function EmployeesPage() {
     });
 
     const stats = [
-        { label: 'إجمالي الموظفين', value: employees.length, icon: UsersIcon, color: '#3b82f6' },
-        { label: 'موظفين نشطين', value: employees.filter(e => e.status === 'active').length, icon: UserPlus, color: '#10b981' },
-        { label: 'متوسط الأجور', value: employees.length ? (employees.reduce((acc, curr) => acc + curr.basicSalary, 0) / employees.length).toLocaleString() : 0, icon: TrendingUp, color: '#a78bfa', unit: currencySymbol },
-        { label: 'تعيينات حديثة', value: employees.filter(e => new Date(e.hireDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length, icon: UserPlus, color: '#5286ed' },
+        { label: t('إجمالي الموظفين'), value: employees.length, icon: UsersIcon, color: '#3b82f6' },
+        { label: t('موظفين نشطين'), value: employees.filter(e => e.status === 'active').length, icon: UserPlus, color: '#10b981' },
+        { label: t('متوسط الأجور'), value: employees.length ? (employees.reduce((acc, curr) => acc + curr.basicSalary, 0) / employees.length).toLocaleString() : 0, icon: TrendingUp, color: '#a78bfa', unit: currencySymbol },
+        { label: t('تعيينات حديثة'), value: employees.filter(e => new Date(e.hireDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length, icon: UserPlus, color: '#5286ed' },
     ];
 
     const handleConfirmDelete = async () => {
@@ -100,11 +100,11 @@ export default function EmployeesPage() {
 
                 {/* Header Section */}
                 <PageHeader 
-                    title="الموظفين" 
-                    subtitle="إدارة شؤون العاملين، العقود، والأقسام الإدارية" 
+                    title={t("الموظفين")} 
+                    subtitle={t("إدارة شؤون العاملين، العقود، والأقسام الإدارية")} 
                     icon={UsersIcon}
                     primaryButton={{
-                        label: 'إضافة موظف',
+                        label: t('إضافة موظف'),
                         onClick: () => router.push('/employees/new'),
                         icon: Plus
                     }}
@@ -143,7 +143,7 @@ export default function EmployeesPage() {
                         <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
-                            placeholder="ابحث باسم الموظف أو الكود أو المنصب الوظيفي..."
+                            placeholder={t("ابحث باسم الموظف أو الكود أو المنصب الوظيفي...")}
                             style={{ 
                                 ...IS, paddingInlineEnd: '40px', height: '40px', fontSize: '13px', 
                                 borderRadius: '12px'
@@ -159,11 +159,11 @@ export default function EmployeesPage() {
                         <CustomSelect 
                             value={selectedDept}
                             onChange={setSelectedDept}
-                            placeholder="كل الأقسام"
+                            placeholder={t("كل الأقسام")}
                             icon={Filter}
                             style={{ height: '40px', borderRadius: '12px' }}
                             options={[
-                                { value: 'all', label: 'كل الأقسام', icon: Building2 },
+                                { value: 'all', label: t('كل الأقسام'), icon: Building2 },
                                 ...departments.map(d => ({ value: d.id, label: d.name, icon: Building2 }))
                             ]}
                         />
@@ -173,13 +173,13 @@ export default function EmployeesPage() {
                         <CustomSelect 
                             value={selectedStatus}
                             onChange={setSelectedStatus}
-                            placeholder="كل الحالات"
+                            placeholder={t("كل الحالات")}
                             icon={UserPlus}
                             style={{ height: '40px', borderRadius: '12px' }}
                             options={[
-                                { value: 'all', label: 'كل الحالات' },
-                                { value: 'active', label: 'نشط', style: { color: '#10b981' } },
-                                { value: 'inactive', label: 'متوقف', style: { color: '#ef4444' } }
+                                { value: 'all', label: t('كل الحالات') },
+                                { value: 'active', label: t('نشط'), style: { color: '#10b981' } },
+                                { value: 'inactive', label: t('متوقف'), style: { color: '#ef4444' } }
                             ]}
                         />
                     </div>
@@ -190,28 +190,28 @@ export default function EmployeesPage() {
                     {loading ? (
                         <div style={{ padding: '80px', textAlign: 'center' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                            <p style={{ margin: 0, color: C.textMuted, fontWeight: 800 }}>جاري استرجاع السجلات...</p>
+                            <p style={{ margin: 0, color: C.textMuted, fontWeight: 800 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
                     ) : filteredEmployees.length === 0 ? (
                         <div style={{ padding: '100px 20px', textAlign: 'center' }}>
                             <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                 <UsersIcon size={40} style={{ color: C.textMuted }} />
                             </div>
-                            <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 900, margin: '0 0 8px' }}>لا توجد نتائج</h3>
-                            <p style={{ fontSize: '14px', color: C.textMuted, margin: 0 }}>{searchTerm ? 'لم يتم العثور على موظفين تطابق البحث' : 'ابدأ بإضافة موظفين جدد لسجلك'}</p>
+                            <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 900, margin: '0 0 8px' }}>{t('لا توجد نتائج')}</h3>
+                            <p style={{ fontSize: '14px', color: C.textMuted, margin: 0 }}>{searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>الكود</th>
-                                        <th style={TABLE_STYLE.th(false)}>الموظف</th>
-                                        <th style={TABLE_STYLE.th(false)}>المنصب والقسم</th>
-                                        <th style={TABLE_STYLE.th(false)}>تاريخ التعيين</th>
-                                        <th style={TABLE_STYLE.th(false)}>صافي الراتب</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>الإجراءات</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('الكود')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المنصب والقسم')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('تاريخ التعيين')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('صافي الراتب')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الإجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -234,12 +234,12 @@ export default function EmployeesPage() {
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{emp.position || '—'}</div>
                                                     <div style={{ fontSize: '11px', color: C.primary, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}>
-                                                        <Building2 size={12} /> {emp.department?.name || 'غير مصنف'}
+                                                        <Building2 size={12} /> {emp.department?.name || t('غير مصنف')}
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
-                                                        {new Date(emp.hireDate).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                                        {new Date(emp.hireDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
@@ -256,7 +256,7 @@ export default function EmployeesPage() {
                                                         border: `1px solid ${emp.status === 'active' ? '#10b98130' : '#ef444430'}`
                                                     }}>
                                                         <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
-                                                        {emp.status === 'active' ? 'نشط' : 'متوقف'}
+                                                        {emp.status === 'active' ? t('نشط') : t('متوقف')}
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
@@ -298,7 +298,7 @@ export default function EmployeesPage() {
                 show={!!employeeToDelete}
                 onClose={() => setEmployeeToDelete(null)}
                 onConfirm={handleConfirmDelete}
-                title="تأكيد حذف الموظف"
+                title={t("تأكيد حذف الموظف")}
                 itemName={employeeToDelete?.name || ''}
                 isDelete={true}
                 isSubmitting={isDeleting}

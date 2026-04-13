@@ -119,7 +119,7 @@ export default function ItemMovementReportPage() {
                     title="تقرير حركة صنف"
                     subtitle="متابعة تفصيلية لكافة عمليات الصادر والوارد لكل قطعة بالاسم أو الكود."
                     backTab="inventory"
-                    onExportPdf={() => window.print()}
+                    
                     printTitle="تقرير حركة صنف تفصيلي"
                     printDate={itemDetails ? `${itemDetails.name} (${itemDetails.code})` : undefined}
                 />

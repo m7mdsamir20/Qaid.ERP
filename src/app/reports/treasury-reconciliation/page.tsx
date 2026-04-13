@@ -95,7 +95,7 @@ export default function TreasuryReconciliationPage() {
                     title="تقرير الجرد والعجز والزيادة" 
                     subtitle="مطابقة الأرصدة الفعلية بالأرصدة الدفترية المودعة في النظام للخزن والحسابات البنكية." 
                     backTab="treasury-bank"
-                    onExportPdf={() => window.print()}
+                    
                     onExportExcel={exportToExcel}
                 />
 

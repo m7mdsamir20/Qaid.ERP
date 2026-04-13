@@ -426,9 +426,6 @@ export default function EditCompanyPage() {
                                         { code: 'TN', name: 'تونس', flag: '🇹🇳' },
                                         { code: 'DZ', name: 'الجزائر', flag: '🇩🇿' },
                                         { code: 'MA', name: 'المغرب', flag: '🇲🇦' },
-                                        { code: 'TR', name: 'تركيا', flag: '🇹🇷' },
-                                        { code: 'US', name: 'أمريكا', flag: '🇺🇸' },
-                                        { code: 'GB', name: 'بريطانيا', flag: '🇬🇧' },
                                     ].map(c => (
                                         <button key={c.code} type="button" onClick={() => setForm(f => ({ ...f, countryCode: c.code }))}
                                             style={{

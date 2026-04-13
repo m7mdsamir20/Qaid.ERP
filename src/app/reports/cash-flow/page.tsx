@@ -72,16 +72,16 @@ export default function CashFlowReportPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="قائمة التدفق النقدي"
-                    subtitle="تحليل السيولة النقدية الواردة والمنصرفة عبر كافة الخزن والتحويلات البنكية."
+                    title={t("قائمة التدفق النقدي")}
+                    subtitle={t("تحليل السيولة النقدية الواردة والمنصرفة عبر كافة الخزن والتحويلات البنكية.")}
                     backTab="financial"
-                    onExportPdf={exportToPDF}
+                    
                 />
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>جاري تحليل التدفقات النقدية...</span>
+                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحليل التدفقات النقدية...')}</span>
                     </div>
                 ) : (
                     <>
@@ -89,10 +89,10 @@ export default function CashFlowReportPage() {
                         {/* KPI Cards */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: 'إجمالي المقبوضات', value: fmt(stats.totalIncome), color: '#10b981', icon: <TrendingUp size={18} /> },
-                                { label: 'إجمالي المدفوعات', value: fmt(stats.totalExpense), color: '#fb7185', icon: <TrendingDown size={18} /> },
-                                { label: 'صافي التدفق', value: fmt(stats.netFlow), color: stats.netFlow >= 0 ? '#10b981' : '#fb7185', icon: <DollarSign size={18} /> },
-                                { label: 'عدد الحركات', value: data.length.toString(), color: '#3b82f6', icon: <Activity size={18} /> },
+                                { label: t('إجمالي المقبوضات'), value: fmt(stats.totalIncome), color: '#10b981', icon: <TrendingUp size={18} /> },
+                                { label: t('إجمالي المدفوعات'), value: fmt(stats.totalExpense), color: '#fb7185', icon: <TrendingDown size={18} /> },
+                                { label: t('صافي التدفق'), value: fmt(stats.netFlow), color: stats.netFlow >= 0 ? '#10b981' : '#fb7185', icon: <DollarSign size={18} /> },
+                                { label: t('عدد الحركات'), value: data.length.toString(), color: '#3b82f6', icon: <Activity size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -116,7 +116,7 @@ export default function CashFlowReportPage() {
                         <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
                             <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
                             <input
-                                placeholder="ابحث بالخزينة، الطرف الآخر، أو البيان..."
+                                placeholder={t("ابحث بالخزينة، الطرف الآخر، أو البيان...")}
                                 value={q} onChange={e => setQ(e.target.value)}
                                 style={{ 
                                     ...IS,
@@ -138,7 +138,7 @@ export default function CashFlowReportPage() {
                         {/* Result Count Indicator */}
                         <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
                             <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
-                                نتائج البحث: <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
+                                {t('نتائج البحث:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
                             </div>
                         </div>
 
@@ -147,7 +147,7 @@ export default function CashFlowReportPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {['التاريخ', 'النوع', 'الخزينة', 'الطرف الآخر', 'البيان', 'المبلغ'].map((h, i) => (
+                                        {[t('التاريخ'), t('النوع'), t('الخزينة'), t('الطرف الآخر'), t('البيان'), t('المبلغ')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', 
                                                 fontSize: '12px', 
@@ -162,7 +162,7 @@ export default function CashFlowReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>لم يتم العثور على حركات نقدية تطابق البحث</td></tr>
+                                        <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لم يتم العثور على حركات نقدية تطابق البحث')}</td></tr>
                                     ) : filtered.map((v, i) => (
                                         <tr key={v.id} 
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
@@ -175,7 +175,7 @@ export default function CashFlowReportPage() {
                                                     background: v.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',
                                                     color: v.type === 'receipt' ? '#10b981' : '#fb7185'
                                                 }}>
-                                                    {v.type === 'receipt' ? 'قبض +' : 'صرف -'}
+                                                    {v.type === 'receipt' ? t('قبض +') : t('صرف -')}
                                                 </span>
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 750, color: C.textSecondary, fontFamily: CAIRO }}>{v.treasury}</td>

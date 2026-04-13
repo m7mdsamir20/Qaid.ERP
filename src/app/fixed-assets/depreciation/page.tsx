@@ -45,7 +45,7 @@ export default function DepreciationPage() {
     const isRtl = lang === 'ar';
     const [years, setYears]         = useState<FinancialYear[]>([]);
     const [selectedYearId, setSelectedYearId] = useState('');
-    const [period, setPeriod]       = useState('سنوي');
+    const [period, setPeriod]       = useState('yearly');
     const [assets, setAssets]       = useState<FixedAsset[]>([]);
     const [lines, setLines]         = useState<DepLine[]>([]);
     const [loading, setLoading]     = useState(false);
@@ -55,7 +55,12 @@ export default function DepreciationPage() {
     const [showConfirm, setShowConfirm] = useState(false);
     const [error, setError]         = useState('');
 
-    const monthsMap: Record<string, number> = { 'سنوي': 12, 'ربع سنوي': 3, 'شهري': 1 };
+    const monthsMap: Record<string, number> = { 'yearly': 12, 'quarterly': 3, 'monthly': 1 };
+    const PERIOD_LABELS: Record<string, string> = {
+        'yearly': t('سنوي'),
+        'quarterly': t('ربع سنوي'),
+        'monthly': t('شهري')
+    };
 
     useEffect(() => {
         fetch('/api/settings').then(r => r.json()).then(data => setYears(data.financialYears || [])).catch(() => {});
@@ -63,7 +68,7 @@ export default function DepreciationPage() {
     }, []);
 
     const handleCalculate = async () => {
-        if (!selectedYearId) { setError('يرجى اختيار السنة المالية أولاً'); return; }
+        if (!selectedYearId) { setError(t('يرجى اختيار السنة المالية أولاً')); return; }
         setLoading(true); setError(''); setCalculated(false);
         try {
             const months = monthsMap[period] || 12;
@@ -75,7 +80,7 @@ export default function DepreciationPage() {
                 return { asset: a, depAmount, netBook: Math.max(0, netBook), alreadyDone: done.includes(a.id) };
             }).filter(l => l.depAmount > 0);
             setLines(computed); setCalculated(true);
-        } catch { setError('فشل حساب الإهلاك للأصول المحددة'); }
+        } catch { setError(t('فشل حساب الإهلاك للأصول المحددة')); }
         setLoading(false);
     };
 
@@ -84,7 +89,7 @@ export default function DepreciationPage() {
         try {
             const pendingLines = lines.filter(l => !l.alreadyDone);
             if (pendingLines.length === 0) {
-                setError('تم تسجيل إهلاك جميع الأصول المحددة لهذه الفترة مسبقاً');
+                setError(t('تم تسجيل إهلاك جميع الأصول المحددة لهذه الفترة مسبقاً'));
                 setRegistering(false); return;
             }
             const res = await fetch('/api/depreciation/register', {
@@ -101,8 +106,8 @@ export default function DepreciationPage() {
             if (res.ok) {
                 setRegistered(true); setLines(prev => prev.map(l => ({ ...l, alreadyDone: true })));
                 setTimeout(() => setRegistered(false), 4000);
-            } else { const d = await res.json(); setError(d.error || 'فشل في تسجيل القيود بالدفاتر'); }
-        } catch { setError('خطأ في الاتصال بالخادم، يرجى إعادة المحاولة'); }
+            } else { const d = await res.json(); setError(d.error || t('فشل في تسجيل القيود بالدفاتر')); }
+        } catch { setError(t('خطأ في الاتصال بالخادم، يرجى إعادة المحاولة')); }
         setRegistering(false);
     };
 
@@ -117,11 +122,11 @@ export default function DepreciationPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
-                    title="احتساب قيود الإهلاك للفترة"
-                    subtitle="تعديل ومعاينة إهلاك الأصول قبل الترحيل للدفاتر المحاسبية"
+                    title={t("احتساب قيود الإهلاك للفترة")}
+                    subtitle={t("تعديل ومعاينة إهلاك الأصول قبل الترحيل للدفاتر المحاسبية")}
                     icon={TrendingDown}
                     primaryButton={calculated && pendingCount > 0 ? {
-                        label: `ترحيل الإهلاك (${pendingCount})`,
+                        label: `${t('ترحيل الإهلاك')} (${pendingCount})`,
                         icon: FileText,
                         onClick: () => setShowConfirm(true)
                     } : undefined}
@@ -130,10 +135,10 @@ export default function DepreciationPage() {
                 {/* KPI Section */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                     {[
-                        { label: 'الأصول النشطة حاليّاً', val: assets.length, color: C.blue, icon: Briefcase, isCount: true },
-                        { label: 'إجمالي قيمة الأصول', val: totalCurrentAssetsCost, color: '#10b981', icon: Activity },
-                        { label: 'مجمع الإهلاك الكلي', val: totalAccumDepAssets, color: '#f59e0b', icon: PieChart },
-                        { label: 'الإهلاك المحتسب حاليّاً', val: calculated ? totalCalculatedDep : 0, color: C.danger, icon: TrendingDown },
+                        { label: t('الأصول النشطة حاليّاً'), val: assets.length, color: C.blue, icon: Briefcase, isCount: true },
+                        { label: t('إجمالي قيمة الأصول'), val: totalCurrentAssetsCost, color: '#10b981', icon: Activity },
+                        { label: t('مجمع الإهلاك الكلي'), val: totalAccumDepAssets, color: '#f59e0b', icon: PieChart },
+                        { label: t('الإهلاك المحتسب حاليّاً'), val: calculated ? totalCalculatedDep : 0, color: C.danger, icon: TrendingDown },
                     ].map((s, i) => (
                         <div key={i} style={{ 
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -143,7 +148,7 @@ export default function DepreciationPage() {
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                     <span>{s.val.toLocaleString('en-US')}</span>
-                                    {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>ج.م</span>}
+                                    {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                 </div>
                             </div>
                             <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -156,18 +161,18 @@ export default function DepreciationPage() {
                 {/* Filters Row (No region) */}
                 <div style={{ display: 'flex', gap: '16px', marginBottom: '20px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
                     <div style={{ width: '240px' }}>
-                        <label style={LS}>السنة المالية المحاسبية</label>
+                        <label style={LS}>{t('السنة المالية المحاسبية')}</label>
                         <CustomSelect
                             value={selectedYearId} onChange={setSelectedYearId} icon={Calendar}
-                            placeholder="-- اختر السنة المالية --"
+                            placeholder={t("-- اختر السنة المالية --")}
                             options={years.filter(y => y.isOpen).map(y => ({ value: y.id, label: y.name }))}
                         />
                     </div>
                     <div style={{ width: '180px' }}>
-                        <label style={LS}>دورة الإهلاك الحالية</label>
+                        <label style={LS}>{t('دورة الإهلاك الحالية')}</label>
                         <CustomSelect
                             value={period} onChange={setPeriod} icon={History}
-                            options={['سنوي', 'ربع سنوي', 'شهري'].map(o => ({ value: o, label: o }))}
+                            options={Object.entries(PERIOD_LABELS).map(([v, l]) => ({ value: v, label: l }))}
                         />
                     </div>
                     <button onClick={handleCalculate} disabled={loading} style={{ 
@@ -180,12 +185,12 @@ export default function DepreciationPage() {
                     onMouseEnter={e => { if(!loading) e.currentTarget.style.background = C.primaryHover; }}
                     onMouseLeave={e => { if(!loading) e.currentTarget.style.background = C.primary; }}>
                         {loading ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <Calculator size={16} />}
-                        <span>احسب الإهلاك الآن</span>
+                        <span>{t('احسب الإهلاك الآن')}</span>
                     </button>
                     {selectedYear && (
                         <div style={{ marginInlineEnd: 'auto', display: 'flex', alignItems: 'center', gap: '8px', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO, paddingBottom: '10px' }}>
                             <InfoIcon size={14} />
-                            <span>نطاق السنة: {new Date(selectedYear.startDate).toLocaleDateString('en-GB')} ← {new Date(selectedYear.endDate).toLocaleDateString('en-GB')}</span>
+                            <span>{t('نطاق السنة')}: {new Date(selectedYear.startDate).toLocaleDateString('en-GB')} ← {new Date(selectedYear.endDate).toLocaleDateString('en-GB')}</span>
                         </div>
                     )}
                 </div>
@@ -198,7 +203,7 @@ export default function DepreciationPage() {
                 )}
                 {registered && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 18px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', marginBottom: '16px', color: '#10b981', fontSize: '14px', fontWeight: 800, fontFamily: CAIRO }}>
-                        <CheckCircle2 size={18} /> تم تسجيل كشوف الإهلاك والموافقة عليها بنجاح
+                        <CheckCircle2 size={18} /> {t('تم تسجيل كشوف الإهلاك والموافقة عليها بنجاح')}
                     </div>
                 )}
 
@@ -206,16 +211,25 @@ export default function DepreciationPage() {
                 {calculated && lines.length > 0 ? (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                         <div style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>تفاصيل احتساب الإهلاك المالي</div>
+                            <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
                             <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
-                                <span>عدد الأصول: <b>{lines.length}</b></span>
-                                <span>القيمة المخططة: <b style={{ color: C.danger, fontFamily: INTER }}>{fmt(totalCalculatedDep)} ج.م</b></span>
+                                <span>{t('عدد الأصول')}: <b>{lines.length}</b></span>
+                                <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: INTER }}>{fmt(totalCalculatedDep)} {t('ج.م')}</b></span>
                             </div>
                         </div>
                         <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                    {['كود الأصل', 'اسم الأصل', 'تكلفة الشراء', 'مجمع قبل', 'قسط الفترة', 'مجمع بعد', 'الصافي الباقي', 'الحالة'].map((h, i) => (
+                                    {[
+                                        t('كود الأصل'), 
+                                        t('اسم الأصل'), 
+                                        t('تكلفة الشراء'), 
+                                        t('مجمع قبل'), 
+                                        t('قسط الفترة'), 
+                                        t('مجمع بعد'), 
+                                        t('الصافي الباقي'), 
+                                        t('الحالة')
+                                    ].map((h, i) => (
                                         <th key={i} style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
@@ -234,9 +248,9 @@ export default function DepreciationPage() {
                                             <td style={{ padding: '12px 16px', fontFamily: INTER, fontSize: '14px', fontWeight: 900, color: '#10b981' }}>{fmt(l.netBook)}</td>
                                             <td style={{ padding: '12px 16px' }}>
                                                 {l.alreadyDone ? (
-                                                    <span style={{ fontSize: '10px', fontWeight: 900, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ تم الترحيل</span>
+                                                    <span style={{ fontSize: '10px', fontWeight: 900, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ {t('تم الترحيل')}</span>
                                                 ) : (
-                                                    <span style={{ fontSize: '10px', fontWeight: 900, color: '#f59e0b', padding: '2px 8px', borderRadius: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', fontFamily: CAIRO }}>معاينة قيد</span>
+                                                    <span style={{ fontSize: '10px', fontWeight: 900, color: '#f59e0b', padding: '2px 8px', borderRadius: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', fontFamily: CAIRO }}>{t('معاينة قيد')}</span>
                                                 )}
                                             </td>
                                         </tr>
@@ -248,32 +262,32 @@ export default function DepreciationPage() {
                 ) : calculated ? (
                     <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <CheckCircle2 size={48} style={{ color: '#10b981', opacity: 0.3, margin: '0 auto 16px' }} />
-                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد أصول تستوجب الإهلاك للفترة الحالية</h3>
-                        <p style={{ color: C.textMuted, fontSize: '14px', fontFamily: CAIRO }}>تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة</p>
+                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
+                        <p style={{ color: C.textMuted, fontSize: '14px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
                     </div>
                 ) : (
                     <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '20px', border: `1px dashed ${C.border}` }}>
                         <ArrowRightLeft size={48} style={{ color: C.border, margin: '0 auto 16px', opacity: 0.5 }} />
-                        <h2 style={{ fontSize: '15px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها</h2>
-                        <p style={{ marginTop: '6px', color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, opacity: 0.8 }}>سيتم عرض النتائج هنا للمراجعة والموافقة قبل الترحيل لمجمع الإهلاك</p>
+                        <h2 style={{ fontSize: '15px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>{t('قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها')}</h2>
+                        <p style={{ marginTop: '6px', color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, opacity: 0.8 }}>{t('سيتم عرض النتائج هنا للمراجعة والموافقة قبل الترحيل لمجمع الإهلاك')}</p>
                     </div>
                 )}
 
                 {/* Confirm Post Modal */}
-                <AppModal show={showConfirm} onClose={() => setShowConfirm(false)} title="تأكيد ترحيل القيود للدفاتر" icon={TrendingDown}>
+                <AppModal show={showConfirm} onClose={() => setShowConfirm(false)} title={t("تأكيد ترحيل القيود للدفاتر")} icon={TrendingDown}>
                     <div style={{ textAlign: 'center' }}>
                         <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'rgba(59,130,246,0.1)', color: C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                             <Calculator size={32} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>هل أنت متأكد من تسجيل هذه القيود؟</h3>
+                        <h3 style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من تسجيل هذه القيود؟')}</h3>
                         <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: `1px solid ${C.border}`, marginBottom: '24px', textAlign: 'start' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
-                                <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>عدد الأصول المشمولة:</span>
-                                <span style={{ color: C.textPrimary, fontWeight: 900 }}>{pendingCount} أصل</span>
+                                <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('عدد الأصول المشمولة')}:</span>
+                                <span style={{ color: C.textPrimary, fontWeight: 900 }}>{pendingCount} {t('أصل')}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
-                                <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>إجمالي مبلغ مصروف الإهلاك:</span>
-                                <span style={{ color: C.danger, fontWeight: 900, fontFamily: INTER }}>{fmt(lines.filter(l => !l.alreadyDone).reduce((s, d) => s + d.depAmount, 0))} ج.م</span>
+                                <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي مبلغ مصروف الإهلاك')}:</span>
+                                <span style={{ color: C.danger, fontWeight: 900, fontFamily: INTER }}>{fmt(lines.filter(l => !l.alreadyDone).reduce((s, d) => s + d.depAmount, 0))} {t('ج.م')}</span>
                             </div>
                             <div style={{ fontSize: '11px', color: C.textMuted, borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '10px', direction: 'ltr' }}>
                                 DEBIT: Dep. Expense Account (5xxx) <br/>
@@ -282,9 +296,9 @@ export default function DepreciationPage() {
                         </div>
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={handleRegister} disabled={registering} style={{ ...BTN_PRIMARY(false, registering), flex: 1.5, height: '48px' }}>
-                                {registering ? 'جاري الترحيل للدفاتر...' : 'تأكيد الترحيل النهائي'}
+                                {registering ? t('جاري الترحيل للدفاتر...') : t('تأكيد الترحيل النهائي')}
                             </button>
-                            <button onClick={() => setShowConfirm(false)} style={{ flex: 1, height: '48px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>تراجع</button>
+                            <button onClick={() => setShowConfirm(false)} style={{ flex: 1, height: '48px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>
                         </div>
                     </div>
                 </AppModal>

@@ -162,11 +162,11 @@ export default function ItemsPage() {
                 setShowModal(false);
             } else {
                 const errorData = await res.json();
-                alert(`Failed to save item: ${errorData.message || res.statusText}`);
+                alert(t('فشل حفظ الصنف') + ': ' + (errorData.message || res.statusText));
             }
         } catch (err) {
             console.error(err);
-            alert("An unexpected error occurred while saving the item.");
+            alert(t("An unexpected error occurred while saving the item."));
         }
         finally { setIsSubmitting(false); }
     };
@@ -221,11 +221,11 @@ export default function ItemsPage() {
                 setDeleteItem(null);
             } else {
                 const errorData = await res.json();
-                alert(`فشل الحذف: ${errorData.error || errorData.message || res.statusText}`);
+                alert(t('فشل الحذف') + ': ' + (errorData.error || errorData.message || res.statusText));
             }
         } catch (err) {
             console.error(err);
-            alert("حدث خطأ غير متوقع أثناء محاولة حذف الصنف.");
+            alert(t("حدث خطأ غير متوقع أثناء محاولة حذف الصنف."));
         }
         finally { setIsSubmitting(false); }
     };
@@ -351,7 +351,7 @@ export default function ItemsPage() {
                                 onChange={v => setWarehouseFilter(v)}
                                 style={{ height: '42px', borderRadius: '10px' }}
                                 options={[
-                                    { value: 'all', label: 'جميع المخازن', icon: MapPin },
+                                    { value: 'all', label: t('جميع المخازن'), icon: MapPin },
                                     ...warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))
                                 ]}
                             />
@@ -402,7 +402,7 @@ export default function ItemsPage() {
                                                 )}
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, textAlign: 'center' }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || 'قطعة'}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, textAlign: 'center' }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textPrimary, textAlign: 'center' }}>{fmt(item.costPrice)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
@@ -417,7 +417,7 @@ export default function ItemsPage() {
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
                                                         {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                            <button onClick={() => { setPrintBarcodeItem(item); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title="طباعة باركود">
+                                                            <button onClick={() => { setPrintBarcodeItem(item); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title={t("طباعة باركود")}>
                                                                 <Printer size={TABLE_STYLE.actionIconSize} />
                                                             </button>
                                                         )}
@@ -599,10 +599,10 @@ export default function ItemsPage() {
                     </form>
                 </AppModal>
 
-                <AppModal show={!!deleteItem} onClose={() => setDeleteItem(null)} isDelete={true} title="تأكيد حذف الصنف" itemName={deleteItem?.name} onConfirm={confirmDelete} isSubmitting={isSubmitting} />
+                <AppModal show={!!deleteItem} onClose={() => setDeleteItem(null)} isDelete={true} title={t("تأكيد حذف الصنف")} itemName={deleteItem?.name} onConfirm={confirmDelete} isSubmitting={isSubmitting} />
 
                 {/* Print Barcode Modal */}
-                <AppModal show={!!printBarcodeItem} onClose={() => setPrintBarcodeItem(null)} title="طباعة باركود الصنف" icon={Printer} maxWidth="360px">
+                <AppModal show={!!printBarcodeItem} onClose={() => setPrintBarcodeItem(null)} title={t("طباعة باركود الصنف")} icon={Printer} maxWidth="360px">
                     {printBarcodeItem && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
                             <div id="barcode-svg-container" style={{ display: 'none' }}>
@@ -614,7 +614,7 @@ export default function ItemsPage() {
                             </div>
 
                             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <label style={{ ...LS, textAlign: 'center' }}>عدد النسخ المراد طباعتها</label>
+                                <label style={{ ...LS, textAlign: 'center' }}>{t('عدد النسخ المراد طباعتها')}</label>
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button onClick={() => setBarcodeCopies(c => Math.max(1, c - 1))} style={{ width: '48px', height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, cursor: 'pointer', fontSize: '24px', fontWeight: 'bold' }}>-</button>
                                     <input type="number" value={barcodeCopies} onChange={e => setBarcodeCopies(parseInt(e.target.value) || 1)} style={{ ...IS, height: '48px', flex: 1, textAlign: 'center', fontSize: '18px', fontWeight: 'bold' }} />
@@ -629,12 +629,12 @@ export default function ItemsPage() {
                                 const svgElement = svgContainer ? svgContainer.innerHTML : '';
                                 const barcodeName = printBarcodeItem.name;
 
-                                let htmlString = `<!DOCTYPE html><html dir="${isRtl ? 'rtl' : 'ltr'}"><head><title>طباعة باركود</title>`;
-                                htmlString += '<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }';
-                                htmlString += '.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }';
-                                htmlString += '.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }';
-                                htmlString += 'svg { max-width: 100%; height: auto; }</style></head>';
-                                htmlString += '<body onload="setTimeout(() => { window.print(); window.close(); }, 300)">';
+                                let htmlString = `<!DOCTYPE html><html dir="${isRtl ? 'rtl' : 'ltr'}"><head><title>${t('طباعة باركود')}</title>`;
+                                htmlString += `<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }`;
+                                htmlString += `.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }`;
+                                htmlString += `.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }`;
+                                htmlString += `svg { max-width: 100%; height: auto; }</style></head>`;
+                                htmlString += `<body onload="setTimeout(() => { window.print(); window.close(); }, 300)">`;
 
                                 for (let i = 0; i < barcodeCopies; i++) {
                                     htmlString += '<div class="barcode-ticket">';
@@ -649,39 +649,39 @@ export default function ItemsPage() {
                                 printWindow.document.close();
                             }} style={{ ...BTN_PRIMARY(false, false), width: '100%', height: '48px', marginTop: '10px' }}>
                                 <Printer size={20} style={{ marginInlineStart: '10px' }} />
-                                طباعة الباركود
+                                {t('طباعة الباركود')}
                             </button>
                         </div>
                     )}
                 </AppModal>
 
                 {/* Quick Add Modals */}
-                <AppModal show={showAddCat} onClose={() => setShowAddCat(false)} title="إضافة تصنيف جديد" icon={Boxes} maxWidth="400px">
+                <AppModal show={showAddCat} onClose={() => setShowAddCat(false)} title={t("إضافة تصنيف جديد")} icon={Boxes} maxWidth="400px">
                     <form onSubmit={handleCreateCategory} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div>
-                            <label style={LS}>اسم التصنيف الجديد</label>
-                            <input type="text" value={newCatName} onChange={e => setNewCatName(e.target.value)} placeholder="مثال: زيوت، فلاتر..." style={IS} autoFocus onFocus={focusIn} onBlur={focusOut} />
+                            <label style={LS}>{t('اسم التصنيف الجديد')}</label>
+                            <input type="text" value={newCatName} onChange={e => setNewCatName(e.target.value)} placeholder={t("مثال: زيوت، فلاتر...")} style={IS} autoFocus onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <button type="submit" disabled={isSavingSub} style={{ ...BTN_PRIMARY(!newCatName.trim(), isSavingSub), flex: 1, height: '44px' }}>
-                                {isSavingSub ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ التصنيف'}
+                                {isSavingSub ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ التصنيف')}
                             </button>
-                            <button type="button" onClick={() => setShowAddCat(false)} style={{ border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, borderRadius: '10px', padding: '0 20px', cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                            <button type="button" onClick={() => setShowAddCat(false)} style={{ border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, borderRadius: '10px', padding: '0 20px', cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>
 
-                <AppModal show={showAddUnit} onClose={() => setShowAddUnit(false)} title="إضافة وحدة قياس جديدة" icon={Package} maxWidth="400px">
+                <AppModal show={showAddUnit} onClose={() => setShowAddUnit(false)} title={t("إضافة وحدة قياس جديدة")} icon={Package} maxWidth="400px">
                     <form onSubmit={handleCreateUnit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div>
-                            <label style={LS}>اسم الوحدة الجديدة</label>
-                            <input type="text" value={newUnitName} onChange={e => setNewUnitName(e.target.value)} placeholder="مثال: لتر، جالون، طقم..." style={IS} autoFocus onFocus={focusIn} onBlur={focusOut} />
+                            <label style={LS}>{t('اسم الوحدة الجديدة')}</label>
+                            <input type="text" value={newUnitName} onChange={e => setNewUnitName(e.target.value)} placeholder={t("مثال: لتر، جالون، طقم...")} style={IS} autoFocus onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <button type="submit" disabled={isSavingSub} style={{ ...BTN_PRIMARY(!newUnitName.trim(), isSavingSub), flex: 1, height: '44px' }}>
-                                {isSavingSub ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ الوحدة'}
+                                {isSavingSub ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ الوحدة')}
                             </button>
-                            <button type="button" onClick={() => setShowAddUnit(false)} style={{ border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, borderRadius: '10px', padding: '0 20px', cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                            <button type="button" onClick={() => setShowAddUnit(false)} style={{ border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, borderRadius: '10px', padding: '0 20px', cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

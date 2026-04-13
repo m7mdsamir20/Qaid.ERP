@@ -76,7 +76,7 @@ export default function CollectionReportPage() {
                     title="تقرير تحصيل الأقساط"
                     subtitle="متابعة المبالغ التي تم تحصيلها من العملاء خلال فترة زمنية"
                     backTab="installments"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
                 <div className="no-print" style={{ 

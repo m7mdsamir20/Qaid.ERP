@@ -41,12 +41,12 @@ interface Deduction {
     employee: Employee;
 }
 
-const formatCurrency = (code: string) => {
-    if (!code) return 'ج.م';
+const formatCurrency = (code: string, t: any) => {
+    if (!code) return t('ج.م');
     const mapping: {[key: string]: string} = {
-        'EGP': 'ج.م', 'SAR': 'ر.س', 'USD': 'دولار', 'EUR': 'يورو',
-        'AED': 'د.إ', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب',
-        'OMR': 'ر.ع', 'LYD': 'د.ل', 'JOD': 'د.أ', 'SYP': 'ل.س', 'YER': 'ر.ي'
+        'EGP': t('ج.م'), 'SAR': t('ر.س'), 'USD': t('دولار'), 'EUR': t('يورو'),
+        'AED': t('د.إ'), 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'),
+        'OMR': t('ر.ع'), 'LYD': t('د.ل'), 'JOD': t('د.أ'), 'SYP': t('ل.س'), 'YER': t('ر.ي')
     };
     return mapping[code.toUpperCase()] || code;
 };
@@ -94,7 +94,7 @@ export default function DeductionsPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.employeeId) {
-            alert('يرجى اختيار الموظف أولاً');
+            alert(t('يرجى اختيار الموظف أولاً'));
             return;
         }
         setIsSaving(true);
@@ -115,7 +115,7 @@ export default function DeductionsPage() {
                 fetchAll();
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل في الحفظ');
+                alert(data.error || t('فشل في الحفظ'));
             }
         } finally {
             setIsSaving(false);
@@ -131,7 +131,7 @@ export default function DeductionsPage() {
                 body: JSON.stringify({ status: newStatus }),
             });
             if (res.ok) fetchAll();
-            else alert('فشل في تحديث الحالة');
+            else alert(t('فشل في تحديث الحالة'));
         } finally {
             setIsActionLoading(null);
         }
@@ -149,7 +149,7 @@ export default function DeductionsPage() {
             if (res.ok) {
                 setDeleteItem(null);
                 fetchAll();
-            } else alert('فشل في حذف الخصم');
+            } else alert(t('فشل في حذف الخصم'));
         } finally {
             setIsActionLoading(null);
         }
@@ -170,11 +170,11 @@ export default function DeductionsPage() {
                 
                 {/* Header Section */}
                 <PageHeader
-                    title="جزاءات وخصومات الموظفين"
-                    subtitle="تسجيل الخصومات المباشرة والجزاءات الإدارية لخصمها من الراتب"
+                    title={t("جزاءات وخصومات الموظفين")}
+                    subtitle={t("تسجيل الخصومات المباشرة والجزاءات الإدارية لخصمها من الراتب")}
                     icon={ShieldAlert}
                     primaryButton={{
-                        label: "إضافة خصم جديد",
+                        label: t("إضافة خصم جديد"),
                         onClick: () => setIsModalOpen(true),
                         icon: Plus
                     }}
@@ -184,9 +184,9 @@ export default function DeductionsPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي الخصومات المطبقة', val: totalDeductions, color: C.danger, icon: TrendingUp },
-                            { label: 'خصومات لم ترحل للرواتب', val: pendingDeductions, color: C.warning, icon: Clock },
-                            { label: 'عدد العمليات', val: deductions.length, color: C.primary, icon: UsersIcon, suffix: 'عملية' }
+                            { label: t('إجمالي الخصومات المطبقة'), val: totalDeductions, color: C.danger, icon: TrendingUp },
+                            { label: t('خصومات لم ترحل للرواتب'), val: pendingDeductions, color: C.warning, icon: Clock },
+                            { label: t('عدد العمليات'), val: deductions.length, color: C.primary, icon: UsersIcon, suffix: t('عملية') }
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -199,7 +199,7 @@ export default function DeductionsPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: INTER }} dir="ltr">
-                                        {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>}
+                                        {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>}
                                         <span>{s.val.toLocaleString('en-US')}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -217,7 +217,7 @@ export default function DeductionsPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder="ابحث باسم الموظف أو الكود أو السبب..."
+                            placeholder={t("ابحث باسم الموظف أو الكود أو السبب...")}
                             style={{ ...SEARCH_STYLE.input, height: '40px', borderRadius: '12px' }}
                             onFocus={focusIn}
                             onBlur={focusOut}
@@ -232,25 +232,25 @@ export default function DeductionsPage() {
                     {loading ? (
                         <div style={{ padding: '80px', textAlign: 'center', color: '#64748b' }}>
                             <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
-                            جاري التحميل...
+                            {t('جاري التحميل...')}
                         </div>
                     ) : filteredDeductions.length === 0 ? (
                         <div style={{ padding: '100px 20px', textAlign: 'center', color: '#475569' }}>
                             <ShieldAlert size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
-                            <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>لا توجد خصومات مسجلة</h3>
-                            <p style={{ fontSize: '14px', margin: 0 }}>ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"</p>
+                            <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{t('لا توجد خصومات مسجلة')}</h3>
+                            <p style={{ fontSize: '14px', margin: 0 }}>{t('ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(false)}>تاريخ الخصم</th>
-                                        <th style={TABLE_STYLE.th(false)}>الموظف</th>
-                                        <th style={TABLE_STYLE.th(false)}>المبلغ</th>
-                                        <th style={TABLE_STYLE.th(false)}>سبب الخصم</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('تاريخ الخصم')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المبلغ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('سبب الخصم')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -258,7 +258,7 @@ export default function DeductionsPage() {
                                         <tr key={ded.id} style={TABLE_STYLE.row(idx === filteredDeductions.length - 1)}>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: INTER }} dir="ltr">
-                                                    {new Date(ded.date).toLocaleDateString('en-GB')}
+                                                    {new Date(ded.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
@@ -269,7 +269,7 @@ export default function DeductionsPage() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: INTER }} dir="ltr">
-                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
+                                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{ded.amount.toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
@@ -277,11 +277,11 @@ export default function DeductionsPage() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 {ded.status === 'pending' ? (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
-                                                        <Clock size={12} /> قيد المراجعة
+                                                        <Clock size={12} /> {t('قيد المراجعة')}
                                                     </span>
                                                 ) : (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
-                                                        تم الاعتماد <CheckCircle2 size={12} />
+                                                        {t('تم الاعتماد')} <CheckCircle2 size={12} />
                                                     </span>
                                                 )}
                                             </td>
@@ -292,6 +292,7 @@ export default function DeductionsPage() {
                                                             onClick={() => handleUpdateStatus(ded.id, 'deducted')}
                                                             disabled={isActionLoading === ded.id}
                                                             style={TABLE_STYLE.actionBtn('#10b981')}
+                                                            title={t('اعتماد')}
                                                         >
                                                             {isActionLoading === ded.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={13} />}
                                                         </button>
@@ -301,6 +302,7 @@ export default function DeductionsPage() {
                                                             onClick={() => handleDelete(ded)}
                                                             disabled={isActionLoading === ded.id}
                                                             style={TABLE_STYLE.actionBtn(C.danger)}
+                                                            title={t('حذف')}
                                                         >
                                                             {isActionLoading === ded.id ? <Loader2 size={13} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Trash2 size={13} />}
                                                         </button>
@@ -319,44 +321,44 @@ export default function DeductionsPage() {
                 <AppModal
                     show={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
-                    title="تسجيل خصم / جزاء على موظف"
+                    title={t("تسجيل خصم / جزاء على موظف")}
                     icon={ShieldAlert}
                 >
                     <form onSubmit={handleSubmit}>
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={LS}>الموظف <span style={{ color: C.danger }}>*</span></label>
+                            <label style={LS}>{t('الموظف')} <span style={{ color: C.danger }}>*</span></label>
                             <CustomSelect
                                 value={formData.employeeId}
                                 onChange={v => setFormData({ ...formData, employeeId: v })}
                                 icon={UsersIcon}
                                 style={{ background: C.inputBg }}
-                                placeholder="اختر الموظف..."
+                                placeholder={t("اختر الموظف...")}
                                 options={employees.map(emp => ({ value: emp.id, label: `${emp.code} - ${emp.name}` }))}
                             />
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                             <div>
-                                <label style={LS}>تاريخ الخصم</label>
+                                <label style={LS}>{t('تاريخ الخصم')}</label>
                                 <input type="date" style={IS} required value={formData.date} onChange={e => setFormData({ ...formData, date: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={LS}>المبلغ</label>
+                                <label style={LS}>{t('المبلغ')}</label>
                                 <input type="number" step="0.01" style={IS} required value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>ملاحظات</label>
-                            <textarea placeholder="اذكر سبب الخصم (تأخير، غياب، مخالفة...)" style={{ ...IS, height: '60px', padding: '12px', resize: 'none' }} value={formData.reason} onChange={e => setFormData({ ...formData, reason: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+                            <label style={LS}>{t('ملاحظات')}</label>
+                            <textarea placeholder={t("اذكر سبب الخصم (تأخير، غياب، مخالفة...)")} style={{ ...IS, height: '60px', padding: '12px', resize: 'none' }} value={formData.reason} onChange={e => setFormData({ ...formData, reason: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), flex: 1, height: '46px' }}>
-                                {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : 'تسجيل الخصم والاعتماد'}
+                                {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : t('تسجيل الخصم والاعتماد')}
                             </button>
                             <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                         </div>
                     </form>
@@ -366,8 +368,8 @@ export default function DeductionsPage() {
                     show={!!deleteItem}
                     onClose={() => setDeleteItem(null)}
                     onConfirm={handleConfirmDelete}
-                    title="تأكيد حذف الخصم"
-                    itemName={`خصم بقيمة ${deleteItem?.amount.toLocaleString()} للموظف ${deleteItem?.employee.name}`}
+                    title={t("تأكيد حذف الخصم")}
+                    itemName={`${t('خصم بقيمة')} ${deleteItem?.amount.toLocaleString()} ${t('للموظف')} ${deleteItem?.employee.name}`}
                     isDelete={true}
                     isSubmitting={isActionLoading === deleteItem?.id}
                 />

@@ -19,16 +19,17 @@ interface Account {
     level: number;
 }
 
-const accountTypes = [
-    { value: 'asset', label: 'أصول', nature: 'debit', color: '#10b981' },
-    { value: 'liability', label: 'خصوم', nature: 'credit', color: '#f87171' },
-    { value: 'equity', label: 'حقوق ملكية', nature: 'credit', color: '#a78bfa' },
-    { value: 'revenue', label: 'إيرادات', nature: 'credit', color: '#60a5fa' },
-    { value: 'expense', label: 'مصروفات', nature: 'debit', color: '#fb923c' },
-];
-
 export default function NewAccountPage() {
     const { lang, t } = useTranslation();
+
+    const accountTypes = [
+        { value: 'asset', label: t('أصول'), nature: 'debit', color: '#10b981' },
+        { value: 'liability', label: t('خصوم'), nature: 'credit', color: '#f87171' },
+        { value: 'equity', label: t('حقوق ملكية'), nature: 'credit', color: '#a78bfa' },
+        { value: 'revenue', label: t('إيرادات'), nature: 'credit', color: '#60a5fa' },
+        { value: 'expense', label: t('مصروفات'), nature: 'debit', color: '#fb923c' },
+    ];
+
     const isRtl = lang === 'ar';
     const router = useRouter();
     const [accounts, setAccounts] = useState<Account[]>([]);
@@ -108,11 +109,11 @@ export default function NewAccountPage() {
                 router.push('/accounts');
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل الحفظ');
+                alert(d.error || t('فشل الحفظ'));
                 setSaving(false);
             }
         } catch {
-            alert('فشل الاتصال');
+            alert(t('فشل الاتصال'));
             setSaving(false);
         }
     };
@@ -121,7 +122,7 @@ export default function NewAccountPage() {
         display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#94a3b8', textAlign: 'start',
     };
     const IS: React.CSSProperties = {
-        width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: 'rtl',
+        width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: isRtl ? 'rtl' : 'ltr',
         borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)',
         background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '14px',
         fontWeight: 500, outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s', boxSizing: 'border-box',
@@ -132,7 +133,7 @@ export default function NewAccountPage() {
             <DashboardLayout>
                 <div style={{ textAlign: 'center', padding: '60px', color: '#475569' }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', margin: '0 auto 12px', display: 'block' }} />
-                    جاري التحميل...
+                    {t('جاري التحميل...')}
                 </div>
             </DashboardLayout>
         );
@@ -141,7 +142,7 @@ export default function NewAccountPage() {
     return (
         <DashboardLayout>
             {/* Header */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{
                         width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)',
@@ -150,23 +151,24 @@ export default function NewAccountPage() {
                         <BookOpen size={20} />
                     </div>
                     <div>
-                        <h1 className="page-title">إضافة حساب جديد</h1>
-                        <p className="page-subtitle">إنشاء حساب جديد في الدليل المحاسبي</p>
+                        <h1 className="page-title">{t('إضافة حساب جديد')}</h1>
+                        <p className="page-subtitle">{t('إنشاء حساب جديد في الدليل المحاسبي')}</p>
                     </div>
                 </div>
 
                 <button
                     onClick={() => router.push('/accounts')}
                     style={{
+                        paddingInlineStart: '16px', paddingInlineEnd: '16px',
                         display: 'flex', alignItems: 'center', gap: '8px',
                         background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
-                        color: '#94a3b8', padding: '8px 16px', borderRadius: '8px',
+                        color: '#94a3b8', height: '38px', borderRadius: '8px',
                         fontSize: '13px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
                     }}
                     onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#e2e8f0'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}
                 >
-                    <ArrowRight size={16} /> العودة
+                    <ArrowRight size={16} style={{ transform: isRtl ? 'rotate(180deg)' : 'none' }} /> {t('العودة')}
                 </button>
             </div>
 
@@ -174,7 +176,7 @@ export default function NewAccountPage() {
                 <form onSubmit={handleSubmit} dir={isRtl ? 'rtl' : 'ltr'}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
                         <div>
-                            <label style={LS}>كود الحساب <span style={{ color: '#f87171' }}>*</span></label>
+                            <label style={LS}>{t('كود الحساب')} <span style={{ color: '#f87171' }}>*</span></label>
                             <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
                                 <input
                                     type="text" readOnly disabled value={form.code} dir="ltr"
@@ -182,14 +184,14 @@ export default function NewAccountPage() {
                                 />
                                 <Lock size={15} style={{ position: 'absolute', insetInlineStart: '14px', color: '#334155', pointerEvents: 'none' }} />
                             </div>
-                            <p style={{ fontSize: '11px', color: '#475569', marginTop: '6px' }}>يتم توليد الكود تلقائياً بناءً على الحساب الأب ونوع الحساب</p>
+                            <p style={{ fontSize: '11px', color: '#475569', marginTop: '6px' }}>{t('يتم توليد الكود تلقائياً بناءً على الحساب الأب ونوع الحساب')}</p>
                         </div>
 
                         <div>
-                            <label style={LS}>اسم الحساب <span style={{ color: '#f87171' }}>*</span></label>
+                            <label style={LS}>{t('اسم الحساب')} <span style={{ color: '#f87171' }}>*</span></label>
                             <input
                                 required type="text"
-                                placeholder="مثال: النقدية، البنك الأهلي، العملاء..."
+                                placeholder={t('مثال: النقدية، البنك الأهلي، العملاء...')}
                                 value={form.name}
                                 onChange={e => setForm({ ...form, name: e.target.value })}
                                 style={IS}
@@ -200,7 +202,7 @@ export default function NewAccountPage() {
                     </div>
 
                     <div style={{ marginBottom: '24px' }}>
-                        <label style={LS}>تصنيف نوع الحساب <span style={{ color: '#f87171' }}>*</span></label>
+                        <label style={LS}>{t('تصنيف نوع الحساب')} <span style={{ color: '#f87171' }}>*</span></label>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px' }}>
                             {accountTypes.map(opt => (
                                 <button key={opt.value} type="button"
@@ -213,7 +215,7 @@ export default function NewAccountPage() {
                                     }}>
                                     <div style={{ fontSize: '14px', color: form.type === opt.value ? opt.color : '#64748b', fontWeight: 800 }}>{opt.label}</div>
                                     <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px', fontWeight: 600 }}>
-                                        {opt.nature === 'debit' ? 'مدين' : 'دائن'}
+                                        {opt.nature === 'debit' ? t('مدين') : t('دائن')}
                                     </div>
                                 </button>
                             ))}
@@ -222,11 +224,11 @@ export default function NewAccountPage() {
 
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
                         <div>
-                            <label style={LS}>نوع التصنيف المحاسبي</label>
+                            <label style={LS}>{t('نوع التصنيف المحاسبي')}</label>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                 {[
-                                    { val: 'summary', label: 'حساب إجمالي', sub: 'للتجميع والتقارير', color: '#a78bfa' },
-                                    { val: 'detail', label: 'حساب تحليلي', sub: 'يقبل قيود يومية', color: '#10b981' },
+                                    { val: 'summary', label: t('حساب إجمالي'), sub: t('للتجميع والتقارير'), color: '#a78bfa' },
+                                    { val: 'detail', label: t('حساب تحليلي'), sub: t('يقبل قيود يومية'), color: '#10b981' },
                                 ].map(opt => (
                                     <button key={opt.val} type="button"
                                         onClick={() => setForm(f => ({ ...f, accountCategory: opt.val as any }))}
@@ -244,12 +246,12 @@ export default function NewAccountPage() {
                         </div>
 
                         <div>
-                            <label style={LS}>الحساب الرئيسي (الأب)</label>
+                            <label style={LS}>{t('الحساب الرئيسي (الأب)')}</label>
                             <CustomSelect
                                 value={form.parentId}
                                 onChange={v => setForm(f => ({ ...f, parentId: v }))}
                                 icon={FolderOpen}
-                                placeholder="-- حساب رئيسي (مستوى 1) --"
+                                placeholder={t('-- حساب رئيسي (مستوى 1) --')}
                                 options={accounts
                                     .filter(a => a.accountCategory !== 'detail')
                                     .map(a => ({
@@ -259,11 +261,11 @@ export default function NewAccountPage() {
                                     }))}
                                 style={{ minWidth: '100%' }}
                             />
-                            <p style={{ fontSize: '11px', color: '#475569', marginTop: '6px' }}>اتركه فارغاً لإنشاء حساب رئيسي في المستوى الأول</p>
+                            <p style={{ fontSize: '11px', color: '#475569', marginTop: '6px' }}>{t('اتركه فارغاً لإنشاء حساب رئيسي في المستوى الأول')}</p>
                         </div>
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'row-reverse', gap: '12px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ display: 'flex', flexDirection: isRtl ? 'row' : 'row-reverse', gap: '12px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
                         <button
                             type="submit"
                             disabled={saving}
@@ -276,7 +278,7 @@ export default function NewAccountPage() {
                                 boxShadow: saving ? 'none' : '0 4px 14px rgba(59,130,246,0.3)', transition: 'all 0.15s'
                             }}
                         >
-                            {saving ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={18} /> إضافة الحساب للدليل</>}
+                            {saving ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={18} /> {t('إضافة الحساب للدليل')}</>}
                         </button>
                         <button
                             type="button"
@@ -287,7 +289,7 @@ export default function NewAccountPage() {
                                 color: '#94a3b8', fontSize: '15px', fontWeight: 600, cursor: 'pointer'
                             }}
                         >
-                            إلغاء
+                            {t('إلغاء')}
                         </button>
                     </div>
                 </form>
@@ -295,7 +297,7 @@ export default function NewAccountPage() {
 
             {/* Spacer for dropdown */}
             <div style={{ height: '300px' }}></div>
-            <style>{`@keyframes spin { to { transform:rotate(360deg); } }`}</style>
+            <style jsx>{`@keyframes spin { to { transform:rotate(360deg); } }`}</style>
         </DashboardLayout>
     );
 }

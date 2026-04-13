@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
+import { formatAddressForInvoice } from '@/lib/addressConfig';
 
 interface ReportHeaderProps {
     title: string;
@@ -33,10 +34,123 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         else router.push('/reports');
     };
 
+    const openCleanPrintWindow = () => {
+        // ── بناء header الشركة ──
+        const companyName = co.companyName || co.name || '';
+        const companyNameEn = co.nameEn || '';
+        const phone = co.phone || '';
+        const taxNumber = co.taxNumber || '';
+        const cr = co.commercialRegister || '';
+        const logo = co.logo || co.companyLogo || '';
+        const countryCode = co.countryCode || 'EG';
+        const addrLines = formatAddressForInvoice(co.address, countryCode);
+        const reportTitle = printTitle || title;
+        const reportDate = printDate || new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+
+        // ── استخراج المحتوى من الـ DOM ──
+        // 1) كروت الإحصاءات (print-include)
+        const includeEls = Array.from(document.querySelectorAll('[data-print-include]'));
+        const includeHTML = includeEls.map(el => el.outerHTML).join('');
+
+        // 2) الجداول - نسخ نظيفة
+        const tables = Array.from(document.querySelectorAll('table'));
+        const tablesHTML = tables.map(tbl => {
+            // نسخة من الجدول بدون inline colors
+            return tbl.outerHTML;
+        }).join('');
+
+        const html = `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<title>${reportTitle}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;padding:8mm 10mm;font-size:12px}
+
+/* ── رأس التقرير ── */
+.rpt-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:2px solid #111;margin-bottom:18px}
+.rpt-co{flex:1;text-align:right}
+.rpt-co-name{font-size:18px;font-weight:900;color:#111;margin-bottom:3px}
+.rpt-co-en{font-size:14px;font-weight:700;color:#555;margin-bottom:3px;font-family:sans-serif}
+.rpt-co-line{font-size:10.5px;color:#444;line-height:1.6}
+.rpt-center{flex:1;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.rpt-title-box{border:1.5px solid #ccc;padding:8px 30px;border-radius:10px;background:#f9f9f9;display:inline-block}
+.rpt-title{font-size:18px;font-weight:900;color:#111}
+.rpt-date{font-size:12px;color:#555;font-weight:700}
+.rpt-logo{flex:1;display:flex;justify-content:flex-start;align-items:flex-start}
+.rpt-logo img{max-height:80px;max-width:140px;object-fit:contain}
+
+/* ── كروت الإحصاء ── */
+[data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+[data-print-include]>div{flex:1;min-width:120px;padding:10px 14px!important;border:1px solid #e0e0e0!important;border-radius:10px!important;background:#fff!important;color:#111!important}
+[data-print-include] span,[data-print-include] p,[data-print-include] div{color:#111!important;background:transparent!important;border:none!important;box-shadow:none!important}
+
+/* ── الجدول ── */
+table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-top:0}
+thead{background:#f0f0f0}
+thead tr{background:#f0f0f0!important}
+th{padding:8px 10px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1px solid #999;background:#f0f0f0}
+td{padding:7px 10px;font-size:11.5px;color:#111;text-align:center;border:1px solid #ccc;background:#fff}
+tfoot tr{background:#f5f5f5}
+tfoot td{font-weight:900;color:#111;background:#f5f5f5;border:1.5px solid #333}
+/* إزالة خلفيات الـ badge spans */
+td span{background:transparent!important;border:none!important;padding:0!important;color:#111!important;font-weight:700!important}
+/* تلوين الأرقام المالية */
+td[data-type="debit"]{color:#15803d!important;font-weight:900!important}
+td[data-type="credit"]{color:#dc2626!important;font-weight:900!important}
+td[data-type="balance"]{font-weight:900!important}
+
+@media print{
+    @page{margin:6mm 8mm;size:A4}
+    body{padding:0}
+    thead{display:table-header-group}
+    tr{page-break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="rpt-header">
+    <div class="rpt-co">
+        <div class="rpt-co-name">${companyName}</div>
+        ${companyNameEn ? `<div class="rpt-co-en">${companyNameEn}</div>` : ''}
+        ${addrLines.map(l => `<div class="rpt-co-line">${l}</div>`).join('')}
+        ${phone ? `<div class="rpt-co-line">${phone}</div>` : ''}
+        ${taxNumber ? `<div class="rpt-co-line">الرقم الضريبي: <strong>${taxNumber}</strong></div>` : ''}
+        ${cr ? `<div class="rpt-co-line">السجل التجاري: <strong>${cr}</strong></div>` : ''}
+    </div>
+    <div class="rpt-center">
+        <div class="rpt-title-box">
+            <div class="rpt-title">${reportTitle}</div>
+        </div>
+        ${printCode ? `<div class="rpt-date">${printCode}</div>` : ''}
+        <div class="rpt-date">${reportDate}</div>
+    </div>
+    <div class="rpt-logo">
+        ${logo ? `<img src="${logo}" alt="logo"/>` : ''}
+    </div>
+</div>
+
+${includeHTML}
+${tablesHTML}
+
+</body>
+</html>`;
+
+        const win = window.open('', '_blank', 'width=1000,height=750');
+        if (win) {
+            win.document.write(html);
+            win.document.close();
+            win.focus();
+            setTimeout(() => { win.print(); }, 900);
+        }
+    };
+
     return (
         <div style={{ marginBottom: THEME.header.mb }}>
-            {/* ── UI Header (Hidden on Print) ── */}
-            <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '300px' }}>
                     <button
                         onClick={handleBack}
@@ -73,7 +187,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         </button>
                     )}
                     <button
-                        onClick={onExportPdf || (() => window.print())}
+                        onClick={onExportPdf || openCleanPrintWindow}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
                             borderRadius: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa',
@@ -86,7 +200,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                         <FileDown size={15} /> حفظ PDF
                     </button>
                     <button
-                        onClick={() => window.print()}
+                        onClick={openCleanPrintWindow}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
                             borderRadius: '10px', background: 'rgba(255, 255, 255, 0.05)', color: '#f8fafc',
@@ -100,158 +214,6 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
                     </button>
                 </div>
             </div>
-
-            {/* ── Professional Print Header (Visible only on Print) ── */}
-            <div className="print-only" dir="rtl" style={{
-                marginBottom: '40px',
-                paddingBottom: '20px',
-                borderBottom: '1px solid #eee',
-                paddingTop: '10px'
-            }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-
-                    {/* Visual Right: Info (1st in RTL) */}
-                    <div style={{ textAlign: 'start', flex: 1 }}>
-                        <h2 style={{ margin: '0 0 6px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{co.companyName || co.name}</h2>
-                        <div style={{ fontSize: '11.5px', color: '#333', display: 'flex', flexDirection: 'column', gap: '3px', fontFamily: CAIRO, fontWeight: 600 }}>
-                            {co.address && <div style={{ color: '#555' }}>{co.address}</div>}
-                            {co.phone && <div dir="ltr" style={{ textAlign: 'start', color: '#555' }}>{co.phone}</div>}
-                            {co.taxNumber && (
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                    <span style={{ color: '#777' }}>الرقم الضريبي:</span>
-                                    <span style={{ color: '#000', fontWeight: 800 }}>{co.taxNumber}</span>
-                                </div>
-                            )}
-                            {co.commercialRegister && (
-                                <div style={{ display: 'flex', gap: '4px' }}>
-                                    <span style={{ color: '#777' }}>السجل التجاري:</span>
-                                    <span style={{ color: '#000', fontWeight: 800 }}>{co.commercialRegister}</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Visual Center: Title Box (2nd in RTL) */}
-                    <div style={{ textAlign: 'center', flex: 1, padding: '0 10px' }}>
-                        <div style={{
-                            display: 'inline-block',
-                            border: '1.2px solid #ccc',
-                            padding: '10px 35px',
-                            background: '#fff',
-                            borderRadius: '12px',
-                            minWidth: '260px'
-                        }}>
-                            <h3 style={{ margin: 0, fontSize: '20px', fontWeight: 950, color: '#000', fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{printTitle || title}</h3>
-                        </div>
-                        {printCode && (
-                            <div style={{ marginTop: '10px', fontSize: '14px', fontWeight: 700, color: '#111', fontFamily: INTER }}>
-                                {printCode}
-                            </div>
-                        )}
-                        <div style={{ marginTop: `${printCode ? '4px' : '10px'}`, fontSize: '12px', color: '#444', fontWeight: 800, fontFamily: INTER }}>
-                            {printDate || new Date().toLocaleDateString('en-GB')}
-                        </div>
-                    </div>
-
-                    {/* Visual Left: Logo (3rd in RTL) */}
-                    <div style={{ textAlign: 'end', flex: 1, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                        {(co.companyLogo || co.logo) && (
-                            <img src={co.companyLogo || co.logo} alt="Logo" style={{ maxHeight: '85px', maxWidth: '145px', objectFit: 'contain' }} />
-                        )}
-                    </div>
-                </div>
-            </div>
-
-            <style>{`
-                @media print {
-                    /* UI Hide */
-                    .no-print, .print-hide, .ui-only, nav, header { display: none !important; }
-                    .print-only { display: block !important; }
-                    
-                    /* Reset Heights to prevent extra blank page */
-                    html, body, #__next, .dashboard-content, main, [style*="minHeight"] { 
-                        height: auto !important; 
-                        min-height: 0 !important; 
-                        overflow: visible !important;
-                        margin: 0 !important;
-                        padding: 0 !important;
-                        background: #fff !important;
-                    }
-                    
-                    body { 
-                        padding: 0.5cm 1cm !important; 
-                        width: 100% !important;
-                    }
-
-                    /* Important: Reset PAGE_BASE padding specifically */
-                    [style*="paddingBottom: '30px'"], [style*="padding-bottom: 30px"] {
-                        padding-bottom: 0 !important;
-                        padding-top: 0 !important;
-                    }
-
-                    * { 
-                        -webkit-print-color-adjust: exact !important; 
-                        print-color-adjust: exact !important; 
-                        box-shadow: none !important; 
-                        text-decoration: none !important;
-                    }
-
-                    /* Break Prevention */
-                    table { page-break-inside: auto !important; }
-                    tr { page-break-inside: avoid !important; page-break-after: auto !important; }
-                    thead { display: table-header-group !important; }
-
-                    /* ── Card Styling for Print ── */
-                    div[style*="grid-template-columns"] {
-                        display: flex !important;
-                        flex-wrap: nowrap !important;
-                        gap: 10px !important;
-                        margin-bottom: 25px !important;
-                    }
-                    div[style*="grid-template-columns"] > div {
-                        flex: 1 !important;
-                        min-width: 0 !important;
-                        padding: 10px !important;
-                        border: 1px solid #e0e0e0 !important;
-                        background: #fff !important;
-                        border-radius: 12px !important;
-                        display: flex !important;
-                        flex-direction: column !important;
-                        align-items: center !important;
-                        justify-content: center !important;
-                        text-align: center !important;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
-                    }
-                    .stat-value { 
-                        font-size: 13px !important; 
-                        font-weight: 950 !important; 
-                        color: #111 !important; 
-                        margin: 2px 0 !important;
-                    }
-                    .stat-label { 
-                        font-size: 11px !important; 
-                        font-weight: 900 !important;
-                        color: #111 !important; 
-                        font-family: ${CAIRO} !important;
-                    }
-
-                    /* ── Standardize Table for Print (Remove backgrounds from spans) ── */
-                    table span {
-                        background: transparent !important;
-                        border: none !important;
-                        padding: 0 !important;
-                        color: #111 !important;
-                        font-weight: 800 !important;
-                    }
-                    
-                    table { border-collapse: collapse !important; width: 100% !important; margin-top: 15px; border: 1.5px solid #333 !important; }
-                    th, td { border: 1px solid #666 !important; padding: 10px 12px !important; color: #1a1a1a !important; background: #fff !important; font-size: 12px !important; }
-                    th { font-weight: 900 !important; background: #f0f0f0 !important; color: #111 !important; border: 1.5px solid #333 !important; font-size: 11px !important; }
-                }
-                @media screen {
-                    .print-only { display: none !important; }
-                }
-            `}</style>
         </div>
     );
 }

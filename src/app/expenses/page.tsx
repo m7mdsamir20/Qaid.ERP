@@ -64,7 +64,7 @@ export default function ExpensesPage() {
     const handleSave = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!form.amount || !form.accountId || !form.treasuryId) {
-            alert('يرجى ملء كافة البيانات الأساسية'); return;
+            alert(t('يرجى ملء كافة البيانات الأساسية')); return;
         }
         setSubmitting(true);
         try {
@@ -79,9 +79,9 @@ export default function ExpensesPage() {
                 fetchData();
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل الحفظ');
+                alert(d.error || t('فشل الحفظ'));
             }
-        } catch { alert('خطأ في الاتصال'); }
+        } catch { alert(t('خطأ في الاتصال')); }
         finally { setSubmitting(false); }
     };
 
@@ -98,11 +98,11 @@ export default function ExpensesPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader 
-                    title="المصروفات" 
-                    subtitle="متابعة وتسجيل كافة المصروفات التشغيلية والإدارية والعمومية" 
+                    title={t("المصروفات")} 
+                    subtitle={t("متابعة وتسجيل كافة المصروفات التشغيلية والإدارية والعمومية")} 
                     icon={TrendingDown}
                     primaryButton={{ 
-                        label: 'إضافة مصروف جديد', 
+                        label: t('إضافة مصروف جديد'), 
                         onClick: () => setShowForm(true), 
                         icon: Plus 
                     }}
@@ -113,7 +113,7 @@ export default function ExpensesPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="البحث في قيود المصروفات، البند، أو الوصف..." 
+                            placeholder={t("البحث في قيود المصروفات، البند، أو الوصف...")} 
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
                             style={SEARCH_STYLE.input} 
@@ -127,19 +127,19 @@ export default function ExpensesPage() {
                     <table style={TABLE_STYLE.table}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
-                                <th style={TABLE_STYLE.th(true)}>التاريخ</th>
-                                <th style={TABLE_STYLE.th(false)}>رقم القيد</th>
-                                <th style={TABLE_STYLE.th(false)}>بند المصروف</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>الخزينة / البنك</th>
-                                <th style={TABLE_STYLE.th(false)}>البيان / التفاصيل</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>المبلغ</th>
+                                <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('بند المصروف')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الخزينة / البنك')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('البيان / التفاصيل')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
                                 <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center' }}><Loader2 size={32} className="animate-spin" style={{ color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filteredAll.length === 0 ? (
-                                <tr><td colSpan={6} style={{ padding: '80px', textAlign: 'center', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>لا توجد بيانات مسجلة مطابقة للبحث</td></tr>
+                                <tr><td colSpan={6} style={{ padding: '80px', textAlign: 'center', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد بيانات مسجلة مطابقة للبحث')}</td></tr>
                             ) : paginated.map((e, idx) => {
                                 const debitLine = e.lines.find((l: any) => l.debit > 0);
                                 const creditLine = e.lines.find((l: any) => l.credit > 0);
@@ -154,7 +154,7 @@ export default function ExpensesPage() {
                                         <td style={TABLE_STYLE.td(false)}>
                                             <div style={{ fontWeight: 800, color: C.textPrimary }}>{debitLine?.account?.name}</div>
                                             <div style={{ fontSize: '10px', color: C.textMuted }}>{debitLine?.account?.code}</div>
-                                            {debitLine?.costCenter && <div style={{ fontSize: '10px', color: C.primary, marginTop: '2px' }}>مركز: {debitLine.costCenter.name}</div>}
+                                            {debitLine?.costCenter && <div style={{ fontSize: '10px', color: C.primary, marginTop: '2px' }}>{t('مركز')}: {debitLine.costCenter.name}</div>}
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
@@ -168,7 +168,7 @@ export default function ExpensesPage() {
                                                     color: e.sourceType === 'bank' ? '#60a5fa' : '#34d399',
                                                     fontFamily: CAIRO
                                                 }}>
-                                                    {e.sourceType === 'bank' ? 'تحويل بنكي' : 'نقدية / خزينة'}
+                                                    {e.sourceType === 'bank' ? t('تحويل بنكي') : t('نقدية / خزينة')}
                                                 </div>
                                             </div>
                                         </td>
@@ -198,7 +198,7 @@ export default function ExpensesPage() {
                 <AppModal 
                     show={showForm} 
                     onClose={() => setShowForm(false)} 
-                    title="تسجيل مصروف متنوع" 
+                    title={t("تسجيل مصروف متنوع")} 
                     icon={TrendingDown} 
                     maxWidth="500px"
                     footer={
@@ -206,19 +206,19 @@ export default function ExpensesPage() {
                             style={{ ...BTN_PRIMARY(false, submitting), height: '48px', margin: 0 }}
                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
                             onMouseLeave={e => e.currentTarget.style.transform = 'none'}>
-                            {submitting ? <Loader2 size={24} className="animate-spin" /> : <>حفظ العملية وتأكيد القيد</>}
+                            {submitting ? <Loader2 size={24} className="animate-spin" /> : <>{t('حفظ العملية وتأكيد القيد')}</>}
                         </button>
                     }
                 >
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', padding: '10px 0 0 0' }}>
                         <div>
-                            <label style={LS}>تاريخ الصرف</label>
+                            <label style={LS}>{t('تاريخ الصرف')}</label>
                             <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
                                 style={{ ...IS, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
 
                         <div>
-                            <label style={LS}>المبلغ المنصرف</label>
+                            <label style={LS}>{t('المبلغ المنصرف')}</label>
                             <div 
                                 style={{ 
                                     position: 'relative', 
@@ -248,28 +248,28 @@ export default function ExpensesPage() {
                         </div>
 
                         <div>
-                            <label style={LS}>يصرف من (الخزينة / البنك)</label>
+                            <label style={LS}>{t('يصرف من (الخزينة / البنك)')}</label>
                             <CustomSelect options={treasuries.map(t => ({ value: t.id, label: t.name, sub: t.balance.toLocaleString() }))}
-                                value={form.treasuryId} onChange={v => setForm(f => ({ ...f, treasuryId: v }))} placeholder="مصدر الصرف..." icon={Banknote} />
+                                value={form.treasuryId} onChange={v => setForm(f => ({ ...f, treasuryId: v }))} placeholder={t("مصدر الصرف...")} icon={Banknote} />
                         </div>
 
                         <div>
-                            <label style={LS}>بند المصروف</label>
+                            <label style={LS}>{t('بند المصروف')}</label>
                             <CustomSelect options={accounts.map(a => ({ value: a.id, label: a.name, sub: a.code }))}
                                 value={form.accountId} onChange={v => setForm(f => ({ ...f, accountId: v }))} 
-                                placeholder="اختر البند..." icon={Tag} openUp={true} />
+                                placeholder={t("اختر البند...")} icon={Tag} openUp={true} />
                         </div>
 
                         <div>
-                            <label style={LS}>مركز التكلفة (اختياري)</label>
+                            <label style={LS}>{t('مركز التكلفة (اختياري)')}</label>
                             <CustomSelect options={costCenters.map(cc => ({ value: cc.id, label: cc.name, sub: cc.code }))}
                                 value={form.costCenterId} onChange={v => setForm(f => ({ ...f, costCenterId: v }))} 
-                                placeholder="اختر المركز..." icon={Layers} openUp={true} />
+                                placeholder={t("اختر المركز...")} icon={Layers} openUp={true} />
                         </div>
 
                         <div>
-                            <label style={LS}>البيان / التفاصيل</label>
-                            <textarea rows={2} placeholder="وصف العملية..." value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
+                            <label style={LS}>{t('البيان / التفاصيل')}</label>
+                            <textarea rows={2} placeholder={t("وصف العملية...")} value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
                                 style={{ ...IS, height: '54px', padding: '8px 12px', resize: 'none', fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>

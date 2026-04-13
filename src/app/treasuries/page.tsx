@@ -24,8 +24,9 @@ interface Treasury {
 
 /* ── Treasury Modal (Same design as Customer Modal) ── */
 function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | null, onClose: () => void, onSaved: () => void }) {
+    const { t } = useTranslation();
     const isEdit = !!initial;
-    const [currencySymbol, setCurrencySymbol] = useState('ج.م');
+    const [currencySymbol, setCurrencySymbol] = useState(t('ج.م'));
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({
         name: initial?.name || '',
@@ -40,7 +41,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
         fetch('/api/settings').then(r => r.json()).then(data => {
             const cur = data?.company?.currency;
             if (cur) {
-                const maps: any = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'USD': 'دولار', 'AED': 'د.إ' };
+                const maps: any = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'USD': t('دولار'), 'AED': t('د.إ') };
                 setCurrencySymbol(maps[cur] || cur);
             }
         }).catch(() => {});
@@ -65,28 +66,28 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                 body: JSON.stringify({ ...form, openingBalance: numericBalance })
             });
             if (res.ok) onSaved();
-            else { const d = await res.json(); alert(d.error || 'فشل الحفظ'); }
+            else { const d = await res.json(); alert(d.error || t('فشل الحفظ')); }
         } catch { }
         finally { setSaving(false); }
     };
 
     return (
-        <AppModal show={true} onClose={onClose} title={isEdit ? 'تعديل بيانات الخزينة / البنك' : 'إضافة خزينة / بنك جديد'} icon={isEdit ? Pencil : Landmark} maxWidth="520px">
+        <AppModal show={true} onClose={onClose} title={isEdit ? t('تعديل بيانات الخزينة / البنك') : t('إضافة خزينة / بنك جديد')} icon={isEdit ? Pencil : Landmark} maxWidth="520px">
             <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
                 <div>
-                    <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>المسمى / الاسم <span style={{ color: C.danger }}>*</span></label>
+                    <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>{t('المسمى / الاسم')} <span style={{ color: C.danger }}>*</span></label>
                     <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                        placeholder="مثال: الخزينة الرئيسية، بنك CIB" style={{ ...IS, fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                        placeholder={t("مثال: الخزينة الرئيسية، بنك CIB")} style={{ ...IS, fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                 </div>
 
                 {/* Type Toggle */}
                 <div>
-                    <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>نوع السيولة <span style={{ color: C.danger }}>*</span></label>
+                    <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>{t('نوع السيولة')} <span style={{ color: C.danger }}>*</span></label>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                         {[
-                            { val: 'cash', label: 'نقدي (خزينة)', icon: <Banknote size={17} />, color: C.success },
-                            { val: 'bank', label: 'بنكي (حساب)', icon: <Building2 size={17} />, color: C.primary },
+                            { val: 'cash', label: t('نقدي (خزينة)'), icon: <Banknote size={17} />, color: C.success },
+                            { val: 'bank', label: t('بنكي (حساب)'), icon: <Building2 size={17} />, color: C.primary },
                         ].map(opt => (
                             <button key={opt.val} type="button"
                                 onClick={() => setForm(f => ({ ...f, type: opt.val as any }))}
@@ -110,12 +111,12 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                 {form.type === 'bank' && (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: 'rgba(59,130,246,0.02)', border: `1px solid rgba(59,130,246,0.1)`, borderRadius: '16px', padding: '16px', animation: 'fadeIn 0.2s ease', borderInlineStart: `3px solid ${C.primary}` }}>
                         <div>
-                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>اسم البنك</label>
+                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>{t('اسم البنك')}</label>
                             <input value={form.bankName} onChange={e => setForm(f => ({ ...f, bankName: e.target.value }))}
-                                placeholder="مثال: بنك مصر" style={{ ...IS, fontSize: '12px', height: '36px' }} onFocus={focusIn} onBlur={focusOut} />
+                                placeholder={t("مثال: بنك مصر")} style={{ ...IS, fontSize: '12px', height: '36px' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div>
-                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>رقم الحساب / IBAN</label>
+                            <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>{t('رقم الحساب / IBAN')}</label>
                             <input value={form.accountNumber} onChange={e => setForm(f => ({ ...f, accountNumber: e.target.value }))}
                                 placeholder="XXXX-XXXX-XXXX" style={{ ...IS, fontSize: '12px', height: '36px', direction: 'ltr', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
@@ -125,7 +126,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                 {/* Opening Balance */}
                 {!isEdit && (
                     <div>
-                        <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>الرصيد الافتتاحي (عند الإنشاء)</label>
+                        <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>{t('الرصيد الافتتاحي (عند الإنشاء)')}</label>
                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                             {/* Background Zeros Layer (Only visible when empty) */}
                             {!form.balance && (
@@ -156,7 +157,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                 }}>
                     <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(saving, false), height: '44px', fontSize: '14px' }}>
                         {saving ? <Loader2 size={18} className="animate-spin" /> : (isEdit ? <CheckCircle2 size={18} /> : <Plus size={18} />)}
-                        <span style={{ fontFamily: CAIRO }}>{isEdit ? 'حفظ التعديلات' : 'إضافة الخزينة / البنك'}</span>
+                        <span style={{ fontFamily: CAIRO }}>{isEdit ? t('حفظ التعديلات') : t('إضافة الخزينة / البنك')}</span>
                     </button>
                     <button type="button" onClick={onClose} 
                         style={{ 
@@ -169,7 +170,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                         }}
                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textPrimary; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
-                        إلغاء
+                        {t('إلغاء')}
                     </button>
                 </div>
             </form>
@@ -189,7 +190,7 @@ export default function TreasuriesPage() {
     const [editItem, setEditItem] = useState<Treasury | null>(null);
     const [deleteItem, setDeleteItem] = useState<Treasury | null>(null);
     const [submitting, setSubmitting] = useState(false);
-    const [currencySymbol, setCurrencySymbol] = useState('ج.م');
+    const [currencySymbol, setCurrencySymbol] = useState(t('ج.م'));
 
     const isAdmin = session?.user?.role === 'admin';
     const perms = (session?.user as any)?.permissions || {};
@@ -212,7 +213,7 @@ export default function TreasuriesPage() {
 
             const cur = sData?.company?.currency;
             if (cur) {
-                const maps: any = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'USD': 'دولار' };
+                const maps: any = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'USD': t('دولار') };
                 setCurrencySymbol(maps[cur] || cur);
             }
         } catch { setTreasuries([]); }
@@ -240,11 +241,11 @@ export default function TreasuriesPage() {
                 fetchData();
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل الحذف');
+                alert(d.error || t('فشل الحذف'));
                 setDeleteItem(null);
             }
         } catch { 
-            alert('حدث خطأ في الاتصال');
+            alert(t('حدث خطأ في الاتصال'));
             setDeleteItem(null);
         }
         finally { setSubmitting(false); }
@@ -262,20 +263,20 @@ export default function TreasuriesPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader 
-                    title="الخزن والبنوك" 
-                    subtitle="إدارة السيولة النقدية، أرصدة البنوك، ومتابعة الأرصدة المتوفرة لحظياً"
+                    title={t("الخزن والبنوك")} 
+                    subtitle={t("إدارة السيولة النقدية، أرصدة البنوك، ومتابعة الأرصدة المتوفرة لحظياً")}
                     icon={Landmark}
                     primaryButton={canCreate ? {
-                        label: "خزينة / بنك جديد",
+                        label: t("خزينة / بنك جديد"),
                         onClick: () => { setEditItem(null); setShowModal(true); }
                     } : undefined}
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'إجمالي السيولة', val: totalAll, color: C.primary, icon: Wallet, unit: currencySymbol },
-                        { label: 'إجمالي الخزن', val: totalCash, color: C.success, icon: Banknote, unit: currencySymbol },
-                        { label: 'إجمالي البنوك', val: totalBank, color: C.blue, icon: Building2, unit: currencySymbol },
+                        { label: t('إجمالي السيولة'), val: totalAll, color: C.primary, icon: Wallet, unit: currencySymbol },
+                        { label: t('إجمالي الخزن'), val: totalCash, color: C.success, icon: Banknote, unit: currencySymbol },
+                        { label: t('إجمالي البنوك'), val: totalBank, color: C.blue, icon: Building2, unit: currencySymbol },
                     ].map((s, idx) => (
                         <div key={idx} style={{ 
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px', 
@@ -301,15 +302,15 @@ export default function TreasuriesPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, color: C.textSecondary, fontWeight: 700, fontSize: '15px', fontFamily: CAIRO }}>جاري جرد الخزن والبنوك...</p>
+                        <p style={{ margin: 0, color: C.textSecondary, fontWeight: 700, fontSize: '15px', fontFamily: CAIRO }}>{t('جاري جرد الخزن والبنوك...')}</p>
                     </div>
                 ) : treasuries.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textMuted, margin: '0 auto 20px' }}>
                             <Landmark size={36} />
                         </div>
-                        <h3 style={{ margin: '0 0 10px', color: C.textPrimary, fontWeight: 800, fontSize: '18px', fontFamily: CAIRO }}>لا توجد بيانات</h3>
-                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: CAIRO }}>ابدأ بإضافة أول خزينة أو حساب بنكي لتتبع أموالك.</p>
+                        <h3 style={{ margin: '0 0 10px', color: C.textPrimary, fontWeight: 800, fontSize: '18px', fontFamily: CAIRO }}>{t('لا توجد بيانات')}</h3>
+                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: CAIRO }}>{t('ابدأ بإضافة أول خزينة أو حساب بنكي لتتبع أموالك.')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
@@ -317,7 +318,7 @@ export default function TreasuriesPage() {
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', padding: '0 4px' }}>
                                     <Banknote size={20} style={{ color: C.success }} />
-                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>الخزن النقدية</span>
+                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الخزن النقدية')}</span>
                                     <span style={{ fontSize: '11px', color: C.success, background: `${C.success}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.success}20`, fontFamily: INTER }}>{cashList.length}</span>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
@@ -331,7 +332,7 @@ export default function TreasuriesPage() {
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', padding: '0 4px' }}>
                                     <Building size={20} style={{ color: C.primary }} />
-                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>الحسابات البنكية</span>
+                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الحسابات البنكية')}</span>
                                     <span style={{ fontSize: '11px', color: C.primary, background: `${C.primary}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.primary}20`, fontFamily: INTER }}>{bankList.length}</span>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
@@ -350,7 +351,7 @@ export default function TreasuriesPage() {
                     show={!!deleteItem}
                     onClose={() => setDeleteItem(null)}
                     isDelete={true}
-                    title="تأكيد حذف الخزينة / البنك"
+                    title={t("تأكيد حذف الخزينة / البنك")}
                     itemName={deleteItem?.name}
                     onConfirm={handleDelete}
                     isSubmitting={submitting}
@@ -364,6 +365,7 @@ export default function TreasuriesPage() {
 
 /* ── Treasury Card ── */
 function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDelete }: { item: Treasury; currencySymbol: string; canEdit?: boolean; canDelete?: boolean; onEdit: () => void; onDelete: () => void; }) {
+    const { t } = useTranslation();
     const isCash = item.type === 'cash';
     const accentColor = isCash ? C.success : C.primary;
     const Icon = isCash ? Banknote : Building2;
@@ -400,17 +402,17 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                     </div>
                     <div>
                         <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800, fontFamily: CAIRO }}>{item.name}</div>
-                        <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{item.type === 'cash' ? 'خزينة' : 'بنك'}</div>
+                        <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{item.type === 'cash' ? t('خزينة') : t('بنك')}</div>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '6px' }}>
                     {canEdit && (
-                        <button onClick={onEdit} style={TABLE_STYLE.actionBtn()} title="تعديل">
+                        <button onClick={onEdit} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
                             <Pencil size={TABLE_STYLE.actionIconSize} />
                         </button>
                     )}
                     {canDelete && (
-                        <button onClick={onDelete} style={TABLE_STYLE.actionBtn(C.danger)} title="حذف">
+                        <button onClick={onDelete} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
                             <Trash2 size={TABLE_STYLE.actionIconSize} />
                         </button>
                     )}

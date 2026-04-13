@@ -17,21 +17,21 @@ interface Account {
     type: string; accountCategory: string; isParent: boolean;
 }
 
-const CATEGORIES = [
-    'مركبات', 'أجهزة وحاسبات', 'أراضي ومباني',
-    'أثاث ومفروشات', 'معدات وآلات', 'أخرى',
-];
-
-const DEP_METHODS = [
-    { value: 'straight', label: 'قسط ثابت', sub: 'التكلفة ÷ العمر الإنتاجي' },
-    { value: 'declining', label: 'قسط متناقص', sub: 'الصافي × المعدل' },
-];
-
-
 export default function NewFixedAssetPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
+
+    const CATEGORIES = [
+        t('مركبات'), t('أجهزة وحاسبات'), t('أراضي ومباني'),
+        t('أثاث ومفروشات'), t('معدات وآلات'), t('أخرى'),
+    ];
+
+    const DEP_METHODS = [
+        { value: 'straight', label: t('قسط ثابت'), sub: t('التكلفة ÷ العمر الإنتاجي') },
+        { value: 'declining', label: t('قسط متناقص'), sub: t('الصافي × المعدل') },
+    ];
+
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
@@ -95,10 +95,10 @@ export default function NewFixedAssetPage() {
         // Validation
         if (!form.name || !form.category || !form.purchaseDate ||
             !form.purchaseCost || !form.depreciationRate) {
-            setError('يرجى تعبئة جميع الحقول المطلوبة'); return;
+            setError(t('يرجى تعبئة جميع الحقول المطلوبة')); return;
         }
         if (!form.assetAccountId || !form.depAccountId || !form.accumAccountId) {
-            setError('يرجى تحديد الحسابات المحاسبية الثلاثة'); return;
+            setError(t('يرجى تحديد الحسابات المحاسبية الثلاثة')); return;
         }
 
         setSaving(true);
@@ -129,10 +129,10 @@ export default function NewFixedAssetPage() {
                 router.push('/fixed-assets');
             } else {
                 const d = await res.json();
-                setError(d.error || 'فشل الحفظ');
+                setError(d.error || t('فشل الحفظ'));
             }
         } catch {
-            setError('خطأ في الاتصال بالخادم');
+            setError(t('خطأ في الاتصال بالخادم'));
         }
         setSaving(false);
     };
@@ -148,8 +148,8 @@ export default function NewFixedAssetPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px', background: C.bg, fontFamily: CAIRO }}>
 
                 <PageHeader
-                    title="إضافة أصل ثابت جديد"
-                    subtitle="تسجيل بيانات الأصل الثابت وربطه بالحسابات المحاسبية والمعدلات المناسبة"
+                    title={t("إضافة أصل ثابت جديد")}
+                    subtitle={t("تسجيل بيانات الأصل الثابت وربطه بالحسابات المحاسبية والمعدلات المناسبة")}
                     icon={Briefcase}
                     backUrl="/fixed-assets"
                 />
@@ -166,32 +166,32 @@ export default function NewFixedAssetPage() {
                     {/* ══ القسم الأول: البيانات الأساسية ══ */}
                     <div style={{ ...SC, marginBottom: '20px' }}>
                         <div style={STitle}>
-                            <Briefcase size={16} /> البيانات الأساسية
+                            <Briefcase size={16} /> {t('البيانات الأساسية')}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
-                                <label style={LS}>كود الأصل</label>
+                                <label style={LS}>{t('كود الأصل')}</label>
                                 <input readOnly value={generatedCode}
                                     style={{ ...IS, background: 'rgba(255,255,255,0.01)', cursor: 'default', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 800 }}
                                     onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={LS}>اسم الأصل <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('اسم الأصل')} <span style={{ color: C.danger }}>*</span></label>
                                 <input required value={form.name}
                                     onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
-                                    placeholder="مثال: سيارة نيسان 2024"
+                                    placeholder={t("مثال: سيارة نيسان 2024")}
                                     style={IS} onFocus={focusIn} onBlur={focusOut} autoFocus />
                             </div>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                             <div>
-                                <label style={LS}>الفئة <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('الفئة')} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect value={form.category} onChange={set('category')}
-                                    icon={Building2} placeholder="اختر الفئة..."
+                                    icon={Building2} placeholder={t("اختر الفئة...")}
                                     options={CATEGORIES.map(c => ({ value: c, label: c }))} />
                             </div>
                             <div>
-                                <label style={LS}>تاريخ الشراء <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('تاريخ الشراء')} <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="date" value={form.purchaseDate}
                                     onChange={e => setForm(f => ({ ...f, purchaseDate: e.target.value }))}
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end' }}
@@ -203,35 +203,35 @@ export default function NewFixedAssetPage() {
                     {/* ══ القسم الثاني: التكلفة والإهلاك ══ */}
                     <div style={{ ...SC, marginBottom: '20px' }}>
                         <div style={STitle}>
-                            <TrendingDown size={16} /> التكلفة والإهلاك
+                            <TrendingDown size={16} /> {t('التكلفة والإهلاك')}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
-                                <label style={LS}>تكلفة الشراء (ج.م) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('تكلفة الشراء (ج.م)')} <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="number" step="0.01" min="0"
                                     value={form.purchaseCost}
                                     onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))}
                                     placeholder="0.00" style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={LS}>قيمة الخردة (ج.م)</label>
+                                <label style={LS}>{t('قيمة الخردة (ج.م)')}</label>
                                 <input type="number" step="0.01" min="0"
                                     value={form.salvageValue}
                                     onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))}
                                     placeholder="0.00" style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
-                                <label style={LS}>معدل الإهلاك % <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('معدل الإهلاك')} % <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="number" step="0.01" min="0" max="100"
                                     value={form.depreciationRate}
                                     onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))}
-                                    placeholder="مثال: 20" style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                    placeholder={t("مثال: 20")} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
                         {/* طريقة الإهلاك */}
                         <div>
-                            <label style={LS}>طريقة الإهلاك <span style={{ color: '#f87171' }}>*</span></label>
+                            <label style={LS}>{t('طريقة الإهلاك')} <span style={{ color: '#f87171' }}>*</span></label>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                 {DEP_METHODS.map(m => (
                                     <button key={m.value} type="button"
@@ -260,40 +260,40 @@ export default function NewFixedAssetPage() {
                     {/* ══ القسم الثالث: الحسابات المحاسبية ══ */}
                     <div style={{ ...SC, marginBottom: '20px' }}>
                         <div style={STitle}>
-                            <Building2 size={16} /> الحسابات المحاسبية
+                            <Building2 size={16} /> {t('الحسابات المحاسبية')}
                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginInlineEnd: 'auto' }}>
-                                مطلوبة لإنشاء القيود تلقائياً
+                                {t('مطلوبة لإنشاء القيود تلقائياً')}
                             </span>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>حساب الأصل الثابت <span style={{ color: '#f87171' }}>*</span></label>
+                                <label style={LS}>{t('حساب الأصل الثابت')} <span style={{ color: '#f87171' }}>*</span></label>
                                 <CustomSelect value={form.assetAccountId} onChange={set('assetAccountId')}
                                     icon={Building2}
-                                    placeholder="اختر حساب الأصل (1xxx)..."
+                                    placeholder={t("اختر حساب الأصل (1xxx)...")}
                                     options={toOpts(assetAccounts)} />
                                 <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
-                                    من حسابات الأصول الثابتة
+                                    {t('من حسابات الأصول الثابتة')}
                                 </p>
                             </div>
                             <div>
-                                <label style={LS}>حساب مصروف الإهلاك <span style={{ color: '#f87171' }}>*</span></label>
+                                <label style={LS}>{t('حساب مصروف الإهلاك')} <span style={{ color: '#f87171' }}>*</span></label>
                                 <CustomSelect value={form.depAccountId} onChange={set('depAccountId')}
                                     icon={TrendingDown}
-                                    placeholder="اختر حساب المصروف (5xxx)..."
+                                    placeholder={t("اختر حساب المصروف (5xxx)...")}
                                     options={toOpts(expenseAccounts)} />
                                 <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
-                                    مدين عند تسجيل الإهلاك
+                                    {t('مدين عند تسجيل الإهلاك')}
                                 </p>
                             </div>
                             <div>
-                                <label style={LS}>حساب مجمع الإهلاك <span style={{ color: '#f87171' }}>*</span></label>
+                                <label style={LS}>{t('حساب مجمع الإهلاك')} <span style={{ color: '#f87171' }}>*</span></label>
                                 <CustomSelect value={form.accumAccountId} onChange={set('accumAccountId')}
                                     icon={TrendingDown}
-                                    placeholder="اختر حساب مجمع الإهلاك..."
+                                    placeholder={t("اختر حساب مجمع الإهلاك...")}
                                     options={toOpts(assetAccounts)} />
                                 <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
-                                    دائن عند تسجيل الإهلاك — حساب مقابل للأصل
+                                    {t('دائن عند تسجيل الإهلاك — حساب مقابل للأصل')}
                                 </p>
                             </div>
                         </div>
@@ -301,10 +301,10 @@ export default function NewFixedAssetPage() {
 
                     {/* ══ القسم الرابع: ملاحظات ══ */}
                     <div style={{ ...SC, marginBottom: '20px' }}>
-                        <label style={LS}>ملاحظات</label>
+                        <label style={LS}>{t('ملاحظات')}</label>
                         <textarea value={form.notes}
                             onChange={e => setForm(f => ({ ...f, notes: e.target.value }))}
-                            rows={3} placeholder="أي ملاحظات إضافية عن الأصل..."
+                            rows={3} placeholder={t("أي ملاحظات إضافية عن الأصل...")}
                             style={{ ...IS, height: 'auto', padding: '10px 14px', resize: 'vertical' } as any}
                             onFocus={focusIn} onBlur={focusOut} />
                     </div>
@@ -313,11 +313,11 @@ export default function NewFixedAssetPage() {
                     <div style={{ display: 'flex', gap: '16px', marginTop: '20px' }}>
                         <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), width: 'auto', flex: 3 }}>
                             {saving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
-                            {saving ? 'جاري الحفظ...' : 'إضافة الأصل للسجل'}
+                            {saving ? t('جاري الحفظ...') : t('إضافة الأصل للسجل')}
                         </button>
                         <button type="button" onClick={() => router.push('/fixed-assets')}
                             style={{ flex: 1, height: '52px', borderRadius: '14px', border: `1px solid ${C.border}`, fontFamily: CAIRO, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '15px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
-                            إلغاء
+                            {t('إلغاء')}
                         </button>
                     </div>
 

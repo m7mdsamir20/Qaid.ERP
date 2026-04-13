@@ -70,10 +70,10 @@ export default function CategoriesPage() {
                 setCategoryToDelete(null);
             } else { 
                 const d = await res.json();
-                alert(d.error || `فشل حذف التصنيف، قد يكون مرتبطاً ب${isServices ? 'خدمات' : 'أصناف مخزنية'}.`); 
+                alert(d.error || t('فشل حذف التصنيف، قد يكون مرتبطاً ب') + (isServices ? t('خدمات') : t('أصناف مخزنية'))); 
             }
         } catch (err) {
-            alert('خطأ في عملية الحذف');
+            alert(t('خطأ في عملية الحذف'));
         } finally {
             setIsDeleting(false);
         }
@@ -103,7 +103,7 @@ export default function CategoriesPage() {
                 fetchCategories(); 
             } else { 
                 const d = await res.json(); 
-                alert(d.error || 'فشل في الحفظ'); 
+                alert(d.error || t('فشل في الحفظ')); 
             }
         } finally {
             setIsSubmitting(false);
@@ -118,11 +118,11 @@ export default function CategoriesPage() {
                 
                 {/* Page Header */}
                 <PageHeader 
-                    title={isServices ? "تصنيفات الخدمات" : "تصنيفات الأصناف"} 
-                    subtitle={isServices ? "إدارة وتبويب الخدمات المقدمة إلى مجموعات لتسهيل عملية الفوترة والتقارير" : "إدارة وتبويب الأصناف المخزنية إلى مجموعات لتسهيل عملية الجرد والبيع"} 
+                    title={isServices ? t("تصنيفات الخدمات") : t("تصنيفات الأصناف")} 
+                    subtitle={isServices ? t("إدارة وتبويب الخدمات المقدمة إلى مجموعات لتسهيل عملية الفوترة والتقارير") : t("إدارة وتبويب الأصناف المخزنية إلى مجموعات لتسهيل عملية الجرد والبيع")} 
                     icon={FolderTree} 
                     primaryButton={canCreate ? {
-                        label: "إضافة تصنيف جديد",
+                        label: t("إضافة تصنيف جديد"),
                         onClick: openCreateModal,
                         icon: Plus
                     } : undefined}
@@ -133,7 +133,7 @@ export default function CategoriesPage() {
                     <div style={{ flex: 1, position: 'relative' }}>
                         <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
-                            placeholder="ابحث باسم التصنيف..."
+                            placeholder={t("ابحث باسم التصنيف...")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{ ...IS, width: '100%', paddingInlineEnd: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
@@ -146,12 +146,12 @@ export default function CategoriesPage() {
                 {loading ? (
                     <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>جاري استخراج البيانات...</p>
+                        <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filtered.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
                         <Layers size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? 'لا توجد نتائج بحث تطابق استفسارك' : 'لا توجد تصنيفات مسجلة حالياً'}</p>
+                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد تصنيفات مسجلة حالياً')}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -159,7 +159,7 @@ export default function CategoriesPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        {['الرقم', 'اسم التصنيف', isServices ? 'عدد الخدمات المرتبطة' : 'عدد الأصناف المرتبطة', 'إجراء'].map((h, i) => (
+                                        {[t('الرقم'), t('اسم التصنيف'), isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
                                             <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
                                         ))}
                                     </tr>
@@ -184,20 +184,20 @@ export default function CategoriesPage() {
                                                     padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 900, fontFamily: INTER,
                                                     background: 'rgba(56,189,248,0.1)', color: '#38bdf8'
                                                 }}>
-                                                    {cat._count?.items || 0} {isServices ? 'خدمة' : 'صنف'}
+                                                    {cat._count?.items || 0} {isServices ? t('خدمة') : t('صنف')}
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', gap: '8px' }}>
                                                     {canEdit && (
                                                         <button onClick={() => openEditModal(cat)}
-                                                            style={TABLE_STYLE.actionBtn()} title="تعديل">
+                                                            style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
                                                              <Pencil size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                     )}
                                                     {canEdit && (
                                                         <button onClick={() => setCategoryToDelete(cat)}
-                                                            style={TABLE_STYLE.actionBtn(C.danger)} title="حذف">
+                                                            style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
                                                              <Trash2 size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                     )}
@@ -216,7 +216,7 @@ export default function CategoriesPage() {
                     show={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
                     icon={form.id ? Pencil : Plus}
-                    title={form.id ? 'تعديل بيانات التصنيف' : 'إضافة تصنيف جديد'}
+                    title={form.id ? t('تعديل بيانات التصنيف') : t('إضافة تصنيف جديد')}
                     maxWidth="440px"
                 >
                     <form onSubmit={handleSubmit}>
@@ -228,17 +228,17 @@ export default function CategoriesPage() {
                             <Info size={16} style={{ color: C.primary, marginTop: '2px', flexShrink: 0 }} />
                             <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, lineHeight: 1.5, fontWeight: 600 }}>
                                 {isServices 
-                                    ? "استخدم التصنيفات لتجميع الخدمات المتشابهة لتسهيل عملية الفوترة وإصدار التقارير التحليلية."
-                                    : "استخدم التصنيفات لتجميع الأصناف المتشابهة في المخزون وفي نقطة البيع (POS)."}
+                                    ? t("استخدم التصنيفات لتجميع الخدمات المتشابهة لتسهيل عملية الفوترة وإصدار التقارير التحليلية.")
+                                    : t("استخدم التصنيفات لتجميع الأصناف المتشابهة في المخزون وفي نقطة البيع (POS).")}
                             </p>
                         </div>
 
                         {/* Category Name */}
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>اسم التصنيف <span style={{ color: C.danger }}>*</span></label>
+                            <label style={LS}>{t('اسم التصنيف')} <span style={{ color: C.danger }}>*</span></label>
                             <input
                                 type="text" required autoFocus
-                                placeholder={isServices ? "مثال: صيانة، استشارات، تركيبات..." : "مثال: إلكترونيات، ملابس، مأكولات..."}
+                                placeholder={isServices ? t("مثال: صيانة، استشارات، تركيبات...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
                                 value={form.name}
                                 onChange={e => setForm({ ...form, name: e.target.value })}
                                 style={IS}
@@ -249,7 +249,7 @@ export default function CategoriesPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={isSubmitting} 
                                 style={{ ...BTN_PRIMARY(false, isSubmitting), flex: 1.5, height: '48px', fontSize: '14px' }}>
-                                {isSubmitting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ البيانات'}
+                                {isSubmitting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ البيانات')}
                             </button>
                             <button type="button" onClick={() => setIsModalOpen(false)} 
                                 style={{ 
@@ -260,7 +260,7 @@ export default function CategoriesPage() {
                                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textPrimary; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = C.textSecondary; }}
                             >
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                         </div>
                     </form>
@@ -270,7 +270,7 @@ export default function CategoriesPage() {
                     show={!!categoryToDelete}
                     onClose={() => setCategoryToDelete(null)}
                     onConfirm={handleDelete}
-                    title="تأكيد حذف التصنيف"
+                    title={t("تأكيد حذف التصنيف")}
                     itemName={categoryToDelete?.name || ''}
                     isDelete={true}
                     isSubmitting={isDeleting}

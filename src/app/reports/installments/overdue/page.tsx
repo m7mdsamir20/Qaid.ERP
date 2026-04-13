@@ -72,7 +72,7 @@ export default function OverdueReportPage() {
                     title="الأقساط المستحقة"
                     subtitle="كشف مفصل بجميع الأقساط التي تجاوزت موعد استحقاقها ولم تُسدد"
                     backTab="installments"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
                 <div className="no-print" style={{ 

@@ -47,7 +47,7 @@ export default function LoginPage() {
         }
     };
 
-    const BRAND_NAME = 'قيد المطور'; // اسم البراند (النظام)
+    const BRAND_NAME = t('قيد المطور'); // اسم البراند (النظام)
     const BRAND_LOGO = '/logo-system.png'; // لوجو النظام الموحد (قيد المطور)
 
     return (
@@ -113,12 +113,12 @@ export default function LoginPage() {
                             <span style={{ fontSize: '24px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, letterSpacing: '0.5px' }}>{BRAND_NAME}</span>
                         </div>
                     )}
-                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>مرحباً بعودتك لنظامك السحابي</p>
+                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{t('مرحباً بعودتك لنظامك السحابي')}</p>
                 </div>
 
                 {/* كارت التسجيل */}
                 <div style={{ ...THEME.glass.card, borderRadius: '24px', padding: '32px', boxShadow: THEME.shadows.premium }}>
-                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>تسجيل الدخول</h2>
+                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>{t('تسجيل الدخول')}</h2>
 
                     {error && (
                         <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', textAlign: 'center', fontWeight: 600 }}>
@@ -128,12 +128,12 @@ export default function LoginPage() {
 
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div>
-                            <label style={LS}>اسم المستخدم أو البريد الإلكتروني</label>
+                            <label style={LS}>{t('اسم المستخدم أو البريد الإلكتروني')}</label>
                             <input
                                 type="text" required
                                 value={form.identity}
                                 onChange={e => setForm({ ...form, identity: e.target.value })}
-                                placeholder="username أو email@example.com"
+                                placeholder={t("username أو email@example.com")}
                                 style={{ ...IS, height: '48px' }}
                                 onFocus={focusIn}
                                 onBlur={focusOut}
@@ -143,7 +143,7 @@ export default function LoginPage() {
                         </div>
 
                         <div>
-                            <label style={LS}>كلمة المرور</label>
+                            <label style={LS}>{t('كلمة المرور')}</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPass ? 'text' : 'password'} required
@@ -165,13 +165,13 @@ export default function LoginPage() {
                             style={{ height: '50px', borderRadius: '12px', border: 'none', background: loading ? C.primaryBg : C.primary, color: '#fff', fontSize: '16px', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO, marginTop: '8px', boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}40`, transition: 'all 0.2s' }}
                             onMouseEnter={e => { if (!loading) e.currentTarget.style.background = C.primaryHover; }}
                             onMouseLeave={e => { if (!loading) e.currentTarget.style.background = C.primary; }}>
-                            {loading ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جاري الدخول...</> : 'تسجيل الدخول'}
+                            {loading ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الدخول...')}</> : t('تسجيل الدخول')}
                         </button>
                     </form>
 
                     <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: C.textSecondary }}>
-                        ليس لديك حساب؟{' '}
-                        <Link href="/register" style={{ color: C.primary, fontWeight: 800, textDecoration: 'none' }}>إنشاء حساب جديد</Link>
+                        {t('ليس لديك حساب؟')}{' '}
+                        <Link href="/register" style={{ color: C.primary, fontWeight: 800, textDecoration: 'none' }}>{t('إنشاء حساب جديد')}</Link>
                     </p>
                 </div>
             </div>

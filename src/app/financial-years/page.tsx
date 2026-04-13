@@ -15,10 +15,8 @@ import {
     BookOpen, Receipt, Pencil, X
 } from 'lucide-react';
 
-/* ── helpers ── */
-// ar-EG-u-nu-latn = Arabic month names + Latin (English) digits
-const fmt = (d: any) =>
-    new Date(d).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: '2-digit' });
+const fmt = (d: any, locale: string = 'ar-EG-u-nu-latn') =>
+    new Date(d).toLocaleDateString(locale, { year: 'numeric', month: 'short', day: '2-digit' });
 
 const calcDays = (s: any, e: any) =>
     Math.max(0, Math.ceil((new Date(e).getTime() - new Date(s).getTime()) / 86400000) + 1);
@@ -95,12 +93,12 @@ export default function FinancialYearsPage() {
                 body: JSON.stringify({ action, data })
             });
             if (res.ok) {
-                showToast('تم الحفظ بنجاح ✓');
+                showToast(t('تم الحفظ بنجاح ✓'));
                 await fetchYears();
                 return true;
             } else {
                 const e = await res.json();
-                showToast(e.error || 'فشل الحفظ', 'error');
+                showToast(e.error || t('فشل الحفظ'), 'error');
                 return false;
             }
         } finally { setIsSaving(false); }
@@ -163,8 +161,8 @@ export default function FinancialYearsPage() {
                 )}
 
                 <PageHeader
-                    title="السنة المالية"
-                    subtitle="إدارة الدورات المحاسبية وتتبع ملخص كل فترة مالية"
+                    title={t("السنة المالية")}
+                    subtitle={t("إدارة الدورات المحاسبية وتتبع ملخص كل فترة مالية")}
                     icon={CalendarDays}
                 />
 
@@ -189,15 +187,15 @@ export default function FinancialYearsPage() {
                                     <CalendarDays size={36} />
                                 </div>
                                 <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>
-                                    تأسيس الدورة المحاسبية
+                                    {t('تأسيس الدورة المحاسبية')}
                                 </h3>
                                 <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7 }}>
-                                    حدد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.
+                                    {t('حدد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}
                                 </p>
                                 <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '28px' }}>
                                     {[
-                                        { label: 'تاريخ البداية', key: 'startDate' },
-                                        { label: 'تاريخ النهاية', key: 'endDate' },
+                                        { label: t('تاريخ البداية'), key: 'startDate' },
+                                        { label: t('تاريخ النهاية'), key: 'endDate' },
                                     ].map(f => (
                                         <div key={f.key} style={{ textAlign: 'start' }}>
                                             <label style={{ display: 'block', fontSize: '12px', color: C.textSecondary, marginBottom: '8px', fontFamily: CAIRO, fontWeight: 700 }}>{f.label}</label>
@@ -209,13 +207,13 @@ export default function FinancialYearsPage() {
                                     ))}
                                 </div>
                                 <button onClick={async () => {
-                                    if (!createForm.startDate || !createForm.endDate) { showToast('حدد التواريخ أولاً', 'error'); return; }
-                                    if (new Date(createForm.endDate) <= new Date(createForm.startDate)) { showToast('تاريخ النهاية يجب أن يكون بعد البداية', 'error'); return; }
+                                    if (!createForm.startDate || !createForm.endDate) { showToast(t('حدد التواريخ أولاً'), 'error'); return; }
+                                    if (new Date(createForm.endDate) <= new Date(createForm.startDate)) { showToast(t('تاريخ النهاية يجب أن يكون بعد البداية'), 'error'); return; }
                                     await callApi('create_first', createForm);
                                 }} disabled={isSaving}
                                     style={{ ...BTN_PRIMARY(false, isSaving), width: 'auto', height: '44px', padding: '0 32px', margin: '0 auto', fontSize: '14px' }}>
                                     {isSaving ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <CalendarCheck size={16} />}
-                                    تأسيس السنة المالية
+                                    {t('تأسيس السنة المالية')}
                                 </button>
                             </div>
                         )}
@@ -258,10 +256,10 @@ export default function FinancialYearsPage() {
                                                 </button>
                                             </div>
                                         )}
-                                        <span style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 900, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>دورة نشطة</span>
+                                        <span style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 900, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>{t('دورة نشطة')}</span>
                                     </div>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
-                                        {fmt(activeFY.startDate)} — {fmt(activeFY.endDate)}
+                                        {fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} — {fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                     </span>
                                 </div>
 
@@ -279,24 +277,24 @@ export default function FinancialYearsPage() {
                                         </svg>
                                         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                                             <span style={{ fontSize: '22px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{Math.round(pct)}%</span>
-                                            <span style={{ fontSize: '9px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>مكتمل</span>
+                                            <span style={{ fontSize: '9px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('مكتمل')}</span>
                                         </div>
                                     </div>
 
                                     {/* KPI Cards */}
                                     <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                                        <KpiCard icon={Calendar} label="تاريخ البداية" value={fmt(activeFY.startDate)} color={C.primary} />
-                                        <KpiCard icon={CalendarCheck} label="تاريخ الانتهاء" value={fmt(activeFY.endDate)} color="#8b5cf6" />
-                                        <KpiCard icon={Clock} label="الأيام المتبقية" value={`${remaining.toLocaleString('en-US')} يوم`} color={remaining < 30 ? C.danger : '#f59e0b'}
-                                            sub={remaining < 30 ? 'تقترب نهاية السنة' : undefined} />
+                                        <KpiCard icon={Calendar} label={t("تاريخ البداية")} value={fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color={C.primary} />
+                                        <KpiCard icon={CalendarCheck} label={t("تاريخ الانتهاء")} value={fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color="#8b5cf6" />
+                                        <KpiCard icon={Clock} label={t("الأيام المتبقية")} value={`${remaining.toLocaleString('en-US')} ${t('يوم')}`} color={remaining < 30 ? C.danger : '#f59e0b'}
+                                            sub={remaining < 30 ? t('تقترب نهاية السنة') : undefined} />
                                         {activeFY.stats && <>
-                                            <KpiCard icon={TrendingUp} label="إجمالي المبيعات"
+                                            <KpiCard icon={TrendingUp} label={t("إجمالي المبيعات")}
                                                 value={`${fmtMoney(activeFY.stats.salesTotal)} ${CURRENCY_AR[currency] || currency}`} color="#10b981"
-                                                sub={`${activeFY.stats.salesCount} فاتورة`} />
-                                            <KpiCard icon={TrendingDown} label="إجمالي المشتريات"
+                                                sub={`${activeFY.stats.salesCount} ${t('فاتورة')}`} />
+                                            <KpiCard icon={TrendingDown} label={t("إجمالي المشتريات")}
                                                 value={`${fmtMoney(activeFY.stats.purchasesTotal)} ${CURRENCY_AR[currency] || currency}`} color={C.danger}
-                                                sub={`${activeFY.stats.purchasesCount} فاتورة`} />
-                                            <KpiCard icon={BookOpen} label="قيود يومية" value={activeFY.stats.journalEntries.toLocaleString('en-US')} color="#f59e0b" />
+                                                sub={`${activeFY.stats.purchasesCount} ${t('فاتورة')}`} />
+                                            <KpiCard icon={BookOpen} label={t("قيود يومية")} value={activeFY.stats.journalEntries.toLocaleString('en-US')} color="#f59e0b" />
                                         </>}
                                     </div>
                                 </div>
@@ -307,21 +305,21 @@ export default function FinancialYearsPage() {
                                         <div style={{ flex: 1 }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                                                 <LockIcon size={13} color={C.danger} />
-                                                <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>إغلاق السنة وفتح دورة جديدة</span>
-                                                <span style={{ fontSize: '10px', color: C.danger, background: `${C.danger}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 800, fontFamily: CAIRO }}>إجراء حساس</span>
+                                                <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إغلاق السنة وفتح دورة جديدة')}</span>
+                                                <span style={{ fontSize: '10px', color: C.danger, background: `${C.danger}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 800, fontFamily: CAIRO }}>{t('إجراء حساس')}</span>
                                             </div>
                                             <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, lineHeight: 1.6 }}>
-                                                ستُجمَّد جميع العمليات وتُفتح فترة جديدة تبدأ من <span style={{ color: C.primary, fontWeight: 900, fontFamily: CAIRO }}>{fmt(nextStart)}</span>
+                                                {t('ستُجمَّد جميع العمليات وتُفتح فترة جديدة تبدأ من')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: CAIRO }}>{fmt(nextStart, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</span>
                                             </p>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexShrink: 0 }}>
                                             <div>
-                                                <label style={{ display: 'block', fontSize: '10px', color: C.textSecondary, marginBottom: '5px', fontFamily: CAIRO, fontWeight: 700 }}>نهاية الفترة الجديدة</label>
+                                                <label style={{ display: 'block', fontSize: '10px', color: C.textSecondary, marginBottom: '5px', fontFamily: CAIRO, fontWeight: 700 }}>{t('نهاية الفترة الجديدة')}</label>
                                                 <input ref={closeEndRef} type="date" min={nextStartStr} defaultValue={defaultCloseEnd} style={IS} />
                                             </div>
                                             <button onClick={() => setConfirmClose({ id: activeFY.id, name: activeFY.name })} disabled={isSaving}
                                                 style={{ height: '40px', padding: '0 20px', borderRadius: '10px', border: 'none', background: C.danger, color: '#fff', fontSize: '12px', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 6px 14px -4px ${C.danger}50`, fontFamily: CAIRO }}>
-                                                <LockIcon size={13} /> إغلاق السنة
+                                                <LockIcon size={13} /> {t('إغلاق السنة')}
                                             </button>
                                         </div>
                                     </div>
@@ -335,7 +333,7 @@ export default function FinancialYearsPage() {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                                     <LockIcon size={13} color={C.textMuted} />
                                     <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                        الفترات المالية المغلقة · {closedYears.length}
+                                        {t('الفترات المالية المغلقة')} · {closedYears.length}
                                     </h3>
                                 </div>
 
@@ -343,15 +341,15 @@ export default function FinancialYearsPage() {
                                     <table style={TABLE_STYLE.table}>
                                         <thead>
                                             <tr style={TABLE_STYLE.thead}>
-                                                <th style={TABLE_STYLE.th(true)}>السنة المالية</th>
-                                                <th style={TABLE_STYLE.th(false)}>من</th>
-                                                <th style={TABLE_STYLE.th(false)}>إلى</th>
-                                                <th style={TABLE_STYLE.th(false)}>الأيام</th>
-                                                <th style={TABLE_STYLE.th(false)}>المبيعات</th>
-                                                <th style={TABLE_STYLE.th(false)}>المشتريات</th>
-                                                <th style={TABLE_STYLE.th(false)}>صافي الفترة</th>
-                                                <th style={TABLE_STYLE.th(false)}>قيود</th>
-                                                <th style={TABLE_STYLE.th(false)}>الحالة</th>
+                                                <th style={TABLE_STYLE.th(true)}>{t('السنة المالية')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('من')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('إلى')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('الأيام')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('المبيعات')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('المشتريات')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('صافي الفترة')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('قيود')}</th>
+                                                <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -369,11 +367,11 @@ export default function FinancialYearsPage() {
                                                         </td>
                                                         {/* من */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
-                                                            {fmt(fy.startDate)}
+                                                            {fmt(fy.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                         </td>
                                                         {/* إلى */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
-                                                            {fmt(fy.endDate)}
+                                                            {fmt(fy.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                         </td>
                                                         {/* الأيام */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted }}>
@@ -384,7 +382,7 @@ export default function FinancialYearsPage() {
                                                             {s ? (
                                                                 <div>
                                                                     <div style={{ fontWeight: 700, color: '#10b981', fontSize: '12px' }}>{fmtMoney(s.salesTotal)} {CURRENCY_AR[currency] || currency}</div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{s.salesCount} فاتورة</div>
+                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{s.salesCount} {t('فاتورة')}</div>
                                                                 </div>
                                                             ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
                                                         </td>
@@ -393,7 +391,7 @@ export default function FinancialYearsPage() {
                                                             {s ? (
                                                                 <div>
                                                                     <div style={{ fontWeight: 700, color: C.danger, fontSize: '12px' }}>{fmtMoney(s.purchasesTotal)} {CURRENCY_AR[currency] || currency}</div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{s.purchasesCount} فاتورة</div>
+                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{s.purchasesCount} {t('فاتورة')}</div>
                                                                 </div>
                                                             ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
                                                         </td>
@@ -404,7 +402,7 @@ export default function FinancialYearsPage() {
                                                                     <div style={{ fontWeight: 800, color: profit >= 0 ? '#10b981' : C.danger, fontSize: '12px' }}>
                                                                         {profit >= 0 ? '+' : '-'}{fmtMoney(Math.abs(profit))} {CURRENCY_AR[currency] || currency}
                                                                     </div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{profit >= 0 ? 'ربح' : 'خسارة'}</div>
+                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{profit >= 0 ? t('ربح') : t('خسارة')}</div>
                                                                 </div>
                                                             ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
                                                         </td>
@@ -420,7 +418,7 @@ export default function FinancialYearsPage() {
                                                                 fontWeight: 900, border: '1px solid rgba(100,116,139,0.15)',
                                                                 display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: CAIRO
                                                             }}>
-                                                                <LockIcon size={10} /> مغلقة
+                                                                <LockIcon size={10} /> {t('مغلقة')}
                                                             </span>
                                                         </td>
                                                     </tr>
@@ -441,9 +439,9 @@ export default function FinancialYearsPage() {
                     onClose={() => !isClosing && setConfirmClose(null)}
                     isSubmitting={isClosing}
                     isDelete={true}
-                    title="إغلاق السنة المالية"
-                    description={`هل أنت متأكد من إغلاق "${confirmClose?.name}"؟ سيتم تجميد كافة العمليات في هذه الفترة وفتح سنة جديدة تلقائياً.`}
-                    confirmText="نعم، أغلق السنة"
+                    title={t("إغلاق السنة المالية")}
+                    description={`${t('هل أنت متأكد من إغلاق')} "${confirmClose?.name}"؟ ${t('سيتم تجميد كافة العمليات في هذه الفترة وفتح سنة جديدة تلقائياً.')}`}
+                    confirmText={t("نعم، أغلق السنة")}
                     onConfirm={async () => {
                         setIsClosing(true);
                         const newEnd = closeEndRef.current?.value;

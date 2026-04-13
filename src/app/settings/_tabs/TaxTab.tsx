@@ -79,7 +79,7 @@ export default function TaxTab({
                                 <div style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t(taxForm.type)}</div>
                             ) : (
                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-                                    {['VAT', 'ضريبة مبيعات', 'ضريبة جدول', 'ضريبة دمغة'].map(taxType => (
+                                    {['VAT', t('ضريبة مبيعات'), t('ضريبة جدول'), t('ضريبة دمغة')].map(taxType => (
                                         <button
                                             key={taxType}
                                             onClick={() => setTaxForm((p: any) => ({ ...p, type: taxType }))}
@@ -90,7 +90,7 @@ export default function TaxTab({
                                                 color: taxForm.type === taxType ? C.primary : C.textSecondary,
                                                 fontFamily: CAIRO
                                             }}
-                                        >{t(taxType)}</button>
+                                        >{taxType}</button>
                                     ))}
                                 </div>
                             )}
@@ -133,48 +133,6 @@ export default function TaxTab({
 
                     </div>
                 )}
-
-                {/* ── POS Service Charge Toggle ── */}
-                <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: taxForm.hasServiceCharge ? '#3b82f620' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: taxForm.hasServiceCharge ? '#3b82f6' : C.textMuted }}>
-                            <Receipt size={20} />
-                        </div>
-                        <div>
-                            <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفعيل رسوم الخدمة (POS)')}</div>
-                            <div style={{ fontSize: '11px', color: C.textMuted }}>{t("عند تفعيلها، سيتم إضافة حقل 'خدمة' بنسبة مئوية في شاشة الكاشير السريع (المطاعم/الكافيهات)")}</div>
-                        </div>
-                    </div>
-                    <Toggle
-                        checked={!!taxForm.hasServiceCharge}
-                        onChange={v => setTaxForm((p: any) => ({ ...p, hasServiceCharge: v }))}
-                        disabled={!isEditMode}
-                    />
-                </div>
-
-                {taxForm.hasServiceCharge && (
-                    <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', animation: 'fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-                        <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textMuted, marginBottom: '12px', fontFamily: CAIRO }}>{t('نسبة الخدمة الافتراضية (%)')}</label>
-                        {!isEditMode ? (
-                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{taxForm.serviceChargeRate || 0}%</div>
-                        ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <input
-                                    type="number"
-                                    value={taxForm.serviceChargeRate || 0}
-                                    onChange={e => setTaxForm((p: any) => ({ ...p, serviceChargeRate: parseFloat(e.target.value) || 0 }))}
-                                    style={{
-                                        width: '100px', height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`,
-                                        background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 12px',
-                                        fontSize: '15px', fontWeight: 800, textAlign: 'center', outline: 'none'
-                                    }}
-                                />
-                                <span style={{ fontSize: '14px', fontWeight: 800, color: C.primary }}>%</span>
-                            </div>
-                        )}
-                    </div>
-                )}
-
             </div>
         </div>
     );

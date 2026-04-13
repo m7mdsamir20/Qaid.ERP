@@ -79,9 +79,9 @@ export default function PurchasesListPage() {
     const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const getStatusStyle = (total: number, paid: number) => {
-        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: 'مدفوعة', icon: CheckCircle2 };
-        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: 'دفع جزئي', icon: Clock };
-        return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: 'غير مدفوعة', icon: AlertCircle };
+        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
+        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('دفع جزئي'), icon: Clock };
+        return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: t('غير مدفوعة'), icon: AlertCircle };
     };
 
     const handlePrint = async (inv: Invoice) => {
@@ -92,11 +92,11 @@ export default function PurchasesListPage() {
                 if (res.ok) {
                     fullInv = await res.json();
                 } else {
-                    alert('تعذر جلب تفاصيل الفاتورة للطباعة');
+                    alert(t('تعذر جلب تفاصيل الفاتورة للطباعة'));
                     return;
                 }
             } catch (err) {
-                alert('خطأ في الاتصال');
+                alert(t('خطأ في الاتصال'));
                 return;
             }
         }
@@ -186,7 +186,7 @@ export default function PurchasesListPage() {
                                 <tbody>
                                     {paginated.map((inv, idx) => {
                                         const st = getStatusStyle(inv.total, inv.paidAmount);
-                                        const dateStr = new Date(inv.date).toLocaleDateString('en-GB');
+                                        const dateStr = new Date(inv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
                                         return (
                                             <tr key={inv.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
@@ -212,15 +212,15 @@ export default function PurchasesListPage() {
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
                                                         background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
                                                     }}>
-                                                        {t(st.text)} <st.icon size={12} />
+                                                        {st.text} <st.icon size={12} />
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => handlePrint(inv)} style={TABLE_STYLE.actionBtn()} title="طباعة">
+                                                        <button onClick={() => handlePrint(inv)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
                                                             <Printer size={TABLE_STYLE.actionIconSize} />
                                                         </button>
-<button onClick={() => router.push(`/purchases/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title="عرض">
+                                                        <button onClick={() => router.push(`/purchases/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
                                                             <Eye size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                     </div>

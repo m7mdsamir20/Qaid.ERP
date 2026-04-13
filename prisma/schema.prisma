@@ -498,6 +498,7 @@ model Customer {
   type             String            @default("individual")
   taxNumber        String?
   crNumber         String?
+  contactPerson    String?
   creditLimit      Float             @default(0)
   balance          Float             @default(0)
   companyId        String
@@ -510,16 +511,17 @@ model Customer {
 }
 
 model Supplier {
-  id        String    @id @default(cuid())
-  name      String
-  phone     String?
-  address   String?
-  type      String    @default("individual")
-  taxNumber String?
-  crNumber  String?
-  balance   Float     @default(0)
-  companyId String
-  createdAt DateTime  @default(now())
+  id            String    @id @default(cuid())
+  name          String
+  phone         String?
+  address       String?
+  type          String    @default("individual")
+  taxNumber     String?
+  crNumber      String?
+  contactPerson String?
+  balance       Float     @default(0)
+  companyId     String
+  createdAt     DateTime  @default(now())
   invoices  Invoice[]
   company   Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   vouchers  Voucher[]

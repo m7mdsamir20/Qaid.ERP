@@ -86,7 +86,7 @@ export default function AgingReportPage() {
                     title="تقرير أعمار الديون"
                     subtitle="تحليل المديونيات المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل."
                     backTab="partners"
-                    onExportPdf={() => window.print()}
+                    
                     onExportExcel={exportToExcel}
                 />
 

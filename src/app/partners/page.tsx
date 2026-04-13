@@ -65,7 +65,7 @@ export default function PartnersPage() {
 
         const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         if (res.ok) { setModal(null); fetchData(); }
-        else { const d = await res.json(); alert(d.error || 'فشل الحفظ'); }
+        else { const d = await res.json(); alert(d.error || t('فشل الحفظ')); }
         setSaving(false);
     };
 
@@ -74,7 +74,7 @@ export default function PartnersPage() {
         setSaving(true);
         const res = await fetch('/api/partners', { method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: deleteTarget.id }) });
         if (res.ok) { setDeleteTarget(null); fetchData(); }
-        else { alert('فشل الحذف'); }
+        else { alert(t('فشل الحذف')); }
         setSaving(false);
     };
 
@@ -87,11 +87,11 @@ export default function PartnersPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
-                    title="بيانات الشركاء"
-                    subtitle="إدارة الحصص ورأس المال وتوزيع الأرباح"
+                    title={t("بيانات الشركاء")}
+                    subtitle={t("إدارة الحصص ورأس المال وتوزيع الأرباح")}
                     icon={Users}
                     primaryButton={{
-                        label: "شريك جديد",
+                        label: t("شريك جديد"),
                         onClick: openAdd,
                         icon: Plus
                     }}
@@ -100,9 +100,9 @@ export default function PartnersPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي رأس المال', val: totalCapital, color: C.blue, icon: DollarSign, suffix: 'ج.م' },
-                            { label: 'إجمالي الحصص', val: totalShare.toFixed(1), color: '#818cf8', icon: PieChart, suffix: '%' },
-                            { label: 'إجمالي الأرصدة', val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: TrendingUp, suffix: 'ج.م' },
+                            { label: t('إجمالي رأس المال'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: t('ج.م') },
+                            { label: t('إجمالي الحصص'), val: totalShare.toFixed(1), color: '#818cf8', icon: PieChart, suffix: '%' },
+                            { label: t('إجمالي الأرصدة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: TrendingUp, suffix: t('ج.م') },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -132,9 +132,9 @@ export default function PartnersPage() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                             <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <PieChart size={16} style={{ color: C.primary }} />
-                                توزيع الحصص الفعلي
+                                {t('توزيع الحصص الفعلي')}
                             </div>
-                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>الإجمالي: 100%</div>
+                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{t('الإجمالي')}: 100%</div>
                         </div>
                         
                         <div style={{ display: 'flex', height: '14px', borderRadius: '7px', overflow: 'hidden', gap: '2px', background: 'rgba(255,255,255,0.03)' }}>
@@ -143,7 +143,7 @@ export default function PartnersPage() {
                                     style={{ width: `${p.share}%`, background: PARTNER_COLORS[i % PARTNER_COLORS.length], transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)' }} />
                             ))}
                             {totalShare < 100 && (
-                                <div title={`غير موزع: ${(100 - totalShare).toFixed(1)}%`}
+                                <div title={`${t('غير موزع')}: ${(100 - totalShare).toFixed(1)}%`}
                                     style={{ width: `${100 - totalShare}%`, background: 'rgba(255,255,255,0.06)', borderInlineStart: '1px dashed rgba(255,255,255,0.1)' }} />
                             )}
                         </div>
@@ -162,20 +162,20 @@ export default function PartnersPage() {
                 {loading ? (
                     <div style={{ padding: '80px', textAlign: 'center' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>جاري استرجاع سجلات الشركاء...</p>
+                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري استرجاع سجلات الشركاء...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>لا يوجد شركاء مسجلون</h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح</p>
+                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
+                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
                         {partners.map((p, i) => {
                             const color = PARTNER_COLORS[i % PARTNER_COLORS.length];
                             return (
-                                 <div key={p.id} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '18px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', overflow: 'hidden', position: 'relative', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+                                <div key={p.id} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '18px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', overflow: 'hidden', position: 'relative', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
                                      onMouseEnter={e => { 
                                          e.currentTarget.style.borderColor = `${color}60`; 
                                          e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)'; 
@@ -209,13 +209,13 @@ export default function PartnersPage() {
 
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
                                             <div style={{ textAlign: 'center' }}>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>رأس المال</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 900, color: C.blue, fontFamily: INTER }}>{p.capital.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>ج.م</span></div>
+                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
+                                                <div style={{ fontSize: '15px', fontWeight: 900, color: C.blue, fontFamily: INTER }}>{p.capital.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span></div>
                                             </div>
                                             <div style={{ textAlign: 'center' }}>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>الرصيد الجاري</div>
+                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
                                                 <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: INTER }}>
-                                                    {p.balance.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>ج.م</span>
+                                                    {p.balance.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -224,12 +224,12 @@ export default function PartnersPage() {
                                             <button onClick={() => router.push('/partner-accounts')}
                                                 style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '36px', borderRadius: '10px', border: `1px solid ${color}30`, background: `${color}10`, color, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
                                                 <ExternalLink size={13} />
-                                                كشف الحساب
+                                                {t('كشف الحساب')}
                                             </button>
-                                            <button onClick={() => openEdit(p)} style={{ ...TABLE_STYLE.actionBtn(), width: '36px', height: '36px' }} title="تعديل">
+                                            <button onClick={() => openEdit(p)} style={{ ...TABLE_STYLE.actionBtn(), width: '36px', height: '36px' }} title={t("تعديل")}>
                                                 <Pencil size={15} />
                                             </button>
-                                            <button onClick={() => setDeleteTarget(p)} style={{ ...TABLE_STYLE.actionBtn(C.danger), width: '36px', height: '36px' }} title="حذف">
+                                            <button onClick={() => setDeleteTarget(p)} style={{ ...TABLE_STYLE.actionBtn(C.danger), width: '36px', height: '36px' }} title={t("حذف")}>
                                                 <Trash2 size={15} />
                                             </button>
                                         </div>
@@ -247,22 +247,22 @@ export default function PartnersPage() {
                 <AppModal
                     show={modal !== null}
                     onClose={() => setModal(null)}
-                    title={modal === 'add' ? 'إضافة شريك جديد' : `تعديل بيانات الشريك`}
+                    title={modal === 'add' ? t('إضافة شريك جديد') : t(`تعديل بيانات الشريك`)}
                     icon={Users}
                 >
                     <form onSubmit={handleSave}>
                         <div style={{ marginBottom: '16px' }}>
-                            <label style={LS}>اسم الشريك <span style={{ color: C.danger }}>*</span></label>
-                            <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder="أدخل اسم الشريك الكامل..." />
+                            <label style={LS}>{t('اسم الشريك')} <span style={{ color: C.danger }}>*</span></label>
+                            <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("أدخل اسم الشريك الكامل...")} />
                         </div>
                         
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
-                                <label style={LS}>رأس المال (ج.م) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>{t('رأس المال (ج.م)')} <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="number" min="0" step="0.01" value={form.capital} onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} style={{...IS, color: '#10b981', fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <label style={LS}>النسبة المحسوبة (%)</label>
+                                <label style={LS}>{t('النسبة المحسوبة (%)')}</label>
                                 <div style={{...IS, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: INTER}}>
                                     {(() => {
                                         const cap = parseFloat(form.capital) || 0;
@@ -280,24 +280,24 @@ export default function PartnersPage() {
                         </div>
 
                         <div style={{ marginBottom: '16px' }}>
-                            <label style={LS}>رقم الهاتف</label>
+                            <label style={LS}>{t('رقم الهاتف')}</label>
                             <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="05xxxxxxxx" />
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>ملاحظات</label>
+                            <label style={LS}>{t('ملاحظات')}</label>
                             <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2}
                                 style={{ ...IS, height: 'auto', padding: '12px 14px', resize: 'none' } as any}
-                                onFocus={focusIn} onBlur={focusOut} placeholder="أية ملاحظات إضافية..." />
+                                onFocus={focusIn} onBlur={focusOut} placeholder={t("أية ملاحظات إضافية...")} />
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1, height: '48px' }}>
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Save size={18} />}
-                                <span style={{ marginInlineEnd: '8px' }}>{modal === 'add' ? 'إضافة الشريك' : 'حفظ التعديلات'}</span>
+                                <span style={{ marginInlineEnd: '8px' }}>{modal === 'add' ? t('إضافة الشريك') : t('حفظ التعديلات')}</span>
                             </button>
                             <button type="button" onClick={() => setModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                إلغاء
+                                {t('إلغاء')}
                             </button>
                         </div>
                     </form>
@@ -307,7 +307,7 @@ export default function PartnersPage() {
                     show={deleteTarget !== null}
                     onClose={() => setDeleteTarget(null)}
                     isDelete={true}
-                    title="تأكيد حذف الشريك"
+                    title={t("تأكيد حذف الشريك")}
                     itemName={deleteTarget?.name}
                     onConfirm={handleDelete}
                     isSubmitting={saving}

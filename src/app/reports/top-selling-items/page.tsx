@@ -55,10 +55,10 @@ export default function TopSellingReportPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={isServices ? "تحليل الخدمات الأكثر طلباً" : "تحليل الأصناف الأكثر مبيعاً"}
-                    subtitle={isServices ? "نظرة شاملة على الخدمات الأعلى حركة وطلباً في نشاطك." : "نظرة شاملة على المنتجات الأعلى حركة وكفاءة ربحية في محفظة مبيعاتك."}
+                    title={isServices ? t("تحليل الخدمات الأكثر طلباً") : t("تحليل الأصناف الأكثر مبيعاً")}
+                    subtitle={isServices ? t("نظرة شاملة على الخدمات الأعلى حركة وطلباً في نشاطك.") : t("نظرة شاملة على المنتجات الأعلى حركة وكفاءة ربحية في محفظة مبيعاتك.")}
                     backTab="sales-purchases"
-                    onExportPdf={() => window.print()}
+                    
                 />
 
 
@@ -68,7 +68,7 @@ export default function TopSellingReportPage() {
                             <div style={{ position: 'relative', flex: 1 }}>
                                 <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                                 <input
-                                    placeholder="ابحث بالاسم، الكود، أو التصنيف..."
+                                    placeholder={t("ابحث بالاسم، الكود، أو التصنيف...")}
                                     value={q} onChange={e => setQ(e.target.value)}
                                     style={{ 
                                         ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
@@ -79,20 +79,20 @@ export default function TopSellingReportPage() {
                                 />
                             </div>
                             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>
-                                تم العثور على: <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER }}>{filtered.length}</span> {isServices ? "خدمة" : "صنف"}
+                                {t('تم العثور على:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER }}>{filtered.length}</span> {isServices ? t("خدمة") : t("صنف")}
                             </div>
                         </div>
 
                         {loading ? (
                             <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                                 <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                                <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? "جاري تحليل حركة الخدمات..." : "جاري تحليل حركة الأصناف..."}</span>
+                                <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? t("جاري تحليل حركة الخدمات...") : t("جاري تحليل حركة الأصناف...")}</span>
                             </div>
                         ) : filtered.length === 0 ? (
                             <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? "لا توجد خدمات منفذة" : "لا توجد أصناف مباعة"}</h3>
-                                <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{isServices ? "لم يتم تسجيل عمليات طلب لهذه الخدمات في الفترة الحالية." : "لم يتم تسجيل عمليات بيع لهذه الأصناف في الفترة الحالية."}</p>
+                                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("لا توجد خدمات منفذة") : t("لا توجد أصناف مباعة")}</h3>
+                                <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{isServices ? t("لم يتم تسجيل عمليات طلب لهذه الخدمات في الفترة الحالية.") : t("لم يتم تسجيل عمليات بيع لهذه الأصناف في الفترة الحالية.")}</p>
                             </div>
                         ) : (
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
@@ -100,10 +100,10 @@ export default function TopSellingReportPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>#</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{isServices ? "بيانات الخدمة" : "بيانات الصنف"}</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>الكمية</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>القيمة</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>الربح التقديري</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{isServices ? t("بيانات الخدمة") : t("بيانات الصنف")}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>{t('القيمة')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>{t('الربح التقديري')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -119,7 +119,7 @@ export default function TopSellingReportPage() {
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{item.totalQuantity.toLocaleString('en-US')}</span>
-                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{item.unit}</span>
+                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.primary, fontSize: '13.5px', fontFamily: INTER }}>
                                                     {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })}
@@ -146,7 +146,7 @@ export default function TopSellingReportPage() {
                             <div style={{ width: '45px', height: '45px', borderRadius: '14px', background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', marginBottom: '16px' }}>
                                 <TrendingUp size={24} />
                             </div>
-                            <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{isServices ? "إجمالي قيمة الخدمات" : "إجمالي القيمة البيعية"}</div>
+                            <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{isServices ? t("إجمالي قيمة الخدمات") : t("إجمالي القيمة البيعية")}</div>
                             <div style={{ fontSize: '20px', fontWeight: 1000, color: '#60a5fa', fontFamily: INTER, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                                 {totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                 <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
@@ -155,7 +155,7 @@ export default function TopSellingReportPage() {
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '18px', padding: '20px' }}>
                             <div style={{ fontSize: '13px', fontWeight: 800, color: '#fb923c', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                <Activity size={16} /> {isServices ? "أعلى 5 خدمات" : "أعلى 5 أصناف"}
+                                <Activity size={16} /> {isServices ? t("أعلى 5 خدمات") : t("أعلى 5 أصناف")}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 {filtered.slice(0, 5).map((item, idx) => (
