@@ -107,10 +107,10 @@ export default function QuotationViewPage() {
                     }}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 310px', gap: '16px', padding: '0 20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', padding: '0 20px', alignItems: 'start' }}>
 
                     {/* ── Left Column ── */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
                         {/* Status Bar */}
                         <div style={{
@@ -197,7 +197,7 @@ export default function QuotationViewPage() {
                     </div>
 
                     {/* ── Right Column: Summary ── */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <div style={{ ...SC, position: 'sticky', top: '20px' }}>
                             <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
                                 <Info size={12} /> {t('ملخص عرض السعر')}

@@ -231,13 +231,13 @@ export default function NewQuotationPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
                 <PageHeader 
                     title={t("إنشاء عرض سعر")}
-                    subtitle=""
+                    subtitle={t("قم بإنشاء عرض سعر احترافي لعملائك بسهولة وبخطوات سريعة")}
                     icon={FileText}
                     backUrl="/quotations"
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 310px', gap: '16px', padding: '0 20px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', padding: '0 20px', alignItems: 'start' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         
                         {/* Basic Info */}
                         <div style={SC}>
@@ -245,7 +245,7 @@ export default function NewQuotationPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 150px', gap: '15px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم العرض')}</label>
-                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,244,0.1)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, color: C.primary, letterSpacing: '0.5px' }}>
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, color: C.primary, letterSpacing: '0.5px' }}>
                                         QUO-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
@@ -364,7 +364,7 @@ export default function NewQuotationPage() {
                     </div>
 
                     {/* Summary Sidebar */}
-                    <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
                                 <Info size={12} /> {t('ملخص عرض السعر')}
@@ -466,7 +466,7 @@ export default function NewQuotationPage() {
                                 </div>
                             </div>
 
-                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #256af4 0%, #1e40af 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '16px', marginTop: '18px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(37,106,244,0.4)' }}>
+                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #256af4 0%, #1e40af 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '16px', marginTop: '14px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(37,106,244,0.4)' }}>
                                 {submitting ? <Loader2 className="animate-spin" /> : <Printer size={20} />}
                                 {submitting ? t('جاري الحفظ...') : t('حفظ وطباعة العرض')}
                             </button>
