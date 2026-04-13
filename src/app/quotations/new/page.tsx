@@ -6,7 +6,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { FileText, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus, Percent } from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, SC, STitle } from '@/constants/theme';
 import { printQuotation, CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -24,8 +24,7 @@ const fmt = (v: any) => {
     return parts.join('.');
 };
 
-const SC: React.CSSProperties = { background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' };
-const STitle: React.CSSProperties = { fontSize: '13px', fontWeight: 800, color: C.textMuted, display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.5px' };
+const PAGE_SC: React.CSSProperties = { background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' };
 
 export default function NewQuotationPage() {
     const { lang, t } = useTranslation();
@@ -105,7 +104,6 @@ export default function NewQuotationPage() {
 
     const subtotal = lines.reduce((s, l) => s + l.total, 0);
     
-    // Sync discounts
     const updateDiscount = (val: number, type: 'pct' | 'amt') => {
         if (type === 'pct') {
             const amt = subtotal * (val / 100);
@@ -235,7 +233,7 @@ export default function NewQuotationPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
                 <PageHeader 
                     title={t("إنشاء عرض سعر")}
-                    subtitle={`${t("قم بتجهيز عرض سعر احترافي لعملائك برقم")} QUO-${String(nextNum).padStart(5, '0')}`}
+                    subtitle={`${t("رقم عرض السعر")} QUO-${String(nextNum).padStart(5, '0')}`}
                     icon={FileText}
                     backUrl="/quotations"
                 />
@@ -244,7 +242,7 @@ export default function NewQuotationPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         
                         {/* Basic Info */}
-                        <div style={SC}>
+                        <div style={PAGE_SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 150px', gap: '15px' }}>
                                 <div>
@@ -271,7 +269,7 @@ export default function NewQuotationPage() {
                         </div>
 
                         {/* Items Selection */}
-                        <div style={SC}>
+                        <div style={PAGE_SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}</div>
                             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
@@ -324,7 +322,6 @@ export default function NewQuotationPage() {
                                 </button>
                             </div>
 
-                            {/* Lines Table */}
                             <div style={{ marginTop: '10px', overflowX: 'auto', borderRadius: '12px', border: `1px solid ${C.border}` }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
@@ -362,16 +359,18 @@ export default function NewQuotationPage() {
                         </div>
 
                         {/* Notes */}
-                        <div style={SC}>
+                        <div style={PAGE_SC}>
                             <div style={STitle}><FileText size={12} /> {t('ملاحظات وشروط العرض')}</div>
                             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} style={{ ...IS, height: '100px', padding: '12px', fontSize: '14px' }} placeholder={t("اكتب أي ملاحظات أو شروط تود ظهورها في عرض السعر...")} />
                         </div>
                     </div>
 
                     {/* Summary Sidebar */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ ...SC, border: 'none', background: 'transparent', padding: '0', position: 'sticky', top: '20px' }}>
-                            <div style={{ fontSize: '18px', fontWeight: 900, color: '#3b82f6', marginBottom: '18px', textAlign: 'center' }}>{t('ملخص عرض السعر')}</div>
+                    <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <div style={SC}>
+                            <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
+                                <Info size={12} /> {t('ملخص عرض السعر')}
+                            </div>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px', padding: '0 5px' }}>
@@ -379,7 +378,7 @@ export default function NewQuotationPage() {
                                     <span style={{ fontWeight: 800, fontFamily: INTER, color: C.textPrimary }}>{fmt(subtotal)} <small style={{fontFamily: CAIRO}}>{cSymbol}</small> </span>
                                 </div>
 
-                                {/* Discount Section - Card Style */}
+                                {/* Discount Section */}
                                 <div style={{ 
                                     background: 'rgba(255,255,255,0.03)', 
                                     borderRadius: '15px', 
@@ -387,7 +386,7 @@ export default function NewQuotationPage() {
                                     border: `1px solid ${C.border}` 
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{t('الخصم')}</label>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{t('الخصم')}</label>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                         <div style={{ position: 'relative' }}>
@@ -415,7 +414,7 @@ export default function NewQuotationPage() {
                                     </div>
                                 </div>
 
-                                {/* Tax Section - Dashed Box */}
+                                {/* Tax Section */}
                                 {taxSettings?.enabled && (
                                     <div style={{ 
                                         borderRadius: '15px', 
@@ -427,8 +426,8 @@ export default function NewQuotationPage() {
                                         background: 'rgba(255,255,255,0.01)'
                                     }}>
                                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <label style={{ ...LS, marginBottom: 0, fontSize: '12px', fontWeight: 800, color: C.textMuted }}>
-                                                {taxSettings.label || 'VAT'} ({taxSettings.isInclusive ? t('مضمنة') : t('مضافة')})
+                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>
+                                                {taxSettings.label || 'VAT'}
                                             </label>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
@@ -456,7 +455,7 @@ export default function NewQuotationPage() {
                                 )}
 
                                 <div style={{ 
-                                    background: '#0f172a', /* Darker blue background matching screenshot */
+                                    background: '#0f172a', 
                                     color: '#fff', 
                                     padding: '20px 18px', 
                                     borderRadius: '18px', 

@@ -198,79 +198,82 @@ export default function QuotationViewPage() {
 
                     {/* ── Right Column: Summary ── */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', position: 'sticky', top: '20px' }}>
-                            <div style={{ fontSize: '18px', fontWeight: 900, color: '#3b82f6', marginBottom: '8px', textAlign: 'center' }}>{t('ملخص عرض السعر')}</div>
-                            
-                            <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px', padding: '0 5px' }}>
-                                <span style={{ color: C.textMuted, fontWeight: 700 }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}:</span>
-                                <span style={{ fontWeight: 800, fontFamily: INTER, color: C.textPrimary }}>{fmt(quotation.subtotal)} <small style={{fontFamily: CAIRO}}>{cSymbol}</small> </span>
+                        <div style={{ ...SC, position: 'sticky', top: '20px' }}>
+                            <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
+                                <Info size={12} /> {t('ملخص عرض السعر')}
                             </div>
+                            
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px', padding: '0 5px' }}>
+                                    <span style={{ color: C.textMuted, fontWeight: 700 }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}:</span>
+                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: C.textPrimary }}>{fmt(quotation.subtotal)} <small style={{fontFamily: CAIRO}}>{cSymbol}</small> </span>
+                                </div>
 
-                            {/* Discount View */}
-                            {quotation.discountAmt > 0 && (
+                                {/* Discount View */}
+                                {quotation.discountAmt > 0 && (
+                                    <div style={{ 
+                                        background: 'rgba(255,255,255,0.03)', 
+                                        borderRadius: '15px', 
+                                        padding: '15px', 
+                                        border: `1px solid ${C.border}`,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '10px'
+                                    }}>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{t('الخصم الممنوح')}</label>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: INTER, color: C.danger }}>- {fmt(quotation.discountAmt)} {cSymbol}</div>
+                                            {quotation.discountPct > 0 && <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted }}>({quotation.discountPct}%)</span>}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Tax View */}
+                                {quotation.taxAmount > 0 && (
+                                    <div style={{ 
+                                        borderRadius: '15px', 
+                                        padding: '15px', 
+                                        border: `1px dashed ${C.border}`,
+                                        background: 'rgba(255,255,255,0.01)',
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '10px'
+                                    }}>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{quotation.taxLabel || 'VAT'} ({quotation.taxRate}%)</label>
+                                        <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: INTER, color: C.primary }}>+ {fmt(quotation.taxAmount)} {cSymbol}</div>
+                                    </div>
+                                )}
+
                                 <div style={{ 
-                                    background: 'rgba(255,255,255,0.03)', 
-                                    borderRadius: '15px', 
-                                    padding: '15px', 
-                                    border: `1px solid ${C.border}`,
+                                    background: '#0f172a', 
+                                    color: '#fff', 
+                                    padding: '20px 18px', 
+                                    borderRadius: '18px', 
+                                    border: '1px solid #1e293b',
                                     display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '10px'
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
                                 }}>
-                                    <label style={{ ...LS, marginBottom: 0, fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{t('الخصم الممنوح')}</label>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: INTER, color: C.danger }}>- {fmt(quotation.discountAmt)} {cSymbol}</div>
-                                        {quotation.discountPct > 0 && <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted }}>({quotation.discountPct}%)</span>}
+                                    <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.5px' }}>{t('صافي العرض')}</div>
+                                    <div style={{ fontSize: '28px', fontWeight: 900, fontFamily: INTER, color: '#3b82f6', display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                                        {fmt(quotation.total)} <span style={{ fontSize: '14px', fontWeight: 700, opacity: 0.8 }}>{cSymbol}</span>
                                     </div>
                                 </div>
-                            )}
 
-                            {/* Tax View */}
-                            {quotation.taxAmount > 0 && (
-                                <div style={{ 
-                                    borderRadius: '15px', 
-                                    padding: '15px', 
-                                    border: `1px dashed ${C.border}`,
-                                    background: 'rgba(255,255,255,0.01)',
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: '10px'
-                                }}>
-                                    <label style={{ ...LS, marginBottom: 0, fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{quotation.taxLabel || 'VAT'} ({quotation.taxRate}%)</label>
-                                    <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: INTER, color: C.primary }}>+ {fmt(quotation.taxAmount)} {cSymbol}</div>
-                                </div>
-                            )}
+                                {quotation.status === 'pending' && (
+                                    <button onClick={handleConvert} disabled={converting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '16px', marginTop: '10px', cursor: converting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 15px rgba(74,222,128,0.3)' }}>
+                                        {converting ? <Loader2 className="animate-spin" /> : <Package size={20} />}
+                                        {t('تحويل لفاتورة مبيعات')}
+                                    </button>
+                                )}
 
-                            {/* Net Total Box - Exactly like the New page */}
-                            <div style={{ 
-                                background: '#0f172a', /* Dark slate background */
-                                color: '#fff', 
-                                padding: '20px 18px', 
-                                borderRadius: '18px', 
-                                border: '1px solid #1e293b',
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
-                                boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
-                            }}>
-                                <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.5px' }}>{t('صافي العرض')}</div>
-                                <div style={{ fontSize: '28px', fontWeight: 900, fontFamily: INTER, color: '#3b82f6', display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                    {fmt(quotation.total)} <span style={{ fontSize: '14px', fontWeight: 700, opacity: 0.8 }}>{cSymbol}</span>
-                                </div>
+                                {quotation.status === 'converted' && (
+                                    <button onClick={() => router.push(`/sales/${quotation.convertedInvoiceId}`)} style={{ width: '100%', height: '50px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', cursor: 'pointer' }}>
+                                        <Eye size={18} /> {t('عرض الفاتورة المرتبطة')}
+                                    </button>
+                                )}
                             </div>
-
-                            {quotation.status === 'pending' && (
-                                <button onClick={handleConvert} disabled={converting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '16px', marginTop: '10px', cursor: converting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 15px rgba(74,222,128,0.3)' }}>
-                                    {converting ? <Loader2 className="animate-spin" /> : <Package size={20} />}
-                                    {t('تحويل لفاتورة مبيعات')}
-                                </button>
-                            )}
-
-                            {quotation.status === 'converted' && (
-                                <button onClick={() => router.push(`/sales/${quotation.convertedInvoiceId}`)} style={{ width: '100%', height: '50px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '14px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', cursor: 'pointer' }}>
-                                    <Eye size={18} /> {t('عرض الفاتورة المرتبطة')}
-                                </button>
-                            )}
                         </div>
                     </div>
                 </div>
