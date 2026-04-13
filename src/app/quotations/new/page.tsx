@@ -239,17 +239,16 @@ export default function NewQuotationPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         
-                        {/* Basic Info */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
                                     <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
                                         QUO-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
-                                <div style={{ flex: 1 }}>
+                                <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('العميل')}</label>
                                     <CustomSelect 
                                         options={customers.map(c => ({ value: c.id, label: c.name }))}
@@ -259,7 +258,7 @@ export default function NewQuotationPage() {
                                         icon={Search}
                                     />
                                 </div>
-                                <div style={{ width: '100%' }}>
+                                <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ العرض')}</label>
                                     <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} style={{ ...IS, fontFamily: INTER, fontSize: '13px', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
