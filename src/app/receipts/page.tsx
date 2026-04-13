@@ -6,14 +6,14 @@ import { useRouter } from 'next/navigation';
 import {
     Plus, Search, Loader2,
     Building2, Banknote,
-    Printer, Receipt, Trash2, TrendingUp
+    Printer, Download, Receipt, Trash2, TrendingUp
 } from 'lucide-react';
 
 import { THEME, C, CAIRO, INTER, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
-import { printThermalVoucher, CompanyInfo } from '@/lib/printInvoices';
+import { printThermalVoucher, downloadThermalVoucher, CompanyInfo } from '@/lib/printInvoices';
 
 /* ── Types ── */
 interface Voucher {
@@ -74,6 +74,10 @@ export default function ReceiptVouchersPage() {
 
     const handlePrint = (v: Voucher) => {
         printThermalVoucher(v, 'receipt', company);
+    };
+
+    const handleDownload = (v: Voucher) => {
+        downloadThermalVoucher(v, 'receipt', company);
     };
 
     return (
@@ -192,12 +196,18 @@ export default function ReceiptVouchersPage() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button 
+                                                        <button
                                                             onClick={(e) => { e.stopPropagation(); handlePrint(v); }}
-                                                        style={TABLE_STYLE.actionBtn()}
-                                                        title="طباعة">
-                                                        <Printer size={TABLE_STYLE.actionIconSize} />
-                                                    </button>
+                                                            style={TABLE_STYLE.actionBtn()}
+                                                            title="طباعة">
+                                                            <Printer size={TABLE_STYLE.actionIconSize} />
+                                                        </button>
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); handleDownload(v); }}
+                                                            style={TABLE_STYLE.actionBtn()}
+                                                            title="تنزيل PDF">
+                                                            <Download size={TABLE_STYLE.actionIconSize} />
+                                                        </button>
                                                 </div>
                                             </td>
                                         </tr>

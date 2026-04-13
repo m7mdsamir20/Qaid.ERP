@@ -2,11 +2,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { ShoppingCart, Plus, Printer, Info, Loader2, Search, ChevronDown, Package, TrendingUp, Wallet, Clock, CheckCircle2, History, Filter, Calendar, Trash2, Receipt, Eye, AlertCircle } from 'lucide-react';
+import { ShoppingCart, Plus, Printer, Download, Info, Loader2, Search, ChevronDown, Package, TrendingUp, Wallet, Clock, CheckCircle2, History, Filter, Calendar, Trash2, Receipt, Eye, AlertCircle } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol } from '@/lib/currency';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
+import { printA4Invoice, downloadA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, PAGE_BASE, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
@@ -103,6 +103,18 @@ export default function PurchasesListPage() {
         printA4Invoice(fullInv, 'purchase', company, {
             partyBalance: fullInv.supplier?.balance
         });
+    };
+
+    const handleDownload = async (inv: Invoice) => {
+        let fullInv = inv;
+        if (!inv.lines || inv.lines.length === 0) {
+            try {
+                const res = await fetch(`/api/purchases?id=${inv.id}`);
+                if (res.ok) { fullInv = await res.json(); }
+                else { alert('تعذر جلب تفاصيل الفاتورة'); return; }
+            } catch { alert('خطأ في الاتصال'); return; }
+        }
+        downloadA4Invoice(fullInv, 'purchase', company, { partyBalance: fullInv.supplier?.balance });
     };
 
     return (
@@ -218,6 +230,9 @@ export default function PurchasesListPage() {
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => handlePrint(inv)} style={TABLE_STYLE.actionBtn()} title="طباعة">
                                                             <Printer size={TABLE_STYLE.actionIconSize} />
+                                                        </button>
+                                                        <button onClick={() => handleDownload(inv)} style={TABLE_STYLE.actionBtn()} title="تنزيل PDF">
+                                                            <Download size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                         <button onClick={() => router.push(`/purchases/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title="عرض">
                                                             <Eye size={TABLE_STYLE.actionIconSize} />

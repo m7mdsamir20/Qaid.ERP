@@ -69,7 +69,7 @@ function generateZatcaTLV(sellerName: string, vatNumber: string, timestamp: stri
 // ═══════════════════════════════════════════════
 //  A4 INVOICE (مبيعات / مشتريات / مرتجعات)
 // ═══════════════════════════════════════════════
-export function printA4Invoice(
+function generateA4HTML(
     invoice: any,
     type: InvoiceType,
     company: CompanyInfo = {},
@@ -77,9 +77,10 @@ export function printA4Invoice(
         terms?: string;
         showSignature?: boolean;
         showStamp?: boolean;
-        partyBalance?: number; // رصيد العميل/المورد بعد الفاتورة
+        partyBalance?: number;
+        forDownload?: boolean; // إذا true لا يتم تشغيل window.print تلقائياً
     } = {}
-) {
+): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
     const isSaudi = country === 'SA';
@@ -388,19 +389,161 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 </div>
 ${isSaudi ? `
 <script>
-window.onload = () => {
-    setTimeout(() => window.print(), 500);
-};
+window.onload = () => { setTimeout(() => window.print(), 500); };
 </script>` : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;
 
+    return html;
+}
+
+// ── Print (opens new tab + auto-print) ──────────────────────────────────────
+export function printA4Invoice(
+    invoice: any,
+    type: InvoiceType,
+    company: CompanyInfo = {},
+    options: { terms?: string; showSignature?: boolean; showStamp?: boolean; partyBalance?: number } = {}
+) {
+    const html = generateA4HTML(invoice, type, company, options);
     const win = window.open('', '_blank');
     if (win) { win.document.write(html); win.document.close(); }
 }
 
+// ── Download as PDF (same HTML, no print dialog) ────────────────────────────
+export async function downloadA4Invoice(
+    invoice: any,
+    type: InvoiceType,
+    company: CompanyInfo = {},
+    options: { terms?: string; showSignature?: boolean; showStamp?: boolean; partyBalance?: number } = {}
+) {
+    const html2pdf = (await import('html2pdf.js')).default;
+
+    // Build filename
+    const PREFIXES: Record<InvoiceType, string> = { sale: 'SAL', purchase: 'PUR', 'sale-return': 'SLR', 'purchase-return': 'PRR' };
+    const isServ = company.businessType?.toUpperCase() === 'SERVICES';
+    const prefix = isServ ? 'SRV' : PREFIXES[type];
+    const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
+    const filename = `${prefix}-${invoiceNum}.pdf`;
+
+    // Generate same HTML but strip auto-print script
+    const rawHtml = generateA4HTML(invoice, type, company, options);
+    const cleanHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
+
+    // Render in hidden iframe then export
+    const blob = new Blob([cleanHtml], { type: 'text/html;charset=utf-8' });
+    const url  = URL.createObjectURL(blob);
+
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;';
+    iframe.src = url;
+    document.body.appendChild(iframe);
+
+    await new Promise<void>(resolve => { iframe.onload = () => resolve(); });
+
+    await html2pdf()
+        .set({
+            margin: 0,
+            filename,
+            image:      { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+            jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        })
+        .from(iframe.contentDocument!.body)
+        .save();
+
+    document.body.removeChild(iframe);
+    URL.revokeObjectURL(url);
+}
+
+function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}): string {
+    const sym = getCurrencySymbol(company.currency || 'EGP');
+    const isReceipt = type === 'receipt';
+    const title = isReceipt ? 'سند قبض' : 'سند صرف';
+    const titleEn = isReceipt ? 'Receipt Voucher' : 'Payment Voucher';
+    const vNum = String(voucher.voucherNumber || 1).padStart(5, '0');
+    const date = new Date(voucher.date || new Date()).toLocaleDateString('en-GB');
+    const amount = Number(voucher.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const partyName = voucher.customer?.name || voucher.supplier?.name || '—';
+    const treasuryName = voucher.treasury?.name || '';
+    const paymentType = voucher.paymentType === 'bank' ? 'تحويل بنكي' : 'نقداً';
+    const coName = company.name || '';
+    const coPhone = company.phone || '';
+
+    return `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Cairo',sans-serif; background:#fff; color:#111; width:80mm; padding:6mm; }
+  .header { text-align:center; border-bottom:2px solid #111; padding-bottom:8px; margin-bottom:8px; }
+  .co-name { font-size:15px; font-weight:800; }
+  .co-phone { font-size:11px; color:#555; margin-top:2px; }
+  .title { font-size:16px; font-weight:800; margin:8px 0 2px; text-align:center; }
+  .title-en { font-size:11px; color:#666; text-align:center; margin-bottom:8px; }
+  .vnum { font-size:12px; font-weight:700; color:#333; text-align:center; margin-bottom:8px; }
+  .row { display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px dashed #ccc; }
+  .row .label { color:#555; }
+  .row .value { font-weight:700; }
+  .amount-row { font-size:16px; font-weight:800; padding:10px 0; text-align:center; border-top:2px solid #111; margin-top:6px; }
+  .footer { text-align:center; font-size:10px; color:#888; margin-top:10px; padding-top:6px; border-top:1px dashed #ccc; }
+  @media print { @page { size:80mm auto; margin:0; } body { width:80mm; } }
+</style>
+</head>
+<body>
+  <div class="header">
+    ${coName ? `<div class="co-name">${coName}</div>` : ''}
+    ${coPhone ? `<div class="co-phone">${coPhone}</div>` : ''}
+  </div>
+  <div class="title">${title}</div>
+  <div class="title-en">${titleEn}</div>
+  <div class="vnum">#${vNum} — ${date}</div>
+  <div class="row"><span class="label">${isReceipt ? 'استلمنا من' : 'صرفنا لـ'}</span><span class="value">${partyName}</span></div>
+  ${treasuryName ? `<div class="row"><span class="label">الخزينة</span><span class="value">${treasuryName}</span></div>` : ''}
+  <div class="row"><span class="label">طريقة الدفع</span><span class="value">${paymentType}</span></div>
+  ${voucher.description ? `<div class="row"><span class="label">البيان</span><span class="value">${voucher.description}</span></div>` : ''}
+  <div class="amount-row">${amount} ${sym}</div>
+  <div class="footer">شكراً لتعاملكم معنا</div>
+<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>
+</body>
+</html>`;
+}
+
 export function printThermalVoucher(voucher: any, type: VoucherType, company: CompanyInfo = {}) {
-    // ... thermal logic omitted for brevity, but you can keep it as is if needed ...
+    const html = generateThermalVoucherHTML(voucher, type, company);
+    const win = window.open('', '_blank');
+    if (win) { win.document.write(html); win.document.close(); }
+}
+
+export async function downloadThermalVoucher(voucher: any, type: VoucherType, company: CompanyInfo = {}) {
+    const html2pdf = (await import('html2pdf.js')).default;
+    const prefix = type === 'receipt' ? 'REC' : 'PAY';
+    const vNum = String(voucher.voucherNumber || 1).padStart(5, '0');
+    const filename = `${prefix}-${vNum}.pdf`;
+
+    const rawHtml = generateThermalVoucherHTML(voucher, type, company);
+    const cleanHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
+
+    const blob = new Blob([cleanHtml], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:80mm;height:200mm;border:none;';
+    iframe.src = url;
+    document.body.appendChild(iframe);
+    await new Promise<void>(resolve => { iframe.onload = () => resolve(); });
+    await html2pdf()
+        .set({
+            margin: 0,
+            filename,
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2, useCORS: true },
+            jsPDF: { unit: 'mm', format: [80, 200], orientation: 'portrait' }
+        })
+        .from(iframe.contentDocument!.body)
+        .save();
+    document.body.removeChild(iframe);
+    URL.revokeObjectURL(url);
 }
 
 export function printSaleInvoice(inv: any, cust: any, num: number, form: any, co: CompanyInfo = {}) {
@@ -542,7 +685,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
             <tr>
                 <td>${i + 1}</td>
                 <td style="text-align:right">
-                    <div style="font-weight:800">${l.itemName}</div>
+                    <div style="font-weight:800">${l.item?.name || l.itemName || ''}</div>
                     ${l.description ? `<div style="font-size:10px;color:#444;margin-top:2px">${l.description}</div>` : ''}
                 </td>
                 <td><strong>${l.quantity}</strong></td>

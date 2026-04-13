@@ -371,22 +371,23 @@ export default function NewQuotationPage() {
                     {/* Summary Sidebar */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={{ ...SC, position: 'sticky', top: '20px' }}>
-                            <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, marginBottom: '10px', textAlign: 'center' }}>{t('ملخص عرض السعر')}</div>
+                            <div style={{ fontSize: '16px', fontWeight: 900, color: '#3b82f6', marginBottom: '15px', textAlign: 'center' }}>{t('ملخص عرض السعر')}</div>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px' }}>
-                                    <span>{t('المجموع الفرعي')}:</span>
-                                    <span style={{ fontWeight: 800, fontFamily: INTER }}>{fmt(subtotal)}</span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '15px' }}>
+                                    <span style={{ color: C.textMuted }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}:</span>
+                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: C.textPrimary }}>{fmt(subtotal)} <small style={{fontFamily: CAIRO}}>{cSymbol}</small> </span>
                                 </div>
 
-                                {/* Discount Section aligned with Sales Invoice */}
-                                <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '15px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
-                                        <label style={{ ...LS, marginBottom: 0 }}>{t('الخصم')}</label>
-                                        <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.05)', padding: '2px', borderRadius: '6px' }}>
-                                            <Percent size={10} style={{ color: C.textMuted }} />
-                                            <Banknote size={10} style={{ color: C.textMuted }} />
-                                        </div>
+                                {/* Discount Section - Card Style */}
+                                <div style={{ 
+                                    background: 'rgba(255,255,255,0.02)', 
+                                    borderRadius: '12px', 
+                                    padding: '12px', 
+                                    border: `1px solid ${C.border}` 
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', color: C.textMuted }}>{t('الخصم')}</label>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
@@ -395,9 +396,9 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
                                                 }} 
-                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(255,255,255,0.02)' }} 
-                                                placeholder="%" onFocus={focusIn} onBlur={focusOut} 
+                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }} 
                                             />
+                                            <span style={{ position: 'absolute', bottom: '10px', left: '10px', fontSize: '12px', color: C.primary, fontWeight: 700 }}>%</span>
                                         </div>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={form.discountAmt === 0 ? '' : fmt(form.discountAmt)} 
@@ -405,51 +406,65 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }} 
-                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', color: '#fb7185', background: 'rgba(251,113,133,0.05)', borderColor: 'rgba(251,113,133,0.2)' }} 
-                                                placeholder={cSymbol} onFocus={focusIn} onBlur={focusOut} 
+                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }} 
                                             />
+                                            <span style={{ position: 'absolute', bottom: '10px', left: '8px', fontSize: '10px', color: C.textMuted }}>{cSymbol}</span>
                                         </div>
                                     </div>
                                 </div>
 
-                                {/* Tax Section - Integrated visibility */}
+                                {/* Tax Section - Dashed Box */}
                                 {taxSettings?.enabled && (
-                                    <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '15px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
-                                            <label style={{ ...LS, marginBottom: 0 }}>{taxSettings.label || t('الضريبة')}</label>
-                                            <span style={{ fontSize: '10px', color: C.textMuted }}>{taxSettings.isInclusive ? t('(شاملة)') : t('(مضافة)')}</span>
+                                    <div style={{ 
+                                        borderRadius: '12px', 
+                                        padding: '12px', 
+                                        border: `1px dashed ${C.border}`,
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        gap: '8px'
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', color: C.textMuted }}>
+                                                {taxSettings.label || 'VAT'} ({taxSettings.isInclusive ? t('مضمنة') : t('مضافة')})
+                                            </label>
                                         </div>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" value={form.taxRate === 0 ? '' : fmt(form.taxRate)} 
                                                     onChange={e => {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }} 
-                                                    style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(255,255,255,0.02)' }} 
-                                                    placeholder="%" onFocus={focusIn} onBlur={focusOut} 
+                                                    style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }} 
                                                 />
+                                                <span style={{ position: 'absolute', bottom: '10px', left: '10px', fontSize: '12px', color: C.primary, fontWeight: 700 }}>%</span>
                                             </div>
                                             <div style={{ 
-                                                height: '38px', borderRadius: '10px', border: `1px solid ${C.border}`, 
-                                                background: 'rgba(251,113,133,0.05)', color: '#fb7185',
+                                                height: '38px', borderRadius: '8px', border: `1px solid ${C.border}`, 
+                                                background: 'rgba(255,255,255,0.02)', color: C.primary,
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 fontFamily: INTER, fontSize: '14px', fontWeight: 800
                                             }}>
-                                                {fmt(taxAmount)}
+                                                {fmt(taxAmount)} <small style={{marginLeft: '4px', fontSize: '9px', fontWeight: 400, color: C.textMuted}}>{cSymbol}</small>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
                                 <div style={{ 
-                                    background: C.primary, color: '#fff', padding: '15px', borderRadius: '14px', marginTop: '10px',
-                                    boxShadow: '0 4px 15px rgba(37,106,244,0.3)', position: 'relative', overflow: 'hidden'
+                                    background: '#0f172a', /* Dark slate/blue like the image */
+                                    color: '#fff', 
+                                    padding: '18px 15px', 
+                                    borderRadius: '16px', 
+                                    marginTop: '5px',
+                                    border: '1px solid #1e293b',
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center'
                                 }}>
-                                    <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1 }}><Banknote size={60} /></div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 700, marginBottom: '5px', opacity: 0.9 }}>{t('الإجمالي النهائي')}</div>
-                                    <div style={{ fontSize: '26px', fontWeight: 900, textAlign: 'center', fontFamily: INTER }}>
-                                        {fmt(finalTotal)} <span style={{ fontSize: '14px', fontWeight: 600 }}>{cSymbol}</span>
+                                    <div style={{ fontSize: '16px', fontWeight: 800 }}>{t('صافي العرض')}</div>
+                                    <div style={{ fontSize: '24px', fontWeight: 900, fontFamily: INTER, color: '#3b82f6' }}>
+                                        {fmt(finalTotal)} <span style={{ fontSize: '13px', fontWeight: 600 }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             </div>

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { Printer, X, Info, Receipt, TrendingDown, Plus, Search, ChevronDown, Lock, Loader2, UserCheck, Building2, Banknote, CheckCircle2, ArrowRight, Trash2, Eye } from 'lucide-react';
+import { Printer, Download, X, Info, Receipt, TrendingDown, Plus, Search, ChevronDown, Lock, Loader2, UserCheck, Building2, Banknote, CheckCircle2, ArrowRight, Trash2, Eye } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { 
     THEME, C, CAIRO, INTER, IS, focusIn, focusOut, PAGE_BASE, SC, STitle, 
@@ -12,7 +12,7 @@ import {
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useCurrency } from '@/hooks/useCurrency';
-import { printThermalVoucher, CompanyInfo } from '@/lib/printInvoices';
+import { printThermalVoucher, downloadThermalVoucher, CompanyInfo } from '@/lib/printInvoices';
 
 /* ── Types ── */
 interface Voucher {
@@ -65,6 +65,10 @@ export default function PaymentVouchersPage() {
 
     const handlePrint = (v: Voucher) => {
         printThermalVoucher(v, 'payment', company);
+    };
+
+    const handleDownload = (v: Voucher) => {
+        downloadThermalVoucher(v, 'payment', company);
     };
 
     const filteredAll = vouchers.filter(v => {
@@ -203,6 +207,9 @@ export default function PaymentVouchersPage() {
                                                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                             <button onClick={() => handlePrint(v)} style={TABLE_STYLE.actionBtn()} title="طباعة">
                                                                 <Printer size={TABLE_STYLE.actionIconSize} />
+                                                            </button>
+                                                            <button onClick={() => handleDownload(v)} style={TABLE_STYLE.actionBtn()} title="تنزيل PDF">
+                                                                <Download size={TABLE_STYLE.actionIconSize} />
                                                             </button>
                                                             <button onClick={() => router.push(`/payments/${v.id}`)} style={TABLE_STYLE.actionBtn()} title="عرض">
                                                                 <Eye size={TABLE_STYLE.actionIconSize} />
