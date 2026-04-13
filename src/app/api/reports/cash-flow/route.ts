@@ -48,7 +48,6 @@ export const GET = withProtection(async (request, session) => {
                 party: v.customer?.name || v.supplier?.name || '—',
                 treasury: v.treasury?.name || '—',
                 amount: v.amount,
-                paymentType: v.paymentType,
                 description: v.description,
             })),
             totalIncome,
