@@ -4,8 +4,8 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { FileText, Printer, CheckCircle, ArrowRight, Loader2, Save, Trash2, X, Send, Eye, Receipt } from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
+import { FileText, Printer, CheckCircle, Loader2, X, Eye } from 'lucide-react';
+import { THEME, C, CAIRO, INTER, IS, LS, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import { printQuotation, CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -56,7 +56,7 @@ export default function QuotationViewPage() {
                 const err = await res.json();
                 alert(err.error || t('فشل تحويل عرض السعر'));
             }
-        } catch (error) {
+        } catch {
             alert(t('خطأ في الاتصال بالسيرفر'));
         } finally {
             setConverting(false);
@@ -65,8 +65,8 @@ export default function QuotationViewPage() {
 
     if (loading) return (
         <DashboardLayout>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                <Loader2 size={32} className="animate-spin" style={{ color: C.primary }} />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textMuted }}>
+                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
             </div>
         </DashboardLayout>
     );
@@ -75,63 +75,81 @@ export default function QuotationViewPage() {
         <DashboardLayout>
             <div style={{ padding: '60px', textAlign: 'center' }}>
                 <X size={48} style={{ color: C.danger, opacity: 0.3 }} />
-                <p>{t('عذراً، لم يتم العثور على عرض السعر المطلوب')}</p>
+                <p style={{ color: C.textMuted, fontFamily: CAIRO }}>{t('عذراً، لم يتم العثور على عرض السعر المطلوب')}</p>
             </div>
         </DashboardLayout>
     );
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => Number(num).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const quoCode = `QR-${String(quotation.quotationNumber).padStart(5, '0')}`;
+    const dateStr = new Date(quotation.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+
+    const statusColor = quotation.status === 'converted' ? '#4ade80' : quotation.status === 'cancelled' ? '#fb7185' : '#fbbf24';
+    const statusBg    = quotation.status === 'converted' ? 'rgba(74,222,128,0.08)' : quotation.status === 'cancelled' ? 'rgba(251,113,133,0.08)' : 'rgba(251,191,36,0.08)';
+    const statusLabel = quotation.status === 'converted' ? t('تم تحويل عرض السعر هذا إلى فاتورة بنجاح') : quotation.status === 'cancelled' ? t('هذا العرض ملغي') : t('هذا العرض قيد الانتظار لموافقة العميل');
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
-                <PageHeader 
-                    title={`${t('عرض سعر')} #${quotation.quotationNumber}`}
-                    subtitle={`${t('بتاريخ')} ${new Date(quotation.date).toLocaleDateString((isRtl ? 'ar-EG' : 'en-US'))}`}
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ fontFamily: CAIRO, paddingBottom: '60px', paddingTop: THEME.header.pt }}>
+
+                <PageHeader
+                    title={t('عرض سعر')}
+                    subtitle={`${quoCode} — ${dateStr}`}
                     icon={FileText}
                     backUrl="/quotations"
                     primaryButton={{
-                        label: t("طباعة العرض"),
+                        label: t('طباعة العرض'),
                         onClick: () => printQuotation(quotation, company),
                         icon: Printer
                     }}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr', gap: '24px' }}>
-                    
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '2.5fr 1fr', gap: '16px', alignItems: 'start' }}>
+
+                    {/* ── Left Column ── */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+
                         {/* Status Bar */}
-                        <div style={{ 
-                            background: quotation.status === 'converted' ? 'rgba(74,222,128,0.1)' : (quotation.status === 'cancelled' ? 'rgba(251,113,133,0.1)' : 'rgba(251,191,36,0.1)'),
-                            padding: '14px 20px', borderRadius: '12px', border: `1px solid ${quotation.status === 'converted' ? '#4ade8055' : (quotation.status === 'cancelled' ? '#fb718555' : '#fbbf2455')}`,
-                            display: 'flex', alignItems: 'center', gap: '12px', color: quotation.status === 'converted' ? '#4ade80' : (quotation.status === 'cancelled' ? '#fb7185' : '#fbbf24')
+                        <div style={{
+                            background: statusBg, padding: '12px 20px', borderRadius: '12px',
+                            border: `1px solid ${statusColor}44`,
+                            display: 'flex', alignItems: 'center', gap: '10px', color: statusColor
                         }}>
-                            {quotation.status === 'converted' ? <CheckCircle size={20} /> : <FileText size={20} />}
-                            <span style={{ fontWeight: 800, fontSize: '15px' }}>
-                                {quotation.status === 'converted' ? t('تم تحويل عرض السعر هذا إلى فاتورة بنجاح') : (quotation.status === 'cancelled' ? t('هذا العرض ملغي') : t('هذا العرض قيد الانتظار لموافقة العميل'))}
-                            </span>
+                            {quotation.status === 'converted' ? <CheckCircle size={18} /> : <FileText size={18} />}
+                            <span style={{ fontWeight: 800, fontSize: '14px', fontFamily: CAIRO }}>{statusLabel}</span>
                         </div>
 
-                        {/* Customer Info */}
-                        <div style={{ background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '24px' }}>
-                            <div style={{ display: 'flex', gap: '30px' }}>
-                                <div style={{ flex: 1 }}>
-                                    <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>{t('معلومات العميل')}</h4>
-                                    <div style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary }}>{quotation.customer?.name || t('عميل نقدي')}</div>
-                                    <div style={{ color: C.textSecondary, fontSize: '14px', marginTop: '4px' }}>{quotation.customer?.phone || t('بدون رقم هاتف')}</div>
-                                    <div style={{ color: C.textMuted, fontSize: '13px', marginTop: '2px' }}>{quotation.customer?.address || t('بدون عنوان مسجل')}</div>
+                        {/* Info Card */}
+                        <div style={{ ...SC }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr', gap: '24px' }}>
+                                {/* Customer */}
+                                <div>
+                                    <div style={{ ...STitle, fontSize: '12px', marginBottom: '12px' }}>{t('معلومات العميل')}</div>
+                                    <div style={{ fontSize: '17px', fontWeight: 800, color: C.textPrimary, marginBottom: '4px' }}>
+                                        {quotation.customer?.name || t('عميل نقدي')}
+                                    </div>
+                                    {quotation.customer?.phone && (
+                                        <div style={{ color: C.textSecondary, fontSize: '13px', fontFamily: INTER }}>{quotation.customer.phone}</div>
+                                    )}
+                                    {quotation.customer?.address && (
+                                        <div style={{ color: C.textMuted, fontSize: '12px', marginTop: '2px' }}>{quotation.customer.address}</div>
+                                    )}
                                 </div>
-                                <div style={{ width: '1px', background: C.border }} />
-                                <div style={{ flex: 1 }}>
-                                    <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>{t('تفاصيل العرض')}</h4>
+
+                                {/* Divider */}
+                                <div style={{ background: C.border }} />
+
+                                {/* Quotation Details */}
+                                <div>
+                                    <div style={{ ...STitle, fontSize: '12px', marginBottom: '12px' }}>{t('تفاصيل العرض')}</div>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        <div style={{ display: 'flex', gap: '10px' }}>
-                                            <span style={{ color: C.textSecondary, minWidth: '90px' }}>{t('رقم العرض:')}</span>
-                                            <span style={{ fontWeight: 800, fontFamily: INTER }}>#{quotation.quotationNumber}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                            <span style={{ color: C.textMuted }}>{t('كود العرض')}</span>
+                                            <span style={{ fontWeight: 800, fontFamily: INTER, color: C.primary }}>{quoCode}</span>
                                         </div>
-                                        <div style={{ display: 'flex', gap: '10px' }}>
-                                            <span style={{ color: C.textSecondary, minWidth: '90px' }}>{t('تاريخ العرض:')}</span>
-                                            <span style={{ fontWeight: 700, fontFamily: INTER }}>{new Date(quotation.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                            <span style={{ color: C.textMuted }}>{t('تاريخ العرض')}</span>
+                                            <span style={{ fontWeight: 700, fontFamily: INTER, color: C.textPrimary }}>{dateStr}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -139,104 +157,120 @@ export default function QuotationViewPage() {
                         </div>
 
                         {/* Items Table */}
-                        <div style={{ background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <div style={TABLE_STYLE.container}>
+                            <div style={{ padding: '14px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                <div style={{ ...STitle, marginBottom: 0 }}>{t('بنود العرض')}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{quotation.lines?.length || 0} {t('عناصر')}</div>
+                            </div>
+                            <table style={TABLE_STYLE.table}>
                                 <thead>
-                                    <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '15px 20px', textAlign: 'start', fontSize: '13px', color: C.textMuted }}>{t('الخدمة / الصنف')}</th>
-                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '80px' }}>{t('الكمية')}</th>
-                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>{t('السعر')}</th>
-                                        <th style={{ padding: '15px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, width: '120px' }}>{t('الإجمالي')}</th>
+                                    <tr style={TABLE_STYLE.thead}>
+                                        <th style={TABLE_STYLE.th(true)}>{t('الخدمة / الصنف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('السعر')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {quotation.lines?.map((l: any, idx: number) => (
-                                        <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44` }}>
-                                            <td style={{ padding: '15px 20px' }}>
+                                        <tr key={idx} style={TABLE_STYLE.row(idx === quotation.lines.length - 1)}>
+                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ fontWeight: 700, color: C.textPrimary }}>{l.item?.name || t('خدمة / صنف')}</div>
-                                                <div style={{ fontSize: '11px', color: C.textMuted }}>{l.item?.code || ''}</div>
+                                                {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px' }}>{l.description}</div>}
+                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, opacity: 0.5 }}>{l.item?.code || ''}</div>
                                             </td>
-                                            <td style={{ padding: '15px 20px', textAlign: 'center', fontFamily: INTER, fontWeight: 600 }}>{l.quantity}</td>
-                                            <td style={{ padding: '15px 20px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }}>{fmt(l.price)}</td>
-                                            <td style={{ padding: '15px 20px', textAlign: 'center', fontFamily: INTER, fontWeight: 800 }}>{fmt(l.total)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700 }}>{l.quantity}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                             </table>
                         </div>
+
+                        {/* Notes */}
+                        {quotation.notes && (
+                            <div style={SC}>
+                                <div style={{ ...STitle, fontSize: '12px', marginBottom: '10px' }}>{t('ملاحظات العرض')}</div>
+                                <p style={{ fontSize: '13px', lineHeight: '1.7', color: C.textSecondary, margin: 0 }}>{quotation.notes}</p>
+                            </div>
+                        )}
                     </div>
 
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        {/* Summary Card */}
-                        <div style={{ background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '24px' }}>
-                            <h3 style={{ margin: '0 0 20px', fontSize: '16px', fontWeight: 800, color: C.textPrimary, borderBottom: `1px solid ${C.border}`, paddingBottom: '12px' }}>{t('ملخص الحساب')}</h3>
-                            
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary }}>
+                    {/* ── Right Column ── */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                        <div style={SC}>
+                            <div style={{ ...STitle, marginBottom: '16px' }}>{t('ملخص الحساب')}</div>
+
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary }}>
                                     <span>{t('المجموع الفرعي:')}</span>
                                     <span style={{ fontWeight: 700, fontFamily: INTER }}>{fmt(quotation.subtotal)}</span>
                                 </div>
                                 {quotation.discount > 0 && (
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: C.danger }}>
-                                        <span>{t('خصم العرض:')}</span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.danger }}>
+                                        <span>{t('إجمالي الخصم:')}</span>
                                         <span style={{ fontWeight: 700, fontFamily: INTER }}>- {fmt(quotation.discount)}</span>
                                     </div>
                                 )}
                                 {quotation.taxAmount > 0 && (
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary }}>
-                                        <span>{quotation.taxLabel} ({quotation.taxRate}%):</span>
-                                        <span style={{ fontWeight: 700, fontFamily: INTER }}>+ {fmt(quotation.taxAmount)}</span>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', color: C.textSecondary }}>
+                                        <span>{quotation.taxLabel || t('الضريبة')} ({quotation.taxRate}%):</span>
+                                        <span style={{ fontWeight: 700, fontFamily: INTER, color: '#fb7185' }}>+ {fmt(quotation.taxAmount)}</span>
                                     </div>
                                 )}
-                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '22px', fontWeight: 900, color: C.primary, marginTop: '10px', paddingTop: '15px', borderTop: `1px solid ${C.border}` }}>
-                                    <span>{t('الإجمالي:')}</span>
+                                <div style={{
+                                    display: 'flex', justifyContent: 'space-between',
+                                    fontSize: '20px', fontWeight: 900, color: C.primary,
+                                    marginTop: '8px', paddingTop: '12px', borderTop: `1px solid ${C.border}`
+                                }}>
+                                    <span style={{ fontFamily: CAIRO }}>{t('الإجمالي:')}</span>
                                     <span style={{ fontFamily: INTER }}>{fmt(quotation.total)} {cSymbol}</span>
                                 </div>
                             </div>
 
                             {quotation.status === 'pending' && (
-                                <button 
+                                <button
                                     onClick={handleConvert}
                                     disabled={converting}
-                                    style={{ 
-                                        width: '100%', height: '52px', background: C.success, color: '#fff', border: 'none', borderRadius: '12px', 
-                                        fontWeight: 800, fontSize: '15px', marginTop: '30px', cursor: converting ? 'not-allowed' : 'pointer',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.2s',
-                                        boxShadow: '0 8px 16px -4px rgba(74, 222, 128, 0.4)'
+                                    style={{
+                                        width: '100%', height: '48px', background: C.success, color: '#fff',
+                                        border: 'none', borderRadius: '12px', fontWeight: 800, fontSize: '14px',
+                                        marginTop: '20px', cursor: converting ? 'not-allowed' : 'pointer',
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+                                        fontFamily: CAIRO, boxShadow: '0 6px 14px -4px rgba(74,222,128,0.4)',
+                                        transition: 'transform 0.15s'
                                     }}
                                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                                 >
-                                    {converting ? <Loader2 className="animate-spin" size={20} /> : <CheckCircle size={20} />}
+                                    {converting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <CheckCircle size={18} />}
                                     {t('تحويل لفاتورة مبيعات')}
                                 </button>
                             )}
 
                             {quotation.status === 'converted' && (
-                                <button 
+                                <button
                                     onClick={() => router.push(`/sales/${quotation.convertedInvoiceId}`)}
-                                    style={{ 
-                                        width: '100%', height: '50px', background: 'rgba(255,255,255,0.03)', color: C.textSecondary, border: `1px solid ${C.border}`, borderRadius: '10px', 
-                                        fontWeight: 700, fontSize: '14px', marginTop: '30px', cursor: 'pointer',
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
+                                    style={{
+                                        width: '100%', height: '44px',
+                                        background: 'rgba(255,255,255,0.03)', color: C.textSecondary,
+                                        border: `1px solid ${C.border}`, borderRadius: '10px',
+                                        fontWeight: 700, fontSize: '13px', marginTop: '16px',
+                                        cursor: 'pointer', display: 'flex', alignItems: 'center',
+                                        justifyContent: 'center', gap: '8px', fontFamily: CAIRO
                                     }}
                                 >
-                                    <Eye size={18} />
+                                    <Eye size={16} />
                                     {t('عرض الفاتورة المسجلة')}
                                 </button>
                             )}
                         </div>
-
-                        {quotation.notes && (
-                            <div style={{ background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '20px' }}>
-                                <h4 style={{ margin: '0 0 10px', fontSize: '13px', color: C.textMuted }}>{t('ملاحظات العرض')}</h4>
-                                <p style={{ fontSize: '13px', lineHeight: '1.6', color: C.textSecondary, margin: 0 }}>{quotation.notes}</p>
-                            </div>
-                        )}
                     </div>
+
                 </div>
             </div>
-            <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; } `}</style>
+            <style jsx global>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </DashboardLayout>
     );
 }

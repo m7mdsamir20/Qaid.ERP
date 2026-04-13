@@ -87,10 +87,11 @@ export default function NewQuotationPage() {
             }
             if (settingsRes.ok) {
                 const setts = await settingsRes.json();
-                const taxS = setts.taxSettings || setts;
+                const rawTax = setts.company?.taxSettings;
+                const taxS = rawTax ? (typeof rawTax === 'string' ? JSON.parse(rawTax) : rawTax) : null;
                 setTaxSettings(taxS);
                 if (taxS?.enabled) {
-                    setForm((form: any) => ({ ...form, taxRate: taxS.rate }));
+                    setForm((f: any) => ({ ...f, taxRate: taxS.rate }));
                 }
             }
         } catch (error) {

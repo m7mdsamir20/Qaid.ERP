@@ -106,7 +106,12 @@ export const POST = withProtection(async (request, session, body) => {
             }
         });
 
-        return NextResponse.json(quotation, { status: 201 });
+        // @ts-ignore
+        const fullQuotation = await prisma.quotation.findUnique({
+            where: { id: quotation.id },
+            include: { lines: { include: { item: { include: { unit: true } } } }, customer: true }
+        });
+        return NextResponse.json(fullQuotation, { status: 201 });
     } catch (error) {
         console.error("POST /api/quotations Error:", error);
         return NextResponse.json({ error: 'فشل في إنشاء عرض السعر' }, { status: 500 });
