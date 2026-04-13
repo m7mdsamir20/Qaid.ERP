@@ -191,31 +191,30 @@ export default function QuotationsPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, color: C.primary, fontFamily: INTER, letterSpacing: '0.5px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: isRtl ? 'right' : 'left' }}>
                                                     QUO-{quo.quotationNumber.toString().padStart(5, '0')}
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
-                                                    <span style={{ fontWeight: 600 }}>{quo.customer?.name || t('عميل نقدي')}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: isRtl ? 'right' : 'left' }}>
+                                                    {quo.customer?.name || t('عميل نقدي')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: INTER, color: C.textMuted }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: INTER, color: C.textSecondary, textAlign: isRtl ? 'right' : 'left' }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>
-                                                    {fmt(quo.total)} {cSymbol}
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 800, color: C.textPrimary, fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>
+                                                    {fmt(quo.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}>
                                                     <div style={{ 
-                                                        background: status.bg, color: status.color, 
-                                                        padding: '4px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 800,
-                                                        display: 'flex', alignItems: 'center', gap: '6px', width: 'fit-content'
+                                                        display: 'inline-flex', alignItems: 'center', gap: '5px', 
+                                                        padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
+                                                        background: status.bg, color: status.color, border: `1px solid ${status.color}30`, fontFamily: CAIRO
                                                     }}>
-                                                        <status.icon size={12} />
-                                                        {status.text}
+                                                        {status.text} <status.icon size={12} />
                                                     </div>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={{ ...TABLE_STYLE.actionBtn, color: C.primary }}><Eye size={16} /></Link>
+                                                        <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
                                                         <button 
                                                             onClick={async () => {
                                                                 let full = quo;
@@ -229,14 +228,14 @@ export default function QuotationsPage() {
                                                                 printQuotation(full, { ...company, branchName, businessType: bizType });
                                                             }}
                                                             title={t("طباعة")}
-                                                            style={{ ...TABLE_STYLE.actionBtn, color: C.textSecondary }}
+                                                            style={TABLE_STYLE.actionBtn()}
                                                         >
-                                                            <Printer size={16} />
+                                                            <Printer size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                         {quo.status === 'pending' && (
-                                                            <Link href={`/sales/new?quotationId=${quo.id}`} title={t("تحويل لفاتورة")} style={{ ...TABLE_STYLE.actionBtn, color: '#10b981' }}><Send size={16} /></Link>
+                                                            <Link href={`/sales/new?quotationId=${quo.id}`} title={t("تحويل لفاتورة")} style={TABLE_STYLE.actionBtn(C.success)}><Send size={TABLE_STYLE.actionIconSize} /></Link>
                                                         )}
-                                                        <button onClick={() => handleDelete(quo.id, quo.quotationNumber)} title={t("حذف")} style={{ ...TABLE_STYLE.actionBtn, color: C.danger }}><Trash2 size={16} /></button>
+                                                        <button onClick={() => handleDelete(quo.id, quo.quotationNumber)} title={t("حذف")} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
