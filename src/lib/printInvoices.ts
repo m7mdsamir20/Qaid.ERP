@@ -409,92 +409,67 @@ export function printA4Invoice(
     if (win) { win.document.write(html); win.document.close(); }
 }
 
-// ── Download as PDF (html2canvas + jsPDF, no print dialog) ──────────────────
-export async function downloadA4Invoice(
+// ── Download as PDF — opens preview window with one-click save button ────────
+export function downloadA4Invoice(
     invoice: any,
     type: InvoiceType,
     company: CompanyInfo = {},
     options: { terms?: string; showSignature?: boolean; showStamp?: boolean; partyBalance?: number } = {}
 ) {
-    const html2canvas = (await import('html2canvas')).default;
-    const { jsPDF }   = await import('jspdf');
-
-    // Filename
     const PREFIXES: Record<InvoiceType, string> = { sale: 'SAL', purchase: 'PUR', 'sale-return': 'SLR', 'purchase-return': 'PRR' };
     const isServ = company.businessType?.toUpperCase() === 'SERVICES';
     const prefix = isServ ? 'SRV' : PREFIXES[type];
     const filename = `${prefix}-${String(invoice.invoiceNumber || 1).padStart(5, '0')}.pdf`;
 
-    // Build HTML, strip print scripts
-    const rawHtml  = generateA4HTML(invoice, type, company, options);
-    const cleanHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
+    // Generate invoice HTML and strip auto-print script
+    const rawHtml   = generateA4HTML(invoice, type, company, options);
+    const invoiceHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
 
-    // Extract styles + body HTML
-    const styleBlocks = [...cleanHtml.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map(m => m[1]).join('\n');
-    const bodyMatch   = cleanHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    const bodyHtml    = bodyMatch ? bodyMatch[1] : cleanHtml;
+    // Extract <body> content so we can prepend the save toolbar
+    const bodyMatch = invoiceHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    const bodyHtml  = bodyMatch ? bodyMatch[1] : invoiceHtml;
 
-    // Mount hidden container at A4 width (794px ≈ 210mm @96dpi)
-    const wrapper = document.createElement('div');
-    wrapper.style.cssText = 'position:fixed;top:-99999px;left:-99999px;width:794px;background:#fff;z-index:-1;';
+    // Extract <head> to preserve styles / fonts
+    const headMatch = invoiceHtml.match(/<head[^>]*>([\s\S]*)<\/head>/i);
+    const headHtml  = headMatch ? headMatch[1] : '';
 
-    const styleEl = document.createElement('style');
-    styleEl.textContent = styleBlocks;
-    wrapper.appendChild(styleEl);
+    const toolbar = `
+<div id="pdf-toolbar" style="
+    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+    background:#0f172a;border:1px solid #334155;border-radius:14px;
+    padding:10px 20px;display:flex;align-items:center;gap:14px;
+    box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:99999;
+    font-family:'Cairo',sans-serif;direction:rtl;
+">
+  <span style="color:#94a3b8;font-size:13px;white-space:nowrap">
+    اضغط الزر ثم اختر <strong style="color:#fff">حفظ كـ PDF</strong>
+  </span>
+  <button onclick="window.print()" style="
+    background:#4ade80;color:#0f172a;border:none;
+    padding:9px 22px;border-radius:10px;font-weight:800;
+    font-size:14px;cursor:pointer;font-family:'Cairo',sans-serif;
+    box-shadow:0 4px 12px rgba(74,222,128,0.4);
+  ">طباعة / حفظ PDF</button>
+  <button onclick="document.getElementById('pdf-toolbar').style.display='none'" style="
+    background:transparent;border:1px solid #334155;color:#94a3b8;
+    padding:9px 14px;border-radius:10px;font-size:12px;cursor:pointer;
+  ">إخفاء</button>
+</div>`;
 
-    const content = document.createElement('div');
-    content.style.cssText = 'width:794px;background:#fff;';
-    content.innerHTML = bodyHtml;
-    wrapper.appendChild(content);
+    const printCss = `<style>
+@media print { #pdf-toolbar { display:none !important; } }
+@page { size: A4; margin: 0; }
+</style>`;
 
-    document.body.appendChild(wrapper);
+    const finalHtml = `<!DOCTYPE html><html lang="ar" dir="rtl">
+<head>${headHtml}${printCss}</head>
+<body>
+${toolbar}
+${bodyHtml}
+</body></html>`;
 
-    // Wait for layout & fonts
-    await new Promise<void>(r => setTimeout(r, 600));
-
-    // Capture
-    const canvas = await html2canvas(content, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        width: 794,
-        windowWidth: 794,
-    });
-
-    document.body.removeChild(wrapper);
-
-    // A4 dimensions in mm
-    const A4_W = 210;
-    const A4_H = 297;
-    const imgW  = A4_W;
-    const imgH  = (canvas.height * A4_W) / canvas.width;   // proportional height in mm
-
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-    const imgData = canvas.toDataURL('image/jpeg', 0.95);
-
-    if (imgH <= A4_H) {
-        // Single page
-        pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
-    } else {
-        // Multi-page: slice canvas per A4 page
-        const pageHeightPx = Math.floor((canvas.width * A4_H) / A4_W);
-        let yPx = 0;
-        while (yPx < canvas.height) {
-            const sliceH = Math.min(pageHeightPx, canvas.height - yPx);
-            const sliceCanvas = document.createElement('canvas');
-            sliceCanvas.width  = canvas.width;
-            sliceCanvas.height = sliceH;
-            const ctx = sliceCanvas.getContext('2d');
-            if (ctx) ctx.drawImage(canvas, 0, yPx, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
-            const sliceImg = sliceCanvas.toDataURL('image/jpeg', 0.95);
-            const sliceHmm = (sliceH * A4_W) / canvas.width;
-            if (yPx > 0) pdf.addPage();
-            pdf.addImage(sliceImg, 'JPEG', 0, 0, A4_W, sliceHmm);
-            yPx += sliceH;
-        }
-    }
-
-    pdf.save(filename);
+    const win = window.open('', '_blank');
+    if (win) { win.document.write(finalHtml); win.document.close(); }
 }
 
 function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}): string {
@@ -558,34 +533,45 @@ export function printThermalVoucher(voucher: any, type: VoucherType, company: Co
     if (win) { win.document.write(html); win.document.close(); }
 }
 
-export async function downloadThermalVoucher(voucher: any, type: VoucherType, company: CompanyInfo = {}) {
-    const html2pdf = (await import('html2pdf.js')).default;
-    const prefix = type === 'receipt' ? 'REC' : 'PAY';
-    const vNum = String(voucher.voucherNumber || 1).padStart(5, '0');
-    const filename = `${prefix}-${vNum}.pdf`;
+export function downloadThermalVoucher(voucher: any, type: VoucherType, company: CompanyInfo = {}) {
+    const rawHtml    = generateThermalVoucherHTML(voucher, type, company);
+    const voucherHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
 
-    const rawHtml = generateThermalVoucherHTML(voucher, type, company);
-    const cleanHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
+    const bodyMatch = voucherHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    const bodyHtml  = bodyMatch ? bodyMatch[1] : voucherHtml;
+    const headMatch = voucherHtml.match(/<head[^>]*>([\s\S]*)<\/head>/i);
+    const headHtml  = headMatch ? headMatch[1] : '';
 
-    const blob = new Blob([cleanHtml], { type: 'text/html;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:80mm;height:200mm;border:none;';
-    iframe.src = url;
-    document.body.appendChild(iframe);
-    await new Promise<void>(resolve => { iframe.onload = () => resolve(); });
-    await html2pdf()
-        .set({
-            margin: 0,
-            filename,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: [80, 200], orientation: 'portrait' }
-        })
-        .from(iframe.contentDocument!.body)
-        .save();
-    document.body.removeChild(iframe);
-    URL.revokeObjectURL(url);
+    const toolbar = `
+<div id="pdf-toolbar" style="
+    position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
+    background:#0f172a;border:1px solid #334155;border-radius:12px;
+    padding:8px 16px;display:flex;align-items:center;gap:10px;
+    box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:99999;
+    font-family:'Cairo',sans-serif;direction:rtl;
+">
+  <button onclick="window.print()" style="
+    background:#4ade80;color:#0f172a;border:none;
+    padding:8px 18px;border-radius:8px;font-weight:800;
+    font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif;
+  ">طباعة / حفظ PDF</button>
+  <button onclick="document.getElementById('pdf-toolbar').style.display='none'" style="
+    background:transparent;border:1px solid #334155;color:#94a3b8;
+    padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;
+  ">إخفاء</button>
+</div>`;
+
+    const printCss = `<style>
+@media print { #pdf-toolbar { display:none !important; } }
+@page { size: 80mm auto; margin: 0; }
+</style>`;
+
+    const finalHtml = `<!DOCTYPE html><html lang="ar" dir="rtl">
+<head>${headHtml}${printCss}</head>
+<body>${toolbar}${bodyHtml}</body></html>`;
+
+    const win = window.open('', '_blank');
+    if (win) { win.document.write(finalHtml); win.document.close(); }
 }
 
 export function printSaleInvoice(inv: any, cust: any, num: number, form: any, co: CompanyInfo = {}) {

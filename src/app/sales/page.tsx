@@ -199,7 +199,7 @@ export default function SalesPage() {
         const branches = (session?.user as any)?.branches || [];
         const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
         const bizType = (session?.user as any)?.businessType || company.businessType;
-        await downloadA4Invoice(fullInv, 'sale', { ...company, branchName, businessType: bizType }, {
+        downloadA4Invoice(fullInv, 'sale', { ...company, branchName, businessType: bizType }, {
             partyBalance: fullInv.customer?.balance
         });
     };
