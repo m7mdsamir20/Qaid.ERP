@@ -409,58 +409,92 @@ export function printA4Invoice(
     if (win) { win.document.write(html); win.document.close(); }
 }
 
-// ── Download as PDF (same HTML, no print dialog) ────────────────────────────
+// ── Download as PDF (html2canvas + jsPDF, no print dialog) ──────────────────
 export async function downloadA4Invoice(
     invoice: any,
     type: InvoiceType,
     company: CompanyInfo = {},
     options: { terms?: string; showSignature?: boolean; showStamp?: boolean; partyBalance?: number } = {}
 ) {
-    const html2pdf = (await import('html2pdf.js')).default;
+    const html2canvas = (await import('html2canvas')).default;
+    const { jsPDF }   = await import('jspdf');
 
-    // Build filename
+    // Filename
     const PREFIXES: Record<InvoiceType, string> = { sale: 'SAL', purchase: 'PUR', 'sale-return': 'SLR', 'purchase-return': 'PRR' };
     const isServ = company.businessType?.toUpperCase() === 'SERVICES';
     const prefix = isServ ? 'SRV' : PREFIXES[type];
-    const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
-    const filename = `${prefix}-${invoiceNum}.pdf`;
+    const filename = `${prefix}-${String(invoice.invoiceNumber || 1).padStart(5, '0')}.pdf`;
 
-    // Generate HTML, strip scripts
-    const rawHtml = generateA4HTML(invoice, type, company, options);
+    // Build HTML, strip print scripts
+    const rawHtml  = generateA4HTML(invoice, type, company, options);
     const cleanHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
 
-    // Extract <style> blocks and <body> content, inject into a hidden DOM container
+    // Extract styles + body HTML
     const styleBlocks = [...cleanHtml.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map(m => m[1]).join('\n');
-    const bodyMatch = cleanHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    const bodyHtml = bodyMatch ? bodyMatch[1] : cleanHtml;
+    const bodyMatch   = cleanHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    const bodyHtml    = bodyMatch ? bodyMatch[1] : cleanHtml;
 
+    // Mount hidden container at A4 width (794px ≈ 210mm @96dpi)
     const wrapper = document.createElement('div');
-    wrapper.style.cssText = 'position:fixed;top:-99999px;left:-99999px;width:210mm;background:#fff;';
+    wrapper.style.cssText = 'position:fixed;top:-99999px;left:-99999px;width:794px;background:#fff;z-index:-1;';
 
     const styleEl = document.createElement('style');
     styleEl.textContent = styleBlocks;
     wrapper.appendChild(styleEl);
 
     const content = document.createElement('div');
+    content.style.cssText = 'width:794px;background:#fff;';
     content.innerHTML = bodyHtml;
     wrapper.appendChild(content);
 
     document.body.appendChild(wrapper);
-    // Small delay so fonts/layout settle
-    await new Promise<void>(r => setTimeout(r, 300));
 
-    await html2pdf()
-        .set({
-            margin: 0,
-            filename,
-            image:      { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true },
-            jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        })
-        .from(content)
-        .save();
+    // Wait for layout & fonts
+    await new Promise<void>(r => setTimeout(r, 600));
+
+    // Capture
+    const canvas = await html2canvas(content, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        width: 794,
+        windowWidth: 794,
+    });
 
     document.body.removeChild(wrapper);
+
+    // A4 dimensions in mm
+    const A4_W = 210;
+    const A4_H = 297;
+    const imgW  = A4_W;
+    const imgH  = (canvas.height * A4_W) / canvas.width;   // proportional height in mm
+
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+    const imgData = canvas.toDataURL('image/jpeg', 0.95);
+
+    if (imgH <= A4_H) {
+        // Single page
+        pdf.addImage(imgData, 'JPEG', 0, 0, imgW, imgH);
+    } else {
+        // Multi-page: slice canvas per A4 page
+        const pageHeightPx = Math.floor((canvas.width * A4_H) / A4_W);
+        let yPx = 0;
+        while (yPx < canvas.height) {
+            const sliceH = Math.min(pageHeightPx, canvas.height - yPx);
+            const sliceCanvas = document.createElement('canvas');
+            sliceCanvas.width  = canvas.width;
+            sliceCanvas.height = sliceH;
+            const ctx = sliceCanvas.getContext('2d');
+            if (ctx) ctx.drawImage(canvas, 0, yPx, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+            const sliceImg = sliceCanvas.toDataURL('image/jpeg', 0.95);
+            const sliceHmm = (sliceH * A4_W) / canvas.width;
+            if (yPx > 0) pdf.addPage();
+            pdf.addImage(sliceImg, 'JPEG', 0, 0, A4_W, sliceHmm);
+            yPx += sliceH;
+        }
+    }
+
+    pdf.save(filename);
 }
 
 function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}): string {
