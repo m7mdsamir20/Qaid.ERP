@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -32,7 +32,7 @@ const fmt = (v: any) => {
 
 
 
-export default function NewSalePage() {
+function NewSalePageInner() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
@@ -1268,5 +1268,13 @@ export default function NewSalePage() {
                 }, { passive: false });
             `}} />
         </DashboardLayout>
+    );
+}
+
+export default function NewSalePage() {
+    return (
+        <Suspense>
+            <NewSalePageInner />
+        </Suspense>
     );
 }

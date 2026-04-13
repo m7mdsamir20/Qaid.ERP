@@ -1,6 +1,6 @@
 'use client';
 import { useTranslation } from '@/lib/i18n';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
@@ -24,7 +24,7 @@ interface ReportLink {
     requiredPages?: string[];
 }
 
-export default function ReportsHubPage() {
+function ReportsHubPageInner() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
@@ -348,5 +348,13 @@ export default function ReportsHubPage() {
                 }
             `}</style>
         </DashboardLayout>
+    );
+}
+
+export default function ReportsHubPage() {
+    return (
+        <Suspense>
+            <ReportsHubPageInner />
+        </Suspense>
     );
 }
