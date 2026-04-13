@@ -7,7 +7,16 @@ export const POST = withProtection(async (request, session, body) => {
         const companyId = (session.user as any).companyId;
         const branchId = (session.user as any).activeBranchId === 'all' ? null : (session.user as any).activeBranchId;
         const isServices = (session.user as any).businessType === 'SERVICES';
-        const { quotationId } = body;
+        const { quotationId, invoiceId } = body;
+
+        // If invoiceId is provided, we just want to link and mark as converted
+        if (invoiceId) {
+            await prisma.quotation.update({
+                where: { id: quotationId, companyId },
+                data: { status: 'converted', convertedInvoiceId: invoiceId }
+            });
+            return NextResponse.json({ success: true, invoiceId });
+        }
 
         // ① جيب عرض السعر بالأصناف
         // @ts-ignore

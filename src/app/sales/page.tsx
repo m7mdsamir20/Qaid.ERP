@@ -10,8 +10,7 @@ import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/navigation';
-import { printA4Invoice, downloadA4Invoice, CompanyInfo } from '@/lib/printInvoices';
-import { Download } from 'lucide-react';
+import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -187,22 +186,6 @@ export default function SalesPage() {
         });
     };
 
-    const handleDownload = async (inv: Invoice) => {
-        let fullInv = inv;
-        if (!inv.lines || inv.lines.length === 0) {
-            try {
-                const res = await fetch(`/api/sales?id=${inv.id}`);
-                if (res.ok) fullInv = await res.json();
-                else { alert('تعذر جلب تفاصيل الفاتورة'); return; }
-            } catch { alert('خطأ في الاتصال'); return; }
-        }
-        const branches = (session?.user as any)?.branches || [];
-        const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
-        const bizType = (session?.user as any)?.businessType || company.businessType;
-        downloadA4Invoice(fullInv, 'sale', { ...company, branchName, businessType: bizType }, {
-            partyBalance: fullInv.customer?.balance
-        });
-    };
 
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
@@ -323,10 +306,7 @@ export default function SalesPage() {
                                                         <button onClick={() => handlePrint(inv)} style={TABLE_STYLE.actionBtn()} title={t('طباعة')}>
                                                             <Printer size={TABLE_STYLE.actionIconSize} />
                                                         </button>
-                                                        <button onClick={() => handleDownload(inv)} style={TABLE_STYLE.actionBtn()} title={t('تنزيل PDF')}>
-                                                            <Download size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
-                                                        <button onClick={() => router.push(`/sales/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title={t('عرض')}>
+<button onClick={() => router.push(`/sales/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title={t('عرض')}>
                                                             <Eye size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                     </div>

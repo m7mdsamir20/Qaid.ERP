@@ -10,6 +10,8 @@ export const GET = withProtection(async (request, session) => {
         const accountId = searchParams.get('accountId');
         const fromDate = searchParams.get('from');
         const toDate = searchParams.get('to');
+        const toDateEnd = toDate ? new Date(toDate) : null;
+        if (toDateEnd) toDateEnd.setHours(23, 59, 59, 999);
 
         if (!accountId) {
             return NextResponse.json({ error: "Account ID is required" }, { status: 400 });
@@ -37,6 +39,7 @@ export const GET = withProtection(async (request, session) => {
                 accountId,
                 journalEntry: {
                     companyId,
+                    isPosted: true,
                     date: fromDate ? { lt: new Date(fromDate) } : undefined,
                 },
             },
@@ -51,9 +54,10 @@ export const GET = withProtection(async (request, session) => {
                 accountId,
                 journalEntry: {
                     companyId,
+                    isPosted: true,
                     date: {
                         gte: fromDate ? new Date(fromDate) : new Date('2000-01-01'),
-                        lte: toDate ? new Date(toDate) : new Date('2100-01-01'),
+                        lte: toDateEnd || new Date('2100-01-01'),
                     },
                 },
             },

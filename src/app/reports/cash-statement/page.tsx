@@ -104,7 +104,10 @@ export default function CashStatementPage() {
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'كشف حركة الخزينة');
-        XLSX.writeFile(wb, `كشف_حركة_الخزينة_${data.treasury.name}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(
+            wb,
+            `كشف_حركة_الخزينة_${data.treasuryName || 'cash'}_${new Date().toLocaleDateString('en-GB')}.xlsx`
+        );
     };
 
     return (

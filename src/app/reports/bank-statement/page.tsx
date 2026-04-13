@@ -104,7 +104,10 @@ export default function BankStatementPage() {
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'كشف حساب بنكي');
-        XLSX.writeFile(wb, `كشف_حساب_بنكي_${data.treasury.name}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.writeFile(
+            wb,
+            `كشف_حساب_بنكي_${data.treasuryName || 'bank'}_${new Date().toLocaleDateString('en-GB')}.xlsx`
+        );
     };
 
     return (

@@ -409,68 +409,6 @@ export function printA4Invoice(
     if (win) { win.document.write(html); win.document.close(); }
 }
 
-// ── Download as PDF — opens preview window with one-click save button ────────
-export function downloadA4Invoice(
-    invoice: any,
-    type: InvoiceType,
-    company: CompanyInfo = {},
-    options: { terms?: string; showSignature?: boolean; showStamp?: boolean; partyBalance?: number } = {}
-) {
-    const PREFIXES: Record<InvoiceType, string> = { sale: 'SAL', purchase: 'PUR', 'sale-return': 'SLR', 'purchase-return': 'PRR' };
-    const isServ = company.businessType?.toUpperCase() === 'SERVICES';
-    const prefix = isServ ? 'SRV' : PREFIXES[type];
-    const filename = `${prefix}-${String(invoice.invoiceNumber || 1).padStart(5, '0')}.pdf`;
-
-    // Generate invoice HTML and strip auto-print script
-    const rawHtml   = generateA4HTML(invoice, type, company, options);
-    const invoiceHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
-
-    // Extract <body> content so we can prepend the save toolbar
-    const bodyMatch = invoiceHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    const bodyHtml  = bodyMatch ? bodyMatch[1] : invoiceHtml;
-
-    // Extract <head> to preserve styles / fonts
-    const headMatch = invoiceHtml.match(/<head[^>]*>([\s\S]*)<\/head>/i);
-    const headHtml  = headMatch ? headMatch[1] : '';
-
-    const toolbar = `
-<div id="pdf-toolbar" style="
-    position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
-    background:#0f172a;border:1px solid #334155;border-radius:14px;
-    padding:10px 20px;display:flex;align-items:center;gap:14px;
-    box-shadow:0 8px 32px rgba(0,0,0,0.5);z-index:99999;
-    font-family:'Cairo',sans-serif;direction:rtl;
-">
-  <span style="color:#94a3b8;font-size:13px;white-space:nowrap">
-    اضغط الزر ثم اختر <strong style="color:#fff">حفظ كـ PDF</strong>
-  </span>
-  <button onclick="window.print()" style="
-    background:#4ade80;color:#0f172a;border:none;
-    padding:9px 22px;border-radius:10px;font-weight:800;
-    font-size:14px;cursor:pointer;font-family:'Cairo',sans-serif;
-    box-shadow:0 4px 12px rgba(74,222,128,0.4);
-  ">طباعة / حفظ PDF</button>
-  <button onclick="document.getElementById('pdf-toolbar').style.display='none'" style="
-    background:transparent;border:1px solid #334155;color:#94a3b8;
-    padding:9px 14px;border-radius:10px;font-size:12px;cursor:pointer;
-  ">إخفاء</button>
-</div>`;
-
-    const printCss = `<style>
-@media print { #pdf-toolbar { display:none !important; } }
-@page { size: A4; margin: 0; }
-</style>`;
-
-    const finalHtml = `<!DOCTYPE html><html lang="ar" dir="rtl">
-<head>${headHtml}${printCss}</head>
-<body>
-${toolbar}
-${bodyHtml}
-</body></html>`;
-
-    const win = window.open('', '_blank');
-    if (win) { win.document.write(finalHtml); win.document.close(); }
-}
 
 function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
@@ -533,46 +471,6 @@ export function printThermalVoucher(voucher: any, type: VoucherType, company: Co
     if (win) { win.document.write(html); win.document.close(); }
 }
 
-export function downloadThermalVoucher(voucher: any, type: VoucherType, company: CompanyInfo = {}) {
-    const rawHtml    = generateThermalVoucherHTML(voucher, type, company);
-    const voucherHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
-
-    const bodyMatch = voucherHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-    const bodyHtml  = bodyMatch ? bodyMatch[1] : voucherHtml;
-    const headMatch = voucherHtml.match(/<head[^>]*>([\s\S]*)<\/head>/i);
-    const headHtml  = headMatch ? headMatch[1] : '';
-
-    const toolbar = `
-<div id="pdf-toolbar" style="
-    position:fixed;bottom:16px;left:50%;transform:translateX(-50%);
-    background:#0f172a;border:1px solid #334155;border-radius:12px;
-    padding:8px 16px;display:flex;align-items:center;gap:10px;
-    box-shadow:0 8px 24px rgba(0,0,0,0.5);z-index:99999;
-    font-family:'Cairo',sans-serif;direction:rtl;
-">
-  <button onclick="window.print()" style="
-    background:#4ade80;color:#0f172a;border:none;
-    padding:8px 18px;border-radius:8px;font-weight:800;
-    font-size:13px;cursor:pointer;font-family:'Cairo',sans-serif;
-  ">طباعة / حفظ PDF</button>
-  <button onclick="document.getElementById('pdf-toolbar').style.display='none'" style="
-    background:transparent;border:1px solid #334155;color:#94a3b8;
-    padding:8px 12px;border-radius:8px;font-size:12px;cursor:pointer;
-  ">إخفاء</button>
-</div>`;
-
-    const printCss = `<style>
-@media print { #pdf-toolbar { display:none !important; } }
-@page { size: 80mm auto; margin: 0; }
-</style>`;
-
-    const finalHtml = `<!DOCTYPE html><html lang="ar" dir="rtl">
-<head>${headHtml}${printCss}</head>
-<body>${toolbar}${bodyHtml}</body></html>`;
-
-    const win = window.open('', '_blank');
-    if (win) { win.document.write(finalHtml); win.document.close(); }
-}
 
 export function printSaleInvoice(inv: any, cust: any, num: number, form: any, co: CompanyInfo = {}) {
     printA4Invoice({ ...inv, customer: cust, invoiceNumber: num, notes: inv.notes || form.notes }, 'sale', co);

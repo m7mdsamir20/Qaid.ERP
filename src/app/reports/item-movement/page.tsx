@@ -16,10 +16,12 @@ const getCurrencyName = (code: string) => {
 
 interface Movement {
     id: string;
-    type: 'IN' | 'OUT' | 'ADJUST' | 'TRANSFER';
+    type: string;
     quantity: number;
-    description: string;
-    createdAt: string;
+    description?: string;
+    notes?: string;
+    createdAt?: string;
+    date?: string;
     warehouse: { name: string };
 }
 
@@ -62,11 +64,11 @@ export default function ItemMovementReportPage() {
             .finally(() => setLoadingItems(false));
     }, []);
 
-    const fetchMovements = (id: string) => {
+    const fetchMovements = (id: string, targetBranchId = branchId) => {
         setLoading(true);
         const params = new URLSearchParams();
         params.set('itemId', id);
-        if (branchId && branchId !== 'all') params.set('branchId', branchId);
+        if (targetBranchId && targetBranchId !== 'all') params.set('branchId', targetBranchId);
         fetch(`/api/reports/item-movement?${params}`)
             .then(res => res.json())
             .then(d => {
@@ -77,6 +79,42 @@ export default function ItemMovementReportPage() {
             })
             .catch(() => { })
             .finally(() => setLoading(false));
+    };
+
+    const getMovementMeta = (movement: Movement) => {
+        const rawType = String(movement.type || '').toLowerCase();
+        const qty = Number(movement.quantity || 0);
+        const isTransfer = rawType === 'transfer';
+        const isAdjustment = rawType === 'adjustment';
+        const isOutgoing = rawType === 'out' || qty < 0;
+
+        if (isTransfer) {
+            return {
+                label: 'تحويل',
+                color: '#60a5fa',
+                background: 'rgba(59,130,246,0.1)',
+                sign: qty < 0 ? '-' : '+',
+                quantity: Math.abs(qty),
+            };
+        }
+
+        if (isAdjustment) {
+            return {
+                label: 'تعديل',
+                color: '#a78bfa',
+                background: 'rgba(167,139,250,0.15)',
+                sign: qty < 0 ? '-' : '+',
+                quantity: Math.abs(qty),
+            };
+        }
+
+        return {
+            label: isOutgoing ? 'صادر -' : 'وارد +',
+            color: isOutgoing ? '#ef4444' : '#10b981',
+            background: isOutgoing ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
+            sign: isOutgoing ? '-' : '+',
+            quantity: Math.abs(qty),
+        };
     };
 
     return (
@@ -97,7 +135,12 @@ export default function ItemMovementReportPage() {
                             value={selectedId}
                             onChange={val => {
                                 setSelectedId(val);
-                                if (val) fetchMovements(val);
+                                if (val) {
+                                    fetchMovements(val, branchId);
+                                } else {
+                                    setMovements([]);
+                                    setItemDetails(null);
+                                }
                             }}
                             icon={Search}
                             placeholder="ابحث عن الصنف بالاسم أو الكود لمتابعة حركته..."
@@ -116,7 +159,10 @@ export default function ItemMovementReportPage() {
                     {branches.length > 1 && (
                         <CustomSelect
                             value={branchId}
-                            onChange={v => setBranchId(v)}
+                            onChange={v => {
+                                setBranchId(v);
+                                if (selectedId) fetchMovements(selectedId, v);
+                            }}
                             placeholder="كل الفروع"
                             options={[
                                 { value: 'all', label: 'كل الفروع' },
@@ -157,30 +203,36 @@ export default function ItemMovementReportPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {movements.map((m, idx) => (
-                                            <tr key={m.id} 
+                                        {movements.map((m, idx) => {
+                                            const meta = getMovementMeta(m);
+                                            const movementDate = m.date || m.createdAt;
+                                            return (
+                                            <tr key={m.id}
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(m.createdAt).toLocaleString('en-GB')}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>
+                                                    {movementDate ? new Date(movementDate).toLocaleString('en-GB') : '—'}
+                                                </td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
-                                                        background: m.type === 'IN' ? 'rgba(16,185,129,0.1)' : m.type === 'OUT' ? 'rgba(239,68,68,0.1)' : 'rgba(59, 130, 246, 0.1)',
-                                                        color: m.type === 'IN' ? '#10b981' : m.type === 'OUT' ? '#ef4444' : '#60a5fa'
+                                                        background: meta.background,
+                                                        color: meta.color
                                                     }}>
-                                                        {m.type === 'IN' ? 'وارد +' : m.type === 'OUT' ? 'صادر -' : m.type === 'TRANSFER' ? 'تحويل' : 'تعديل'}
+                                                        {meta.label}
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse.name}</td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: m.type === 'IN' ? '#10b981' : m.type === 'OUT' ? '#ef4444' : C.textPrimary, fontFamily: INTER }}>
-                                                        {m.type === 'OUT' ? '-' : '+'}{m.quantity.toLocaleString('en-US')}
+                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: meta.color, fontFamily: INTER }}>
+                                                        {meta.sign}{meta.quantity.toLocaleString('en-US')}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{m.description || '—'}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{m.description || m.notes || '—'}</td>
                                             </tr>
-                                        ))}
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </div>

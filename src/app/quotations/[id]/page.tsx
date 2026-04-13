@@ -43,27 +43,8 @@ export default function QuotationViewPage() {
 
     useEffect(() => { fetchData(); }, [fetchData]);
 
-    const handleConvert = async () => {
-        if (!confirm(t('هل تريد تحويل عرض السعر هذا إلى فاتورة مبيعات نهائية؟\nسيتم نسخ كافة البيانات وإنشاء فاتورة جديدة.'))) return;
-        setConverting(true);
-        try {
-            const res = await fetch('/api/quotations/convert', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ quotationId: params.id })
-            });
-            if (res.ok) {
-                const data = await res.json();
-                router.push(`/sales/${data.invoiceId}`);
-            } else {
-                const err = await res.json();
-                alert(err.error || t('فشل تحويل عرض السعر'));
-            }
-        } catch {
-            alert(t('خطأ في الاتصال بالسيرفر'));
-        } finally {
-            setConverting(false);
-        }
+    const handleConvert = () => {
+        router.push(`/sales/new?quotationId=${params.id}`);
     };
 
     if (loading) return (

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Receipt, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus } from 'lucide-react';
 import { printSaleInvoice, CompanyInfo } from '@/lib/printInvoices';
@@ -56,6 +56,9 @@ export default function NewSalePage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [showAddCust, setShowAddCust] = useState(false);
+    const searchParams = useSearchParams();
+    const quotationId = searchParams.get('quotationId');
+    const [fromQuotation, setFromQuotation] = useState<any>(null);
     const [newPartnerType, setNewPartnerType] = useState<'customer' | 'supplier'>('customer');
 
     const itemSelectRef = useRef<any>(null);
@@ -176,6 +179,49 @@ export default function NewSalePage() {
     }, []);
 
     useEffect(() => { loadData(); }, [loadData]);
+
+    // Prefill from quotation if quotationId param is present
+    useEffect(() => {
+        if (!quotationId || loading) return;
+        fetch(`/api/quotations?id=${quotationId}`)
+            .then(r => r.ok ? r.json() : null)
+            .then(quo => {
+                if (!quo) return;
+                setFromQuotation(quo);
+                // Set customer
+                if (quo.customerId) {
+                    setForm((f: any) => ({ ...f, customerId: quo.customerId }));
+                }
+                // Set discount
+                setForm((f: any) => ({
+                    ...f,
+                    customerId: quo.customerId || f.customerId,
+                    discountPct: quo.discountPct || 0,
+                    discountAmt: quo.discountAmt || 0,
+                    taxRate: quo.taxRate || f.taxRate,
+                    notes: quo.notes || '',
+                    date: quo.date ? quo.date.split('T')[0] : f.date,
+                }));
+                // Set lines from quotation
+                if (quo.lines?.length) {
+                    setLines(quo.lines.map((l: any) => ({
+                        itemId: l.itemId,
+                        itemCode: l.itemCode || '',
+                        itemName: l.itemName,
+                        unit: l.unit || '',
+                        quantity: l.quantity,
+                        price: l.price,
+                        total: l.total,
+                        stock: 99999,
+                        description: l.description || '',
+                        taxRate: l.taxRate || 0,
+                        taxAmount: l.taxAmount || 0,
+                    })));
+                }
+            })
+            .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [quotationId, loading]);
 
     useEffect(() => {
         if (!entryItemId || !form.warehouseId) { setEntryStock(null); return; }
@@ -376,8 +422,17 @@ export default function NewSalePage() {
             });
             if (res.ok) {
                 const savedInvoice = await res.json();
+
+                // If converting from a quotation, mark it as converted
+                if (quotationId) {
+                    await fetch('/api/quotations/convert', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ quotationId, invoiceId: savedInvoice.id }),
+                    }).catch(() => {});
+                }
+
                 if (andPrint) {
-                    // Use the same company object fetched on load (identical to details/list print)
                     const branches = (session?.user as any)?.branches || [];
                     const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
                     const co: CompanyInfo = { ...company, branchName, businessType: (session?.user as any)?.businessType || company.businessType };
@@ -488,6 +543,28 @@ export default function NewSalePage() {
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
                                 {t('أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء الفاتورة')}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* ── Quotation Conversion Banner ── */}
+                {fromQuotation && (
+                    <div style={{
+                        display: 'flex', alignItems: 'center', gap: '14px',
+                        padding: '14px 20px', marginBottom: '16px',
+                        background: 'rgba(74,222,128,0.06)',
+                        border: '1px solid rgba(74,222,128,0.3)',
+                        borderRadius: '12px',
+                        fontFamily: CAIRO,
+                    }}>
+                        <CheckCircle size={20} style={{ color: '#4ade80', flexShrink: 0 }} />
+                        <div style={{ flex: 1 }}>
+                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#4ade80', marginBottom: '2px' }}>
+                                {t('تحويل عرض السعر')} QUO-{String(fromQuotation.quotationNumber).padStart(5, '0')} {t('إلى فاتورة مبيعات')}
+                            </div>
+                            <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                                {t('تم تحميل بيانات العرض تلقائياً — اختر طريقة الدفع واضغط حفظ')}
                             </div>
                         </div>
                     </div>

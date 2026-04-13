@@ -18,7 +18,8 @@ export const GET = withProtection(async (request, session) => {
 
         const flowByDate: Record<string, { income: number; expense: number; label: string }> = {};
         vouchers.forEach(v => {
-            const dateStr = new Date(v.date).toISOString().split('T')[0];
+            const d = new Date(v.date);
+            const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
             if (!flowByDate[dateStr]) {
                 flowByDate[dateStr] = { income: 0, expense: 0, label: dateStr };
             }
@@ -38,7 +39,7 @@ export const GET = withProtection(async (request, session) => {
                 type: v.type,
                 date: v.date,
                 party: v.customer?.name || v.supplier?.name || '—',
-                treasury: v.treasury.name,
+                treasury: v.treasury?.name || '—',
                 amount: v.amount,
                 paymentType: v.paymentType,
                 description: v.description,
