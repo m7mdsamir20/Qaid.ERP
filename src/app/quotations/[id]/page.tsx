@@ -107,10 +107,10 @@ export default function QuotationViewPage() {
                     }}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 310px', gap: '20px', padding: '0 20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 310px', gap: '16px', padding: '0 20px' }}>
 
                     {/* ── Left Column ── */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
 
                         {/* Status Bar */}
                         <div style={{
@@ -197,7 +197,7 @@ export default function QuotationViewPage() {
                     </div>
 
                     {/* ── Right Column: Summary ── */}
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ ...SC, position: 'sticky', top: '20px' }}>
                             <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
                                 <Info size={12} /> {t('ملخص عرض السعر')}
@@ -245,20 +245,16 @@ export default function QuotationViewPage() {
                                 )}
 
                                 <div style={{ 
-                                    background: '#0f172a', 
-                                    color: '#fff', 
-                                    padding: '20px 18px', 
-                                    borderRadius: '18px', 
-                                    border: '1px solid #1e293b',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
+                                    padding: '10px 14px', borderRadius: '12px', marginTop: '6px',
+                                    border: `1px solid ${C.primaryBorder}`,
+                                    boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.5px' }}>{t('صافي العرض')}</div>
-                                    <div style={{ fontSize: '28px', fontWeight: 900, fontFamily: INTER, color: '#3b82f6', display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                        {fmt(quotation.total)} <span style={{ fontSize: '14px', fontWeight: 700, opacity: 0.8 }}>{cSymbol}</span>
-                                    </div>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
+                                        {fmt(quotation.total)} <small style={{ fontWeight: 700 }}>{cSymbol}</small>
+                                    </span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
                                 </div>
 
                                 {quotation.status === 'pending' && (

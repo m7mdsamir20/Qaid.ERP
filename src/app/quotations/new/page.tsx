@@ -24,8 +24,6 @@ const fmt = (v: any) => {
     return parts.join('.');
 };
 
-const PAGE_SC: React.CSSProperties = { background: C.card, borderRadius: '15px', border: `1px solid ${C.border}`, padding: '20px', display: 'flex', flexDirection: 'column', gap: '15px' };
-
 export default function NewQuotationPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -233,16 +231,16 @@ export default function NewQuotationPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
                 <PageHeader 
                     title={t("إنشاء عرض سعر")}
-                    subtitle={`${t("رقم عرض السعر")} QUO-${String(nextNum).padStart(5, '0')}`}
+                    subtitle=""
                     icon={FileText}
                     backUrl="/quotations"
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 310px', gap: '20px', padding: '0 20px' }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 310px', gap: '16px', padding: '0 20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         
                         {/* Basic Info */}
-                        <div style={PAGE_SC}>
+                        <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 150px', gap: '15px' }}>
                                 <div>
@@ -269,7 +267,7 @@ export default function NewQuotationPage() {
                         </div>
 
                         {/* Items Selection */}
-                        <div style={PAGE_SC}>
+                        <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}</div>
                             <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
@@ -359,14 +357,14 @@ export default function NewQuotationPage() {
                         </div>
 
                         {/* Notes */}
-                        <div style={PAGE_SC}>
+                        <div style={SC}>
                             <div style={STitle}><FileText size={12} /> {t('ملاحظات وشروط العرض')}</div>
                             <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} style={{ ...IS, height: '100px', padding: '12px', fontSize: '14px' }} placeholder={t("اكتب أي ملاحظات أو شروط تود ظهورها في عرض السعر...")} />
                         </div>
                     </div>
 
                     {/* Summary Sidebar */}
-                    <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
                                 <Info size={12} /> {t('ملخص عرض السعر')}
@@ -455,21 +453,16 @@ export default function NewQuotationPage() {
                                 )}
 
                                 <div style={{ 
-                                    background: '#0f172a', 
-                                    color: '#fff', 
-                                    padding: '20px 18px', 
-                                    borderRadius: '18px', 
-                                    marginTop: '5px',
-                                    border: '1px solid #1e293b',
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
+                                    padding: '10px 14px', borderRadius: '12px', marginTop: '6px',
+                                    border: `1px solid ${C.primaryBorder}`,
+                                    boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.5px' }}>{t('صافي العرض')}</div>
-                                    <div style={{ fontSize: '28px', fontWeight: 900, fontFamily: INTER, color: '#3b82f6', display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                        {fmt(finalTotal)} <span style={{ fontSize: '14px', fontWeight: 700, opacity: 0.8 }}>{cSymbol}</span>
-                                    </div>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
+                                        {fmt(finalTotal)} <small style={{ fontWeight: 700 }}>{cSymbol}</small>
+                                    </span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
                                 </div>
                             </div>
 
