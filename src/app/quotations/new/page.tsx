@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { FileText, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus } from 'lucide-react';
+import { FileText, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus, Percent } from 'lucide-react';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import { printQuotation, CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
@@ -234,7 +234,7 @@ export default function NewQuotationPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ background: C.bg, minHeight: '100%', fontFamily: CAIRO, paddingBottom: '80px' }}>
                 <PageHeader 
                     title={t("إنشاء عرض سعر")}
-                    subtitle={`${t("قم بتجهيز عرض سعر احترافي لعملائك برقم")} #${nextNum}`}
+                    subtitle={`${t("قم بتجهيز عرض سعر احترافي لعملائك برقم")} QUO-${String(nextNum).padStart(5, '0')}`}
                     icon={FileText}
                     backUrl="/quotations"
                 />
@@ -248,8 +248,8 @@ export default function NewQuotationPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr 150px', gap: '15px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم العرض')}</label>
-                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,244,0.1)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, color: C.primary }}>
-                                        #{String(nextNum).padStart(5, '0')}
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,244,0.1)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, color: C.primary, letterSpacing: '0.5px' }}>
+                                        QUO-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
                                 <div>
@@ -306,17 +306,17 @@ export default function NewQuotationPage() {
                                 </div>
                                 <div style={{ width: '100px' }}>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
-                                    <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} onChange={e => {
+                                    <input ref={qtyRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryQty === '' ? '1' : fmt(entryQty)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryQty(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                    }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: INTER, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <div style={{ width: '120px' }}>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
-                                    <input ref={priceRef} type="text" inputMode="decimal" value={entryPrice === '' ? '0' : fmt(entryPrice)} onChange={e => {
+                                    <input ref={priceRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryPrice === '' ? '0' : fmt(entryPrice)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryPrice(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                    }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: INTER, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <button type="button" onClick={addLine} disabled={!entryItemId} style={{ height: '42px', width: '60px', borderRadius: '10px', background: !entryItemId ? 'rgba(59,130,246,0.3)' : C.primary, color: '#fff', border: 'none', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Plus size={22} />
@@ -340,7 +340,6 @@ export default function NewQuotationPage() {
                                             <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44`, background: 'rgba(0,0,0,0.1)' }}>
                                                 <td style={{ padding: '12px' }}>
                                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.itemCode}</div>
                                                 </td>
                                                 <td style={{ padding: '12px', textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
                                                 <td style={{ padding: '12px', textAlign: 'center', fontFamily: INTER, color: C.textSecondary }}>{fmt(l.price)}</td>
@@ -375,50 +374,86 @@ export default function NewQuotationPage() {
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px' }}>
-                                    <span>{t('الإجمالي الفرعي')}:</span>
+                                    <span>{t('المجموع الفرعي')}:</span>
                                     <span style={{ fontWeight: 800, fontFamily: INTER }}>{fmt(subtotal)}</span>
                                 </div>
+
+                                {/* Discount Section aligned with Sales Invoice */}
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '15px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
                                         <label style={{ ...LS, marginBottom: 0 }}>{t('الخصم')}</label>
                                         <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.05)', padding: '2px', borderRadius: '6px' }}>
-                                            <button onClick={() => updateDiscount(0, 'pct')} style={{ padding: '2px 8px', fontSize: '10px', borderRadius: '4px', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}>%</button>
-                                            <button onClick={() => updateDiscount(0, 'amt')} style={{ padding: '2px 8px', fontSize: '10px', borderRadius: '4px', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}>{cSymbol}</button>
+                                            <Percent size={10} style={{ color: C.textMuted }} />
+                                            <Banknote size={10} style={{ color: C.textMuted }} />
                                         </div>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={form.discountPct === 0 ? '' : fmt(form.discountPct)} onChange={e => {
-                                                const v = e.target.value.replace(/,/g, '');
-                                                if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
-                                            }} style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px' }} placeholder="%" />
+                                            <input type="text" inputMode="decimal" value={form.discountPct === 0 ? '' : fmt(form.discountPct)} 
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
+                                                }} 
+                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(255,255,255,0.02)' }} 
+                                                placeholder="%" onFocus={focusIn} onBlur={focusOut} 
+                                            />
                                         </div>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={form.discountAmt === 0 ? '' : fmt(form.discountAmt)} onChange={e => {
-                                                const v = e.target.value.replace(/,/g, '');
-                                                if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
-                                            }} style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', color: '#fb7185' }} placeholder={cSymbol} />
+                                            <input type="text" inputMode="decimal" value={form.discountAmt === 0 ? '' : fmt(form.discountAmt)} 
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
+                                                }} 
+                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', color: '#fb7185', background: 'rgba(251,113,133,0.05)', borderColor: 'rgba(251,113,133,0.2)' }} 
+                                                placeholder={cSymbol} onFocus={focusIn} onBlur={focusOut} 
+                                            />
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Tax Section - Integrated visibility */}
                                 {taxSettings?.enabled && (
-                                    <div style={{ background: 'rgba(251,113,133,0.05)', border: '1px solid rgba(251,113,133,0.1)', borderRadius: '10px', padding: '10px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#fb7185', fontSize: '13px', fontWeight: 700, marginBottom: '5px' }}>
-                                            <span>{t('الضريبة')} ({form.taxRate}%):</span>
-                                            <span style={{ fontFamily: INTER }}>{fmt(taxAmount)}</span>
+                                    <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '15px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
+                                            <label style={{ ...LS, marginBottom: 0 }}>{taxSettings.label || t('الضريبة')}</label>
+                                            <span style={{ fontSize: '10px', color: C.textMuted }}>{taxSettings.isInclusive ? t('(شاملة)') : t('(مضافة)')}</span>
                                         </div>
-                                        <div style={{ fontSize: '10px', color: C.textMuted }}>{taxSettings.label || t('ضريبة القيمة المضافة')}</div>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
+                                            <div style={{ position: 'relative' }}>
+                                                <input type="text" inputMode="decimal" value={form.taxRate === 0 ? '' : fmt(form.taxRate)} 
+                                                    onChange={e => {
+                                                        const v = e.target.value.replace(/,/g, '');
+                                                        if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
+                                                    }} 
+                                                    style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(255,255,255,0.02)' }} 
+                                                    placeholder="%" onFocus={focusIn} onBlur={focusOut} 
+                                                />
+                                            </div>
+                                            <div style={{ 
+                                                height: '38px', borderRadius: '10px', border: `1px solid ${C.border}`, 
+                                                background: 'rgba(251,113,133,0.05)', color: '#fb7185',
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontFamily: INTER, fontSize: '14px', fontWeight: 800
+                                            }}>
+                                                {fmt(taxAmount)}
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
-                                <div style={{ background: 'rgba(37,106,244,0.1)', padding: '15px', borderRadius: '12px', marginTop: '10px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', color: C.primary, fontSize: '13px', fontWeight: 700, marginBottom: '5px' }}>{t('الإجمالي النهائي')}</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 900, color: C.primary, textAlign: 'center', fontFamily: INTER }}>
-                                        {fmt(finalTotal)} <span style={{ fontSize: '14px', fontWeight: 700 }}>{cSymbol}</span>
+
+                                <div style={{ 
+                                    background: C.primary, color: '#fff', padding: '15px', borderRadius: '14px', marginTop: '10px',
+                                    boxShadow: '0 4px 15px rgba(37,106,244,0.3)', position: 'relative', overflow: 'hidden'
+                                }}>
+                                    <div style={{ position: 'absolute', top: '-10px', right: '-10px', opacity: 0.1 }}><Banknote size={60} /></div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: 700, marginBottom: '5px', opacity: 0.9 }}>{t('الإجمالي النهائي')}</div>
+                                    <div style={{ fontSize: '26px', fontWeight: 900, textAlign: 'center', fontFamily: INTER }}>
+                                        {fmt(finalTotal)} <span style={{ fontSize: '14px', fontWeight: 600 }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '50px', background: C.primary, color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 800, fontSize: '16px', marginTop: '10px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 12px rgba(37,106,244,0.3)' }}>
+                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '52px', background: 'linear-gradient(135deg, #256af4 0%, #1e40af 100%)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 800, fontSize: '16px', marginTop: '15px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.2s shadow' }}>
                                 {submitting ? <Loader2 className="animate-spin" /> : <Printer size={20} />}
                                 {submitting ? t('جاري الحفظ...') : t('حفظ وطباعة العرض')}
                             </button>

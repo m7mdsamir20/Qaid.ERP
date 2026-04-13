@@ -188,14 +188,14 @@ export default function QuotationsPage() {
                                         const status = getStatusStyle(quo.status);
                                         return (
                                             <tr key={quo.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, color: C.primary, fontFamily: INTER }}>
-                                                    #{quo.quotationNumber}
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, color: C.primary, fontFamily: INTER, letterSpacing: '0.5px' }}>
+                                                    QUO-{quo.quotationNumber.toString().padStart(5, '0')}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <span style={{ fontWeight: 600 }}>{quo.customer?.name || 'عميل نقدي'}</span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: INTER, color: C.textMuted }}>
-                                                    {new Date(quo.date).toLocaleDateString('ar-EG')}
+                                                    {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>
                                                     {fmt(quo.total)} <small style={{ fontFamily: CAIRO, fontSize: '10px', opacity: 0.7 }}>{cSymbol}</small>
