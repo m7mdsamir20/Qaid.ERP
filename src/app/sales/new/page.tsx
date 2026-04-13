@@ -703,7 +703,7 @@ export default function NewSalePage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
-                                                [t('الخدمة / الوصف التفصيلي'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
+                                                [t('الخدمة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
                                                     <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             ) : (
