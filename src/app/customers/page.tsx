@@ -385,9 +385,32 @@ export default function CustomersPage() {
                                 </div>
                             </div>
 
-                            {/* حقول الشركة */}
+                            {/* العنوان المقسم */}
+                            <div>
+                                <label style={LS}>{t('العنوان')}</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                    {([0, 1, 2, 3] as const).map(i => {
+                                        const key = `f${i + 1}` as keyof AddressFields;
+                                        return (
+                                            <div key={i}>
+                                                <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{addrCfg.labels[i]}</label>
+                                                <input
+                                                    value={form.addr[key]}
+                                                    onChange={e => setForm({ ...form, addr: { ...form.addr, [key]: e.target.value } })}
+                                                    style={IS}
+                                                    onFocus={focusIn}
+                                                    onBlur={focusOut}
+                                                    placeholder={addrCfg.placeholders[i]}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+
+                            {/* رقم ضريبي + سجل تجاري (شركة فقط) */}
                             {form.type === 'company' && (
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
                                     <div>
                                         <label style={LS}>{t('الرقم الضريبي')}</label>
                                         <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
@@ -396,38 +419,21 @@ export default function CustomersPage() {
                                         <label style={LS}>{t('السجل التجاري')}</label>
                                         <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
                                     </div>
+                                </div>
+                            )}
+
+                            {/* هاتف + المسؤول */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                <div>
+                                    <label style={LS}>{t('رقم الهاتف')}</label>
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
+                                </div>
+                                {form.type === 'company' && (
                                     <div>
                                         <label style={LS}>{t('المسؤول / جهة الاتصال')}</label>
                                         <input value={form.contactPerson} onChange={e => setForm({ ...form, contactPerson: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثال: محمد علي')} />
                                     </div>
-                                </div>
-                            )}
-
-                            {/* هاتف */}
-                            <div>
-                                <label style={LS}>{t('رقم الهاتف')}</label>
-                                <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
-                            </div>
-
-                            {/* العنوان المقسم */}
-                            <div>
-                                <label style={LS}>{t('العنوان')}</label>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    {([0, 1, 2, 3] as const).map(i => {
-                                        const key = `f${i + 1}` as keyof AddressFields;
-                                        return (
-                                            <input
-                                                key={i}
-                                                value={form.addr[key]}
-                                                onChange={e => setForm({ ...form, addr: { ...form.addr, [key]: e.target.value } })}
-                                                style={IS}
-                                                onFocus={focusIn}
-                                                onBlur={focusOut}
-                                                placeholder={addrCfg.placeholders[i]}
-                                            />
-                                        );
-                                    })}
-                                </div>
+                                )}
                             </div>
                             <div>
                                 <label style={LS}>{t('الحد الائتماني المسموح (اختياري)')}</label>

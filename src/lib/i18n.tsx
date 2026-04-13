@@ -215,8 +215,6 @@ export const dictionaries = {
         "النسبة الافتراضية (%)": "Default Rate (%)",
         "الأسعار شاملة الضريبة": "Prices include tax",
         "عند التفعيل، سيتم اعتبار سلع الفاتورة شاملة لنسبة الضريبة المسجلة": "When enabled, invoice items will be considered inclusive of recorded tax",
-        "تفعيل رسوم الخدمة (POS)": "Enable Service Charge (POS)",
-        "عند تفعيلها، سيتم إضافة حقل 'خدمة' بنسبة مئوية في شاشة الكاشير السريع (المطاعم/الكافيهات)": "When enabled, a 'Service' percentage field will be added to the POS screen",
         "نسبة الخدمة الافتراضية (%)": "Default Service Rate (%)",
 
         // Notifications Tab Extras
@@ -533,8 +531,6 @@ export const dictionaries = {
         "المشتريات والموردين": "Purchases and Suppliers",
         "إدارة المخزون والمخازن": "Inventory and Warehouse Management",
         "الموظفين والرواتب والأقسام": "HR, Payroll, and Departments",
-        "نقاط البيع وسندات القبض": "POS and Receipt Vouchers",
-        "تحديد الصلاحيات يدوياً": "Define permissions manually",
         "تحديث البيانات": "Update Data",
         "الصلاحيات": "Permissions",
         "تحديد الكل": "Select All",
