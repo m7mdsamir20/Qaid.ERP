@@ -425,20 +425,29 @@ export async function downloadA4Invoice(
     const invoiceNum = String(invoice.invoiceNumber || 1).padStart(5, '0');
     const filename = `${prefix}-${invoiceNum}.pdf`;
 
-    // Generate same HTML but strip auto-print script
+    // Generate HTML, strip scripts
     const rawHtml = generateA4HTML(invoice, type, company, options);
     const cleanHtml = rawHtml.replace(/<script[\s\S]*?<\/script>/gi, '');
 
-    // Render in hidden iframe then export
-    const blob = new Blob([cleanHtml], { type: 'text/html;charset=utf-8' });
-    const url  = URL.createObjectURL(blob);
+    // Extract <style> blocks and <body> content, inject into a hidden DOM container
+    const styleBlocks = [...cleanHtml.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/gi)].map(m => m[1]).join('\n');
+    const bodyMatch = cleanHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    const bodyHtml = bodyMatch ? bodyMatch[1] : cleanHtml;
 
-    const iframe = document.createElement('iframe');
-    iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:210mm;height:297mm;border:none;';
-    iframe.src = url;
-    document.body.appendChild(iframe);
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:fixed;top:-99999px;left:-99999px;width:210mm;background:#fff;';
 
-    await new Promise<void>(resolve => { iframe.onload = () => resolve(); });
+    const styleEl = document.createElement('style');
+    styleEl.textContent = styleBlocks;
+    wrapper.appendChild(styleEl);
+
+    const content = document.createElement('div');
+    content.innerHTML = bodyHtml;
+    wrapper.appendChild(content);
+
+    document.body.appendChild(wrapper);
+    // Small delay so fonts/layout settle
+    await new Promise<void>(r => setTimeout(r, 300));
 
     await html2pdf()
         .set({
@@ -448,11 +457,10 @@ export async function downloadA4Invoice(
             html2canvas: { scale: 2, useCORS: true, letterRendering: true },
             jsPDF:      { unit: 'mm', format: 'a4', orientation: 'portrait' }
         })
-        .from(iframe.contentDocument!.body)
+        .from(content)
         .save();
 
-    document.body.removeChild(iframe);
-    URL.revokeObjectURL(url);
+    document.body.removeChild(wrapper);
 }
 
 function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}): string {

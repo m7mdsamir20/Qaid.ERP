@@ -22,6 +22,9 @@ export default function QuotationViewPage() {
     const [loading, setLoading] = useState(true);
     const [converting, setConverting] = useState(false);
 
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isServices = businessType === 'SERVICES';
+
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
@@ -94,7 +97,7 @@ export default function QuotationViewPage() {
 
                 <PageHeader
                     title={t('عرض سعر')}
-                    subtitle={`${quoCode} — ${dateStr}`}
+                    subtitle=""
                     icon={FileText}
                     backUrl="/quotations"
                     primaryButton={{
@@ -165,7 +168,7 @@ export default function QuotationViewPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('الخدمة / الصنف')}</th>
+                                        <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('السعر')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
@@ -177,7 +180,6 @@ export default function QuotationViewPage() {
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
                                                 <div style={{ fontWeight: 700, color: C.textPrimary }}>{l.item?.name || t('خدمة / صنف')}</div>
                                                 {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px' }}>{l.description}</div>}
-                                                <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, opacity: 0.5 }}>{l.item?.code || ''}</div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700 }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
