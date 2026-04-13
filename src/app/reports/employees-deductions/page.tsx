@@ -49,7 +49,7 @@ export default function EmployeesDeductionsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [q, setQ] = useState('');
@@ -143,3 +143,4 @@ export default function EmployeesDeductionsPage() {
         </DashboardLayout>
     );
 }
+

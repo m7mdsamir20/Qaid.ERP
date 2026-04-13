@@ -34,7 +34,7 @@ export default function IncomeStatementPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<IncomeStatementData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -180,3 +180,4 @@ export default function IncomeStatementPage() {
         </DashboardLayout>
     );
 }
+

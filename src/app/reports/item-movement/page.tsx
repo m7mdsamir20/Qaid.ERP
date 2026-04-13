@@ -5,14 +5,8 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
-import { Package, Activity, Search, Loader2, Warehouse, TrendingUp, TrendingDown, ArrowRightLeft } from 'lucide-react';
-import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
-import { useSession } from 'next-auth/react';
-
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
+import { Package, Activity, Search, Loader2, Warehouse } from 'lucide-react';
+import { C, CAIRO, PAGE_BASE, INTER } from '@/constants/theme';
 
 interface Movement {
     id: string;
@@ -35,20 +29,22 @@ interface Item {
     stockByWarehouse: { warehouse: string; quantity: number }[];
 }
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
 export default function ItemMovementReportPage() {
-    const { lang, t } = useTranslation();
+    const { lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
 
     const [items, setItems] = useState<{ id: string, name: string, code: string }[]>([]);
     const [selectedId, setSelectedId] = useState('');
     const [movements, setMovements] = useState<Movement[]>([]);
     const [itemDetails, setItemDetails] = useState<Item | null>(null);
     const [loading, setLoading] = useState(false);
-    const [loadingItems, setLoadingItems] = useState(true);
     const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<any[]>([]);
+    const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
@@ -60,8 +56,7 @@ export default function ItemMovementReportPage() {
         fetch('/api/reports/item-movement')
             .then(res => res.json())
             .then(d => { if (!d.error) setItems(d.items); })
-            .catch(() => { })
-            .finally(() => setLoadingItems(false));
+            .catch(() => { });
     }, []);
 
     const fetchMovements = (id: string, targetBranchId = branchId) => {
@@ -166,7 +161,7 @@ export default function ItemMovementReportPage() {
                             placeholder="كل الفروع"
                             options={[
                                 { value: 'all', label: 'كل الفروع' },
-                                ...branches.map((b: any) => ({ value: b.id, label: b.name }))
+                                ...branches.map(b => ({ value: b.id, label: b.name }))
                             ]}
                         />
                     )}
@@ -289,3 +284,5 @@ export default function ItemMovementReportPage() {
         </DashboardLayout>
     );
 }
+
+

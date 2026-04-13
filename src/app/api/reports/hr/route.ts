@@ -10,12 +10,22 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { NextResponse } from 'next/server';
 
+interface AdvanceRecord {
+    id: string;
+    employeeName: string;
+    totalAmount: number;
+    paidAmount: number;
+    remainingAmount: number;
+    status: 'paid' | 'partial' | 'active';
+}
+
 export async function GET(req: Request) {
     // Session authorization check
-    const session: any = await getServerSession(authOptions as any);
+    const session = await getServerSession(authOptions);
     if (!session?.user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
     const companyId = session.user.companyId;
+    if (!companyId) return NextResponse.json({ error: 'Company context is required' }, { status: 400 });
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type');
 
@@ -58,7 +68,7 @@ export async function GET(req: Request) {
                 });
 
                 const records = employeesWithAdvances
-                    .map(emp => {
+                    .map<AdvanceRecord | null>(emp => {
                         const totalAdvances = emp.advances.reduce((sum, a) => sum + a.amount, 0);
                         const paidAmount = emp.payrolls.reduce((sum, p) => sum + p.advances, 0);
                         const remaining = totalAdvances - paidAmount;
@@ -74,13 +84,13 @@ export async function GET(req: Request) {
                             status: remaining <= 0 ? 'paid' : (paidAmount > 0 ? 'partial' : 'active')
                         };
                     })
-                    .filter(Boolean);
+                    .filter((record): record is AdvanceRecord => record !== null);
 
                 return NextResponse.json({
                     records,
-                    totalAdvances: records.reduce((sum, r: any) => sum + r.totalAmount, 0),
-                    totalRecovered: records.reduce((sum, r: any) => sum + r.paidAmount, 0),
-                    totalOutstanding: records.reduce((sum, r: any) => sum + r.remainingAmount, 0)
+                    totalAdvances: records.reduce((sum, r) => sum + r.totalAmount, 0),
+                    totalRecovered: records.reduce((sum, r) => sum + r.paidAmount, 0),
+                    totalOutstanding: records.reduce((sum, r) => sum + r.remainingAmount, 0)
                 });
             }
 
@@ -121,7 +131,7 @@ export async function GET(req: Request) {
                     position: e.position || 'غير محدد',
                     joinDate: e.hireDate.toISOString().split('T')[0],
                     phone: e.phone || '-',
-                    status: (e as any).status === 'active' ? 'active' : 'inactive'
+                    status: e.status === 'active' ? 'active' : 'inactive'
                 })));
             }
 

@@ -30,7 +30,7 @@ export default function AgingReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<AgingInvoice[]>([]);
     const [buckets, setBuckets] = useState<any>(null);
@@ -253,3 +253,4 @@ export default function AgingReportPage() {
         </DashboardLayout>
     );
 }
+

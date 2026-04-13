@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
 
         const vouchers = await prisma.voucher.findMany({
             where: { companyId },
@@ -29,11 +32,15 @@ export const GET = withProtection(async (request, session) => {
                 flowByDate[dateStr].expense += v.amount;
             }
         });
-        const totalIncome = vouchers.filter((v: any) => v.type === 'receipt').reduce((s: number, v: any) => s + v.amount, 0);
-        const totalExpense = vouchers.filter((v: any) => v.type === 'payment').reduce((s: number, v: any) => s + v.amount, 0);
+        const totalIncome = vouchers
+            .filter(v => v.type === 'receipt')
+            .reduce((sum, v) => sum + v.amount, 0);
+        const totalExpense = vouchers
+            .filter(v => v.type === 'payment')
+            .reduce((sum, v) => sum + v.amount, 0);
 
         return NextResponse.json({
-            vouchers: vouchers.map((v: any) => ({
+            vouchers: vouchers.map(v => ({
                 id: v.id,
                 voucherNumber: v.voucherNumber,
                 type: v.type,
@@ -47,9 +54,11 @@ export const GET = withProtection(async (request, session) => {
             totalIncome,
             totalExpense,
             netFlow: totalIncome - totalExpense,
-            flowByDate: Object.values(flowByDate).sort((a: any, b: any) => a.label.localeCompare(b.label)).slice(-30),
+            flowByDate: Object.values(flowByDate)
+                .sort((a, b) => a.label.localeCompare(b.label))
+                .slice(-30),
         });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Cash Flow API Error:", error);
         return NextResponse.json({ error: "فشل في جلب تقرير التدفق النقدي" }, { status: 500 });
     }

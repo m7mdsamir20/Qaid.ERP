@@ -28,7 +28,7 @@ export default function TrialBalancePage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [report, setReport] = useState<TrialBalanceLine[]>([]);
     const [loading, setLoading] = useState(true);
@@ -183,3 +183,4 @@ export default function TrialBalancePage() {
         </DashboardLayout>
     );
 }
+

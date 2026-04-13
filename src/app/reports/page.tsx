@@ -1,10 +1,11 @@
 'use client';
 import { useTranslation } from '@/lib/i18n';
-import { useEffect, useState, Suspense } from 'react';
+import { useState, Suspense } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import { useRouter, useSearchParams } from 'next/navigation';
+import type { LucideIcon } from 'lucide-react';
 import {
     PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity,
     ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers,
@@ -18,9 +19,17 @@ interface ReportLink {
     title: string;
     description: string;
     href: string;
-    icon: any;
+    icon: LucideIcon;
     color: string;
     status: 'ready' | 'new';
+    requiredPages?: string[];
+}
+
+interface ModuleTab {
+    key: string;
+    label: string;
+    icon: LucideIcon;
+    requiredFeatures?: string[];
     requiredPages?: string[];
 }
 
@@ -30,7 +39,7 @@ function ReportsHubPageInner() {
     const { data: session } = useSession();
     const router = useRouter();
 
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const businessType = session?.user?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
 
     const REPORTS_DATA: Record<string, ReportLink[]> = {
@@ -54,7 +63,7 @@ function ReportsHubPageInner() {
             { title: isServices ? t('قائمة الخدمات') : t('تقرير المخزون'), description: isServices ? t('قائمة جميع الخدمات المسجلة وأسعارها') : t('حالة المخازن وأرصدة الأصناف والجرد'), href: '/reports/inventory-report', icon: Package, color: '#8b5cf6', status: 'ready', requiredPages: ['/items'] },
             { title: isServices ? t('تصنيفات الخدمات') : t('حركات المخزون'), description: isServices ? t('عرض الخدمات حسب التصنيفات') : t('سجل شامل لجميع عمليات الصرف والتوريد والتحويل المخزني'), href: isServices ? '/categories' : '/stock-movements', icon: isServices ? Layers : ArrowRightLeft, color: '#3b82f6', status: 'ready', requiredPages: ['/categories', '/stock-movements'] },
             { title: isServices ? t('إحصائيات الخدمات') : t('حركة صنف'), description: isServices ? t('تحليل حركة طلب خدمة معينة') : t('مراقبة الصادر والوارد لصنف معين ككارتة صنف'), href: '/reports/item-movement', icon: Activity, color: '#f59e0b', status: 'ready', requiredPages: ['/items', '/stock-movements'] },
-            ...(!isServices ? [{ title: t('أصناف تحت الحد الأدنى'), description: t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready' as any, requiredPages: ['/items'] }] : []),
+            ...(!isServices ? [{ title: t('أصناف تحت الحد الأدنى'), description: t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready', requiredPages: ['/items'] }] : []),
         ],
         'partners': [
             { title: t('أرصدة العملاء والموردين'), description: t('تقرير إجمالي لجميع العملاء والموردين يعرض من عليه أموال ومن له مستحقات'), href: '/reports/clients-suppliers-balances', icon: Users, color: '#3b82f6', status: 'ready', requiredPages: ['/customers', '/suppliers'] },
@@ -81,12 +90,12 @@ function ReportsHubPageInner() {
         ]
     };
 
-    const userPermissions = (session?.user as any)?.permissions || {};
+    const userPermissions = session?.user?.permissions || {};
     const reportsPerms = userPermissions['التقارير الإحصائية'] || {};
-    const isAdmin = session?.user?.role === 'admin' || (session?.user as any)?.isSuperAdmin;
-    const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
-    const featuresRaw = (session?.user as any)?.subscription?.features;
-    const hasSubscription = !!(session?.user as any)?.subscription;
+    const isAdmin = session?.user?.role === 'admin' || session?.user?.isSuperAdmin;
+    const isSuperAdmin = session?.user?.isSuperAdmin;
+    const featuresRaw = session?.user?.subscription?.features;
+    const hasSubscription = !!session?.user?.subscription;
 
     const enabledFeatures: Record<string, string[]> = (() => {
         if (!featuresRaw) return {};
@@ -128,7 +137,7 @@ function ReportsHubPageInner() {
         return section.links.some(l => hasPageAccess(l.id, featureKey));
     };
 
-    const TABS = [
+    const TABS: ModuleTab[] = [
         { 
             key: 'financial', 
             label: t('التقارير المالية'), 
@@ -192,7 +201,7 @@ function ReportsHubPageInner() {
         },
     ];
 
-    const hasModuleAccess = (tab: any) => {
+    const hasModuleAccess = (tab: ModuleTab) => {
         if (isSuperAdmin) return true;
 
         // 1. تحقق من صلاحية التبويب في موديول التقارير الإحصائية (للموظفين فقط)
@@ -212,11 +221,6 @@ function ReportsHubPageInner() {
         if (visibleTabs.length > 0) return visibleTabs[0].key;
         return 'financial';
     });
-
-    useEffect(() => {
-        const t = searchParams.get('tab');
-        if (t && REPORTS_DATA[t]) setActiveTab(t);
-    }, [searchParams]);
 
     const renderCards = (groupKey: string) => {
         const reports = (REPORTS_DATA[groupKey] || []).filter(report => {
@@ -358,3 +362,4 @@ export default function ReportsHubPage() {
         </Suspense>
     );
 }
+

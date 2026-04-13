@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
 
         const branchId = request.nextUrl.searchParams.get('branchId');
         const warehouseFilter = branchId && branchId !== 'all' ? { branchId } : {};
@@ -20,7 +23,7 @@ export const GET = withProtection(async (request, session) => {
 
         const totalItemsCount = new Set(stocks.map(s => s.itemId)).size;
         const totalQuantity = stocks.reduce((s, st) => s + st.quantity, 0);
-        const totalValue = stocks.reduce((s, st: any) => s + (st.quantity * (st.item.averageCost || st.item.costPrice || 0)), 0);
+        const totalValue = stocks.reduce((s, st) => s + (st.quantity * (st.item.averageCost || st.item.costPrice || 0)), 0);
 
         return NextResponse.json({ 
             stocks: stocks.map(s => ({
@@ -29,7 +32,7 @@ export const GET = withProtection(async (request, session) => {
                 item: {
                     code: s.item.code,
                     name: s.item.name,
-                    unit: (s.item.unit as any)?.name || '—',
+                    unit: s.item.unit?.name || '—',
                     costPrice: s.item.averageCost || s.item.costPrice || 0,
                     sellPrice: s.item.sellPrice || 0,
                     averageCost: s.item.averageCost || s.item.costPrice || 0
@@ -47,3 +50,5 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: "فشل في جلب التقرير" }, { status: 500 });
     }
 });
+
+

@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
         const { searchParams } = new URL(request.url);
         const from = searchParams.get('from');
         const to = searchParams.get('to');
@@ -15,7 +18,12 @@ export const GET = withProtection(async (request, session) => {
 
         const branchId = searchParams.get('branchId');
 
-        const where: any = { companyId, type: 'purchase' };
+        const where: {
+            companyId: string;
+            type: 'purchase';
+            date?: { gte?: Date; lte?: Date };
+            branchId?: string;
+        } = { companyId, type: 'purchase' };
         if (from)     where.date = { ...where.date, gte: new Date(from) };
         if (to)       where.date = { ...where.date, lte: new Date(to + 'T23:59:59') };
         if (branchId && branchId !== 'all') where.branchId = branchId;
@@ -46,3 +54,4 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: "فشل في جلب التقرير" }, { status: 500 });
     }
 });
+

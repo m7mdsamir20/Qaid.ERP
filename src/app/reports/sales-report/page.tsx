@@ -41,10 +41,10 @@ export default function SalesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const businessType = session?.user?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const { symbol: cSymbol } = useCurrency();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [from, setFrom] = useState('');
@@ -272,3 +272,4 @@ export default function SalesReportPage() {
         </DashboardLayout>
     );
 }
+

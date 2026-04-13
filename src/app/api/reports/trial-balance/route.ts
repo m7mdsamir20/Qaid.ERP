@@ -1,14 +1,17 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
 
         const financialYearId = request.nextUrl.searchParams.get('financialYearId');
 
-        let yearFilter: any = {};
+        let yearFilter: { financialYearId?: string } = {};
         if (financialYearId) {
             yearFilter = { financialYearId };
         } else {
@@ -67,3 +70,4 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: 'Failed to generate Trial Balance' }, { status: 500 });
     }
 });
+

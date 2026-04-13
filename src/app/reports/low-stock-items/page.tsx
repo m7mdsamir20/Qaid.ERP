@@ -29,7 +29,7 @@ export default function LowStockReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<LowStockItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -194,3 +194,4 @@ export default function LowStockReportPage() {
         </DashboardLayout>
     );
 }
+

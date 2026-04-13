@@ -34,7 +34,7 @@ export default function CashFlowReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<MoneyLog[]>([]);
     const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, netFlow: 0, flowByDate: [] });
@@ -208,3 +208,4 @@ export default function CashFlowReportPage() {
         </DashboardLayout>
     );
 }
+

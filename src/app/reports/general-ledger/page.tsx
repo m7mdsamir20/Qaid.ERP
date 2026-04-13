@@ -50,7 +50,7 @@ export default function GeneralLedgerPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [accounts, setAccounts] = useState<Account[]>([]);
     const [selectedAccount, setSelectedAccount] = useState('');
@@ -317,3 +317,4 @@ export default function GeneralLedgerPage() {
         </DashboardLayout>
     );
 }
+

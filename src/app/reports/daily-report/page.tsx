@@ -23,7 +23,7 @@ export default function DailyReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
@@ -280,3 +280,4 @@ export default function DailyReportPage() {
         </DashboardLayout>
     );
 }
+

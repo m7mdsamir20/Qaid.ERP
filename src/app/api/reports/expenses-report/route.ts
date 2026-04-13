@@ -4,7 +4,10 @@ import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
         const { searchParams } = new URL(request.url);
         const from = searchParams.get('from');
         const to = searchParams.get('to');
@@ -13,7 +16,11 @@ export const GET = withProtection(async (request, session) => {
             return NextResponse.json({ error: 'تاريخ البداية يجب أن يكون قبل تاريخ النهاية' }, { status: 400 });
         }
 
-        const where: any = {
+        const where: {
+            companyId: string;
+            referenceType: string;
+            date?: { gte?: Date; lte?: Date };
+        } = {
             companyId,
             referenceType: 'other_expense',
         };
@@ -42,7 +49,7 @@ export const GET = withProtection(async (request, session) => {
         });
 
         const rows = entries.map(entry => {
-            const debitLine = entry.lines.find((l: any) => l.debit > 0);
+            const debitLine = entry.lines.find(l => l.debit > 0);
             const amount = debitLine ? Number(debitLine.debit) : 0;
             const expenseAccountName = debitLine?.account?.name || '—';
 
@@ -73,3 +80,4 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: 'فشل في استخراج تقرير المصروفات' }, { status: 500 });
     }
 });
+

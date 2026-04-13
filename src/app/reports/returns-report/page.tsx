@@ -30,7 +30,7 @@ export default function ReturnsReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<ReturnInvoice[]>([]);
     const [stats, setStats] = useState({ totalSaleReturns: 0, totalPurchaseReturns: 0 });
@@ -201,3 +201,4 @@ export default function ReturnsReportPage() {
         </DashboardLayout>
     );
 }
+

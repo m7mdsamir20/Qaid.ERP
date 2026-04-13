@@ -33,7 +33,7 @@ export default function ClientsSuppliersBalancesPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [result, setResult] = useState<ReportResult | null>(null);
     const [loading, setLoading] = useState(true);
@@ -142,7 +142,7 @@ export default function ClientsSuppliersBalancesPage() {
                         ].map(t => (
                             <button
                                 key={t.key}
-                                onClick={() => setFilter(t.key as any)}
+                                onClick={() => setFilter(t.key as 'all' | 'customer' | 'supplier' | 'debtor' | 'creditor')}
                                 style={{
                                     display: 'flex', alignItems: 'center', gap: '8px',
                                     padding: '8px 18px', borderRadius: '10px',
@@ -293,3 +293,4 @@ export default function ClientsSuppliersBalancesPage() {
         </DashboardLayout>
     );
 }
+

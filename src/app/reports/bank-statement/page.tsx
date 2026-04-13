@@ -8,9 +8,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
 import {
-    Calendar, Search, Printer, Landmark,
-    ArrowUpRight, ArrowDownRight, Loader2, FileText, FileDown,
-    History, TrendingUp, TrendingDown, UserCircle
+    Search, Landmark, Loader2, FileText,
+    History, TrendingUp, TrendingDown
 } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
@@ -22,19 +21,55 @@ const getCurrencyName = (code: string) => {
 const SC = '#10b981';
 const DC = '#ef4444';
 
+type StatementMovementType = 'receipt' | 'payment' | string;
+
+interface TreasuryOption {
+    id: string;
+    name: string;
+    type: string;
+}
+
+interface StatementMovement {
+    id: string;
+    date: string;
+    party: string;
+    description: string;
+    amount: number;
+    type: StatementMovementType;
+}
+
+interface StatementData {
+    openingBalance: number;
+    currentBalance: number;
+    treasuryName?: string;
+    movements: StatementMovement[];
+}
+
+interface MovementWithBalance extends StatementMovement {
+    balanceBefore: number;
+    balanceAfter: number;
+}
+
+interface SummaryCard {
+    label: string;
+    value: number;
+    color: string;
+    icon: React.ReactNode;
+    sign: string;
+}
+
 export default function BankStatementPage() {
-    const { lang, t } = useTranslation();
+    const { lang } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [selectedId, setSelectedId] = useState('');
-    const [treasuries, setTreasuries] = useState<any[]>([]);
-    const [data, setData] = useState<any>(null);
+    const [treasuries, setTreasuries] = useState<TreasuryOption[]>([]);
+    const [data, setData] = useState<StatementData | null>(null);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchTreasuries = async () => {
@@ -42,7 +77,7 @@ export default function BankStatementPage() {
                 const res = await fetch('/api/treasuries');
                 if (res.ok) {
                     const all = await res.json();
-                    setTreasuries(all.filter((t: any) => t.type === 'bank'));
+                    setTreasuries(Array.isArray(all) ? all.filter((treasury: TreasuryOption) => treasury.type === 'bank') : []);
                 }
             } catch { }
         };
@@ -60,26 +95,24 @@ export default function BankStatementPage() {
             if (res.ok) {
                 const result = await res.json();
                 setData(result);
-                setError('');
-            } else {
-                setError('فشل جلب البيانات');
             }
         } catch { 
-            setError('خطأ في الاتصال بالخادم');
         } finally { 
             setLoading(false); 
         }
     }, [selectedId, from, to]);
 
-    const movements = data ? (() => {
+    const movements: MovementWithBalance[] = data ? (() => {
         let running = data.openingBalance;
-        return data.movements.map((m: any) => {
+        return data.movements.map((m) => {
             const before = running;
             if (m.type === 'receipt') running += m.amount;
             else running -= m.amount;
             return { ...m, balanceBefore: before, balanceAfter: running };
         });
     })() : [];
+    const totalReceipts = data?.movements.reduce((sum, m) => (m.type === 'receipt' ? sum + m.amount : sum), 0) || 0;
+    const totalPayments = data?.movements.reduce((sum, m) => (m.type === 'payment' ? sum + m.amount : sum), 0) || 0;
 
     const exportToExcel = () => {
         if (!data || !movements.length) return;
@@ -92,7 +125,7 @@ export default function BankStatementPage() {
                 'سحب (-)': '—',
                 'الرصيد بعد': data.openingBalance
             },
-            ...movements.map((m: any) => ({
+            ...movements.map((m) => ({
                 'التاريخ': new Date(m.date).toLocaleDateString('en-GB'),
                 'البيان / الجهة': `${m.party} - ${m.description}`,
                 'الرصيد قبل': m.balanceBefore,
@@ -194,10 +227,10 @@ export default function BankStatementPage() {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: 'رصيد مرحل (قبل)', value: data.openingBalance, color: '#3b82f6', icon: <History size={20} />, sign: 'الرصيد في بداية الفترة' },
-                                { label: 'إجمالي الإيداعات', value: data.movements.reduce((s: number, m: any) => m.type === 'receipt' ? s + m.amount : s, 0), color: SC, icon: <TrendingUp size={20} />, sign: 'وارد للحساب (+)' },
-                                { label: 'إجمالي السحوبات', value: data.movements.reduce((s: number, m: any) => m.type === 'payment' ? s + m.amount : s, 0), color: DC, icon: <TrendingDown size={20} />, sign: 'صادر من الحساب (-)' },
+                                { label: 'إجمالي الإيداعات', value: totalReceipts, color: SC, icon: <TrendingUp size={20} />, sign: 'وارد للحساب (+)' },
+                                { label: 'إجمالي السحوبات', value: totalPayments, color: DC, icon: <TrendingDown size={20} />, sign: 'صادر من الحساب (-)' },
                                 { label: 'صافي الرصيد البنكي', value: data.currentBalance, color: data.currentBalance >= 0 ? SC : DC, icon: <FileText size={20} />, sign: 'الرصيد الدفتري الحالي' },
-                            ].map((s: any, i: number) => (
+                            ].map((s: SummaryCard, i: number) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -240,7 +273,7 @@ export default function BankStatementPage() {
                                             <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: data.openingBalance >= 0 ? SC : DC, fontSize: '15px', fontFamily: INTER }}>{data.openingBalance.toLocaleString('en-US')}</td>
                                         </tr>
-                                        {movements.map((m: any, i: number) => (
+                                        {movements.map((m, i: number) => (
                                             <tr key={m.id + i} 
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
@@ -262,8 +295,8 @@ export default function BankStatementPage() {
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
                                             <td colSpan={3} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>تحليل الحركة البنكية الكلية</td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>+{data.movements.reduce((s: number, m: any) => m.type === 'receipt' ? s + m.amount : s, 0).toLocaleString('en-US')}</td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>-{data.movements.reduce((s: number, m: any) => m.type === 'payment' ? s + m.amount : s, 0).toLocaleString('en-US')}</td>
+                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>+{totalReceipts.toLocaleString('en-US')}</td>
+                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>-{totalPayments.toLocaleString('en-US')}</td>
                                             <td style={{ padding: '20px 24px', textAlign: 'center', color: C.textPrimary, fontSize: '16px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>{data.currentBalance.toLocaleString('en-US')}</td>
                                         </tr>
                                     </tfoot>
@@ -289,3 +322,5 @@ export default function BankStatementPage() {
         </DashboardLayout>
     );
 }
+
+

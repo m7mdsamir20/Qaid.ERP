@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
         const { searchParams } = new URL(request.url);
         const treasuryId = searchParams.get('treasuryId');
         const from = searchParams.get('from');
@@ -18,7 +21,7 @@ export const GET = withProtection(async (request, session) => {
             return NextResponse.json({ error: 'يرجى اختيار الخزينة أو البنك' }, { status: 400 });
         }
 
-        const dateFilter: any = {};
+        const dateFilter: { gte?: Date; lte?: Date } = {};
         if (from) {
             dateFilter.gte = new Date(from);
         }
@@ -97,3 +100,5 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: 'Failed to generate report' }, { status: 500 });
     }
 });
+
+

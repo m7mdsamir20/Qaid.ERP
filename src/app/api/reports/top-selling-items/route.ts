@@ -1,10 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
+
+        interface TopSellingAggregate {
+            id: string;
+            code: string;
+            name: string;
+            category: string;
+            unit: string;
+            totalQuantity: number;
+            totalSales: number;
+            totalProfit: number;
+        }
 
         // Fetch invoice lines from 'sale' invoices
         const invoiceLines = await prisma.invoiceLine.findMany({
@@ -20,9 +34,9 @@ export const GET = withProtection(async (request, session) => {
         });
 
         // Use a map to aggregate totals per item
-        const itemAggregates: Record<string, any> = {};
+        const itemAggregates: Record<string, TopSellingAggregate> = {};
         
-        invoiceLines.forEach((line: any) => {
+        invoiceLines.forEach((line) => {
             const itemId = line.itemId;
             if (!itemAggregates[itemId]) {
                 itemAggregates[itemId] = {
@@ -44,7 +58,7 @@ export const GET = withProtection(async (request, session) => {
 
         // Convert map to array and sort by total sales
         const topSellingItems = Object.values(itemAggregates)
-            .sort((a: any, b: any) => b.totalSales - a.totalSales)
+            .sort((a, b) => b.totalSales - a.totalSales)
             .slice(0, 50); // Top 50
 
         return NextResponse.json(topSellingItems);
@@ -53,3 +67,4 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: "فشل في جلب تقرير الأكثر مبيعاً" }, { status: 500 });
     }
 });
+

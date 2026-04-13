@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
 
         const [customers, suppliers] = await Promise.all([
             prisma.customer.findMany({
@@ -36,3 +39,4 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: "فشل استخراج التقرير" }, { status: 500 });
     }
 });
+

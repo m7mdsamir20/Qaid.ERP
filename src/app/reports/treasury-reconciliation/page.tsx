@@ -26,7 +26,7 @@ export default function TreasuryReconciliationPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [treasuries, setTreasuries] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -278,3 +278,4 @@ export default function TreasuryReconciliationPage() {
         </DashboardLayout>
     );
 }
+

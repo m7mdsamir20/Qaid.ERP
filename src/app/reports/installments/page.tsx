@@ -22,7 +22,7 @@ export default function InstallmentReportsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const { symbol: cSymbol } = useCurrency();
     const [activeTab, setActiveTab] = useState<'collection' | 'overdue' | 'customer'>('collection');
@@ -97,7 +97,7 @@ export default function InstallmentReportsPage() {
                     {tabs.map(t => {
                         const active = activeTab === t.id;
                         return (
-                            <button key={t.id} onClick={() => { setActiveTab(t.id as any); setData(null); }}
+                            <button key={t.id} onClick={() => { setActiveTab(t.id as 'collection' | 'overdue' | 'customer'); setData(null); }}
                                 style={{
                                     padding: '16px', borderRadius: '16px', border: `1px solid ${active ? C.primaryBorder : C.border}`,
                                     background: active ? 'linear-gradient(135deg, rgba(37,106,244,0.1), rgba(37,106,244,0.05))' : C.card,
@@ -387,3 +387,4 @@ export default function InstallmentReportsPage() {
         </DashboardLayout>
     );
 }
+

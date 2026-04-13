@@ -17,16 +17,34 @@ const getCurrencyName = (code: string) => {
 
 interface Customer { id: string; name: string; balance: number; createdAt: string; }
 
+interface StatementRow {
+    id: string;
+    date: string;
+    type: string;
+    ref?: string;
+    description: string;
+    debit: number;
+    credit: number;
+    balance: number;
+}
+
+interface CustomerStatementData {
+    customer: Customer;
+    initialBalance: number;
+    finalBalance: number;
+    statement: StatementRow[];
+}
+
 export default function CustomerStatementPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [selectedId, setSelectedId] = useState('');
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<CustomerStatementData | null>(null);
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
     const [error, setError] = useState('');
@@ -68,7 +86,7 @@ export default function CustomerStatementPage() {
 
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
-        const excelData = data.statement.map((row: any) => ({
+        const excelData = data.statement.map((row: StatementRow) => ({
             'التاريخ': new Date(row.date).toLocaleDateString('en-GB'),
             'طبيعة الحركة': row.type,
             'المرجع': row.ref || '—',
@@ -181,8 +199,8 @@ export default function CustomerStatementPage() {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: 'رصيد سابق (منقول)', value: Math.abs(data.initialBalance), sign: data.initialBalance >= 0 ? 'عليه (مدين)' : 'له (دائن)', color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', icon: <History size={20} /> },
-                                { label: 'إجمالي المبيعات (عليه)', value: data.statement.reduce((s: number, l: any) => s + l.debit, 0), sign: 'حركات مدينة', color: '#10b981', icon: <TrendingDown size={20} /> },
-                                { label: 'إجمالي السدادات (له)', value: data.statement.reduce((s: number, l: any) => s + l.credit, 0), sign: 'حركات دائنة', color: '#ef4444', icon: <TrendingUp size={20} /> },
+                                { label: 'إجمالي المبيعات (عليه)', value: data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0), sign: 'حركات مدينة', color: '#10b981', icon: <TrendingDown size={20} /> },
+                                { label: 'إجمالي السدادات (له)', value: data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0), sign: 'حركات دائنة', color: '#ef4444', icon: <TrendingUp size={20} /> },
                                 { label: 'الرصيد النهائي (الآن)', value: Math.abs(data.finalBalance), sign: data.finalBalance >= 0 ? 'عليه (مدين)' : 'له (دائن)', color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', icon: <FileText size={20} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
@@ -235,7 +253,7 @@ export default function CustomerStatementPage() {
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontFamily: INTER }}>{Math.abs(data.initialBalance).toLocaleString('en-US')}</td>
                                             </tr>
                                         )}
-                                        {data.statement.map((row: any, i: number) => (
+                                        {data.statement.map((row: StatementRow, i: number) => (
                                             <tr key={row.id + i} 
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
@@ -266,10 +284,10 @@ export default function CustomerStatementPage() {
                                         <tr>
                                             <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>إجمالي كامل الحساب</td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: '#10b981', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
-                                                {(data.statement.reduce((s: number, l: any) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0)).toLocaleString('en-US')}
+                                                {(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0)).toLocaleString('en-US')}
                                             </td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
-                                                {(data.statement.reduce((s: number, l: any) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0)).toLocaleString('en-US')}
+                                                {(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0)).toLocaleString('en-US')}
                                             </td>
                                             <td style={{ padding: '20px 24px', textAlign: 'center', color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '17px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>
                                                 {Math.abs(data.finalBalance).toLocaleString('en-US')}
@@ -298,3 +316,5 @@ export default function CustomerStatementPage() {
         </DashboardLayout>
     );
 }
+
+

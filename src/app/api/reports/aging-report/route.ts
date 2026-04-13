@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
         const branchId = request.nextUrl.searchParams.get('branchId');
         const branchFilter = branchId && branchId !== 'all' ? { branchId } : {};
 
@@ -20,7 +23,8 @@ export const GET = withProtection(async (request, session) => {
         });
 
         const today = new Date();
-        const buckets: any = {
+        type AgingBucketKey = '0-30' | '31-60' | '61-90' | '91+';
+        const buckets: Record<AgingBucketKey, { total: number; count: number }> = {
             '0-30': { total: 0, count: 0 },
             '31-60': { total: 0, count: 0 },
             '61-90': { total: 0, count: 0 },
@@ -30,7 +34,7 @@ export const GET = withProtection(async (request, session) => {
         const invoicesWithAge = unpaidInvoices.map(inv => {
             const dateToUse = inv.dueDate || inv.date;
             const ageDays = Math.floor((today.getTime() - new Date(dateToUse).getTime()) / (1000 * 3600 * 24));
-            let category: string;
+            let category: AgingBucketKey;
             if (ageDays <= 30) {
                 category = '0-30'; buckets['0-30'].total += inv.remaining; buckets['0-30'].count++;
             } else if (ageDays <= 60) {
@@ -65,3 +69,4 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: "فشل في جلب تقرير أعمار الديون" }, { status: 500 });
     }
 });
+

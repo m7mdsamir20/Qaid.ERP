@@ -1,10 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
 
 export const GET = withProtection(async (request, session) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const companyId = session.user.companyId;
+        if (!companyId) {
+            return NextResponse.json({ error: "Company context is required" }, { status: 400 });
+        }
 
         // Fetch all items with their stocks and units
         const items = await prisma.item.findMany({
@@ -26,8 +29,8 @@ export const GET = withProtection(async (request, session) => {
             name: item.name,
             totalStock: item.stocks.reduce((sum, s) => sum + s.quantity, 0),
             minLimit: item.minLimit,
-            unit: (item as any).unit?.name || '—',
-            category: (item as any).category?.name || '—',
+            unit: item.unit?.name || '—',
+            category: item.category?.name || '—',
             averageCost: item.averageCost || 0,
             value: item.stocks.reduce((sum, s) => sum + s.quantity, 0) * (item.averageCost || item.costPrice || 0)
         }));
@@ -38,3 +41,5 @@ export const GET = withProtection(async (request, session) => {
         return NextResponse.json({ error: "فشل في جلب تقرير النواقص" }, { status: 500 });
     }
 });
+
+

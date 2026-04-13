@@ -38,7 +38,7 @@ export default function PayrollStatementPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [month, setMonth] = useState(new Date().toISOString().slice(0, 7)); // YYYY-MM
@@ -161,3 +161,4 @@ export default function PayrollStatementPage() {
         </DashboardLayout>
     );
 }
+

@@ -29,7 +29,7 @@ export default function OverdueReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const currency = (session?.user as any)?.currency || 'EGP';
+    const currency = session?.user?.currency || 'EGP';
 
     const router = useRouter();
     const [customers, setCustomers] = useState<any[]>([]);
@@ -131,14 +131,14 @@ export default function OverdueReportPage() {
                             <div className="print-only">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
                                     <div style={{ textAlign: 'start' }}>
-                                        <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
-                                        {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {(session?.user as any)?.taxNumber}</div>}
+                                        <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
+                                        {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
                                     </div>
                                     <div style={{ textAlign: 'center' }}>
                                         <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>الأقساط المستحقة والمتأخرة</h3>
                                     </div>
                                     <div style={{ maxWidth: '150px', textAlign: 'end' }}>
-                                        {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
+                                        {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
                                     </div>
                                 </div>
                             </div>
@@ -217,3 +217,4 @@ export default function OverdueReportPage() {
         </DashboardLayout>
     );
 }
+
