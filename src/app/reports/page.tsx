@@ -63,7 +63,7 @@ function ReportsHubPageInner() {
             { title: isServices ? t('قائمة الخدمات') : t('تقرير المخزون'), description: isServices ? t('قائمة جميع الخدمات المسجلة وأسعارها') : t('حالة المخازن وأرصدة الأصناف والجرد'), href: '/reports/inventory-report', icon: Package, color: '#8b5cf6', status: 'ready', requiredPages: ['/items'] },
             { title: isServices ? t('تصنيفات الخدمات') : t('حركات المخزون'), description: isServices ? t('عرض الخدمات حسب التصنيفات') : t('سجل شامل لجميع عمليات الصرف والتوريد والتحويل المخزني'), href: isServices ? '/categories' : '/stock-movements', icon: isServices ? Layers : ArrowRightLeft, color: '#3b82f6', status: 'ready', requiredPages: ['/categories', '/stock-movements'] },
             { title: isServices ? t('إحصائيات الخدمات') : t('حركة صنف'), description: isServices ? t('تحليل حركة طلب خدمة معينة') : t('مراقبة الصادر والوارد لصنف معين ككارتة صنف'), href: '/reports/item-movement', icon: Activity, color: '#f59e0b', status: 'ready', requiredPages: ['/items', '/stock-movements'] },
-            ...(!isServices ? [{ title: t('أصناف تحت الحد الأدنى'), description: t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready', requiredPages: ['/items'] }] : []),
+            ...(!isServices ? [{ title: t('أصناف تحت الحد الأدنى'), description: t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready' as const, requiredPages: ['/items'] }] : []),
         ],
         'partners': [
             { title: t('أرصدة العملاء والموردين'), description: t('تقرير إجمالي لجميع العملاء والموردين يعرض من عليه أموال ومن له مستحقات'), href: '/reports/clients-suppliers-balances', icon: Users, color: '#3b82f6', status: 'ready', requiredPages: ['/customers', '/suppliers'] },
@@ -100,7 +100,7 @@ function ReportsHubPageInner() {
     const enabledFeatures: Record<string, string[]> = (() => {
         if (!featuresRaw) return {};
         try {
-            const parsed = JSON.parse(featuresRaw);
+            const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
             if (Array.isArray(parsed)) {
                 const obj: Record<string, string[]> = {};
                 parsed.forEach((key: string) => {
@@ -127,7 +127,8 @@ function ReportsHubPageInner() {
         if (session?.user?.role === 'admin') return true;
 
         // 3. التحقق من صلاحية الجرانيولار للموظفين
-        return !!userPermissions[pageId]?.view;
+        const perms = (userPermissions as Record<string, any>);
+        return !!perms[pageId]?.view;
     };
 
     const hasFeatureAccess = (featureKey: string): boolean => {
@@ -205,7 +206,8 @@ function ReportsHubPageInner() {
         if (isSuperAdmin) return true;
 
         // 1. تحقق من صلاحية التبويب في موديول التقارير الإحصائية (للموظفين فقط)
-        if (!isAdmin && reportsPerms[`reports-${tab.key}`]?.view !== true) return false;
+        const perms = (reportsPerms as Record<string, any>);
+        if (!isAdmin && perms[`reports-${tab.key}`]?.view !== true) return false;
 
         // 2. تحقق هل يملك صلاحية على الموارد الأصلية
         const targetFeatures = tab.requiredFeatures || [];
