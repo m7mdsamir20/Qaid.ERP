@@ -240,7 +240,7 @@ export default function NewQuotationPage() {
                     backUrl="/quotations"
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px', padding: '0 20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 310px', gap: '20px', padding: '0 20px' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         
                         {/* Basic Info */}
@@ -370,45 +370,47 @@ export default function NewQuotationPage() {
 
                     {/* Summary Sidebar */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ ...SC, position: 'sticky', top: '20px' }}>
-                            <div style={{ fontSize: '16px', fontWeight: 900, color: '#3b82f6', marginBottom: '15px', textAlign: 'center' }}>{t('ملخص عرض السعر')}</div>
+                        <div style={{ ...SC, border: 'none', background: 'transparent', padding: '0', position: 'sticky', top: '20px' }}>
+                            <div style={{ fontSize: '18px', fontWeight: 900, color: '#3b82f6', marginBottom: '18px', textAlign: 'center' }}>{t('ملخص عرض السعر')}</div>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '15px' }}>
-                                    <span style={{ color: C.textMuted }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}:</span>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px', padding: '0 5px' }}>
+                                    <span style={{ color: C.textMuted, fontWeight: 700 }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}:</span>
                                     <span style={{ fontWeight: 800, fontFamily: INTER, color: C.textPrimary }}>{fmt(subtotal)} <small style={{fontFamily: CAIRO}}>{cSymbol}</small> </span>
                                 </div>
 
                                 {/* Discount Section - Card Style */}
                                 <div style={{ 
-                                    background: 'rgba(255,255,255,0.02)', 
-                                    borderRadius: '12px', 
-                                    padding: '12px', 
+                                    background: 'rgba(255,255,255,0.03)', 
+                                    borderRadius: '15px', 
+                                    padding: '15px', 
                                     border: `1px solid ${C.border}` 
                                 }}>
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '8px' }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', color: C.textMuted }}>{t('الخصم')}</label>
+                                    <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{t('الخصم')}</label>
                                     </div>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
-                                        <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={form.discountPct === 0 ? '' : fmt(form.discountPct)} 
-                                                onChange={e => {
-                                                    const v = e.target.value.replace(/,/g, '');
-                                                    if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
-                                                }} 
-                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }} 
-                                            />
-                                            <span style={{ position: 'absolute', bottom: '10px', left: '10px', fontSize: '12px', color: C.primary, fontWeight: 700 }}>%</span>
-                                        </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={form.discountAmt === 0 ? '' : fmt(form.discountAmt)} 
                                                 onChange={e => {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }} 
-                                                style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }} 
+                                                style={{ ...IS, height: '40px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px' }} 
+                                                placeholder="0.00"
                                             />
-                                            <span style={{ position: 'absolute', bottom: '10px', left: '8px', fontSize: '10px', color: C.textMuted }}>{cSymbol}</span>
+                                            <span style={{ position: 'absolute', bottom: '11px', insetInlineEnd: '12px', fontSize: '10px', color: C.textMuted }}>{cSymbol}</span>
+                                        </div>
+                                        <div style={{ position: 'relative' }}>
+                                            <input type="text" inputMode="decimal" value={form.discountPct === 0 ? '' : fmt(form.discountPct)} 
+                                                onChange={e => {
+                                                    const v = e.target.value.replace(/,/g, '');
+                                                    if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
+                                                }} 
+                                                style={{ ...IS, height: '40px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px' }} 
+                                                placeholder="0"
+                                            />
+                                            <span style={{ position: 'absolute', bottom: '11px', insetInlineStart: '12px', fontSize: '14px', color: C.primary, fontWeight: 900 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -416,60 +418,63 @@ export default function NewQuotationPage() {
                                 {/* Tax Section - Dashed Box */}
                                 {taxSettings?.enabled && (
                                     <div style={{ 
-                                        borderRadius: '12px', 
-                                        padding: '12px', 
+                                        borderRadius: '15px', 
+                                        padding: '15px', 
                                         border: `1px dashed ${C.border}`,
                                         display: 'flex',
                                         flexDirection: 'column',
-                                        gap: '8px'
+                                        gap: '10px',
+                                        background: 'rgba(255,255,255,0.01)'
                                     }}>
-                                        <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', color: C.textMuted }}>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                                            <label style={{ ...LS, marginBottom: 0, fontSize: '12px', fontWeight: 800, color: C.textMuted }}>
                                                 {taxSettings.label || 'VAT'} ({taxSettings.isInclusive ? t('مضمنة') : t('مضافة')})
                                             </label>
                                         </div>
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                            <div style={{ 
+                                                height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, 
+                                                background: 'rgba(0,0,0,0.2)', color: C.primary,
+                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                                fontFamily: INTER, fontSize: '15px', fontWeight: 800, position: 'relative'
+                                            }}>
+                                                {fmt(taxAmount)}
+                                                <small style={{position: 'absolute', bottom: '11px', insetInlineEnd: '12px', fontSize: '10px', fontWeight: 400, color: C.textMuted}}>{cSymbol}</small>
+                                            </div>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" value={form.taxRate === 0 ? '' : fmt(form.taxRate)} 
                                                     onChange={e => {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }} 
-                                                    style={{ ...IS, height: '38px', textAlign: 'center', fontFamily: INTER, fontSize: '14px', background: 'rgba(255,255,255,0.02)', borderRadius: '8px' }} 
+                                                    style={{ ...IS, height: '40px', textAlign: 'center', fontFamily: INTER, fontSize: '15px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px' }} 
                                                 />
-                                                <span style={{ position: 'absolute', bottom: '10px', left: '10px', fontSize: '12px', color: C.primary, fontWeight: 700 }}>%</span>
-                                            </div>
-                                            <div style={{ 
-                                                height: '38px', borderRadius: '8px', border: `1px solid ${C.border}`, 
-                                                background: 'rgba(255,255,255,0.02)', color: C.primary,
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                fontFamily: INTER, fontSize: '14px', fontWeight: 800
-                                            }}>
-                                                {fmt(taxAmount)} <small style={{marginLeft: '4px', fontSize: '9px', fontWeight: 400, color: C.textMuted}}>{cSymbol}</small>
+                                                <span style={{ position: 'absolute', bottom: '11px', insetInlineStart: '12px', fontSize: '14px', color: C.primary, fontWeight: 900 }}>%</span>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
                                 <div style={{ 
-                                    background: '#0f172a', /* Dark slate/blue like the image */
+                                    background: '#0f172a', /* Darker blue background matching screenshot */
                                     color: '#fff', 
-                                    padding: '18px 15px', 
-                                    borderRadius: '16px', 
+                                    padding: '20px 18px', 
+                                    borderRadius: '18px', 
                                     marginTop: '5px',
                                     border: '1px solid #1e293b',
                                     display: 'flex',
                                     justifyContent: 'space-between',
-                                    alignItems: 'center'
+                                    alignItems: 'center',
+                                    boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)'
                                 }}>
-                                    <div style={{ fontSize: '16px', fontWeight: 800 }}>{t('صافي العرض')}</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 900, fontFamily: INTER, color: '#3b82f6' }}>
-                                        {fmt(finalTotal)} <span style={{ fontSize: '13px', fontWeight: 600 }}>{cSymbol}</span>
+                                    <div style={{ fontSize: '18px', fontWeight: 800, letterSpacing: '-0.5px' }}>{t('صافي العرض')}</div>
+                                    <div style={{ fontSize: '28px', fontWeight: 900, fontFamily: INTER, color: '#3b82f6', display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                                        {fmt(finalTotal)} <span style={{ fontSize: '14px', fontWeight: 700, opacity: 0.8 }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             </div>
 
-                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '52px', background: 'linear-gradient(135deg, #256af4 0%, #1e40af 100%)', color: '#fff', border: 'none', borderRadius: '12px', fontWeight: 800, fontSize: '16px', marginTop: '15px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', transition: 'all 0.2s shadow' }}>
+                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #256af4 0%, #1e40af 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '16px', marginTop: '18px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', transition: 'all 0.2s', boxShadow: '0 4px 15px rgba(37,106,244,0.4)' }}>
                                 {submitting ? <Loader2 className="animate-spin" /> : <Printer size={20} />}
                                 {submitting ? t('جاري الحفظ...') : t('حفظ وطباعة العرض')}
                             </button>

@@ -211,9 +211,9 @@ export default function QuotationsPage() {
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => router.push(`/quotations/${quo.id}`)} style={TABLE_STYLE.actionBtn(C.primary)} title="عرض / تعديل"><Eye size={16} /></button>
-                                                        <button onClick={() => printQuotation(quo, company)} style={TABLE_STYLE.actionBtn(C.success)} title="طباعة"><Printer size={16} /></button>
-                                                        <button onClick={() => handleDelete(quo.id, quo.quotationNumber)} style={TABLE_STYLE.actionBtn(C.danger)} title="حذف"><Trash2 size={16} /></button>
+                                                        <button onClick={() => router.push(`/quotations/${quo.id}`)} style={TABLE_STYLE.actionBtn()} title="عرض / تعديل"><Eye size={16} /></button>
+                                                        <button onClick={() => printQuotation(quo, company)} style={TABLE_STYLE.actionBtn()} title="طباعة"><Printer size={16} /></button>
+                                                        <button onClick={() => handleDelete(quo.id, quo.quotationNumber)} style={TABLE_STYLE.actionBtn()} title="حذف"><Trash2 size={16} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
