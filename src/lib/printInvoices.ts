@@ -189,7 +189,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 .inv-title-en{font-size:16px;font-weight:700;color:#555;margin-top:2px;font-family:sans-serif}
 .inv-num{font-size:13px;color:#333;margin-top:4px;font-family:monospace;font-weight:700}
 .logo-block{flex:1;text-align:left}
-.logo-block img{max-height:70px;max-width:140px;object-fit:contain}
+.logo-block img{max-height:90px;max-width:180px;object-fit:contain}
 
 /* ── TABLES ── */
 .info-wrap{display:flex;gap:12px;margin-top:10px}
