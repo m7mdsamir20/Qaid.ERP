@@ -334,27 +334,42 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     </div>
     
     <div class="totals">
-        ${(discount > 0 || lines.some((l: any) => (l.taxAmount || 0) > 0)) ? `
+        <!-- الإجمالي -->
         <div class="t-row">
-            <span>${bl('الإجمالي (قبل الخصم)', 'Subtotal')}</span>
+            <span>${isSaudi ? bl('الإجمالي غير شامل الضريبة', 'Total (Excluding VAT)') : bl('الإجمالي (قبل الخصم)', 'Subtotal')}</span>
             <span>${subtotal.toLocaleString()} ${sym}</span>
-        </div>` : ''}
-        
+        </div>
+
+        <!-- الخصومات -->
         ${discount > 0 ? `
         <div class="t-row">
-            <span>${bl('الخصم', 'Discount')}</span>
+            <span>${isSaudi ? bl('مجموع الخصومات', 'Total Discounts') : bl('الخصم', 'Discount')}</span>
             <span>-${discount.toLocaleString()} ${sym}</span>
         </div>` : ''}
 
-        ${invoiceTaxAmount > 0 || (invoiceTaxRate > 0 && !taxInclusive) ? (() => {
+        <!-- الإجمالي الخاضع للضريبة (يظهر في السعودية) -->
+        ${isSaudi ? `
+        <div class="t-row" style="background:#f9fafb">
+            <span>${bl('الإجمالي الخاضع لضريبة القيمة المضافة', 'Total Taxable Amount')}</span>
+            <span>${(subtotal - discount).toLocaleString()} ${sym}</span>
+        </div>` : ''}
+
+        <!-- الضريبة -->
+        ${(() => {
             const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
                 : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+            if (displayTax === 0 && !isSaudi) return '';
             return `
         <div class="t-row" style="background:#fffbe6;font-weight:800">
-            <span>${bl('إجمالي الضريبة', 'Total VAT')} (${invoiceTaxRate}%)</span>
+            <span>${isSaudi ? bl('مجموع ضريبة القيمة المضافة', 'Total VAT') : bl('إجمالي الضريبة', 'Total VAT')} (${invoiceTaxRate}%)</span>
             <span>${displayTax.toLocaleString()} ${sym}</span>
         </div>`;
-        })() : ''}
+        })()}
+
+        <div class="t-main t-row" style="background:#f0f0f0; border-top: 1.5px solid #111">
+            <span>${isSaudi ? bl('إجمالي المبلغ المستحق', 'Total Amount Due') : bl('صافي هذه الفاتورة', 'Net Invoice')}</span>
+            <span>${total.toLocaleString()} ${sym}</span>
+        </div>
 
         ${partyBalance !== null ? (() => {
             const currentTransaction = isSale ? (total - paid) : (paid - total);
@@ -373,16 +388,12 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
             </div>`;
         })() : ''}
 
-        <div class="t-main t-row">
-            <span>${bl('صافي هذه الفاتورة', 'Net Invoice')}</span>
-            <span>${total.toLocaleString()} ${sym}</span>
-        </div>
         <div class="t-row">
-            <span>${bl('المبلغ المدفوع حالياً', 'Amount Paid')}</span>
+            <span>${isSaudi ? bl('المبلغ المدفوع', 'Amount Paid') : bl('المبلغ المدفوع حالياً', 'Amount Paid')}</span>
             <span>${paid.toLocaleString()} ${sym}</span>
         </div>
         <div class="t-row">
-            <span>${bl('متبقي من هذه الفاتورة', 'Remaining')}</span>
+            <span>${isSaudi ? bl('المتبقي المستحق', 'Remaining Amount') : bl('متبقي من هذه الفاتورة', 'Remaining')}</span>
             <span>${remaining.toLocaleString()} ${sym}</span>
         </div>
 
