@@ -324,7 +324,7 @@ export default function UsersTab({
                                     <div key={idx} style={{ borderBottom: idx < permissionHierarchy.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                         {/* Section Row */}
                                         <div style={{ display: 'flex', alignItems: 'center', padding: '12px 20px', background: allSel ? `${C.primary}10` : 'transparent', cursor: 'pointer', transition: 'background 0.15s' }}
-                                            onMouseEnter={e => { if (!allSel) e.currentTarget.style.background = 'rgba(255,255,255,0.01)'; }}
+                                            onMouseEnter={e => { if (!allSel) e.currentTarget.style.background = C.hover; }}
                                             onMouseLeave={e => { if (!allSel) e.currentTarget.style.background = 'transparent'; }}>
 
                                             {/* Toggle + Title */}
@@ -336,7 +336,7 @@ export default function UsersTab({
                                                 <span style={{ fontSize: '13px', fontWeight: 800, color: allSel ? C.textPrimary : C.textSecondary, fontFamily: CAIRO }}>
                                                     {t(section.title)}
                                                 </span>
-                                                <span style={{ fontSize: '10px', padding: '2px 10px', borderRadius: '20px', background: activeCount > 0 ? `${C.primary}15` : 'rgba(255,255,255,0.05)', color: activeCount > 0 ? C.primary : C.textMuted, border: `1px solid ${activeCount > 0 ? `${C.primary}25` : 'rgba(255,255,255,0.08)'}`, fontWeight: 900, marginInlineEnd: '8px', fontFamily: CAIRO }}>
+                                                <span style={{ fontSize: '10px', padding: '2px 10px', borderRadius: '20px', background: activeCount > 0 ? `${C.primary}15` : C.inputBg, color: activeCount > 0 ? C.primary : C.textMuted, border: `1px solid ${activeCount > 0 ? `${C.primary}25` : C.border}`, fontWeight: 900, marginInlineEnd: '8px', fontFamily: CAIRO }}>
                                                     {activeCount > 0 ? `${activeCount} / ${section.links.length}` : `${section.links.length} ${t('صفحة')}`}
                                                 </span>
                                             </div>
@@ -344,7 +344,7 @@ export default function UsersTab({
                                             {/* Select all toggle */}
                                             <button type="button"
                                                 onClick={e => { e.stopPropagation(); toggleSection(!allSel); }}
-                                                style={{ height: '28px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${allSel || someSel ? `${C.primary}40` : 'rgba(255,255,255,0.1)'}`, background: allSel ? `${C.primary}15` : someSel ? `${C.primary}05` : 'transparent', color: allSel || someSel ? C.primary : C.textMuted, fontSize: '10px', fontWeight: 900, cursor: 'pointer', fontFamily: CAIRO }}>
+                                                style={{ height: '28px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${allSel || someSel ? `${C.primary}40` : C.border}`, background: allSel ? `${C.primary}15` : someSel ? `${C.primary}05` : 'transparent', color: allSel || someSel ? C.primary : C.textMuted, fontSize: '10px', fontWeight: 900, cursor: 'pointer', fontFamily: CAIRO }}>
                                                 {allSel ? t('إلغاء الكل') : someSel ? t('جزئي') : t('تحديد الكل')}
                                             </button>
                                         </div>
@@ -371,7 +371,7 @@ export default function UsersTab({
 
                                             return (
                                                 <div key={page.id} style={{ display: 'grid', gridTemplateColumns: isAccessOnlySection ? '1fr 280px' : '1fr 280px', padding: '10px 20px 10px 50px', borderTop: `1px solid ${C.border}`, alignItems: 'center', transition: 'background 0.1s' }}
-                                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'}
+                                                    onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -392,24 +392,24 @@ export default function UsersTab({
                                                                         return { ...prev, roleId: 'custom', customPermissions: up };
                                                                     });
                                                                 }}
-                                                                style={{ height: '32px', padding: '0 20px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : 'rgba(255,255,255,0.1)'}`, background: perms.view ? `${C.primary}15` : 'rgba(255,255,255,0.02)', color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '11px', fontWeight: 900 }}>
+                                                                style={{ height: '32px', padding: '0 20px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : C.border}`, background: perms.view ? `${C.primary}15` : C.inputBg, color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '11px', fontWeight: 900 }}>
                                                                 {perms.view ? <><Check size={14} /> {t('مفعّل')}</> : <><Shield size={13} style={{ opacity: 0.5 }} /> {t('معطّل')}</>}
                                                             </button>
                                                         </div>
                                                     ) : (
                                                         <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
                                                             <button type="button" onClick={() => setP('view', !perms.view)}
-                                                                style={{ height: '32px', padding: '0 8px', minWidth: '75px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : 'rgba(255,255,255,0.1)'}`, background: perms.view ? `${C.primary}15` : 'rgba(255,255,255,0.02)', color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
+                                                                style={{ height: '32px', padding: '0 8px', minWidth: '75px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : C.border}`, background: perms.view ? `${C.primary}15` : C.inputBg, color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
                                                                 {perms.view ? <Check size={12} /> : <Eye size={12} style={{ opacity: 0.5 }} />}
                                                                 {t('مشاهدة')}
                                                             </button>
                                                             <button type="button" onClick={() => setP('create', !perms.create)}
-                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.create ? 'rgba(16,185,129,0.4)' : 'rgba(255,255,255,0.1)'}`, background: perms.create ? 'rgba(16,185,129,0.15)' : 'rgba(255,255,255,0.02)', color: perms.create ? '#10b981' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
+                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.create ? 'var(--c-success-border, rgba(16,185,129,0.4))' : C.border}`, background: perms.create ? 'var(--c-success-bg, rgba(16,185,129,0.15))' : C.inputBg, color: perms.create ? 'var(--c-success, #10b981)' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
                                                                 {perms.create ? <Check size={13} /> : <Plus size={12} style={{ opacity: 0.5 }} />}
                                                                 {t('إضافة')}
                                                             </button>
                                                             <button type="button" onClick={() => setP('editDelete', !perms.editDelete)}
-                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.editDelete ? 'rgba(245,158,11,0.4)' : 'rgba(255,255,255,0.1)'}`, background: perms.editDelete ? 'rgba(245,158,11,0.15)' : 'rgba(255,255,255,0.02)', color: perms.editDelete ? '#f59e0b' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
+                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.editDelete ? 'var(--c-warning-border, rgba(245,158,11,0.4))' : C.border}`, background: perms.editDelete ? 'var(--c-warning-bg, rgba(245,158,11,0.15))' : C.inputBg, color: perms.editDelete ? 'var(--c-warning, #f59e0b)' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
                                                                 {perms.editDelete ? <Check size={13} /> : <Trash2 size={12} style={{ opacity: 0.5 }} />}
                                                                 {t('تعديل')}
                                                             </button>
@@ -446,7 +446,7 @@ export default function UsersTab({
                         <tbody>
                             {users.map((u, idx) => (
                                 <tr key={u.id} style={{ borderBottom: idx < users.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
-                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'}
+                                    onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                     <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                         <div style={{ fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{u.name}</div>

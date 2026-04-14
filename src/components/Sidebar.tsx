@@ -12,10 +12,12 @@ import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
 import { C, CAIRO } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
+import { useTheme } from '@/components/Providers';
 
 export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
     const pathname = usePathname();
     const { data: session } = useSession();
+    const { theme } = useTheme();
 
     const user = session?.user as any;
     const businessType = user?.businessType?.toUpperCase() || 'TRADING';
@@ -104,11 +106,11 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
 
-    const BRAND_LOGO = '/logo-system.png';
+    const BRAND_LOGO = theme === 'light' ? '/logo-light.png' : '/logo-system.png';
 
     return (
         <aside className="sidebar" style={{ width: '100%', position: 'absolute', insetInlineStart: 0, top: 0, bottom: 0, backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px var(--c-shadow)' : '10px 0 30px var(--c-shadow)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
-            <Link href="/" style={{ height: '95px', display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
+            <Link href="/" style={{ height: '95px', display: 'flex', alignItems: 'center' }}>
                 <img src={BRAND_LOGO} alt="Logo" style={{ display: 'block', margin: '0 auto', width: '100%', maxWidth: '240px', maxHeight: '75px', objectFit: 'contain' }} />
             </Link>
 
