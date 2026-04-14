@@ -63,7 +63,11 @@ export const PUT = withProtection(async (request, session, body) => {
                     name: data.name, nameEn: data.nameEn, phone: data.phone,
                     email: data.email, taxNumber: data.taxNumber,
                     commercialRegister: data.commercialRegister,
-                    address: data.address, website: data.website, logo: data.logo,
+                    addressRegion: data.addressRegion || null,
+                    addressCity: data.addressCity || null,
+                    addressDistrict: data.addressDistrict || null,
+                    addressStreet: data.addressStreet || null,
+                    website: data.website, logo: data.logo,
                 }
             });
 

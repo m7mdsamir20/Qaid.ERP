@@ -32,7 +32,7 @@ export const PUT = withProtection(async (request, session, body, context) => {
     try {
         const { id } = await context.params;
         const { 
-            name, nameEn, phone, email, address, businessType, countryCode, isActive,
+            name, nameEn, phone, email, businessType, countryCode, isActive,
             adminName, adminEmail, adminPhone, newPassword, 
             plan, startDate, endDate, maxUsers, maxBranches, features, notes 
         } = body;
@@ -56,7 +56,6 @@ export const PUT = withProtection(async (request, session, body, context) => {
                     nameEn: nameEn || undefined,
                     phone: phone || undefined,
                     email: email || undefined,
-                    address: address || undefined,
                     businessType: businessType?.toLowerCase() || undefined,
                     countryCode: countryCode || undefined,
                     isActive: isActive !== undefined ? isActive : undefined,

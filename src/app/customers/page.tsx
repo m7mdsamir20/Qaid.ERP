@@ -15,13 +15,16 @@ import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import Link from 'next/link';
 import { getCountryPlaceholders } from '@/lib/placeholders';
-import { getAddressConfig, parseAddress, stringifyAddress, formatAddressInline, type AddressFields } from '@/lib/addressConfig';
+import { getAddressConfig } from '@/lib/addressConfig';
 
 interface Customer {
   id: string;
   name: string;
   phone: string | null;
-  address: string | null;
+  addressRegion: string | null;
+  addressCity: string | null;
+  addressDistrict: string | null;
+  addressStreet: string | null;
   type: string;
   taxNumber: string | null;
   crNumber: string | null;
@@ -31,7 +34,9 @@ interface Customer {
   createdAt: string;
 }
 
-const EMPTY_ADDR: AddressFields = { f1: '', f2: '', f3: '', f4: '' };
+function formatAddress(c: Customer) {
+    return [c.addressRegion, c.addressCity, c.addressDistrict, c.addressStreet].filter(Boolean).join('، ');
+}
 
 export default function CustomersPage() {
     const { lang, t } = useTranslation();
@@ -58,7 +63,7 @@ export default function CustomersPage() {
 
     const [form, setForm] = useState({
         name: '', phone: '',
-        addr: { ...EMPTY_ADDR } as AddressFields,
+        addressRegion: '', addressCity: '', addressDistrict: '', addressStreet: '',
         type: 'individual', taxNumber: '', crNumber: '', contactPerson: '',
         openingBalance: '', balanceType: 'debit' as 'credit' | 'debit',
         creditLimit: ''
@@ -94,10 +99,13 @@ export default function CustomersPage() {
             
             // Clean numeric fields
             const payload = {
-                name:          form.name,
-                phone:         form.phone || null,
-                address:       stringifyAddress(form.addr),
-                type:          form.type,
+                name:            form.name,
+                phone:           form.phone || null,
+                addressRegion:   form.addressRegion   || null,
+                addressCity:     form.addressCity     || null,
+                addressDistrict: form.addressDistrict || null,
+                addressStreet:   form.addressStreet   || null,
+                type:            form.type,
                 taxNumber:     form.taxNumber || null,
                 crNumber:      form.crNumber  || null,
                 contactPerson: form.contactPerson || null,
@@ -147,15 +155,17 @@ export default function CustomersPage() {
 
     const openEdit = (c: Customer) => {
         setEditingId(c.id);
-        const parsed = parseAddress(c.address);
         setForm({
-            name:          c.name,
-            phone:         c.phone         || '',
-            addr:          parsed ?? { ...EMPTY_ADDR },
-            type:          c.type          || 'individual',
-            taxNumber:     c.taxNumber     || '',
-            crNumber:      c.crNumber      || '',
-            contactPerson: c.contactPerson || '',
+            name:            c.name,
+            phone:           c.phone           || '',
+            addressRegion:   c.addressRegion   || '',
+            addressCity:     c.addressCity     || '',
+            addressDistrict: c.addressDistrict || '',
+            addressStreet:   c.addressStreet   || '',
+            type:            c.type            || 'individual',
+            taxNumber:       c.taxNumber       || '',
+            crNumber:        c.crNumber        || '',
+            contactPerson:   c.contactPerson   || '',
             openingBalance: '',
             balanceType:   c.balance < 0 ? 'credit' : 'debit',
             creditLimit:   c.creditLimit ? String(c.creditLimit) : ''
@@ -202,7 +212,8 @@ export default function CustomersPage() {
                         onClick: () => {
                             setEditingId(null);
                             setForm({
-                                name: '', phone: '', addr: { ...EMPTY_ADDR },
+                                name: '', phone: '',
+                                addressRegion: '', addressCity: '', addressDistrict: '', addressStreet: '',
                                 type: 'individual', taxNumber: '', crNumber: '', contactPerson: '',
                                 openingBalance: '', balanceType: 'debit', creditLimit: ''
                             });
@@ -322,7 +333,7 @@ export default function CustomersPage() {
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddressInline(parseAddress(c.address)) || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <span style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
@@ -385,26 +396,26 @@ export default function CustomersPage() {
                                 </div>
                             </div>
 
-                            {/* العنوان المقسم */}
+                            {/* العنوان — 4 خانات */}
                             <div>
                                 <label style={LS}>{t('العنوان')}</label>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    {([0, 1, 2, 3] as const).map(i => {
-                                        const key = `f${i + 1}` as keyof AddressFields;
-                                        return (
-                                            <div key={i}>
-                                                <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{addrCfg.labels[i]}</label>
-                                                <input
-                                                    value={form.addr[key]}
-                                                    onChange={e => setForm({ ...form, addr: { ...form.addr, [key]: e.target.value } })}
-                                                    style={IS}
-                                                    onFocus={focusIn}
-                                                    onBlur={focusOut}
-                                                    placeholder={addrCfg.placeholders[i]}
-                                                />
-                                            </div>
-                                        );
-                                    })}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[0]}</label>
+                                        <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[0]} />
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[1]}</label>
+                                        <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[1]} />
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[2]}</label>
+                                        <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[2]} />
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[3]}</label>
+                                        <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[3]} />
+                                    </div>
                                 </div>
                             </div>
 

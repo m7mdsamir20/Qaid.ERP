@@ -122,11 +122,23 @@ export function formatAddressInline(addr: AddressFields | null | undefined): str
     return [addr.f1, addr.f2, addr.f3, addr.f4].filter(Boolean).join('، ');
 }
 
+/** فك ترميز HTML entities */
+function decodeHtmlEntities(str: string): string {
+    return str
+        .replace(/&quot;/g, '"')
+        .replace(/&#x27;/g, "'")
+        .replace(/&amp;/g, '&')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+}
+
 /** تحليل حقل address من DB (string أو JSON) */
 export function parseAddress(raw: string | null | undefined): AddressFields | null {
     if (!raw) return null;
+    // فك أي HTML encoding قديم قبل التحليل
+    const clean = decodeHtmlEntities(raw);
     try {
-        const parsed = JSON.parse(raw);
+        const parsed = JSON.parse(clean);
         if (parsed && typeof parsed === 'object' && ('f1' in parsed || 'f2' in parsed)) {
             return parsed as AddressFields;
         }
@@ -134,7 +146,7 @@ export function parseAddress(raw: string | null | undefined): AddressFields | nu
         // نص قديم — نضعه في f1
     }
     // backward compat: نص قديم
-    return { f1: raw, f2: '', f3: '', f4: '' };
+    return { f1: clean, f2: '', f3: '', f4: '' };
 }
 
 /** تحويل AddressFields → JSON string للحفظ */

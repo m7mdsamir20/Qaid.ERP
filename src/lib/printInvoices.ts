@@ -1,5 +1,4 @@
 import { getCurrencySymbol } from './currency';
-import { formatAddressForInvoice } from './addressConfig';
 
 export interface CompanyInfo {
     name?: string;
@@ -8,7 +7,10 @@ export interface CompanyInfo {
     email?: string;
     taxNumber?: string;
     commercialRegister?: string;
-    address?: string;
+    addressRegion?: string;
+    addressCity?: string;
+    addressDistrict?: string;
+    addressStreet?: string;
     logo?: string;
     currency?: string;
     countryCode?: string;
@@ -89,7 +91,7 @@ function generateA4HTML(
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
-        addrLines: formatAddressForInvoice(company.address, company.countryCode || 'EG'),
+        addrLines: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean) as string[],
         phone: company.phone || '',
         email: company.email || '',
         tax: company.taxNumber || '',
@@ -212,7 +214,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     <div class="co-block">
         <div class="co-name">${co.name}</div>
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
-        ${co.addrLines.map(l => `<div class="co-line">${l}</div>`).join('')}
+        ${co.addrLines.map((l: string) => `<div class="co-line">${l}</div>`).join('')}
         ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
         ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
         ${co.cr ? `<div class="co-line">${blInline('السجل التجاري', 'C.R.')}: <strong>${co.cr}</strong></div>` : ''}
@@ -233,7 +235,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     <div class="info-col">
         <div class="info-row"><span class="ik">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
         ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
-        ${(() => { const lines = formatAddressForInvoice(party?.address, company.countryCode || 'EG'); return lines.map(l => `<div class="info-row"><span class="iv">${l}</span></div>`).join(''); })()}
+        ${[party?.addressRegion, party?.addressCity, party?.addressDistrict, party?.addressStreet].filter(Boolean).map((l: string) => `<div class="info-row"><span class="iv">${l}</span></div>`).join('')}
     </div>
     <div class="info-col">
         <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
@@ -507,7 +509,7 @@ export function printQuotation(
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
-        addrLines: formatAddressForInvoice(company.address, company.countryCode || 'EG'),
+        addrLines: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean) as string[],
         phone: company.phone || '',
         email: company.email || '',
         tax: company.taxNumber || '',
@@ -573,7 +575,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div class="co-block">
             <div class="co-name">${co.name}</div>
             ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
-            ${co.addrLines.map(l => `<div class="co-line">${l}</div>`).join('')}
+            ${co.addrLines.map((l: string) => `<div class="co-line">${l}</div>`).join('')}
             ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
             ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
         </div>

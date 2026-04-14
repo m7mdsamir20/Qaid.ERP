@@ -13,7 +13,10 @@ model Company {
   nameEn               String?
   businessType         String               @default("trading")
   activeModules        String?
-  address              String?
+  addressRegion        String?
+  addressCity          String?
+  addressDistrict      String?
+  addressStreet        String?
   phone                String?
   email                String?
   taxNumber            String?
@@ -494,7 +497,10 @@ model Customer {
   id               String            @id @default(cuid())
   name             String
   phone            String?
-  address          String?
+  addressRegion    String?
+  addressCity      String?
+  addressDistrict  String?
+  addressStreet    String?
   type             String            @default("individual")
   taxNumber        String?
   crNumber         String?
@@ -511,11 +517,14 @@ model Customer {
 }
 
 model Supplier {
-  id            String    @id @default(cuid())
-  name          String
-  phone         String?
-  address       String?
-  type          String    @default("individual")
+  id              String    @id @default(cuid())
+  name            String
+  phone           String?
+  addressRegion   String?
+  addressCity     String?
+  addressDistrict String?
+  addressStreet   String?
+  type            String    @default("individual")
   taxNumber     String?
   crNumber      String?
   contactPerson String?

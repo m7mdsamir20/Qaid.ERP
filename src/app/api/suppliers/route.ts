@@ -28,14 +28,17 @@ export const POST = withProtection(async (request, session, body) => {
 
         const supplier = await prisma.supplier.create({
             data: {
-                name:          body.name,
-                phone:         body.phone         || null,
-                address:       body.address       || null,
-                type:          body.type          || 'individual',
-                taxNumber:     body.taxNumber     || null,
-                crNumber:      body.crNumber      || null,
-                contactPerson: body.contactPerson || null,
-                balance:       signedBalance,
+                name:            body.name,
+                phone:           body.phone           || null,
+                addressRegion:   body.addressRegion   || null,
+                addressCity:     body.addressCity     || null,
+                addressDistrict: body.addressDistrict || null,
+                addressStreet:   body.addressStreet   || null,
+                type:            body.type            || 'individual',
+                taxNumber:       body.taxNumber       || null,
+                crNumber:        body.crNumber        || null,
+                contactPerson:   body.contactPerson   || null,
+                balance:         signedBalance,
                 companyId,
             },
         });
@@ -114,13 +117,16 @@ export const PUT = withProtection(async (request, session, body) => {
         const supplier = await prisma.supplier.update({
             where: { id: body.id, companyId },
             data: {
-                name:          body.name,
-                phone:         body.phone         || null,
-                address:       body.address       || null,
-                type:          body.type          || 'individual',
-                taxNumber:     body.taxNumber     || null,
-                crNumber:      body.crNumber      || null,
-                contactPerson: body.contactPerson || null,
+                name:            body.name,
+                phone:           body.phone           || null,
+                addressRegion:   body.addressRegion   || null,
+                addressCity:     body.addressCity     || null,
+                addressDistrict: body.addressDistrict || null,
+                addressStreet:   body.addressStreet   || null,
+                type:            body.type            || 'individual',
+                taxNumber:       body.taxNumber       || null,
+                crNumber:        body.crNumber        || null,
+                contactPerson:   body.contactPerson   || null,
             },
         });
         return NextResponse.json(supplier);

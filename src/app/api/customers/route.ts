@@ -29,10 +29,13 @@ export const POST = withProtection(async (request, session, body) => {
         // ① إنشاء العميل
         const customer = await prisma.customer.create({
             data: {
-                name:          body.name,
-                phone:         body.phone         || null,
-                address:       body.address       || null,
-                type:          body.type          || 'individual',
+                name:            body.name,
+                phone:           body.phone           || null,
+                addressRegion:   body.addressRegion   || null,
+                addressCity:     body.addressCity     || null,
+                addressDistrict: body.addressDistrict || null,
+                addressStreet:   body.addressStreet   || null,
+                type:            body.type            || 'individual',
                 taxNumber:     body.taxNumber     || null,
                 crNumber:      body.crNumber      || null,
                 contactPerson: body.contactPerson || null,
@@ -114,14 +117,17 @@ export const PUT = withProtection(async (request, session, body) => {
         const customer = await prisma.customer.update({
             where: { id: body.id, companyId: (session.user as any).companyId },
             data: {
-                name:          body.name,
-                phone:         body.phone         || null,
-                address:       body.address       || null,
-                type:          body.type          || 'individual',
-                taxNumber:     body.taxNumber     || null,
-                crNumber:      body.crNumber      || null,
-                contactPerson: body.contactPerson || null,
-                creditLimit:   parseFloat(body.creditLimit) || 0,
+                name:            body.name,
+                phone:           body.phone           || null,
+                addressRegion:   body.addressRegion   || null,
+                addressCity:     body.addressCity     || null,
+                addressDistrict: body.addressDistrict || null,
+                addressStreet:   body.addressStreet   || null,
+                type:            body.type            || 'individual',
+                taxNumber:       body.taxNumber       || null,
+                crNumber:        body.crNumber        || null,
+                contactPerson:   body.contactPerson   || null,
+                creditLimit:     parseFloat(body.creditLimit) || 0,
             },
         });
         return NextResponse.json(customer);

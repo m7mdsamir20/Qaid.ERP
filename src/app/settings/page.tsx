@@ -75,7 +75,8 @@ function SettingsContent() {
 
     // Forms
     const [companyForm, setCompanyForm] = useState({
-        name: '', nameEn: '', phone: '', email: '', address: '',
+        name: '', nameEn: '', phone: '', email: '',
+        addressRegion: '', addressCity: '', addressDistrict: '', addressStreet: '',
         taxNumber: '', commercialRegister: '', website: '', logo: ''
     });
     const [generalForm, setGeneralForm] = useState({
@@ -87,7 +88,8 @@ function SettingsContent() {
         customCurrency: '', countryCode: 'EG'
     });
     const [savedCompanyForm, setSavedCompanyForm] = useState({
-        name: '', nameEn: '', phone: '', email: '', address: '',
+        name: '', nameEn: '', phone: '', email: '',
+        addressRegion: '', addressCity: '', addressDistrict: '', addressStreet: '',
         taxNumber: '', commercialRegister: '', website: '', logo: ''
     });
     const [notificationsForm, setNotificationsForm] = useState<any>({
@@ -505,7 +507,7 @@ function SettingsContent() {
                 setCompany(data.company);
                 setUsers(data.users || []);
                 if (data.company) {
-                    const cForm = { name: data.company.name || '', nameEn: data.company.nameEn || '', phone: data.company.phone || '', email: data.company.email || '', address: data.company.address || '', taxNumber: data.company.taxNumber || '', commercialRegister: data.company.commercialRegister || '', website: data.company.website || '', logo: data.company.logo || '' };
+                    const cForm = { name: data.company.name || '', nameEn: data.company.nameEn || '', phone: data.company.phone || '', email: data.company.email || '', addressRegion: data.company.addressRegion || '', addressCity: data.company.addressCity || '', addressDistrict: data.company.addressDistrict || '', addressStreet: data.company.addressStreet || '', taxNumber: data.company.taxNumber || '', commercialRegister: data.company.commercialRegister || '', website: data.company.website || '', logo: data.company.logo || '' };
 
                     const standardCurrencies = ['EGP', 'SAR', 'AED', 'KWD', 'USD', 'QAR', 'BHD', 'OMR', 'JOD', 'LYD', 'IQD', 'TRY', 'EUR', 'GBP', 'LBP', 'SYP', 'YER', 'TND', 'DZD', 'MAD', 'SDG'];
                     const isCustom = data.company.currency && !standardCurrencies.includes(data.company.currency);

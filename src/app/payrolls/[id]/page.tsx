@@ -78,7 +78,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
     const companyLogo = companyData.logo || '';
     const taxNumber = companyData.taxNumber || '';
     const commercialReg = companyData.commercialRegister || '';
-    const address = companyData.address || '';
+    const address = [companyData.addressRegion, companyData.addressCity, companyData.addressDistrict, companyData.addressStreet].filter(Boolean).join('، ');
     const email = companyData.email || '';
     const phone = companyData.phone || '';
 

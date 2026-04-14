@@ -8,15 +8,15 @@ import {
 } from 'lucide-react';
 import { TabHeader } from './shared';
 import { getCountryPlaceholders } from '@/lib/placeholders';
-import { useState, useEffect } from 'react';
-import { getAddressConfig, parseAddress, stringifyAddress, type AddressFields } from '@/lib/addressConfig';
+import { getAddressConfig } from '@/lib/addressConfig';
 
 interface CompanyTabProps {
     countryCode: string;
     isEditMode: boolean;
     setIsEditMode: (v: boolean) => void;
     companyForm: {
-        name: string; nameEn: string; phone: string; email: string; address: string;
+        name: string; nameEn: string; phone: string; email: string;
+        addressRegion: string; addressCity: string; addressDistrict: string; addressStreet: string;
         taxNumber: string; commercialRegister: string; website: string; logo: string;
     };
     setCompanyForm: (updater: any) => void;
@@ -26,8 +26,6 @@ interface CompanyTabProps {
     showToast: (msg: string, type?: 'success' | 'error') => void;
 }
 
-const EMPTY_ADDR: AddressFields = { f1: '', f2: '', f3: '', f4: '' };
-
 export default function CompanyTab({
     countryCode, isEditMode, setIsEditMode, companyForm, setCompanyForm,
     isSaving, handleCancel, saveSettings, showToast
@@ -35,20 +33,6 @@ export default function CompanyTab({
     const { t } = useTranslation();
     const ph = getCountryPlaceholders(countryCode);
     const addrCfg = getAddressConfig(countryCode);
-
-    // Keep local split-address state, synced with companyForm.address (JSON)
-    const [addr, setAddr] = useState<AddressFields>(() => parseAddress(companyForm.address) ?? { ...EMPTY_ADDR });
-
-    // When companyForm.address changes from outside (on load), re-parse
-    useEffect(() => {
-        setAddr(parseAddress(companyForm.address) ?? { ...EMPTY_ADDR });
-    }, [companyForm.address]);
-
-    const updateAddr = (key: keyof AddressFields, val: string) => {
-        const next = { ...addr, [key]: val };
-        setAddr(next);
-        setCompanyForm((p: any) => ({ ...p, address: stringifyAddress(next) }));
-    };
 
     return (
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
@@ -251,7 +235,7 @@ export default function CompanyTab({
                             </div>
                         ))}
 
-                        {/* العنوان المقسم */}
+                        {/* العنوان — 4 خانات */}
                         <div style={{ display: 'flex', alignItems: 'flex-start', borderBottom: 'none' }}>
                             <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                                 <div style={{ color: isEditMode ? C.primary : C.textMuted, flexShrink: 0 }}><MapPin size={15} /></div>
@@ -260,27 +244,31 @@ export default function CompanyTab({
                             <div style={{ flex: 1, padding: '12px 20px' }}>
                                 {isEditMode ? (
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                        {([0, 1, 2, 3] as const).map(i => {
-                                            const key = `f${i + 1}` as keyof AddressFields;
-                                            return (
+                                        {[
+                                            { key: 'addressRegion',   label: addrCfg.labels[0], ph: addrCfg.placeholders[0] },
+                                            { key: 'addressCity',     label: addrCfg.labels[1], ph: addrCfg.placeholders[1] },
+                                            { key: 'addressDistrict', label: addrCfg.labels[2], ph: addrCfg.placeholders[2] },
+                                            { key: 'addressStreet',   label: addrCfg.labels[3], ph: addrCfg.placeholders[3] },
+                                        ].map(f => (
+                                            <div key={f.key}>
+                                                <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px', fontFamily: CAIRO }}>{f.label}</div>
                                                 <input
-                                                    key={i}
-                                                    value={addr[key]}
-                                                    onChange={e => updateAddr(key, e.target.value)}
-                                                    placeholder={addrCfg.labels[i]}
+                                                    value={(companyForm as any)[f.key] || ''}
+                                                    onChange={e => setCompanyForm((p: any) => ({ ...p, [f.key]: e.target.value }))}
+                                                    placeholder={f.ph}
                                                     style={{ width: '100%', height: '36px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 10px', fontSize: '13px', fontFamily: CAIRO, outline: 'none', boxSizing: 'border-box' }}
                                                 />
-                                            );
-                                        })}
+                                            </div>
+                                        ))}
                                     </div>
                                 ) : (
-                                    <div style={{ fontSize: '14px', fontWeight: 700, color: companyForm.address ? C.textPrimary : C.textMuted, padding: '14px 0', fontStyle: companyForm.address ? 'normal' : 'italic', fontFamily: CAIRO }}>
-                                        {(() => {
-                                            const parsed = parseAddress(companyForm.address);
-                                            if (!parsed) return t('لم يُضف بعد');
-                                            const parts = [parsed.f1, parsed.f2, parsed.f3, parsed.f4].filter(Boolean);
-                                            return parts.length ? parts.join('، ') : t('لم يُضف بعد');
-                                        })()}
+                                    <div style={{ padding: '10px 0', display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                        {[companyForm.addressRegion, companyForm.addressCity, companyForm.addressDistrict, companyForm.addressStreet].filter(Boolean).length > 0
+                                            ? [companyForm.addressRegion, companyForm.addressCity, companyForm.addressDistrict, companyForm.addressStreet].filter(Boolean).map((line, i) => (
+                                                <div key={i} style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{line}</div>
+                                            ))
+                                            : <span style={{ fontSize: '14px', color: C.textMuted, fontStyle: 'italic', fontFamily: CAIRO }}>{t('لم يُضف بعد')}</span>
+                                        }
                                     </div>
                                 )}
                             </div>
