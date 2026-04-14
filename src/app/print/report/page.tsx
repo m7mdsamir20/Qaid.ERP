@@ -37,12 +37,16 @@ export default function PrintReportPage() {
                 import('html2canvas'),
                 import('jspdf'),
             ]);
-            const canvas = await html2canvas(iframeDoc.body, {
+            // نحسب العرض الفعلي للمحتوى (بدون الفراغ الزايد)
+            const pageEl = iframeDoc.querySelector('.page') as HTMLElement || iframeDoc.body;
+            const canvas = await html2canvas(pageEl, {
                 scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                windowWidth: 794,
+                windowWidth: pageEl.scrollWidth,
+                width: pageEl.scrollWidth,
+                height: pageEl.scrollHeight,
             });
             const pw = 210, ph = 297;
             const pdf = new jsPDF('p', 'mm', [pw, ph]);

@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
-import { formatAddressForInvoice } from '@/lib/addressConfig';
 
 interface ReportHeaderProps {
     title: string;
@@ -38,21 +37,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         // ── بيانات الشركة ──
         const companyName = co.companyName || co.name || '';
         const companyNameEn = co.nameEn || '';
-        const phone = co.phone || '';
-        const taxNumber = co.taxNumber || '';
-        const cr = co.commercialRegister || '';
         const logo = co.logo || co.companyLogo || '';
-        const countryCode = (co.countryCode || 'EG').toUpperCase();
-
-        // العنوان: نجرب الـ split fields أولاً ثم نرجع للـ address القديم
-        let addrLine = '';
-        if (co.addressRegion || co.addressCity || co.addressDistrict || co.addressStreet) {
-            const parts = [co.addressRegion, co.addressCity, co.addressDistrict, co.addressStreet].filter(Boolean);
-            addrLine = parts.join('، ');
-        } else {
-            const lines = formatAddressForInvoice(co.address, countryCode);
-            addrLine = lines.join('، ');
-        }
 
         const reportTitle = printTitle || title;
         const today = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -87,12 +72,11 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
   padding-bottom:14px;border-bottom:3px solid #7a8699;margin-bottom:0;gap:12px
 }
 .rpt-co{flex:1;text-align:right}
-.rpt-co-name{font-size:20px;font-weight:900;color:#111;margin-bottom:3px}
-.rpt-co-en{font-size:15px;font-weight:700;color:#555;font-family:sans-serif;margin-bottom:3px}
-.rpt-co-line{font-size:11px;color:#444;line-height:1.8}
+.rpt-co-name{font-size:18px;font-weight:900;color:#111;display:inline}
+.rpt-co-en{font-size:14px;font-weight:700;color:#555;font-family:sans-serif;display:inline;margin-right:6px}
 .rpt-center{flex:1.4;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
-.rpt-title-box{border:2px solid #111;padding:8px 28px;border-radius:10px;background:#f5f5f5}
-.rpt-title{font-size:20px;font-weight:900;color:#111;white-space:nowrap}
+.rpt-title-box{border:1.5px solid #ccc;padding:4px 18px;border-radius:8px;background:#f5f5f5}
+.rpt-title{font-size:17px;font-weight:900;color:#111;white-space:nowrap}
 .rpt-date{font-size:11.5px;color:#555;font-weight:600}
 .rpt-logo{flex:1;text-align:left}
 .rpt-logo img{max-height:85px;max-width:160px;object-fit:contain}
@@ -211,12 +195,10 @@ tfoot td:first-child{text-align:right;border-right:2px solid #909aaa}
 <!-- هيدر الشركة -->
 <div class="rpt-header">
   <div class="rpt-co">
-    <div class="rpt-co-name">${companyName}</div>
-    ${companyNameEn ? `<div class="rpt-co-en">${companyNameEn}</div>` : ''}
-    ${addrLine ? `<div class="rpt-co-line">${addrLine}</div>` : ''}
-    ${phone ? `<div class="rpt-co-line">${phone}</div>` : ''}
-    ${taxNumber ? `<div class="rpt-co-line">الرقم الضريبي: <strong>${taxNumber}</strong></div>` : ''}
-    ${cr ? `<div class="rpt-co-line">السجل التجاري: <strong>${cr}</strong></div>` : ''}
+    <div>
+      <span class="rpt-co-name">${companyName}</span>
+      ${companyNameEn ? `<span class="rpt-co-en"> / ${companyNameEn}</span>` : ''}
+    </div>
   </div>
   <div class="rpt-center">
     <div class="rpt-title-box">

@@ -229,8 +229,10 @@ tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border:1
 <div class="page">
 <div class="header">
     <div class="co-block">
-        <div class="co-name">${co.name}</div>
-        ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
+        <div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end;flex-wrap:wrap">
+          <span class="co-name">${co.name}</span>
+          ${co.nameEn ? `<span class="co-name-en">${co.nameEn}</span>` : ''}
+        </div>
         ${isBilingual
             ? co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')
             : co.addrLines.length > 0 ? `<div class="co-line">${co.addrLines.map(a => a.value).join('، ')}</div>` : ''
@@ -534,8 +536,10 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
 <div class="page">
   <div class="header">
     <div class="co-block">
-      <div class="co-name">${company.name || ''}</div>
-      ${isBilingual && company.nameEn ? `<div class="co-name-en">${company.nameEn}</div>` : ''}
+      <div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end;flex-wrap:wrap">
+        <span class="co-name">${company.name || ''}</span>
+        ${company.nameEn ? `<span class="co-name-en">${company.nameEn}</span>` : ''}
+      </div>
       ${addrLines.map(l => `<div class="co-line">${l}</div>`).join('')}
       ${company.phone ? `<div class="co-line">${company.phone}</div>` : ''}
       ${company.taxNumber ? `<div class="co-line">${blInline('الرقم الضريبي','VAT No.')}: <strong>${company.taxNumber}</strong></div>` : ''}
@@ -703,8 +707,10 @@ tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border:1
 <div class="page">
     <div class="header">
         <div class="co-block">
-            <div class="co-name">${co.name}</div>
-            ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
+            <div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end;flex-wrap:wrap">
+              <span class="co-name">${co.name}</span>
+              ${co.nameEn ? `<span class="co-name-en">${co.nameEn}</span>` : ''}
+            </div>
             ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
             ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
             ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
