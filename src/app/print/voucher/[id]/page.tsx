@@ -7,7 +7,9 @@ import { Printer, Download, X, Loader2 } from 'lucide-react';
 export default function PrintVoucherPage() {
     const { id } = useParams<{ id: string }>();
     const [html, setHtml] = useState('');
+    const [voucherNum, setVoucherNum] = useState('');
     const [loading, setLoading] = useState(true);
+    const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState('');
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const autoPrinted = useRef(false);
@@ -19,6 +21,8 @@ export default function PrintVoucherPage() {
                 if (data.error) { setError(data.error); setLoading(false); return; }
                 const type = data.voucher?.type || 'receipt';
                 const generated = generateThermalVoucherHTML(data.voucher, type, data.company, { noAutoPrint: true });
+                const num = String(data.voucher?.voucherNumber || id).padStart(5, '0');
+                setVoucherNum(num);
                 setHtml(generated);
                 setLoading(false);
             })
@@ -28,27 +32,41 @@ export default function PrintVoucherPage() {
     const handleIframeLoad = useCallback(() => {
         if (autoPrinted.current) return;
         autoPrinted.current = true;
-        setTimeout(() => {
-            iframeRef.current?.contentWindow?.print();
-        }, 300);
+        setTimeout(() => iframeRef.current?.contentWindow?.print(), 300);
     }, []);
 
-    const handlePrint = () => {
-        iframeRef.current?.contentWindow?.print();
-    };
+    const handlePrint = () => iframeRef.current?.contentWindow?.print();
 
-    const handleDownloadPdf = () => {
-        const printHtml = html.replace('</body>', `
-<script>
-  window.onload = function() {
-    setTimeout(function() { window.print(); }, 200);
-  };
-</script>
-</body>`);
-        const blob = new Blob([printHtml], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        setTimeout(() => URL.revokeObjectURL(url), 10000);
+    const handleDownloadPdf = async () => {
+        const iframeDoc = iframeRef.current?.contentDocument;
+        if (!iframeDoc) return;
+        setDownloading(true);
+        try {
+            const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+                import('html2canvas'),
+                import('jspdf'),
+            ]);
+            const body = iframeDoc.body;
+            const canvas = await html2canvas(body, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                width: body.scrollWidth,
+                height: body.scrollHeight,
+            });
+            // Thermal: 80mm wide, auto height
+            const mmW = 80;
+            const mmH = (canvas.height * mmW) / canvas.width;
+            const pdf = new jsPDF('p', 'mm', [mmW, mmH]);
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, mmW, mmH);
+            pdf.save(`voucher-${voucherNum}.pdf`);
+        } catch (e) {
+            console.error(e);
+            alert('فشل تحميل PDF');
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) return (
@@ -67,68 +85,26 @@ export default function PrintVoucherPage() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1a1a2e' }}>
-            {/* Toolbar */}
-            <div style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
-                padding: '10px 20px', background: '#16213e',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                flexShrink: 0,
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: '#16213e', borderBottom: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0 }}>
                 <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>
                     عارض السند
                 </span>
                 <div style={{ marginRight: 'auto', display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={handlePrint}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '6px',
-                            padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                            background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif',
-                            fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#4338ca'}
-                        onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
-                    >
+                    <button onClick={handlePrint} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
                         <Printer size={15} /> طباعة
                     </button>
-                    <button
-                        onClick={handleDownloadPdf}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '6px',
-                            padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: 'pointer',
-                            background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif',
-                            fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.25)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(16,185,129,0.15)'}
-                    >
-                        <Download size={15} /> تنزيل PDF
+                    <button onClick={handleDownloadPdf} disabled={downloading} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: downloading ? 'wait' : 'pointer', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700, opacity: downloading ? 0.7 : 1 }}>
+                        {downloading ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Download size={15} />}
+                        {downloading ? 'جاري التحميل...' : 'تنزيل PDF'}
                     </button>
-                    <button
-                        onClick={() => window.close()}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '6px',
-                            padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                            background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: 'Cairo, sans-serif',
-                            fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(251,113,133,0.15)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-                    >
+                    <button onClick={() => window.close()} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
                         <X size={15} /> إغلاق
                     </button>
                 </div>
             </div>
-            {/* Voucher iframe */}
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             <div style={{ flex: 1, background: '#2d2d2d', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '20px', overflowY: 'auto' }}>
-                <iframe
-                    ref={iframeRef}
-                    srcDoc={html}
-                    onLoad={handleIframeLoad}
-                    style={{ border: 'none', background: '#fff', width: '80mm', minHeight: '200px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
-                    title="voucher-print"
-                />
+                <iframe ref={iframeRef} srcDoc={html} onLoad={handleIframeLoad} style={{ border: 'none', background: '#fff', width: '80mm', minHeight: '200px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }} title="voucher-print" />
             </div>
         </div>
     );

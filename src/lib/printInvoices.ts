@@ -248,11 +248,11 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div class="info-row"><span class="ik">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
         ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
         ${([
-            party?.addressRegion   ? { label: 'المنطقة', value: party.addressRegion }   : null,
-            party?.addressCity     ? { label: 'المدينة', value: party.addressCity }     : null,
-            party?.addressDistrict ? { label: 'الحي',    value: party.addressDistrict } : null,
-            party?.addressStreet   ? { label: 'الشارع',  value: party.addressStreet }   : null,
-        ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik" style="color:#999;font-size:10.5px">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')}
+            party?.addressRegion   ? { label: blInline('المنطقة','Region'),   value: party.addressRegion }   : null,
+            party?.addressCity     ? { label: blInline('المدينة','City'),      value: party.addressCity }     : null,
+            party?.addressDistrict ? { label: blInline('الحي','District'),     value: party.addressDistrict } : null,
+            party?.addressStreet   ? { label: blInline('الشارع','Street'),     value: party.addressStreet }   : null,
+        ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')}
     </div>
     <div class="info-col">
         <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>

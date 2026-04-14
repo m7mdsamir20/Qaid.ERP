@@ -7,7 +7,9 @@ import { Printer, Download, X, Loader2 } from 'lucide-react';
 export default function PrintInvoicePage() {
     const { id } = useParams<{ id: string }>();
     const [html, setHtml] = useState('');
+    const [invoiceNum, setInvoiceNum] = useState('');
     const [loading, setLoading] = useState(true);
+    const [downloading, setDownloading] = useState(false);
     const [error, setError] = useState('');
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const autoPrinted = useRef(false);
@@ -22,38 +24,59 @@ export default function PrintInvoicePage() {
                     partyBalance: data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance,
                     noAutoPrint: true,
                 });
+                const num = String(data.invoice?.invoiceNumber || id).padStart(5, '0');
+                setInvoiceNum(num);
                 setHtml(generated);
                 setLoading(false);
             })
             .catch(() => { setError('فشل تحميل الفاتورة'); setLoading(false); });
     }, [id]);
 
-    // Auto-print once when iframe content is ready
     const handleIframeLoad = useCallback(() => {
         if (autoPrinted.current) return;
         autoPrinted.current = true;
-        setTimeout(() => {
-            iframeRef.current?.contentWindow?.print();
-        }, 300);
+        setTimeout(() => iframeRef.current?.contentWindow?.print(), 300);
     }, []);
 
-    const handlePrint = () => {
-        iframeRef.current?.contentWindow?.print();
-    };
+    const handlePrint = () => iframeRef.current?.contentWindow?.print();
 
-    // Download as PDF: open in a new window and trigger print → user picks "Save as PDF"
-    const handleDownloadPdf = () => {
-        const printHtml = html.replace('</body>', `
-<script>
-  window.onload = function() {
-    setTimeout(function() { window.print(); }, 200);
-  };
-</script>
-</body>`);
-        const blob = new Blob([printHtml], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        window.open(url, '_blank');
-        setTimeout(() => URL.revokeObjectURL(url), 10000);
+    const handleDownloadPdf = async () => {
+        const iframeDoc = iframeRef.current?.contentDocument;
+        if (!iframeDoc) return;
+        setDownloading(true);
+        try {
+            const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
+                import('html2canvas'),
+                import('jspdf'),
+            ]);
+            const canvas = await html2canvas(iframeDoc.body, {
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+            });
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageW = pdf.internal.pageSize.getWidth();
+            const pageH = pdf.internal.pageSize.getHeight();
+            const imgW = pageW;
+            const imgH = (canvas.height * pageW) / canvas.width;
+            let remaining = imgH;
+            let pos = 0;
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, pos, imgW, imgH);
+            remaining -= pageH;
+            while (remaining > 0) {
+                pos -= pageH;
+                pdf.addPage();
+                pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, pos, imgW, imgH);
+                remaining -= pageH;
+            }
+            pdf.save(`invoice-${invoiceNum}.pdf`);
+        } catch (e) {
+            console.error(e);
+            alert('فشل تحميل PDF');
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) return (
@@ -72,67 +95,25 @@ export default function PrintInvoicePage() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1a1a2e' }}>
-            {/* Toolbar */}
-            <div style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
-                padding: '10px 20px', background: '#16213e',
-                borderBottom: '1px solid rgba(255,255,255,0.08)',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                flexShrink: 0,
-            }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: '#16213e', borderBottom: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0 }}>
                 <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>
                     عارض الفاتورة
                 </span>
                 <div style={{ marginRight: 'auto', display: 'flex', gap: '8px' }}>
-                    <button
-                        onClick={handlePrint}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '6px',
-                            padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                            background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif',
-                            fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#4338ca'}
-                        onMouseLeave={e => e.currentTarget.style.background = '#4f46e5'}
-                    >
+                    <button onClick={handlePrint} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
                         <Printer size={15} /> طباعة
                     </button>
-                    <button
-                        onClick={handleDownloadPdf}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '6px',
-                            padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: 'pointer',
-                            background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif',
-                            fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.25)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(16,185,129,0.15)'}
-                    >
-                        <Download size={15} /> تنزيل PDF
+                    <button onClick={handleDownloadPdf} disabled={downloading} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: downloading ? 'wait' : 'pointer', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700, opacity: downloading ? 0.7 : 1 }}>
+                        {downloading ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Download size={15} />}
+                        {downloading ? 'جاري التحميل...' : 'تنزيل PDF'}
                     </button>
-                    <button
-                        onClick={() => window.close()}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '6px',
-                            padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                            background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: 'Cairo, sans-serif',
-                            fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(251,113,133,0.15)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.08)'}
-                    >
+                    <button onClick={() => window.close()} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
                         <X size={15} /> إغلاق
                     </button>
                 </div>
             </div>
-            {/* Invoice iframe */}
-            <iframe
-                ref={iframeRef}
-                srcDoc={html}
-                onLoad={handleIframeLoad}
-                style={{ flex: 1, border: 'none', background: '#fff' }}
-                title="invoice-print"
-            />
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <iframe ref={iframeRef} srcDoc={html} onLoad={handleIframeLoad} style={{ flex: 1, border: 'none', background: '#fff' }} title="invoice-print" />
         </div>
     );
 }
