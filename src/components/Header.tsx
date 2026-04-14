@@ -483,14 +483,12 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
     const isRtl = lang === 'ar';
 
     return (
-        <header style={{
+        <header className="main-header" style={{
             height: '64px', position: 'fixed', top: 0,
-            insetInlineStart: '260px',
-            insetInlineEnd: 0,
             zIndex: 800,
             background: 'var(--c-overlay, rgba(7, 13, 26, 0.7))', backdropFilter: 'blur(12px)',
             borderBottom: `1px solid ${C.border}`, display: 'flex',
-            alignItems: 'center', padding: '0 24px'
+            alignItems: 'center', padding: '0 24px', transition: 'all 0.3s'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
             
             {/* Mobile Menu Toggle */}

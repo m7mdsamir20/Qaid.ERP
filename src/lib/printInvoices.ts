@@ -229,9 +229,8 @@ tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border:1
 <div class="page">
 <div class="header">
     <div class="co-block">
-        <div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end;flex-wrap:wrap">
-          <span class="co-name">${co.name}</span>
-          ${co.nameEn ? `<span class="co-name-en">${co.nameEn}</span>` : ''}
+        <div style="text-align:right">
+          <span class="co-name">${co.name}</span>${co.nameEn ? `<span style="color:#999;font-size:13px;margin:0 4px">/</span><span class="co-name-en">${co.nameEn}</span>` : ''}
         </div>
         ${isBilingual
             ? co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')
@@ -536,9 +535,8 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
 <div class="page">
   <div class="header">
     <div class="co-block">
-      <div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end;flex-wrap:wrap">
-        <span class="co-name">${company.name || ''}</span>
-        ${company.nameEn ? `<span class="co-name-en">${company.nameEn}</span>` : ''}
+      <div style="text-align:right">
+        <span class="co-name">${company.name || ''}</span>${`${company.nameEn ? `<span style="color:#999;font-size:13px;margin:0 4px">/</span><span class="co-name-en">${company.nameEn}</span>` : ''}`}
       </div>
       ${addrLines.map(l => `<div class="co-line">${l}</div>`).join('')}
       ${company.phone ? `<div class="co-line">${company.phone}</div>` : ''}
@@ -707,9 +705,8 @@ tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border:1
 <div class="page">
     <div class="header">
         <div class="co-block">
-            <div style="display:flex;align-items:baseline;gap:6px;justify-content:flex-end;flex-wrap:wrap">
-              <span class="co-name">${co.name}</span>
-              ${co.nameEn ? `<span class="co-name-en">${co.nameEn}</span>` : ''}
+            <div style="text-align:right">
+              <span class="co-name">${co.name}</span>${co.nameEn ? `<span style="color:#999;font-size:13px;margin:0 4px">/</span><span class="co-name-en">${co.nameEn}</span>` : ''}
             </div>
             ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
             ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}

@@ -97,7 +97,7 @@ export default function DashboardLayout({
                 <div className="print-hide">
                     <Header onMenuToggle={() => setShowMobileMenu(!showMobileMenu)} />
                 </div>
-                <main style={{ flex: 1, padding: '24px 24px 24px', position: 'relative' }}>
+                <main style={{ flex: 1, padding: '88px 24px 24px', position: 'relative' }}>
                         <TrialBanner />
                         
                         <div style={{ position: 'relative' }}>
