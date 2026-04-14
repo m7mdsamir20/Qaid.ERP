@@ -101,11 +101,10 @@ export default function PrintInvoicePage() {
                         onClick={handleDownloadPdf}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '6px',
-                            padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
+                            padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: 'pointer',
                             background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif',
                             fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                            border: '1px solid rgba(16,185,129,0.3)',
-                        } as React.CSSProperties}
+                        }}
                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.25)'}
                         onMouseLeave={e => e.currentTarget.style.background = 'rgba(16,185,129,0.15)'}
                     >
