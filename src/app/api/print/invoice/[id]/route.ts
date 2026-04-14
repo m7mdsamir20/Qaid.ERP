@@ -23,6 +23,7 @@ export const GET = withProtection(async (request, session, body, context) => {
                     taxNumber: true, commercialRegister: true,
                     addressRegion: true, addressCity: true, addressDistrict: true, addressStreet: true,
                     logo: true, currency: true, countryCode: true, businessType: true,
+                    website: true,
                 },
             }),
         ]);

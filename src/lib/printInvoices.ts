@@ -11,6 +11,7 @@ export interface CompanyInfo {
     addressCity?: string;
     addressDistrict?: string;
     addressStreet?: string;
+    website?: string;
     logo?: string;
     currency?: string;
     countryCode?: string;
@@ -108,6 +109,7 @@ export function generateA4HTML(
         email: company.email || '',
         tax: company.taxNumber || '',
         cr: company.commercialRegister || '',
+        website: company.website || '',
         logo: company.logo || '',
         branch: company.branchName || '',
     };
@@ -230,9 +232,20 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div class="co-name">${co.name}</div>
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
         ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
-        ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
-        ${co.tax ? `<div class="co-line">${isBilingual ? `الرقم الضريبي / VAT No: <strong>${co.tax}</strong>` : `الرقم الضريبي: <strong>${co.tax}</strong>`}</div>` : ''}
-        ${co.cr ? `<div class="co-line">${isBilingual ? `السجل التجاري: <strong>${co.cr}</strong> / <span style="font-family:sans-serif">C.R.: <strong>${co.cr}</strong></span>` : `السجل التجاري: <strong>${co.cr}</strong>`}</div>` : ''}
+        ${co.phone ? `<div class="co-line">${blInline('الهاتف', 'Phone')}: <strong>${co.phone}</strong></div>` : ''}
+        ${co.email ? `<div class="co-line">${blInline('البريد', 'Email')}: <strong>${co.email}</strong></div>` : ''}
+        ${co.website ? `<div class="co-line">${blInline('الموقع', 'Web')}: <strong>${co.website}</strong></div>` : ''}
+        
+        <div style="margin-top:4px">
+            ${co.tax ? `<div class="co-line" style="font-weight:900; color:#000; display:flex; gap:4px; justify-content:flex-start; flex-direction:row-reverse">
+                <span>${blInline('الرقم الضريبي', 'VAT No')}:</span>
+                <strong dir="ltr">${co.tax}</strong>
+            </div>` : ''}
+            ${co.cr ? `<div class="co-line" style="font-weight:900; color:#000; display:flex; gap:4px; justify-content:flex-start; flex-direction:row-reverse">
+                <span>${blInline('السجل التجاري', 'C.R')}:</span>
+                <strong dir="ltr">${co.cr}</strong>
+            </div>` : ''}
+        </div>
     </div>
     <div class="header-center">
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
