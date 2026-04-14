@@ -189,19 +189,6 @@ export default function CompanyTab({
                                                 </button>
                                             )}
                                         </div>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                                            <label style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t('أو ضع رابط الشعار المباشر هنا:')}</label>
-                                            <input 
-                                                value={companyForm.logo?.startsWith('data:') ? t('صورة محفوظة ككود (Base64)') : companyForm.logo}
-                                                onChange={e => {
-                                                    const val = e.target.value;
-                                                    if (val === t('صورة محفوظة ككود (Base64)')) return;
-                                                    setCompanyForm((p: any) => ({ ...p, logo: val }));
-                                                }}
-                                                placeholder="https://example.com/logo.png"
-                                                style={{ width: '100%', height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, padding: '0 10px', fontSize: '11px', fontFamily: CAIRO, outline: 'none' }}
-                                            />
-                                        </div>
                                     </div>
                                 )}
                             </div>

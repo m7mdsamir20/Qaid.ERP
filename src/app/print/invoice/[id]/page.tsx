@@ -92,6 +92,7 @@ export default function PrintInvoicePage() {
                         {downloading ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Download size={15} />}
                         {downloading ? 'جاري التحميل...' : 'تنزيل PDF'}
                     </button>
+
                     <button onClick={() => window.close()} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
                         <X size={15} /> إغلاق
                     </button>

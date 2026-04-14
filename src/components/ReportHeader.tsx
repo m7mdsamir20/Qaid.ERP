@@ -77,85 +77,173 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;font-size:12px}
-.page{padding:8mm 10mm}
+.page{padding:10mm 12mm}
 
-/* ── هيدر ── */
-.rpt-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:2.5px solid #111;margin-bottom:16px;gap:8px}
+/* ══════════════════════════════
+   هيدر الشركة
+══════════════════════════════ */
+.rpt-header{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding-bottom:14px;border-bottom:3px solid #111;margin-bottom:0;gap:12px
+}
 .rpt-co{flex:1;text-align:right}
-.rpt-co-name{font-size:18px;font-weight:900;color:#111;margin-bottom:2px}
-.rpt-co-en{font-size:14px;font-weight:700;color:#555;margin-bottom:2px;font-family:sans-serif}
-.rpt-co-line{font-size:11px;color:#444;line-height:1.7}
-.rpt-center{flex:1.2;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
-.rpt-title-box{border:1.5px solid #ccc;padding:7px 24px;border-radius:8px;background:#f5f5f5}
-.rpt-title{font-size:18px;font-weight:900;color:#111}
-.rpt-account{font-size:13px;font-weight:800;color:#333;margin-top:2px}
-.rpt-date{font-size:11px;color:#666;font-weight:600}
+.rpt-co-name{font-size:20px;font-weight:900;color:#111;margin-bottom:3px}
+.rpt-co-en{font-size:15px;font-weight:700;color:#555;font-family:sans-serif;margin-bottom:3px}
+.rpt-co-line{font-size:11px;color:#444;line-height:1.8}
+.rpt-center{flex:1.4;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.rpt-title-box{border:2px solid #111;padding:8px 28px;border-radius:10px;background:#f5f5f5}
+.rpt-title{font-size:20px;font-weight:900;color:#111;white-space:nowrap}
+.rpt-date{font-size:11.5px;color:#555;font-weight:600}
 .rpt-logo{flex:1;text-align:left}
-.rpt-logo img{max-height:80px;max-width:150px;object-fit:contain}
+.rpt-logo img{max-height:85px;max-width:160px;object-fit:contain}
 
-/* ── كروت الإحصاء ── */
-[data-print-include]{display:flex!important;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-[data-print-include]>*{flex:1;min-width:100px;padding:8px 12px!important;border:1px solid #ddd!important;border-radius:8px!important;background:#fafafa!important}
+/* ══════════════════════════════
+   بطاقة معلومات الحساب / العميل
+══════════════════════════════ */
+.account-card{
+  display:flex;align-items:center;gap:0;
+  border:2px solid #111;border-radius:0;
+  margin:12px 0;overflow:hidden
+}
+.account-card-label{
+  background:#111;color:#fff;font-weight:900;font-size:12px;
+  padding:10px 18px;white-space:nowrap;writing-mode:horizontal-tb;
+  display:flex;align-items:center;gap:6px
+}
+.account-card-name{
+  font-size:15px;font-weight:900;color:#111;padding:10px 20px;flex:1
+}
+.account-card-meta{
+  font-size:11px;color:#555;font-weight:600;padding:10px 20px;
+  border-right:1px solid #ddd;text-align:center
+}
+
+/* ══════════════════════════════
+   كروت الإحصاء
+══════════════════════════════ */
+.stats-row{display:flex;gap:10px;margin:12px 0}
+.stat-card{
+  flex:1;border:1.5px solid #ddd;border-radius:8px;
+  padding:10px 14px;background:#fafafa;text-align:center
+}
+.stat-card *{color:#111!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important}
+.stat-card svg{display:none!important}
+[data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin:12px 0 0}
+[data-print-include]>*{flex:1;min-width:100px;padding:10px 14px!important;border:1.5px solid #ddd!important;border-radius:8px!important;background:#fafafa!important;text-align:center}
 [data-print-include] *{color:#111!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important}
 [data-print-include] svg{display:none!important}
 
-/* ── جدول ── */
-table{width:100%;border-collapse:collapse;border:2px solid #333;margin-bottom:16px}
-thead tr{background:#e8e8e8!important}
-th{padding:9px 12px;font-size:11.5px;font-weight:900;color:#111;text-align:center;border:1.5px solid #555;background:#e8e8e8;white-space:nowrap}
-tbody tr:nth-child(even){background:#f9f9f9}
+/* ══════════════════════════════
+   الجدول
+══════════════════════════════ */
+.table-wrap{margin-top:14px}
+table{width:100%;border-collapse:collapse;border:2px solid #222}
+/* رأس الجدول - خلفية داكنة */
+thead tr{background:#222!important}
+th{
+  padding:10px 14px;font-size:11.5px;font-weight:900;
+  color:#fff!important;text-align:center;
+  border-left:1px solid #444;border-right:1px solid #444;
+  background:#222!important;white-space:nowrap;line-height:1.4
+}
+th:first-child{text-align:right;border-right:none}
+th:last-child{border-left:none}
+/* صفوف الجدول */
+tbody tr:nth-child(even){background:#f7f7f7}
 tbody tr:nth-child(odd){background:#fff}
-td{padding:8px 12px;font-size:12px;color:#111;text-align:center;border:1px solid #bbb;vertical-align:middle;line-height:1.5}
-td:first-child,th:first-child{text-align:right}
-tfoot tr{background:#efefef!important}
-tfoot td{font-weight:900;font-size:12px;color:#111;background:#efefef!important;border:1.5px solid #555;padding:9px 12px}
-/* تنظيف spans داخل الخلايا */
-td span,td a{color:inherit!important;background:transparent!important;border:none!important;padding:0!important;font-weight:inherit!important;border-radius:0!important}
-td strong{font-weight:900}
+tbody tr:hover{background:#eef2ff}
+td{
+  padding:9px 14px;font-size:12px;color:#111;
+  text-align:center;border:1px solid #ccc;
+  vertical-align:middle;line-height:1.5
+}
+td:first-child{text-align:right;font-weight:600;border-right:2px solid #999}
+/* تنظيف العناصر الداخلية */
+td span,td a,td div{
+  color:inherit!important;background:transparent!important;
+  border:none!important;padding:0!important;
+  border-radius:0!important;font-size:inherit!important
+}
+td strong,td b{font-weight:900}
+td button{display:none!important}
 /* أرقام مالية */
-td[data-type="debit"],td.text-green-600,td.text-emerald-600{color:#15803d!important;font-weight:800!important}
-td[data-type="credit"],td.text-red-600{color:#dc2626!important;font-weight:800!important}
-td[data-type="balance"]{font-weight:900!important}
-/* صف الرصيد الافتتاحي والإجماليات */
-tr.opening-balance td,tr.totals-row td{background:#f0f4ff!important;font-weight:900!important;border:1.5px solid #888!important}
+td[data-type="debit"]{color:#166534!important;font-weight:800!important}
+td[data-type="credit"]{color:#991b1b!important;font-weight:800!important}
+td[data-type="balance"]{font-weight:900!important;color:#111!important}
+/* صف الرصيد الافتتاحي */
+tr.opening-balance td{
+  background:#fffbeb!important;font-weight:900!important;
+  font-style:italic;border-top:2px solid #d97706!important;
+  border-bottom:2px solid #d97706!important
+}
+/* الـ tfoot - إجمالي */
+tfoot tr{background:#1e293b!important}
+tfoot td{
+  font-weight:900;font-size:13px;
+  color:#fff!important;background:#1e293b!important;
+  border:1px solid #334155;padding:11px 14px
+}
+tfoot td:first-child{text-align:right;border-right:2px solid #475569}
 
+/* ══════════════════════════════
+   طباعة
+══════════════════════════════ */
 @media print{
-    @page{size:auto;margin:8mm 10mm}
-    body{font-size:11px}
-    .page{padding:0}
-    thead{display:table-header-group}
-    tfoot{display:table-footer-group}
-    tr{page-break-inside:avoid}
-    table{page-break-inside:auto}
+  @page{size:auto;margin:8mm 10mm}
+  body{font-size:11px}
+  .page{padding:0}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tbody tr{page-break-inside:avoid}
+  table{page-break-inside:auto;border:2px solid #222!important}
+  th{background:#222!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}
+  tfoot tr{background:#1e293b!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  tfoot td{color:#fff!important;background:#1e293b!important}
+  thead tr{background:#222!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
 <body>
 <div class="page">
+
+<!-- هيدر الشركة -->
 <div class="rpt-header">
-    <div class="rpt-co">
-        <div class="rpt-co-name">${companyName}</div>
-        ${companyNameEn ? `<div class="rpt-co-en">${companyNameEn}</div>` : ''}
-        ${addrLine ? `<div class="rpt-co-line">${addrLine}</div>` : ''}
-        ${phone ? `<div class="rpt-co-line">${phone}</div>` : ''}
-        ${taxNumber ? `<div class="rpt-co-line">الرقم الضريبي: <strong>${taxNumber}</strong></div>` : ''}
-        ${cr ? `<div class="rpt-co-line">السجل التجاري: <strong>${cr}</strong></div>` : ''}
+  <div class="rpt-co">
+    <div class="rpt-co-name">${companyName}</div>
+    ${companyNameEn ? `<div class="rpt-co-en">${companyNameEn}</div>` : ''}
+    ${addrLine ? `<div class="rpt-co-line">${addrLine}</div>` : ''}
+    ${phone ? `<div class="rpt-co-line">${phone}</div>` : ''}
+    ${taxNumber ? `<div class="rpt-co-line">الرقم الضريبي: <strong>${taxNumber}</strong></div>` : ''}
+    ${cr ? `<div class="rpt-co-line">السجل التجاري: <strong>${cr}</strong></div>` : ''}
+  </div>
+  <div class="rpt-center">
+    <div class="rpt-title-box">
+      <div class="rpt-title">${reportTitle}</div>
     </div>
-    <div class="rpt-center">
-        <div class="rpt-title-box">
-            <div class="rpt-title">${reportTitle}</div>
-        </div>
-        ${accountName ? `<div class="rpt-account">${accountName}</div>` : ''}
-        ${printCode ? `<div class="rpt-date">${printCode}</div>` : ''}
-        <div class="rpt-date">${dateRange}</div>
-    </div>
-    <div class="rpt-logo">
-        ${logo ? `<img src="${logo}" alt=""/>` : ''}
-    </div>
+    ${printCode ? `<div class="rpt-date">${printCode}</div>` : ''}
+    <div class="rpt-date">${dateRange}</div>
+  </div>
+  <div class="rpt-logo">
+    ${logo ? `<img src="${logo}" alt=""/>` : ''}
+  </div>
 </div>
 
+<!-- بطاقة اسم العميل / المورد / الحساب -->
+${accountName ? `
+<div class="account-card">
+  <div class="account-card-label">&#9664; الاسم</div>
+  <div class="account-card-name">${accountName}</div>
+  <div class="account-card-meta">${dateRange}</div>
+</div>` : ''}
+
+<!-- كروت الإحصاء -->
 ${includeHTML}
+
+<!-- الجداول -->
+<div class="table-wrap">
 ${tablesHTML}
+</div>
+
 </div>
 </body>
 </html>`;
@@ -203,19 +291,7 @@ ${tablesHTML}
                             <FileSpreadsheet size={15} /> تحميل Excel
                         </button>
                     )}
-                    <button
-                        onClick={onExportPdf || openCleanPrintWindow}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
-                            borderRadius: '10px', background: 'rgba(59, 130, 246, 0.1)', color: '#60a5fa',
-                            border: '1px solid rgba(59, 130, 246, 0.2)', fontSize: '12px', fontWeight: 700,
-                            cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'; e.currentTarget.style.transform = 'none'; }}
-                    >
-                        <FileDown size={15} /> حفظ PDF
-                    </button>
+
                     <button
                         onClick={openCleanPrintWindow}
                         style={{
