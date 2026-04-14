@@ -29,21 +29,10 @@ export default function PrintVoucherPage() {
             .catch(() => { setError('فشل تحميل السند'); setLoading(false); });
     }, [id]);
 
-    // Auto-resize iframe to content height + auto-print once
     const handleIframeLoad = useCallback(() => {
-        const iframe = iframeRef.current;
-        if (!iframe) return;
-        try {
-            const body = iframe.contentDocument?.body;
-            if (body) {
-                const h = body.scrollHeight;
-                iframe.style.height = `${h + 20}px`;
-            }
-        } catch (_) {}
-
         if (autoPrinted.current) return;
         autoPrinted.current = true;
-        setTimeout(() => iframe.contentWindow?.print(), 300);
+        setTimeout(() => iframeRef.current?.contentWindow?.print(), 400);
     }, []);
 
     const handlePrint = () => iframeRef.current?.contentWindow?.print();
@@ -57,19 +46,17 @@ export default function PrintVoucherPage() {
                 import('html2canvas'),
                 import('jspdf'),
             ]);
-            const body = iframeDoc.body;
-            const canvas = await html2canvas(body, {
-                scale: 3,
+            const canvas = await html2canvas(iframeDoc.body, {
+                scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                width: body.scrollWidth,
-                height: body.scrollHeight,
             });
-            const mmW = 80;
-            const mmH = (canvas.height * mmW) / canvas.width;
-            const pdf = new jsPDF('p', 'mm', [mmW, mmH]);
-            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, mmW, mmH);
+            const pw = 210, ph = 297; // A4
+            const pdf = new jsPDF('p', 'mm', [pw, ph]);
+            const imgW = pw;
+            const imgH = (canvas.height * pw) / canvas.width;
+            pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgW, imgH);
             pdf.save(`voucher-${voucherNum}.pdf`);
         } catch (e) {
             console.error(e);
@@ -95,7 +82,6 @@ export default function PrintVoucherPage() {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1a1a2e' }}>
-            {/* Toolbar */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: '#16213e', borderBottom: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0 }}>
                 <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>
                     عارض السند
@@ -114,20 +100,13 @@ export default function PrintVoucherPage() {
                 </div>
             </div>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-
-            {/* Receipt centered on dark bg */}
-            <div style={{ flex: 1, background: '#2a2a3e', display: 'flex', justifyContent: 'center', padding: '30px 20px', overflowY: 'auto' }}>
-                <div style={{ boxShadow: '0 8px 32px rgba(0,0,0,0.6)', borderRadius: '4px', overflow: 'hidden' }}>
-                    <iframe
-                        ref={iframeRef}
-                        srcDoc={html}
-                        onLoad={handleIframeLoad}
-                        scrolling="no"
-                        style={{ border: 'none', background: '#fff', width: '302px', height: '400px', display: 'block' }}
-                        title="voucher-print"
-                    />
-                </div>
-            </div>
+            <iframe
+                ref={iframeRef}
+                srcDoc={html}
+                onLoad={handleIframeLoad}
+                style={{ flex: 1, border: 'none', background: '#fff' }}
+                title="voucher-print"
+            />
         </div>
     );
 }

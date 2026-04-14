@@ -435,54 +435,115 @@ export function printA4Invoice(
 
 export function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}, options: { noAutoPrint?: boolean } = {}): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
+    const country = (company.countryCode || 'EG').toUpperCase();
+    const isBilingual = country !== 'EG';
     const isReceipt = type === 'receipt';
     const title = isReceipt ? 'سند قبض' : 'سند صرف';
     const titleEn = isReceipt ? 'Receipt Voucher' : 'Payment Voucher';
     const vNum = String(voucher.voucherNumber || 1).padStart(5, '0');
+    const prefix = isReceipt ? 'RCV' : 'PAY';
     const date = new Date(voucher.date || new Date()).toLocaleDateString('en-GB');
     const amount = Number(voucher.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const partyName = voucher.customer?.name || voucher.supplier?.name || '—';
     const treasuryName = voucher.treasury?.name || '';
     const paymentType = voucher.paymentType === 'bank' ? 'تحويل بنكي' : 'نقداً';
-    const coName = company.name || '';
-    const coPhone = company.phone || '';
+
+    const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-family:sans-serif">${en}</span>` : ar;
+
+    const addrLines = [
+        company.addressRegion   ? `${isBilingual ? 'المنطقة / Region' : 'المنطقة'}: ${company.addressRegion}` : null,
+        company.addressCity     ? `${isBilingual ? 'المدينة / City'   : 'المدينة'}: ${company.addressCity}`   : null,
+    ].filter(Boolean) as string[];
 
     return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
+<title>${title} - ${prefix}-${vNum}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Cairo',sans-serif; background:#fff; color:#111; width:80mm; padding:6mm; }
-  .header { text-align:center; border-bottom:2px solid #111; padding-bottom:8px; margin-bottom:8px; }
-  .co-name { font-size:15px; font-weight:800; }
-  .co-phone { font-size:11px; color:#555; margin-top:2px; }
-  .title { font-size:16px; font-weight:800; margin:8px 0 2px; text-align:center; }
-  .title-en { font-size:11px; color:#666; text-align:center; margin-bottom:8px; }
-  .vnum { font-size:12px; font-weight:700; color:#333; text-align:center; margin-bottom:8px; }
-  .row { display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px dashed #ccc; }
-  .row .label { color:#555; }
-  .row .value { font-weight:700; }
-  .amount-row { font-size:16px; font-weight:800; padding:10px 0; text-align:center; border-top:2px solid #111; margin-top:6px; }
-  .footer { text-align:center; font-size:10px; color:#888; margin-top:10px; padding-top:6px; border-top:1px dashed #ccc; }
-  @media print { @page { size:80mm auto; margin:0; } body { width:80mm; } }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;direction:rtl}
+.page{padding:12mm 15mm;display:flex;flex-direction:column;gap:16px}
+.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:2.5px solid #111}
+.co-block{flex:1}
+.co-name{font-size:20px;font-weight:900;color:#111}
+.co-name-en{font-size:15px;font-weight:700;color:#555;font-family:sans-serif}
+.co-line{font-size:11px;color:#444;line-height:1.6}
+.title-block{flex:1;text-align:center}
+.v-title{font-size:24px;font-weight:900;background:#f5f5f5;border:2px solid #ccc;border-radius:10px;padding:6px 24px;display:inline-block}
+.v-title-en{font-size:14px;color:#555;font-family:sans-serif;margin-top:3px}
+.v-num{font-size:13px;color:#333;font-family:monospace;font-weight:700;margin-top:5px}
+.logo-block{flex:1;text-align:left}
+.logo-block img{max-height:75px;max-width:150px;object-fit:contain}
+.details-box{border:1.5px solid #333;border-radius:10px;overflow:hidden}
+.details-title{background:#f0f0f0;padding:7px 16px;font-weight:900;font-size:12px;border-bottom:1px solid #ccc}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.d-row{display:flex;gap:8px;padding:9px 16px;border-bottom:1px solid #eee;font-size:13px}
+.d-row:last-child{border-bottom:none}
+.d-label{color:#666;min-width:110px;flex-shrink:0}
+.d-value{font-weight:800;color:#111}
+.amount-section{border:2px solid #111;border-radius:10px;padding:16px 24px;text-align:center;background:#f9fafb}
+.amount-label{font-size:13px;color:#555;margin-bottom:6px}
+.amount-value{font-size:28px;font-weight:900;color:#111}
+.sigs{display:flex;justify-content:space-between;margin-top:8px;padding-top:16px;border-top:1px dashed #ccc}
+.sig-box{text-align:center;min-width:160px}
+.sig-label{font-size:12px;font-weight:800;color:#333;margin-bottom:36px}
+.sig-line{border-top:1px solid #555;padding-top:5px;font-size:11px;color:#555}
+@media screen{.page{min-height:100vh}}
+@media print{@page{margin:10mm}.page{min-height:0 !important}}
 </style>
 </head>
 <body>
+<div class="page">
   <div class="header">
-    ${coName ? `<div class="co-name">${coName}</div>` : ''}
-    ${coPhone ? `<div class="co-phone">${coPhone}</div>` : ''}
+    <div class="co-block">
+      <div class="co-name">${company.name || ''}</div>
+      ${isBilingual && company.nameEn ? `<div class="co-name-en">${company.nameEn}</div>` : ''}
+      ${addrLines.map(l => `<div class="co-line">${l}</div>`).join('')}
+      ${company.phone ? `<div class="co-line">${company.phone}</div>` : ''}
+      ${company.taxNumber ? `<div class="co-line">${blInline('الرقم الضريبي','VAT No.')}: <strong>${company.taxNumber}</strong></div>` : ''}
+    </div>
+    <div class="title-block">
+      <div class="v-title">${title}</div>
+      ${isBilingual ? `<div class="v-title-en">${titleEn}</div>` : ''}
+      <div class="v-num">${prefix}-${vNum}</div>
+    </div>
+    <div class="logo-block">
+      ${company.logo ? `<img src="${company.logo}" alt=""/>` : ''}
+    </div>
   </div>
-  <div class="title">${title}</div>
-  <div class="title-en">${titleEn}</div>
-  <div class="vnum">#${vNum} — ${date}</div>
-  <div class="row"><span class="label">${isReceipt ? 'استلمنا من' : 'صرفنا لـ'}</span><span class="value">${partyName}</span></div>
-  ${treasuryName ? `<div class="row"><span class="label">الخزينة</span><span class="value">${treasuryName}</span></div>` : ''}
-  <div class="row"><span class="label">طريقة الدفع</span><span class="value">${paymentType}</span></div>
-  ${voucher.description ? `<div class="row"><span class="label">البيان</span><span class="value">${voucher.description}</span></div>` : ''}
-  <div class="amount-row">${amount} ${sym}</div>
-  <div class="footer">شكراً لتعاملكم معنا</div>
+
+  <div class="details-box">
+    <div class="details-title">${blInline('بيانات السند','Voucher Details')}</div>
+    <div class="details-grid">
+      <div class="d-row"><span class="d-label">${blInline(isReceipt ? 'استلمنا من' : 'صرفنا لـ', isReceipt ? 'Received From' : 'Paid To')}:</span><span class="d-value">${partyName}</span></div>
+      <div class="d-row"><span class="d-label">${blInline('التاريخ','Date')}:</span><span class="d-value">${date}</span></div>
+      <div class="d-row"><span class="d-label">${blInline('طريقة الدفع','Payment')}:</span><span class="d-value">${paymentType}</span></div>
+      ${treasuryName ? `<div class="d-row"><span class="d-label">${blInline('الخزينة','Treasury')}:</span><span class="d-value">${treasuryName}</span></div>` : ''}
+      ${voucher.description ? `<div class="d-row" style="grid-column:span 2"><span class="d-label">${blInline('البيان','Description')}:</span><span class="d-value">${voucher.description}</span></div>` : ''}
+    </div>
+  </div>
+
+  <div class="amount-section">
+    <div class="amount-label">${blInline(isReceipt ? 'المبلغ المستلم' : 'المبلغ المصروف', isReceipt ? 'Amount Received' : 'Amount Paid')}</div>
+    <div class="amount-value">${amount} ${sym}</div>
+  </div>
+
+  <div class="sigs">
+    <div class="sig-box">
+      <div class="sig-label">${blInline('توقيع المستلم','Receiver Signature')}</div>
+      <div class="sig-line">${blInline('الاسم والتوقيع','Name & Signature')}</div>
+    </div>
+    <div style="text-align:center;font-size:11px;color:#999;align-self:flex-end">
+      ${blInline('شكراً لتعاملكم معنا','Thank you for your business')}
+    </div>
+    <div class="sig-box">
+      <div class="sig-label">${blInline('توقيع المسؤول','Authorized Signature')}</div>
+      <div class="sig-line">${blInline('الختم والتوقيع','Stamp & Signature')}</div>
+    </div>
+  </div>
+</div>
 ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;
