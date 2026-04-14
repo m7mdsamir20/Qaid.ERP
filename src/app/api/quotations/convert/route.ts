@@ -90,7 +90,7 @@ export const POST = withProtection(async (request, session, body) => {
                     paidAmount: 0,
                     remaining: quotation.total,
                     paymentMethod: 'credit',
-                    notes: (quotation.notes || '') + `\n(تم التحويل من عرض سعر رقم: ${quotation.quotationNumber})`,
+                    notes: quotation.notes || '',
                     companyId,
                     branchId,
                     warehouseId: (quotation as any).warehouseId || null,

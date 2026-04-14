@@ -231,7 +231,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
         ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
         ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
-        ${co.tax ? `<div class="co-line">${isBilingual ? `الرقم الضريبي: <strong>${co.tax}</strong> / <span style="font-family:sans-serif">VAT No.: <strong>${co.tax}</strong></span>` : `الرقم الضريبي: <strong>${co.tax}</strong>`}</div>` : ''}
+        ${co.tax ? `<div class="co-line">${isBilingual ? `الرقم الضريبي / VAT No: <strong>${co.tax}</strong>` : `الرقم الضريبي: <strong>${co.tax}</strong>`}</div>` : ''}
         ${co.cr ? `<div class="co-line">${isBilingual ? `السجل التجاري: <strong>${co.cr}</strong> / <span style="font-family:sans-serif">C.R.: <strong>${co.cr}</strong></span>` : `السجل التجاري: <strong>${co.cr}</strong>`}</div>` : ''}
     </div>
     <div class="header-center">
@@ -323,10 +323,14 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 
 <div class="bottom-wrap">
     <div style="flex:1">
-        ${invoice.notes ? `
+        ${(() => {
+            const cleanNotes = (invoice.notes || '').replace(/\(تم التحويل من عرض سعر رقم: \d+\)/g, '').trim();
+            if (!cleanNotes) return '';
+            return `
         <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-top:10px">
-            <strong>${blInline('ملاحظات', 'Notes')}: </strong>${invoice.notes}
-        </div>` : ''}
+            <strong>${blInline('ملاحظات', 'Notes')}: </strong>${cleanNotes}
+        </div>`;
+        })()}
         ${isSaudi ? `<div class="qr-box" style="margin-top:12px">
             <img src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(zatcaQR)}" style="width:120px;height:120px;margin:0 auto;display:block;" alt="ZATCA QR" />
             <div class="qr-label">${blInline('رمز الفاتورة الضريبية', 'Tax Invoice QR Code')}</div>
