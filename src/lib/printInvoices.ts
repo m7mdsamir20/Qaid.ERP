@@ -218,6 +218,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 .qr-box canvas{display:block;margin:0 auto}
 .qr-label{font-size:10px;color:#666;margin-top:2px}
 .en-sub{font-size:100%;color:#555;font-family:sans-serif}
+@media print{@page{size:A4 portrait;margin:10mm}}
 </style>
 </head>
 <body>
