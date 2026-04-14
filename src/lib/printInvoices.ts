@@ -190,11 +190,12 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 .logo-block img{max-height:70px;max-width:140px;object-fit:contain}
 
 /* ── TABLES ── */
-.info-section{border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,0.02);display:grid;grid-template-columns:1fr 1fr}
-.info-col{padding:8px 12px}
-.info-col:first-child{border-left:1px solid #e0e0e0}
-.info-row{font-size:11.5px;margin-bottom:4px}
-.ik{color:#777;min-width:90px;display:inline-block}
+.info-wrap{display:flex;gap:12px;margin-top:10px}
+.info-box{flex:1;border:1.5px solid #333;border-radius:8px;overflow:hidden;background:#fff}
+.info-title{background:#f0f0f0;padding:6px 12px;font-weight:900;font-size:11px;border-bottom:1.5px solid #333}
+.info-body{padding:8px 12px}
+.info-row{font-size:11.5px;margin-bottom:4px;display:flex;gap:4px}
+.ik{color:#666;min-width:90px;flex-shrink:0}
 .iv{color:#111;font-weight:800}
 
 table{width:100%;border-collapse:collapse;border:1.5px solid #333}
@@ -244,24 +245,32 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     </div>
 </div>
 
-<div class="info-section">
-    <div style="grid-column: span 2; background: #f8f9fa; padding: 6px 18px; border-bottom: 1px solid #e0e0e0; font-weight: 900; font-size: 11px">${blInline('بيانات الفاتورة', 'Invoice Details')}</div>
-    <div class="info-col">
-        <div class="info-row"><span class="ik">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
-        ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
-        ${([
-            party?.addressRegion   ? { label: blInline('المنطقة','Region'),   value: party.addressRegion }   : null,
-            party?.addressCity     ? { label: blInline('المدينة','City'),      value: party.addressCity }     : null,
-            party?.addressDistrict ? { label: blInline('الحي','District'),     value: party.addressDistrict } : null,
-            party?.addressStreet   ? { label: blInline('الشارع','Street'),     value: party.addressStreet }   : null,
-        ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')}
+<div class="info-wrap">
+    <!-- بيانات الطرف -->
+    <div class="info-box">
+        <div class="info-title">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}</div>
+        <div class="info-body">
+            <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
+            ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
+            ${([
+                party?.addressRegion   ? { label: blInline('المنطقة','Region'),   value: party.addressRegion }   : null,
+                party?.addressCity     ? { label: blInline('المدينة','City'),      value: party.addressCity }     : null,
+                party?.addressDistrict ? { label: blInline('الحي','District'),     value: party.addressDistrict } : null,
+                party?.addressStreet   ? { label: blInline('الشارع','Street'),     value: party.addressStreet }   : null,
+            ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')}
+        </div>
     </div>
-    <div class="info-col">
-        <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
-        <div class="info-row"><span class="ik">${blInline('التاريخ', 'Date')}:</span><span class="iv">${date}</span></div>
-        ${invoice.dueDate ? `<div class="info-row"><span class="ik">${blInline('تاريخ الاستحقاق', 'Due Date')}:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('en-GB')}</span></div>` : ''}
-        ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
-        ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
+
+    <!-- بيانات الفاتورة -->
+    <div class="info-box">
+        <div class="info-title">${blInline('بيانات الفاتورة', 'Invoice Details')}</div>
+        <div class="info-body">
+            <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
+            <div class="info-row"><span class="ik">${blInline('التاريخ', 'Date')}:</span><span class="iv">${date}</span></div>
+            ${invoice.dueDate ? `<div class="info-row"><span class="ik">${blInline('تاريخ الاستحقاق', 'Due Date')}:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('en-GB')}</span></div>` : ''}
+            ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
+            ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
+        </div>
     </div>
 </div>
 

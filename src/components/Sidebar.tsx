@@ -108,7 +108,7 @@ export default function Sidebar() {
 
     return (
         <aside className="sidebar" style={{ width: '260px', position: 'fixed', insetInlineStart: 0, top: 0, bottom: 0, backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px rgba(0,0,0,0.2)' : '10px 0 30px rgba(0,0,0,0.2)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
-            <Link href="/" style={{ height: '110px', display: 'flex', alignItems: 'center', borderBottom: `1px solid rgba(255,255,255,0.02)` }}>
+            <Link href="/" style={{ height: '95px', display: 'flex', alignItems: 'center', borderBottom: `1px solid rgba(255,255,255,0.02)` }}>
                 <img src={BRAND_LOGO} alt="Logo" style={{ display: 'block', margin: '0 auto', width: '100%', maxWidth: '240px', maxHeight: '75px', objectFit: 'contain' }} />
             </Link>
 
