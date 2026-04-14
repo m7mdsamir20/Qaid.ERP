@@ -6,7 +6,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Receipt, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus } from 'lucide-react';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
+import { CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -333,7 +333,7 @@ export default function NewPurchasePage() {
             });
             if (res.ok) {
                 const saved = await res.json();
-                if (andPrint) printA4Invoice(saved.invoice || saved, 'purchase', company);
+                if (andPrint) window.open(`/print/invoice/${(saved.invoice || saved).id}`, '_blank');
                 router.push('/purchases');
             } else alert(t('فشل الحفظ'));
         } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }

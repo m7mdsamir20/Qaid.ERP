@@ -13,7 +13,6 @@ import { THEME, C, CAIRO, INTER, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYL
 import { useSession } from 'next-auth/react';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
-import { printThermalVoucher, CompanyInfo } from '@/lib/printInvoices';
 
 /* ── Types ── */
 interface Voucher {
@@ -33,7 +32,6 @@ export default function ReceiptVouchersPage() {
     const { symbol: cSymbol } = useCurrency();
     const [vouchers, setVouchers] = useState<Voucher[]>([]);
     const [customers, setCustomers] = useState<Customer[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -47,17 +45,15 @@ export default function ReceiptVouchersPage() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const [vovRes, custRes, treaRes, coRes] = await Promise.all([
+            const [vovRes, custRes, treaRes] = await Promise.all([
                 fetch('/api/vouchers?type=receipt'),
                 fetch('/api/customers'),
                 fetch('/api/treasuries'),
-                fetch('/api/company')
             ]);
             const vList: Voucher[] = await vovRes.json();
             setVouchers(Array.isArray(vList) ? vList : []);
             setCustomers(await custRes.json());
             setTreasuries(await treaRes.json());
-            if (coRes.ok) setCompany(await coRes.json());
         } catch { } finally { setLoading(false); }
     }, []);
     useEffect(() => { fetchData(); }, [fetchData]);
@@ -73,7 +69,7 @@ export default function ReceiptVouchersPage() {
     const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const handlePrint = (v: Voucher) => {
-        printThermalVoucher(v, 'receipt', company);
+        window.open(`/print/voucher/${v.id}`, '_blank');
     };
 
 

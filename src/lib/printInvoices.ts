@@ -72,7 +72,7 @@ function generateZatcaTLV(sellerName: string, vatNumber: string, timestamp: stri
 // ═══════════════════════════════════════════════
 //  A4 INVOICE (مبيعات / مشتريات / مرتجعات)
 // ═══════════════════════════════════════════════
-function generateA4HTML(
+export function generateA4HTML(
     invoice: any,
     type: InvoiceType,
     company: CompanyInfo = {},
@@ -82,6 +82,7 @@ function generateA4HTML(
         showStamp?: boolean;
         partyBalance?: number;
         forDownload?: boolean; // إذا true لا يتم تشغيل window.print تلقائياً
+        noAutoPrint?: boolean; // لصفحات الطباعة المستقلة
     } = {}
 ): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
@@ -391,10 +392,10 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     </div>
 </div>
 </div>
-${isSaudi ? `
+${options.noAutoPrint ? '' : (isSaudi ? `
 <script>
 window.onload = () => { setTimeout(() => window.print(), 500); };
-</script>` : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
+</script>` : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>')}
 </body>
 </html>`;
 
@@ -414,7 +415,7 @@ export function printA4Invoice(
 }
 
 
-function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}): string {
+export function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}, options: { noAutoPrint?: boolean } = {}): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const isReceipt = type === 'receipt';
     const title = isReceipt ? 'سند قبض' : 'سند صرف';
@@ -464,7 +465,7 @@ function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: Co
   ${voucher.description ? `<div class="row"><span class="label">البيان</span><span class="value">${voucher.description}</span></div>` : ''}
   <div class="amount-row">${amount} ${sym}</div>
   <div class="footer">شكراً لتعاملكم معنا</div>
-<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>
+${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;
 }
@@ -495,13 +496,14 @@ export function printInvoice(inv: any, type: InvoiceType, sym: string = 'ج.م')
 // ═══════════════════════════════════════════════
 //  A4 QUOTATION (عرض سعر)
 // ═══════════════════════════════════════════════
-export function printQuotation(
+export function generateQuotationHTML(
     quotation: any,
     company: CompanyInfo = {},
     options: {
         terms?: string;
+        noAutoPrint?: boolean;
     } = {}
-) {
+): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
@@ -669,12 +671,19 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         هذا المستند يعتبر عرض سعر أولي وغير ملزم للطرفين إلا بعد تحويله لفاتورة رسمية أو عقد معتمد.
     </div>
 </div>
-<script>
-    window.onload = () => { window.print(); setTimeout(() => window.close(), 500); };
-</script>
+${options.noAutoPrint ? '' : '<script>window.onload=()=>{window.print();setTimeout(()=>window.close(),500);};</script>'}
 </body>
 </html>`;
 
+    return html;
+}
+
+export function printQuotation(
+    quotation: any,
+    company: CompanyInfo = {},
+    options: { terms?: string } = {}
+) {
+    const html = generateQuotationHTML(quotation, company, options);
     const printWin = window.open('', '_blank');
     if (printWin) {
         printWin.document.write(html);

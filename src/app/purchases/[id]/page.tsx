@@ -8,7 +8,6 @@ import {
     Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart, 
     Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet
 } from 'lucide-react';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, INTER, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -45,17 +44,12 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
     const { symbol: cSymbol } = useCurrency();
     const { data: session } = useSession();
     const [invoice, setInvoice] = useState<PurchaseInvoice | null>(null);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
 
     const fetchDetail = useCallback(async () => {
         try {
-            const [invR, coR] = await Promise.all([
-                fetch(`/api/purchases?id=${params.id}`),
-                fetch('/api/company')
-            ]);
+            const invR = await fetch(`/api/purchases?id=${params.id}`);
             if (invR.ok) setInvoice(await invR.json());
-            if (coR.ok) setCompany(await coR.json());
         } catch (error) {
             console.error(error);
         } finally {
@@ -100,9 +94,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                     primaryButton={{
                         label: t('طباعة الفاتورة'),
                         onClick: () => {
-                            const branches = (session?.user as any)?.branches || [];
-                            const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
-                            printA4Invoice(invoice, 'purchase', { ...company, branchName }, { partyBalance: invoice.supplier?.balance || invoice.customer?.balance });
+                            window.open(`/print/invoice/${invoice.id}`, '_blank');
                         },
                         icon: Printer
                     }}

@@ -10,7 +10,6 @@ import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/navigation';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -37,7 +36,6 @@ export default function SalesPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const [invoices, setInvoices] = useState<Invoice[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
@@ -48,16 +46,10 @@ export default function SalesPage() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const [salRes, comRes] = await Promise.all([
-                fetch('/api/sales'),
-                fetch('/api/company')
-            ]);
+            const salRes = await fetch('/api/sales');
             if (salRes.ok) {
                 const data = await salRes.json();
                 setInvoices(data.invoices || []);
-            }
-            if (comRes.ok) {
-                setCompany(await comRes.json());
             }
         } catch (error) {
             console.error('Failed to fetch sales:', error);
@@ -92,26 +84,8 @@ export default function SalesPage() {
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: t('غير مدفوعة'), icon: AlertCircle };
     };
 
-    const handlePrint = async (inv: Invoice) => {
-        let fullInv = inv;
-        if (!inv.lines || inv.lines.length === 0) {
-            try {
-                const res = await fetch(`/api/sales?id=${inv.id}`);
-                if (res.ok) {
-                    fullInv = await res.json();
-                } else {
-                    alert(t('تعذر جلب تفاصيل الفاتورة للطباعة'));
-                    return;
-                }
-            } catch (err) {
-                alert(t('خطأ في الاتصال'));
-                return;
-            }
-        }
-
-        printA4Invoice(fullInv, 'sale', company, {
-            partyBalance: fullInv.customer?.balance
-        });
+    const handlePrint = (inv: Invoice) => {
+        window.open(`/print/invoice/${inv.id}`, '_blank');
     };
 
 

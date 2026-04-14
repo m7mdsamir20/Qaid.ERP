@@ -6,7 +6,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Receipt, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus } from 'lucide-react';
-import { printSaleInvoice, CompanyInfo } from '@/lib/printInvoices';
+import { CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -433,15 +433,7 @@ function NewSalePageInner() {
                 }
 
                 if (andPrint) {
-                    const branches = (session?.user as any)?.branches || [];
-                    const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
-                    const co: CompanyInfo = { ...company, branchName, businessType: (session?.user as any)?.businessType || company.businessType };
-
-                    const printRes = await fetch(`/api/sales?id=${savedInvoice.id}`);
-                    if (printRes.ok) {
-                        const fullInv = await printRes.json();
-                        printSaleInvoice(fullInv, fullInv.customer, fullInv.invoiceNumber, fullInv, co);
-                    }
+                    window.open(`/print/invoice/${savedInvoice.id}`, '_blank');
                 }
                 router.push('/sales');
             } else {

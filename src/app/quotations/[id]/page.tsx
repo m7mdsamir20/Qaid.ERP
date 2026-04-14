@@ -6,7 +6,6 @@ import { useRouter, useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { FileText, Printer, CheckCircle, Loader2, X, Eye, Package, Info } from 'lucide-react';
 import { THEME, C, CAIRO, INTER, IS, LS, TABLE_STYLE, SC, STitle } from '@/constants/theme';
-import { printQuotation, CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 
@@ -18,7 +17,6 @@ export default function QuotationViewPage() {
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
     const [quotation, setQuotation] = useState<any>(null);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
     const [converting, setConverting] = useState(false);
 
@@ -28,12 +26,8 @@ export default function QuotationViewPage() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const [quoRes, comRes] = await Promise.all([
-                fetch(`/api/quotations?id=${params.id}`),
-                fetch('/api/company')
-            ]);
+            const quoRes = await fetch(`/api/quotations?id=${params.id}`);
             if (quoRes.ok) setQuotation(await quoRes.json());
-            if (comRes.ok) setCompany(await comRes.json());
         } catch (error) {
             console.error('Failed to fetch:', error);
         } finally {
@@ -83,7 +77,7 @@ export default function QuotationViewPage() {
                     backUrl="/quotations"
                     primaryButton={{
                         label: t('طباعة العرض'),
-                        onClick: () => printQuotation(quotation, company),
+                        onClick: () => window.open(`/print/quotation/${quotation.id}`, '_blank'),
                         icon: Printer
                     }}
                 />

@@ -12,7 +12,7 @@ import {
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useSession } from 'next-auth/react';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
+import { CompanyInfo } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { AlertCircle, User, Phone, UserPlus } from 'lucide-react';
 import AppModal from '@/components/AppModal';
@@ -276,7 +276,7 @@ export default function NewPurchaseReturnPage() {
             if (res.ok) {
                 const saved = await res.json();
                 if (andPrint) {
-                    printA4Invoice(saved, 'purchase-return', company);
+                    window.open(`/print/invoice/${saved.id}`, '_blank');
                 }
                 router.push('/purchase-returns');
             } else { const err = await res.json(); alert(err.error || 'فشل في الحفظ'); }

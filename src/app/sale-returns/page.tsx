@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { RotateCcw, Plus, Printer, Loader2, Search, ChevronDown, Package, Trash2, Calendar, Eye, X } from 'lucide-react';
 
 import { useSession } from 'next-auth/react';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
@@ -29,7 +28,6 @@ export default function SaleReturnsListPage() {
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
     const [returns, setReturns] = useState<ReturnInvoice[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
@@ -44,10 +42,9 @@ export default function SaleReturnsListPage() {
 
     const fetchAll = useCallback(async () => {
         try {
-            const [retRes, coRes] = await Promise.all([fetch('/api/sale-returns'), fetch('/api/company')]);
+            const retRes = await fetch('/api/sale-returns');
             const data = await retRes.json();
             setReturns(Array.isArray(data) ? data : (data.returns || []));
-            if (coRes.ok) setCompany(await coRes.json());
         } catch { } finally { setLoading(false); }
     }, []);
     useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -60,23 +57,8 @@ export default function SaleReturnsListPage() {
         return matchSearch && matchFrom && matchTo;
     });
 
-    const handlePrint = async (r: ReturnInvoice) => {
-        let fullR = r;
-        if (!r.lines || r.lines.length === 0) {
-            try {
-                const res = await fetch(`/api/sale-returns?id=${r.id}`);
-                if (res.ok) {
-                    fullR = await res.json();
-                } else {
-                    alert('تعذر جلب تفاصيل المرتجع للطباعة');
-                    return;
-                }
-            } catch (err) {
-                alert('خطأ في الاتصال');
-                return;
-            }
-        }
-        printA4Invoice(fullR, 'sale-return', company);
+    const handlePrint = (r: ReturnInvoice) => {
+        window.open(`/print/invoice/${r.id}`, '_blank');
     };
 
     /* ─── Status badge ─── */

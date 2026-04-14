@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { FileText, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus, Percent } from 'lucide-react';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, SC, STitle } from '@/constants/theme';
-import { printQuotation, CompanyInfo } from '@/lib/printInvoices';
+import { CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -202,10 +202,7 @@ export default function NewQuotationPage() {
             });
             if (res.ok) {
                 const savedQuotation = await res.json();
-                const branches = (session?.user as any)?.branches || [];
-                const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
-                const co: CompanyInfo = { ...company, branchName, businessType: (session?.user as any)?.businessType || company.businessType };
-                printQuotation({ ...savedQuotation, customer: customers.find(c => c.id === form.customerId) }, co);
+                window.open(`/print/quotation/${savedQuotation.id}`, '_blank');
                 router.push('/quotations');
             } else {
                 const err = await res.json();

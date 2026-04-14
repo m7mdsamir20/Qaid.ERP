@@ -6,7 +6,6 @@ import { ShoppingCart, Plus, Printer, Info, Loader2, Search, ChevronDown, Packag
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { getCurrencySymbol } from '@/lib/currency';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, PAGE_BASE, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
@@ -34,7 +33,6 @@ export default function PurchasesListPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const [invoices, setInvoices] = useState<Invoice[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [activeYear, setActiveYear] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -51,14 +49,10 @@ export default function PurchasesListPage() {
 
     const fetchAll = useCallback(async () => {
         try {
-            const [purRes, coRes] = await Promise.all([
-                fetch('/api/purchases'),
-                fetch('/api/company')
-            ]);
+            const purRes = await fetch('/api/purchases');
             const data = await purRes.json();
             setInvoices(data.invoices || []);
             setActiveYear(data.activeYear || null);
-            if (coRes.ok) setCompany(await coRes.json());
         } catch { } finally { setLoading(false); }
     }, []);
     useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -84,25 +78,8 @@ export default function PurchasesListPage() {
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: t('غير مدفوعة'), icon: AlertCircle };
     };
 
-    const handlePrint = async (inv: Invoice) => {
-        let fullInv = inv;
-        if (!inv.lines || inv.lines.length === 0) {
-            try {
-                const res = await fetch(`/api/purchases?id=${inv.id}`);
-                if (res.ok) {
-                    fullInv = await res.json();
-                } else {
-                    alert(t('تعذر جلب تفاصيل الفاتورة للطباعة'));
-                    return;
-                }
-            } catch (err) {
-                alert(t('خطأ في الاتصال'));
-                return;
-            }
-        }
-        printA4Invoice(fullInv, 'purchase', company, {
-            partyBalance: fullInv.supplier?.balance
-        });
+    const handlePrint = (inv: Invoice) => {
+        window.open(`/print/invoice/${inv.id}`, '_blank');
     };
 
 

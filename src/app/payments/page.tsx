@@ -12,7 +12,6 @@ import {
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useCurrency } from '@/hooks/useCurrency';
-import { printThermalVoucher, CompanyInfo } from '@/lib/printInvoices';
 
 /* ── Types ── */
 interface Voucher {
@@ -33,7 +32,6 @@ export default function PaymentVouchersPage() {
     const router = useRouter();
     const [vouchers, setVouchers] = useState<Voucher[]>([]);
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -48,23 +46,21 @@ export default function PaymentVouchersPage() {
 
     const fetchAll = useCallback(async () => {
         try {
-            const [vR, sR, tR, coR] = await Promise.all([
+            const [vR, sR, tR] = await Promise.all([
                 fetch('/api/vouchers?type=payment'),
                 fetch('/api/suppliers'),
                 fetch('/api/treasuries'),
-                fetch('/api/company')
             ]);
             setVouchers(await vR.json());
             setSuppliers(await sR.json());
             setTreasuries(await tR.json());
-            if (coR.ok) setCompany(await coR.json());
         } catch { } finally { setLoading(false); }
     }, []);
 
     useEffect(() => { fetchAll(); }, [fetchAll]);
 
     const handlePrint = (v: Voucher) => {
-        printThermalVoucher(v, 'payment', company);
+        window.open(`/print/voucher/${v.id}`, '_blank');
     };
 
 

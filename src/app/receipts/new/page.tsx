@@ -11,7 +11,6 @@ import {
 } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC, STitle, BTN_PRIMARY, BTN_SUCCESS } from '@/constants/theme';
-import { printThermalVoucher, CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -26,7 +25,6 @@ export default function NewReceiptPage() {
     const { symbol: cSymbol } = useCurrency();
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
     const [partners, setPartners] = useState<any[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [nextNum, setNextNum] = useState(1);
     const [loading, setLoading] = useState(true);
@@ -53,12 +51,11 @@ export default function NewReceiptPage() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const [vovRes, suppRes, custRes, treaRes, coRes] = await Promise.all([
+                const [vovRes, suppRes, custRes, treaRes] = await Promise.all([
                     fetch('/api/vouchers?type=receipt'),
                     fetch('/api/suppliers'),
                     fetch('/api/customers'),
                     fetch('/api/treasuries'),
-                    fetch('/api/company')
                 ]);
                 const vData = await vovRes.json();
                 const vArray = Array.isArray(vData) ? vData : (vData.vouchers || []);
@@ -78,7 +75,6 @@ export default function NewReceiptPage() {
                 const tArray = Array.isArray(tData) ? tData : [];
                 setTreasuries(tArray);
 
-                if (coRes.ok) setCompany(await coRes.json());
 
                 const defaultCash = tArray.find((t: any) => t.type !== 'bank');
                 if (defaultCash) setForm((f: any) => ({ ...f, treasuryId: defaultCash.id }));
@@ -140,7 +136,7 @@ export default function NewReceiptPage() {
     };
 
     const handlePrint = (v: any) => {
-        printThermalVoucher(v, 'receipt', company);
+        window.open(`/print/voucher/${v.id}`, '_blank');
     };
 
     const InlineError = ({ field, top = '-32px' }: { field: string, top?: string }) => {

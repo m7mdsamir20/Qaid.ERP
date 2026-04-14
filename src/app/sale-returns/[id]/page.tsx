@@ -9,7 +9,6 @@ import {
     RotateCcw, AlertCircle, ShoppingBag, ArrowLeftRight, Phone, ArrowRight
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 
 interface ReturnInvoice {
     id: string; invoiceNumber: number; date: string;
@@ -38,7 +37,6 @@ export default function SaleReturnDetailsPage() {
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const [ret, setRet] = useState<ReturnInvoice | null>(null);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -47,10 +45,7 @@ export default function SaleReturnDetailsPage() {
     const fetchData = useCallback(async () => {
         try {
             setLoading(true);
-            const [retRes, coRes] = await Promise.all([
-                fetch(`/api/sale-returns/${id}`),
-                fetch('/api/company')
-            ]);
+            const retRes = await fetch(`/api/sale-returns/${id}`);
 
             if (!retRes.ok) {
                 const err = await retRes.json();
@@ -59,7 +54,6 @@ export default function SaleReturnDetailsPage() {
 
             const data = await retRes.json();
             setRet(data);
-            if (coRes.ok) setCompany(await coRes.json());
         } catch (err: any) {
             setError(err.message);
         } finally {
@@ -73,7 +67,7 @@ export default function SaleReturnDetailsPage() {
 
     const handlePrint = () => {
         if (ret) {
-            printA4Invoice(ret, 'sale-return', company);
+            window.open(`/print/invoice/${ret.id}`, '_blank');
         }
     };
 

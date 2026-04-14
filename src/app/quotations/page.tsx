@@ -11,7 +11,6 @@ import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/navigation';
-import { CompanyInfo, printQuotation } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
@@ -36,7 +35,6 @@ export default function QuotationsPage() {
     const { data: session } = useSession();
     const { symbol: cSymbol } = useCurrency();
     const [quotations, setQuotations] = useState<Quotation[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
@@ -47,16 +45,10 @@ export default function QuotationsPage() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
-            const [quoRes, comRes] = await Promise.all([
-                fetch('/api/quotations'),
-                fetch('/api/company')
-            ]);
+            const quoRes = await fetch('/api/quotations');
             if (quoRes.ok) {
                 const data = await quoRes.json();
                 setQuotations(data.quotations || []);
-            }
-            if (comRes.ok) {
-                setCompany(await comRes.json());
             }
         } catch (error) {
             console.error('Failed to fetch quotations:', error);
@@ -216,17 +208,7 @@ export default function QuotationsPage() {
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
                                                         <button 
-                                                            onClick={async () => {
-                                                                let full = quo;
-                                                                if (!full.lines || full.lines.length === 0) {
-                                                                    const r = await fetch(`/api/quotations?id=${quo.id}`);
-                                                                    if (r.ok) full = await r.json();
-                                                                }
-                                                                const branches = (session?.user as any)?.branches || [];
-                                                                const branchName = branches.length > 1 ? (session?.user as any)?.activeBranchName : undefined;
-                                                                const bizType = (session?.user as any)?.businessType || company.businessType;
-                                                                printQuotation(full, { ...company, branchName, businessType: bizType });
-                                                            }}
+                                                            onClick={() => window.open(`/print/quotation/${quo.id}`, '_blank')}
                                                             title={t("طباعة")}
                                                             style={TABLE_STYLE.actionBtn()}
                                                         >

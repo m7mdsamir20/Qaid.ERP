@@ -8,7 +8,7 @@ import {
     Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart,
     Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet, RotateCcw
 } from 'lucide-react';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
+import { CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, INTER, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -199,8 +199,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 return;
                             }
 
-                            const bizType = (session?.user as any)?.businessType || company.businessType;
-                            printA4Invoice(invoice, 'sale', { ...company, branchName, businessType: bizType }, { partyBalance: invoice.customer?.balance });
+                            window.open(`/print/invoice/${invoice.id}`, '_blank');
                         },
                         icon: Printer
                     }}

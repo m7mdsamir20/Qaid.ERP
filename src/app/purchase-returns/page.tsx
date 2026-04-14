@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { RotateCcw, Plus, Printer, Loader2, Search, ChevronDown, Package, CheckCircle2, Clock, AlertCircle, Trash2, Eye } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { THEME, C, CAIRO, INTER, IS, focusIn, focusOut, PAGE_BASE, SC, STitle, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
-import { printA4Invoice, CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 
@@ -29,7 +28,6 @@ export default function PurchaseReturnsListPage() {
     const router = useRouter();
     const { data: session } = useSession();
     const [returns, setReturns] = useState<PurchaseReturn[]>([]);
-    const [company, setCompany] = useState<CompanyInfo>({});
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFrom, setDateFrom] = useState('');
@@ -41,13 +39,9 @@ export default function PurchaseReturnsListPage() {
 
     const fetchAll = useCallback(async () => {
         try {
-            const [res, coR] = await Promise.all([
-                fetch('/api/purchase-returns'),
-                fetch('/api/company')
-            ]);
+            const res = await fetch('/api/purchase-returns');
             const data = await res.json();
             setReturns(Array.isArray(data) ? data : (data.returns || []));
-            if (coR.ok) setCompany(await coR.json());
         } catch { } finally { setLoading(false); }
     }, []);
     useEffect(() => { fetchAll(); }, [fetchAll]);
@@ -68,23 +62,8 @@ export default function PurchaseReturnsListPage() {
         return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: 'غير مدفوعة', icon: AlertCircle };
     };
 
-    const handlePrint = async (inv: PurchaseReturn) => {
-        let fullInv = inv;
-        if (!inv.lines || inv.lines.length === 0) {
-            try {
-                const res = await fetch(`/api/purchase-returns?id=${inv.id}`);
-                if (res.ok) {
-                    fullInv = await res.json();
-                } else {
-                    alert('تعذر جلب تفاصيل المرتجع للطباعة');
-                    return;
-                }
-            } catch (err) {
-                alert('خطأ في الاتصال');
-                return;
-            }
-        }
-        printA4Invoice(fullInv, 'purchase-return', company);
+    const handlePrint = (inv: PurchaseReturn) => {
+        window.open(`/print/invoice/${inv.id}`, '_blank');
     };
 
     return (
@@ -197,7 +176,7 @@ export default function PurchaseReturnsListPage() {
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => printA4Invoice(inv, 'purchase-return', company)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="طباعة">
+                                                        <button onClick={() => window.open(`/print/invoice/${inv.id}`, '_blank')} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="طباعة">
                                                             <Printer size={16} />
                                                         </button>
                                                         <button onClick={() => router.push(`/purchase-returns/${inv.id}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="عرض">
