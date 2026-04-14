@@ -222,7 +222,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 .qr-label{font-size:10px;color:#666;margin-top:2px}
 .en-sub{font-size:100%;color:#555;font-family:sans-serif}
 @media screen{.page{min-height:100vh}}
-@media print{@page{size:auto;margin:10mm}html,body{width:100%}.page{min-height:0 !important;width:100%}}
+@media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
 </style>
 </head>
 <body>
@@ -527,7 +527,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
 .sig-label{font-size:12px;font-weight:800;color:#333;margin-bottom:36px}
 .sig-line{border-top:1px solid #555;padding-top:5px;font-size:11px;color:#555}
 @media screen{.page{min-height:100vh}}
-@media print{@page{size:auto;margin:10mm}html,body{width:100%}.page{min-height:0 !important;width:100%}}
+@media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
 </style>
 </head>
 <body>
@@ -696,7 +696,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 .notes{margin-top:15px;padding:12px;border:1px dashed #ccc;border-radius:8px;font-size:11px}
 .footer{margin-top:10px;padding-top:10px;text-align:center;font-size:10px;color:#666}
 @media screen{.page{min-height:100vh}}
-@media print{@page{size:auto;margin:10mm}html,body{width:100%}.page{min-height:0 !important;width:100%}}
+@media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
 </style>
 </head>
 <body>

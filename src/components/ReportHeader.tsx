@@ -84,7 +84,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
 ══════════════════════════════ */
 .rpt-header{
   display:flex;justify-content:space-between;align-items:flex-start;
-  padding-bottom:14px;border-bottom:3px solid #111;margin-bottom:0;gap:12px
+  padding-bottom:14px;border-bottom:3px solid #5a6475;margin-bottom:0;gap:12px
 }
 .rpt-co{flex:1;text-align:right}
 .rpt-co-name{font-size:20px;font-weight:900;color:#111;margin-bottom:3px}
@@ -102,11 +102,11 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
 ══════════════════════════════ */
 .account-card{
   display:flex;align-items:center;gap:0;
-  border:2px solid #111;border-radius:0;
+  border:2px solid #5a6475;border-radius:0;
   margin:12px 0;overflow:hidden
 }
 .account-card-label{
-  background:#111;color:#fff;font-weight:900;font-size:12px;
+  background:#5a6475;color:#fff;font-weight:900;font-size:12px;
   padding:10px 18px;white-space:nowrap;writing-mode:horizontal-tb;
   display:flex;align-items:center;gap:6px
 }
@@ -137,14 +137,14 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
    الجدول
 ══════════════════════════════ */
 .table-wrap{margin-top:14px}
-table{width:100%;border-collapse:collapse;border:2px solid #222}
-/* رأس الجدول - خلفية داكنة */
-thead tr{background:#222!important}
+table{width:100%;border-collapse:collapse;border:2px solid #5a6475}
+/* رأس الجدول */
+thead tr{background:#5a6475!important}
 th{
-  padding:10px 14px;font-size:11.5px;font-weight:900;
+  padding:7px 10px;font-size:10.5px;font-weight:900;
   color:#fff!important;text-align:center;
-  border-left:1px solid #444;border-right:1px solid #444;
-  background:#222!important;white-space:nowrap;line-height:1.4
+  border-left:1px solid #717a8a;border-right:1px solid #717a8a;
+  background:#5a6475!important;white-space:nowrap;line-height:1.3
 }
 th:first-child{text-align:right;border-right:none}
 th:last-child{border-left:none}
@@ -153,9 +153,9 @@ tbody tr:nth-child(even){background:#f7f7f7}
 tbody tr:nth-child(odd){background:#fff}
 tbody tr:hover{background:#eef2ff}
 td{
-  padding:9px 14px;font-size:12px;color:#111;
+  padding:6px 10px;font-size:11px;color:#111;
   text-align:center;border:1px solid #ccc;
-  vertical-align:middle;line-height:1.5
+  vertical-align:middle;line-height:1.3;white-space:nowrap
 }
 td:first-child{text-align:right;font-weight:600;border-right:2px solid #999}
 /* تنظيف العناصر الداخلية */
@@ -177,29 +177,31 @@ tr.opening-balance td{
   border-bottom:2px solid #d97706!important
 }
 /* الـ tfoot - إجمالي */
-tfoot tr{background:#1e293b!important}
+tfoot tr{background:#5a6475!important}
 tfoot td{
-  font-weight:900;font-size:13px;
-  color:#fff!important;background:#1e293b!important;
-  border:1px solid #334155;padding:11px 14px
+  font-weight:900;font-size:11.5px;
+  color:#fff!important;background:#5a6475!important;
+  border:1px solid #717a8a;padding:8px 10px;white-space:nowrap
 }
-tfoot td:first-child{text-align:right;border-right:2px solid #475569}
+tfoot td:first-child{text-align:right;border-right:2px solid #717a8a}
 
 /* ══════════════════════════════
    طباعة
 ══════════════════════════════ */
 @media print{
-  @page{size:auto;margin:8mm 10mm}
-  body{font-size:11px}
+  @page{size:auto;margin:6mm 8mm}
+  body{font-size:10px}
+  th{font-size:10px!important;padding:6px 8px!important}
+  td{font-size:10px!important;padding:5px 8px!important}
   .page{padding:0}
   thead{display:table-header-group}
   tfoot{display:table-footer-group}
   tbody tr{page-break-inside:avoid}
   table{page-break-inside:auto;border:2px solid #222!important}
-  th{background:#222!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}
-  tfoot tr{background:#1e293b!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  tfoot td{color:#fff!important;background:#1e293b!important}
-  thead tr{background:#222!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  th{background:#5a6475!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}
+  tfoot tr{background:#5a6475!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  tfoot td{color:#fff!important;background:#5a6475!important}
+  thead tr{background:#5a6475!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
