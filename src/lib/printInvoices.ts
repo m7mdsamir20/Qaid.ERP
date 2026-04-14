@@ -231,8 +231,8 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
         ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
         ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
-        ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
-        ${co.cr ? `<div class="co-line">${blInline('السجل التجاري', 'C.R.')}: <strong>${co.cr}</strong></div>` : ''}
+        ${co.tax ? `<div class="co-line">${isBilingual ? `الرقم الضريبي: <strong>${co.tax}</strong> / <span style="font-family:sans-serif">VAT No.: <strong>${co.tax}</strong></span>` : `الرقم الضريبي: <strong>${co.tax}</strong>`}</div>` : ''}
+        ${co.cr ? `<div class="co-line">${isBilingual ? `السجل التجاري: <strong>${co.cr}</strong> / <span style="font-family:sans-serif">C.R.: <strong>${co.cr}</strong></span>` : `السجل التجاري: <strong>${co.cr}</strong>`}</div>` : ''}
     </div>
     <div class="header-center">
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
@@ -258,6 +258,8 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
                 party?.addressDistrict ? { label: blInline('الحي','District'),     value: party.addressDistrict } : null,
                 party?.addressStreet   ? { label: blInline('الشارع','Street'),     value: party.addressStreet }   : null,
             ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')}
+            ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
+            ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
         </div>
     </div>
 
@@ -268,8 +270,6 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
             <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
             <div class="info-row"><span class="ik">${blInline('التاريخ', 'Date')}:</span><span class="iv">${date}</span></div>
             ${invoice.dueDate ? `<div class="info-row"><span class="ik">${blInline('تاريخ الاستحقاق', 'Due Date')}:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('en-GB')}</span></div>` : ''}
-            ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
-            ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
         </div>
     </div>
 </div>
@@ -341,7 +341,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         </div>
 
         <!-- الخصومات -->
-        ${discount > 0 ? `
+        ${(discount > 0 || isSaudi) ? `
         <div class="t-row">
             <span>${isSaudi ? bl('مجموع الخصومات', 'Total Discounts') : bl('الخصم', 'Discount')}</span>
             <span>-${discount.toLocaleString()} ${sym}</span>
@@ -371,7 +371,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
             <span>${total.toLocaleString()} ${sym}</span>
         </div>
 
-        ${partyBalance !== null ? (() => {
+        ${(partyBalance !== null && !isSaudi) ? (() => {
             const currentTransaction = isSale ? (total - paid) : (paid - total);
             const oldBalance = Number(partyBalance) - currentTransaction;
             const formatBal = (val: number) => {
@@ -397,7 +397,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
             <span>${remaining.toLocaleString()} ${sym}</span>
         </div>
 
-        ${partyBalance !== null ? (() => {
+        ${(partyBalance !== null && !isSaudi) ? (() => {
             const formatBal = (val: number) => {
                 const abs = Math.abs(val).toLocaleString();
                 const suffix = isSale
