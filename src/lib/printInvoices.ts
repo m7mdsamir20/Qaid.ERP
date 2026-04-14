@@ -232,20 +232,11 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div class="co-name">${co.name}</div>
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
         ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
-        ${co.phone ? `<div class="co-line">${blInline('الهاتف', 'Phone')}: <strong>${co.phone}</strong></div>` : ''}
-        ${co.email ? `<div class="co-line">${blInline('البريد', 'Email')}: <strong>${co.email}</strong></div>` : ''}
-        ${co.website ? `<div class="co-line">${blInline('الموقع', 'Web')}: <strong>${co.website}</strong></div>` : ''}
-        
-        <div style="margin-top:4px">
-            ${co.tax ? `<div class="co-line" style="font-weight:900; color:#000; display:flex; gap:4px; justify-content:flex-start; flex-direction:row-reverse">
-                <span>${blInline('الرقم الضريبي', 'VAT No')}:</span>
-                <strong dir="ltr">${co.tax}</strong>
-            </div>` : ''}
-            ${co.cr ? `<div class="co-line" style="font-weight:900; color:#000; display:flex; gap:4px; justify-content:flex-start; flex-direction:row-reverse">
-                <span>${blInline('السجل التجاري', 'C.R')}:</span>
-                <strong dir="ltr">${co.cr}</strong>
-            </div>` : ''}
-        </div>
+        <div class="co-line"><span style="color:#888;font-size:10px">${blInline('الهاتف', 'Phone')}: </span><strong>&rlm;${co.phone}</strong></div>
+        ${co.tax ? `<div class="co-line" style="margin-top:2px"><span style="color:#888;font-size:10px">${blInline('الرقم الضريبي', 'VAT No')}: </span><strong>&rlm;${co.tax}</strong></div>` : ''}
+        ${co.cr ? `<div class="co-line"><span style="color:#888;font-size:10px">${blInline('السجل التجاري', 'C.R')}: </span><strong>&rlm;${co.cr}</strong></div>` : ''}
+        ${co.email ? `<div class="co-line" style="margin-top:2px"><span style="color:#888;font-size:10px">${blInline('البريد', 'Email')}: </span><strong>&rlm;${co.email}</strong></div>` : ''}
+        ${co.website ? `<div class="co-line"><span style="color:#888;font-size:10px">${blInline('الموقع', 'Web')}: </span><strong>&rlm;${co.website}</strong></div>` : ''}
     </div>
     <div class="header-center">
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
