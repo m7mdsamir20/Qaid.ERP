@@ -84,7 +84,7 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
 ══════════════════════════════ */
 .rpt-header{
   display:flex;justify-content:space-between;align-items:flex-start;
-  padding-bottom:14px;border-bottom:3px solid #5a6475;margin-bottom:0;gap:12px
+  padding-bottom:14px;border-bottom:3px solid #7a8699;margin-bottom:0;gap:12px
 }
 .rpt-co{flex:1;text-align:right}
 .rpt-co-name{font-size:20px;font-weight:900;color:#111;margin-bottom:3px}
@@ -102,11 +102,11 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
 ══════════════════════════════ */
 .account-card{
   display:flex;align-items:center;gap:0;
-  border:2px solid #5a6475;border-radius:0;
+  border:2px solid #7a8699;border-radius:0;
   margin:12px 0;overflow:hidden
 }
 .account-card-label{
-  background:#5a6475;color:#fff;font-weight:900;font-size:12px;
+  background:#7a8699;color:#fff;font-weight:900;font-size:12px;
   padding:10px 18px;white-space:nowrap;writing-mode:horizontal-tb;
   display:flex;align-items:center;gap:6px
 }
@@ -137,14 +137,14 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
    الجدول
 ══════════════════════════════ */
 .table-wrap{margin-top:14px}
-table{width:100%;border-collapse:collapse;border:2px solid #5a6475}
+table{width:100%;border-collapse:collapse;border:2px solid #7a8699}
 /* رأس الجدول */
-thead tr{background:#5a6475!important}
+thead tr{background:#7a8699!important}
 th{
   padding:7px 10px;font-size:10.5px;font-weight:900;
   color:#fff!important;text-align:center;
-  border-left:1px solid #717a8a;border-right:1px solid #717a8a;
-  background:#5a6475!important;white-space:nowrap;line-height:1.3
+  border-left:1px solid #909aaa;border-right:1px solid #909aaa;
+  background:#7a8699!important;white-space:nowrap;line-height:1.3
 }
 th:first-child{text-align:right;border-right:none}
 th:last-child{border-left:none}
@@ -177,13 +177,13 @@ tr.opening-balance td{
   border-bottom:2px solid #d97706!important
 }
 /* الـ tfoot - إجمالي */
-tfoot tr{background:#5a6475!important}
+tfoot tr{background:#7a8699!important}
 tfoot td{
   font-weight:900;font-size:11.5px;
-  color:#fff!important;background:#5a6475!important;
-  border:1px solid #717a8a;padding:8px 10px;white-space:nowrap
+  color:#fff!important;background:#7a8699!important;
+  border:1px solid #909aaa;padding:8px 10px;white-space:nowrap
 }
-tfoot td:first-child{text-align:right;border-right:2px solid #717a8a}
+tfoot td:first-child{text-align:right;border-right:2px solid #909aaa}
 
 /* ══════════════════════════════
    طباعة
@@ -198,10 +198,10 @@ tfoot td:first-child{text-align:right;border-right:2px solid #717a8a}
   tfoot{display:table-footer-group}
   tbody tr{page-break-inside:avoid}
   table{page-break-inside:auto;border:2px solid #222!important}
-  th{background:#5a6475!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}
-  tfoot tr{background:#5a6475!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-  tfoot td{color:#fff!important;background:#5a6475!important}
-  thead tr{background:#5a6475!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  th{background:#7a8699!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;color:#fff!important}
+  tfoot tr{background:#7a8699!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  tfoot td{color:#fff!important;background:#7a8699!important}
+  thead tr{background:#7a8699!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 }
 </style>
 </head>
@@ -223,7 +223,6 @@ tfoot td:first-child{text-align:right;border-right:2px solid #717a8a}
       <div class="rpt-title">${reportTitle}</div>
     </div>
     ${printCode ? `<div class="rpt-date">${printCode}</div>` : ''}
-    <div class="rpt-date">${dateRange}</div>
   </div>
   <div class="rpt-logo">
     ${logo ? `<img src="${logo}" alt=""/>` : ''}
