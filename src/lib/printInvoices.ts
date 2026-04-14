@@ -222,26 +222,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 .qr-label{font-size:10px;color:#666;margin-top:2px}
 .en-sub{font-size:100%;color:#555;font-family:sans-serif}
 @media screen{.page{min-height:100vh}}
-@media print{
-    @page { 
-        size: A5; 
-        margin: 5mm; 
-    }
-    .page { 
-        width: 140mm;
-        min-height: 0 !important;
-        margin: 0 auto;
-        padding: 0;
-    }
-    body { font-size: 11px; }
-    .inv-title { font-size: 16px; padding: 2px 10px; }
-    .co-name { font-size: 15px; }
-    .co-name-en { font-size: 13px; }
-    .info-row { font-size: 10px; }
-    thead th { font-size: 9.5px; padding: 4px; }
-    tbody td { font-size: 10px; padding: 3px; }
-    .totals { min-width: 220px; }
-}
+@media print{@page{margin:10mm}.page{min-height:0 !important}}
 </style>
 </head>
 <body>
