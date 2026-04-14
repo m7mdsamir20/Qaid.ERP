@@ -103,7 +103,7 @@ td[data-type="credit"]{color:#dc2626!important;font-weight:900!important}
 td[data-type="balance"]{font-weight:900!important}
 
 @media print{
-    @page{margin:6mm 8mm;size:A4}
+    @page{margin:6mm 8mm;size:auto}
     body{padding:0}
     thead{display:table-header-group}
     tr{page-break-inside:avoid}
@@ -139,13 +139,9 @@ ${tablesHTML}
 </body>
 </html>`;
 
-        const win = window.open('', '_blank', 'width=1000,height=750');
-        if (win) {
-            win.document.write(html);
-            win.document.close();
-            win.focus();
-            setTimeout(() => { win.print(); }, 900);
-        }
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', reportTitle);
+        window.open('/print/report', '_blank');
     };
 
     return (

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile, mkdir } from 'fs/promises';
-import path from 'path';
 import { withProtection } from '@/lib/apiHandler';
+import { supabase } from '@/lib/supabase';
+import path from 'path';
 
 export const POST = withProtection(async (request, session) => {
     try {
@@ -12,41 +12,43 @@ export const POST = withProtection(async (request, session) => {
             return NextResponse.json({ success: false, error: "لم يتم العثور على ملف" }, { status: 400 });
         }
 
-        // Check file size (e.g., 5MB limit)
+        // Check file size (5MB limit)
         if (file.size > 5 * 1024 * 1024) {
             return NextResponse.json({ success: false, error: "حجم الملف كبير جداً (الأقصى 5 ميجابايت)" }, { status: 400 });
         }
 
         const bytes = await file.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-
-        // Better sanitization for non-latin filenames
+        
+        // Sanitize filename
         let safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
         if (!safeName || safeName.startsWith('.')) {
             safeName = 'file-' + Math.random().toString(36).substring(2, 7) + (path.extname(file.name) || '.png');
         }
         
-        const filename = `${Date.now()}-${safeName}`;
-        const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-        const filepath = path.join(uploadDir, filename);
+        const filename = `logo-${Date.now()}-${safeName}`;
 
-        // Detailed error reporting for specialized environments
-        try {
-            // Ensure directory exists
-            await mkdir(uploadDir, { recursive: true });
-            await writeFile(filepath, buffer);
-        } catch (dirError: any) {
-            console.error("FileSystem Error:", dirError);
-            if (dirError.code === 'EROFS' || process.env.VERCEL) {
-                return NextResponse.json({ 
-                    success: false, 
-                    error: "بيئة الاستضافة (Vercel) تمنع حفظ الملفات محلياً. يرجى استخدام رابط خارجي للشعار أو تواصل مع الدعم الفني." 
-                }, { status: 403 });
-            }
-            throw dirError;
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+            .from('company-logos')
+            .upload(filename, bytes, {
+                contentType: file.type,
+                upsert: true
+            });
+
+        if (uploadError) {
+            console.error("Supabase Storage Error:", uploadError);
+            return NextResponse.json({ 
+                success: false, 
+                error: "فشل الرفع إلى Supabase. تأكد من إنشاء Bucket باسم 'company-logos' وجعله متاح للجميع (Public). الخطأ: " + uploadError.message 
+            }, { status: 500 });
         }
 
-        return NextResponse.json({ success: true, url: `/uploads/${filename}` });
+        // Get the public URL
+        const { data: { publicUrl } } = supabase.storage
+            .from('company-logos')
+            .getPublicUrl(filename);
+
+        return NextResponse.json({ success: true, url: publicUrl });
     } catch (e: any) {
         console.error("Upload Error:", e);
         return NextResponse.json({ success: false, error: "فشل الرفع: " + (e.message || "خطأ غير معروف") }, { status: 500 });

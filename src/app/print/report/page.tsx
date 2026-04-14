@@ -1,37 +1,29 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
-import { useParams } from 'next/navigation';
-import { generateThermalVoucherHTML } from '@/lib/printInvoices';
 import { Printer, Download, X, Loader2 } from 'lucide-react';
 
-export default function PrintVoucherPage() {
-    const { id } = useParams<{ id: string }>();
+export default function PrintReportPage() {
     const [html, setHtml] = useState('');
-    const [voucherNum, setVoucherNum] = useState('');
+    const [title, setTitle] = useState('تقرير');
     const [loading, setLoading] = useState(true);
     const [downloading, setDownloading] = useState(false);
-    const [error, setError] = useState('');
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const autoPrinted = useRef(false);
 
     useEffect(() => {
-        fetch(`/api/print/voucher/${id}`)
-            .then(r => r.json())
-            .then(data => {
-                if (data.error) { setError(data.error); setLoading(false); return; }
-                const type = data.voucher?.type || 'receipt';
-                const generated = generateThermalVoucherHTML(data.voucher, type, data.company, { noAutoPrint: true });
-                setVoucherNum(String(data.voucher?.voucherNumber || id).padStart(5, '0'));
-                setHtml(generated);
-                setLoading(false);
-            })
-            .catch(() => { setError('فشل تحميل السند'); setLoading(false); });
-    }, [id]);
+        const stored = sessionStorage.getItem('print_report_html');
+        const storedTitle = sessionStorage.getItem('print_report_title');
+        if (stored) {
+            setHtml(stored);
+            if (storedTitle) setTitle(storedTitle);
+        }
+        setLoading(false);
+    }, []);
 
     const handleIframeLoad = useCallback(() => {
         if (autoPrinted.current) return;
         autoPrinted.current = true;
-        setTimeout(() => iframeRef.current?.contentWindow?.print(), 400);
+        setTimeout(() => iframeRef.current?.contentWindow?.print(), 500);
     }, []);
 
     const handlePrint = () => iframeRef.current?.contentWindow?.print();
@@ -46,34 +38,59 @@ export default function PrintVoucherPage() {
                 import('jspdf'),
             ]);
             const canvas = await html2canvas(iframeDoc.body, {
-                scale: 2, useCORS: true, allowTaint: true,
-                backgroundColor: '#ffffff', windowWidth: 794,
+                scale: 2,
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: '#ffffff',
+                windowWidth: 794,
             });
             const pw = 210, ph = 297;
             const pdf = new jsPDF('p', 'mm', [pw, ph]);
             const imgData = canvas.toDataURL('image/png');
             const imgH = (canvas.height * pw) / canvas.width;
-            pdf.addImage(imgData, 'PNG', 0, 0, pw, imgH);
-            pdf.save(`voucher-${voucherNum}.pdf`);
-        } catch (e) { console.error(e); alert('فشل تحميل PDF'); }
-        finally { setDownloading(false); }
+            if (imgH <= ph) {
+                pdf.addImage(imgData, 'PNG', 0, 0, pw, imgH);
+            } else {
+                let pos = 0, remaining = imgH;
+                pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH);
+                remaining -= ph;
+                while (remaining > 0) {
+                    pos -= ph;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH);
+                    remaining -= ph;
+                }
+            }
+            const safeName = title.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '-');
+            pdf.save(`${safeName}.pdf`);
+        } catch (e) {
+            console.error(e);
+            alert('فشل تحميل PDF');
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (loading) return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', gap: '12px', color: '#fff', fontFamily: 'Cairo, sans-serif' }}>
             <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
-            <span>جاري تحميل السند...</span>
+            <span>جاري تحميل التقرير...</span>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
     );
-    if (error) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>{error}</div>
+
+    if (!html) return (
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>
+            لا يوجد تقرير للعرض
+        </div>
     );
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1a1a2e' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: '#16213e', borderBottom: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0 }}>
-                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>عارض السند</span>
+                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>
+                    {title}
+                </span>
                 <div style={{ marginRight: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <button onClick={handlePrint} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
                         <Printer size={15} /> طباعة
@@ -88,7 +105,13 @@ export default function PrintVoucherPage() {
                 </div>
             </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
-            <iframe ref={iframeRef} srcDoc={html} onLoad={handleIframeLoad} style={{ flex: 1, border: 'none', background: '#fff' }} title="voucher-print" />
+            <iframe
+                ref={iframeRef}
+                srcDoc={html}
+                onLoad={handleIframeLoad}
+                style={{ flex: 1, border: 'none', background: '#fff' }}
+                title="report-print"
+            />
         </div>
     );
 }

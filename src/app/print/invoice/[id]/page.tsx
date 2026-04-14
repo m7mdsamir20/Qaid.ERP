@@ -24,8 +24,7 @@ export default function PrintInvoicePage() {
                     partyBalance: data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance,
                     noAutoPrint: true,
                 });
-                const num = String(data.invoice?.invoiceNumber || id).padStart(5, '0');
-                setInvoiceNum(num);
+                setInvoiceNum(String(data.invoice?.invoiceNumber || id).padStart(5, '0'));
                 setHtml(generated);
                 setLoading(false);
             })
@@ -50,55 +49,41 @@ export default function PrintInvoicePage() {
                 import('jspdf'),
             ]);
             const canvas = await html2canvas(iframeDoc.body, {
-                scale: 2,
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: '#ffffff',
+                scale: 2, useCORS: true, allowTaint: true,
+                backgroundColor: '#ffffff', windowWidth: 794,
             });
-            const pw = 210, ph = 297; // A4
+            const pw = 210, ph = 297;
             const pdf = new jsPDF('p', 'mm', [pw, ph]);
-            const imgW = pw;
-            const imgH = (canvas.height * pw) / canvas.width;
             const imgData = canvas.toDataURL('image/png');
-            let remaining = imgH;
-            let pos = 0;
-            pdf.addImage(imgData, 'PNG', 0, pos, imgW, imgH);
-            remaining -= ph;
-            while (remaining > 0) {
-                pos -= ph;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, pos, imgW, imgH);
+            const imgH = (canvas.height * pw) / canvas.width;
+            if (imgH <= ph) {
+                pdf.addImage(imgData, 'PNG', 0, 0, pw, imgH);
+            } else {
+                let pos = 0, remaining = imgH;
+                pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH);
                 remaining -= ph;
+                while (remaining > 0) { pos -= ph; pdf.addPage(); pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH); remaining -= ph; }
             }
             pdf.save(`invoice-${invoiceNum}.pdf`);
-        } catch (e) {
-            console.error(e);
-            alert('فشل تحميل PDF');
-        } finally {
-            setDownloading(false);
-        }
+        } catch (e) { console.error(e); alert('فشل تحميل PDF'); }
+        finally { setDownloading(false); }
     };
 
     if (loading) return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', gap: '12px', color: '#fff', fontFamily: 'Cairo, sans-serif' }}>
             <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
             <span>جاري تحميل الفاتورة...</span>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
     );
-
     if (error) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>
-            {error}
-        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>{error}</div>
     );
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1a1a2e' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: '#16213e', borderBottom: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0 }}>
-                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>
-                    عارض الفاتورة
-                </span>
+                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>عارض الفاتورة</span>
                 <div style={{ marginRight: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <button onClick={handlePrint} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
                         <Printer size={15} /> طباعة
@@ -112,14 +97,8 @@ export default function PrintInvoicePage() {
                     </button>
                 </div>
             </div>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-            <iframe
-                ref={iframeRef}
-                srcDoc={html}
-                onLoad={handleIframeLoad}
-                style={{ flex: 1, border: 'none', background: '#fff' }}
-                title="invoice-print"
-            />
+            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+            <iframe ref={iframeRef} srcDoc={html} onLoad={handleIframeLoad} style={{ flex: 1, border: 'none', background: '#fff' }} title="invoice-print" />
         </div>
     );
 }

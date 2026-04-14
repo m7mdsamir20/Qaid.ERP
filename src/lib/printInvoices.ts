@@ -222,7 +222,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 .qr-label{font-size:10px;color:#666;margin-top:2px}
 .en-sub{font-size:100%;color:#555;font-family:sans-serif}
 @media screen{.page{min-height:100vh}}
-@media print{@page{margin:10mm}.page{min-height:0 !important}}
+@media print{@page{size:auto;margin:10mm}html,body{width:100%}.page{min-height:0 !important;width:100%}}
 </style>
 </head>
 <body>
@@ -231,7 +231,10 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     <div class="co-block">
         <div class="co-name">${co.name}</div>
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
-        ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
+        ${isBilingual
+            ? co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')
+            : co.addrLines.length > 0 ? `<div class="co-line">${co.addrLines.map(a => a.value).join('، ')}</div>` : ''
+        }
         <div class="co-line"><span style="color:#888;font-size:10px">${blInline('الهاتف', 'Phone')}: </span><strong>&rlm;${co.phone}</strong></div>
         ${co.tax ? `<div class="co-line" style="margin-top:2px"><span style="color:#888;font-size:10px">${blInline('الرقم الضريبي', 'VAT No')}: </span><strong>&rlm;${co.tax}</strong></div>` : ''}
         ${co.cr ? `<div class="co-line"><span style="color:#888;font-size:10px">${blInline('السجل التجاري', 'C.R')}: </span><strong>&rlm;${co.cr}</strong></div>` : ''}
@@ -256,12 +259,17 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div class="info-body">
             <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
             ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
-            ${([
-                party?.addressRegion   ? { label: blInline('المنطقة','Region'),   value: party.addressRegion }   : null,
-                party?.addressCity     ? { label: blInline('المدينة','City'),      value: party.addressCity }     : null,
-                party?.addressDistrict ? { label: blInline('الحي','District'),     value: party.addressDistrict } : null,
-                party?.addressStreet   ? { label: blInline('الشارع','Street'),     value: party.addressStreet }   : null,
-            ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')}
+            ${(() => {
+                const parts = [party?.addressRegion, party?.addressCity, party?.addressDistrict, party?.addressStreet].filter(Boolean) as string[];
+                if (!parts.length) return '';
+                if (!isBilingual) return `<div class="info-row"><span class="ik">العنوان:</span><span class="iv">${parts.join('، ')}</span></div>`;
+                return ([
+                    party?.addressRegion   ? { label: blInline('المنطقة','Region'),   value: party.addressRegion }   : null,
+                    party?.addressCity     ? { label: blInline('المدينة','City'),      value: party.addressCity }     : null,
+                    party?.addressDistrict ? { label: blInline('الحي','District'),     value: party.addressDistrict } : null,
+                    party?.addressStreet   ? { label: blInline('الشارع','Street'),     value: party.addressStreet }   : null,
+                ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('');
+            })()}
             ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
             ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
         </div>
@@ -519,7 +527,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
 .sig-label{font-size:12px;font-weight:800;color:#333;margin-bottom:36px}
 .sig-line{border-top:1px solid #555;padding-top:5px;font-size:11px;color:#555}
 @media screen{.page{min-height:100vh}}
-@media print{@page{margin:10mm}.page{min-height:0 !important}}
+@media print{@page{size:auto;margin:10mm}html,body{width:100%}.page{min-height:0 !important;width:100%}}
 </style>
 </head>
 <body>
@@ -688,7 +696,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
 .notes{margin-top:15px;padding:12px;border:1px dashed #ccc;border-radius:8px;font-size:11px}
 .footer{margin-top:10px;padding-top:10px;text-align:center;font-size:10px;color:#666}
 @media screen{.page{min-height:100vh}}
-@media print{@page{margin:10mm}.page{min-height:0 !important}}
+@media print{@page{size:auto;margin:10mm}html,body{width:100%}.page{min-height:0 !important;width:100%}}
 </style>
 </head>
 <body>
