@@ -348,7 +348,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         ${(discount > 0 || isSaudi) ? `
         <div class="t-row">
             <span>${isSaudi ? bl('مجموع الخصومات', 'Total Discounts') : bl('الخصم', 'Discount')}</span>
-            <span>-${discount.toLocaleString()} ${sym}</span>
+            <span>${discount.toLocaleString()} ${sym}</span>
         </div>` : ''}
 
         <!-- الإجمالي الخاضع للضريبة (يظهر في السعودية) -->
