@@ -89,10 +89,21 @@ export function generateA4HTML(
     const country = (company.countryCode || 'EG').toUpperCase();
     const isSaudi = country === 'SA';
     const isBilingual = country !== 'EG'; // كل الدول العربية ماعدا مصر
+    const addrLabels = {
+        region:   isBilingual ? 'المنطقة / Region'  : 'المنطقة',
+        city:     isBilingual ? 'المدينة / City'     : 'المدينة',
+        district: isBilingual ? 'الحي / District'    : 'الحي',
+        street:   isBilingual ? 'الشارع / Street'    : 'الشارع',
+    };
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
-        addrLines: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean) as string[],
+        addrLines: [
+            company.addressRegion   ? { label: addrLabels.region,   value: company.addressRegion }   : null,
+            company.addressCity     ? { label: addrLabels.city,     value: company.addressCity }     : null,
+            company.addressDistrict ? { label: addrLabels.district, value: company.addressDistrict } : null,
+            company.addressStreet   ? { label: addrLabels.street,   value: company.addressStreet }   : null,
+        ].filter(Boolean) as { label: string; value: string }[],
         phone: company.phone || '',
         email: company.email || '',
         tax: company.taxNumber || '',
@@ -215,7 +226,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     <div class="co-block">
         <div class="co-name">${co.name}</div>
         ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
-        ${co.addrLines.map((l: string) => `<div class="co-line">${l}</div>`).join('')}
+        ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
         ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
         ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
         ${co.cr ? `<div class="co-line">${blInline('السجل التجاري', 'C.R.')}: <strong>${co.cr}</strong></div>` : ''}
@@ -236,7 +247,12 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
     <div class="info-col">
         <div class="info-row"><span class="ik">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
         ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
-        ${[party?.addressRegion, party?.addressCity, party?.addressDistrict, party?.addressStreet].filter(Boolean).map((l: string) => `<div class="info-row"><span class="iv">${l}</span></div>`).join('')}
+        ${([
+            party?.addressRegion   ? { label: 'المنطقة', value: party.addressRegion }   : null,
+            party?.addressCity     ? { label: 'المدينة', value: party.addressCity }     : null,
+            party?.addressDistrict ? { label: 'الحي',    value: party.addressDistrict } : null,
+            party?.addressStreet   ? { label: 'الشارع',  value: party.addressStreet }   : null,
+        ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik" style="color:#999;font-size:10.5px">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('')}
     </div>
     <div class="info-col">
         <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
@@ -508,10 +524,21 @@ export function generateQuotationHTML(
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
     
+    const qAddrLabels = {
+        region:   isBilingual ? 'المنطقة / Region'  : 'المنطقة',
+        city:     isBilingual ? 'المدينة / City'     : 'المدينة',
+        district: isBilingual ? 'الحي / District'    : 'الحي',
+        street:   isBilingual ? 'الشارع / Street'    : 'الشارع',
+    };
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
-        addrLines: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean) as string[],
+        addrLines: [
+            company.addressRegion   ? { label: qAddrLabels.region,   value: company.addressRegion }   : null,
+            company.addressCity     ? { label: qAddrLabels.city,     value: company.addressCity }     : null,
+            company.addressDistrict ? { label: qAddrLabels.district, value: company.addressDistrict } : null,
+            company.addressStreet   ? { label: qAddrLabels.street,   value: company.addressStreet }   : null,
+        ].filter(Boolean) as { label: string; value: string }[],
         phone: company.phone || '',
         email: company.email || '',
         tax: company.taxNumber || '',
@@ -577,7 +604,7 @@ tbody td{padding:5px 8px;font-size:12px;color:#1a1a1a;text-align:center;border:1
         <div class="co-block">
             <div class="co-name">${co.name}</div>
             ${isBilingual && co.nameEn ? `<div class="co-name-en">${co.nameEn}</div>` : ''}
-            ${co.addrLines.map((l: string) => `<div class="co-line">${l}</div>`).join('')}
+            ${co.addrLines.map(a => `<div class="co-line"><span style="color:#888;font-size:10px">${a.label}: </span>${a.value}</div>`).join('')}
             ${co.phone ? `<div class="co-line">${co.phone}</div>` : ''}
             ${co.tax ? `<div class="co-line">${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong></div>` : ''}
         </div>

@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { generateThermalVoucherHTML } from '@/lib/printInvoices';
 import { Printer, Download, X, Loader2 } from 'lucide-react';
@@ -10,6 +10,7 @@ export default function PrintVoucherPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const iframeRef = useRef<HTMLIFrameElement>(null);
+    const autoPrinted = useRef(false);
 
     useEffect(() => {
         fetch(`/api/print/voucher/${id}`)
@@ -24,18 +25,30 @@ export default function PrintVoucherPage() {
             .catch(() => { setError('فشل تحميل السند'); setLoading(false); });
     }, [id]);
 
+    const handleIframeLoad = useCallback(() => {
+        if (autoPrinted.current) return;
+        autoPrinted.current = true;
+        setTimeout(() => {
+            iframeRef.current?.contentWindow?.print();
+        }, 300);
+    }, []);
+
     const handlePrint = () => {
         iframeRef.current?.contentWindow?.print();
     };
 
-    const handleDownload = () => {
-        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const handleDownloadPdf = () => {
+        const printHtml = html.replace('</body>', `
+<script>
+  window.onload = function() {
+    setTimeout(function() { window.print(); }, 200);
+  };
+</script>
+</body>`);
+        const blob = new Blob([printHtml], { type: 'text/html;charset=utf-8' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `voucher-${id}.html`;
-        a.click();
-        URL.revokeObjectURL(url);
+        window.open(url, '_blank');
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
     };
 
     if (loading) return (
@@ -80,17 +93,18 @@ export default function PrintVoucherPage() {
                         <Printer size={15} /> طباعة
                     </button>
                     <button
-                        onClick={handleDownload}
+                        onClick={handleDownloadPdf}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '6px',
                             padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer',
-                            background: 'rgba(255,255,255,0.1)', color: '#fff', fontFamily: 'Cairo, sans-serif',
+                            background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif',
                             fontSize: '13px', fontWeight: 700, transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.18)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'}
+                            border: '1px solid rgba(16,185,129,0.3)',
+                        } as React.CSSProperties}
+                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(16,185,129,0.25)'}
+                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(16,185,129,0.15)'}
                     >
-                        <Download size={15} /> تنزيل
+                        <Download size={15} /> تنزيل PDF
                     </button>
                     <button
                         onClick={() => window.close()}
@@ -112,6 +126,7 @@ export default function PrintVoucherPage() {
                 <iframe
                     ref={iframeRef}
                     srcDoc={html}
+                    onLoad={handleIframeLoad}
                     style={{ border: 'none', background: '#fff', width: '80mm', minHeight: '200px', boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}
                     title="voucher-print"
                 />
