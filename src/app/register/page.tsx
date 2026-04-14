@@ -281,7 +281,7 @@ export default function RegisterPage() {
                                         style={{ width: '100%', height: '44px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
-                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : `${C.textMuted}90` }}>{form.businessType ? t(BUSINESS_TYPES.find(b => b.value === form.businessType)?.label || '') : t('اختر نوع النشاط')}</span>
+                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : C.textMuted }}>{form.businessType ? t(BUSINESS_TYPES.find(b => b.value === form.businessType)?.label || '') : t('اختر نوع النشاط')}</span>
                                         <ChevronDown size={14} color={C.textMuted} style={{ transform: showBusinessTypes ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                                     </button>
 
@@ -385,7 +385,7 @@ export default function RegisterPage() {
                     0% { opacity: 0; transform: translateY(10px); }
                     100% { opacity: 1; transform: translateY(0); }
                 }
-                input::placeholder { color: ${C.textMuted}90 }
+                input::placeholder { color: ${C.textMuted}; opacity: 0.9; }
                 input:-webkit-autofill,
                 input:-webkit-autofill:hover,
                 input:-webkit-autofill:focus {

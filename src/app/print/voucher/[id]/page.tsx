@@ -45,9 +45,13 @@ export default function PrintVoucherPage() {
                 import('html2canvas'),
                 import('jspdf'),
             ]);
+            const renderW = iframeRef.current!.clientWidth || 794;
             const canvas = await html2canvas(iframeDoc.body, {
                 scale: 2, useCORS: true, allowTaint: true,
-                backgroundColor: '#ffffff', windowWidth: 794,
+                backgroundColor: '#ffffff',
+                windowWidth: renderW, width: renderW,
+                height: iframeDoc.body.scrollHeight,
+                scrollX: 0, scrollY: 0,
             });
             const pw = 210, ph = 297;
             const pdf = new jsPDF('p', 'mm', [pw, ph]);

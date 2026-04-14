@@ -48,6 +48,8 @@ export default function DashboardLayout({
             .finally(() => setLoadingFY(false));
     }, [status, session, pathname]);
 
+    const [showMobileMenu, setShowMobileMenu] = useState(false);
+
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
 
@@ -66,21 +68,34 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
-            <div className="print-hide" style={{ opacity: isLockoutActive ? 0.6 : 1, pointerEvents: isLockoutActive ? 'none' : 'auto' }}>
-                <Sidebar />
+        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'} ${showMobileMenu ? 'menu-open' : ''}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
+            {/* Overlay for mobile menu */}
+            {showMobileMenu && (
+                <div 
+                    onClick={() => setShowMobileMenu(false)}
+                    style={{
+                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
+                        backdropFilter: 'blur(4px)', zIndex: 940, animation: 'fadeIn 0.3s ease'
+                    }} 
+                />
+            )}
+
+            <div className={`sidebar-wrapper ${showMobileMenu ? 'open' : ''}`} style={{ 
+                opacity: isLockoutActive ? 0.6 : 1, 
+                pointerEvents: isLockoutActive ? 'none' : 'auto',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}>
+                <Sidebar onLinkClick={() => setShowMobileMenu(false)} />
             </div>
+
             <div className="dashboard-content" style={{
                 flex: 1, 
                 display: 'flex', 
                 flexDirection: 'column',
-                marginInlineStart: '260px',
-                width: 'calc(100% - 260px)',
-                paddingTop: '64px',
                 transition: 'all 0.3s ease'
             }}>
                 <div className="print-hide">
-                    <Header />
+                    <Header onMenuToggle={() => setShowMobileMenu(!showMobileMenu)} />
                 </div>
                 <main style={{ flex: 1, padding: '24px 24px 24px', position: 'relative' }}>
                         <TrialBanner />
@@ -110,11 +125,32 @@ export default function DashboardLayout({
                 .app-container.ltr-mode { direction: ltr; }
                 .app-container.rtl-mode { direction: rtl; }
 
-                .ltr-mode .sidebar { left: 0 !important; right: auto !important; }
-                .rtl-mode .sidebar { right: 0 !important; left: auto !important; }
+                /* Desktop sidebar logic */
+                @media (min-width: 1024px) {
+                    .sidebar-wrapper { width: 260px; position: fixed; top: 0; bottom: 0; z-index: 950; }
+                    .ltr-mode .sidebar-wrapper { left: 0; border-right: 1px solid ${C.border}; }
+                    .rtl-mode .sidebar-wrapper { right: 0; border-left: 1px solid ${C.border}; }
 
-                .ltr-mode .dashboard-content { margin-left: 260px !important; margin-right: 0 !important; }
-                .rtl-mode .dashboard-content { margin-right: 260px !important; margin-left: 0 !important; }
+                    .ltr-mode .dashboard-content { margin-left: 260px; }
+                    .rtl-mode .dashboard-content { margin-right: 260px; }
+                    
+                    .ltr-mode .main-header { left: 260px; right: 0; }
+                    .rtl-mode .main-header { right: 260px; left: 0; }
+                }
+
+                /* Mobile sidebar logic */
+                @media (max-width: 1023px) {
+                    .main-header { left: 0 !important; right: 0 !important; width: 100% !important; padding: 0 16px !important; }
+                    .mobile-menu-btn { display: flex !important; }
+                    .branch-switcher-wrap { display: none !important; }
+                    .sidebar-wrapper {
+                        position: fixed; top: 0; bottom: 0; width: 280px; z-index: 950;
+                        background: ${C.card};
+                        transform: translateX(${isRtl ? '100%' : '-100%'});
+                    }
+                    .sidebar-wrapper.open { transform: translateX(0); }
+                    .dashboard-content { margin: 0 !important; width: 100% !important; }
+                }
 
                 @keyframes slideUp {
                     from { opacity: 0; transform: translateY(20px); }
@@ -202,6 +238,16 @@ export default function DashboardLayout({
                     }
 
                     tr { page-break-inside: avoid !important; }
+                }
+
+                /* Mobile Utility Classes */
+                @media (max-width: 1023px) {
+                    .mobile-column { flex-direction: column !important; align-items: stretch !important; gap: 15px !important; }
+                    .mobile-full { width: 100% !important; max-width: 100% !important; margin: 0 !important; }
+                    .mobile-hide { display: none !important; }
+                    .mobile-order-last { order: 99 !important; }
+                    .mobile-order-first { order: -1 !important; }
+                    .mobile-gap-sm { gap: 8px !important; }
                 }
             `}</style>
         </div>

@@ -3,34 +3,34 @@ export const THEME = {
     colors: {
         primary: '#256af4',
         primaryHover: '#1a56d6',
-        primaryBg: 'rgba(37,106,244,0.12)',
-        primaryBorder: 'rgba(37,106,244,0.3)',
+        primaryBg: 'var(--c-primary-bg, rgba(37,106,244,0.12))',
+        primaryBorder: 'var(--c-primary-border, rgba(37,106,244,0.3))',
 
         success: '#4ade80',
-        successBg: 'rgba(74,222,128,0.1)',
-        successBorder: 'rgba(74,222,128,0.22)',
+        successBg: 'var(--c-success-bg, rgba(74,222,128,0.1))',
+        successBorder: 'var(--c-success-border, rgba(74,222,128,0.22))',
 
         danger: '#ef4444',
-        dangerBg: 'rgba(239,68,68,0.1)',
-        dangerBorder: 'rgba(239,68,68,0.22)',
+        dangerBg: 'var(--c-danger-bg, rgba(239,68,68,0.1))',
+        dangerBorder: 'var(--c-danger-border, rgba(239,68,68,0.22))',
 
         warning: '#fbbf24',
-        warningBg: 'rgba(251,191,36,0.1)',
-        warningBorder: 'rgba(251,191,36,0.22)',
+        warningBg: 'var(--c-warning-bg, rgba(251,191,36,0.1))',
+        warningBorder: 'var(--c-warning-border, rgba(251,191,36,0.22))',
 
         blue: '#3b82f6',
         teal: '#14b8a6',
         purple: '#a78bfa',
 
-        bg: '#070d1a',   // absolute deep navy
-        card: '#0e172a',   // slate card
-        hover: 'rgba(255,255,255,0.04)',
-        border: 'rgba(255,255,255,0.15)',
-        inputBg: 'rgba(14, 23, 41, 0.4)',
+        bg: 'var(--c-bg, #070d1a)',
+        card: 'var(--c-card, #0e172a)',
+        hover: 'var(--c-hover, rgba(255,255,255,0.04))',
+        border: 'var(--c-border, rgba(255,255,255,0.15))',
+        inputBg: 'var(--c-input-bg, rgba(14, 23, 41, 0.4))',
 
-        textPrimary: '#f8fafc',   // crisp white
-        textSecondary: '#94a3b8',   // slate-400
-        textMuted: '#64748b',   // slate-500
+        textPrimary: 'var(--c-text-primary, #f8fafc)',
+        textSecondary: 'var(--c-text-secondary, #94a3b8)',
+        textMuted: 'var(--c-text-muted, #64748b)',
     },
     fonts: {
         /* ERP-Numbers أول → يطبق Outfit على الأرقام، Cairo للحروف */

@@ -7,7 +7,8 @@ import {
     Search, Bell, ChevronDown,
     User, Settings, KeyRound, LogOut,
     FileText, Package, Users, Receipt, Loader2,
-    Globe, AlertTriangle, GitBranch
+    Globe, AlertTriangle, GitBranch, Menu,
+    Sun, Moon
 } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
 import { Avatar } from '@/components/UserAvatar';
@@ -30,6 +31,7 @@ const typeIcon: Record<string, any> = {
 };
 
 import { useTranslation } from '@/lib/i18n';
+import { useTheme } from '@/components/Providers';
 
 const roleLabels: Record<string, string> = {
     admin: 'مدير النظام',
@@ -89,7 +91,7 @@ function SearchBox() {
     const isServices = businessType === 'SERVICES';
 
     return (
-        <div ref={boxRef} style={{ position: 'relative', width: '340px' }}>
+        <div ref={boxRef} className="search-box-container" style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
             <div style={{
                 display: 'flex', alignItems: 'center', gap: '10px',
                 background: C.inputBg, border: `1px solid ${C.border}`,
@@ -153,6 +155,7 @@ function SearchBox() {
 function Actions() {
     const { data: session, status: sessionStatus } = useSession();
     const { lang, t, toggleLang } = useTranslation();
+    const { theme, toggleTheme } = useTheme();
     const isRtl = lang === 'ar';
     const [openUser, setOpenUser] = useState(false);
     const [openNotif, setOpenNotif] = useState(false);
@@ -216,6 +219,22 @@ function Actions() {
                 onMouseLeave={e => e.currentTarget.style.background = `${C.primary}10`}
             >
                 {lang === 'ar' ? 'EN' : 'ع'}
+            </button>
+
+            {/* Theme Toggle */}
+            <button
+                onClick={toggleTheme}
+                title={theme === 'dark' ? t('تفعيل الوضع الفاتح') : t('تفعيل الوضع الداكن')}
+                style={{
+                    width: '36px', height: '36px', borderRadius: '10px',
+                    border: `1px solid ${C.border}`, background: C.card,
+                    color: C.textSecondary, display: 'flex', alignItems: 'center',
+                    justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
+                onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
+            >
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
             </button>
 
             {/* Notifications */}
@@ -459,7 +478,7 @@ function BranchSwitcher() {
     );
 }
 
-export default function Header() {
+export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) {
     const { lang } = useTranslation();
     const isRtl = lang === 'ar';
 
@@ -469,13 +488,27 @@ export default function Header() {
             insetInlineStart: '260px',
             insetInlineEnd: 0,
             zIndex: 800,
-            background: 'rgba(7, 13, 26, 0.7)', backdropFilter: 'blur(12px)',
+            background: 'var(--c-overlay, rgba(7, 13, 26, 0.7))', backdropFilter: 'blur(12px)',
             borderBottom: `1px solid ${C.border}`, display: 'flex',
             alignItems: 'center', padding: '0 24px'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
+            
+            {/* Mobile Menu Toggle */}
+            <button 
+                className="mobile-menu-btn"
+                onClick={onMenuToggle}
+                style={{
+                    width: '38px', height: '38px', borderRadius: '10px',
+                    border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)',
+                    color: C.textPrimary, display: 'none', alignItems: 'center', 
+                    justifyContent: 'center', cursor: 'pointer', marginInlineEnd: '12px'
+                }}
+            >
+                <Menu size={20} />
+            </button>
 
             {/* Branch Switcher - Fixed Position */}
-            <div style={{ order: 1 }}>
+            <div className="branch-switcher-wrap" style={{ order: 1 }}>
                 <BranchSwitcher />
             </div>
 
@@ -493,6 +526,9 @@ export default function Header() {
                 @keyframes fadeDown {
                     from { opacity: 0; transform: translateY(-10px); }
                     to { opacity: 1; transform: translateY(0); }
+                }
+                @media (max-width: 1023px) {
+                    .search-box-container { display: none; }
                 }
             `}</style>
         </header>

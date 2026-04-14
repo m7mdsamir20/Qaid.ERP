@@ -139,7 +139,7 @@ export default function UsersTab({
                                     fontFamily: CAIRO, transition: 'border-color 0.2s'
                                 }}>
                                 <ChevronDown size={14} style={{ color: C.primary, transform: openDropdown === 'role' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
-                                <span style={{ flex: 1, textAlign: 'start', fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? `${C.textMuted}aa` : C.textPrimary }}>
+                                <span style={{ flex: 1, textAlign: 'start', fontWeight: newUserForm.roleId === 'none' ? 600 : 800, color: newUserForm.roleId === 'none' ? C.textMuted : C.textPrimary }}>
                                     {roleLabels[newUserForm.roleId] || newUserForm.roleId}
                                 </span>
                             </button>

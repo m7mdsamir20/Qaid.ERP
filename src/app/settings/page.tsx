@@ -684,8 +684,13 @@ function SettingsContent() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
                 <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
             </div>
-            <style>{`
-                @keyframes spin{to{transform:rotate(360deg)}}
+                <style jsx>{`
+                    @media (max-width: 1023px) {
+                        .settings-sidebar { position: relative !important; top: 0 !important; }
+                    }
+                `}</style>
+                <style>{`
+                    @keyframes spin{to{transform:rotate(360deg)}}
                 input:-webkit-autofill,
                 input:-webkit-autofill:hover,
                 input:-webkit-autofill:focus {
@@ -734,12 +739,13 @@ function SettingsContent() {
                     </div>
                 )}
 
-                <div style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
+                <div className="mobile-column" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
                     {/* ── Sidebar ── */}
-                    <div style={{
+                    <div className="settings-sidebar mobile-full" style={{
                         padding: '8px', width: '280px', flexShrink: 0,
                         background: C.card, borderRadius: '20px', border: `1px solid ${C.border}`,
-                        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)', position: 'sticky', top: '20px'
+                        boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)', position: 'sticky', top: '84px',
+                        zIndex: 10
                     }}>
                         {filteredTabs.map(tab => {
                             const Icon = tab.icon;

@@ -71,8 +71,9 @@ const AppModal: React.FC<AppModalProps> = ({
         >
             <div
                 dir="rtl"
+                className="modal-content"
                 style={{
-                    width: '100%', maxWidth: isDelete ? '420px' : maxWidth, background: C.card,
+                    width: '94%', maxWidth: isDelete ? '420px' : maxWidth, background: C.card,
                     borderRadius: '16px', border: `1px solid ${isDanger ? 'rgba(239,68,68,0.3)' : C.border}`,
                     boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
                     transform: show ? 'scale(1)' : 'scale(0.95)',
@@ -84,19 +85,20 @@ const AppModal: React.FC<AppModalProps> = ({
             >
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '18px 24px', borderBottom: `1px solid ${C.border}` }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', minWidth: 0 }}>
                         {((isDelete && !Icon) ? Trash2 : Icon) && (
                             <div style={{ 
                                 padding: '10px', borderRadius: '10px', 
                                 background: isDanger ? 'rgba(239,68,68,0.1)' : C.primaryBg, 
                                 color: isDanger ? '#ef4444' : C.primary, 
-                                display: 'flex', alignItems: 'center', justifyContent: 'center' 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                flexShrink: 0
                             }}>
                                 {isDelete && !Icon ? <Trash2 size={18} /> : Icon && <Icon size={18} />}
                             </div>
                         )}
-                        <div>
-                            <h2 style={{ fontSize: '15px', fontWeight: 600, margin: 0, color: C.textPrimary, fontFamily: CAIRO }}>
+                        <div style={{ minWidth: 0 }}>
+                            <h2 style={{ fontSize: '15px', fontWeight: 600, margin: 0, color: C.textPrimary, fontFamily: CAIRO, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                 {title}
                             </h2>
                         </div>
@@ -107,7 +109,8 @@ const AppModal: React.FC<AppModalProps> = ({
                             width: '30px', height: '30px', borderRadius: '6px',
                             border: `1px solid ${C.border}`, background: 'transparent',
                             color: C.textMuted, cursor: 'pointer', display: 'flex',
-                            alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s'
+                            alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s',
+                            flexShrink: 0
                         }}
                         onMouseEnter={e => {
                             e.currentTarget.style.color = C.danger;
@@ -162,7 +165,7 @@ const AppModal: React.FC<AppModalProps> = ({
                                 </div>
                             )}
 
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '12px', marginTop: '32px' }}>
+                            <div className="modal-actions" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: '12px', marginTop: '32px' }}>
                                 <button 
                                     onClick={onConfirm} 
                                     disabled={isSubmitting} 

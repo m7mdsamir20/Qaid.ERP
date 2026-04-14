@@ -13,7 +13,7 @@ import { navSections } from '@/constants/navigation';
 import { C, CAIRO } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 
-export default function Sidebar() {
+export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
     const pathname = usePathname();
     const { data: session } = useSession();
 
@@ -107,7 +107,7 @@ export default function Sidebar() {
     const BRAND_LOGO = '/logo-system.png';
 
     return (
-        <aside className="sidebar" style={{ width: '260px', position: 'fixed', insetInlineStart: 0, top: 0, bottom: 0, backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px rgba(0,0,0,0.2)' : '10px 0 30px rgba(0,0,0,0.2)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
+        <aside className="sidebar" style={{ width: '100%', position: 'absolute', insetInlineStart: 0, top: 0, bottom: 0, backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px rgba(0,0,0,0.2)' : '10px 0 30px rgba(0,0,0,0.2)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
             <Link href="/" style={{ height: '95px', display: 'flex', alignItems: 'center', borderBottom: `1px solid rgba(255,255,255,0.02)` }}>
                 <img src={BRAND_LOGO} alt="Logo" style={{ display: 'block', margin: '0 auto', width: '100%', maxWidth: '240px', maxHeight: '75px', objectFit: 'contain' }} />
             </Link>
@@ -144,7 +144,7 @@ export default function Sidebar() {
                         const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
                         return (
                             <div key={section.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
-                                <Link href={section.href} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
+                                <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
                                     <SectionIcon size={18} />
                                     <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>
                                 </Link>
@@ -168,7 +168,7 @@ export default function Sidebar() {
                                     {visibleLinks.map((link: any) => {
                                         const isActive = pathname === link.href;
                                         return (
-                                            <Link key={link.href} href={link.href} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', color: isActive ? C.primary : C.textMuted, textDecoration: 'none', fontSize: '13px', fontWeight: isActive ? 700 : 500, borderRadius: '8px', backgroundColor: isActive ? C.primaryBg : 'transparent', fontFamily: CAIRO }}>
+                                            <Link key={link.href} href={link.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', color: isActive ? C.primary : C.textMuted, textDecoration: 'none', fontSize: '13px', fontWeight: isActive ? 700 : 500, borderRadius: '8px', backgroundColor: isActive ? C.primaryBg : 'transparent', fontFamily: CAIRO }}>
                                                 <div style={{ width: '4px', height: '4px', borderRadius: '50%', backgroundColor: isActive ? C.primary : 'rgba(255,255,255,0.1)' }} />
                                                 <span>{t(link.label)}</span>
                                             </Link>

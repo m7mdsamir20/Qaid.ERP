@@ -108,7 +108,7 @@ export default function SalesPage() {
                 />
 
                 {/* Filters Section */}
-                <div style={SEARCH_STYLE.container}>
+                <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
@@ -118,22 +118,23 @@ export default function SalesPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }} />
+                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary, flex: 1 }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary, flex: 1 }} />
                         </div>
                     </div>
                     
                     {(searchTerm || dateFrom || dateTo) && (
                         <button 
+                            className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
                             style={{ 
-                                display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
                                 background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}

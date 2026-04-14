@@ -44,18 +44,18 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     const isRtl = lang === 'ar';
     const BackIcon = isRtl ? ArrowRight : ArrowLeft;
     return (
-        <div style={{ 
+        <div className="mobile-column" style={{ 
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
             marginBottom: THEME.header.mb 
         }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="mobile-gap-sm" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {backUrl && (
                     <button onClick={() => router.push(backUrl)} 
                         style={{ 
                             width: '38px', height: '38px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', 
-                            border: `1px solid ${C.border}`, color: C.textSecondary,
+                            border: `1px solid ${C.border}`, color: C.textSecondary, flexShrink: 0,
                             display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s'
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
@@ -66,7 +66,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 {backButton && (
                     <button onClick={backButton.onClick} 
                         style={{ 
-                            display: 'flex', alignItems: 'center', gap: '6px', 
+                            display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0,
                             padding: '0 12px', height: '38px', borderRadius: '12px', 
                             background: 'rgba(255,255,255,0.03)', 
                             border: `1px solid ${C.border}`, color: C.textSecondary,
@@ -79,7 +79,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 )}
                 <div style={{ 
                     padding: THEME.header.iconPadding, 
-                    borderRadius: '8px', 
+                    borderRadius: '8px', flexShrink: 0,
                     background: C.primaryBg, 
                     color: C.primary,
                     display: 'flex',
@@ -88,7 +88,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 }}>
                     <Icon size={THEME.header.iconSize} />
                 </div>
-                <div>
+                <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <h1 style={{ 
                             fontSize: titleSize || THEME.header.titleSize, 
@@ -96,7 +96,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             margin: 0, 
                             color: C.textPrimary, 
                             textAlign: 'start',
-                            fontFamily: CAIRO
+                            fontFamily: CAIRO,
+                            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
                         }}>
                             {title}
                         </h1>
@@ -109,7 +110,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             margin: '2px 0 0', 
                             fontWeight: 400, 
                             textAlign: 'start',
-                            fontFamily: CAIRO
+                            fontFamily: CAIRO,
+                            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
                         }}>
                             {subtitle}
                         </p>
@@ -117,22 +119,24 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 </div>
             </div>
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="mobile-column" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 {leftContent}
                 
                 {actions && actions.map((action, i) => (
-                    <div key={i}>{action}</div>
+                    <div key={i} style={{ width: '100%' }}>{action}</div>
                 ))}
                 
                 {primaryButton && (
                     <button
+                        className="mobile-full"
                         onClick={primaryButton.onClick}
                         style={{
                             display: 'flex', 
                             alignItems: 'center', 
+                            justifyContent: 'center',
                             gap: '6px',
                             height: THEME.button.height, 
-                            padding: '0 16px', 
+                            padding: '0 24px', 
                             borderRadius: THEME.button.radius,
                             background: C.primary, 
                             color: '#fff', 
@@ -142,7 +146,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             cursor: 'pointer',
                             transition: 'all 0.15s',
                             fontFamily: CAIRO,
-                            boxShadow: `0 4px 12px ${C.primary}30`
+                            boxShadow: `0 4px 12px ${C.primary}30`,
+                            whiteSpace: 'nowrap'
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
                         onMouseLeave={e => e.currentTarget.style.background = C.primary}

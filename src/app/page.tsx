@@ -374,7 +374,7 @@ export default function DashboardPage() {
       <div dir={isRtl ? 'rtl' : 'ltr'} style={{ color: C.textPrimary, fontFamily: CAIRO, padding: '0 0 12px' }}>
 
         {/* ── Header ── */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', animation: 'fadeUp 0.3s ease both' }}>
+        <div className="dashboard-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', animation: 'fadeUp 0.3s ease both', gap: '20px' }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 900, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
               {t(greeting)}، <span style={{ color: C.primary }}>{session?.user?.name || t('مستخدم النظام')}</span>
@@ -385,8 +385,8 @@ export default function DashboardPage() {
                 const str = d.toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                 return toEnDigits(str);
               })()}
-              <span style={{ margin: '0 8px', color: C.border }}>|</span>
-              <span style={{ color: C.textSecondary, fontFamily: INTER }}>{time}</span>
+              <span className="hide-mobile" style={{ margin: '0 8px', color: C.border }}>|</span>
+              <span className="hide-mobile" style={{ color: C.textSecondary, fontFamily: INTER }}>{time}</span>
             </div>
           </div>
 
@@ -408,7 +408,7 @@ export default function DashboardPage() {
 
 
         {/* ── KPI Cards Grid (Dynamic) ── */}
-        <div style={{
+        <div className="kpi-grid" style={{
           display: 'grid',
           gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)',
           gap: '18px',
@@ -479,7 +479,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Charts & Alerts ── */}
-        <div style={{
+        <div className="charts-alerts-row" style={{
           display: 'grid',
           gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory') || hasPage('/customers', 'sales')) ? '2fr 1fr' : '1fr',
           gap: '18px',
@@ -563,7 +563,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Recent Data Row ── */}
-        <div style={{
+        <div className="recent-data-row" style={{
           display: 'grid',
           gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && hasPage('/customers', 'sales') ? '1.6fr 1fr' : '1fr',
           gap: '18px'
@@ -661,6 +661,16 @@ export default function DashboardPage() {
           ::-webkit-scrollbar { width: 6px; }
           ::-webkit-scrollbar-track { background: transparent; }
           ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+
+          @media (max-width: 1023px) {
+            .dashboard-page-header { flex-direction: column; align-items: flex-start !important; gap: 15px !important; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
+            .charts-alerts-row, .recent-data-row { grid-template-columns: 1fr !important; }
+            .hide-mobile { display: none !important; }
+          }
+          @media (max-width: 639px) {
+            .kpi-grid { grid-template-columns: 1fr !important; }
+          }
         `}</style>
       </div>
     </DashboardLayout>

@@ -67,24 +67,81 @@
   unicode-range: U+0030-0039, U+002E, U+002C, U+0025, U+002B, U+002D, U+002F, U+003A;
 }
 
-/* ==================== نظام الألوان - ERP Theme (Fixed Light) ==================== */
+/* ==================== نظام الألوان - ERP Theme ==================== */
 :root {
-  /* Primary - Professional Blue */
-  --primary: #256af4;
-  --primary-hover: #1a56d6;
+  /* Base - Dark Mode (Default) */
+  --c-primary: #256af4;
+  --c-primary-hover: #1a56d6;
+  --c-primary-bg: rgba(37,106,244,0.12);
+  --c-primary-border: rgba(37,106,244,0.3);
 
-  /* Text - High Contrast */
-  --text-primary: #e8edf5;
-  --text-secondary: #8da0b8;
-  --text-muted: #4f6785;
+  --c-success: #4ade80;
+  --c-success-bg: rgba(74,222,128,0.1);
+  --c-success-border: rgba(74,222,128,0.22);
 
-  /* Modal Specific */
-  --modal-overlay: rgba(7, 13, 26, 0.75);
+  --c-danger: #ef4444;
+  --c-danger-bg: rgba(239,68,68,0.1);
+  --c-danger-border: rgba(239,68,68,0.22);
+
+  --c-warning: #fbbf24;
+  --c-warning-bg: rgba(251,191,36,0.1);
+  --c-warning-border: rgba(251,191,36,0.22);
+
+  --c-bg: #070d1a;
+  --c-card: #0e172a;
+  --c-hover: rgba(255,255,255,0.04);
+  --c-border: rgba(255,255,255,0.12);
+  --c-input-bg: rgba(14, 23, 41, 0.4);
+
+  --c-text-primary: #f8fafc;
+  --c-text-secondary: #94a3b8;
+  --c-text-muted: #64748b;
+
+  --c-overlay: rgba(7, 13, 26, 0.75);
+  --c-shadow: rgba(0, 0, 0, 0.5);
+  
+  /* Legacy Vars used in globals.css directly */
+  --primary: var(--c-primary);
+  --primary-hover: var(--c-primary-hover);
+  --text-primary: var(--c-text-primary);
+  --text-secondary: var(--c-text-secondary);
+  --text-muted: var(--c-text-muted);
+  --modal-overlay: var(--c-overlay);
   --modal-blur: blur(10px);
-  --modal-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px var(--c-shadow);
+  
+  --surface-900: var(--c-bg);
+  --surface-800: var(--c-card);
+  --surface-850: var(--c-input-bg);
+  --border-color: var(--c-border);
+  --border-subtle: var(--c-border);
+  --primary-400: var(--c-primary);
+  --primary-500: var(--c-primary);
+  --primary-600: var(--c-primary-hover);
+  --primary-700: var(--c-primary-hover);
+  --primary-800: var(--c-primary-hover);
+  --success-500: var(--c-success);
+  --success-600: var(--c-success);
+  --danger-500: var(--c-danger);
+  --danger-600: var(--c-danger);
+  --warning-500: var(--c-warning);
 }
 
+[data-theme='light'] {
+  /* Aligned with Qaid-Website Light Mode */
+  --c-bg: #f0f4ff;
+  --c-card: #ffffff;
+  --c-hover: #f1f5fe;
+  --c-border: #d0daf0;
+  --c-input-bg: #ffffff;
 
+  --c-text-primary: #0f1a2e;
+  --c-text-secondary: #3d5278;
+  --c-text-muted: #7a93b8;
+
+  --c-overlay: rgba(240, 244, 255, 0.88);
+  --c-shadow: rgba(37, 106, 244, 0.08);
+}
 
 /* ==================== Global Styles ==================== */
 * {
