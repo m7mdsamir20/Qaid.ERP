@@ -22,8 +22,8 @@ export const metadata: Metadata = {
   title: "نظام ERP | إدارة موارد المؤسسات",
   description: "نظام شامل لإدارة موارد المؤسسات - المحاسبة، المخزون، المبيعات، المشتريات",
   icons: {
-    icon: "/icon.png",
-    apple: "/icon.png",
+    icon: "/icon.png?v=2",
+    apple: "/icon.png?v=2",
   }
 };
 
