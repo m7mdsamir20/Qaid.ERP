@@ -106,6 +106,7 @@
   --c-auth-card-border: 1px solid rgba(255, 255, 255, 0.08);
   --c-auth-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
   --c-auth-card-blur: blur(16px);
+  --c-autofill-bg: #0e172a;
 
   /* Legacy Vars used in globals.css directly */
   --primary: var(--c-primary);
@@ -148,6 +149,7 @@
 
   /* Auth Card Variables */
   --c-auth-card-bg: #ffffff;
+  --c-autofill-bg: #ffffff;
   --c-auth-card-border: 1px solid var(--c-border);
   --c-auth-card-shadow: 0 10px 40px rgba(37, 106, 244, 0.1);
   --c-auth-card-blur: none;
@@ -1011,8 +1013,8 @@ select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
   -webkit-text-fill-color: var(--c-text-primary) !important;
-  -webkit-box-shadow: 0 0 0px 1000px var(--c-input-bg) inset !important;
-  box-shadow: 0 0 0px 1000px var(--c-input-bg) inset !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--c-autofill-bg) inset !important;
+  box-shadow: 0 0 0px 1000px var(--c-autofill-bg) inset !important;
   caret-color: var(--c-text-primary) !important;
   transition: background-color 5000s ease-in-out 0s;
 }
