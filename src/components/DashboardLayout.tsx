@@ -253,9 +253,6 @@ export default function DashboardLayout({
                     /* Reduce main padding on mobile */
                     main { padding: 76px 12px 20px !important; }
 
-                    /* Tables: horizontal scroll */
-                    table { display: block !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; width: 100% !important; }
-
                     /* Cards/grids stack on mobile */
                     .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
 

@@ -496,44 +496,33 @@ export default function NewPurchasePage() {
 
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, color: '#3b82f6' }}><Package size={12} /> {t('اضافة الاصناف')}</div>
-                            <div style={{ background: 'rgba(255,255,255,0.01)', borderRadius: '12px', padding: '14px', marginBottom: '16px', display: 'grid', gridTemplateColumns: '1.2fr 80px 80px 110px 110px 44px', gap: '12px', alignItems: 'end', border: `1px solid ${C.border}` }}>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 110px 110px 44px', gap: '12px', alignItems: 'end', marginBottom: '20px' }}>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('الصنف')}</label>
                                         {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 800, color: '#3b82f6' }}>{t('متاح:')} {entryStock}</span>}
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <CustomSelect ref={itemSelectRef} value={entryItemId} 
-                                            onChange={v => { setEntryItemId(v); clearError('entryItemId'); }} 
+                                        <CustomSelect ref={itemSelectRef} value={entryItemId}
+                                            onChange={v => { setEntryItemId(v); clearError('entryItemId'); }}
                                             onCreate={handleCreateItem}
                                             icon={Search} placeholder={t("اختر الصنف...")} options={items.map(i => ({ value: i.id, label: i.name }))} />
                                         <InlineError field="entryItemId" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الوحدة')}</label>
-                                    <input type="text" readOnly 
-                                        value={entryItemId ? getUnitName(items.find(i => i.id === entryItemId)?.unit) : ''} 
-                                        style={{ ...IS, textAlign: 'center', background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '12px' }} 
-                                    />
-                                </div>
-                                <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
                                     </div>
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('التكلفة')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryPrice" />
                                     </div>
-                                </div>
-                                <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الإجمالي')}</label>
-                                    <input type="text" readOnly value={((Number(entryQty) || 0) * (Number(entryPrice) || 0)) === 0 ? '0.00' : ((Number(entryQty) || 0) * (Number(entryPrice) || 0)).toLocaleString()} style={{ ...IS, textAlign: 'center', background: 'rgba(255,255,255,0.02)', color: ((Number(entryQty) || 0) * (Number(entryPrice) || 0)) === 0 ? C.textMuted : C.textPrimary, fontWeight: 800, fontFamily: INTER }} />
                                 </div>
                                 <button onClick={addLine} disabled={!entryItemId} style={{ height: '38px', borderRadius: '10px', border: 'none', background: !entryItemId ? 'rgba(37,106,244,0.3)' : C.primary, color: '#fff', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s', width: '44px' }}><Plus size={22} /></button>
                             </div>

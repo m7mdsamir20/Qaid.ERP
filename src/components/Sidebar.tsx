@@ -196,7 +196,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             <Link href="/" style={{ height: '95px', minHeight: '95px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ position: 'relative', width: '100%', maxWidth: '240px', height: '75px' }}>
                     <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'none' : 'auto' }} />
-                    <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'auto' : 'none', mixBlendMode: 'multiply' }} />
+                    <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'auto' : 'none' }} />
                 </div>
             </Link>
 
