@@ -14,9 +14,10 @@ interface ReportHeaderProps {
     printTitle?: string;
     printDate?: string;
     printCode?: string;
+    accountName?: string;
 }
 
-export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, printTitle, printDate, printCode }: ReportHeaderProps) {
+export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, printTitle, printDate, printCode, accountName: manualAccountName }: ReportHeaderProps) {
     const router = useRouter();
     const { data: session } = useSession();
     const [co, setCo] = React.useState<any>((session?.user as any) || {});
@@ -42,9 +43,8 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         const reportTitle = printTitle || title;
         const today = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
 
-        // printDate أحياناً بيكون اسم عميل/مورد وأحياناً فترة زمنية
-        const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
-        const accountName = printDate && !isDateRange ? printDate : '';
+        // accountName الأولوية للبروب اليدوي، ثم الاستنباط من البرنت ديت
+        const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
         const dateRange = isDateRange ? printDate : today;
 
         // ── استخراج المحتوى ──
@@ -83,23 +83,30 @@ body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;fon
 
 /* ══════════════════════════════
    بطاقة معلومات الحساب / العميل
-══════════════════════════════ */
+   تم جعلها أكثر فخامة وبروزاً
+   ══════════════════════════════ */
 .account-card{
-  display:flex;align-items:center;gap:0;
-  border:2px solid #7a8699;border-radius:0;
-  margin:12px 0;overflow:hidden
+  display:flex;align-items:stretch;justify-content:space-between;
+  border:1px solid #e2e8f0;border-radius:12px;
+  margin:25px 0;overflow:hidden;background:#fff;
+  box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);
+  border-right:5px solid #334155
 }
 .account-card-label{
-  background:#7a8699;color:#fff;font-weight:900;font-size:12px;
-  padding:10px 18px;white-space:nowrap;writing-mode:horizontal-tb;
-  display:flex;align-items:center;gap:6px
+  background:#f8fafc;color:#64748b;font-weight:900;font-size:11px;
+  padding:15px 20px;white-space:nowrap;
+  display:flex;align-items:center;gap:8px;
+  text-transform:uppercase;letter-spacing:1px;
+  border-left:1px solid #e2e8f0
 }
 .account-card-name{
-  font-size:15px;font-weight:900;color:#111;padding:10px 20px;flex:1
+  font-size:22px;font-weight:900;color:#0f172a;padding:12px 25px;flex:1;
+  text-align:right;display:flex;align-items:center
 }
 .account-card-meta{
-  font-size:11px;color:#555;font-weight:600;padding:10px 20px;
-  border-right:1px solid #ddd;text-align:center
+  font-size:12px;color:#334155;font-weight:700;padding:12px 25px;
+  background:#f1f5f9;text-align:center;min-width:200px;
+  display:flex;align-items:center;justify-content:center
 }
 
 /* ══════════════════════════════
@@ -214,7 +221,7 @@ tfoot td:first-child{text-align:right;border-right:2px solid #909aaa}
 <!-- بطاقة اسم العميل / المورد / الحساب -->
 ${accountName ? `
 <div class="account-card">
-  <div class="account-card-label">&#9664; الاسم</div>
+  <div class="account-card-label">اسم الحساب</div>
   <div class="account-card-name">${accountName}</div>
   <div class="account-card-meta">${dateRange}</div>
 </div>` : ''}

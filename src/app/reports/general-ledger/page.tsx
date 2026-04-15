@@ -129,7 +129,9 @@ export default function GeneralLedgerPage() {
                     title={t("كشف الحساب العام")}
                     subtitle={t("تحليل الحركات المالية والرصيد التفصيلي لأي حساب خلال فترة زمنية محددة.")}
                     backTab="financial"
-                    
+                    accountName={account?.name}
+                    printTitle={account ? `${t('كشف حساب')}: ${account.name}` : t('كشف الحساب العام')}
+                    printCode={fromDate || toDate ? `${fromDate || '...'} ${t('إلى')} ${toDate || '...'}` : undefined}
                 />
 
                 <div className="no-print" style={SEARCH_STYLE.container}>

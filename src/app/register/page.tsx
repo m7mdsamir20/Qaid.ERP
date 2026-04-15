@@ -4,9 +4,10 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2, ChevronDown, Search, Check } from 'lucide-react';
+import { Eye, EyeOff, Loader2, ChevronDown, Search, Check, Sun, Moon } from 'lucide-react';
 import { C, CAIRO, IS, LS, focusIn, focusOut, THEME } from '@/constants/theme';
 import { getCountryPlaceholders } from '@/lib/placeholders';
+import { useTheme } from '@/components/Providers';
 
 const COUNTRIES = [
     { code: 'EG', dial: '+20', name: 'مصر', flag: '🇪🇬', currency: 'EGP', timezone: 'Africa/Cairo' },
@@ -34,7 +35,8 @@ const BUSINESS_TYPES = [
 ];
 
 export default function RegisterPage() {
-    const { lang, t } = useTranslation();
+    const { lang, t, toggleLang } = useTranslation();
+    const { theme, toggleTheme } = useTheme();
     const isRtl = lang === 'ar';
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
@@ -123,7 +125,7 @@ export default function RegisterPage() {
                 value={(form as any)[name]}
                 onChange={e => setForm({ ...form, [name]: e.target.value })}
                 placeholder={placeholder}
-                style={{ ...IS, height: '44px' }}
+                style={{ ...IS, height: '44px', textAlign: isRtl ? 'right' : 'left' }}
                 onFocus={focusIn}
                 onBlur={focusOut}
                 spellCheck={false}
@@ -136,57 +138,73 @@ export default function RegisterPage() {
     const BRAND_LOGO = '/logo-system.png'; // لوجو النظام الموحد (قيد المطور)
 
     return (
-        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px' }}>
-            {/* الخلفية الرسمية */}
-            <div style={{ position: 'fixed', inset: 0, background: `radial-gradient(ellipse at 20% 50%, ${C.primary}15 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, ${C.purple}10 0%, transparent 50%)`, pointerEvents: 'none' }} />
+        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative' }}>
+            {/* أزرار التحكم (اللغة والثيم) */}
+            <div style={{ position: 'absolute', top: '24px', insetInlineEnd: '24px', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 10 }}>
+                {/* مفتاح اللغة */}
+                <button
+                    onClick={() => toggleLang()}
+                    style={{
+                        height: '36px', padding: '0 12px', borderRadius: '10px',
+                        border: `1px solid ${C.primary}30`, background: `${C.primary}10`,
+                        color: C.primary, cursor: 'pointer', transition: 'all 0.2s',
+                        fontSize: '13px', fontWeight: 900, fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.background = `${C.primary}20`}
+                    onMouseLeave={e => e.currentTarget.style.background = `${C.primary}10`}
+                >
+                    {lang === 'ar' ? 'EN' : 'ع'}
+                </button>
 
-            {/* نجوم - Render only on client side to avoid hydration mismatch */}
-            {mounted && (
-                <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-                    {Array.from({ length: 60 }).map((_, i) => (
-                        <div key={i} style={{
-                            position: 'absolute',
-                            width: i % 3 === 0 ? '2px' : '1px',
-                            height: i % 3 === 0 ? '2px' : '1px',
-                            borderRadius: '50%',
-                            background: i % 5 === 0 ? '#60a5fa' : '#ffffff',
-                            opacity: 0.2,
-                            top: `${Math.random() * 100}%`,
-                            insetInlineStart: `${Math.random() * 100}%`,
-                            animationName: 'twinkle',
-                            animationDuration: `${Math.random() * 3 + 2}s`,
-                            animationTimingFunction: 'ease-in-out',
-                            animationIterationCount: 'infinite',
-                            animationDelay: `${Math.random() * i * 0.1}s`
-                        }} />
-                    ))}
-                    {/* دوائر ضبابية كبيرة */}
-                    <div style={{ position: 'absolute', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.06) 0%, transparent 70%)', top: '-200px', insetInlineEnd: '-200px', animationName: 'float1', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                    <div style={{ position: 'absolute', width: '500px', height: '500px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(99,102,241,0.05) 0%, transparent 70%)', bottom: '-150px', insetInlineStart: '-150px', animationName: 'float2', animationDuration: '10s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                    <div style={{ position: 'absolute', width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 70%)', top: '40%', insetInlineStart: '30%', animationName: 'float1', animationDuration: '12s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
-                </div>
-            )}
+                {/* مفتاح الثيم */}
+                <button
+                    onClick={toggleTheme}
+                    title={theme === 'dark' ? t('تفعيل الوضع الفاتح') : t('تفعيل الوضع الداكن')}
+                    style={{
+                        width: '36px', height: '36px', borderRadius: '10px',
+                        border: `1px solid ${C.border}`, background: C.card,
+                        color: C.textSecondary, display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s'
+                    }}
+                    onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
+                    onMouseLeave={e => e.currentTarget.style.borderColor = C.border}
+                >
+                    {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+                </button>
+            </div>
+            {/* Premium Moving Background */}
+            <div style={{ position: 'fixed', inset: 0, background: C.bg, zIndex: 0, overflow: 'hidden' }}>
+                {/* Layer 1: Animated Mesh Gradient */}
+                <div style={{ position: 'absolute', inset: '-50%', background: `radial-gradient(circle at 70% 30%, ${C.primary}10 0%, transparent 40%), radial-gradient(circle at 30% 70%, ${C.purple}08 0%, transparent 40%)`, animation: 'meshRotate 30s linear infinite', opacity: 0.6 }} />
+                
+                {/* Layer 2: Moving Glow Orbs */}
+                {mounted && Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} style={{
+                        position: 'absolute',
+                        width: `${250 + i * 80}px`, height: `${250 + i * 80}px`,
+                        borderRadius: '50%',
+                        background: `radial-gradient(circle, ${i % 2 === 0 ? C.primary : C.purple}05 0%, transparent 70%)`,
+                        top: `${Math.random() * 80}%`,
+                        insetInlineStart: `${Math.random() * 80}%`,
+                        animation: `floatAround ${25 + i * 4}s ease-in-out infinite`,
+                        animationDelay: `-${i * 3}s`,
+                        filter: 'blur(50px)',
+                    }} />
+                ))}
 
-            {/* أشكال هندسية */}
-            <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }}>
-                {/* مربعات دوارة */}
-                <div style={{ position: 'absolute', width: '80px', height: '80px', border: '1px solid rgba(59,130,246,0.15)', borderRadius: '12px', top: '10%', insetInlineStart: '8%', animationName: 'spin', animationDuration: '20s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '50px', height: '50px', border: '1px solid rgba(99,102,241,0.12)', borderRadius: '8px', top: '20%', insetInlineStart: '15%', animationName: 'spin', animationDuration: '15s', animationTimingFunction: 'linear', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
-                <div style={{ position: 'absolute', width: '120px', height: '120px', border: '1px solid rgba(59,130,246,0.08)', borderRadius: '16px', bottom: '15%', insetInlineStart: '5%', animationName: 'spin', animationDuration: '25s', animationTimingFunction: 'linear', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '60px', height: '60px', border: '1px solid rgba(99,102,241,0.1)', borderRadius: '10px', top: '60%', insetInlineStart: '20%', animationName: 'spin', animationDuration: '18s', animationTimingFunction: 'linear', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
-
-                {/* مثلثات */}
-                <div style={{ position: 'absolute', width: 0, height: 0, borderInlineStart: '30px solid transparent', borderInlineEnd: '30px solid transparent', borderBottom: '52px solid rgba(59,130,246,0.06)', top: '35%', insetInlineStart: '3%', animationName: 'float', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: 0, height: 0, borderInlineStart: '20px solid transparent', borderInlineEnd: '20px solid transparent', borderBottom: '35px solid rgba(99,102,241,0.06)', bottom: '30%', insetInlineStart: '25%', animationName: 'float', animationDuration: '11s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
-
-                {/* دوائر */}
-                <div style={{ position: 'absolute', width: '100px', height: '100px', borderRadius: '50%', border: '1px solid rgba(59,130,246,0.1)', top: '5%', insetInlineEnd: '10%', animationName: 'float', animationDuration: '9s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '40px', height: '40px', borderRadius: '50%', background: 'rgba(59,130,246,0.05)', border: '1px solid rgba(59,130,246,0.12)', bottom: '20%', insetInlineEnd: '8%', animationName: 'float', animationDuration: '7s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
-                <div style={{ position: 'absolute', width: '160px', height: '160px', borderRadius: '50%', border: '1px solid rgba(99,102,241,0.06)', bottom: '5%', insetInlineEnd: '20%', animationName: 'float', animationDuration: '13s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-
-                {/* خطوط قطرية */}
-                <div style={{ position: 'absolute', width: '150px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(59,130,246,0.15), transparent)', top: '45%', insetInlineStart: '0', transform: 'rotate(-30deg)', animationName: 'fade', animationDuration: '6s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite' }} />
-                <div style={{ position: 'absolute', width: '100px', height: '1px', background: 'linear-gradient(90deg, transparent, rgba(99,102,241,0.12), transparent)', bottom: '40%', insetInlineEnd: '5%', transform: 'rotate(45deg)', animationName: 'fade', animationDuration: '8s', animationTimingFunction: 'ease-in-out', animationIterationCount: 'infinite', animationDirection: 'reverse' }} />
+                {/* Layer 3: Subtle Space Particles */}
+                {mounted && Array.from({ length: 30 }).map((_, i) => (
+                    <div key={i} style={{
+                        position: 'absolute',
+                        width: '2px', height: '2px', background: '#fff', borderRadius: '50%',
+                        opacity: 0.1,
+                        top: `${Math.random() * 100}%`,
+                        insetInlineStart: `${Math.random() * 100}%`,
+                        animation: `twinkleAndMove ${6 + Math.random() * 6}s ease-in-out infinite`,
+                        animationDelay: `${-Math.random() * 6}s`,
+                    }} />
+                ))}
             </div>
 
             <div style={{ width: '100%', maxWidth: '480px', position: 'relative', zIndex: 1 }}>
@@ -315,12 +333,12 @@ export default function RegisterPage() {
                                         value={form.password}
                                         onChange={e => setForm({ ...form, password: e.target.value })}
                                         placeholder={t("8 أحرف على الأقل")}
-                                        style={{ ...IS, height: '44px', paddingInlineStart: '44px', direction: 'ltr', textAlign: 'start' }}
+                                        style={{ ...IS, height: '44px', paddingInlineEnd: '44px', direction: 'ltr', textAlign: isRtl ? 'right' : 'left' }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
                                     />
                                     <button type="button" onClick={() => setShowPass(!showPass)}
-                                        style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
+                                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
                                         {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -333,12 +351,12 @@ export default function RegisterPage() {
                                         value={form.confirmPassword}
                                         onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                                         placeholder={t("إعادة الكلمة")}
-                                        style={{ ...IS, height: '44px', paddingInlineStart: '44px', direction: 'ltr', textAlign: 'start' }}
+                                        style={{ ...IS, height: '44px', paddingInlineEnd: '44px', direction: 'ltr', textAlign: isRtl ? 'right' : 'left' }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
                                     />
                                     <button type="button" onClick={() => setShowConfirmPass(!showConfirmPass)}
-                                        style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
+                                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer', padding: 0, display: 'flex' }}>
                                         {showConfirmPass ? <EyeOff size={18} /> : <Eye size={18} />}
                                     </button>
                                 </div>
@@ -360,26 +378,18 @@ export default function RegisterPage() {
                 </div>
             </div>
             <style>{`
-                @keyframes spin { to { transform: rotate(360deg) } }
-                @keyframes twinkle {
-                    0%, 100% { opacity: 0.1; transform: scale(1); }
-                    50% { opacity: 0.6; transform: scale(1.5); }
+                @keyframes meshRotate {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
                 }
-                @keyframes float1 {
-                    0%, 100% { transform: translateY(0px) scale(1); }
-                    50% { transform: translateY(-30px) scale(1.05); }
+                @keyframes floatAround {
+                    0%, 100% { transform: translate(0, 0) scale(1); }
+                    33% { transform: translate(30px, -50px) scale(1.1); }
+                    66% { transform: translate(-20px, 20px) scale(0.9); }
                 }
-                @keyframes float2 {
-                    0%, 100% { transform: translateY(0px) scale(1); }
-                    50% { transform: translateY(20px) scale(0.95); }
-                }
-                @keyframes float {
-                    0%, 100% { transform: translateY(0px); }
-                    50% { transform: translateY(-20px); }
-                }
-                @keyframes fade {
-                    0%, 100% { opacity: 0.3; }
-                    50% { opacity: 1; }
+                @keyframes twinkleAndMove {
+                    0%, 100% { opacity: 0.1; transform: translateY(0); }
+                    50% { opacity: 0.4; transform: translateY(-20px); }
                 }
                 @keyframes fadeUp {
                     0% { opacity: 0; transform: translateY(10px); }
