@@ -139,7 +139,7 @@ export default function ComprehensiveSettlementPage() {
         if (!pageCache) setLoading(true);
         try {
             const [cRes, sRes, bRes, setRes] = await Promise.all([
-                fetch('/api/customers'), fetch('/api/suppliers'), fetch('/api/treasuries'), fetch('/api/sales/debt-settlement'),
+                fetch('/api/customers'), fetch('/api/suppliers'), fetch('/api/treasuries'), fetch('/api/debt-settlement'),
             ]);
             const [cData, sData, bData, setData] = await Promise.all([cRes.json(), sRes.json(), bRes.json(), setRes.json()]);
             
@@ -165,7 +165,7 @@ export default function ComprehensiveSettlementPage() {
         if (!form.fromId || !form.toId || !amt) { alert(t('يرجى ملء كافة الحقول الإجبارية')); return; }
         setSubmitting(true);
         try {
-            const res = await fetch('/api/sales/debt-settlement', { 
+            const res = await fetch('/api/debt-settlement', { 
                 method: 'POST', 
                 headers: { 'Content-Type': 'application/json' }, 
                 body: JSON.stringify({ ...form, amount: amt }) 
