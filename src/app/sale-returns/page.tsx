@@ -63,9 +63,9 @@ export default function SaleReturnsListPage() {
 
     /* ─── Status badge ─── */
     const getStatusStyle = (r: ReturnInvoice) => {
-        if (r.paidAmount >= r.total && r.total > 0) return { bg: 'rgba(34,197,94,0.1)', color: '#22c55e', text: 'مكتمل' };
-        if (r.paidAmount > 0) return { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', text: 'جزئي' };
-        return { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', text: 'تسوية رصيد' };
+        if (r.paidAmount >= r.total && r.total > 0) return { bg: 'rgba(34,197,94,0.1)', color: '#22c55e', text: t('مكتمل') };
+        if (r.paidAmount > 0) return { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', text: t('جزئي') };
+        return { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', text: t('تسوية رصيد') };
     };
 
     /* ─── RENDER ─── */
@@ -73,11 +73,11 @@ export default function SaleReturnsListPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title={isServices ? "مرتجعات الخدمات" : "مرتجعات المبيعات"}
-                    subtitle={isServices ? "إدارة إلغاء الخدمات أو رد قيمتها للعملاء — تسوية مبالغ خدمات سابقة" : "إدارة المرتجعات من العملاء — رد قيمة الأصناف نقداً أو تسوية مبيعات سابقة"}
+                    title={isServices ? t('مرتجعات الخدمات') : t('مرتجعات المبيعات')}
+                    subtitle={isServices ? t('إدارة إلغاء الخدمات أو رد قيمتها للعملاء — تسوية مبالغ خدمات سابقة') : t('إدارة المرتجعات من العملاء — رد قيمة الأصناف نقداً أو تسوية مبيعات سابقة')}
                     icon={RotateCcw}
                     primaryButton={canCreate ? {
-                        label: isServices ? "مرتجع خدمة جديد" : "مرتجع جديد",
+                        label: isServices ? t('مرتجع خدمة جديد') : t('مرتجع جديد'),
                         onClick: () => router.push('/sale-returns/new'),
                         icon: Plus
                     } : undefined}
@@ -87,18 +87,18 @@ export default function SaleReturnsListPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="ابحث برقم المرتجع أو اسم العميل..." 
+                            placeholder={t('ابحث برقم المرتجع أو اسم العميل...')} 
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
@@ -115,9 +115,7 @@ export default function SaleReturnsListPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
-
-                        </button>
+                            <Trash2 size={14} />{t('مسح')}</button>
                     )}
                 </div>
 
@@ -130,21 +128,21 @@ export default function SaleReturnsListPage() {
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '70px', textAlign: 'center' }}>
                             <RotateCcw size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{`لا توجد ${isServices ? 'مرتجعات خدمات' : 'مرتجعات مبيعات'}`}</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{`لا توجد ${isServices ? t('مرتجعات خدمات') : t('مرتجعات مبيعات')}`}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>العميل</th>
-                                        <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
-                                        <th style={TABLE_STYLE.th(false)}>تم رده</th>
-                                        <th style={TABLE_STYLE.th(false)}>المتبقي</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('العميل')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('تم رده')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المتبقي')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -181,11 +179,9 @@ export default function SaleReturnsListPage() {
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => handlePrint(r)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="طباعة">
-                                                            <Printer size={16} />
+                                                        <button onClick={() => handlePrint(r)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e =>{t('e.currentTarget.style.color = \'#64748b\'} title={t('طباعة')}>')}<Printer size={16} />
                                                         </button>
-                                                        <button onClick={() => router.push(`/sale-returns/${r.id}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="عرض">
-                                                            <Eye size={16} />
+                                                        <button onClick={() => router.push(`/sale-returns/${r.id}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e =>{t('e.currentTarget.style.color = \'#64748b\'} title={t('عرض')}>')}<Eye size={16} />
                                                         </button>
                                                     </div>
                                                 </td>

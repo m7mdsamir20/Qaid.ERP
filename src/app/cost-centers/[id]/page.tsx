@@ -134,7 +134,7 @@ export default function CostCenterDetails() {
                                 ...months.map(m => ({ value: m.id, label: m.name }))
                             ]}
                             minWidth="140px"
-                            placeholder="الشهر"
+                            placeholder={t('الشهر')}
                             icon={Calendar}
                             style={{ height: '32px', background: 'transparent', border: 'none' }}
                         />

@@ -12,11 +12,11 @@ interface Partner { id: string; name: string; share: number; capital: number; ba
 interface Transaction { id: string; type: string; amount: number; date: string; notes?: string; }
 
 const TX_LABELS: Record<string, { label: string; color: string; bg: string; icon: any }> = {
-    deposit: { label: 'إيداع', color: '#34d399', bg: 'rgba(16,185,129,0.1)', icon: TrendingUp },
-    withdrawal: { label: 'سحب', color: '#f87171', bg: 'rgba(239,68,68,0.1)', icon: TrendingDown },
-    profit_share: { label: 'توزيع أرباح', color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', icon: Banknote },
-    capital_increase: { label: 'زيادة رأس مال', color: '#60a5fa', bg: 'rgba(59,130,246,0.1)', icon: TrendingUp },
-    capital_decrease: { label: 'تخفيض رأس مال', color: '#fb923c', bg: 'rgba(249,115,22,0.1)', icon: TrendingDown },
+    deposit: { label: t('إيداع'), color: '#34d399', bg: 'rgba(16,185,129,0.1)', icon: TrendingUp },
+    withdrawal: { label: t('سحب'), color: '#f87171', bg: 'rgba(239,68,68,0.1)', icon: TrendingDown },
+    profit_share: { label: t('توزيع أرباح'), color: '#a78bfa', bg: 'rgba(139,92,246,0.1)', icon: Banknote },
+    capital_increase: { label: t('زيادة رأس مال'), color: '#60a5fa', bg: 'rgba(59,130,246,0.1)', icon: TrendingUp },
+    capital_decrease: { label: t('تخفيض رأس مال'), color: '#fb923c', bg: 'rgba(249,115,22,0.1)', icon: TrendingDown },
 };
 
 export default function PartnerAccountsPage() {
@@ -79,8 +79,8 @@ export default function PartnerAccountsPage() {
                 
                 {/* Header Section */}
                 <PageHeader
-                    title="حسابات الشركاء"
-                    subtitle="إدارة الحسابات الجارية وتتبع المسحوبات والإيداعات"
+                    title={t('حسابات الشركاء')}
+                    subtitle={t('إدارة الحسابات الجارية وتتبع المسحوبات والإيداعات')}
                     icon={ArrowUpDown}
                 />
 
@@ -88,11 +88,10 @@ export default function PartnerAccountsPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي الأرصدة المستحقة', val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: Wallet, suffix: 'ج.م' },
-                            { label: 'عدد الشركاء', val: partners.length, color: C.blue, icon: Users, suffix: 'شريك' },
-                            { label: 'إجمالي رأس المال العام', val: partners.reduce((s, p) => s + p.capital, 0), color: '#818cf8', icon: Banknote, suffix: 'ج.م' },
-                        ].map((s, i) => (
-                            <div key={i} style={{
+                            { label: t('إجمالي الأرصدة المستحقة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: Wallet, suffix: t('ج.م') },
+                            { label: t('عدد الشركاء'), val: partners.length, color: C.blue, icon: Users, suffix: t('شريك') },
+                            { label: t('إجمالي رأس المال العام'), val: partners.reduce((s, p) =>{t('s + p.capital, 0), color: \'#818cf8\', icon: Banknote, suffix: \'ج.م\' },
+                        ].map((s, i) => (')}<div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
                                 padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 transition: 'all 0.2s', position: 'relative'
@@ -118,13 +117,13 @@ export default function PartnerAccountsPage() {
                 {loading ? (
                     <div style={{ padding: '100px', textAlign: 'center' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
-                        <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>جاري تحميل البيانات المالية...</p>
+                        <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل البيانات المالية...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>لا يوجد شركاء مسجلون</h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية</p>
+                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
+                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
@@ -168,34 +167,31 @@ export default function PartnerAccountsPage() {
                                         </div>
 
                                         <div style={{ textAlign: 'center' }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>رأس المال</div>
+                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
                                             <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: INTER }}>{p.capital.toLocaleString('en-US')}</div>
                                         </div>
 
                                          <div style={{ textAlign: 'center' }}>
-                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '2px', fontFamily: CAIRO }}>الرصيد الجاري</div>
+                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '2px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
                                              <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: INTER, direction: 'ltr' }}>
                                                  {p.balance.toLocaleString('en-US')}
                                              </div>
                                          </div>
 
                                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                                            <div title="إجمالي الإيداعات" style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.2)', fontFamily: INTER }}>
+                                            <div title={t('إجمالي الإيداعات')} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.2)', fontFamily: INTER }}>
                                                 ↑ {deposits.toLocaleString('en-US')}
                                             </div>
-                                            <div title="إجمالي المسحوبات" style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontFamily: INTER }}>
+                                            <div title={t('إجمالي المسحوبات')} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontFamily: INTER }}>
                                                 ↓ {withdrawals.toLocaleString('en-US')}
                                             </div>
                                         </div>
 
-                                        <button onClick={() => setShowModal(p)} style={{ height: '36px', borderRadius: '10px', border: 'none', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(37,106,244,0.25)', fontFamily: CAIRO }}>
-                                            + حركة
-                                        </button>
+                                        <button onClick={() => setShowModal(p)} style={{ height: '36px', borderRadius: '10px', border: 'none', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(37,106,244,0.25)', fontFamily: CAIRO }}>{t('+ حركة')}</button>
 
                                         <button onClick={() => toggleExpand(p.id)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '36px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, fontSize: '12px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />} 
-                                            كشف
-                                        </button>
+                                            {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />{t('} 
+                                            كشف')}</button>
                                     </div>
 
                                     {/* Transactions Expanded Section */}
@@ -204,22 +200,20 @@ export default function PartnerAccountsPage() {
                                             {loadingTx === p.id ? (
                                                 <div style={{ padding: '40px', textAlign: 'center', color: C.textMuted }}>
                                                     <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 8px' }} />
-                                                    <span style={{ fontSize: '12px', fontWeight: 800, fontFamily: CAIRO }}>استرجاع الحركات...</span>
+                                                    <span style={{ fontSize: '12px', fontWeight: 800, fontFamily: CAIRO }}>{t('استرجاع الحركات...')}</span>
                                                 </div>
                                             ) : txs.length === 0 ? (
                                                 <div style={{ padding: '30px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>
-                                                    <AlertCircle size={20} style={{ margin: '0 auto 8px', opacity: 0.5 }} />
-                                                    لا توجد حركات مسجلة لهذا الشريك
-                                                </div>
+                                                    <AlertCircle size={20} style={{ margin: '0 auto 8px', opacity: 0.5 }} />{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
                                             ) : (
                                                 <div style={{ padding: '10px' }}>
                                                     <table style={{ ...TABLE_STYLE.table, background: 'transparent' }}>
                                                         <thead>
                                                             <tr style={{ ...TABLE_STYLE.thead, background: 'rgba(255,255,255,0.02)' }}>
-                                                                <th style={{ ...TABLE_STYLE.th(true), padding: '12px 16px' }}>التاريخ</th>
-                                                                <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>نوع العملية</th>
-                                                                <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>المبلغ</th>
-                                                                <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>البيان والملاحظات</th>
+                                                                <th style={{ ...TABLE_STYLE.th(true), padding: '12px 16px' }}>{t('التاريخ')}</th>
+                                                                <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>{t('نوع العملية')}</th>
+                                                                <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>{t('المبلغ')}</th>
+                                                                <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>{t('البيان والملاحظات')}</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -241,7 +235,7 @@ export default function PartnerAccountsPage() {
                                                                             </span>
                                                                         </td>
                                                                         <td style={{ ...TABLE_STYLE.td(false), fontWeight: 900, color: meta.color, fontFamily: INTER, fontSize: '14px' }}>
-                                                                            {tx.amount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>ج.م</span>
+                                                                            {tx.amount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                                                         </td>
                                                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                                             {tx.notes || '—'}
@@ -275,22 +269,22 @@ export default function PartnerAccountsPage() {
                                 background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, 
                                 borderRadius: '12px', padding: '12px', marginBottom: '20px', textAlign: 'center' 
                             }}>
-                                <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>الرصيد الجاري حالياً</div>
+                                <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري حالياً')}</div>
                                 <div style={{ fontSize: '20px', fontWeight: 950, color: showModal.balance >= 0 ? '#10b981' : C.danger, fontFamily: INTER }}>
-                                    {showModal.balance.toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>ج.م</span>
+                                    {showModal.balance.toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                 </div>
                             </div>
 
                             {/* Type Selector */}
                             <div style={{ marginBottom: '16px' }}>
-                                <label style={LS}>نوع الحركة</label>
+                                <label style={LS}>{t('نوع الحركة')}</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(110px, 1fr))', gap: '8px' }}>
                                     {[
-                                        { val: 'deposit', label: 'إيداع', color: '#10b981' },
-                                        { val: 'withdrawal', label: 'سحب', color: C.danger },
-                                        { val: 'profit_share', label: 'توزيع أرباح', color: '#8b5cf6' },
-                                        { val: 'capital_increase', label: 'زيادة رأس مال', color: C.blue },
-                                        { val: 'capital_decrease', label: 'تخفيض رأس مال', color: '#fb923c' },
+                                        { val: 'deposit', label: t('إيداع'), color: '#10b981' },
+                                        { val: 'withdrawal', label: t('سحب'), color: C.danger },
+                                        { val: 'profit_share', label: t('توزيع أرباح'), color: '#8b5cf6' },
+                                        { val: 'capital_increase', label: t('زيادة رأس مال'), color: C.blue },
+                                        { val: 'capital_decrease', label: t('تخفيض رأس مال'), color: '#fb923c' },
                                     ].map(opt => (
                                         <button key={opt.val} type="button" onClick={() => setForm(f => ({ ...f, type: opt.val }))}
                                             style={{ 
@@ -310,12 +304,12 @@ export default function PartnerAccountsPage() {
                             {/* Treasury Section */}
                             {(form.type === 'deposit' || form.type === 'withdrawal' || form.type === 'capital_increase') && (
                                 <div style={{ marginBottom: '16px' }}>
-                                    <label style={LS}>الخزينة / المصدر</label>
+                                    <label style={LS}>{t('الخزينة / المصدر')}</label>
                                     <CustomSelect
                                         value={form.treasuryId}
                                         onChange={v => setForm(f => ({ ...f, treasuryId: v }))}
                                         icon={Wallet}
-                                        placeholder="اختر الخزينة..."
+                                        placeholder={t('اختر الخزينة...')}
                                         options={treasuries.map(t => ({ value: t.id, label: `${t.name} (${t.balance.toLocaleString('en-US')} ج.م)` }))}
                                     />
                                 </div>
@@ -324,30 +318,28 @@ export default function PartnerAccountsPage() {
                             {/* Amount + Date Row */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
-                                    <label style={LS}>المبلغ (ج.م) *</label>
+                                    <label style={LS}>{t('المبلغ (ج.م) *')}</label>
                                     <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 900, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
                                 </div>
                                 <div>
-                                    <label style={LS}>التاريخ</label>
+                                    <label style={LS}>{t('التاريخ')}</label>
                                     <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
 
                             {/* Notes */}
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={LS}>بيان / ملاحظات</label>
-                                <input type="text" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder="تفاصيل الحركة المالية..." />
+                                <label style={LS}>{t('بيان / ملاحظات')}</label>
+                                <input type="text" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('تفاصيل الحركة المالية...')} />
                             </div>
 
                             {/* Buttons */}
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1, height: '48px' }}>
                                     {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Plus size={18} />}
-                                    <span style={{ marginInlineEnd: '8px' }}>اعتماد الحركة</span>
+                                    <span style={{ marginInlineEnd: '8px' }}>{t('اعتماد الحركة')}</span>
                                 </button>
-                                <button type="button" onClick={() => setShowModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                    إلغاء
-                                </button>
+                                <button type="button" onClick={() => setShowModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                             </div>
                         </form>
                     )}

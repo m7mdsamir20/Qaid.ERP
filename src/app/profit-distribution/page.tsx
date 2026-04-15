@@ -20,19 +20,19 @@ interface Distribution { id: string; date: string; totalAmount: number; period: 
 interface Treasury { id: string; name: string; type: string; balance: number; }
 
 const PERIOD_LABELS: Record<string, string> = {
-    monthly: 'شهري',
-    quarterly: 'ربع سنوي',
-    semi_annual: 'نصف سنوي',
-    annual: 'سنوي',
-    custom: 'مخصص',
+    monthly: t('شهري'),
+    quarterly: t('ربع سنوي'),
+    semi_annual: t('نصف سنوي'),
+    annual: t('سنوي'),
+    custom: t('مخصص'),
 };
 
 const PERIODS = [
-    { val: 'monthly', label: 'شهري' },
-    { val: 'quarterly', label: 'ربع سنوي' },
-    { val: 'semi_annual', label: 'نصف سنوي' },
-    { val: 'annual', label: 'سنوي' },
-    { val: 'custom', label: 'مخصص' },
+    { val: 'monthly', label: t('شهري') },
+    { val: 'quarterly', label: t('ربع سنوي') },
+    { val: 'semi_annual', label: t('نصف سنوي') },
+    { val: 'annual', label: t('سنوي') },
+    { val: 'custom', label: t('مخصص') },
 ];
 
 export default function ProfitDistributionPage() {
@@ -99,11 +99,11 @@ export default function ProfitDistributionPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
                 <PageHeader
-                    title="توزيع الأرباح"
-                    subtitle="إدارة وتوزيع الأرباح على الشركاء والمساهمين حسب الحصص الرأسمالية"
+                    title={t('توزيع الأرباح')}
+                    subtitle={t('إدارة وتوزيع الأرباح على الشركاء والمساهمين حسب الحصص الرأسمالية')}
                     icon={PieChart}
                     primaryButton={{
-                        label: "توزيع جديد",
+                        label: t('توزيع جديد'),
                         onClick: () => setShowModal(true),
                         icon: Plus
                     }}
@@ -113,9 +113,9 @@ export default function ProfitDistributionPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: 'إجمالي الأرباح الموزعة', val: totalDistributed, color: '#10b981', icon: TrendingUp, suffix: 'ج.م' },
-                            { label: 'عدد عمليات التوزيع', val: distributions.length, color: C.blue, icon: History, suffix: 'عملية' },
-                            { label: 'إجمالي الحصص الرأسمالية', val: totalShares, color: '#818cf8', icon: Percent, suffix: '%' },
+                            { label: t('إجمالي الأرباح الموزعة'), val: totalDistributed, color: '#10b981', icon: TrendingUp, suffix: t('ج.م') },
+                            { label: t('عدد عمليات التوزيع'), val: distributions.length, color: C.blue, icon: History, suffix: t('عملية') },
+                            { label: t('إجمالي الحصص الرأسمالية'), val: totalShares, color: '#818cf8', icon: Percent, suffix: '%' },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -144,8 +144,7 @@ export default function ProfitDistributionPage() {
                 {!loading && partners.length > 0 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '18px', marginBottom: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                         <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>
-                           <Users size={16} style={{ color: C.primary }} /> قاعدة توزيع الأرباح (الحصص الحالية)
-                        </div>
+                           <Users size={16} style={{ color: C.primary }} />{t('قاعدة توزيع الأرباح (الحصص الحالية)')}</div>
                         {partners.map(p => (
                             <div key={p.id} style={{ flex: 1, minWidth: '180px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
@@ -163,19 +162,19 @@ export default function ProfitDistributionPage() {
                 {/* Main List */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '24px 0 16px' }}>
                     <div style={{ width: 4, height: 20, background: C.primary, borderRadius: '4px' }} />
-                    <h2 style={{ fontSize: '16px', fontWeight: 950, color: C.textPrimary, margin: 0, fontFamily: CAIRO }}>سجل عمليات توزيع الأرباح السابقة</h2>
+                    <h2 style={{ fontSize: '16px', fontWeight: 950, color: C.textPrimary, margin: 0, fontFamily: CAIRO }}>{t('سجل عمليات توزيع الأرباح السابقة')}</h2>
                 </div>
 
                 {loading ? (
                     <div style={{ padding: '80px', textAlign: 'center' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
-                        <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>جاري تحميل سجل التوزيعات...</p>
+                        <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل سجل التوزيعات...')}</p>
                     </div>
                 ) : distributions.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <PieChart size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>لا توجد عمليات توزيع مسجلة</h3>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>سجّل أول عملية توزيع أرباح لزيادة أرصدة الشركاء بناءً على حصصهم</p>
+                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا توجد عمليات توزيع مسجلة')}</h3>
+                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('سجّل أول عملية توزيع أرباح لزيادة أرصدة الشركاء بناءً على حصصهم')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -200,20 +199,20 @@ export default function ProfitDistributionPage() {
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'center' }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>تاريخ القيد</div>
+                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('تاريخ القيد')}</div>
                                             <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: INTER }}>
                                                 {new Date(d.date).toLocaleDateString('ar-EG-u-nu-latn')}
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'center' }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>إجمالي التوزيع</div>
+                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي التوزيع')}</div>
                                             <div style={{ fontSize: '18px', fontWeight: 950, color: '#10b981', fontFamily: INTER }}>
-                                                {d.totalAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>ج.م</span>
+                                                {d.totalAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                             </div>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
                                             <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
-                                            <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 900, fontFamily: CAIRO }}>مُعتمد</span>
+                                            <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 900, fontFamily: CAIRO }}>{t('مُعتمد')}</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'center', color: C.textMuted }}>
                                             {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
@@ -224,7 +223,7 @@ export default function ProfitDistributionPage() {
                                         <div style={{ borderTop: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.15)', padding: '18px 20px', animation: 'slideDown 0.3s ease-out' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
                                                 <History size={14} style={{ color: C.primary }} />
-                                                <div style={{ fontSize: '12px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>تفاصيل توزيع حصص الشركاء</div>
+                                                <div style={{ fontSize: '12px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل توزيع حصص الشركاء')}</div>
                                             </div>
                                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '10px' }}>
                                                 {d.lines?.map((l, i) => (
@@ -235,7 +234,7 @@ export default function ProfitDistributionPage() {
                                                         </div>
                                                         <div style={{ textAlign: 'end' }}>
                                                             <div style={{ fontSize: '15px', fontWeight: 950, color: C.primary, fontFamily: INTER }}>{l.amount.toLocaleString('en-US')}</div>
-                                                            <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>ج.م</div>
+                                                            <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>{t('ج.م')}</div>
                                                         </div>
                                                     </div>
                                                 ))}
@@ -252,20 +251,18 @@ export default function ProfitDistributionPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title="توزيع أرباح جديد"
+                    title={t('توزيع أرباح جديد')}
                     icon={PieChart}
                 >
                     <form onSubmit={handleSave}>
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, borderRadius: '12px', padding: '12px', marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <Info size={18} style={{ color: C.primary }} />
-                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.5 }}>
-                                سيتم توزيع المبلغ المدخل آلياً على الشركاء كلاً حسب نسبة مساهمته الحالية في رأس المال.
-                            </div>
+                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, lineHeight: 1.5 }}>{t('سيتم توزيع المبلغ المدخل آلياً على الشركاء كلاً حسب نسبة مساهمته الحالية في رأس المال.')}</div>
                         </div>
 
                         {/* Period Selection */}
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={LS}>دورة التوزيع</label>
+                            <label style={LS}>{t('دورة التوزيع')}</label>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px' }}>
                                 {PERIODS.map(opt => (
                                     <button key={opt.val} type="button" onClick={() => setForm(f => ({ ...f, period: opt.val }))}
@@ -286,11 +283,11 @@ export default function ProfitDistributionPage() {
                         {/* Amount + Date */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
-                                <label style={LS}>إجمالي الربح الموزع (ج.م) *</label>
+                                <label style={LS}>{t('إجمالي الربح الموزع (ج.م) *')}</label>
                                 <input required type="number" min="1" step="0.01" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 900, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
                             </div>
                             <div>
-                                <label style={LS}>تاريخ التوزيع</label>
+                                <label style={LS}>{t('تاريخ التوزيع')}</label>
                                 <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
@@ -299,8 +296,7 @@ export default function ProfitDistributionPage() {
                         {totalAmt > 0 && partners.length > 0 && (
                             <div style={{ background: 'rgba(0,0,0,0.15)', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px', marginBottom: '20px' }}>
                                 <div style={{ fontSize: '11px', fontWeight: 900, color: C.textPrimary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
-                                    <TrendingUp size={14} style={{ color: '#10b981' }} /> معاينة التوزيع المقترح
-                                </div>
+                                    <TrendingUp size={14} style={{ color: '#10b981' }} />{t('معاينة التوزيع المقترح')}</div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                     {preview.map(p => (
                                         <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
@@ -316,17 +312,12 @@ export default function ProfitDistributionPage() {
                         {/* Treasury (optional immediate payment) */}
                         <div style={{ marginBottom: '16px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '14px' }}>
                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.textPrimary, marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
-                                <Banknote size={14} style={{ color: C.primary }} /> طريقة الصرف
-                            </div>
+                                <Banknote size={14} style={{ color: C.primary }} />{t('طريقة الصرف')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginBottom: '10px' }}>
                                 <button type="button" onClick={() => setForm(f => ({ ...f, treasuryId: '' }))}
-                                    style={{ padding: '10px', borderRadius: '10px', border: `1px solid ${!form.treasuryId ? C.primary : C.border}`, background: !form.treasuryId ? `${C.primary}15` : 'transparent', color: !form.treasuryId ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO }}>
-                                    تسجيل فقط (تأجيل)
-                                </button>
+                                    style={{ padding: '10px', borderRadius: '10px', border: `1px solid ${!form.treasuryId ? C.primary : C.border}`, background: !form.treasuryId ? `${C.primary}15` : 'transparent', color: !form.treasuryId ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO }}>{t('تسجيل فقط (تأجيل)')}</button>
                                 <button type="button" onClick={() => setForm(f => ({ ...f, treasuryId: f.treasuryId || (treasuries[0]?.id || '') }))}
-                                    style={{ padding: '10px', borderRadius: '10px', border: `1px solid ${form.treasuryId ? '#10b981' : C.border}`, background: form.treasuryId ? 'rgba(16,185,129,0.1)' : 'transparent', color: form.treasuryId ? '#10b981' : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO }}>
-                                    صرف فوري من خزينة
-                                </button>
+                                    style={{ padding: '10px', borderRadius: '10px', border: `1px solid ${form.treasuryId ? '#10b981' : C.border}`, background: form.treasuryId ? 'rgba(16,185,129,0.1)' : 'transparent', color: form.treasuryId ? '#10b981' : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO }}>{t('صرف فوري من خزينة')}</button>
                             </div>
                             {form.treasuryId && (
                                 <select value={form.treasuryId} onChange={e => setForm(f => ({ ...f, treasuryId: e.target.value }))}
@@ -348,18 +339,16 @@ export default function ProfitDistributionPage() {
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>ملاحظات</label>
-                            <input type="text" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder="مثل: توزيع أرباح السنة المالية المنتهية 2023..." />
+                            <label style={LS}>{t('ملاحظات')}</label>
+                            <input type="text" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('مثل: توزيع أرباح السنة المالية المنتهية 2023...')} />
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1.5, height: '48px' }}>
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={18} />}
-                                <span style={{ marginInlineEnd: '8px' }}>اعتماد وتوزيع الأرباح</span>
+                                <span style={{ marginInlineEnd: '8px' }}>{t('اعتماد وتوزيع الأرباح')}</span>
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                إلغاء
-                            </button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

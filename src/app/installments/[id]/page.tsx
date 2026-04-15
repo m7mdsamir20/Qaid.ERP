@@ -19,10 +19,10 @@ const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const statusColor: Record<string, { bg: string; color: string; label: string }> = {
-    paid:    { bg: 'rgba(52,211,153,0.1)',  color: '#34d399', label: 'مدفوع'    },
-    partial: { bg: 'rgba(245,158,11,0.1)',  color: '#f59e0b', label: 'جزئي'    },
-    pending: { bg: 'rgba(59,130,246,0.1)',  color: '#3b82f6', label: 'قادم'    },
-    overdue: { bg: 'rgba(239,68,68,0.1)',   color: '#f87171', label: 'متأخر'   },
+    paid:    { bg: 'rgba(52,211,153,0.1)',  color: '#34d399', label: t('مدفوع')    },
+    partial: { bg: 'rgba(245,158,11,0.1)',  color: '#f59e0b', label: t('جزئي')    },
+    pending: { bg: 'rgba(59,130,246,0.1)',  color: '#3b82f6', label: t('قادم')    },
+    overdue: { bg: 'rgba(239,68,68,0.1)',   color: '#f87171', label: t('متأخر')   },
 };
 
 export default function InstallmentDetailPage() {
@@ -138,7 +138,7 @@ export default function InstallmentDetailPage() {
             <h2>جدول أقساط — ${plan.customer?.name}</h2>
             <p>رقم الخطة: #${plan.planNumber} | إجمالي: ${fmtN(plan.grandTotal)} ${cSymbol} | القسط: ${fmtN(plan.installmentAmount)} ${cSymbol}/شهر</p>
             <table>
-                <thead><tr><th>#</th><th>تاريخ الاستحقاق</th><th>المبلغ</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr></thead>
+                <thead><tr><th>#</th><th>{t('تاريخ الاستحقاق')}</th><th>{t('المبلغ')}</th><th>{t('المدفوع')}</th><th>{t('المتبقي')}</th><th>{t('الحالة')}</th></tr></thead>
                 <tbody>
                     ${(plan.installments || []).map((i: any) => `
                         <tr>
@@ -273,12 +273,12 @@ export default function InstallmentDetailPage() {
 
                         {/* Table Listing */}
                         <div style={SC}>
-                            <div style={STitle}><Info size={16} /> جدول استحقاق الأقساط</div>
+                            <div style={STitle}><Info size={16} />{t('جدول استحقاق الأقساط')}</div>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', color: C.textPrimary }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            {['رقم القسط', 'تاريخ الاستحقاق', 'المبلغ المستحق', 'المدفوع', 'المتبقي', 'الحالة', 'إجراء'].map((h, i) => (
+                                            {[t('رقم القسط'), t('تاريخ الاستحقاق'), t('المبلغ المستحق'), t('المدفوع'), t('المتبقي'), t('الحالة'), t('إجراء')].map((h, i) => (
                                                 <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted }}>{h}</th>
                                             ))}
                                         </tr>

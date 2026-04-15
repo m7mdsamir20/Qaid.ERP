@@ -77,11 +77,11 @@ export default function ReceiptVouchersPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px' }}>
                 <PageHeader
-                    title="سندات القبض"
-                    subtitle="إدارة المتحصلات النقدية والبنكية من العملاء — تتبع التوريدات للخزينة والبنوك"
+                    title={t('سندات القبض')}
+                    subtitle={t('إدارة المتحصلات النقدية والبنكية من العملاء — تتبع التوريدات للخزينة والبنوك')}
                     icon={TrendingUp}
                     primaryButton={canCreate ? {
-                        label: "سند قبض جديد",
+                        label: t('سند قبض جديد'),
                         onClick: () => router.push('/receipts/new'),
                         icon: Plus
                     } : undefined}
@@ -92,7 +92,7 @@ export default function ReceiptVouchersPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="ابحث برقم السند أو اسم العميل..." 
+                            placeholder={t('ابحث برقم السند أو اسم العميل...')} 
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
@@ -100,11 +100,11 @@ export default function ReceiptVouchersPage() {
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
@@ -121,8 +121,7 @@ export default function ReceiptVouchersPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
-                        </button>
+                            <Trash2 size={14} />{t('مسح')}</button>
                     )}
                 </div>
 
@@ -135,21 +134,21 @@ export default function ReceiptVouchersPage() {
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '70px', textAlign: 'center' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>لا توجد سندات قبض</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد سندات قبض')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم السند</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>العميل</th>
-                                        <th style={TABLE_STYLE.th(false)}>طريقة الدفع</th>
-                                        <th style={TABLE_STYLE.th(false)}>الخزينة / البنك</th>
-                                        <th style={TABLE_STYLE.th(false)}>البيان</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>المبلغ</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('رقم السند')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('العميل')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('طريقة الدفع')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -175,7 +174,7 @@ export default function ReceiptVouchersPage() {
                                                     color: v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
                                                     border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
                                                 }}>
-                                                    {v.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
+                                                    {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
@@ -192,7 +191,7 @@ export default function ReceiptVouchersPage() {
                                                         <button
                                                             onClick={(e) => { e.stopPropagation(); handlePrint(v); }}
                                                             style={TABLE_STYLE.actionBtn()}
-                                                            title="طباعة">
+                                                            title={t('طباعة')}>
                                                             <Printer size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                 </div>

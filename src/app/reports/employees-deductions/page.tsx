@@ -10,7 +10,7 @@ import { AlertTriangle, Search, Trash2, Activity, Loader2, ArrowDownRight, Users
 import { useCurrency } from '@/hooks/useCurrency';
 
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
@@ -32,10 +32,10 @@ interface ReportData {
 const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const typeLabels: Record<string, string> = {
-    late: 'تأخير',
-    penalty: 'جزاء إداري',
-    absence: 'غياب',
-    other: 'أخرى'
+    late: t('تأخير'),
+    penalty: t('جزاء إداري'),
+    absence: t('غياب'),
+    other: t('أخرى')
 };
 
 const typeColors: Record<string, string> = {
@@ -75,17 +75,17 @@ export default function EmployeesDeductionsPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="سجل الخصومات والجزاءات الفترية"
-                    subtitle="تحليل مالي وإداري لجميع الخصومات المطبقة على الموظفين (تأخيرات، غياب، وجزاءات)."
+                    title={t('سجل الخصومات والجزاءات الفترية')}
+                    subtitle={t('تحليل مالي وإداري لجميع الخصومات المطبقة على الموظفين (تأخيرات، غياب، وجزاءات).')}
                     backTab="hr"
                     
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'إجمالي مبلغ الخصومات', value: fmt(data?.totalAmount || 0), color: '#ef4444', icon: <ArrowDownRight size={18} /> },
-                        { label: 'عدد الجزاءات المسجلة', value: String(data?.totalCount || 0), color: '#fb923c', icon: <AlertTriangle size={18} /> },
-                        { label: 'متوسط قيمة الخصم', value: fmt((data?.totalAmount || 0) / (data?.totalCount || 1)), color: '#3b82f6', icon: <Activity size={18} /> },
+                        { label: t('إجمالي مبلغ الخصومات'), value: fmt(data?.totalAmount || 0), color: '#ef4444', icon: <ArrowDownRight size={18} /> },
+                        { label: t('عدد الجزاءات المسجلة'), value: String(data?.totalCount || 0), color: '#fb923c', icon: <AlertTriangle size={18} /> },
+                        { label: t('متوسط قيمة الخصم'), value: fmt((data?.totalAmount || 0) / (data?.totalCount || 1)), color: '#3b82f6', icon: <Activity size={18} /> },
                     ].map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}22`, borderRadius: '12px',
@@ -93,7 +93,7 @@ export default function EmployeesDeductionsPage() {
                         }}>
                             <div>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <span style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value} <small style={{ fontSize: '10px', color: C.textMuted }}>{i !== 1 ? getCurrencyName(currency) : 'جزاء'}</small></span>
+                                <span style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value} <small style={{ fontSize: '10px', color: C.textMuted }}>{i !== 1 ? getCurrencyName(currency) : t('جزاء')}</small></span>
                             </div>
                             <div style={{ width: 40, height: 40, borderRadius: '10px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{s.icon}</div>
                         </div>
@@ -102,7 +102,7 @@ export default function EmployeesDeductionsPage() {
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '20px' }}>
                     <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                    <input placeholder="ابحث باسم الموظف أو سبب الخصم..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                    <input placeholder={t('ابحث باسم الموظف أو سبب الخصم...')} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                 </div>
 
                 {loading ? (
@@ -112,7 +112,7 @@ export default function EmployeesDeductionsPage() {
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                    {['الموظف', 'التاريخ', 'نوع الخصم', 'السبب', 'القيمة'].map((h, i) => (
+                                    {[t('الموظف'), t('التاريخ'), t('نوع الخصم'), t('السبب'), t('القيمة')].map((h, i) => (
                                         <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i === 4 ? 'center' : 'right', fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>

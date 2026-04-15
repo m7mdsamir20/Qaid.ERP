@@ -29,36 +29,36 @@ import AppModal from '@/components/AppModal';
 import PageHeader from '@/components/PageHeader';
 
 const months = [
-    { value: 1, label: 'يناير' },
-    { value: 2, label: 'فبراير' },
-    { value: 3, label: 'مارس' },
-    { value: 4, label: 'أبريل' },
-    { value: 5, label: 'مايو' },
-    { value: 6, label: 'يونيو' },
-    { value: 7, label: 'يوليو' },
-    { value: 8, label: 'أغسطس' },
-    { value: 9, label: 'سبتمبر' },
-    { value: 10, label: 'أكتوبر' },
-    { value: 11, label: 'نوفمبر' },
-    { value: 12, label: 'ديسمبر' },
+    { value: 1, label: t('يناير') },
+    { value: 2, label: t('فبراير') },
+    { value: 3, label: t('مارس') },
+    { value: 4, label: t('أبريل') },
+    { value: 5, label: t('مايو') },
+    { value: 6, label: t('يونيو') },
+    { value: 7, label: t('يوليو') },
+    { value: 8, label: t('أغسطس') },
+    { value: 9, label: t('سبتمبر') },
+    { value: 10, label: t('أكتوبر') },
+    { value: 11, label: t('نوفمبر') },
+    { value: 12, label: t('ديسمبر') },
 ];
 
 const formatCurrency = (code: string) => {
     if (!code) return 'ج.م';
     const mapping: {[key: string]: string} = {
-        'EGP': 'ج.م',
-        'SAR': 'ر.س',
-        'USD': 'دولار',
-        'EUR': 'يورو',
-        'AED': 'د.إ',
-        'KWD': 'د.ك',
-        'QAR': 'ر.ق',
-        'BHD': 'د.ب',
-        'OMR': 'ر.ع',
-        'LYD': 'د.ل',
-        'JOD': 'د.أ',
-        'SYP': 'ل.س',
-        'YER': 'ر.ي'
+        'EGP': t('ج.م'),
+        'SAR': t('ر.س'),
+        'USD': t('دولار'),
+        'EUR': t('يورو'),
+        'AED': t('د.إ'),
+        'KWD': t('د.ك'),
+        'QAR': t('ر.ق'),
+        'BHD': t('د.ب'),
+        'OMR': t('ر.ع'),
+        'LYD': t('د.ل'),
+        'JOD': t('د.أ'),
+        'SYP': t('ل.س'),
+        'YER': t('ر.ي')
     };
     return mapping[code.toUpperCase()] || code;
 };
@@ -141,7 +141,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px', flexDirection: 'column', gap: '12px' }}>
                 <Loader2 size={32} className="animate-spin" style={{ color: '#3b82f6' }} />
-                <span style={{ fontSize: '13px', color: '#94a3b8' }}>جاري التحميل...</span>
+                <span style={{ fontSize: '13px', color: '#94a3b8' }}>{t('جاري التحميل...')}</span>
             </div>
         </DashboardLayout>
     );
@@ -150,8 +150,8 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
         <DashboardLayout>
             <div style={{ padding: '40px', textAlign: 'center' }}>
                 <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '16px', opacity: 0.5 }} />
-                <h2 style={{ fontSize: '16px', color: '#fff' }}>المسير غير موجود</h2>
-                <Link href="/payrolls" style={{ marginTop: '16px', color: '#3b82f6', textDecoration: 'none', display: 'inline-block', fontWeight: 700 }}>العودة للقائمة</Link>
+                <h2 style={{ fontSize: '16px', color: '#fff' }}>{t('المسير غير موجود')}</h2>
+                <Link href="/payrolls" style={{ marginTop: '16px', color: '#3b82f6', textDecoration: 'none', display: 'inline-block', fontWeight: 700 }}>{t('العودة للقائمة')}</Link>
             </div>
         </DashboardLayout>
     );
@@ -164,7 +164,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                 <div className="print-hide">
                     <PageHeader
                         title={`تفاصيل مسير الرواتب ${months.find(m => m.value === payroll.month)?.label} ${payroll.year}`}
-                        subtitle={payroll.status === 'paid' ? 'معتمد ومُسدد' : 'مسودة قيد المراجعة'}
+                        subtitle={payroll.status === 'paid' ? t('معتمد ومُسدد') : t('مسودة قيد المراجعة')}
                         icon={FileText}
                         backUrl="/payrolls"
                         actions={[
@@ -183,8 +183,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                             >
-                                <Printer size={16} /> طباعة
-                            </button>,
+                                <Printer size={16} />{t('طباعة')}</button>,
                             payroll.status === 'draft' ? (
                                 <button 
                                     key="approve"
@@ -197,8 +196,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                                         boxShadow: '0 4px 12px rgba(16,185,129,0.2)' 
                                     }}
                                 >
-                                    <CheckCircle size={16} /> اعتماد وصرف
-                                </button>
+                                    <CheckCircle size={16} />{t('اعتماد وصرف')}</button>
                             ) : null
                         ]}
                     />
@@ -206,10 +204,10 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                 {/* Summary Grid - Standardized to match Customers page */}
                 <div className="print-hide" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'إجمالي الأساسي', val: payroll.totalSalaries, color: C.primary, icon: Calculator },
-                        { label: 'سلف وخصومات', val: payroll.totalAdvances + payroll.totalDiscounts, color: C.danger, icon: AlertCircle },
-                        { label: 'إجمالي البدلات', val: payroll.totalAllowances, color: '#818cf8', icon: ClipboardList },
-                        { label: 'الصافي النهائي', val: payroll.netTotal, color: C.success, icon: Banknote }
+                        { label: t('إجمالي الأساسي'), val: payroll.totalSalaries, color: C.primary, icon: Calculator },
+                        { label: t('سلف وخصومات'), val: payroll.totalAdvances + payroll.totalDiscounts, color: C.danger, icon: AlertCircle },
+                        { label: t('إجمالي البدلات'), val: payroll.totalAllowances, color: '#818cf8', icon: ClipboardList },
+                        { label: t('الصافي النهائي'), val: payroll.netTotal, color: C.success, icon: Banknote }
                     ].map((stat, i) => (
                         <div key={i} style={{
                             background: `${stat.color}08`, border: `1px solid ${stat.color}33`, borderRadius: '10px',
@@ -292,13 +290,13 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                     <table style={TABLE_STYLE.table}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
-                                <th style={TABLE_STYLE.th(true)}>كود</th>
-                                <th style={TABLE_STYLE.th(false)}>الموظف</th>
-                                <th style={TABLE_STYLE.th(false)}>الأساسي</th>
-                                <th style={TABLE_STYLE.th(false)}>البدلات</th>
-                                <th style={TABLE_STYLE.th(false)}>السلف</th>
-                                <th style={TABLE_STYLE.th(false)}>خصومات</th>
-                                <th style={TABLE_STYLE.th(false)}>الصافي</th>
+                                <th style={TABLE_STYLE.th(true)}>{t('كود')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('الأساسي')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('البدلات')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('السلف')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('خصومات')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('الصافي')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -338,22 +336,20 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                 <AppModal
                     show={showApprovalModal}
                     onClose={() => setShowApprovalModal(false)}
-                    title="اعتماد وصرف المسير"
+                    title={t('اعتماد وصرف المسير')}
                     icon={Calculator}
                 >
-                    <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
-                        سيتم إغلاق المسير وتوليد قيود محاسبية تلقائية، وخصم السلف المستحقة من أرصدة الموظفين.
-                        <br/><br/>
-                        <strong style={{ color: '#fff' }}>المبلغ المطلوب:</strong> <span style={{ color: C.success, fontWeight: 800, fontSize: '16px', fontFamily: INTER }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{payroll.netTotal.toLocaleString('en-US')}</span></div></span>
+                    <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>{t('سيتم إغلاق المسير وتوليد قيود محاسبية تلقائية، وخصم السلف المستحقة من أرصدة الموظفين.')}<br/><br/>
+                        <strong style={{ color: '#fff' }}>{t('المبلغ المطلوب:')}</strong> <span style={{ color: C.success, fontWeight: 800, fontSize: '16px', fontFamily: INTER }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{payroll.netTotal.toLocaleString('en-US')}</span></div></span>
                     </div>
 
                     <div style={{ marginBottom: '24px' }}>
-                        <label style={{ display: 'block', fontSize: '11px', color: '#94a3b8', fontWeight: 700, marginBottom: '8px' }}>خزينة الصرف</label>
+                        <label style={{ display: 'block', fontSize: '11px', color: '#94a3b8', fontWeight: 700, marginBottom: '8px' }}>{t('خزينة الصرف')}</label>
                         <CustomSelect
                             value={selectedTreasury}
                             onChange={setSelectedTreasury}
                             icon={Landmark}
-                            placeholder="اختر الخزينة..."
+                            placeholder={t('اختر الخزينة...')}
                             hideSearch={true}
                             openUp={true}
                             options={treasuries.map(tr => ({ value: tr.id, label: `${tr.name} (${formatCurrency(company?.currency)} ${tr.balance.toLocaleString('en-US')})` }))}
@@ -378,14 +374,11 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                             disabled={isApproving}
                             style={{ flex: 2, height: '48px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', borderRadius: '12px', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO }}
                         >
-                            {isApproving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : 'تأكيد وصرف الرواتب'}
-                        </button>
+                            {isApproving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} />{t(': \'تأكيد وصرف الرواتب\'}')}</button>
                         <button 
                             onClick={() => setShowApprovalModal(false)}
                             style={{ flex: 1, height: '48px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '12px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}
-                        >
-                            إلغاء
-                        </button>
+                        >{t('إلغاء')}</button>
                     </div>
                 </AppModal>
             </div>

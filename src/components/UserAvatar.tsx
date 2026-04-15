@@ -8,36 +8,36 @@ import React from 'react';
  */
 export const AVATAR_OPTIONS = [
     // Row 1
-    { id: 'av1', gender: 'male', label: 'شاب قميص أزرق' },
-    { id: 'av2', gender: 'male', label: 'رجل أسمر ببدلة' },
-    { id: 'av3', gender: 'male', label: 'رجل مسن ببدلة' },
-    { id: 'av4', gender: 'female', label: 'سيدة ببدلة تركواز' },
-    { id: 'av5', gender: 'female', label: 'سيدة سمراء ببدلة صفراء' },
-    { id: 'av6', gender: 'female', label: 'سيدة محجبة' },
+    { id: 'av1', gender: 'male', label: t('شاب قميص أزرق') },
+    { id: 'av2', gender: 'male', label: t('رجل أسمر ببدلة') },
+    { id: 'av3', gender: 'male', label: t('رجل مسن ببدلة') },
+    { id: 'av4', gender: 'female', label: t('سيدة ببدلة تركواز') },
+    { id: 'av5', gender: 'female', label: t('سيدة سمراء ببدلة صفراء') },
+    { id: 'av6', gender: 'female', label: t('سيدة محجبة') },
 
     // Row 2
-    { id: 'av7', gender: 'male', label: 'رجل عربي رسمي' },
-    { id: 'av8', gender: 'male', label: 'رجل بلحية قميص مربعات' },
-    { id: 'av9', gender: 'male', label: 'رجل شعر أحمر' },
-    { id: 'av10', gender: 'female', label: 'سيدة بنظارات بنفسجي' },
-    { id: 'av11', gender: 'female', label: 'سيدة بتسريحة كعكة' },
-    { id: 'av12', gender: 'female', label: 'سيدة ببدلة وردية' },
+    { id: 'av7', gender: 'male', label: t('رجل عربي رسمي') },
+    { id: 'av8', gender: 'male', label: t('رجل بلحية قميص مربعات') },
+    { id: 'av9', gender: 'male', label: t('رجل شعر أحمر') },
+    { id: 'av10', gender: 'female', label: t('سيدة بنظارات بنفسجي') },
+    { id: 'av11', gender: 'female', label: t('سيدة بتسريحة كعكة') },
+    { id: 'av12', gender: 'female', label: t('سيدة ببدلة وردية') },
 
     // Row 3
-    { id: 'av13', gender: 'male', label: 'رجل أسمر بنظارات' },
-    { id: 'av14', gender: 'male', label: 'رجل قميص أبيض وربطة' },
-    { id: 'av15', gender: 'female', label: 'سيدة سمراء ببدلة سوداء' },
-    { id: 'av16', gender: 'female', label: 'سيدة ببدلة كاجوال' },
-    { id: 'av17', gender: 'female', label: 'سيدة قميص أبيض' },
-    { id: 'av18', gender: 'male', label: 'رجل أعمال ببدلة زرقاء' },
+    { id: 'av13', gender: 'male', label: t('رجل أسمر بنظارات') },
+    { id: 'av14', gender: 'male', label: t('رجل قميص أبيض وربطة') },
+    { id: 'av15', gender: 'female', label: t('سيدة سمراء ببدلة سوداء') },
+    { id: 'av16', gender: 'female', label: t('سيدة ببدلة كاجوال') },
+    { id: 'av17', gender: 'female', label: t('سيدة قميص أبيض') },
+    { id: 'av18', gender: 'male', label: t('رجل أعمال ببدلة زرقاء') },
 
     // Row 4
-    { id: 'av19', gender: 'male', label: 'رجل بنظارات ولحية' },
-    { id: 'av20', gender: 'female', label: 'سيدة بنظارات ستايل' },
-    { id: 'av21', gender: 'male', label: 'رجل بقميص برتقالي' },
-    { id: 'av22', gender: 'female', label: 'سيدة بضفيرة' },
-    { id: 'av23', gender: 'male', label: 'رجل ببدلة رسمية سوداء' },
-    { id: 'av24', gender: 'male', label: 'شاب بنظارات وكنزة حمراء' },
+    { id: 'av19', gender: 'male', label: t('رجل بنظارات ولحية') },
+    { id: 'av20', gender: 'female', label: t('سيدة بنظارات ستايل') },
+    { id: 'av21', gender: 'male', label: t('رجل بقميص برتقالي') },
+    { id: 'av22', gender: 'female', label: t('سيدة بضفيرة') },
+    { id: 'av23', gender: 'male', label: t('رجل ببدلة رسمية سوداء') },
+    { id: 'av24', gender: 'male', label: t('شاب بنظارات وكنزة حمراء') },
 ];
 
 interface AvatarProps {

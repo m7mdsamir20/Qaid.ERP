@@ -207,7 +207,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                     type="text"
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
-                                    placeholder="ابحث هنا..."
+                                    placeholder={t('ابحث هنا...')}
                                     autoComplete="off"
                                     name="custom-select-search-nope"
                                     spellCheck={false}
@@ -335,9 +335,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     </div>
 
                     {filteredOptions.length === 0 && !shouldShowCreate && (
-                        <div style={{ padding: '24px 16px', textAlign: 'center', color: C.textMuted, fontSize: '13px' }}>
-                            لم يتم العثور على نتائج
-                        </div>
+                        <div style={{ padding: '24px 16px', textAlign: 'center', color: C.textMuted, fontSize: '13px' }}>{t('لم يتم العثور على نتائج')}</div>
                     )}
                 </div>
             )}

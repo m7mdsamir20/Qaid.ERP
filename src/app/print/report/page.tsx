@@ -84,15 +84,13 @@ export default function PrintReportPage() {
     if (loading) return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', gap: '12px', color: '#fff', fontFamily: 'Cairo, sans-serif' }}>
             <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
-            <span>جاري تحميل التقرير...</span>
+            <span>{t('جاري تحميل التقرير...')}</span>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </div>
     );
 
     if (!html) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>
-            لا يوجد تقرير للعرض
-        </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>{t('لا يوجد تقرير للعرض')}</div>
     );
 
     return (
@@ -103,15 +101,13 @@ export default function PrintReportPage() {
                 </span>
                 <div style={{ marginRight: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
                     <button onClick={handlePrint} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
-                        <Printer size={15} /> طباعة
-                    </button>
+                        <Printer size={15} />{t('طباعة')}</button>
                     <button onClick={handleDownloadPdf} disabled={downloading} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: downloading ? 'wait' : 'pointer', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700, opacity: downloading ? 0.7 : 1 }}>
                         {downloading ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Download size={15} />}
-                        {downloading ? 'جاري التحميل...' : 'تنزيل PDF'}
+                        {downloading ? t('جاري التحميل...') : t('تنزيل PDF')}
                     </button>
                     <button onClick={() => window.close()} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
-                        <X size={15} /> إغلاق
-                    </button>
+                        <X size={15} />{t('إغلاق')}</button>
                 </div>
             </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>

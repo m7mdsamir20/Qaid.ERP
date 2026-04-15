@@ -329,19 +329,10 @@ export default function DatabaseTab({
                                                     };
 
                                                     const name = importType === 'items'
-                                                        ? findT([
-                                                            'اسم الصنف', 'اسماء الصنف', 'الصنف', 'الصنف / الخدمة',
-                                                            'البضاعة', 'البضائع', 'السلعة', 'السلع',
-                                                            'المادة', 'الخامة', 'المنتج', 'الخدمة',
-                                                            'الوصف', 'البيان', 'البند', 'المقال',
-                                                            'اسم', 'الاسم',
+                                                        ? findT([t('اسم الصنف'), t('اسماء الصنف'), t('الصنف'), t('الصنف / الخدمة'), t('البضاعة'), t('البضائع'), t('السلعة'), t('السلع'), t('المادة'), t('الخامة'), t('المنتج'), t('الخدمة'), t('الوصف'), t('البيان'), t('البند'), t('المقال'), t('اسم'), t('الاسم'),
                                                             'item', 'item name', 'product', 'article', 'goods', 'material', 'description', 'name'
                                                         ])
-                                                        : findT([
-                                                            'اسم', 'الاسم', 'اسماء', 'الاسماء', 'الأسماء', 'بيان', 'البيان',
-                                                            'عميل', 'العميل', 'عملاء', 'العملاء',
-                                                            'مورد', 'المورد', 'موردين', 'الموردين',
-                                                            'شركة', 'الشركة', 'جهة', 'الجهة',
+                                                        : findT([t('اسم'), t('الاسم'), t('اسماء'), t('الاسماء'), t('الأسماء'), t('بيان'), t('البيان'), t('عميل'), t('العميل'), t('عملاء'), t('العملاء'), t('مورد'), t('المورد'), t('موردين'), t('الموردين'), t('شركة'), t('الشركة'), t('جهة'), t('الجهة'),
                                                             'name', 'client', 'supplier', 'customer', 'party'
                                                         ]);
 
@@ -350,10 +341,10 @@ export default function DatabaseTab({
                                                     let previewCredit = 0;
 
                                                     if (importType !== 'items') {
-                                                        const dVal = findV(['مدين', 'عليه', 'علية', 'debit', ' dr']);
-                                                        const cVal = findV(['دائن', 'له', 'لة', 'credit', ' cr']);
-                                                        const gBal = findV(['رصيد', 'balance', 'bal', 'افتتاحي', 'opening']);
-                                                        const typeStr = findT(['نوع', 'type', 'حالة', 'status']);
+                                                        const dVal = findV([t('مدين'), t('عليه'), t('علية'), 'debit', ' dr']);
+                                                        const cVal = findV([t('دائن'), t('له'), t('لة'), 'credit', ' cr']);
+                                                        const gBal = findV([t('رصيد'), 'balance', 'bal', t('افتتاحي'), 'opening']);
+                                                        const typeStr = findT([t('نوع'), 'type', t('حالة'), 'status']);
 
                                                         if (dVal > 0 || cVal > 0) {
                                                             previewDebit = dVal;
@@ -361,7 +352,7 @@ export default function DatabaseTab({
                                                         } else if (gBal !== 0) {
                                                             const absVal = Math.abs(gBal);
                                                             let isCredit = importType === 'suppliers';
-                                                            if (typeStr) isCredit = ['دائن', 'له', 'لة', 'credit', 'cr'].some(kw => typeStr.toLowerCase().includes(kw));
+                                                            if (typeStr) isCredit = [t('دائن'), t('له'), t('لة'), 'credit', 'cr'].some(kw => typeStr.toLowerCase().includes(kw));
                                                             else if (gBal < 0) isCredit = importType === 'customers';
                                                             if (isCredit) previewCredit = absVal; else previewDebit = absVal;
                                                         }
@@ -374,19 +365,19 @@ export default function DatabaseTab({
                                                             <td style={{ padding: '11px 14px', fontFamily: CAIRO, fontWeight: 700, color: C.textPrimary }}>{String(name || String(Object.values(row)[0] || ''))}</td>
                                                             <td style={{ padding: '11px 14px', textAlign: 'center', color: C.textMuted, fontSize: '12px' }}>
                                                                 {importType === 'items'
-                                                                    ? findT(['وحدة القياس', 'الوحدة', 'وحده', 'القياس', 'unit', 'measure', 'uom'])
-                                                                    : findT(['هاتف', 'جوال', 'موبايل', 'phone', 'mobile'])}
+                                                                    ? findT([t('وحدة القياس'), t('الوحدة'), t('وحده'), t('القياس'), 'unit', 'measure', 'uom'])
+                                                                    : findT([t('هاتف'), t('جوال'), t('موبايل'), 'phone', 'mobile'])}
                                                             </td>
                                                             {importType === 'items' ? (
                                                                 <>
                                                                     <td style={{ padding: '11px 14px', textAlign: 'center', fontWeight: 800, color: C.textSecondary, fontFamily: 'monospace' }}>
-                                                                        {findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']).toLocaleString('en-US')}
+                                                                        {findV([t('كمية افتتاحية'), t('كمية حالية'), t('الكمية'), t('كمية'), 'stock', 'qty', 'quantity']).toLocaleString('en-US')}
                                                                     </td>
                                                                     <td style={{ padding: '11px 14px', textAlign: 'center', fontWeight: 800, color: C.primary, fontFamily: 'monospace' }}>
-                                                                        {findV(['تكلفة', 'cost']).toLocaleString('en-US')}
+                                                                        {findV([t('تكلفة'), 'cost']).toLocaleString('en-US')}
                                                                     </td>
                                                                     <td style={{ padding: '11px 14px', textAlign: 'center', fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace', background: 'rgba(245,158,11,0.03)' }}>
-                                                                        {(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']) * findV(['تكلفة', 'cost'])).toLocaleString('en-US')}
+                                                                        {(findV([t('كمية افتتاحية'), t('كمية حالية'), t('الكمية'), t('كمية'), 'stock', 'qty', 'quantity']) * findV([t('تكلفة'), 'cost'])).toLocaleString('en-US')}
                                                                     </td>
                                                                 </>
                                                             ) : (

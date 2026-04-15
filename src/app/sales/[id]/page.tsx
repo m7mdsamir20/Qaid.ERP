@@ -132,7 +132,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     printWindow.document.write(`
                                         <html>
                                         <head>
-                                            <title>فاتورة مبيعات</title>
+                                            <title>{t('فاتورة مبيعات')}</title>
                                             <style>
                                                 body { font-family: 'Tahoma', sans-serif; padding: 10px; margin: 0; background: #fff; color: #000; direction: rtl; text-align: center; }
                                                 .receipt-container { width: 100%; max-width: 300px; margin: 0 auto; text-align: center; }
@@ -152,15 +152,15 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 <div class="header">
                                                     ${company.logo ? `<img src="${company.logo}" style="max-height: 60px; max-width: 120px; object-fit: contain; margin: 0 auto 5px;" alt="Logo" />` : ''}
                                                     <h2>${company.name || 'الشركة للأنظمة'}</h2>
-                                                    <p>فاتورة كاشير POS</p>
+                                                    <p>{t('فاتورة كاشير POS')}</p>
                                                     <p>رقم الفاتورة: #${invoice.invoiceNumber}</p>
                                                     <p>تاريخ: ${receiptDate}</p>
                                                 </div>
                                                 <div class="divider"></div>
                                                 <div style="font-weight: bold; font-size:12px; display:flex; margin-bottom: 5px;">
-                                                    <span class="item-name">الصنف</span>
-                                                    <span class="item-qty">كمية</span>
-                                                    <span class="item-total">إجمالي</span>
+                                                    <span class="item-name">{t('الصنف')}</span>
+                                                    <span class="item-qty">{t('كمية')}</span>
+                                                    <span class="item-total">{t('إجمالي')}</span>
                                                 </div>
                                                 ${invoice.lines.map(line => `
                                                     <div class="item-row">
@@ -174,20 +174,20 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 `).join('')}
                                                 <div class="divider"></div>
                                                 <div class="totals-row">
-                                                    <span>المجموع:</span>
+                                                    <span>{t('المجموع:')}</span>
                                                     <span>${fmt(invoice.subtotal)} ${cSymbol}</span>
                                                 </div>
                                                 ${invoice.discount > 0 ? `
                                                 <div class="totals-row">
-                                                    <span>الخصم:</span>
+                                                    <span>{t('الخصم:')}</span>
                                                     <span>- ${fmt(invoice.discount)} ${cSymbol}</span>
                                                 </div>` : ''}
                                                 <div class="totals-row" style="font-size: 18px; margin-top: 10px; border-top: 1px solid #000; padding-top: 5px;">
-                                                    <span>الإجمالي:</span>
+                                                    <span>{t('الإجمالي:')}</span>
                                                     <span>${fmt(invoice.total)} ${cSymbol}</span>
                                                 </div>
                                                 <div class="footer">
-                                                    <p>شكراً لزيارتكم!</p>
+                                                    <p>{t('شكراً لزيارتكم!')}</p>
                                                     <p style="font-size: 10px; color: #555;">Powered By ERP</p>
                                                 </div>
                                             </div>

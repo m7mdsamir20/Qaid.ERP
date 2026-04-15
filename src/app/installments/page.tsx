@@ -381,10 +381,9 @@ export default function InstallmentsPage() {
                                                             <button onClick={() => router.push(`/installments/${p.id}`)}
                                                                 style={{ width: 32, height: 32, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', transition: '0.2s' }}
                                                                 onMouseEnter={e => e.currentTarget.style.color = C.primary}
-                                                                onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
-                                                                title="عرض التفاصيل"
-                                                            >
-                                                                <Eye size={16} />
+                                                                onMouseLeave={e =>{t('e.currentTarget.style.color = C.textSecondary}
+                                                                title={t('عرض التفاصيل')}
+                                                            >')}<Eye size={16} />
                                                             </button>
                                                         </div>
                                                     </td>
@@ -571,7 +570,7 @@ export default function InstallmentsPage() {
                                     <CustomSelect
                                         value={form.treasuryId}
                                         onChange={v => setForm(f => ({ ...f, treasuryId: v }))}
-                                        options={treasuries.map(t => ({ value: t.id, label: t.name, sub: t.type === 'bank' ? 'حساب بنكي' : 'خزينة نقدية' }))}
+                                        options={treasuries.map(t => ({ value: t.id, label: t.name, sub: t.type === 'bank' ? t('حساب بنكي') : t('خزينة نقدية') }))}
                                         placeholder={t("اختر الخزينة...")}
                                         icon={Wallet}
                                         style={{ height: '36px' }}
@@ -633,7 +632,7 @@ export default function InstallmentsPage() {
                                 <div style={{ gridColumn: 'span 2', animation: 'fadeIn 0.3s', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}` }}>
                                     <label style={{ ...LS, fontSize: '11px', color: C.primary, marginBottom: '10px', display: 'block', fontWeight: 900 }}>{t('حدد الشهور النشطة للتحصيل:')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
-                                        {['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'].map((m, i) => {
+                                        {[t('يناير'), t('فبراير'), t('مارس'), t('أبريل'), t('مايو'), t('يونيو'), t('يوليو'), t('أغسطس'), t('سبتمبر'), t('أكتوبر'), t('نوفمبر'), t('ديسمبر')].map((m, i) => {
                                             const monthNum = i + 1;
                                             const isActive = form.activeMonths.includes(monthNum);
                                             return (
@@ -820,7 +819,7 @@ export default function InstallmentsPage() {
                             <button type="button" onClick={() => setShowAddCustomer(false)} style={{ 
                                 flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
                                 background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
-                            }}>إلغاء</button>
+                            }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

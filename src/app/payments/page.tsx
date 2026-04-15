@@ -82,15 +82,15 @@ export default function PaymentVouchersPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title="سندات الصرف"
-                    subtitle="إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك"
+                    title={t('سندات الصرف')}
+                    subtitle={t('إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك')}
                     icon={TrendingDown}
                     primaryButton={canCreate ? {
-                        label: 'سند صرف جديد',
+                        label: t('سند صرف جديد'),
                         onClick: () => router.push('/payments/new'),
                         icon: Plus
                     } : undefined}
-                    backButton={{ label: 'العودة للرئيسية', onClick: () => router.push('/') }}
+                    backButton={{ label: t('العودة للرئيسية'), onClick: () => router.push('/') }}
                 />
 
                 {/* Filters Section */}
@@ -100,18 +100,18 @@ export default function PaymentVouchersPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="رقم السند أو اسم المورد..." 
+                            placeholder={t('رقم السند أو اسم المورد...')} 
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
@@ -128,8 +128,7 @@ export default function PaymentVouchersPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
-                        </button>
+                            <Trash2 size={14} />{t('مسح')}</button>
                     )}
                 </div>
 
@@ -144,12 +143,12 @@ export default function PaymentVouchersPage() {
                     {loading ? (
                         <div style={{ padding: '80px', textAlign: 'center' }}>
                             <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, display: 'block', margin: '0 auto 10px' }} />
-                            <span style={{ fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>جاري تحميل البيانات...</span>
+                            <span style={{ fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>{t('جاري تحميل البيانات...')}</span>
                         </div>
                     ) : filteredAll.length === 0 ? (
                         <div style={{ padding: '70px', textAlign: 'center' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? 'لا توجد نتائج' : 'لا توجد سندات صرف'}</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج') : t('لا توجد سندات صرف')}</p>
                         </div>
                     ) : (
                         <>
@@ -157,14 +156,14 @@ export default function PaymentVouchersPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '14px', minWidth: '1000px' }}>
                                     <thead>
                                         <tr style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO, width: '120px' }}>رقم السند</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>التاريخ</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>المورد</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>طريقة الدفع</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>الخزينة / البنك</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>البيان</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>المبلغ</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>إجراءات</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO, width: '120px' }}>{t('رقم السند')}</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>{t('التاريخ')}</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('المورد')}</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>{t('طريقة الدفع')}</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('الخزينة / البنك')}</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('البيان')}</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>{t('المبلغ')}</th>
+                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>{t('إجراءات')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -188,7 +187,7 @@ export default function PaymentVouchersPage() {
                                                             color: v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399',
                                                             border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399'}30`, fontFamily: CAIRO
                                                         }}>
-                                                            {v.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
+                                                            {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
                                                         </div>
                                                     </td>
                                                     <td style={{ padding: '11px 16px', textAlign: 'start', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{v.treasury?.name || '—'}</td>
@@ -198,10 +197,10 @@ export default function PaymentVouchersPage() {
                                                     </td>
                                                     <td style={{ padding: '11px 16px' }}>
                                                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                            <button onClick={() => handlePrint(v)} style={TABLE_STYLE.actionBtn()} title="طباعة">
+                                                            <button onClick={() => handlePrint(v)} style={TABLE_STYLE.actionBtn()} title={t('طباعة')}>
                                                                 <Printer size={TABLE_STYLE.actionIconSize} />
                                                             </button>
-<button onClick={() => router.push(`/payments/${v.id}`)} style={TABLE_STYLE.actionBtn()} title="عرض">
+<button onClick={() => router.push(`/payments/${v.id}`)} style={TABLE_STYLE.actionBtn()} title={t('عرض')}>
                                                                 <Eye size={TABLE_STYLE.actionIconSize} />
                                                             </button>
                                                         </div>

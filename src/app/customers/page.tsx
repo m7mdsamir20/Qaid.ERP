@@ -176,8 +176,8 @@ export default function CustomersPage() {
     const filteredAll = customers.filter(c => {
         const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) || (c.phone || '').includes(search);
         if (!matchesSearch) return false;
-        if (statusFilter === 'debit') return c.balance > 0; // مديونيات (موجب)
-        if (statusFilter === 'credit') return c.balance < 0; // أرصدة مقدمة (سالب)
+        if (statusFilter === 'debit') return c.balance >{t('0; // مديونيات (موجب)
+        if (statusFilter === \'credit\') return c.balance')}< 0; // أرصدة مقدمة (سالب)
         return true;
     });
 

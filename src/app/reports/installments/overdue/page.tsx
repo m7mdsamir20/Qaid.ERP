@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 import { useSession } from 'next-auth/react';
@@ -69,8 +69,8 @@ export default function OverdueReportPage() {
                 `}</style>
                 
                 <ReportHeader
-                    title="الأقساط المستحقة"
-                    subtitle="كشف مفصل بجميع الأقساط التي تجاوزت موعد استحقاقها ولم تُسدد"
+                    title={t('الأقساط المستحقة')}
+                    subtitle={t('كشف مفصل بجميع الأقساط التي تجاوزت موعد استحقاقها ولم تُسدد')}
                     backTab="installments"
                     
                 />
@@ -84,12 +84,12 @@ export default function OverdueReportPage() {
                     alignItems: 'end'
                 }}>
                     <div style={{ position: 'relative' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>فلترة بعميل محدد (اختياري):</label>
+                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{t('فلترة بعميل محدد (اختياري):')}</label>
                         <CustomSelect 
                             value={selectedCustomer} 
                             onChange={setSelectedCustomer}
-                            options={[{ value: '', label: '-- جميع العملاء المستحقين --' }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
-                            placeholder="اختر عميلاً للفلترة..."
+                            options={[{ value: '', label: t('-- جميع العملاء المستحقين --') }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
+                            placeholder={t('اختر عميلاً للفلترة...')}
                             style={{ 
                                 width: '100%', height: '42.5px', padding: '0 15px', 
                                 borderRadius: '12px', border: `1px solid ${C.border}`, 
@@ -106,23 +106,22 @@ export default function OverdueReportPage() {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                         boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                     }}>
-                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
-                        استخراج التقرير
-                    </button>
+                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />{t('} 
+                        استخراج التقرير')}</button>
                 </div>
 
                 <div style={{ minHeight: '300px' }}>
                     {loading && (
                         <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                             <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                            <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>جاري تحليل المبيعات المتأخرة...</p>
+                            <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>{t('جاري تحليل المبيعات المتأخرة...')}</p>
                         </div>
                     )}
 
                     {!loading && !data && (
                         <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                             <AlertTriangle size={60} style={{ color: C.textMuted }} />
-                            <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>اضغط على زر استخراج التقرير لعرض المديونيات</p>
+                            <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>{t('اضغط على زر استخراج التقرير لعرض المديونيات')}</p>
                         </div>
                     )}
 
@@ -135,7 +134,7 @@ export default function OverdueReportPage() {
                                         {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
                                     </div>
                                     <div style={{ textAlign: 'center' }}>
-                                        <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>الأقساط المستحقة والمتأخرة</h3>
+                                        <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{t('الأقساط المستحقة والمتأخرة')}</h3>
                                     </div>
                                     <div style={{ maxWidth: '150px', textAlign: 'end' }}>
                                         {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
@@ -146,9 +145,9 @@ export default function OverdueReportPage() {
                             {/* ── KPI Cards (Fixed Assets Style) ── */}
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '14px', marginBottom: '24px' }}>
                                 {[
-                                    { label: 'إجمالي المديونية', value: fmtN(data.total || 0), color: '#f87171', icon: <AlertTriangle size={18} /> },
-                                    { label: 'أقساط متعثرة', value: data.installments?.length || 0, color: '#fb7185', icon: <TrendingDown size={18} /> },
-                                    { label: 'نسبة التعثر', value: `${((data.installments?.length || 0) > 0 ? 100 : 0)}%`, color: '#f59e0b', icon: <BarChart3 size={18} /> },
+                                    { label: t('إجمالي المديونية'), value: fmtN(data.total || 0), color: '#f87171', icon: <AlertTriangle size={18} /> },
+                                    { label: t('أقساط متعثرة'), value: data.installments?.length || 0, color: '#fb7185', icon: <TrendingDown size={18} /> },
+                                    { label: t('نسبة التعثر'), value: `${((data.installments?.length || 0) > 0 ? 100 : 0)}%`, color: '#f59e0b', icon: <BarChart3 size={18} /> },
                                 ].map((s, i) => (
                                     <div key={i} style={{
                                         background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -177,7 +176,7 @@ export default function OverdueReportPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            {['العميل', 'رقم الخطة', 'القسط', 'موعد الاستحقاق', 'أيام التأخير', 'المبلغ المتبقي'].map((h, i) => (
+                                            {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => (
                                                 <th key={i} style={{ padding: '20px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>

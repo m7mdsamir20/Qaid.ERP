@@ -122,7 +122,7 @@ export default function SaleReturnDetailsPage() {
                                 border: '1px solid var(--border-color)',
                                 cursor: 'pointer'
                             }}
-                            title="العودة"
+                            title={t('العودة')}
                         >
                             <ArrowRight size={20} />
                         </button>

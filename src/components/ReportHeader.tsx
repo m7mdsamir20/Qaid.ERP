@@ -223,7 +223,7 @@ tfoot td:first-child{text-align:right;border-right:2px solid #909aaa}
 <!-- بطاقة اسم العميل / المورد / الحساب -->
 ${accountName ? `
 <div class="account-card">
-  <div class="account-card-label">اسم الحساب</div>
+  <div class="account-card-label">{t('اسم الحساب')}</div>
   <div class="account-card-name">${accountName}</div>
   <div class="account-card-meta">${dateRange}</div>
 </div>` : ''}
@@ -258,7 +258,7 @@ ${tablesHTML}
                         }}
                         onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
                         onMouseLeave={e => { e.currentTarget.style.background = C.inputBg; e.currentTarget.style.color = C.textSecondary; }}
-                        title="رجوع"
+                        title={t('رجوع')}
                     >
                         <ArrowRight size={22} />
                     </button>
@@ -280,8 +280,7 @@ ${tablesHTML}
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)'; e.currentTarget.style.transform = 'none'; }}
                         >
-                            <FileSpreadsheet size={15} /> تحميل Excel
-                        </button>
+                            <FileSpreadsheet size={15} />{t('تحميل Excel')}</button>
                     )}
 
                     <button
@@ -296,8 +295,7 @@ ${tablesHTML}
                         onMouseEnter={e => { e.currentTarget.style.background = C.primaryHover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
                         onMouseLeave={e => { e.currentTarget.style.background = C.primary; e.currentTarget.style.transform = 'none'; }}
                     >
-                        <Printer size={15} /> طباعة
-                    </button>
+                        <Printer size={15} />{t('طباعة')}</button>
                 </div>
             </div>
         </div>

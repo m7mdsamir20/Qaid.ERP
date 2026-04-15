@@ -29,21 +29,21 @@ interface FixedAsset {
 }
 
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
     return map[code] || code;
 };
 
 const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
-    active:    { label: 'نشط',           color: '#10b981', bg: 'rgba(16,185,129,0.1)'  },
-    disposed:  { label: 'مُستبعد',        color: '#fb7185', bg: 'rgba(251,113,133,0.1)'   },
-    fully_dep: { label: 'مستهلك كلياً',  color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' },
+    active:    { label: t('نشط'),           color: '#10b981', bg: 'rgba(16,185,129,0.1)'  },
+    disposed:  { label: t('مُستبعد'),        color: '#fb7185', bg: 'rgba(251,113,133,0.1)'   },
+    fully_dep: { label: t('مستهلك كلياً'),  color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' },
 };
 
 const METHOD_MAP: Record<string, string> = {
-    straight: 'قسط ثابت', declining: 'قسط متناقص',
+    straight: t('قسط ثابت'), declining: t('قسط متناقص'),
 };
 
-const CATEGORIES = ['الكل', 'مركبات', 'أجهزة وحاسبات', 'أراضي ومباني', 'أثاث ومفروشات', 'معدات وآلات', 'أخرى'];
+const CATEGORIES = [t('الكل'), t('مركبات'), t('أجهزة وحاسبات'), t('أراضي ومباني'), t('أثاث ومفروشات'), t('معدات وآلات'), t('أخرى')];
 
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -93,8 +93,8 @@ export default function FixedAssetsReportPage() {
 
                 {/* ── Header ── */}
                 <ReportHeader
-                    title="تقرير الأصول الثابتة"
-                    subtitle="كشف تفصيلي بالأصول — التكلفة التاريخية ومجمع الإهلاك والقيمة الدفترية"
+                    title={t('تقرير الأصول الثابتة')}
+                    subtitle={t('كشف تفصيلي بالأصول — التكلفة التاريخية ومجمع الإهلاك والقيمة الدفترية')}
                     backTab="financial"
                     
                 />
@@ -102,7 +102,7 @@ export default function FixedAssetsReportPage() {
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>جاري تحميل بيانات الأصول...</span>
+                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل بيانات الأصول...')}</span>
                     </div>
                 ) : (
                     <>
@@ -110,10 +110,10 @@ export default function FixedAssetsReportPage() {
                         {/* ── KPI Cards ── */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: 'إجمالي التكلفة', value: fmt(totalCost), color: '#3b82f6', icon: <DollarSign size={18} /> },
-                                { label: 'مجمع الإهلاك', value: fmt(totalAccum), color: '#fb7185', icon: <TrendingDown size={18} /> },
-                                { label: 'الصافي الدفتري', value: fmt(totalNet), color: '#10b981', icon: <Building2 size={18} /> },
-                                { label: 'نسبة الاستهلاك', value: `${depPct}%`, color: '#f59e0b', icon: <FileBarChart2 size={18} /> },
+                                { label: t('إجمالي التكلفة'), value: fmt(totalCost), color: '#3b82f6', icon: <DollarSign size={18} /> },
+                                { label: t('مجمع الإهلاك'), value: fmt(totalAccum), color: '#fb7185', icon: <TrendingDown size={18} /> },
+                                { label: t('الصافي الدفتري'), value: fmt(totalNet), color: '#10b981', icon: <Building2 size={18} /> },
+                                { label: t('نسبة الاستهلاك'), value: `${depPct}%`, color: '#f59e0b', icon: <FileBarChart2 size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -150,7 +150,7 @@ export default function FixedAssetsReportPage() {
                                 focusOut(e);
                                 e.currentTarget.style.background = C.card;
                             }}
-                            placeholder="بحث شامل بالأصول (الاسم أو الكود)..."
+                            placeholder={t('بحث شامل بالأصول (الاسم أو الكود)...')}
                             style={{ 
                                 ...IS, 
                                 width: '100%', 
@@ -172,7 +172,7 @@ export default function FixedAssetsReportPage() {
                             value={catFilter} 
                             onChange={setCatFilter}
                             icon={Building2} 
-                            placeholder="الفئة"
+                            placeholder={t('الفئة')}
                             options={CATEGORIES.map(c => ({ value: c, label: c }))}
                             style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
                         />
@@ -190,10 +190,10 @@ export default function FixedAssetsReportPage() {
                         alignItems: 'center'
                     }}>
                         {[
-                            { key: 'all',      label: 'الكل',          color: '#3b82f6' },
-                            { key: 'active',   label: 'نشط',           color: '#10b981' },
-                            { key: 'fully_dep',label: 'مستهلك كلياً',  color: '#94a3b8' },
-                            { key: 'disposed', label: 'مُستبعد',        color: '#fb7185' },
+                            { key: 'all',      label: t('الكل'),          color: '#3b82f6' },
+                            { key: 'active',   label: t('نشط'),           color: '#10b981' },
+                            { key: 'fully_dep',label: t('مستهلك كلياً'),  color: '#94a3b8' },
+                            { key: 'disposed', label: t('مُستبعد'),        color: '#fb7185' },
                         ].map(btn => (
                             <button key={btn.key} onClick={() => setStatusFilter(btn.key)} style={{
                                 height: '34px', 
@@ -213,8 +213,7 @@ export default function FixedAssetsReportPage() {
                 </div>
 
                 <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
-                    <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
-                        عدد الأصول المفلترة: <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
+                    <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t('عدد الأصول المفلترة:')}<span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
                     </div>
                 </div>
 
@@ -223,7 +222,7 @@ export default function FixedAssetsReportPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {['الكود', 'اسم الأصل', 'الفئة', 'تاريخ الشراء', 'التكلفة', 'مجمع الإهلاك', 'الصافي الدفتري', 'المعدل', 'الحالة'].map((h, i) => (
+                                        {[t('الكود'), t('اسم الأصل'), t('الفئة'), t('تاريخ الشراء'), t('التكلفة'), t('مجمع الإهلاك'), t('الصافي الدفتري'), t('المعدل'), t('الحالة')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', 
                                                 fontSize: '12px', 
@@ -238,7 +237,7 @@ export default function FixedAssetsReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>لا توجد بيانات تطابق البحث حالياً</td></tr>
+                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
                                     ) : filtered.map((a, i) => {
                                         const st = STATUS_MAP[a.status];
                                         const depPctRow = a.purchaseCost > 0

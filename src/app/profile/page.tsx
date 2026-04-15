@@ -91,16 +91,15 @@ export default function ProfilePage() {
     if (loading) return (
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#64748b', gap: '10px' }}>
-                <Loader2 className="animate-spin" size={24} /> جاري التحميل...
-            </div>
+                <Loader2 className="animate-spin" size={24} />{t('جاري التحميل...')}</div>
         </DashboardLayout>
     );
 
     const roleLabel: Record<string, string> = {
-        admin: 'مدير النظام',
-        accountant: 'محاسب',
-        sales: 'مبيعات',
-        storekeeper: 'أمين مستودع',
+        admin: t('مدير النظام'),
+        accountant: t('محاسب'),
+        sales: t('مبيعات'),
+        storekeeper: t('أمين مستودع'),
     };
 
     return (
@@ -110,8 +109,8 @@ export default function ProfilePage() {
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                     <div>
-                        <h1 className="page-title">الملف الشخصي</h1>
-                        <p className="page-subtitle">عرض وإدارة بياناتك الشخصية في النظام</p>
+                        <h1 className="page-title">{t('الملف الشخصي')}</h1>
+                        <p className="page-subtitle">{t('عرض وإدارة بياناتك الشخصية في النظام')}</p>
                     </div>
                 </div>
 
@@ -140,7 +139,7 @@ export default function ProfilePage() {
                             <button onClick={() => isEditMode ? handleSave() : setIsEditMode(true)} disabled={isSaving}
                                 style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 24px', borderRadius: '12px', background: isEditMode ? '#10b981' : 'rgba(255,255,255,0.05)', border: isEditMode ? 'none' : '1px solid rgba(255,255,255,0.1)', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', boxShadow: isEditMode ? '0 4px 15px rgba(16,185,129,0.3)' : 'none' }}>
                                 {isSaving ? <Loader2 className="animate-spin" size={16} /> : (isEditMode ? <Save size={16} /> : <Edit3 size={16} />)}
-                                {isEditMode ? 'حفظ التغييرات' : 'تعديل الملف'}
+                                {isEditMode ? t('حفظ التغييرات') : t('تعديل الملف')}
                             </button>
                         </div>
 
@@ -150,7 +149,7 @@ export default function ProfilePage() {
                             {/* Form side */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>الاسم الكامل</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>{t('الاسم الكامل')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <User size={16} style={{ position: 'absolute', top: '12px', insetInlineEnd: '14px', color: '#6366f1' }} />
                                         <input
@@ -163,7 +162,7 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>البريد الإلكتروني</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>{t('البريد الإلكتروني')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <Mail size={16} style={{ position: 'absolute', top: '12px', insetInlineEnd: '14px', color: '#6366f1' }} />
                                         <input
@@ -176,14 +175,14 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>رقم الهاتف</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: '#475569', paddingInlineEnd: '4px' }}>{t('رقم الهاتف')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <Phone size={16} style={{ position: 'absolute', top: '12px', insetInlineEnd: '14px', color: '#6366f1' }} />
                                         <input
                                             readOnly={!isEditMode}
                                             value={form.phone}
                                             onChange={e => setForm(p => ({ ...p, phone: e.target.value }))}
-                                            placeholder="لا يوجد"
+                                            placeholder={t('لا يوجد')}
                                             style={{ width: '100%', padding: '10px 40px 10px 14px', background: isEditMode ? 'rgba(255,255,255,0.03)' : 'transparent', border: isEditMode ? '1px solid rgba(99,102,241,0.3)' : '1px solid transparent', borderRadius: '10px', color: '#e2e8f0', fontSize: '14px', boxSizing: 'border-box', outline: 'none' }}
                                         />
                                     </div>
@@ -193,8 +192,7 @@ export default function ProfilePage() {
                             {/* Avatar selector side */}
                             <div>
                                 <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#f1f5f9', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                    <Grid size={16} color="#6366f1" /> اختر الأفاتار المفضل
-                                </h3>
+                                    <Grid size={16} color="#6366f1" />{t('اختر الأفاتار المفضل')}</h3>
 
                                 <div style={{
                                     display: 'grid',
@@ -244,9 +242,7 @@ export default function ProfilePage() {
                                 </div>
 
                                 {isEditMode && (
-                                    <p style={{ fontSize: '11px', color: '#64748b', marginTop: '12px', textAlign: 'center' }}>
-                                        انقر على الأفاتار الذي يشبهك لتغيير مظهرك في النظام
-                                    </p>
+                                    <p style={{ fontSize: '11px', color: '#64748b', marginTop: '12px', textAlign: 'center' }}>{t('انقر على الأفاتار الذي يشبهك لتغيير مظهرك في النظام')}</p>
                                 )}
                             </div>
                         </div>
@@ -254,9 +250,7 @@ export default function ProfilePage() {
                         {isEditMode && (
                             <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '40px', gap: '10px' }}>
                                 <button onClick={() => setIsEditMode(false)}
-                                    style={{ padding: '10px 24px', background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: '10px', color: '#f87171', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>
-                                    إلغاء
-                                </button>
+                                    style={{ padding: '10px 24px', background: 'rgba(248,113,113,0.1)', border: '1px solid rgba(248,113,113,0.2)', borderRadius: '10px', color: '#f87171', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>{t('إلغاء')}</button>
                             </div>
                         )}
                     </div>

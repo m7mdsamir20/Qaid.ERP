@@ -147,9 +147,7 @@ const AppModal: React.FC<AppModalProps> = ({
                             <h3 style={{ margin: '0 0 10px', color: C.textPrimary, fontSize: '20px', fontWeight: 900 }}>{title}</h3>
                             <p style={{ margin: '0 auto', color: C.textSecondary, fontSize: '14px', lineHeight: 1.7, maxWidth: '320px', fontWeight: 600 }}>
                                 {description || (
-                                    <>
-                                        سيتم حذف <span style={{ color: C.danger, fontWeight: 900 }}>"{itemName || 'هذا العنصر'}"</span> نهائياً من قاعدة البيانات.
-                                    </>
+                                    <>{t('سيتم حذف')}<span style={{ color: C.danger, fontWeight: 900 }}>"{itemName || 'هذا العنصر'}"</span>{t('نهائياً من قاعدة البيانات.')}</>
                                 )}
                             </p>
                             

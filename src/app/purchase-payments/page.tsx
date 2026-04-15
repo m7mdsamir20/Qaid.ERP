@@ -72,8 +72,8 @@ export default function PurchasePaymentsPage() {
         const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         const amount = (voucher.amount || 0).toLocaleString('en-US');
         const COMPANY = {
-            name: 'شركة النور للتجارة', nameEn: 'Al-Nour Trading Company',
-            address: 'القاهرة، مصر - شارع التحرير، عمارة 12',
+            name: t('شركة النور للتجارة'), nameEn: 'Al-Nour Trading Company',
+            address: t('القاهرة، مصر - شارع التحرير، عمارة 12'),
             phone: '01000000000  |  01100000000',
             email: 'info@alnour.com', tax: '123-456-789', logo: '',
         };
@@ -127,40 +127,40 @@ export default function PurchasePaymentsPage() {
       </div>
     </div>
     <div class="badge-area">
-      <div><span class="badge-type">📤 سند صرف</span></div>
+      <div><span class="badge-type">{t('📤 سند صرف')}</span></div>
       <div class="badge-num">PMT-${String(voucherNumber).padStart(5, '0')}</div>
       <div class="badge-date">${date}</div>
     </div>
   </div>
   <div class="amount-box">
-    <div class="amount-label">المبلغ المصروف</div>
+    <div class="amount-label">{t('المبلغ المصروف')}</div>
     <div class="amount-value">${amount} ج.م</div>
     ${form.description ? `<div class="amount-words">${form.description}</div>` : ''}
   </div>
   <div class="meta-grid">
     <div class="meta-card">
-      <div class="title">بيانات المورد</div>
-      <div class="ml"><span class="mk">الاسم</span><span class="mv">${supplier?.name || '—'}</span></div>
-      ${supplier?.phone ? `<div class="ml"><span class="mk">الهاتف</span><span class="mv">${supplier.phone}</span></div>` : ''}
+      <div class="title">{t('بيانات المورد')}</div>
+      <div class="ml"><span class="mk">{t('الاسم')}</span><span class="mv">${supplier?.name || '—'}</span></div>
+      ${supplier?.phone ? `<div class="ml"><span class="mk">{t('الهاتف')}</span><span class="mv">${supplier.phone}</span></div>` : ''}
       <div class="ml">
-        <span class="mk">الرصيد بعد السند</span>
+        <span class="mk">{t('الرصيد بعد السند')}</span>
         <span class="mv" style="color:${((supplier?.balance || 0) + (voucher.amount || 0)) >= 0 ? '#166534' : '#dc2626'}">
           ${((supplier?.balance || 0) + (voucher.amount || 0)).toLocaleString('en-US')} ج.م
         </span>
       </div>
     </div>
     <div class="meta-card">
-      <div class="title">تفاصيل السند</div>
-      <div class="ml"><span class="mk">رقم السند</span><span class="mv" style="font-family:monospace">PMT-${String(voucherNumber).padStart(5, '0')}</span></div>
-      <div class="ml"><span class="mk">التاريخ</span><span class="mv">${date}</span></div>
-      <div class="ml"><span class="mk">طريقة الدفع</span><span class="mv">${form.paymentType === 'cash' ? 'نقدي' : 'تحويل بنكي'}</span></div>
-      <div class="ml"><span class="mk">الخزينة</span><span class="mv">${voucher.treasury?.name || '—'}</span></div>
+      <div class="title">{t('تفاصيل السند')}</div>
+      <div class="ml"><span class="mk">{t('رقم السند')}</span><span class="mv" style="font-family:monospace">PMT-${String(voucherNumber).padStart(5, '0')}</span></div>
+      <div class="ml"><span class="mk">{t('التاريخ')}</span><span class="mv">${date}</span></div>
+      <div class="ml"><span class="mk">{t('طريقة الدفع')}</span><span class="mv">${form.paymentType === 'cash' ? t('نقدي') : t('تحويل بنكي')}</span></div>
+      <div class="ml"><span class="mk">{t('الخزينة')}</span><span class="mv">${voucher.treasury?.name || '—'}</span></div>
     </div>
   </div>
   <div class="footer">
-    <div class="sig"><div class="sl">توقيع المورد</div><div class="ss">الاسم والتوقيع</div></div>
-    <div class="cf"><strong>${COMPANY.name}</strong><br/>${COMPANY.address}<br/><span style="color:#3b82f6;font-weight:700">سند رسمي معتمد</span></div>
-    <div class="sig"><div class="sl">توقيع المُصرِف</div><div class="ss">الاسم والتوقيع</div></div>
+    <div class="sig"><div class="sl">{t('توقيع المورد')}</div><div class="ss">{t('الاسم والتوقيع')}</div></div>
+    <div class="cf"><strong>${COMPANY.name}</strong><br/>${COMPANY.address}<br/><span style="color:#3b82f6;font-weight:700">{t('سند رسمي معتمد')}</span></div>
+    <div class="sig"><div class="sl">{t('توقيع المُصرِف')}</div><div class="ss">{t('الاسم والتوقيع')}</div></div>
   </div>
 </div>
 <script>window.onload=()=>window.print();</script>
@@ -174,11 +174,11 @@ export default function PurchasePaymentsPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px' }}>
                 <PageHeader
-                    title="سندات الصرف"
-                    subtitle="إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك"
+                    title={t('سندات الصرف')}
+                    subtitle={t('إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك')}
                     icon={CreditCard}
                     primaryButton={canCreate ? {
-                        label: "سند صرف جديد",
+                        label: t('سند صرف جديد'),
                         onClick: () => router.push('/purchase-payments/new'),
                         icon: Plus
                     } : undefined}
@@ -188,7 +188,7 @@ export default function PurchasePaymentsPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="ابحث برقم السند أو اسم المورد..." 
+                            placeholder={t('ابحث برقم السند أو اسم المورد...')} 
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
@@ -196,11 +196,11 @@ export default function PurchasePaymentsPage() {
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
@@ -217,8 +217,7 @@ export default function PurchasePaymentsPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
-                        </button>
+                            <Trash2 size={14} />{t('مسح')}</button>
                     )}
                 </div>
 
@@ -231,21 +230,21 @@ export default function PurchasePaymentsPage() {
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '70px', textAlign: 'center' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>لا توجد سندات صرف</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد سندات صرف')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم السند</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>المورد</th>
-                                        <th style={TABLE_STYLE.th(false)}>طريقة الدفع</th>
-                                        <th style={TABLE_STYLE.th(false)}>الخزينة / البنك</th>
-                                        <th style={TABLE_STYLE.th(false)}>البيان</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>المبلغ</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('رقم السند')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المورد')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('طريقة الدفع')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -271,7 +270,7 @@ export default function PurchasePaymentsPage() {
                                                     color: v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
                                                     border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
                                                 }}>
-                                                    {v.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
+                                                    {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
@@ -289,9 +288,8 @@ export default function PurchasePaymentsPage() {
                                                         onClick={(e) => { e.stopPropagation(); printPayVoucher(v, suppliers.find(s => s.id === v.supplier?.id), v.voucherNumber, { paymentType: v.paymentType, date: v.date, description: v.description }); }}
                                                         style={{ background: 'transparent', border: 'none', color: "#64748b", cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }}
                                                         onMouseEnter={e => e.currentTarget.style.color = C.primary}
-                                                        onMouseLeave={e => e.currentTarget.style.color = "#64748b"}
-                                                        title="طباعة">
-                                                        <Printer size={16} />
+                                                        onMouseLeave={e =>{t('e.currentTarget.style.color = "#64748b"}
+                                                        title={t('طباعة')}>')}<Printer size={16} />
                                                     </button>
                                                 </div>
                                             </td>

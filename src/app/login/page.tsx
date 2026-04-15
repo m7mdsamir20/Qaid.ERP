@@ -74,7 +74,7 @@ export default function LoginPage() {
                     onMouseEnter={e => e.currentTarget.style.background = `${C.primary}20`}
                     onMouseLeave={e => e.currentTarget.style.background = `${C.primary}10`}
                 >
-                    {lang === 'ar' ? 'EN' : 'ع'}
+                    {lang === 'ar' ? 'EN' : t('ع')}
                 </button>
 
                 {/* مفتاح الثيم */}
