@@ -165,9 +165,12 @@ export default function LoginPage() {
 
                 {/* كارت التسجيل */}
                 <div style={{
-                    ...(theme === 'light' ? { background: '#ffffff', border: `1px solid ${C.border}` } : THEME.glass.card),
+                    background: 'var(--c-auth-card-bg)',
+                    border: 'var(--c-auth-card-border)',
+                    boxShadow: 'var(--c-auth-card-shadow)',
+                    backdropFilter: 'var(--c-auth-card-blur)',
+                    WebkitBackdropFilter: 'var(--c-auth-card-blur)',
                     borderRadius: '24px', padding: '32px',
-                    boxShadow: theme === 'light' ? '0 10px 40px rgba(37, 106, 244, 0.1)' : THEME.shadows.premium
                 }}>
                     <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>{t('تسجيل الدخول')}</h2>
 

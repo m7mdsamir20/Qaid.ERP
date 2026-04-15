@@ -101,6 +101,12 @@
   --c-shadow: rgba(0, 0, 0, 0.25);
   --c-shadow: rgba(0, 0, 0, 0.5);
 
+  /* Auth Card Variables (Glass) */
+  --c-auth-card-bg: rgba(15, 23, 42, 0.7);
+  --c-auth-card-border: 1px solid rgba(255, 255, 255, 0.08);
+  --c-auth-card-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  --c-auth-card-blur: blur(16px);
+
   /* Legacy Vars used in globals.css directly */
   --primary: var(--c-primary);
   --primary-hover: var(--c-primary-hover);
@@ -136,9 +142,15 @@
   --c-border: #d0daf0;
   --c-input-bg: #ffffff;
 
-  --c-text-primary: #0f1a2e;
-  --c-text-secondary: #3d5278;
-  --c-text-muted: #7a93b8;
+  --c-text-primary: #1e293b;
+  --c-text-secondary: #475569;
+  --c-text-muted: #94a3b8;
+
+  /* Auth Card Variables */
+  --c-auth-card-bg: #ffffff;
+  --c-auth-card-border: 1px solid var(--c-border);
+  --c-auth-card-shadow: 0 10px 40px rgba(37, 106, 244, 0.1);
+  --c-auth-card-blur: none;
 
   --c-overlay: rgba(240, 244, 255, 0.88);
   --c-shadow: rgba(37, 106, 244, 0.05);
