@@ -13,11 +13,11 @@ import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '
 
 // We'll use theme constants instead of these local ones
 const PLANS = {
-    trial:   { label: t('تجريبي 14 يوم'), color: '#fb923c', days: 14  },
-    basic:   { label: t('أساسي'),          color: '#60a5fa', days: 365 },
-    pro:     { label: t('متقدم'),          color: '#a78bfa', days: 365 },
-    premium: { label: t('بريميوم'),        color: '#fbbf24', days: 365 },
-    custom:  { label: t('مخصص'),          color: '#34d399', days: 0   },
+    trial:   { label: 'تجريبي 14 يوم', color: '#fb923c', days: 14  },
+    basic:   { label: 'أساسي',          color: '#60a5fa', days: 365 },
+    pro:     { label: 'متقدم',          color: '#a78bfa', days: 365 },
+    premium: { label: 'بريميوم',        color: '#fbbf24', days: 365 },
+    custom:  { label: 'مخصص',          color: '#34d399', days: 0   },
 };
 
 // الـ featureKeys الصحيحة من navSections:
@@ -25,12 +25,12 @@ const PLANS = {
 const BUSINESS_TYPES = [
     {
         value: "TRADING",
-        label: t('نشاط تجاري (جملة وتجزئة)'),
+        label: "نشاط تجاري (جملة وتجزئة)",
         modules: ['sales', 'installments', 'purchases', 'inventory', 'accounting', 'treasury', 'partners', 'reports']
     },
     {
         value: "SERVICES",
-        label: t('نشاط خدمات (استشارات، صيانة، إلخ)'),
+        label: "نشاط خدمات (استشارات، صيانة، إلخ)",
         modules: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports']
     },
 ];
@@ -70,11 +70,11 @@ export default function NewCompanyPage() {
         maxUsers:    '5',
         maxBranches: '1',
         // الصلاحيات
-        features: {} as Record<string, string[]>{t(',
+        features: {} as Record<string, string[]>,
     });
 
     // بناء الـ features بناءً على نوع النشاط مع الـ featureKeys الصحيحة
-    const buildDefaultFeatures = (bType: string): Record')}<string, string[]> => {
+    const buildDefaultFeatures = (bType: string): Record<string, string[]> => {
         const allowedModules = BUSINESS_TYPES.find(b => b.value === bType)?.modules
             || BUSINESS_TYPES.find(b => b.value === 'TRADING')!.modules;
         const features: Record<string, string[]> = {};
@@ -171,10 +171,10 @@ export default function NewCompanyPage() {
 
     /* ─── Steps Config ─── */
     const steps = [
-        { num: 1, label: t('بيانات الشركة'),  icon: <Building2 size={16} /> },
-        { num: 2, label: t('بيانات المدير'),   icon: <User size={16} />      },
-        { num: 3, label: t('الاشتراك'),        icon: <CreditCard size={16} /> },
-        { num: 4, label: t('الصلاحيات'),       icon: <Shield size={16} />    },
+        { num: 1, label: 'بيانات الشركة',  icon: <Building2 size={16} /> },
+        { num: 2, label: 'بيانات المدير',   icon: <User size={16} />      },
+        { num: 3, label: 'الاشتراك',        icon: <CreditCard size={16} /> },
+        { num: 4, label: 'الصلاحيات',       icon: <Shield size={16} />    },
     ];
 
     // إزالة التكرار في الـ featureKey ودمج الروابط
@@ -192,23 +192,23 @@ export default function NewCompanyPage() {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';
                     section.links = section.links.map((l: any) => {
-                        if (l.label === 'فواتير المبيعات') return { ...l, label: t('فواتير الخدمات') };
-                        if (l.label === 'مرتجع مبيعات') return { ...l, label: t('مرتجع خدمات') };
+                        if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
+                        if (l.label === 'مرتجع مبيعات') return { ...l, label: 'مرتجع خدمات' };
                         return l;
                     });
                 }
                 if (section.featureKey === 'inventory') {
                     section.title = 'الخدمات';
                     section.links = section.links.map((l: any) => {
-                        if (l.id === '/items') return { ...l, label: t('قائمة الخدمات') };
-                        if (l.id === '/categories') return { ...l, label: t('تصنيفات الخدمات') };
+                        if (l.id === '/items') return { ...l, label: 'قائمة الخدمات' };
+                        if (l.id === '/categories') return { ...l, label: 'تصنيفات الخدمات' };
                         return l;
                     });
                 }
                 if (section.featureKey === 'reports') {
                     section.links = section.links.map((l: any) => {
-                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: t('الخدمات والمشتريات') };
-                        if (l.label === 'تقارير المخزون') return { ...l, label: t('تقارير الخدمات') };
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'الخدمات والمشتريات' };
+                        if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير الخدمات' };
                         return l;
                     });
                 }
@@ -233,15 +233,16 @@ export default function NewCompanyPage() {
             <div style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 32px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <button onClick={() => router.push('/super-admin')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>
-                        <ArrowRight size={16} />{t('العودة للوحة التحكم')}</button>
+                        <ArrowRight size={16} /> العودة للوحة التحكم
+                    </button>
                     <span style={{ color: '#334155' }}>|</span>
-                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#e2e8f0' }}>{t('إنشاء حساب جديد')}</span>
+                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#e2e8f0' }}>إنشاء حساب جديد</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ width: 28, height: 28, borderRadius: '8px', background: 'linear-gradient(135deg,#6366f1,#4338ca)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Shield size={14} style={{ color: '#fff' }} />
                     </div>
-                    <span style={{ fontSize: '13px', fontWeight: 800, color: '#818cf8' }}>{t('قيد — السوبر أدمن')}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 800, color: '#818cf8' }}>قيد — السوبر أدمن</span>
                 </div>
             </div>
 
@@ -284,64 +285,66 @@ export default function NewCompanyPage() {
                         <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                 <Building2 size={22} />
-                            </div>{t('بيانات الشركة')}</h2>
+                            </div>
+                            بيانات الشركة
+                        </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                             <div style={{ gridColumn: 'span 2' }}>
-                                <label style={LS}>{t('اسم الشركة (بالعربية)')}<span style={{ color: C.danger }}>*</span></label>
-                                <input required type="text" placeholder={t('مثال: شركة النيل للتجارة')}
+                                <label style={LS}>اسم الشركة (بالعربية) <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="text" placeholder="مثال: شركة النيل للتجارة"
                                     value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     style={IS} />
                             </div>
                             <div>
-                                <label style={LS}>{t('الاسم بالإنجليزية')}</label>
+                                <label style={LS}>الاسم بالإنجليزية</label>
                                 <input type="text" placeholder="Nile Trading Co."
                                     value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('رقم هاتف الشركة')}</label>
+                                <label style={LS}>رقم هاتف الشركة</label>
                                 <input type="tel" placeholder="01XXXXXXXXX"
                                     value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone"
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('البريد الإلكتروني للشركة')}</label>
+                                <label style={LS}>البريد الإلكتروني للشركة</label>
                                 <input type="email" placeholder="info@company.com"
                                     value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('العنوان')}</label>
-                                <input type="text" placeholder={t('القاهرة، مصر')}
+                                <label style={LS}>العنوان</label>
+                                <input type="text" placeholder="القاهرة، مصر"
                                     value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     style={IS} />
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
-                                <label style={LS}>{t('الدولة')}<span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>الدولة <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
                                     {[
-                                        { code: 'EG', name: t('مصر'), flag: '🇪🇬' },
-                                        { code: 'SA', name: t('السعودية'), flag: '🇸🇦' },
-                                        { code: 'AE', name: t('الإمارات'), flag: '🇦🇪' },
-                                        { code: 'KW', name: t('الكويت'), flag: '🇰🇼' },
-                                        { code: 'QA', name: t('قطر'), flag: '🇶🇦' },
-                                        { code: 'BH', name: t('البحرين'), flag: '🇧🇭' },
-                                        { code: 'OM', name: t('عمان'), flag: '🇴🇲' },
-                                        { code: 'JO', name: t('الأردن'), flag: '🇯🇴' },
-                                        { code: 'IQ', name: t('العراق'), flag: '🇮🇶' },
-                                        { code: 'LY', name: t('ليبيا'), flag: '🇱🇾' },
-                                        { code: 'SD', name: t('السودان'), flag: '🇸🇩' },
-                                        { code: 'LB', name: t('لبنان'), flag: '🇱🇧' },
-                                        { code: 'SY', name: t('سوريا'), flag: '🇸🇾' },
-                                        { code: 'YE', name: t('اليمن'), flag: '🇾🇪' },
-                                        { code: 'TN', name: t('تونس'), flag: '🇹🇳' },
-                                        { code: 'DZ', name: t('الجزائر'), flag: '🇩🇿' },
-                                        { code: 'MA', name: t('المغرب'), flag: '🇲🇦' },
+                                        { code: 'EG', name: 'مصر', flag: '🇪🇬' },
+                                        { code: 'SA', name: 'السعودية', flag: '🇸🇦' },
+                                        { code: 'AE', name: 'الإمارات', flag: '🇦🇪' },
+                                        { code: 'KW', name: 'الكويت', flag: '🇰🇼' },
+                                        { code: 'QA', name: 'قطر', flag: '🇶🇦' },
+                                        { code: 'BH', name: 'البحرين', flag: '🇧🇭' },
+                                        { code: 'OM', name: 'عمان', flag: '🇴🇲' },
+                                        { code: 'JO', name: 'الأردن', flag: '🇯🇴' },
+                                        { code: 'IQ', name: 'العراق', flag: '🇮🇶' },
+                                        { code: 'LY', name: 'ليبيا', flag: '🇱🇾' },
+                                        { code: 'SD', name: 'السودان', flag: '🇸🇩' },
+                                        { code: 'LB', name: 'لبنان', flag: '🇱🇧' },
+                                        { code: 'SY', name: 'سوريا', flag: '🇸🇾' },
+                                        { code: 'YE', name: 'اليمن', flag: '🇾🇪' },
+                                        { code: 'TN', name: 'تونس', flag: '🇹🇳' },
+                                        { code: 'DZ', name: 'الجزائر', flag: '🇩🇿' },
+                                        { code: 'MA', name: 'المغرب', flag: '🇲🇦' },
                                     ].map(c => (
                                         <button key={c.code} type="button" onClick={() => setForm(f => ({ ...f, countryCode: c.code }))}
                                             style={{
@@ -359,7 +362,7 @@ export default function NewCompanyPage() {
                                 </div>
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
-                                <label style={LS}>{t('نوع النشاط')}<span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>نوع النشاط <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                     {BUSINESS_TYPES.map(b => (
                                         <button key={b.value} type="button" onClick={() => setForm(f => ({ ...f, businessType: b.value }))}
@@ -379,7 +382,8 @@ export default function NewCompanyPage() {
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '32px' }}>
                             <button onClick={() => { if (!form.name.trim()) { alert('اسم الشركة مطلوب'); return; } setStep(2); }}
-                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>{t('التالي')}<ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '8px' }} />
+                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>
+                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '8px' }} />
                             </button>
                         </div>
                     </div>
@@ -391,17 +395,19 @@ export default function NewCompanyPage() {
                         <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                            <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.blue}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
                                 <User size={22} />
-                            </div>{t('بيانات مدير الشركة')}</h2>
+                            </div>
+                            بيانات مدير الشركة
+                        </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                             <div style={{ gridColumn: 'span 2' }}>
-                                <label style={LS}>{t('اسم المدير')}<span style={{ color: C.danger }}>*</span></label>
-                                <input required type="text" placeholder={t('مثال: أحمد محمد')}
+                                <label style={LS}>اسم المدير <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="text" placeholder="مثال: أحمد محمد"
                                     value={form.adminName} onChange={e => setForm(f => ({ ...f, adminName: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     style={IS} />
                             </div>
                             <div>
-                                <label style={LS}>{t('اسم المستخدم للمدير (Login)')}<span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>اسم المستخدم للمدير (Login) <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="text" placeholder="admin123"
                                     value={form.adminUsername} onChange={e => setForm(f => ({ ...f, adminUsername: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
@@ -409,42 +415,45 @@ export default function NewCompanyPage() {
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('البريد الإلكتروني للمدير')}</label>
+                                <label style={LS}>البريد الإلكتروني للمدير</label>
                                 <input type="email" placeholder="admin@company.com"
                                     value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('رقم هاتف المدير')}</label>
+                                <label style={LS}>رقم هاتف المدير</label>
                                 <input type="tel" placeholder="01XXXXXXXXX"
                                     value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} autoComplete="tel"
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('كلمة المرور')}<span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>كلمة المرور <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="password" placeholder="••••••••"
                                     value={form.adminPassword} onChange={e => setForm(f => ({ ...f, adminPassword: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut}
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('تأكيد كلمة المرور')}<span style={{ color: C.danger }}>*</span></label>
+                                <label style={LS}>تأكيد كلمة المرور <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="password" placeholder="••••••••"
                                     value={form.adminPasswordConfirm} onChange={e => setForm(f => ({ ...f, adminPasswordConfirm: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut}
                                     style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER, borderColor: form.adminPasswordConfirm && form.adminPassword !== form.adminPasswordConfirm ? C.danger : undefined }} />
                                 {form.adminPasswordConfirm && form.adminPassword !== form.adminPasswordConfirm && (
-                                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: CAIRO }}>{t('كلمات المرور غير متطابقة')}</p>
+                                    <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: CAIRO }}>كلمات المرور غير متطابقة</p>
                                 )}
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', marginTop: '32px' }}>
                             <button onClick={() => setStep(1)} 
-                                style={{ height: '48px', padding: '0 28px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}>{t('السابق')}</button>
+                                style={{ height: '48px', padding: '0 28px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}>
+                                السابق
+                            </button>
                             <button onClick={() => { if (!form.adminName || !form.adminUsername || !form.adminPassword) { alert('كل الحقول المطلوبة يجب ملؤها'); return; } if (form.adminPassword !== form.adminPasswordConfirm) { alert('كلمات المرور غير متطابقة'); return; } setStep(3); }}
-                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>{t('التالي')}<ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '8px' }} />
+                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>
+                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '8px' }} />
                             </button>
                         </div>
                     </div>
@@ -454,11 +463,12 @@ export default function NewCompanyPage() {
                 {step === 3 && (
                     <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px' }}>
                         <h2 style={{ margin: '0 0 24px', fontSize: '17px', fontWeight: 800, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <CreditCard size={20} style={{ color: '#818cf8' }} />{t('بيانات الاشتراك')}</h2>
+                            <CreditCard size={20} style={{ color: '#818cf8' }} /> بيانات الاشتراك
+                        </h2>
 
                         {/* الباقة */}
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={LS}>{t('الباقة')}</label>
+                            <label style={LS}>الباقة</label>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px' }}>
                                 {Object.entries(PLANS).map(([key, p]) => (
                                     <button key={key} type="button" onClick={() => updatePlan(key)}
@@ -472,22 +482,22 @@ export default function NewCompanyPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                             <div>
-                                <label style={LS}>{t('تاريخ البداية')}<span style={{ color: '#f87171' }}>*</span></label>
+                                <label style={LS}>تاريخ البداية <span style={{ color: '#f87171' }}>*</span></label>
                                 <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
                                     style={{ ...IS, colorScheme: 'dark' }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('تاريخ الانتهاء')}<span style={{ color: '#f87171' }}>*</span></label>
+                                <label style={LS}>تاريخ الانتهاء <span style={{ color: '#f87171' }}>*</span></label>
                                 <input type="date" value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))}
                                     style={{ ...IS, colorScheme: 'dark' }} />
                             </div>
                             <div>
-                                <label style={LS}>{t('عدد المستخدمين')}</label>
+                                <label style={LS}>عدد المستخدمين</label>
                                 <input type="number" min="1" value={form.maxUsers} onChange={e => setForm(f => ({ ...f, maxUsers: e.target.value }))}
                                     style={IS} />
                             </div>
                             <div>
-                                <label style={LS}>{t('عدد الفروع المسموح')}</label>
+                                <label style={LS}>عدد الفروع المسموح</label>
                                 <input type="number" min="1" value={form.maxBranches} onChange={e => setForm(f => ({ ...f, maxBranches: e.target.value }))}
                                     style={IS} />
                             </div>
@@ -495,13 +505,13 @@ export default function NewCompanyPage() {
 
                         {/* ملخص */}
                         <div style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '10px', padding: '14px 18px', marginBottom: '20px' }}>
-                            <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700, marginBottom: '8px' }}>{t('ملخص الاشتراك')}</div>
+                            <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700, marginBottom: '8px' }}>ملخص الاشتراك</div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
                                 {[
-                                    { label: t('الباقة'),           value: PLANS[form.plan as keyof typeof PLANS]?.label },
-                                    { label: t('مدة الاشتراك'),     value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000*60*60*24))} يوم` },
-                                    { label: t('عدد المستخدمين'),  value: form.maxUsers },
-                                    { label: t('عدد الفروع'),      value: form.maxBranches },
+                                    { label: 'الباقة',           value: PLANS[form.plan as keyof typeof PLANS]?.label },
+                                    { label: 'مدة الاشتراك',     value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000*60*60*24))} يوم` },
+                                    { label: 'عدد المستخدمين',  value: form.maxUsers },
+                                    { label: 'عدد الفروع',      value: form.maxBranches },
                                 ].map((item, i) => (
                                     <div key={i} style={{ textAlign: 'center' }}>
                                         <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '3px' }}>{item.label}</div>
@@ -512,9 +522,12 @@ export default function NewCompanyPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start' }}>
-                            <button onClick={() => setStep(2)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>{t('السابق')}</button>
+                            <button onClick={() => setStep(2)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
+                                السابق
+                            </button>
                             <button onClick={() => setStep(4)}
-                                style={{ height: '44px', padding: '0 32px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>{t('التالي — تحديد الصلاحيات')}<ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+                                style={{ height: '44px', padding: '0 32px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                التالي — تحديد الصلاحيات <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
                             </button>
                         </div>
                     </div>
@@ -526,12 +539,17 @@ export default function NewCompanyPage() {
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                                 <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 800, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <Shield size={20} style={{ color: '#818cf8' }} />{t('تحديد الصلاحيات')}</h2>
+                                    <Shield size={20} style={{ color: '#818cf8' }} /> تحديد الصلاحيات
+                                </h2>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <button onClick={() => {
                                         setForm(f => ({ ...f, features: buildAllFeatures() }));
-                                    }} style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: '1px solid rgba(52,211,153,0.3)', background: 'rgba(52,211,153,0.08)', color: '#34d399', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>{t('تحديد الكل')}</button>
-                                    <button onClick={() => setForm(f => ({ ...f, features: {} }))} style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#f87171', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>{t('إلغاء الكل')}</button>
+                                    }} style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: '1px solid rgba(52,211,153,0.3)', background: 'rgba(52,211,153,0.08)', color: '#34d399', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
+                                        تحديد الكل
+                                    </button>
+                                    <button onClick={() => setForm(f => ({ ...f, features: {} }))} style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#f87171', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
+                                        إلغاء الكل
+                                    </button>
                                 </div>
                             </div>
 
@@ -601,7 +619,7 @@ export default function NewCompanyPage() {
 
                         {/* ملخص الصلاحيات */}
                         <div style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '12px', padding: '16px 20px', marginBottom: '20px' }}>
-                            <div style={{ fontSize: '12px', color: '#818cf8', fontWeight: 700, marginBottom: '10px' }}>{t('ملخص الصلاحيات المختارة')}</div>
+                            <div style={{ fontSize: '12px', color: '#818cf8', fontWeight: 700, marginBottom: '10px' }}>ملخص الصلاحيات المختارة</div>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                                 {Object.entries(form.features).map(([key, pages]) => {
                                     if (!pages || pages.length === 0) return null;
@@ -616,10 +634,12 @@ export default function NewCompanyPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start' }}>
-                            <button onClick={() => setStep(3)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>{t('السابق')}</button>
+                            <button onClick={() => setStep(3)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
+                                السابق
+                            </button>
                             <button onClick={handleSubmit} disabled={submitting}
                                 style={{ height: '44px', padding: '0 40px', borderRadius: '10px', border: 'none', background: submitting ? 'rgba(99,102,241,0.4)' : 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(99,102,241,0.3)' }}>
-                                {submitting ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} />{t('جاري الإنشاء...')}</> : <><Check size={16} />{t('إنشاء الحساب')}</>}
+                                {submitting ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> جاري الإنشاء...</> : <><Check size={16} /> إنشاء الحساب</>}
                             </button>
                         </div>
                     </div>

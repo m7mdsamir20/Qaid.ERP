@@ -25,9 +25,9 @@ const fmtMoney = (n: number) =>
     n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
 const CURRENCY_AR: Record<string, string> = {
-    EGP: t('ج.م'), SAR: t('ر.س'), AED: t('د.إ'), KWD: t('د.ك'),
-    QAR: t('ر.ق'), BHD: t('د.ب'), OMR: t('ر.ع'), JOD: t('د.أ'),
-    LYD: t('د.ل'), IQD: t('د.ع'), TRY: '₺', USD: '$', EUR: '€', GBP: '£'
+    EGP: 'ج.م', SAR: 'ر.س', AED: 'د.إ', KWD: 'د.ك',
+    QAR: 'ر.ق', BHD: 'د.ب', OMR: 'ر.ع', JOD: 'د.أ',
+    LYD: 'د.ل', IQD: 'د.ع', TRY: '₺', USD: '$', EUR: '€', GBP: '£'
 };
 
 /* ── KPI card matching system design ── */

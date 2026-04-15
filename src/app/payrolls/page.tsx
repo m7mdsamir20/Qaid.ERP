@@ -34,18 +34,18 @@ interface Payroll {
 }
 
 const months = [
-    { value: '1', label: t('يناير') },
-    { value: '2', label: t('فبراير') },
-    { value: '3', label: t('مارس') },
-    { value: '4', label: t('أبريل') },
-    { value: '5', label: t('مايو') },
-    { value: '6', label: t('يونيو') },
-    { value: '7', label: t('يوليو') },
-    { value: '8', label: t('أغسطس') },
-    { value: '9', label: t('سبتمبر') },
-    { value: '10', label: t('أكتوبر') },
-    { value: '11', label: t('نوفمبر') },
-    { value: '12', label: t('ديسمبر') },
+    { value: '1', label: 'يناير' },
+    { value: '2', label: 'فبراير' },
+    { value: '3', label: 'مارس' },
+    { value: '4', label: 'أبريل' },
+    { value: '5', label: 'مايو' },
+    { value: '6', label: 'يونيو' },
+    { value: '7', label: 'يوليو' },
+    { value: '8', label: 'أغسطس' },
+    { value: '9', label: 'سبتمبر' },
+    { value: '10', label: 'أكتوبر' },
+    { value: '11', label: 'نوفمبر' },
+    { value: '12', label: 'ديسمبر' },
 ].map(m => ({ ...m, label: m.label })); // Placeholder, label mapping happens in component
 
 const getMonthLabel = (m: string, t: any) => {

@@ -122,17 +122,17 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                         if (section.featureKey === 'sales') {
                             section.title = 'فواتير الخدمات';
                             section.links = section.links?.map((l: any) => {
-                                if (l.label === 'فواتير المبيعات') return { ...l, label: t('فواتير الخدمات') };
-                                if (l.label === 'مرتجع مبيعات') return { ...l, label: t('إلغاء خدمات / مرتجع') };
+                                if (l.label === 'فواتير المبيعات') return { ...l, label: 'فواتير الخدمات' };
+                                if (l.label === 'مرتجع مبيعات') return { ...l, label: 'إلغاء خدمات / مرتجع' };
                                 return l;
                             });
                         }
                         if (section.featureKey === 'inventory') {
                             section.title = 'الخدمات';
                             section.links = section.links?.map((l: any) => {
-                                if (l.id === '/categories') return { ...l, label: t('تصنيفات الخدمات') };
-                                if (l.id === '/items') return { ...l, label: t('قائمة الخدمات') };
-                                if (l.id === '/warehouses') return { ...l, label: t('الفروع / مواقع العمل') };
+                                if (l.id === '/categories') return { ...l, label: 'تصنيفات الخدمات' };
+                                if (l.id === '/items') return { ...l, label: 'قائمة الخدمات' };
+                                if (l.id === '/warehouses') return { ...l, label: 'الفروع / مواقع العمل' };
                                 return l;
                             });
                         }

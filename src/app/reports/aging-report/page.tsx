@@ -11,7 +11,7 @@ import * as XLSX from 'xlsx';
 import CustomSelect from '@/components/CustomSelect';
 
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
     return map[code] || code;
 };
 
@@ -71,7 +71,7 @@ export default function AgingReportPage() {
             'العميل': inv.customer,
             'عمر الدين (يوم)': inv.ageDays,
             'المبلغ المتبقي': inv.remaining,
-            'التصنيف': inv.ageDays > 90 ? t('متأخر جداً') : inv.ageDays > 60 ? t('حذر') : t('اعتيادي')
+            'التصنيف': inv.ageDays > 90 ? 'متأخر جداً' : inv.ageDays > 60 ? 'حذر' : 'اعتيادي'
         }));
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
@@ -83,8 +83,8 @@ export default function AgingReportPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={t('تقرير أعمار الديون')}
-                    subtitle={t('تحليل المديونيات المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل.')}
+                    title="تقرير أعمار الديون"
+                    subtitle="تحليل المديونيات المتأخرة وتصنيفها حسب المدة الزمنية لتسهيل عمليات التحصيل."
                     backTab="partners"
                     
                     onExportExcel={exportToExcel}
@@ -95,11 +95,12 @@ export default function AgingReportPage() {
                 {buckets && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                         {[
-                            { label: t('مديونية (0 - 30 يوم)'), value: buckets['0-30'].total, count: buckets['0-30'].count, color: '#3b82f6', icon: <Clock size={20} />, sign: t('ديون حديثة') },
-                            { label: t('مديونية (31 - 60 يوم)'), value: buckets['31-60'].total, count: buckets['31-60'].count, color: '#eab308', icon: <History size={20} />, sign: t('تنبيه أول') },
-                            { label: t('مديونية (61 - 90 يوم)'), value: buckets['61-90'].total, count: buckets['61-90'].count, color: '#f59e0b', icon: <TrendingDown size={20} />, sign: t('حذر شديد') },
-                            { label: t('متأخرات (91+ يوم)'), value: buckets['91+'].total, count: buckets['91+'].count, color: '#ef4444', icon: <AlertTriangle size={20} />{t(', sign: \'خطر التحصيل\' },
-                        ].map((s: any, i: number) => (')}<div key={i} style={{
+                            { label: 'مديونية (0 - 30 يوم)', value: buckets['0-30'].total, count: buckets['0-30'].count, color: '#3b82f6', icon: <Clock size={20} />, sign: 'ديون حديثة' },
+                            { label: 'مديونية (31 - 60 يوم)', value: buckets['31-60'].total, count: buckets['31-60'].count, color: '#eab308', icon: <History size={20} />, sign: 'تنبيه أول' },
+                            { label: 'مديونية (61 - 90 يوم)', value: buckets['61-90'].total, count: buckets['61-90'].count, color: '#f59e0b', icon: <TrendingDown size={20} />, sign: 'حذر شديد' },
+                            { label: 'متأخرات (91+ يوم)', value: buckets['91+'].total, count: buckets['91+'].count, color: '#ef4444', icon: <AlertTriangle size={20} />, sign: 'خطر التحصيل' },
+                        ].map((s: any, i: number) => (
+                            <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                 padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 transition: 'all 0.2s', boxShadow: '0 2px 8px -4px rgba(0,0,0,0.1)'
@@ -124,7 +125,7 @@ export default function AgingReportPage() {
                     <div style={{ position: 'relative', flex: 1 }}>
                         <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
-                            placeholder={t('ابحث باسم العميل أو رقم الفاتورة للفلترة السريعة...')}
+                            placeholder="ابحث باسم العميل أو رقم الفاتورة للفلترة السريعة..."
                             value={q} onChange={e => setQ(e.target.value)}
                             style={{
                                 ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px',
@@ -138,9 +139,9 @@ export default function AgingReportPage() {
                         <CustomSelect
                             value={branchId}
                             onChange={v => setBranchId(v)}
-                            placeholder={t('كل الفروع')}
+                            placeholder="كل الفروع"
                             options={[
-                                { value: 'all', label: t('كل الفروع') },
+                                { value: 'all', label: 'كل الفروع' },
                                 ...branches.map((b: any) => ({ value: b.id, label: b.name }))
                             ]}
                         />
@@ -150,13 +151,13 @@ export default function AgingReportPage() {
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحليل أعمار الديون...')}</span>
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري تحليل أعمار الديون...</span>
                     </div>
                 ) : filtered.length === 0 ? (
                     <div style={{ padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <FileText size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد فواتير مطابقة')}</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على مديونيات متأخرة حالياً في النظام.')}</p>
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>لا توجد فواتير مطابقة</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>لم يتم العثور على مديونيات متأخرة حالياً في النظام.</p>
                     </div>
                 ) : (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
@@ -164,7 +165,7 @@ export default function AgingReportPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {[t('رقم الفاتورة'), t('تاريخ الإصدار'), t('العميل المستحق'), t('عمر الدين'), t('المبلغ المتبقي'), t('حالة التصنيف')].map((h, i) => (
+                                        {['رقم الفاتورة', 'تاريخ الإصدار', 'العميل المستحق', 'عمر الدين', 'المبلغ المتبقي', 'حالة التصنيف'].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                 textAlign: 'center', 
@@ -194,7 +195,7 @@ export default function AgingReportPage() {
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                     <span style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{inv.ageDays}</span>
-                                                    <span style={{ fontSize: '10px', fontFamily: CAIRO, fontWeight: 700, color: C.textMuted }}>{t('يوم متأخر')}</span>
+                                                    <span style={{ fontSize: '10px', fontFamily: CAIRO, fontWeight: 700, color: C.textMuted }}>يوم متأخر</span>
                                                 </div>
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
@@ -210,14 +211,15 @@ export default function AgingReportPage() {
                                                     color: inv.ageDays > 90 ? '#ef4444' : inv.ageDays > 60 ? '#f59e0b' : '#10b981',
                                                     border: `1px solid ${inv.ageDays > 90 ? '#ef444422' : inv.ageDays > 60 ? '#f59e0b22' : '#10b98122'}`
                                                 }}>
-                                                    {inv.ageDays >{t('90 ? \'متأخر جداً\' : inv.ageDays > 60 ? \'حذر\' : \'اعتيادي\'}')}</span>
+                                                    {inv.ageDays > 90 ? 'متأخر جداً' : inv.ageDays > 60 ? 'حذر' : 'اعتيادي'}
+                                                </span>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
+                                        <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>إجمالي المديونيات المتأخرة المستحقة</td>
                                         <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')}</td>
                                         <td style={{ padding: '20px 24px', textAlign: 'center' }}>
                                             <button onClick={exportToExcel} style={{ 
@@ -226,7 +228,8 @@ export default function AgingReportPage() {
                                                 cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
                                                 boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                                             }}>
-                                                <Download size={14} />{t('تصدير Excel')}</button>
+                                                <Download size={14} /> تصدير Excel
+                                            </button>
                                         </td>
                                     </tr>
                                 </tfoot>

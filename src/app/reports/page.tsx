@@ -91,7 +91,7 @@ function ReportsHubPageInner() {
     };
 
     const userPermissions = session?.user?.permissions || {};
-    const reportsPerms = userPermissions[t('التقارير الإحصائية')] || {};
+    const reportsPerms = userPermissions['التقارير الإحصائية'] || {};
     const isAdmin = session?.user?.role === 'admin' || session?.user?.isSuperAdmin;
     const isSuperAdmin = session?.user?.isSuperAdmin;
     const featuresRaw = session?.user?.subscription?.features;

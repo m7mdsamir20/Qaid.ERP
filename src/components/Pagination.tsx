@@ -24,7 +24,8 @@ export default function Pagination({ total, pageSize, currentPage, onPageChange 
             background: 'rgba(255,255,255,0.01)', borderBottomLeftRadius: '14px', borderBottomRightRadius: '14px'
         }}>
             {/* Info */}
-            <div style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t('عرض')}<span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary }}>{startIdx}</span> - <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary }}>{endIdx}</span>{t('من أصل')}<span style={{ fontFamily: INTER, fontWeight: 900, color: C.textPrimary }}>{total}</span>
+            <div style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
+                عرض <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary }}>{startIdx}</span> - <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary }}>{endIdx}</span> من أصل <span style={{ fontFamily: INTER, fontWeight: 900, color: C.textPrimary }}>{total}</span>
             </div>
 
             {/* Controls */}
@@ -56,7 +57,7 @@ export default function Pagination({ total, pageSize, currentPage, onPageChange 
                     }}>
                         {currentPage}
                     </div>
-                    <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, margin: '0 4px', width: '24px', textAlign: 'center' }}>{t('من')}</span>
+                    <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, margin: '0 4px', width: '24px', textAlign: 'center' }}>من</span>
                     <div style={{ 
                         height: '36px', border: `1px solid ${C.border}`, borderRadius: '10px', padding: '0 16px',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',

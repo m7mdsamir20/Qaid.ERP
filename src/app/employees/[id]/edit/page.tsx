@@ -445,7 +445,7 @@ function AttachmentUploader({ attachments, onAdd, onRemove }: any) {
         <div>
             <div onClick={() => !uploading && inputRef.current?.click()} style={{ border: `2px dashed ${C.border}`, borderRadius: '14px', padding: '20px', textAlign: 'center', cursor: 'pointer', background: 'rgba(255,255,255,0.01)', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.borderColor = C.blue}>
                 {uploading ? <Loader2 className="animate-spin" style={{ color: C.blue, margin: '0 auto' }} /> : <Upload size={24} style={{ color: C.textMuted, margin: '0 auto 8px' }} />}
-                <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{uploading ? t('جاري الرفع...') : t('تحديث/إضافة مرفق')}</div>
+                <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{uploading ? 'جاري الرفع...' : 'تحديث/إضافة مرفق'}</div>
             </div>
             <input ref={inputRef} type="file" style={{ display: 'none' }} onChange={e => e.target.files?.[0] && handle(e.target.files[0])} />
             <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>

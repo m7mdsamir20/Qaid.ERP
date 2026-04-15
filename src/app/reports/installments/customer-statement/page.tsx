@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
     return map[code] || code;
 };
 import { useSession } from 'next-auth/react';
@@ -90,8 +90,8 @@ function CustomerStatementReportContent() {
             `}</style>
             
             <ReportHeader
-                title={t('كشف حساب أقساط عميل')}
-                subtitle={t('تقرير تفصيلي بجميع خطط التقسيط، الدفعات المسددة، والمبالغ المتبقية لعميل محدد')}
+                title="كشف حساب أقساط عميل"
+                subtitle="تقرير تفصيلي بجميع خطط التقسيط، الدفعات المسددة، والمبالغ المتبقية لعميل محدد"
                 backTab="installments"
                 
             />
@@ -105,12 +105,12 @@ function CustomerStatementReportContent() {
                 alignItems: 'end'
             }}>
                 <div style={{ position: 'relative' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{t('اختر العميل المطلوب:')}</label>
+                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>اختر العميل المطلوب:</label>
                     <CustomSelect 
                         value={selectedCustomer} 
                         onChange={setSelectedCustomer}
-                        options={[{ value: '', label: t('-- اختر العميل الباحث عنه --') }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
-                        placeholder={t('ابحث عن العميل...')}
+                        options={[{ value: '', label: '-- اختر العميل الباحث عنه --' }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
+                        placeholder="ابحث عن العميل..."
                         style={{ 
                             width: '100%', height: '42.5px', padding: '0 15px', 
                             borderRadius: '12px', border: `1px solid ${C.border}`, 
@@ -127,22 +127,23 @@ function CustomerStatementReportContent() {
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                     boxShadow: '0 4px 12px rgba(37,99,235,0.2)', opacity: !selectedCustomer ? 0.6 : 1
                 }}>
-                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />{t('} 
-                    عرض كشف الحساب')}</button>
+                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
+                    عرض كشف الحساب
+                </button>
             </div>
 
             <div style={{ minHeight: '300px' }}>
                 {loading && (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>{t('جاري جلب البيانات وتحليلها...')}</p>
+                        <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>جاري جلب البيانات وتحليلها...</p>
                     </div>
                 )}
 
                 {!loading && !data && (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                         <FileText size={60} style={{ color: C.textMuted }} />
-                        <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>{t('اختر العميل المعني لعرض تفاصيل حسابه')}</p>
+                        <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>اختر العميل المعني لعرض تفاصيل حسابه</p>
                     </div>
                 )}
 
@@ -155,7 +156,7 @@ function CustomerStatementReportContent() {
                                     {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
-                                    <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{t('كشف حساب أقساط عميل')}</h3>
+                                    <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>كشف حساب أقساط عميل</h3>
                                 </div>
                                 <div style={{ maxWidth: '150px', textAlign: 'end' }}>
                                     {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
@@ -166,10 +167,10 @@ function CustomerStatementReportContent() {
                         {/* ── KPI Cards (Fixed Assets Style) ── */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('عدد خطط التقسيط'), value: data.summary?.totalPlans, icon: <FileText size={18} />, color: '#818cf8' },
-                                { label: t('إجمالي التعاقدات'), value: fmtN(data.summary?.totalAmount || 0), icon: <BarChart3 size={18} />, color: '#6366f1' },
-                                { label: t('إجمالي المسدد'), value: fmtN(data.summary?.totalPaid || 0), icon: <CheckCircle2 size={18} />, color: '#10b981' },
-                                { label: t('الرصيد المتبقي'), value: fmtN(data.summary?.totalRemaining || 0), icon: <AlertTriangle size={18} />, color: '#f59e0b' },
+                                { label: 'عدد خطط التقسيط', value: data.summary?.totalPlans, icon: <FileText size={18} />, color: '#818cf8' },
+                                { label: 'إجمالي التعاقدات', value: fmtN(data.summary?.totalAmount || 0), icon: <BarChart3 size={18} />, color: '#6366f1' },
+                                { label: 'إجمالي المسدد', value: fmtN(data.summary?.totalPaid || 0), icon: <CheckCircle2 size={18} />, color: '#10b981' },
+                                { label: 'الرصيد المتبقي', value: fmtN(data.summary?.totalRemaining || 0), icon: <AlertTriangle size={18} />, color: '#f59e0b' },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -204,7 +205,7 @@ function CustomerStatementReportContent() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(0,0,0,0.1)' }}>
-                                            {[t('م'), t('الاستحقاق'), t('المبلغ'), t('المدفوع'), t('المتبقي'), t('الحالة')].map((h, i) => (
+                                            {['م', 'الاستحقاق', 'المبلغ', 'المدفوع', 'المتبقي', 'الحالة'].map((h, i) => (
                                                 <th key={i} style={{ padding: '12px 16px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
@@ -227,7 +228,7 @@ function CustomerStatementReportContent() {
                                                 </td>
                                                 <td style={{ padding: '12px 16px' }}>
                                                     <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 800, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
-                                                        {inst.status === 'paid' ? t('مدفوع') : t('غير مسدد')}
+                                                        {inst.status === 'paid' ? 'مدفوع' : 'غير مسدد'}
                                                     </span>
                                                 </td>
                                             </tr>

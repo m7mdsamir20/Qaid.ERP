@@ -58,14 +58,14 @@ export default function TrialBanner() {
             <div style={{ flex: 1 }}>
                 <span style={{ fontSize: '14px', fontWeight: 900, color: textColor }}>
                     {isExpired 
-                        ? (subPlan === 'trial' ? t('انتهت الفترة التجريبية للنظام!') : t('انتهى اشتراك النظام الحالي!'))
-                        : (daysLeft === 0 ? t('فترتك التجريبية تنتهي اليوم!') : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`)
+                        ? (subPlan === 'trial' ? 'انتهت الفترة التجريبية للنظام!' : 'انتهى اشتراك النظام الحالي!')
+                        : (daysLeft === 0 ? 'فترتك التجريبية تنتهي اليوم!' : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`)
                     }
                 </span>
                 <span style={{ fontSize: '12px', color: isExpired ? '#ef4444' : '#64748b', marginInlineStart: '8px', opacity: isExpired ? 0.9 : 1 }}>
                     {isExpired 
-                        ? t('يرجى تجديد الاشتراك فوراً لتتمكن من استخدام ميزات النظام والتحكم في البيانات.') 
-                        : t('قم بترقية اشتراكك للاستمرار في استخدام النظام')
+                        ? 'يرجى تجديد الاشتراك فوراً لتتمكن من استخدام ميزات النظام والتحكم في البيانات.' 
+                        : 'قم بترقية اشتراكك للاستمرار في استخدام النظام'
                     }
                 </span>
             </div>
@@ -90,7 +90,7 @@ export default function TrialBanner() {
             <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
                 <Link href="/settings?tab=subscription"
                     style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: 'none', background: textColor, color: '#fff', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
-                    <Crown size={12} /> {isExpired ? t('تجديد الاشتراك الآن') : t('ترقية الآن')}
+                    <Crown size={12} /> {isExpired ? 'تجديد الاشتراك الآن' : 'ترقية الآن'}
                 </Link>
 
                 {!isExpired && (

@@ -77,9 +77,9 @@ export default function ChangePasswordPage() {
                         <div style={{ padding: '10px', background: 'rgba(99,102,241,0.1)', color: '#6366f1', borderRadius: '12px' }}>
                             <Lock size={24} />
                         </div>
-                        <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#f1f5f9', margin: 0 }}>{t('تغيير كلمة المرور')}</h1>
+                        <h1 style={{ fontSize: '24px', fontWeight: 900, color: '#f1f5f9', margin: 0 }}>تغيير كلمة المرور</h1>
                     </div>
-                    <p style={{ fontSize: '13px', color: '#64748b' }}>{t('يفضل اختيار كلمة مرور قوية تحتوي على أحرف وأرقام لضمان أمان حسابك')}</p>
+                    <p style={{ fontSize: '13px', color: '#64748b' }}>يفضل اختيار كلمة مرور قوية تحتوي على أحرف وأرقام لضمان أمان حسابك</p>
                 </div>
 
                 {/* Form Card */}
@@ -88,7 +88,7 @@ export default function ChangePasswordPage() {
                     <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>{t('كلمة المرور الحالية')}</label>
+                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>كلمة المرور الحالية</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.old ? 'text' : 'password'}
@@ -108,7 +108,7 @@ export default function ChangePasswordPage() {
                         <div style={{ height: '1px', background: 'rgba(255,255,255,0.06)', margin: '5px 0' }} />
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>{t('كلمة المرور الجديدة')}</label>
+                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>كلمة المرور الجديدة</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.new ? 'text' : 'password'}
@@ -126,7 +126,7 @@ export default function ChangePasswordPage() {
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>{t('تأكيد كلمة المرور الجديدة')}</label>
+                            <label style={{ fontSize: '13px', fontWeight: 700, color: '#e2e8f0', paddingInlineEnd: '4px' }}>تأكيد كلمة المرور الجديدة</label>
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type={showPasswords.confirm ? 'text' : 'password'}
@@ -151,7 +151,7 @@ export default function ChangePasswordPage() {
                             onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 8px 16px rgba(99,102,241,0.2)'; }}
                         >
                             {isSaving ? <Loader2 className="animate-spin" size={20} /> : <KeyRound size={20} />}
-                            {isSaving ? t('جاري الحفظ...') : t('تغيير كلمة المرور الآن')}
+                            {isSaving ? 'جاري الحفظ...' : 'تغيير كلمة المرور الآن'}
                         </button>
 
                     </form>
@@ -160,7 +160,9 @@ export default function ChangePasswordPage() {
                 {/* Status Box */}
                 <div style={{ display: 'flex', gap: '12px', padding: '16px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '15px', marginTop: '24px' }}>
                     <ShieldCheck size={20} style={{ color: '#10b981', flexShrink: 0 }} />
-                    <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6 }}>{t('سيتم تحديث سجل الأمان الخاص بك فور تغيير كلمة المرور. تأكد من عدم مشاركتها مع أي شخص آخر.')}</div>
+                    <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6 }}>
+                        سيتم تحديث سجل الأمان الخاص بك فور تغيير كلمة المرور. تأكد من عدم مشاركتها مع أي شخص آخر.
+                    </div>
                 </div>
 
                 {/* Toast Notification */}

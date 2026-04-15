@@ -57,9 +57,9 @@ export default function PurchaseReturnsListPage() {
     const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
     const getStatusStyle = (total: number, paid: number) => {
-        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
-        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('جزئي'), icon: Clock };
-        return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: t('غير مدفوعة'), icon: AlertCircle };
+        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: 'مدفوعة', icon: CheckCircle2 };
+        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: 'جزئي', icon: Clock };
+        return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: 'غير مدفوعة', icon: AlertCircle };
     };
 
     const handlePrint = (inv: PurchaseReturn) => {
@@ -70,11 +70,11 @@ export default function PurchaseReturnsListPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader 
-                    title={t('مرتجعات المشتريات')} 
-                    subtitle={t('إدارة المرتجعات للموردين — رد الأصناف المشتراة وتسوية المديونيات')} 
+                    title="مرتجعات المشتريات" 
+                    subtitle="إدارة المرتجعات للموردين — رد الأصناف المشتراة وتسوية المديونيات" 
                     icon={RotateCcw} 
                     primaryButton={canCreate ? {
-                        label: t('مرتجع جديد'),
+                        label: 'مرتجع جديد',
                         onClick: () => router.push('/purchase-returns/new'),
                         icon: Plus
                     } : undefined}
@@ -84,18 +84,18 @@ export default function PurchaseReturnsListPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder={t('رقم المرتجع أو اسم المورد...')} 
+                            placeholder="رقم المرتجع أو اسم المورد..." 
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
+                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
@@ -112,7 +112,8 @@ export default function PurchaseReturnsListPage() {
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} />{t('مسح')}</button>
+                            <Trash2 size={14} /> مسح
+                        </button>
                     )}
                 </div>
 
@@ -124,21 +125,21 @@ export default function PurchaseReturnsListPage() {
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '70px', textAlign: 'center' }}>
                             <RotateCcw size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد مرتجعات مشتريات')}</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>لا توجد مرتجعات مشتريات</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('المورد')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('المدفوع')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('المتبقي')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
+                                        <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
+                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
+                                        <th style={TABLE_STYLE.th(false)}>المورد</th>
+                                        <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
+                                        <th style={TABLE_STYLE.th(false)}>المدفوع</th>
+                                        <th style={TABLE_STYLE.th(false)}>المتبقي</th>
+                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
+                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -175,9 +176,11 @@ export default function PurchaseReturnsListPage() {
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => window.open(`/print/invoice/${inv.id}`, '_blank')} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e =>{t('e.currentTarget.style.color = \'#64748b\'} title={t('طباعة')}>')}<Printer size={16} />
+                                                        <button onClick={() => window.open(`/print/invoice/${inv.id}`, '_blank')} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="طباعة">
+                                                            <Printer size={16} />
                                                         </button>
-                                                        <button onClick={() => router.push(`/purchase-returns/${inv.id}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e =>{t('e.currentTarget.style.color = \'#64748b\'} title={t('عرض')}>')}<Eye size={16} />
+                                                        <button onClick={() => router.push(`/purchase-returns/${inv.id}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="عرض">
+                                                            <Eye size={16} />
                                                         </button>
                                                     </div>
                                                 </td>

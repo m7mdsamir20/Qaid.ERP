@@ -85,7 +85,7 @@ export default function ItemMovementReportPage() {
 
         if (isTransfer) {
             return {
-                label: t('تحويل'),
+                label: 'تحويل',
                 color: '#60a5fa',
                 background: 'rgba(59,130,246,0.1)',
                 sign: qty < 0 ? '-' : '+',
@@ -95,7 +95,7 @@ export default function ItemMovementReportPage() {
 
         if (isAdjustment) {
             return {
-                label: t('تعديل'),
+                label: 'تعديل',
                 color: '#a78bfa',
                 background: 'rgba(167,139,250,0.15)',
                 sign: qty < 0 ? '-' : '+',
@@ -104,7 +104,7 @@ export default function ItemMovementReportPage() {
         }
 
         return {
-            label: isOutgoing ? t('صادر -') : t('وارد +'),
+            label: isOutgoing ? 'صادر -' : 'وارد +',
             color: isOutgoing ? '#ef4444' : '#10b981',
             background: isOutgoing ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
             sign: isOutgoing ? '-' : '+',
@@ -116,8 +116,8 @@ export default function ItemMovementReportPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title={t('تقرير حركة صنف')}
-                    subtitle={t('متابعة تفصيلية لكافة عمليات الصادر والوارد لكل قطعة بالاسم أو الكود.')}
+                    title="تقرير حركة صنف"
+                    subtitle="متابعة تفصيلية لكافة عمليات الصادر والوارد لكل قطعة بالاسم أو الكود."
                     backTab="inventory"
                     
                     printTitle="تقرير حركة صنف تفصيلي"
@@ -138,9 +138,9 @@ export default function ItemMovementReportPage() {
                                 }
                             }}
                             icon={Search}
-                            placeholder={t('ابحث عن الصنف بالاسم أو الكود لمتابعة حركته...')}
+                            placeholder="ابحث عن الصنف بالاسم أو الكود لمتابعة حركته..."
                             options={[
-                                { value: '', label: t('-- اختر صنف من القائمة --') },
+                                { value: '', label: '-- اختر صنف من القائمة --' },
                                 ...items.map(i => ({ value: i.id, label: `${i.name} (${i.code})` }))
                             ]}
                             style={{
@@ -158,9 +158,9 @@ export default function ItemMovementReportPage() {
                                 setBranchId(v);
                                 if (selectedId) fetchMovements(selectedId, v);
                             }}
-                            placeholder={t('كل الفروع')}
+                            placeholder="كل الفروع"
                             options={[
-                                { value: 'all', label: t('كل الفروع') },
+                                { value: 'all', label: 'كل الفروع' },
                                 ...branches.map(b => ({ value: b.id, label: b.name }))
                             ]}
                         />
@@ -170,26 +170,26 @@ export default function ItemMovementReportPage() {
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري استرجاع سجل الحركات...')}</span>
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري استرجاع سجل الحركات...</span>
                     </div>
                 ) : !itemDetails ? (
                     <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Activity size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('جاهز للعرض')}</h3>
-                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء اختيار صنف من القائمة أعلاه لعرض السجل التفصيلي لحركاته.')}</p>
+                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>جاهز للعرض</h3>
+                        <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>برجاء اختيار صنف من القائمة أعلاه لعرض السجل التفصيلي لحركاته.</p>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
-                                <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
-                                <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الحركات:')}<span style={{ color: C.primary, fontFamily: INTER }}>{movements.length}</span></div>
+                                <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>سجل الحركات</h3>
+                                <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>إجمالي الحركات: <span style={{ color: C.primary, fontFamily: INTER }}>{movements.length}</span></div>
                             </div>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            {[t('التاريخ والوقت'), t('نوع الحركة'), t('المخزن'), t('الكمية'), t('البيان')].map((h, i) => (
+                                            {['التاريخ والوقت', 'نوع الحركة', 'المخزن', 'الكمية', 'البيان'].map((h, i) => (
                                                 <th key={i} style={{ 
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                     textAlign: i === 3 ? 'center' : 'right', fontWeight: 800, fontFamily: CAIRO 
@@ -246,7 +246,7 @@ export default function ItemMovementReportPage() {
                                 </div>
 
                                 <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, marginBottom: '6px', fontFamily: CAIRO }}>{t('الرصيد الكلي المتوفر')}</div>
+                                    <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, marginBottom: '6px', fontFamily: CAIRO }}>الرصيد الكلي المتوفر</div>
                                     <div style={{ fontSize: '32px', fontWeight: 1000, color: '#10b981', fontFamily: INTER, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
                                         {itemDetails.totalStock.toLocaleString('en-US')}
                                         <span style={{ fontSize: '14px', fontWeight: 700, color: '#10b981', fontFamily: CAIRO }}>{itemDetails.unit}</span>
@@ -254,7 +254,8 @@ export default function ItemMovementReportPage() {
                                 </div>
 
                                 <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, marginBottom: '14px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                    <Warehouse size={16} color={C.primary} />{t('أرصدة المخازن:')}</div>
+                                    <Warehouse size={16} color={C.primary} /> أرصدة المخازن:
+                                </div>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                     {itemDetails.stockByWarehouse.map(sw => (
                                         <div key={sw.warehouse} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', fontSize: '13px' }}>

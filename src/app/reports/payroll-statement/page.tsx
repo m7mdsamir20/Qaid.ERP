@@ -9,7 +9,7 @@ import { useEffect, useState } from 'react';
 import { DollarSign, Search, Calendar, Wallet, ArrowUpRight, TrendingDown, Loader2, Users } from 'lucide-react';
 
 const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'AED': t('د.إ'), 'USD': '$', 'KWD': t('د.ك'), 'QAR': t('ر.ق'), 'BHD': t('د.ب'), 'OMR': t('ر.ع'), 'JOD': t('د.أ') };
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
     return map[code] || code;
 };
 

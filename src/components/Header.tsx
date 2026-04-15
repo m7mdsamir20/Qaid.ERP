@@ -42,7 +42,7 @@ const roleLabels: Record<string, string> = {
     storekeeper: 'أمين مستودع',
     hr: 'موارد بشرية',
     cashier: 'كاشير',
-    custom: 'مخصص'
+    custom: 'مستخدم'
 };
 
 /* ══════════════════════════════════════════
@@ -106,7 +106,7 @@ function SearchBox() {
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     onFocus={() => results.length && setOpen(true)}
-                    placeholder={t(isServices ? t('ابحث عن فاتورة، عميل أو خدمة...') : t('ابحث عن فاتورة، عميل أو صنف...'))}
+                    placeholder={t(isServices ? "ابحث عن فاتورة، عميل أو خدمة..." : "ابحث عن فاتورة، عميل أو صنف...")}
                     style={{
                         flex: 1, background: 'none', border: 'none', outline: 'none',
                         color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO
@@ -218,7 +218,7 @@ function Actions() {
                 onMouseEnter={e => e.currentTarget.style.background = `${C.primary}20`}
                 onMouseLeave={e => e.currentTarget.style.background = `${C.primary}10`}
             >
-                {lang === 'ar' ? 'EN' : t('ع')}
+                {lang === 'ar' ? 'EN' : 'ع'}
             </button>
 
             {/* Theme Toggle */}
@@ -340,8 +340,8 @@ function Actions() {
                         </div>
 
                         {[
-                            { icon: User, label: t('ملفي الشخصي'), path: '/profile' },
-                            { icon: KeyRound, label: t('تغيير كلمة المرور'), path: '/profile/password' },
+                            { icon: User, label: 'ملفي الشخصي', path: '/profile' },
+                            { icon: KeyRound, label: 'تغيير كلمة المرور', path: '/profile/password' },
                         ].map((it, i) => (
                             <button key={i} onClick={() => { router.push(it.path); setOpenUser(false); }}
                                 style={{

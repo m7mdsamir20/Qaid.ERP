@@ -119,10 +119,10 @@ function AttachmentUploader({ attachments, onAdd, onRemove }: {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(99,102,241,0.2)'; e.currentTarget.style.background = 'rgba(99,102,241,0.02)'; }}
             >
                 {uploading
-                    ? <><Loader2 size={28} color="#6366f1" style={{ animation: 'spin 1s linear infinite' }} /><span style={{ fontSize: '14px', color: '#6366f1', fontWeight: 600 }}>{t('جاري الرفع...')}</span></>
+                    ? <><Loader2 size={28} color="#6366f1" style={{ animation: 'spin 1s linear infinite' }} /><span style={{ fontSize: '14px', color: '#6366f1', fontWeight: 600 }}>جاري الرفع...</span></>
                     : <><div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(99,102,241,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1', marginBottom: '8px' }}><Upload size={24} /></div>
-                        <span style={{ fontSize: '15px', color: '#cbd5e1', fontWeight: 600 }}>{t('اسحب الملف هنا أو')}<span style={{ color: '#818cf8', textDecoration: 'underline' }}>{t('اضغط للاختيار')}</span></span>
-                        <span style={{ fontSize: '12px', color: '#64748b' }}>{t('PDF · Word · صور — حتى 10MB')}</span></>
+                        <span style={{ fontSize: '15px', color: '#cbd5e1', fontWeight: 600 }}>اسحب الملف هنا أو <span style={{ color: '#818cf8', textDecoration: 'underline' }}>اضغط للاختيار</span></span>
+                        <span style={{ fontSize: '12px', color: '#64748b' }}>PDF · Word · صور — حتى 10MB</span></>
                 }
                 <input ref={inputRef} type="file" style={{ display: 'none' }}
                     accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
@@ -137,7 +137,7 @@ function AttachmentUploader({ attachments, onAdd, onRemove }: {
                             <span style={{ fontSize: '24px' }}>{icon(a.name)}</span>
                             <div style={{ flex: 1, minWidth: 0 }}>
                                 <div style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.name}</div>
-                                <div style={{ fontSize: '11px', color: '#64748b' }}>{t('تم الرفع بنجاح')}</div>
+                                <div style={{ fontSize: '11px', color: '#64748b' }}>تم الرفع بنجاح</div>
                             </div>
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <a href={a.url} target="_blank" rel="noreferrer" style={{ width: '32px', height: '32px', borderRadius: '8px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#818cf8', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.1)'} onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}><Eye size={16} /></a>
@@ -235,7 +235,7 @@ export default function EditEmployeePage() {
             <DashboardLayout>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#64748b' }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span style={{ marginInlineEnd: '12px' }}>{t('جاري تحميل بيانات الموظف...')}</span>
+                    <span style={{ marginInlineEnd: '12px' }}>جاري تحميل بيانات الموظف...</span>
                 </div>
             </DashboardLayout>
         );
@@ -256,10 +256,11 @@ export default function EditEmployeePage() {
                             style={{ display: 'flex', alignItems: 'center', gap: '6px', height: '36px', padding: '0 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#94a3b8', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s' }}
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = '#e2e8f0'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#94a3b8'; }}>
-                            <ArrowRight size={14} />{t('العودة')}</button>
+                            <ArrowRight size={14} /> العودة
+                        </button>
                         <div>
-                            <h1 className="page-title">{t('تعديل بيانات الموظف')}</h1>
-                            <p className="page-subtitle">{t('تحديث الملف الشخصي والبيانات الوظيفية والمالية')}</p>
+                            <h1 className="page-title">تعديل بيانات الموظف</h1>
+                            <p className="page-subtitle">تحديث الملف الشخصي والبيانات الوظيفية والمالية</p>
                         </div>
                     </div>
                 </div>
@@ -270,62 +271,62 @@ export default function EditEmployeePage() {
                         {/* Main Content Area */}
                         <div>
                             {/* ① شخصية */}
-                            <FormSection label={t('البيانات الشخصية')} icon={UsersIcon} color="#3b82f6" description="المعلومات الأساسية وبيانات التواصل والتعريف">
+                            <FormSection label="البيانات الشخصية" icon={UsersIcon} color="#3b82f6" description="المعلومات الأساسية وبيانات التواصل والتعريف">
                                 <Grid2>
-                                    <Field label={t('كود الموظف')}>
+                                    <Field label="كود الموظف">
                                         <input type="text" className="input" disabled value={form.code} style={{ height: '48px', fontSize: '15px', background: 'rgba(255,255,255,0.02)', color: '#64748b' }} />
                                     </Field>
-                                    <Field label={t('الاسم الرباعي')} required>
-                                        <input type="text" className="input" required value={form.name} onChange={e => set('name')(e.target.value)} placeholder={t('محمد أحمد علي محمود')} style={{ height: '48px', fontSize: '15px' }} />
+                                    <Field label="الاسم الرباعي" required>
+                                        <input type="text" className="input" required value={form.name} onChange={e => set('name')(e.target.value)} placeholder="محمد أحمد علي محمود" style={{ height: '48px', fontSize: '15px' }} />
                                     </Field>
                                 </Grid2>
                                 <Grid2>
-                                    <Field label={t('الرقم القومي')}>
+                                    <Field label="الرقم القومي">
                                         <input type="text" className="input" value={form.nationalId} onChange={e => set('nationalId')(e.target.value)} placeholder="29xxxxxxxxxxxxxxx" maxLength={14} style={{ direction: 'ltr', fontFamily: 'monospace', height: '45px' }} />
                                     </Field>
-                                    <Field label={t('تاريخ الميلاد')}>
+                                    <Field label="تاريخ الميلاد">
                                         <input type="date" className="input" value={form.birthDate} onChange={e => set('birthDate')(e.target.value)} style={{ height: '45px' }} />
                                     </Field>
                                 </Grid2>
                                 <Grid2>
-                                    <Field label={t('الجنس')}>
+                                    <Field label="الجنس">
                                         <select className="input" value={form.gender} onChange={e => set('gender')(e.target.value)} style={{ height: '45px' }}>
-                                            <option value="">{t('اختر')}</option>
-                                            <option value="male">{t('ذكر')}</option>
-                                            <option value="female">{t('أنثى')}</option>
+                                            <option value="">اختر</option>
+                                            <option value="male">ذكر</option>
+                                            <option value="female">أنثى</option>
                                         </select>
                                     </Field>
-                                    <Field label={t('رقم الهاتف')}>
+                                    <Field label="رقم الهاتف">
                                         <input type="text" className="input" value={form.phone} onChange={e => set('phone')(e.target.value)} placeholder="01xxxxxxxxx" style={{ direction: 'ltr', fontFamily: 'monospace', height: '45px' }} />
                                     </Field>
                                 </Grid2>
                                 <Grid2>
-                                    <Field label={t('البريد الإلكتروني')}>
+                                    <Field label="البريد الإلكتروني">
                                         <input type="email" className="input" value={form.email} onChange={e => set('email')(e.target.value)} placeholder="name@company.com" style={{ direction: 'ltr', height: '45px' }} />
                                     </Field>
-                                    <Field label={t('العنوان')}>
-                                        <input type="text" className="input" value={form.address} onChange={e => set('address')(e.target.value)} placeholder={t('المدينة، الحي، الشارع')} style={{ height: '45px' }} />
+                                    <Field label="العنوان">
+                                        <input type="text" className="input" value={form.address} onChange={e => set('address')(e.target.value)} placeholder="المدينة، الحي، الشارع" style={{ height: '45px' }} />
                                     </Field>
                                 </Grid2>
                             </FormSection>
 
                             {/* ② وظيفية */}
-                            <FormSection label={t('البيانات الوظيفية')} icon={Briefcase} color="#8b5cf6" description="تفاصيل التعيين والمسمى الوظيفي والقسم">
+                            <FormSection label="البيانات الوظيفية" icon={Briefcase} color="#8b5cf6" description="تفاصيل التعيين والمسمى الوظيفي والقسم">
                                 <Grid2>
-                                    <Field label={t('القسم الإداري')}>
-                                        <CustomSelect value={form.departmentId} onChange={set('departmentId')} icon={Building2} placeholder={t('(بدون قسم)')} options={departments.map(d => ({ value: d.id, label: d.name }))} />
+                                    <Field label="القسم الإداري">
+                                        <CustomSelect value={form.departmentId} onChange={set('departmentId')} icon={Building2} placeholder="(بدون قسم)" options={departments.map(d => ({ value: d.id, label: d.name }))} />
                                     </Field>
-                                    <Field label={t('المسمى الوظيفي')}>
-                                        <input type="text" className="input" value={form.position} onChange={e => set('position')(e.target.value)} placeholder={t('محاسب أول')} style={{ height: '45px' }} />
+                                    <Field label="المسمى الوظيفي">
+                                        <input type="text" className="input" value={form.position} onChange={e => set('position')(e.target.value)} placeholder="محاسب أول" style={{ height: '45px' }} />
                                     </Field>
                                 </Grid2>
-                                <Field label={t('تاريخ التعيين')} required>
+                                <Field label="تاريخ التعيين" required>
                                     <input type="date" className="input" required value={form.hireDate} onChange={e => set('hireDate')(e.target.value)} style={{ height: '45px' }} />
                                 </Field>
                             </FormSection>
 
                             {/* ③ مالي */}
-                            <FormSection label={t('الراتب والبدلات والخصومات')} icon={CreditCard} color="#10b981" description="تفاصيل الراتب الشهري والحوافز والاستقطاعات">
+                            <FormSection label="الراتب والبدلات والخصومات" icon={CreditCard} color="#10b981" description="تفاصيل الراتب الشهري والحوافز والاستقطاعات">
                                 <Field label={`الراتب الأساسي الشهري (${cSymbol})`} required>
                                     <div style={{ position: 'relative' }}>
                                         <input type="number" step="0.01" min="0" className="input" required value={form.basicSalary} onChange={e => set('basicSalary')(e.target.value)} placeholder="0.00" style={{ fontSize: '20px', fontWeight: 900, height: '56px', paddingInlineEnd: '16px', color: '#10b981', background: 'rgba(16,185,129,0.02)', borderColor: 'rgba(16,185,129,0.2)' }} />
@@ -334,42 +335,42 @@ export default function EditEmployeePage() {
                                 </Field>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.05)' }} />
-                                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#10b981' }}>{t('+ البدلات الإضافية')}</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#10b981' }}>+ البدلات الإضافية</span>
                                     <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.05)' }} />
                                 </div>
                                 <Grid3>
-                                    <Field label={t('بدل سكن')}>
+                                    <Field label="بدل سكن">
                                         <input type="number" step="0.01" min="0" className="input" value={form.housingAllowance} onChange={e => set('housingAllowance')(e.target.value)} placeholder="0.00" />
                                     </Field>
-                                    <Field label={t('بدل مواصلات')}>
+                                    <Field label="بدل مواصلات">
                                         <input type="number" step="0.01" min="0" className="input" value={form.transportAllowance} onChange={e => set('transportAllowance')(e.target.value)} placeholder="0.00" />
                                     </Field>
-                                    <Field label={t('بدل غذاء')}>
+                                    <Field label="بدل غذاء">
                                         <input type="number" step="0.01" min="0" className="input" value={form.foodAllowance} onChange={e => set('foodAllowance')(e.target.value)} placeholder="0.00" />
                                     </Field>
                                 </Grid3>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.05)' }} />
-                                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#ef4444' }}>{t('− الخصومات والاستقطاعات')}</span>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: '#ef4444' }}>− الخصومات والاستقطاعات</span>
                                     <div style={{ flex: 1, height: '1px', background: 'rgba(255,255,255,0.05)' }} />
                                 </div>
                                 <Grid2>
-                                    <Field label={t('خصم التأمينات')}>
+                                    <Field label="خصم التأمينات">
                                         <input type="number" step="0.01" min="0" className="input" value={form.insuranceDeduction} onChange={e => set('insuranceDeduction')(e.target.value)} placeholder="0.00" />
                                     </Field>
-                                    <Field label={t('خصم الضرائب')}>
+                                    <Field label="خصم الضرائب">
                                         <input type="number" step="0.01" min="0" className="input" value={form.taxDeduction} onChange={e => set('taxDeduction')(e.target.value)} placeholder="0.00" />
                                     </Field>
                                 </Grid2>
                             </FormSection>
 
                             {/* ④ بنكية */}
-                            <FormSection label={t('بيانات الحساب البنكي')} icon={CreditCard} color="#f59e0b" description="معلومات تحويل الراتب والبيانات البنكية">
+                            <FormSection label="بيانات الحساب البنكي" icon={CreditCard} color="#f59e0b" description="معلومات تحويل الراتب والبيانات البنكية">
                                 <Grid2>
-                                    <Field label={t('اسم البنك')}>
-                                        <input type="text" className="input" value={form.bankName} onChange={e => set('bankName')(e.target.value)} placeholder={t('البنك الأهلي المصري')} style={{ height: '45px' }} />
+                                    <Field label="اسم البنك">
+                                        <input type="text" className="input" value={form.bankName} onChange={e => set('bankName')(e.target.value)} placeholder="البنك الأهلي المصري" style={{ height: '45px' }} />
                                     </Field>
-                                    <Field label={t('رقم الحساب / IBAN')}>
+                                    <Field label="رقم الحساب / IBAN">
                                         <input type="text" className="input" value={form.bankAccount} onChange={e => set('bankAccount')(e.target.value)} placeholder="xxxxxxxxxxxx" style={{ direction: 'ltr', fontFamily: 'monospace', height: '45px' }} />
                                     </Field>
                                 </Grid2>
@@ -381,23 +382,23 @@ export default function EditEmployeePage() {
 
                             {/* Summary Card */}
                             <div style={{ background: 'linear-gradient(135deg, #1e293b, #0f172a)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
-                                <h4 style={{ margin: '0 0 16px', fontSize: '15px', fontWeight: 700, color: '#94a3b8' }}>{t('ملخص الراتب')}</h4>
+                                <h4 style={{ margin: '0 0 16px', fontSize: '15px', fontWeight: 700, color: '#94a3b8' }}>ملخص الراتب</h4>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#64748b' }}>{t('الأساسي:')}</span>
+                                        <span style={{ color: '#64748b' }}>الأساسي:</span>
                                         <span style={{ color: '#f1f5f9', fontWeight: 600 }}>{(+form.basicSalary || 0).toLocaleString('en-US')} {cSymbol}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#10b981' }}>{t('إجمالي البدلات:')}</span>
+                                        <span style={{ color: '#10b981' }}>إجمالي البدلات:</span>
                                         <span style={{ color: '#10b981', fontWeight: 600 }}>+ {allowances.toLocaleString('en-US')} {cSymbol}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                                        <span style={{ color: '#ef4444' }}>{t('إجمالي الخصومات:')}</span>
+                                        <span style={{ color: '#ef4444' }}>إجمالي الخصومات:</span>
                                         <span style={{ color: '#ef4444', fontWeight: 600 }}>- {deductions.toLocaleString('en-US')} {cSymbol}</span>
                                     </div>
                                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '4px 0' }} />
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '4px' }}>
-                                        <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700 }}>{t('صافي الراتب المتوقع')}</span>
+                                        <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700 }}>صافي الراتب المتوقع</span>
                                         <span style={{ fontSize: '28px', fontWeight: 950, color: '#fff', letterSpacing: '-0.5px' }} dir="ltr">
                                             {net.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '14px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                         </span>
@@ -409,7 +410,7 @@ export default function EditEmployeePage() {
                             <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '24px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
                                     <Paperclip size={18} color="#6366f1" />
-                                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{t('الوثائق والمرفقات')}</h4>
+                                    <h4 style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>الوثائق والمرفقات</h4>
                                 </div>
                                 <AttachmentUploader
                                     attachments={attachments}
@@ -426,7 +427,7 @@ export default function EditEmployeePage() {
                                 onMouseEnter={e => { if (!isSaving) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(59,130,246,0.3)'; } }}
                                 onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(59,130,246,0.2)'; }}
                             >
-                                {isSaving ? <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} />{t('جاري الحفظ...')}</> : <><Save size={20} />{t('حفظ التغييرات')}</>}
+                                {isSaving ? <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> جاري الحفظ...</> : <><Save size={20} /> حفظ التغييرات</>}
                             </button>
                             <button
                                 type="button"
@@ -434,7 +435,9 @@ export default function EditEmployeePage() {
                                 style={{ width: '100%', height: '48px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.05)', background: 'transparent', color: '#64748b', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'inherit' }}
                                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.color = '#94a3b8'; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748b'; }}
-                            >{t('إلغاء التعديلات')}</button>
+                            >
+                                إلغاء التعديلات
+                            </button>
                         </div>
                     </div>
                 </form>

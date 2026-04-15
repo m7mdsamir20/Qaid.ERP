@@ -36,25 +36,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning className={`${cairo.variable} ${outfit.variable}`}>
-      <head>
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            (function() {
-              try {
-                var lang = localStorage.getItem('erp_lang') || 'ar';
-                var theme = localStorage.getItem('erp-theme') || 'dark';
-                document.documentElement.lang = lang;
-                document.documentElement.dir = (lang === 'en' ? 'ltr' : 'rtl');
-                if (theme === 'light') {
-                  document.documentElement.setAttribute('data-theme', 'light');
-                } else {
-                  document.documentElement.removeAttribute('data-theme');
-                }
-              } catch (e) {}
-            })()
-          `
-        }} />
-      </head>
       <body>
         <Providers>
           {children}
