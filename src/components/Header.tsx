@@ -8,11 +8,10 @@ import {
     User, Settings, KeyRound, LogOut,
     FileText, Package, Users, Receipt, Loader2,
     Globe, AlertTriangle, GitBranch, Menu,
-    Sun, Moon, PanelLeftClose, PanelRightClose
+    Sun, Moon
 } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
 import { Avatar } from '@/components/UserAvatar';
-import Link from 'next/link';
 
 /* ══════════════════════════════════════════
    TYPES & MOCK DATA
@@ -484,57 +483,18 @@ function BranchSwitcher() {
     );
 }
 
-export default function Header({ 
-    onMenuToggle, 
-    isCollapsed, 
-    onCollapseToggle 
-}: { 
-    onMenuToggle?: () => void;
-    isCollapsed?: boolean;
-    onCollapseToggle?: () => void;
-}) {
+export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) {
     const { lang } = useTranslation();
-    const { theme: currentTheme } = useTheme();
     const isRtl = lang === 'ar';
-
-    const CollapseIcon = isRtl 
-        ? (isCollapsed ? PanelLeftClose : PanelRightClose)
-        : (isCollapsed ? PanelRightClose : PanelLeftClose);
 
     return (
         <header className="main-header" style={{
             height: '64px', position: 'fixed', top: 0,
-            zIndex: 1001,
+            zIndex: 800,
             background: 'var(--c-overlay, rgba(7, 13, 26, 0.7))', backdropFilter: 'blur(12px)',
             borderBottom: `1px solid ${C.border}`, display: 'flex',
-            alignItems: 'center', padding: '0 20px', transition: 'all 0.3s',
-            width: '100%', left: 0, right: 0
+            alignItems: 'center', padding: '0 24px', transition: 'all 0.3s'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
-
-            {/* Logo & Toggle Section */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '15px', minWidth: '240px' }} className="header-logo-section">
-                <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-                    <div style={{ position: 'relative', width: '130px', height: '40px' }}>
-                        <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: currentTheme === 'light' ? 0 : 1, transition: 'opacity 0.3s' }} />
-                        <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: currentTheme === 'light' ? 1 : 0, transition: 'opacity 0.3s' }} />
-                    </div>
-                </Link>
-
-                <button
-                    onClick={onCollapseToggle}
-                    className="hide-mobile"
-                    style={{
-                        width: '32px', height: '32px', borderRadius: '8px',
-                        border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)',
-                        color: C.textSecondary, display: 'flex', alignItems: 'center',
-                        justifyContent: 'center', cursor: 'pointer', transition: 'all 0.2s'
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.color = C.primary; e.currentTarget.style.borderColor = C.primary; }}
-                    onMouseLeave={e => { e.currentTarget.style.color = C.textSecondary; e.currentTarget.style.borderColor = C.border; }}
-                >
-                    <CollapseIcon size={18} />
-                </button>
-            </div>
 
             {/* Mobile Menu Toggle */}
             <button
@@ -550,18 +510,18 @@ export default function Header({
                 <Menu size={20} />
             </button>
 
-            {/* Branch Switcher */}
-            <div className="branch-switcher-wrap" style={{ marginInlineStart: '10px' }}>
+            {/* Branch Switcher - Fixed Position */}
+            <div className="branch-switcher-wrap" style={{ order: 1 }}>
                 <BranchSwitcher />
             </div>
 
             {/* Center: Search */}
-            <div style={{ flex: 1, display: 'flex', justifyContent: 'center' }} className="hide-mobile">
+            <div style={{ flex: 1, display: 'flex', justifyContent: 'center', order: 5 }}>
                 <SearchBox />
             </div>
 
-            {/* Actions & User Menu */}
-            <div style={{ marginInlineStart: 'auto' }}>
+            {/* Actions & User Menu - Fixed Position */}
+            <div style={{ order: 10 }}>
                 <Actions />
             </div>
 
@@ -572,8 +532,6 @@ export default function Header({
                 }
                 @media (max-width: 1023px) {
                     .search-box-container { display: none; }
-                    .header-logo-section { min-width: auto !important; }
-                    .hide-mobile { display: none !important; }
                 }
             `}</style>
         </header>

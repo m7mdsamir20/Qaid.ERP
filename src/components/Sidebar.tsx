@@ -15,13 +15,7 @@ import { C, CAIRO } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
 
-export default function Sidebar({ 
-    onLinkClick,
-    isCollapsed = false 
-}: { 
-    onLinkClick?: () => void,
-    isCollapsed?: boolean 
-}) {
+export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
     const pathname = usePathname();
     const { data: session, status } = useSession();
     const { theme } = useTheme();
@@ -149,30 +143,10 @@ export default function Sidebar({
             if (section.isStandalone && section.href) {
                 const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
                 return (
-                    <div key={section.title} style={{ marginBottom: '4px', padding: isCollapsed ? '0 8px' : '0 14px' }}>
-                        <Link 
-                            href={section.href} 
-                            onClick={onLinkClick} 
-                            title={isCollapsed ? t(section.title) : ''}
-                            style={{ 
-                                display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: isCollapsed ? 'center' : 'flex-start',
-                                gap: isCollapsed ? '0' : '12px', 
-                                padding: '10px 14px', 
-                                color: isActive ? C.primary : C.textSecondary, 
-                                textDecoration: 'none', 
-                                fontWeight: isActive ? 700 : 500, 
-                                fontSize: '14px', 
-                                borderRadius: '12px', 
-                                backgroundColor: isActive ? C.primaryBg : 'transparent', 
-                                transition: 'all 0.2s', 
-                                border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` 
-                            }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: isCollapsed ? 'auto' : '20px' }}>
-                                <SectionIcon size={18} />
-                            </div>
-                            {!isCollapsed && <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>}
+                    <div key={section.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
+                        <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
+                            <SectionIcon size={18} />
+                            <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>
                         </Link>
                     </div>
                 );
@@ -182,32 +156,14 @@ export default function Sidebar({
             const isActiveGroup = visibleLinks.some((l: any) => pathname === l.href);
 
             return (
-                <div key={section.title} style={{ marginBottom: '6px', padding: isCollapsed ? '0 8px' : '0 14px' }}>
-                    <button 
-                        onClick={() => setOpenSections(prev => ({ ...prev, [section.title]: !prev[section.title] }))} 
-                        title={isCollapsed ? t(section.title) : ''}
-                        style={{ 
-                            width: '100%', 
-                            background: 'transparent', 
-                            border: 'none', 
-                            display: 'flex', 
-                            justifyContent: isCollapsed ? 'center' : 'space-between', 
-                            alignItems: 'center', 
-                            padding: '10px 14px', 
-                            color: isActiveGroup ? C.primary : C.textSecondary, 
-                            cursor: 'pointer', 
-                            borderRadius: '12px', 
-                            fontSize: '14px' 
-                        }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: isCollapsed ? '0' : '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: isCollapsed ? 'auto' : '20px' }}>
-                                <SectionIcon size={18} />
-                            </div>
-                            {!isCollapsed && t(section.title)}
+                <div key={section.title} style={{ marginBottom: '6px', padding: '0 14px' }}>
+                    <button onClick={() => setOpenSections(prev => ({ ...prev, [section.title]: !prev[section.title] }))} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
+                            <SectionIcon size={18} /> {t(section.title)}
                         </div>
-                        {!isCollapsed && <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>}
+                        <div style={{ opacity: 0.5 }}>{isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}</div>
                     </button>
-                    {isOpen && !isCollapsed && (
+                    {isOpen && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', marginInlineEnd: '22px', paddingInlineEnd: '12px', marginTop: '6px', borderInlineEnd: `1px dashed ${C.border}` }}>
                             {visibleLinks.map((link: any) => {
                                 const isActive = pathname === link.href;
@@ -236,11 +192,23 @@ export default function Sidebar({
     }
 
     return (
-        <aside className="sidebar" style={{ width: '100%', height: '100%', position: 'relative', backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isCollapsed ? 'none' : (isRtl ? '-10px 0 30px var(--c-shadow)' : '10px 0 30px var(--c-shadow)'), zIndex: 1001, overflow: 'hidden', transition: 'width 0.3s ease' }} dir={isRtl ? 'rtl' : 'ltr'}>
-            
-            <div style={{ height: '15px' }} /> {/* Spacer since logo moved to header */}
+        <aside className="sidebar" style={{ width: '100%', height: '100%', position: 'relative', backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px var(--c-shadow)' : '10px 0 30px var(--c-shadow)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
+            <Link href="/" style={{
+                height: '100px',
+                minHeight: '100px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '0 20px',
+                borderBottom: `1px solid ${C.border}05`
+            }}>
+                <div style={{ position: 'relative', width: '100%', maxWidth: '200px', height: '60px' }}>
+                    <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s' }} />
+                    <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s' }} />
+                </div>
+            </Link>
 
-            <nav className="sidebar-nav" style={{ padding: '10px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' as any }}>
+            <nav className="sidebar-nav" style={{ padding: '20px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' as any }}>
                 {isSidebarEmpty ? (
                     <div style={{ padding: '40px 20px', textAlign: 'center', color: C.textSecondary, fontFamily: CAIRO }}>
                         <div style={{ marginBottom: '12px', opacity: 0.5 }}><Loader2 size={32} style={{ animation: 'spin 2s linear infinite' }} /></div>
