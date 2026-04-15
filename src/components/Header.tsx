@@ -42,7 +42,7 @@ const roleLabels: Record<string, string> = {
     storekeeper: 'أمين مستودع',
     hr: 'موارد بشرية',
     cashier: 'كاشير',
-    custom: 'مخصص'
+    custom: 'مستخدم'
 };
 
 /* ══════════════════════════════════════════
@@ -490,15 +490,15 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
             borderBottom: `1px solid ${C.border}`, display: 'flex',
             alignItems: 'center', padding: '0 24px', transition: 'all 0.3s'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
-            
+
             {/* Mobile Menu Toggle */}
-            <button 
+            <button
                 className="mobile-menu-btn"
                 onClick={onMenuToggle}
                 style={{
                     width: '38px', height: '38px', borderRadius: '10px',
                     border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)',
-                    color: C.textPrimary, display: 'none', alignItems: 'center', 
+                    color: C.textPrimary, display: 'none', alignItems: 'center',
                     justifyContent: 'center', cursor: 'pointer', marginInlineEnd: '12px'
                 }}
             >

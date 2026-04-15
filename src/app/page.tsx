@@ -342,7 +342,7 @@ export default function DashboardPage() {
       { id: '/expenses', featureKey: 'treasury', href: '/expenses', label: t('المصروفات'), icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
       { id: '/other-income', featureKey: 'treasury', href: '/other-income', label: t('الإيرادات'), icon: TrendingUp, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
       { id: '/payrolls', featureKey: 'hr', href: '/payrolls', label: t('مسير الرواتب'), icon: DollarSign, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
-      
+
       { id: '/accounts', featureKey: 'accounting', href: '/accounts', label: t('شجرة الحسابات'), icon: Landmark, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
       { id: '/reports', featureKey: 'dashboard', href: '/reports', label: t('التقارير الإحصائية'), icon: BarChart2, color: 'rgba(234, 179, 8, 0.12)', iconColor: '#eab308' },
       { id: '/settings', featureKey: 'dashboard', href: '/settings', label: t('إعدادات النظام'), icon: LayoutDashboard, color: 'rgba(75, 85, 99, 0.2)', iconColor: '#4b5563' },
@@ -355,7 +355,7 @@ export default function DashboardPage() {
       { id: '/purchase-payments', featureKey: 'purchases', href: '/purchase-payments/new', label: t('سند صرف'), icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
       { id: '/customers', featureKey: 'sales', href: '/customers', label: t('العملاء'), icon: Users, color: 'rgba(6, 182, 212, 0.12)', iconColor: '#06b6d4' },
       { id: '/suppliers', featureKey: 'purchases', href: '/suppliers', label: t('الموردين'), icon: Truck, color: 'rgba(244, 63, 94, 0.12)', iconColor: '#f43f5e' },
-      
+
       { id: '/items', featureKey: 'inventory', href: '/items', label: t('الأصناف'), icon: Package, color: 'rgba(139, 92, 246, 0.12)', iconColor: '#8b5cf6' },
       { id: '/accounts', featureKey: 'accounting', href: '/accounts', label: t('شجرة الحسابات'), icon: Landmark, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
     ];
@@ -455,26 +455,26 @@ export default function DashboardPage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px' }}>
             {visibleQuickActions.map((action, i) => (
-                <Link key={i} href={action.href} style={{ textDecoration: 'none' }}>
+              <Link key={i} href={action.href} style={{ textDecoration: 'none' }}>
+                <div style={{
+                  background: C.card, border: `1px solid ${C.border}`, borderRadius: '15px',
+                  padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center',
+                  gap: '10px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.background = C.hover; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = C.card; }}>
                   <div style={{
-                    background: C.card, border: `1px solid ${C.border}`, borderRadius: '15px',
-                    padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center',
-                    gap: '10px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                  }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.background = C.hover; }}
-                    onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = C.card; }}>
-                    <div style={{
-                      width: '42px', height: '42px', borderRadius: '12px',
-                      background: action.color, color: action.iconColor,
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      boxShadow: `0 8px 16px -4px ${action.color}`
-                    }}>
-                      <action.icon size={20} />
-                    </div>
-                    <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, textAlign: 'center', fontFamily: CAIRO }}>{action.label}</span>
+                    width: '42px', height: '42px', borderRadius: '12px',
+                    background: action.color, color: action.iconColor,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: `0 8px 16px -4px ${action.color}`
+                  }}>
+                    <action.icon size={20} />
                   </div>
-                </Link>
-              ))}
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, textAlign: 'center', fontFamily: CAIRO }}>{action.label}</span>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
 
@@ -514,9 +514,9 @@ export default function DashboardPage() {
                     <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: INTER }} axisLine={false} tickLine={false} tickFormatter={v => fmt(v)} width={40} />
                     <Tooltip content={<ChartTooltip cSymbol={cSymbol} t={t} />} />
                     {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
-                    {isServices 
-                       ? <Area type="monotone" dataKey="expenses" name={t("مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
-                       : (hasPage('/purchases', 'purchases') && <Area type="monotone" dataKey="purchases" name={t("مشتريات")} stroke={C.warning} strokeWidth={2} fill="url(#gPurch)" dot={false} />)
+                    {isServices
+                      ? <Area type="monotone" dataKey="expenses" name={t("مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
+                      : (hasPage('/purchases', 'purchases') && <Area type="monotone" dataKey="purchases" name={t("مشتريات")} stroke={C.warning} strokeWidth={2} fill="url(#gPurch)" dot={false} />)
                     }
                   </AreaChart>
                 </ResponsiveContainer>
