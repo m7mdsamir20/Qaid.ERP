@@ -440,9 +440,3 @@ export default function RegisterPage() {
         </div>
     );
 }
-                :: -webkit - scrollbar - track { background: transparent }
-                :: -webkit - scrollbar - thumb { background: ${ C.border }; border - radius: 4px }
-`}</style>
-        </div>
-    );
-}
