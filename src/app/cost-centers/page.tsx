@@ -200,7 +200,7 @@ export default function CostCentersPage() {
                                 {paginated.map((cc, idx) => (
                                     <tr key={cc.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.12)'}
+                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                     >
                                         <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER }}>
                                             {cc.code}

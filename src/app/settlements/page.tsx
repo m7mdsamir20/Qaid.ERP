@@ -385,7 +385,7 @@ export default function ComprehensiveSettlementPage() {
                                         </thead>
                                         <tbody>
                                             {filteredSettlements.map((s: any, idx) => (
-                                                <tr key={s.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < filteredSettlements.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}>
+                                                <tr key={s.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < filteredSettlements.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                     <td style={{ padding: '11px 16px', textAlign: 'start', color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: INTER }}>
                                                         {new Date(s.date).toLocaleDateString('en-GB')}
                                                     </td>

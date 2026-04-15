@@ -284,7 +284,7 @@ export default function GeneralLedgerPage() {
                                         <tr key={line.id}
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.12)'}>
+                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
                                             {/* Date */}
                                             <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>

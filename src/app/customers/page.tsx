@@ -317,7 +317,7 @@ export default function CustomersPage() {
                                     {paginated.map((c, idx) => (
                                         <tr key={c.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
                                             <td style={TABLE_STYLE.td(true)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>

@@ -314,7 +314,7 @@ export default function InstallmentsPage() {
                                                     style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                                     onClick={() => router.push(`/installments/${p.id}`)}
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.12)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
                                                     <td style={TABLE_STYLE.td(true)}>
                                                         <div style={{ fontWeight: 900, color: '#5286ed', fontFamily: INTER, fontSize: '13px' }}>#{p.planNumber}</div>

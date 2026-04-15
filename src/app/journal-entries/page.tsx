@@ -286,7 +286,7 @@ export default function JournalEntriesPage() {
                                             <React.Fragment key={entry.id}>
                                                 <tr style={TABLE_STYLE.row(idx === paginated.length - 1 && !isExpanded)}
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.12)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
                                                     <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>
                                                         {entry.entryNumber}

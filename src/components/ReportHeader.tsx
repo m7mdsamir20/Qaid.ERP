@@ -243,12 +243,12 @@ ${tablesHTML}
                     <button
                         onClick={handleBack}
                         style={{
-                            width: '38px', height: '38px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)',
+                            width: '38px', height: '38px', borderRadius: '12px', background: C.inputBg,
                             border: `1px solid ${C.border}`, color: C.textSecondary,
                             display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s'
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                        onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = C.inputBg; e.currentTarget.style.color = C.textSecondary; }}
                         title="رجوع"
                     >
                         <ArrowRight size={22} />
@@ -279,12 +279,12 @@ ${tablesHTML}
                         onClick={openCleanPrintWindow}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
-                            borderRadius: '10px', background: 'rgba(255, 255, 255, 0.05)', color: '#f8fafc',
-                            border: '1px solid rgba(255, 255, 255, 0.1)', fontSize: '12px', fontWeight: 700,
+                            borderRadius: '10px', background: C.inputBg, color: C.textPrimary,
+                            border: `1px solid ${C.border}`, fontSize: '12px', fontWeight: 700,
                             cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)'; e.currentTarget.style.transform = 'none'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = C.inputBg; e.currentTarget.style.transform = 'none'; }}
                     >
                         <Printer size={15} /> طباعة
                     </button>

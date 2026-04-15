@@ -147,7 +147,7 @@ export default function OtherIncomePage() {
                                 return (
                                     <tr key={e.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}>
+                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px' }}>{new Date(e.date).toLocaleDateString('en-GB')}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER }}>
                                             JN#{e.entryNumber.toString().padStart(4, '0')}

@@ -360,7 +360,7 @@ export default function FinancialYearsPage() {
                                                 return (
                                                     <tr key={fy.id} style={TABLE_STYLE.row(isLast)}
                                                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.025)'}
-                                                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.12)'}>
+                                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                         {/* الاسم */}
                                                         <td style={{ ...TABLE_STYLE.td(true) }}>
                                                             <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</div>

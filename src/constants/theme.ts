@@ -225,7 +225,7 @@ export const TABLE_STYLE = {
         borderBottom: `1px solid ${C.border}`
     }),
     row: (isLast: boolean) => ({
-        background: 'rgba(0,0,0,0.12)',
+        background: 'transparent',
         borderBottom: isLast ? 'none' : `1px solid ${C.border}`,
         transition: 'all 0.2s',
         cursor: 'default' as 'default'

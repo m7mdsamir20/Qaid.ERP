@@ -90,7 +90,7 @@ export default function WarehouseTransfersPage() {
                                         key={tf.id} 
                                         style={TABLE_STYLE.row(idx === transfers.length - 1)}
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
+                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                     >
                                         <td style={TABLE_STYLE.td(true)}>
                                             <div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.8 }}>

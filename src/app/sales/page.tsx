@@ -179,7 +179,7 @@ export default function SalesPage() {
                                         return (
                                             <tr key={inv.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
                                                 <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: isRtl ? 'right' : 'left' }}>
                                                     {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}

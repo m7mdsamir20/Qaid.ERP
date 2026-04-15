@@ -146,7 +146,7 @@ export default function OverduePage() {
                                                 style={TABLE_STYLE.row(idx === installments.length - 1)}
                                                 onClick={() => router.push(`/installments/${inst.plan?.id}`)}
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.12)'}>
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                 <td style={{ padding: '14px 16px' }}>
                                                     <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>
                                                         {inst.plan?.customer?.name}

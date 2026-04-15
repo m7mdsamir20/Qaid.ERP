@@ -208,6 +208,9 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                                     value={search}
                                     onChange={e => setSearch(e.target.value)}
                                     placeholder="ابحث هنا..."
+                                    autoComplete="off"
+                                    name="custom-select-search-nope"
+                                    spellCheck={false}
                                     style={{
                                         width: '100%',
                                         height: '36px',

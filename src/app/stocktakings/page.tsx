@@ -211,7 +211,7 @@ export default function StocktakingsPage() {
                                         <tr key={st.id} 
                                             style={TABLE_STYLE.row(idx === stocktakings.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
                                             <td style={{ ...TABLE_STYLE.td(true), width: '100px' }}>
                                                 <div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>

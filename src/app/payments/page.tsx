@@ -173,7 +173,7 @@ export default function PaymentVouchersPage() {
                                             return (
                                                 <tr key={v.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < paginated.length - 1 ? `1px solid ${C.border}` : 'none' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}
+                                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
                                                     <td style={{ padding: '11px 16px', textAlign: 'start', fontWeight: 500, fontSize: '11px', color: 'rgba(59, 130, 246, 0.65)', fontFamily: CAIRO, width: '120px' }}>
                                                         PMT-{String(v.voucherNumber).padStart(5, '0')}

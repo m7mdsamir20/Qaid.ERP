@@ -157,7 +157,7 @@ export default function ReceiptVouchersPage() {
                                         <tr key={v.id} 
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.15)'}>
+                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
                                                 RCP-{String(v.voucherNumber).padStart(5, '0')}
                                             </td>

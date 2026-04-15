@@ -138,6 +138,9 @@ export default function GeneralLedgerPage() {
                         <input
                             placeholder={loadingAccounts ? t('جاري التحميل...') : t('ابحث عن الحساب بالاسم أو الكود...')}
                             value={accountSearch}
+                            autoComplete="off"
+                            name="search-account-nope"
+                            spellCheck={false}
                             onChange={e => { setAccountSearch(e.target.value); setShowAccountList(true); }}
                             onFocus={() => { setAccountSearch(''); setShowAccountList(true); }}
                             style={{ ...SEARCH_STYLE.input, paddingInlineStart: '40px' }}
@@ -146,7 +149,7 @@ export default function GeneralLedgerPage() {
                         <ChevronDown size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, opacity: 0.5, pointerEvents: 'none' }} />
 
                         {showAccountList && filteredAccounts.length > 0 && (
-                            <div style={{ position: 'absolute', top: '100%', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 50, background: '#0f1c2e', border: `1px solid ${C.border}`, borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', maxHeight: '300px', overflowY: 'auto', marginTop: '6px' }}>
+                            <div style={{ position: 'absolute', top: '100%', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 50, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', maxHeight: '300px', overflowY: 'auto', marginTop: '6px' }}>
                                 {filteredAccounts.map(a => (
                                     <div key={a.id}
                                         onMouseDown={() => {
@@ -154,11 +157,11 @@ export default function GeneralLedgerPage() {
                                             setAccountSearch(`${a.code} — ${a.name}`);
                                             setShowAccountList(false);
                                         }}
-                                        style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background 0.1s' }}
-                                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,0.1)'}
+                                        style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', cursor: 'pointer', borderBottom: `1px solid ${C.border}`, transition: 'background 0.1s' }}
+                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 800, color: typeColors[a.type] || '#64748b', minWidth: '60px' }}>{a.code}</span>
-                                        <span style={{ fontSize: '12px', color: '#e2e8f0', flex: 1, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</span>
+                                        <span style={{ fontSize: '12px', color: C.textPrimary, flex: 1, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</span>
                                         <span style={{ fontSize: '10px', color: typeColors[a.type] || '#64748b', background: `${typeColors[a.type] || '#64748b'}15`, border: `1px solid ${typeColors[a.type] || '#64748b'}30`, borderRadius: '20px', padding: '2px 10px', flexShrink: 0, fontFamily: CAIRO }}>{typeLabels[a.type]}</span>
                                     </div>
                                 ))}
@@ -187,7 +190,7 @@ export default function GeneralLedgerPage() {
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(59,130,246,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <ScrollText size={40} style={{ opacity: 0.1, color: '#3b82f6' }} />
                         </div>
-                        <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: '#e2e8f0', fontFamily: CAIRO }}>{t('ابدأ بطلب كشف الحساب')}</h2>
+                        <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('ابدأ بطلب كشف الحساب')}</h2>
                         <p style={{ margin: '10px 0 0', fontSize: '12px', maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('اختر الحساب المطلوب والفترة الزمنية من الأعلى لعرض تفاصيل الحركات والرصيد الافتتاحي والختامي.')}</p>
                     </div>
                 ) : loading ? (
