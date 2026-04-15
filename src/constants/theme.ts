@@ -200,7 +200,9 @@ export const TABLE_STYLE = {
         background: THEME.colors.card,
         border: `1px solid ${C.border}`,
         borderRadius: '14px',
-        overflow: 'hidden' as 'hidden',
+        overflowX: 'auto' as 'auto',
+        overflowY: 'hidden' as 'hidden',
+        WebkitOverflowScrolling: 'touch' as any,
         boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)'
     },
     table: {

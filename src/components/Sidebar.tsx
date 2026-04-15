@@ -183,7 +183,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
 
     const isSidebarEmpty = useMemo(() => sidebarItems.every(i => i === null), [sidebarItems]);
 
-    if (!mounted || status === 'loading') {
+    if (!mounted) {
         return (
             <aside className="sidebar" style={{ width: '100%', height: '100%', backgroundColor: C.card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                 <Loader2 size={24} style={{ animation: 'spin 1s linear infinite', color: C.primary, opacity: 0.5 }} />
@@ -196,11 +196,11 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             <Link href="/" style={{ height: '95px', minHeight: '95px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ position: 'relative', width: '100%', maxWidth: '240px', height: '75px' }}>
                     <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'none' : 'auto' }} />
-                    <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'auto' : 'none' }} />
+                    <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'auto' : 'none', mixBlendMode: 'multiply' }} />
                 </div>
             </Link>
 
-            <nav className="sidebar-nav" style={{ padding: '20px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none' }}>
+            <nav className="sidebar-nav" style={{ padding: '20px 0', flex: 1, overflowY: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' as any }}>
                 {isSidebarEmpty ? (
                     <div style={{ padding: '40px 20px', textAlign: 'center', color: C.textSecondary, fontFamily: CAIRO }}>
                         <div style={{ marginBottom: '12px', opacity: 0.5 }}><Loader2 size={32} style={{ animation: 'spin 2s linear infinite' }} /></div>

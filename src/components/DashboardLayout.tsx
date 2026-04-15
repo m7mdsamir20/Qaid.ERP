@@ -146,9 +146,10 @@ export default function DashboardLayout({
                     .sidebar-wrapper {
                         position: fixed; top: 0; bottom: 0; width: 280px; z-index: 950;
                         background: ${C.card};
-                        transform: translateX(${isRtl ? '100%' : '-100%'});
                     }
-                    .sidebar-wrapper.open { transform: translateX(0); }
+                    .ltr-mode .sidebar-wrapper { left: 0; transform: translateX(-100%); }
+                    .rtl-mode .sidebar-wrapper { right: 0; transform: translateX(100%); }
+                    .sidebar-wrapper.open { transform: translateX(0) !important; }
                     .dashboard-content { margin: 0 !important; width: 100% !important; }
                 }
 
