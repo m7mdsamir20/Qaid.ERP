@@ -42,7 +42,7 @@ const roleLabels: Record<string, string> = {
     storekeeper: 'أمين مستودع',
     hr: 'موارد بشرية',
     cashier: 'كاشير',
-    custom: 'مستخدم'
+    custom: 'مخصص'
 };
 
 /* ══════════════════════════════════════════
