@@ -170,7 +170,12 @@ const AppModal: React.FC<AppModalProps> = ({
                                 </div>
                             )}
 
-                            <div className="modal-actions" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', gap: '12px', marginTop: '32px' }}>
+                            <div className="modal-actions" style={{ 
+                                display: 'grid', 
+                                gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)', 
+                                gap: '12px', 
+                                marginTop: '32px' 
+                            }}>
                                 <button 
                                     onClick={onConfirm} 
                                     disabled={isSubmitting} 
@@ -220,6 +225,19 @@ const AppModal: React.FC<AppModalProps> = ({
             </div>
             <style jsx>{`
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                @media (max-width: 480px) {
+                    .modal-content {
+                        width: 96% !important;
+                        margin: 10px !important;
+                        max-height: 96vh !important;
+                    }
+                    .modal-actions {
+                        grid-template-columns: 1fr !important;
+                    }
+                    .modal-actions button {
+                        width: 100% !important;
+                    }
+                }
             `}</style>
         </div>
     );

@@ -146,7 +146,7 @@ export default function SuperAdminPage() {
             />
 
             {/* Stats Overview */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
+            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
                 {[
                     { label: 'إجمالي الشركات', value: stats.totalCompanies || companies.length || 0, color: '#3b82f6', icon: <Building2 size={18} />, suffix: 'شركة' },
                     { label: 'حسابات نشطة', value: stats.activeCompanies || companies.filter(c=>c.isActive).length || 0, color: '#10b981', icon: <CheckCircle2 size={18} />, suffix: 'حساب' },
@@ -176,7 +176,7 @@ export default function SuperAdminPage() {
             </div>
 
             {/* Filter Section */}
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}` }}>
+            <div className="mobile-column" style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}` }}>
                 <div style={{ flex: 1, position: 'relative' }}>
                     <Search size={18} style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.7, pointerEvents: 'none' }} />
                     <input
@@ -206,7 +206,7 @@ export default function SuperAdminPage() {
                     <div style={{ fontSize: '16px', fontWeight: 800 }}>جاري استخراج بيانات الشركات والأنشطة...</div>
                 </div>
             ) : (
-                <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
+                <div className="scroll-table" style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
                     <table style={{ ...TABLE_STYLE.table, width: '100%', borderCollapse: 'collapse' }}>
                         <thead style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
                             <tr>

@@ -257,6 +257,23 @@ export default function DashboardLayout({
                     /* Cards/grids stack on mobile */
                     .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
 
+                    /* Global Responsive Table Container */
+                    .scroll-table {
+                        width: 100% !important;
+                        overflow-x: auto !important;
+                        -webkit-overflow-scrolling: touch !important;
+                        padding-bottom: 5px !important;
+                    }
+
+                    .scroll-table table {
+                        min-width: 600px !important; /* Forces scroll if table is too narrow */
+                    }
+
+                    /* Utility for 1-column layout on mobile */
+                    .responsive-grid {
+                        grid-template-columns: 1fr !important;
+                    }
+
                     /* Modal full width on mobile */
                     [role="dialog"], .modal-content {
                         width: 95vw !important;
@@ -269,13 +286,16 @@ export default function DashboardLayout({
                     .dashboard-content { max-width: 100vw; }
                 }
 
-                /* Item entry form responsive */
                 @media (max-width: 640px) {
                     .item-entry-grid {
                         grid-template-columns: 1fr 1fr auto !important;
                     }
                     .item-entry-grid > div:first-child {
                         grid-column: 1 / -1 !important;
+                    }
+                    /* Tappable targets for inputs/buttons on mobile */
+                    input, select, textarea, button:not(.mobile-menu-btn) {
+                        min-height: 44px !important;
                     }
                 }
 

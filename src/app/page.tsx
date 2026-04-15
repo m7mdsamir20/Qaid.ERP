@@ -576,7 +576,7 @@ export default function DashboardPage() {
                   {t('عرض التقارير')} <ArrowUpRight size={14} />
                 </Link>
               )}>
-              <div style={{ padding: '0 10px 10px' }}>
+              <div style={{ padding: '0 10px 10px' }} className="scroll-table">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start' }}>
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
@@ -664,12 +664,8 @@ export default function DashboardPage() {
 
           @media (max-width: 1023px) {
             .dashboard-page-header { flex-direction: column; align-items: flex-start !important; gap: 15px !important; }
-            .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 12px !important; }
             .charts-alerts-row, .recent-data-row { grid-template-columns: 1fr !important; }
             .hide-mobile { display: none !important; }
-          }
-          @media (max-width: 639px) {
-            .kpi-grid { grid-template-columns: 1fr !important; }
           }
         `}</style>
       </div>
