@@ -179,32 +179,41 @@ export default function RegisterPage() {
                 <div style={{ position: 'absolute', inset: '-50%', background: `radial-gradient(circle at 70% 30%, ${C.primary}10 0%, transparent 40%), radial-gradient(circle at 30% 70%, ${C.purple}08 0%, transparent 40%)`, animation: 'meshRotate 30s linear infinite', opacity: 0.6 }} />
                 
                 {/* Layer 2: Moving Glow Orbs */}
-                {mounted && Array.from({ length: 8 }).map((_, i) => (
+                {mounted && Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} style={{
                         position: 'absolute',
-                        width: `${250 + i * 80}px`, height: `${250 + i * 80}px`,
+                        width: `${200 + i * 100}px`, height: `${200 + i * 100}px`,
                         borderRadius: '50%',
-                        background: `radial-gradient(circle, ${i % 2 === 0 ? C.primary : C.purple}05 0%, transparent 70%)`,
+                        background: theme === 'dark' 
+                            ? `radial-gradient(circle, ${i % 2 === 0 ? C.primary : C.purple}05 0%, transparent 70%)`
+                            : `radial-gradient(circle, ${i % 2 === 0 ? C.primary : '#fff'}15 0%, transparent 70%)`,
                         top: `${Math.random() * 80}%`,
                         insetInlineStart: `${Math.random() * 80}%`,
-                        animation: `floatAround ${25 + i * 4}s ease-in-out infinite`,
-                        animationDelay: `-${i * 3}s`,
-                        filter: 'blur(50px)',
+                        animation: `floatAround ${20 + i * 5}s ease-in-out infinite`,
+                        animationDelay: `-${i * 2}s`,
+                        filter: 'blur(40px)',
                     }} />
                 ))}
 
-                {/* Layer 3: Subtle Space Particles */}
-                {mounted && Array.from({ length: 30 }).map((_, i) => (
-                    <div key={i} style={{
-                        position: 'absolute',
-                        width: '2px', height: '2px', background: '#fff', borderRadius: '50%',
-                        opacity: 0.1,
-                        top: `${Math.random() * 100}%`,
-                        insetInlineStart: `${Math.random() * 100}%`,
-                        animation: `twinkleAndMove ${6 + Math.random() * 6}s ease-in-out infinite`,
-                        animationDelay: `${-Math.random() * 6}s`,
-                    }} />
-                ))}
+                {/* Layer 3: Dynamic Stellar Field */}
+                {mounted && Array.from({ length: 60 }).map((_, i) => {
+                    const size = Math.random() * 2 + 1;
+                    const duration = 3 + Math.random() * 7;
+                    return (
+                        <div key={i} style={{
+                            position: 'absolute',
+                            width: `${size}px`, height: `${size}px`, 
+                            background: theme === 'dark' ? '#fff' : C.primary, 
+                            borderRadius: '50%',
+                            opacity: theme === 'dark' ? Math.random() * 0.4 + 0.1 : 0.2,
+                            top: `${Math.random() * 100}%`,
+                            insetInlineStart: `${Math.random() * 100}%`,
+                            animation: `twinkleAndMove ${duration}s ease-in-out infinite`,
+                            animationDelay: `${-Math.random() * 10}s`,
+                            boxShadow: theme === 'dark' && size > 2 ? `0 0 ${size * 4}px #fff` : 'none',
+                        }} />
+                    );
+                })}
             </div>
 
             <div style={{ width: '100%', maxWidth: '480px', position: 'relative', zIndex: 1 }}>
