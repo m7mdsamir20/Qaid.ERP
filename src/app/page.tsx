@@ -233,7 +233,6 @@ export default function DashboardPage() {
 
   const [stats, setStats] = useState<any>(getDashboardCache());
   const [period, setPeriod] = useState<'today' | 'week' | 'month'>('today');
-  const [greeting, setGreeting] = useState('');
   const [time, setTime] = useState('');
   const [loading, setLoading] = useState(!getDashboardCache());
   const [isError, setIsError] = useState(false);
@@ -257,8 +256,6 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
-    const h = new Date().getHours();
-    setGreeting(h < 12 ? t('صباح الخير') : h < 17 ? t('مساء الخير') : t('مساء النور'));
     const tick = () => {
       const d = new Date();
       setTime(d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }));
@@ -367,6 +364,8 @@ export default function DashboardPage() {
   };
 
   const visibleQuickActions = getVisibleActions();
+  const h = new Date().getHours();
+  const greetingKey = h < 12 ? 'صباح الخير' : h < 17 ? 'مساء الخير' : 'مساء النور';
 
   return (
     <DashboardLayout>
@@ -376,7 +375,7 @@ export default function DashboardPage() {
         <div className="dashboard-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', animation: 'fadeUp 0.3s ease both', gap: '20px' }}>
           <div>
             <h1 style={{ fontSize: '24px', fontWeight: 900, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {t(greeting)}، <span style={{ color: C.primary }}>{session?.user?.name || t('مستخدم النظام')}</span>
+              {t(greetingKey)}، <span style={{ color: C.primary }}>{session?.user?.name || t('مستخدم النظام')}</span>
             </h1>
             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
               {(() => {
