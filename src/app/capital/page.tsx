@@ -1,11 +1,11 @@
 'use client';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { 
     DollarSign, Plus, Loader2, X, TrendingUp, TrendingDown, 
     ChevronDown, ChevronUp, History, Info, AlertCircle, Save,
-    Banknote, Users
+    Banknote, Users, CheckCircle2, ArrowUpRight, ArrowDownRight
 } from 'lucide-react';
 import { 
     C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, 
@@ -15,14 +15,27 @@ import {
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
-interface Partner { id: string; name: string; share: number; capital: number; balance: number; }
-interface CapitalChange { id: string; type: 'increase' | 'decrease'; amount: number; date: string; notes?: string; }
-interface PartnerWithChanges extends Partner { changes: CapitalChange[]; }
+interface CapitalChange { 
+    id: string; 
+    type: 'increase' | 'decrease'; 
+    amount: number; 
+    date: string; 
+    notes?: string; 
+}
+
+interface Partner { 
+    id: string; 
+    name: string; 
+    share: number; 
+    capital: number; 
+    balance: number; 
+    changes: CapitalChange[];
+}
 
 export default function CapitalPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const [data, setData] = useState<PartnerWithChanges[]>([]);
+    const [data, setData] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [showModal, setShowModal] = useState<Partner | null>(null);
@@ -35,28 +48,50 @@ export default function CapitalPage() {
     });
 
     const fetchData = useCallback(async () => {
-        const res = await fetch('/api/capital');
-        if (res.ok) setData(await res.json());
-        setLoading(false);
+        try {
+            const res = await fetch('/api/capital');
+            if (res.ok) {
+                const json = await res.json();
+                setData(Array.isArray(json) ? json : []);
+            }
+        } catch (error) {
+            console.error('Failed to fetch capital data:', error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
+
     useEffect(() => { fetchData(); }, [fetchData]);
 
-    const totalCapital = data.reduce((s, p) => s + p.capital, 0);
+    const totalCapital = useMemo(() => data.reduce((s, p) => s + (p.capital || 0), 0), [data]);
 
     const handleSave = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!showModal) return;
+        if (!showModal || !form.amount) return;
         setSaving(true);
-        const res = await fetch('/api/capital', {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...form, partnerId: showModal.id, amount: parseFloat(form.amount) }),
-        });
-        if (res.ok) {
-            setShowModal(null);
-            setForm({ type: 'increase', amount: '', date: new Date().toISOString().split('T')[0], notes: '' });
-            fetchData();
-        } else { const d = await res.json(); alert(d.error || 'فشل الحفظ'); }
-        setSaving(false);
+        try {
+            const res = await fetch('/api/capital', {
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    ...form, 
+                    partnerId: showModal.id, 
+                    amount: parseFloat(form.amount) 
+                }),
+            });
+            if (res.ok) {
+                setShowModal(null);
+                setForm({ type: 'increase', amount: '', date: new Date().toISOString().split('T')[0], notes: '' });
+                fetchData();
+            } else { 
+                const d = await res.json(); 
+                alert(d.error || t('فشل الحفظ')); 
+            }
+        } catch (error) {
+            alert(t('حدث خطأ أثناء الاتصال بالسيرفر'));
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -75,7 +110,7 @@ export default function CapitalPage() {
                         {[
                             { label: t('إجمالي رأس المال العام'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: t('ج.م') },
                             { label: t('عدد المساهمين'), val: data.length, color: '#818cf8', icon: Users, suffix: t('شريك') },
-                            { label: t('آخر تحديث لرأس المال'), val: data.length > 0 ? new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB') : '-', color: '#10b981', icon: History, suffix: '' },
+                            { label: t('آخر تحديث لرأس المال'), val: data.length > 0 ? new Date().toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB') : '-', color: '#10b981', icon: History, suffix: '' },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -87,7 +122,7 @@ export default function CapitalPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
                                         <span>{typeof s.val === 'number' ? s.val.toLocaleString('en-US') : s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -114,31 +149,30 @@ export default function CapitalPage() {
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
                         {data.map(p => {
-                            const increased = p.changes.filter(c => c.type === 'increase').reduce((s, c) => s + c.amount, 0);
-                            const decreased = p.changes.filter(c => c.type === 'decrease').reduce((s, c) => s + c.amount, 0);
+                            const changes = p.changes || [];
+                            const increased = changes.filter(c => c.type === 'increase').reduce((s, c) => s + c.amount, 0);
+                            const decreased = changes.filter(c => c.type === 'decrease').reduce((s, c) => s + c.amount, 0);
                             const isExpanded = expanded === p.id;
 
                             return (
                                 <div key={p.id} style={{ 
-                                    background: C.card, border: `1px solid ${C.border}`, borderRadius: '18px', 
+                                    background: C.card, border: `1px solid ${isExpanded ? C.primary : C.border}`, borderRadius: '18px', 
                                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', overflow: 'hidden', position: 'relative' 
-                                }}
-                                onMouseEnter={e => { e.currentTarget.style.borderColor = `${C.blue}50`; e.currentTarget.style.transform = 'translateY(-4px)'; e.currentTarget.style.boxShadow = `0 15px 35px -12px ${C.blue}20`; }}
-                                onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = 'none'; }}>
+                                }}>
                                     
                                     <div style={{ padding: '20px' }}>
                                         {/* Header */}
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                 <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.blue}15`, border: `1px solid ${C.blue}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 900, color: C.blue, fontFamily: CAIRO }}>
-                                                    {p.name.charAt(0)}
+                                                    {p.name?.charAt(0) || '?'}
                                                 </div>
                                                 <div>
                                                     <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{t('المساهمة الحالية')}: {p.share}%</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{t('الحصة')}: {p.share}%</div>
                                                 </div>
                                             </div>
-                                            <button onClick={() => setExpanded(isExpanded ? null : p.id)} style={{ padding: '6px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textMuted, cursor: 'pointer' }}>
+                                            <button onClick={() => setExpanded(isExpanded ? null : p.id)} style={{ padding: '6px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textMuted, cursor: 'pointer', transition: '0.2s' }}>
                                                 {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                             </button>
                                         </div>
@@ -154,11 +188,11 @@ export default function CapitalPage() {
                                         {/* Stats Row */}
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
                                             <div style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '12px', padding: '10px' }}>
-                                                <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('إجمالي الزيادات')}</div>
+                                                <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('زيادات')}</div>
                                                 <div style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{increased.toLocaleString('en-US')}</div>
                                             </div>
                                             <div style={{ background: `${C.danger}05`, border: `1px solid ${C.danger}10`, borderRadius: '12px', padding: '10px' }}>
-                                                <div style={{ fontSize: '10px', color: C.danger, fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('إجمالي التخفيضات')}</div>
+                                                <div style={{ fontSize: '10px', color: C.danger, fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('تخفيضات')}</div>
                                                 <div style={{ fontSize: '14px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{decreased.toLocaleString('en-US')}</div>
                                             </div>
                                         </div>
@@ -180,119 +214,55 @@ export default function CapitalPage() {
                                             <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: `1px dashed ${C.border}`, animation: 'slideDown 0.3s ease-out' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                                                     <History size={14} style={{ color: C.textMuted }} />
-                                                    <div style={{ fontSize: '11px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات الرأسمالية')}</div>
+                                                    <div style={{ fontSize: '11px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</div>
                                                 </div>
                                                 
-                                                {p.changes.length === 0 ? (
-                                                    <div style={{ padding: '20px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                                                        <Info size={16} style={{ color: C.textMuted, opacity: 0.5, marginBottom: '4px' }} />
+                                                {changes.length === 0 ? (
+                                                    <div style={{ padding: '16px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                                         <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد حركات سابقة')}</div>
                                                     </div>
                                                 ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '20px' }}>
-                    
-                    {/* Current Partners List */}
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                        <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('المساهمة الحالية')}</div>
-                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, background: 'rgba(255,255,255,0.03)', padding: '4px 8px', borderRadius: '6px', fontFamily: INTER }}>
-                                {totalCapital.toLocaleString()} {t('ج.م')}
-                            </div>
-                        </div>
-                        
-                        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
-                            {loading ? (
-                                <div style={{ padding: '40px', textAlign: 'center' }}>
-                                    <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
-                                </div>
-                            ) : partners.map(p => (
-                                <div key={p.id} style={{ padding: '14px 20px', borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s' }}
-                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'}
-                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
-                                >
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                                        <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
-                                        <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{totalCapital > 0 ? ((p.capital / totalCapital) * 100).toFixed(1) : 0}%</div>
-                                    </div>
-                                    <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden', marginBottom: '8px' }}>
-                                        <div style={{ width: `${totalCapital > 0 ? (p.capital / totalCapital) * 100 : 0}%`, height: '100%', background: C.primary, borderRadius: '2px' }} />
-                                    </div>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER, textAlign: 'end' }}>
-                                        {p.capital.toLocaleString()} {t('ج.م')}
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Recent History */}
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                        <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <History size={18} style={{ color: C.primary }} />
-                            <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات الرأسمالية')}</div>
-                        </div>
-                        
-                        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
-                            {loading ? (
-                                <div style={{ padding: '40px', textAlign: 'center' }}>
-                                    <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
-                                </div>
-                            ) : history.length === 0 ? (
-                                <div style={{ padding: '80px 20px', textAlign: 'center' }}>
-                                    <History size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
-                                    <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد حركات سابقة')}</p>
-                                </div>
-                            ) : (
-                                history.map((h, i) => (
-                                    <div key={i} style={{ padding: '18px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '18px' }}>
-                                        <div style={{ 
-                                            width: '40px', height: '40px', borderRadius: '12px', 
-                                            background: h.type === 'increase' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', 
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                                            color: h.type === 'increase' ? '#10b981' : C.danger, border: `1px solid ${h.type === 'increase' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`
-                                        }}>
-                                            {h.type === 'increase' ? <ArrowUpRight size={20} /> : <ArrowDownRight size={20} />}
-                                        </div>
-                                        <div style={{ flex: 1 }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                                                <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{h.type === 'increase' ? t('زيادة رأس مال') : t('تخفيض رأس مال')}</div>
-                                                <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{new Date(h.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}</div>
+                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                        {changes.map((c, i) => (
+                                                            <div key={i} style={{ padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                <div>
+                                                                    <div style={{ fontSize: '12px', fontWeight: 800, color: c.type === 'increase' ? '#10b981' : C.danger, fontFamily: CAIRO }}>
+                                                                        {c.type === 'increase' ? t('زيادة') : t('تخفيض')}
+                                                                    </div>
+                                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: INTER }}>{new Date(c.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}</div>
+                                                                </div>
+                                                                <div style={{ textAlign: 'end' }}>
+                                                                    <div style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                                                        {c.type === 'increase' ? '+' : '-'}{c.amount.toLocaleString()}
+                                                                    </div>
+                                                                    <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>{t('ج.م')}</div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
-                                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, marginBottom: '6px' }}>{h.notes || t('بدون بيان')}</div>
-                                            <div style={{ display: 'flex', gap: '14px', fontSize: '11px', color: C.textMuted, fontWeight: 800, fontFamily: INTER }}>
-                                               <span style={{ color: h.type === 'increase' ? '#10b981' : C.danger }}>{h.type === 'increase' ? '+' : '-'}{h.amount.toLocaleString()}</span>
-                                               <span style={{ opacity: 0.5 }}>→</span>
-                                               <span style={{ color: '#f1f5f9' }}>{t('الرصيد')}: {h.balanceAfter.toLocaleString()}</span>
-                                            </div>
-                                        </div>
+                                        )}
                                     </div>
-                                ))
-                            )}
-                        </div>
+                                </div>
+                            );
+                        })}
                     </div>
-                </div>
+                )}
 
                 {/* MODAL: Adjust Capital */}
                 <AppModal
-                    show={showModal}
-                    onClose={() => setShowModal(false)}
-                    title={t("تعديل رأس المال")}
-                    icon={TrendingUp}
+                    show={!!showModal}
+                    onClose={() => setShowModal(null)}
+                    title={`${t('تعديل رأس مال')} : ${showModal?.name || ''}`}
+                    icon={DollarSign}
                 >
                     <form onSubmit={handleSave}>
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
-                            <div style={{ fontSize: '11px', fontWeight: 900, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>{t('رأس المال الحالي')}</div>
-                            <div style={{ fontSize: '24px', fontWeight: 950, color: '#10b981', fontFamily: INTER }}>{totalCapital.toLocaleString()} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span></div>
-                        </div>
-
-                        <div style={{ marginBottom: '20px' }}>
-                            <label style={LS}>{t('اختر الشريك')} <span style={{ color: C.danger }}>*</span></label>
-                            <select required value={form.partnerId} onChange={e => setForm(f => ({ ...f, partnerId: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut}>
-                                <option value="">{t('اختر الشريك...')}</option>
-                                {partners.map(p => (
-                                    <option key={p.id} value={p.id}>{p.name} — {t('مساهمة الحالية')}: {p.capital.toLocaleString()}</option>
-                                ))}
-                            </select>
+                            <div style={{ fontSize: '11px', fontWeight: 900, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>{t('القيمة الرأسمالية الحالية')}</div>
+                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: INTER }}>
+                                {showModal?.capital.toLocaleString() || 0} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                            </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
@@ -303,7 +273,7 @@ export default function CapitalPage() {
                                     color: form.type === 'increase' ? '#10b981' : C.textSecondary,
                                     fontSize: '14px', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO
                                 }}>
-                                <ArrowUpPlus size={18} /> {t('زيادة')}
+                                <TrendingUp size={18} /> {t('زيادة')}
                             </button>
                             <button type="button" onClick={() => setForm(f => ({ ...f, type: 'decrease' }))}
                                 style={{ 
@@ -312,7 +282,7 @@ export default function CapitalPage() {
                                     color: form.type === 'decrease' ? C.danger : C.textSecondary,
                                     fontSize: '14px', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO
                                 }}>
-                                <ArrowDownToLine size={18} /> {t('تخفيض')}
+                                <TrendingDown size={18} /> {t('تخفيض')}
                             </button>
                         </div>
 
@@ -339,7 +309,7 @@ export default function CapitalPage() {
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={18} />}
                                 <span style={{ marginInlineEnd: '8px' }}>{t('اعتماد الحركة')}</span>
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                            <button type="button" onClick={() => setShowModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                 {t('إلغاء')}
                             </button>
                         </div>
