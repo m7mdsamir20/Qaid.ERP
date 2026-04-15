@@ -39,10 +39,12 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         const companyName = co.companyName || co.name || '';
         const companyNameEn = co.nameEn || '';
         const logo = co.logo || co.companyLogo || '';
-
         const reportTitle = printTitle || title;
         const today = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
 
+        // printDate أحياناً بيكون اسم عميل/مورد وأحياناً فترة زمنية
+        const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
+        
         // accountName الأولوية للبروب اليدوي، ثم الاستنباط من البرنت ديت
         const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
         const dateRange = isDateRange ? printDate : today;
