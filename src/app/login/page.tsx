@@ -26,13 +26,6 @@ export default function LoginPage() {
         const params = new URLSearchParams(window.location.search);
         const cb = params.get('callbackUrl');
         if (cb) setCallbackUrl(cb);
-
-        // إجبار المتصفح على تحديث الأيقونة برمجياً لضمان ظهور التعديل
-        const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
-        link.type = 'image/png';
-        link.rel = 'shortcut icon';
-        link.href = '/icon.png?v=5';
-        document.getElementsByTagName('head')[0].appendChild(link);
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -57,9 +50,9 @@ export default function LoginPage() {
     };
 
     const BRAND_NAME = t('قيد المطور'); // اسم البراند (النظام)
-    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=5' : '/logo-system.png?v=5') : '/logo-system.png?v=5';
+    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=3' : '/logo-system.png?v=3') : '/logo-system.png?v=3';
     // استخدام أيقونة التاب الموحدة المنسوخة لمجلد public
-    const TAB_ICON = '/icon.png?v=5';
+    const TAB_ICON = '/icon.png';
 
     return (
         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative' }}>
@@ -102,14 +95,14 @@ export default function LoginPage() {
             <div style={{ position: 'fixed', inset: 0, background: C.bg, zIndex: 0, overflow: 'hidden' }}>
                 {/* Layer 1: Animated Mesh Gradient */}
                 <div style={{ position: 'absolute', inset: '-50%', background: `radial-gradient(circle at 70% 30%, ${C.primary}10 0%, transparent 40%), radial-gradient(circle at 30% 70%, ${C.purple}08 0%, transparent 40%)`, animation: 'meshRotate 30s linear infinite', opacity: 0.6 }} />
-                
+
                 {/* Layer 2: Moving Glow Orbs */}
                 {mounted && Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} style={{
                         position: 'absolute',
                         width: `${200 + i * 100}px`, height: `${200 + i * 100}px`,
                         borderRadius: '50%',
-                        background: theme === 'dark' 
+                        background: theme === 'dark'
                             ? `radial-gradient(circle, ${i % 2 === 0 ? C.primary : C.purple}05 0%, transparent 70%)`
                             : `radial-gradient(circle, ${i % 2 === 0 ? C.primary : '#fff'}30 0%, transparent 70%)`,
                         top: `${Math.random() * 80}%`,
@@ -129,7 +122,7 @@ export default function LoginPage() {
                     return (
                         <div key={i} style={{
                             position: 'absolute',
-                            width: `${size}px`, height: `${size}px`, 
+                            width: `${size}px`, height: `${size}px`,
                             background: starColor,
                             borderRadius: '50%',
                             opacity: theme === 'dark' ? Math.random() * 0.4 + 0.1 : 0.4,
@@ -247,6 +240,13 @@ export default function LoginPage() {
                     transition: background-color 5000s ease-in-out 0s;
                 }
             `}</style>
+        </div>
+    );
+}
+-webkit - text - fill - color: ${ C.textPrimary } !important;
+transition: background - color 5000s ease -in -out 0s;
+                }
+`}</style>
         </div>
     );
 }

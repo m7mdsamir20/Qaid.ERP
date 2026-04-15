@@ -46,12 +46,6 @@ export default function RegisterPage() {
 
     useEffect(() => {
         setMounted(true);
-        // إجبار المتصفح على تحديث الأيقونة برمجياً لضمان ظهور التعديل
-        const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
-        link.type = 'image/png';
-        link.rel = 'shortcut icon';
-        link.href = '/icon.png?v=5';
-        document.getElementsByTagName('head')[0].appendChild(link);
     }, []);
     const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
     const [showCountries, setShowCountries] = useState(false);
@@ -141,7 +135,7 @@ export default function RegisterPage() {
     );
 
     const BRAND_NAME = t('قيد المطور'); // اسم البراند (النظام)
-    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=5' : '/logo-system.png?v=5') : '/logo-system.png?v=5';
+    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=3' : '/logo-system.png?v=3') : '/logo-system.png?v=3';
 
     return (
         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative' }}>
@@ -183,14 +177,14 @@ export default function RegisterPage() {
             <div style={{ position: 'fixed', inset: 0, background: C.bg, zIndex: 0, overflow: 'hidden' }}>
                 {/* Layer 1: Animated Mesh Gradient */}
                 <div style={{ position: 'absolute', inset: '-50%', background: `radial-gradient(circle at 70% 30%, ${C.primary}10 0%, transparent 40%), radial-gradient(circle at 30% 70%, ${C.purple}08 0%, transparent 40%)`, animation: 'meshRotate 30s linear infinite', opacity: 0.6 }} />
-                
+
                 {/* Layer 2: Moving Glow Orbs */}
                 {mounted && Array.from({ length: 6 }).map((_, i) => (
                     <div key={i} style={{
                         position: 'absolute',
                         width: `${200 + i * 100}px`, height: `${200 + i * 100}px`,
                         borderRadius: '50%',
-                        background: theme === 'dark' 
+                        background: theme === 'dark'
                             ? `radial-gradient(circle, ${i % 2 === 0 ? C.primary : C.purple}05 0%, transparent 70%)`
                             : `radial-gradient(circle, ${i % 2 === 0 ? C.primary : '#fff'}30 0%, transparent 70%)`,
                         top: `${Math.random() * 80}%`,
@@ -210,7 +204,7 @@ export default function RegisterPage() {
                     return (
                         <div key={i} style={{
                             position: 'absolute',
-                            width: `${size}px`, height: `${size}px`, 
+                            width: `${size}px`, height: `${size}px`,
                             background: starColor,
                             borderRadius: '50%',
                             opacity: theme === 'dark' ? Math.random() * 0.4 + 0.1 : 0.4,
@@ -443,6 +437,12 @@ export default function RegisterPage() {
                 ::-webkit-scrollbar-track { background: transparent }
                 ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 4px }
             `}</style>
+        </div>
+    );
+}
+                :: -webkit - scrollbar - track { background: transparent }
+                :: -webkit - scrollbar - thumb { background: ${ C.border }; border - radius: 4px }
+`}</style>
         </div>
     );
 }
