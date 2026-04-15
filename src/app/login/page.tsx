@@ -50,9 +50,9 @@ export default function LoginPage() {
     };
 
     const BRAND_NAME = t('قيد المطور'); // اسم البراند (النظام)
-    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=3' : '/logo-system.png?v=3') : '/logo-system.png?v=3';
+    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=5' : '/logo-system.png?v=5') : '/logo-system.png?v=5';
     // استخدام أيقونة التاب الموحدة المنسوخة لمجلد public
-    const TAB_ICON = '/icon.png';
+    const TAB_ICON = '/icon.png?v=5';
 
     return (
         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative' }}>
