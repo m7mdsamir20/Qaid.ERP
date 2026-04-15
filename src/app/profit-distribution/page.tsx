@@ -19,6 +19,9 @@ interface Partner { id: string; name: string; share: number; capital: number; ba
 interface Distribution { id: string; date: string; totalAmount: number; period: string; notes?: string; paidFromTreasury?: boolean; lines: { partnerName: string; amount: number; share: number }[]; }
 interface Treasury { id: string; name: string; type: string; balance: number; }
 
+export default function ProfitDistributionPage() {
+    const { lang, t } = useTranslation();
+
     const PERIOD_LABELS: Record<string, string> = {
         monthly: t('شهري'),
         quarterly: t('ربع سنوي'),
@@ -34,9 +37,6 @@ interface Treasury { id: string; name: string; type: string; balance: number; }
         { val: 'annual', label: t('سنوي') },
         { val: 'custom', label: t('مخصص') },
     ];
-
-    export default function ProfitDistributionPage() {
-        const { lang, t } = useTranslation();
         const isRtl = lang === 'ar';
         const [partners, setPartners] = useState<Partner[]>([]);
         const [distributions, setDistributions] = useState<Distribution[]>([]);

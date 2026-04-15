@@ -227,12 +227,12 @@ export default function SuperAdminPage() {
                                 return (
                                     <tr key={c.id} style={{ borderBottom: index === filtered.length - 1 ? 'none' : `1px solid ${C.border}`, background: 'transparent' }}>
                                         {/* Company Info */}
-                                        <td style={{ padding: '16px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                                <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 900, fontSize: '18px' }}>
+                                        <td style={{ padding: '16px', textAlign: 'right' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'flex-start' }}>
+                                                <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 900, fontSize: '18px', flexShrink: 0 }}>
                                                     {c.name.charAt(0)}
                                                 </div>
-                                                <div>
+                                                <div style={{ textAlign: 'right' }}>
                                                     <div style={{ fontWeight: 900, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
                                                     <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: INTER }}>{c.email || '—'}</div>
                                                 </div>
