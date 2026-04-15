@@ -1,5 +1,5 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
@@ -50,9 +50,12 @@ export default function LoginPage() {
     };
 
     const BRAND_NAME = t('قيد المطور'); // اسم البراند (النظام)
-    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=3' : '/logo-system.png?v=3') : null;
     // استخدام أيقونة التاب الموحدة المنسوخة لمجلد public
     const TAB_ICON = '/icon.png';
+
+    // الشعار الصحيح حسب الثيم: dark → logo-system.png (أبيض), light → logo-light.png (أسود)
+    const isDarkTheme = theme === 'dark';
+    const showLogos = mounted;
 
     return (
         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative' }}>
@@ -139,8 +142,21 @@ export default function LoginPage() {
             <div style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 1 }}>
                 {/* الهوية البصرية */}
                 <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-                    {BRAND_LOGO ? (
-                        <img key={theme} src={BRAND_LOGO} alt={BRAND_NAME} style={{ display: 'block', margin: '0 auto 12px', width: '100%', maxWidth: '220px', height: 'auto', objectFit: 'contain', filter: theme === 'dark' ? 'drop-shadow(0 15px 35px rgba(0,0,0,0.3))' : 'none', mixBlendMode: theme === 'light' ? 'multiply' : 'normal' }} />
+                    {showLogos ? (
+                        <img
+                            key={isDarkTheme ? 'logo-dark' : 'logo-light'}
+                            src={isDarkTheme ? '/logo-system.png' : '/logo-light.png'}
+                            alt={BRAND_NAME}
+                            style={{
+                                display: 'block',
+                                width: '100%',
+                                maxWidth: '220px',
+                                height: 'auto',
+                                objectFit: 'contain',
+                                margin: '0 auto 12px',
+                                filter: 'drop-shadow(0 15px 35px rgba(0,0,0,0.3))',
+                            }}
+                        />
                     ) : (
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, borderRadius: '16px', padding: '12px 24px', marginBottom: '0', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', fontWeight: 900, color: '#fff', boxShadow: `0 8px 16px -4px ${C.primary}60` }}>{BRAND_NAME.charAt(0)}</div>
