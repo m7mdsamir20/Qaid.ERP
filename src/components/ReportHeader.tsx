@@ -279,12 +279,13 @@ ${tablesHTML}
                         onClick={openCleanPrintWindow}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
-                            borderRadius: '10px', background: C.inputBg, color: C.textPrimary,
-                            border: `1px solid ${C.border}`, fontSize: '12px', fontWeight: 700,
-                            cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO
+                            borderRadius: '10px', background: C.primary, color: '#fff',
+                            border: 'none', fontSize: '12px', fontWeight: 700,
+                            cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+                            boxShadow: `0 4px 12px ${C.primary}30`
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = C.inputBg; e.currentTarget.style.transform = 'none'; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = C.primaryHover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+                        onMouseLeave={e => { e.currentTarget.style.background = C.primary; e.currentTarget.style.transform = 'none'; }}
                     >
                         <Printer size={15} /> طباعة
                     </button>

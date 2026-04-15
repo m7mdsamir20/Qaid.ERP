@@ -547,19 +547,18 @@ select.input:focus,
 }
 
 /* Date Input Appearance */
-input[type="date"] {
-  position: relative;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5) sepia(1) saturate(5) hue-rotate(200deg);
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(32%) sepia(85%) saturate(3015%) hue-rotate(213deg) brightness(101%) contrast(93%);
   cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
+  opacity: 0.9;
+  transition: all 0.2s ease;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   opacity: 1;
+  transform: scale(1.1);
 }
 
 /* Fallback for wrapper if still used */
@@ -705,12 +704,7 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   cursor: pointer;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator,
-input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: 0.6;
-  cursor: pointer;
-}
+/* Removed conflicting definition */
 
 /* ==================== Universal Select ==================== */
 select {

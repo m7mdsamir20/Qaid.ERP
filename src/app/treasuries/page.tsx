@@ -420,9 +420,9 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
              </div>
 
              {/* Balance Row (Applied Modal Style) */}
-             <div style={{ position: 'relative', background: 'rgba(0,0,0,0.15)', borderRadius: '12px', padding: '14px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+             <div style={{ position: 'relative', background: C.inputBg, borderRadius: '12px', padding: '14px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                 {/* Digital Watermark */}
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 900, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: INTER, letterSpacing: '2px' }}>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 900, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: INTER, letterSpacing: '2px', opacity: 0.1 }}>
                     0.00
                 </div>
                 <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
