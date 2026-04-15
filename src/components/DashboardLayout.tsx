@@ -248,6 +248,31 @@ export default function DashboardLayout({
                     .mobile-order-last { order: 99 !important; }
                     .mobile-order-first { order: -1 !important; }
                     .mobile-gap-sm { gap: 8px !important; }
+
+                    /* Reduce main padding on mobile */
+                    main { padding: 76px 12px 20px !important; }
+
+                    /* Tables: horizontal scroll */
+                    table { display: block !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch !important; width: 100% !important; }
+
+                    /* Cards/grids stack on mobile */
+                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+
+                    /* Modal full width on mobile */
+                    [role="dialog"], .modal-content {
+                        width: 95vw !important;
+                        max-width: 95vw !important;
+                        margin: 16px auto !important;
+                        padding: 20px 16px !important;
+                    }
+
+                    /* Fix overflow on containers */
+                    .dashboard-content { overflow-x: hidden !important; }
+                }
+
+                @media (max-width: 480px) {
+                    main { padding: 72px 10px 16px !important; }
+                    .stats-grid, .kpi-grid { grid-template-columns: 1fr !important; }
                 }
             `}</style>
         </div>

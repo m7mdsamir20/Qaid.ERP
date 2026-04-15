@@ -871,6 +871,44 @@ select option {
   .stats-grid {
     grid-template-columns: 1fr 1fr;
   }
+
+  /* ── Mobile: General fixes ── */
+  body { overflow-x: hidden; }
+
+  /* Inline flex rows → column on small screens */
+  .flex-row-mobile {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* All inputs & selects full width */
+  input, select, textarea {
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Prevent oversized fixed-width containers */
+  div[style*="minWidth"] {
+    min-width: 0 !important;
+  }
+
+  /* Scrollable table wrapper applied via JS or parent */
+  .table-scroll-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Header actions: smaller text */
+  .main-header {
+    padding: 0 12px !important;
+  }
 }
 
 /* ==================== الأرصدة الافتتاحية ==================== */
