@@ -14,11 +14,13 @@ export const useTheme = () => useContext(ThemeContext);
 export function Providers({ children }: {
     children: React.ReactNode;
 }) {
-    const [theme, setTheme] = useState('dark');
+    const [theme, setTheme] = useState<'dark' | 'light'>('dark');
 
     useEffect(() => {
-        // Load theme from localStorage if available
-        const savedTheme = localStorage.getItem('erp-theme') || 'dark';
+        // Find existing theme from DOM (set by our head script) or localStorage
+        const existingTheme = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        const savedTheme = (localStorage.getItem('erp-theme') as 'dark' | 'light') || existingTheme;
+        
         setTheme(savedTheme);
         if (savedTheme === 'light') {
             document.documentElement.setAttribute('data-theme', 'light');

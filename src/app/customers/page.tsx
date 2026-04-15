@@ -231,8 +231,8 @@ export default function CustomersPage() {
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             transition: 'all 0.2s', position: 'relative'
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                        onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                        onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                         >
                              <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>

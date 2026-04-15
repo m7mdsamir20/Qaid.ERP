@@ -67,8 +67,7 @@ function KpiCard({
         position: 'relative', overflow: 'hidden',
         animation: `fadeUp 0.4s ease ${delay}ms both`,
         cursor: 'default', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-        transform: isHover ? 'translateY(-4px)' : 'none',
-        boxShadow: isHover ? `0 12px 24px -8px rgba(0,0,0,0.5)` : 'none',
+        boxShadow: isHover ? '0 10px 20px -10px rgba(0,0,0,0.2)' : 'none',
       }}
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
@@ -461,8 +460,8 @@ export default function DashboardPage() {
                   padding: '16px', display: 'flex', flexDirection: 'column', alignItems: 'center',
                   gap: '10px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                 }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.transform = 'translateY(-3px)'; e.currentTarget.style.background = C.hover; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.background = C.card; }}>
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = C.primary; e.currentTarget.style.background = C.hover; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = C.border; e.currentTarget.style.background = C.card; }}>
                   <div style={{
                     width: '42px', height: '42px', borderRadius: '12px',
                     background: action.color, color: action.iconColor,
