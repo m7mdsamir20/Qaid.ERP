@@ -42,10 +42,12 @@ const getInvoicePrefix = (type: string) => {
 };
 
 const statusLabel: Record<string, { label: string; color: string; bg: string }> = {
-  sale: { label: 'sales', color: C.success, bg: C.successBg },
-  purchase: { label: 'purchases', color: C.warning, bg: C.warningBg },
-  sale_return: { label: 'sale_return', color: C.danger, bg: C.dangerBg },
-  purchase_return: { label: 'purchase_return', color: C.danger, bg: C.dangerBg },
+  sale: { label: 'مبيعات', color: C.success, bg: C.successBg },
+  purchase: { label: 'مشتريات', color: C.warning, bg: C.warningBg },
+  sale_return: { label: 'مرتجع مبيعات', color: C.danger, bg: C.dangerBg },
+  purchase_return: { label: 'مرتجع مشتريات', color: C.danger, bg: C.dangerBg },
+  receipt: { label: 'سند قبض', color: C.success, bg: C.successBg },
+  payment: { label: 'سند صرف', color: C.danger, bg: C.dangerBg },
 };
 
 function KpiCard({

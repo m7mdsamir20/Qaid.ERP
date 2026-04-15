@@ -17,8 +17,10 @@ export const dictionaries = {
     en: {
         "الرئيسية": "Dashboard",
         "المبيعات": "Sales",
+        "مبيعات": "Sales",
         "الأقساط": "Installments",
         "المشتريات": "Purchases",
+        "مشتريات": "Purchases",
         "إدارة المخزون": "Inventory",
         "الحسابات العامة": "Accounting",
         "الخزن والبنوك": "Treasury & Banks",

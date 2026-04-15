@@ -998,9 +998,9 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  -webkit-text-fill-color: #e8edf5 !important;
-  -webkit-box-shadow: 0 0 0px 1000px #0e1628 inset !important;
-  box-shadow: 0 0 0px 1000px #0e1628 inset !important;
-  caret-color: #f8fafc !important;
+  -webkit-text-fill-color: var(--c-text-primary) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--c-input-bg) inset !important;
+  box-shadow: 0 0 0px 1000px var(--c-input-bg) inset !important;
+  caret-color: var(--c-text-primary) !important;
   transition: background-color 5000s ease-in-out 0s;
 }

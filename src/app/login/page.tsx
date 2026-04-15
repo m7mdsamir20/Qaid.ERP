@@ -247,9 +247,12 @@ export default function LoginPage() {
                     50% { opacity: 0.4; transform: translateY(-20px); }
                 }
                 input::placeholder { color: ${C.textMuted}; opacity: 0.9; }
-                input:-webkit-autofill {
-                    -webkit-box-shadow: 0 0 0px 1000px ${C.card} inset !important;
-                    -webkit-text-fill-color: ${C.textPrimary} !important;
+                input:-webkit-autofill,
+                input:-webkit-autofill:hover,
+                input:-webkit-autofill:focus {
+                    -webkit-box-shadow: 0 0 0px 1000px var(--c-input-bg) inset !important;
+                    -webkit-text-fill-color: var(--c-text-primary) !important;
+                    caret-color: var(--c-text-primary) !important;
                     transition: background-color 5000s ease-in-out 0s;
                 }
             `}</style>

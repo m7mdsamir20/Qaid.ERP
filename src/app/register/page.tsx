@@ -421,12 +421,10 @@ export default function RegisterPage() {
                 input:-webkit-autofill,
                 input:-webkit-autofill:hover,
                 input:-webkit-autofill:focus {
-                    -webkit-box-shadow: 0 0 0px 1000px ${C.card} inset !important;
-                    box-shadow: 0 0 0 4px ${C.primaryBg}, 0 0 0px 1000px ${C.card} inset !important;
-                    -webkit-text-fill-color: ${C.textPrimary} !important;
-                    color: ${C.textPrimary} !important;
-                    caret-color: ${C.textPrimary} !important;
-                    border-color: ${C.primary} !important;
+                    -webkit-box-shadow: 0 0 0px 1000px var(--c-input-bg) inset !important;
+                    -webkit-text-fill-color: var(--c-text-primary) !important;
+                    caret-color: var(--c-text-primary) !important;
+                    border-color: var(--c-primary) !important;
                     outline: none !important;
                     transition: background-color 5000s ease-in-out 0s;
                 }
