@@ -25,11 +25,29 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
     serverExternalPackages: ['@prisma/client', 'prisma'],
 
+    // تسريع: ضغط الملفات
+    compress: true,
+
+    // تسريع: تحسين الصور
+    images: {
+        formats: ['image/avif', 'image/webp'],
+    },
+
     async headers() {
         return [
             {
                 source: '/(.*)',
                 headers: securityHeaders,
+            },
+            // كاش للملفات الثابتة (JS, CSS, صور)
+            {
+                source: '/_next/static/(.*)',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+            },
+            // كاش للصور في public
+            {
+                source: '/(.*)\\.(png|jpg|jpeg|svg|ico|webp)',
+                headers: [{ key: 'Cache-Control', value: 'public, max-age=86400, stale-while-revalidate=604800' }],
             },
         ];
     },

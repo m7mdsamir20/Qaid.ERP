@@ -496,7 +496,7 @@ export default function NewPurchasePage() {
 
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, color: '#3b82f6' }}><Package size={12} /> {t('اضافة الاصناف')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 110px 110px 44px', gap: '12px', alignItems: 'end', marginBottom: '20px' }}>
+                            <div className="item-entry-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 110px 110px 44px', gap: '12px', alignItems: 'end', marginBottom: '20px' }}>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('الصنف')}</label>

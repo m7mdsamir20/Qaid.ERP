@@ -9,7 +9,7 @@ const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
 const getDatabaseUrl = () => {
     const url = process.env.DATABASE_URL || '';
     if (url && !url.includes('pgbouncer=true') && url.includes('pooler.supabase.com')) {
-        return url.includes('?') ? `${url}&pgbouncer=true&connection_limit=1` : `${url}?pgbouncer=true&connection_limit=1`;
+        return url.includes('?') ? `${url}&pgbouncer=true&connection_limit=10` : `${url}?pgbouncer=true&connection_limit=10`;
     }
     return url;
 };

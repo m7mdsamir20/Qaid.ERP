@@ -663,7 +663,7 @@ function NewSalePageInner() {
                             </div>
 
                             {/* Entry Row - Direct without nested box */}
-                            <div style={{
+                            <div className="item-entry-grid" style={{
                                 display: 'grid',
                                 gridTemplateColumns: isServices ? '1fr 110px 110px 60px' : '1fr 110px 110px 60px',
                                 gap: '12px',

@@ -146,6 +146,8 @@ export default function DashboardLayout({
                     .sidebar-wrapper {
                         position: fixed; top: 0; bottom: 0; width: 280px; z-index: 950;
                         background: ${C.card};
+                        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+                        will-change: transform;
                     }
                     .ltr-mode .sidebar-wrapper { left: 0; transform: translateX(-100%); }
                     .rtl-mode .sidebar-wrapper { right: 0; transform: translateX(100%); }
@@ -264,8 +266,18 @@ export default function DashboardLayout({
                         padding: 20px 16px !important;
                     }
 
-                    /* Fix overflow on containers */
-                    .dashboard-content { overflow-x: hidden !important; }
+                    /* Fix overflow on containers - clip the wrapper, not the content */
+                    .app-container { overflow-x: hidden; }
+                }
+
+                /* Item entry form responsive */
+                @media (max-width: 640px) {
+                    .item-entry-grid {
+                        grid-template-columns: 1fr 1fr auto !important;
+                    }
+                    .item-entry-grid > div:first-child {
+                        grid-column: 1 / -1 !important;
+                    }
                 }
 
                 @media (max-width: 480px) {
