@@ -186,12 +186,13 @@ export default function RegisterPage() {
                         borderRadius: '50%',
                         background: theme === 'dark' 
                             ? `radial-gradient(circle, ${i % 2 === 0 ? C.primary : C.purple}05 0%, transparent 70%)`
-                            : `radial-gradient(circle, ${i % 2 === 0 ? C.primary : '#fff'}15 0%, transparent 70%)`,
+                            : `radial-gradient(circle, ${i % 2 === 0 ? C.primary : '#fff'}30 0%, transparent 70%)`,
                         top: `${Math.random() * 80}%`,
                         insetInlineStart: `${Math.random() * 80}%`,
                         animation: `floatAround ${20 + i * 5}s ease-in-out infinite`,
                         animationDelay: `-${i * 2}s`,
-                        filter: 'blur(40px)',
+                        filter: theme === 'dark' ? 'blur(40px)' : 'blur(60px)',
+                        opacity: theme === 'light' ? 0.6 : 1
                     }} />
                 ))}
 
@@ -199,18 +200,19 @@ export default function RegisterPage() {
                 {mounted && Array.from({ length: 60 }).map((_, i) => {
                     const size = Math.random() * 2 + 1;
                     const duration = 3 + Math.random() * 7;
+                    const starColor = theme === 'dark' ? '#fff' : C.primary;
                     return (
                         <div key={i} style={{
                             position: 'absolute',
                             width: `${size}px`, height: `${size}px`, 
-                            background: theme === 'dark' ? '#fff' : C.primary, 
+                            background: starColor,
                             borderRadius: '50%',
-                            opacity: theme === 'dark' ? Math.random() * 0.4 + 0.1 : 0.2,
+                            opacity: theme === 'dark' ? Math.random() * 0.4 + 0.1 : 0.4,
                             top: `${Math.random() * 100}%`,
                             insetInlineStart: `${Math.random() * 100}%`,
                             animation: `twinkleAndMove ${duration}s ease-in-out infinite`,
                             animationDelay: `${-Math.random() * 10}s`,
-                            boxShadow: theme === 'dark' && size > 2 ? `0 0 ${size * 4}px #fff` : 'none',
+                            boxShadow: theme === 'dark' && size > 2 ? `0 0 ${size * 4}px #fff` : (theme === 'light' ? `0 0 ${size * 3}px ${C.primary}50` : 'none'),
                         }} />
                     );
                 })}
