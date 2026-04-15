@@ -50,7 +50,7 @@ export default function LoginPage() {
     };
 
     const BRAND_NAME = t('قيد المطور'); // اسم البراند (النظام)
-    const BRAND_LOGO = '/logo-system.png'; // لوجو النظام الموحد (قيد المطور)
+    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png' : '/logo-system.png') : '/logo-system.png';
 
     return (
         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: CAIRO, padding: '20px', position: 'relative' }}>
@@ -127,7 +127,7 @@ export default function LoginPage() {
                 {/* الهوية البصرية */}
                 <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                     {BRAND_LOGO ? (
-                        <img src={BRAND_LOGO} alt={BRAND_NAME} style={{ display: 'block', margin: '0 auto 12px', width: '100%', maxWidth: '220px', height: 'auto', objectFit: 'contain', filter: 'drop-shadow(0 15px 35px rgba(0,0,0,0.3))' }} />
+                        <img src={BRAND_LOGO} alt={BRAND_NAME} style={{ display: 'block', margin: '0 auto 12px', width: '100%', maxWidth: '220px', height: 'auto', objectFit: 'contain', filter: theme === 'dark' ? 'drop-shadow(0 15px 35px rgba(0,0,0,0.3))' : 'none' }} />
                     ) : (
                         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, borderRadius: '16px', padding: '12px 24px', marginBottom: '0', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '22px', fontWeight: 900, color: '#fff', boxShadow: `0 8px 16px -4px ${C.primary}60` }}>{BRAND_NAME.charAt(0)}</div>
@@ -138,7 +138,11 @@ export default function LoginPage() {
                 </div>
 
                 {/* كارت التسجيل */}
-                <div style={{ ...THEME.glass.card, borderRadius: '24px', padding: '32px', boxShadow: THEME.shadows.premium }}>
+                <div style={{
+                    ...(theme === 'light' ? { background: '#ffffff', border: `1px solid ${C.border}` } : THEME.glass.card),
+                    borderRadius: '24px', padding: '32px',
+                    boxShadow: theme === 'light' ? '0 10px 40px rgba(37, 106, 244, 0.1)' : THEME.shadows.premium
+                }}>
                     <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>{t('تسجيل الدخول')}</h2>
 
                     {error && (
@@ -171,7 +175,12 @@ export default function LoginPage() {
                                     value={form.password}
                                     onChange={e => setForm({ ...form, password: e.target.value })}
                                     placeholder="••••••••"
-                                    style={{ ...IS, height: '48px', paddingInlineEnd: '44px', direction: 'ltr', textAlign: isRtl ? 'right' : 'left' }}
+                                    style={{
+                                        ...IS, height: '48px',
+                                        paddingLeft: isRtl ? '44px' : '16px',
+                                        paddingRight: isRtl ? '16px' : '44px',
+                                        direction: 'ltr', textAlign: isRtl ? 'right' : 'left'
+                                    }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
                                 />
