@@ -49,6 +49,7 @@ export default function DashboardLayout({
     }, [status, session, pathname]);
 
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const [isCollapsed, setIsCollapsed] = useState(false);
 
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -68,36 +69,55 @@ export default function DashboardLayout({
     }
 
     return (
-        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'} ${showMobileMenu ? 'menu-open' : ''}`} style={{ display: 'flex', minHeight: '100vh', background: C.bg }}>
-            {/* Overlay for mobile menu */}
-            {showMobileMenu && (
-                <div 
-                    onClick={() => setShowMobileMenu(false)}
-                    style={{
-                        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
-                        backdropFilter: 'blur(4px)', zIndex: 940, animation: 'fadeIn 0.3s ease'
-                    }} 
-                />
-            )}
-
-            <div className={`sidebar-wrapper ${showMobileMenu ? 'open' : ''}`} style={{ 
-                opacity: isLockoutActive ? 0.6 : 1, 
-                pointerEvents: isLockoutActive ? 'none' : 'auto',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+        <div className={`app-container ${isRtl ? 'rtl-mode' : 'ltr-mode'} ${showMobileMenu ? 'menu-open' : ''}`} 
+            style={{ 
+                display: 'flex', 
+                flexDirection: 'column', 
+                minHeight: '100vh', 
+                background: C.bg 
             }}>
-                <Sidebar onLinkClick={() => setShowMobileMenu(false)} />
+            
+            {/* ── TOP HEADER (100% Width) ── */}
+            <div className="print-hide">
+                <Header 
+                    onMenuToggle={() => setShowMobileMenu(!showMobileMenu)} 
+                    isCollapsed={isCollapsed}
+                    onCollapseToggle={() => setIsCollapsed(!isCollapsed)}
+                />
             </div>
 
-            <div className="dashboard-content" style={{
-                flex: 1, 
-                display: 'flex', 
-                flexDirection: 'column',
-                transition: 'all 0.3s ease'
-            }}>
-                <div className="print-hide">
-                    <Header onMenuToggle={() => setShowMobileMenu(!showMobileMenu)} />
+            <div style={{ display: 'flex', flex: 1, position: 'relative' }}>
+                {/* Overlay for mobile menu */}
+                {showMobileMenu && (
+                    <div 
+                        onClick={() => setShowMobileMenu(false)}
+                        style={{
+                            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', 
+                            backdropFilter: 'blur(4px)', zIndex: 940, animation: 'fadeIn 0.3s ease'
+                        }} 
+                    />
+                )}
+
+                {/* ── SIDEBAR (Collapsible) ── */}
+                <div className={`sidebar-wrapper ${showMobileMenu ? 'open' : ''} ${isCollapsed ? 'collapsed' : ''}`} style={{ 
+                    opacity: isLockoutActive ? 0.6 : 1, 
+                    pointerEvents: isLockoutActive ? 'none' : 'auto',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                }}>
+                    <Sidebar 
+                        onLinkClick={() => setShowMobileMenu(false)} 
+                        isCollapsed={isCollapsed}
+                    />
                 </div>
-                <main style={{ flex: 1, padding: '88px 24px 24px', position: 'relative' }}>
+
+                {/* ── MAIN CONTENT ── */}
+                <div className={`dashboard-content ${isCollapsed ? 'collapsed' : ''}`} style={{
+                    flex: 1, 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    transition: 'all 0.3s ease'
+                }}>
+                    <main style={{ flex: 1, padding: '24px', position: 'relative', marginTop: '64px' }}>
                         <TrialBanner />
                         
                         <div style={{ position: 'relative' }}>
@@ -120,6 +140,7 @@ export default function DashboardLayout({
                         </div>
                 </main>
             </div>
+        </div>
 
             <style jsx global>{`
                 .app-container.ltr-mode { direction: ltr; }
@@ -127,15 +148,19 @@ export default function DashboardLayout({
 
                 /* Desktop sidebar logic */
                 @media (min-width: 1024px) {
-                    .sidebar-wrapper { width: 260px; position: fixed; top: 0; bottom: 0; z-index: 950; }
+                    .sidebar-wrapper { width: 260px; position: fixed; top: 64px; bottom: 0; z-index: 930; }
+                    .sidebar-wrapper.collapsed { width: 80px; }
+                    
                     .ltr-mode .sidebar-wrapper { left: 0; border-right: 1px solid ${C.border}; }
                     .rtl-mode .sidebar-wrapper { right: 0; border-left: 1px solid ${C.border}; }
 
                     .ltr-mode .dashboard-content { margin-left: 260px; }
                     .rtl-mode .dashboard-content { margin-right: 260px; }
                     
-                    .ltr-mode .main-header { left: 260px; right: 0; }
-                    .rtl-mode .main-header { right: 260px; left: 0; }
+                    .ltr-mode .dashboard-content.collapsed { margin-left: 80px; }
+                    .rtl-mode .dashboard-content.collapsed { margin-right: 80px; }
+                    
+                    .main-header { left: 0 !important; right: 0 !important; width: 100% !important; }
                 }
 
                 /* Mobile sidebar logic */
