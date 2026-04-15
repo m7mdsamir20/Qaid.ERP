@@ -147,7 +147,6 @@ export default function DashboardLayout({
                         position: fixed; top: 0; bottom: 0; width: 280px; z-index: 950;
                         background: ${C.card};
                         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-                        will-change: transform;
                     }
                     .ltr-mode .sidebar-wrapper { left: 0; transform: translateX(-100%); }
                     .rtl-mode .sidebar-wrapper { right: 0; transform: translateX(100%); }
