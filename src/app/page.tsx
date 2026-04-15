@@ -492,7 +492,7 @@ export default function DashboardPage() {
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isServices ? 'إيرادات' : 'مبيعات')}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isServices ? C.danger : C.warning }} />{t(isServices ? 'مصروفات' : 'مشتريات')}</span>
               </div>}>
-              <div style={{ padding: '20px 10px 10px', height: '260px' }}>
+              <div style={{ padding: '20px 10px 10px', height: '260px', minWidth: 0 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <AreaChart data={stats.chartData} margin={{ top: 5, right: 10, left: 0, bottom: 0 }}>
                     <defs>

@@ -106,6 +106,8 @@ function SearchBox() {
                     : <Search size={16} color={C.primary} />
                 }
                 <input
+                    id="global-search"
+                    name="q"
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     onFocus={() => results.length && setOpen(true)}

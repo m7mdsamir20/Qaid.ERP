@@ -121,7 +121,10 @@ export default function RegisterPage() {
     const F = (label: string, name: string, placeholder: string, type = 'text') => (
         <div>
             <label style={LS}>{label}</label>
-            <input type={type} required
+            <input 
+                id={name}
+                name={name}
+                type={type} required
                 value={(form as any)[name]}
                 onChange={e => setForm({ ...form, [name]: e.target.value })}
                 placeholder={placeholder}
@@ -290,6 +293,8 @@ export default function RegisterPage() {
                                 </div>
 
                                 <input
+                                    id="phone"
+                                    name="phone"
                                     type="tel" required
                                     value={form.phone}
                                     onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
@@ -344,7 +349,10 @@ export default function RegisterPage() {
                             <div>
                                 <label style={LS}>{t('كلمة المرور')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type={showPass ? 'text' : 'password'} required minLength={8}
+                                    <input 
+                                        id="password"
+                                        name="password"
+                                        type={showPass ? 'text' : 'password'} required minLength={8}
                                         value={form.password}
                                         onChange={e => setForm({ ...form, password: e.target.value })}
                                         placeholder={t("8 أحرف على الأقل")}
@@ -367,7 +375,10 @@ export default function RegisterPage() {
                             <div>
                                 <label style={LS}>{t('تأكيد المرور')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type={showConfirmPass ? 'text' : 'password'} required minLength={8}
+                                    <input 
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        type={showConfirmPass ? 'text' : 'password'} required minLength={8}
                                         value={form.confirmPassword}
                                         onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                                         placeholder={t("إعادة الكلمة")}

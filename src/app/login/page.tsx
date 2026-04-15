@@ -184,6 +184,8 @@ export default function LoginPage() {
                         <div>
                             <label style={LS}>{t('اسم المستخدم أو البريد الإلكتروني')}</label>
                             <input
+                                id="identity"
+                                name="identity"
                                 type="text" required
                                 value={form.identity}
                                 onChange={e => setForm({ ...form, identity: e.target.value })}
@@ -200,6 +202,8 @@ export default function LoginPage() {
                             <label style={LS}>{t('كلمة المرور')}</label>
                             <div style={{ position: 'relative' }}>
                                 <input
+                                    id="password"
+                                    name="password"
                                     type={showPass ? 'text' : 'password'} required
                                     value={form.password}
                                     onChange={e => setForm({ ...form, password: e.target.value })}
