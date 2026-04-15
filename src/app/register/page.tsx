@@ -29,9 +29,9 @@ const COUNTRIES = [
     { code: 'SD', dial: '+249', name: 'السودان', flag: '🇸🇩', currency: 'SDG', timezone: 'Africa/Khartoum' },
 ];
 
-const BUSINESS_TYPES = [
-    { value: "TRADING", label: 'نشاط تجاري (جملة وتجزئة)' },
-    { value: "SERVICES", label: 'نشاط خدمات (استشارات، صيانة، إلخ)' },
+const BUSINESS_TYPES = (t: any) => [
+    { value: "TRADING", label: t('نشاط تجاري (جملة وتجزئة)') },
+    { value: "SERVICES", label: t('نشاط خدمات (استشارات، صيانة، إلخ)') },
 ];
 
 export default function RegisterPage() {
@@ -314,7 +314,7 @@ export default function RegisterPage() {
                                         style={{ width: '100%', height: '44px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
-                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : C.textMuted }}>{form.businessType ? t(BUSINESS_TYPES.find(b => b.value === form.businessType)?.label || '') : t('اختر نوع النشاط')}</span>
+                                        <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : C.textMuted }}>{form.businessType ? BUSINESS_TYPES(t).find(b => b.value === form.businessType)?.label || '' : t('اختر نوع النشاط')}</span>
                                         <ChevronDown size={14} color={C.textMuted} style={{ transform: showBusinessTypes ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                                     </button>
 
@@ -324,13 +324,13 @@ export default function RegisterPage() {
                                     {showBusinessTypes && (
                                         <div style={{ position: 'absolute', bottom: 'calc(100% + 8px)', insetInlineStart: 0, insetInlineEnd: 0, background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 -25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden', animation: 'fadeUp 0.2s ease', borderBottom: `2px solid ${C.primary}` }}>
                                             <div style={{ maxHeight: '200px', overflowY: 'auto', padding: '6px' }}>
-                                                {BUSINESS_TYPES.map(b => (
+                                                {BUSINESS_TYPES(t).map(b => (
                                                     <button key={b.value} type="button"
                                                         onClick={() => { setForm({ ...form, businessType: b.value }); setShowBusinessTypes(false); }}
                                                         style={{ width: '100%', display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box', background: form.businessType === b.value ? `${C.primary}15` : 'transparent', color: form.businessType === b.value ? C.primary : C.textSecondary, transition: '0.15s', fontWeight: form.businessType === b.value ? 800 : 500 }}
                                                         onMouseEnter={e => { if (form.businessType !== b.value) e.currentTarget.style.background = C.hover; }}
                                                         onMouseLeave={e => { if (form.businessType !== b.value) e.currentTarget.style.background = 'transparent'; }}>
-                                                        <span style={{ flex: 1, textAlign: 'start' }}>{t(b.label)}</span>
+                                                        <span style={{ flex: 1, textAlign: 'start' }}>{b.label}</span>
                                                     </button>
                                                 ))}
                                             </div>

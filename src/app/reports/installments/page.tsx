@@ -62,15 +62,15 @@ export default function InstallmentReportsPage() {
         const tables = Array.from(document.querySelectorAll('table'));
         if (!tables.length) return;
         const tablesHTML = tables.map(t => t.outerHTML).join('');
-        const html = `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"/><title>تقرير الأقساط</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;padding:10mm}table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-bottom:16px}th{padding:8px 10px;font-size:11px;font-weight:900;background:#f0f0f0;color:#111;text-align:center;border:1px solid #999}td{padding:7px 10px;font-size:11.5px;color:#111;text-align:center;border:1px solid #ccc;background:#fff}td span{background:transparent!important;border:none!important;padding:0!important;color:#111!important}@media print{@page{margin:6mm 8mm}thead{display:table-header-group}}</style></head><body>${tablesHTML}</body></html>`;
+        const html = `<!DOCTYPE html><html lang="${lang}" dir="${isRtl ? 'rtl' : 'ltr'}"><head><meta charset="UTF-8"/><title>${t('تقرير الأقساط')}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo',sans-serif;direction:${isRtl ? 'rtl' : 'ltr'};background:#fff;color:#111;padding:10mm}table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-bottom:16px}th{padding:8px 10px;font-size:11px;font-weight:900;background:#f0f0f0;color:#111;text-align:center;border:1px solid #999}td{padding:7px 10px;font-size:11.5px;color:#111;text-align:center;border:1px solid #ccc;background:#fff}td span{background:transparent!important;border:none!important;padding:0!important;color:#111!important}@media print{@page{margin:6mm 8mm}thead{display:table-header-group}}</style></head><body>${tablesHTML}</body></html>`;
         const win = window.open('', '_blank', 'width=1000,height=750');
         if (win) { win.document.write(html); win.document.close(); win.focus(); setTimeout(() => win.print(), 800); }
     };
 
     const tabs = [
-        { id: 'collection', label: 'تقرير التحصيلات', icon: CheckCircle2, sub: 'مراجعة المبالغ الواردة' },
-        { id: 'overdue',    label: 'تقرير المتأخرات', icon: AlertTriangle, sub: 'تتبع حالات التعثر' },
-        { id: 'customer',   label: 'كشف حساب عميل', icon: FileText, sub: 'سجل الأقساط التاريخي' },
+        { id: 'collection', label: t('تقرير التحصيلات'), icon: CheckCircle2, sub: t('مراجعة المبالغ الواردة') },
+        { id: 'overdue',    label: t('تقرير المتأخرات'), icon: AlertTriangle, sub: t('تتبع حالات التعثر') },
+        { id: 'customer',   label: t('كشف حساب عميل'), icon: FileText, sub: t('سجل الأقساط التاريخي') },
     ];
 
     return (
@@ -91,18 +91,18 @@ export default function InstallmentReportsPage() {
                 {/* Header Section */}
                 <div className="no-print">
                     <PageHeader 
-                        title="تقارير الأقساط" 
-                        subtitle="تحليل التحصيلات، متابعة المديونيات المتأخرة، وإصدار كشوف الحسابات التفصيلية" 
+                        title={t("تقارير الأقساط")} 
+                        subtitle={t("تحليل التحصيلات، متابعة المديونيات المتأخرة، وإصدار كشوف الحسابات التفصيلية")} 
                         icon={BarChart3} 
                     />
                 </div>
 
                 {/* Tabs Selector */}
                 <div className="no-print" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '24px' }}>
-                    {tabs.map(t => {
-                        const active = activeTab === t.id;
+                    {tabs.map(tab => {
+                        const active = activeTab === tab.id;
                         return (
-                            <button key={t.id} onClick={() => { setActiveTab(t.id as 'collection' | 'overdue' | 'customer'); setData(null); }}
+                            <button key={tab.id} onClick={() => { setActiveTab(tab.id as 'collection' | 'overdue' | 'customer'); setData(null); }}
                                 style={{
                                     padding: '16px', borderRadius: '16px', border: `1px solid ${active ? C.primaryBorder : C.border}`,
                                     background: active ? 'linear-gradient(135deg, rgba(37,106,244,0.1), rgba(37,106,244,0.05))' : C.card,
@@ -110,11 +110,11 @@ export default function InstallmentReportsPage() {
                                     display: 'flex', alignItems: 'center', gap: '14px', textAlign: 'start'
                                 }}>
                                 <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: active ? C.primaryBg : 'rgba(255,255,255,0.02)', color: active ? C.primary : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                    <t.icon size={22} />
+                                    <tab.icon size={22} />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 800 , fontFamily: CAIRO}}>{t.label}</div>
-                                    <div style={{ fontSize: '11px', fontWeight: 600, color: active ? C.primary : C.textMuted, marginTop: '2px' , fontFamily: CAIRO}}>{t.sub}</div>
+                                    <div style={{ fontSize: '12px', fontWeight: 800 , fontFamily: CAIRO}}>{tab.label}</div>
+                                    <div style={{ fontSize: '11px', fontWeight: 600, color: active ? C.primary : C.textMuted, marginTop: '2px' , fontFamily: CAIRO}}>{tab.sub}</div>
                                 </div>
                             </button>
                         );
@@ -123,21 +123,21 @@ export default function InstallmentReportsPage() {
 
                 {/* Filters Section */}
                 <div className="no-print" style={{ ...SC, marginBottom: '24px', position: 'relative' }}>
-                    <div style={STitle}><TrendingUp size={16} /> تصفية النتائج واستخراج التقرير</div>
+                    <div style={STitle}><TrendingUp size={16} /> {t('تصفية النتائج واستخراج التقرير')}</div>
                     
                     <div style={{ display: 'flex', alignItems: 'flex-end', gap: '20px', flexWrap: 'wrap' }}>
                         
                         {activeTab === 'collection' && (
                             <>
                                 <div style={{ minWidth: '200px' }}>
-                                    <label style={LS}>من تاريخ</label>
+                                    <label style={LS}>{t('من تاريخ')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                                         <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                                 <div style={{ minWidth: '200px' }}>
-                                    <label style={LS}>إلى تاريخ</label>
+                                    <label style={LS}>{t('إلى تاريخ')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                                         <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
@@ -148,12 +148,12 @@ export default function InstallmentReportsPage() {
 
                         {activeTab === 'overdue' && (
                             <div style={{ flex: 1, minWidth: '300px' }}>
-                                <label style={LS}>فلترة حسب العميل (اختياري)</label>
+                                <label style={LS}>{t('فلترة حسب العميل (اختياري)')}</label>
                                 <CustomSelect 
                                     value={overdueCustomer} 
                                     onChange={setOverdueCustomer}
-                                    options={[{ value: '', label: 'جميع العملاء المديونين' }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
-                                    placeholder="اختر عميلاً للفلترة..."
+                                    options={[{ value: '', label: t('جميع العملاء المديونين') }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
+                                    placeholder={t("اختر عميلاً للفلترة...")}
                                     icon={User}
                                 />
                             </div>
@@ -161,12 +161,12 @@ export default function InstallmentReportsPage() {
 
                         {activeTab === 'customer' && (
                             <div style={{ flex: 1, minWidth: '300px' }}>
-                                <label style={LS}>اختر العميل المعني بكشف الحساب</label>
+                                <label style={LS}>{t('اختر العميل المعني بكشف الحساب')}</label>
                                 <CustomSelect 
                                     value={customerReport} 
                                     onChange={setCustomerReport}
-                                    options={customers.map(c => ({ value: c.id, label: c.name, sub: `رصيد العميل الحالي: ${fmtN(c.balance)} ${cSymbol}` }))}
-                                    placeholder="ابحث واختر العميل من القائمة..."
+                                    options={customers.map(c => ({ value: c.id, label: c.name, sub: `${t('رصيد العميل الحالي:')} ${fmtN(c.balance)} ${cSymbol}` }))}
+                                    placeholder={t("ابحث واختر العميل من القائمة...")}
                                     icon={User}
                                 />
                             </div>
@@ -175,11 +175,11 @@ export default function InstallmentReportsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={fetchReport} disabled={loading || (activeTab === 'customer' && !customerReport)}
                                 style={{ ...BTN_PRIMARY(false, loading), height: '42px', width: 'auto', padding: '0 24px', opacity: (activeTab === 'customer' && !customerReport) ? 0.5 : 1 }}>
-                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} /> عرض النتائج</>}
+                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} /> {t('عرض النتائج')}</>}
                             </button>
                             {data && (
                                 <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
-                                    <Printer size={18} /> طباعة
+                                    <Printer size={18} /> {t('طباعة')}
                                 </button>
                             )}
                         </div>
@@ -191,14 +191,14 @@ export default function InstallmentReportsPage() {
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '120px 0', color: C.textMuted }}>
                             <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '16px' }} />
-                            <p style={{ fontSize: '12px', fontWeight: 600 , fontFamily: CAIRO}}>جاري استخراج وتحليل بيانات التقرير...</p>
+                            <p style={{ fontSize: '12px', fontWeight: 600 , fontFamily: CAIRO}}>{t('جاري استخراج وتحليل بيانات التقرير...')}</p>
                         </div>
                     ) : !data ? (
                         <div style={{ textAlign: 'center', padding: '120px 0', color: C.textMuted }}>
                             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <BarChart3 size={40} style={{ opacity: 0.1 }} />
                             </div>
-                            <p style={{ fontSize: '15px', fontWeight: 500 , fontFamily: CAIRO}}>حدد معايير البحث ثم اضغط على زر "عرض النتائج" لإنشاء التقرير</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500 , fontFamily: CAIRO}}>{t('حدد معايير البحث ثم اضغط على زر "عرض النتائج" لإنشاء التقرير')}</p>
                         </div>
                     ) : (
                         <div className="report-content">
@@ -212,25 +212,25 @@ export default function InstallmentReportsPage() {
                                                 <DollarSign size={24} />
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 800 , fontFamily: CAIRO}}>إجمالي التحصيلات للفترة</div>
+                                                <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 800 , fontFamily: CAIRO}}>{t('إجمالي التحصيلات للفترة')}</div>
                                                 <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                                     {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7 , fontFamily: CAIRO}}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'end' }}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>عدد العمليات الصالحة</div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>{t('عدد العمليات الصالحة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
 
                                     <div style={SC}>
-                                        <div style={STitle}><Info size={16} /> قائمة العمليات المسجلة</div>
+                                        <div style={STitle}><Info size={16} /> {t('قائمة العمليات المسجلة')}</div>
                                         <div style={{ overflowX: 'auto' }}>
                                             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary , fontFamily: CAIRO}}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                                        {['تاريخ العملية', 'العميل', 'البيان', 'رقم الخطة', 'المبلغ المحصّل'].map((h, i) => (
+                                                        {[t('تاريخ العملية'), t('العميل'), t('البيان'), t('رقم الخطة'), t('المبلغ المحصّل')].map((h, i) => (
                                                             <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
                                                         ))}
                                                     </tr>
@@ -240,7 +240,7 @@ export default function InstallmentReportsPage() {
                                                         <tr key={inst.id} style={{ borderBottom: idx < data.installments.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary , fontFamily: CAIRO}}>{inst.plan?.customer?.name}</td>
-                                                            <td style={{ padding: '16px', color: C.textMuted }}>قسط رقم {inst.installmentNo}</td>
+                                                            <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط رقم')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
                                                             <td style={{ padding: '16px', color: '#10b981', fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 , fontFamily: CAIRO}}>{cSymbol}</span></td>
                                                         </tr>
@@ -260,25 +260,25 @@ export default function InstallmentReportsPage() {
                                                 <AlertTriangle size={24} />
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '12px', color: C.danger, fontWeight: 800 , fontFamily: CAIRO}}>إجمالي المتأخرات القائمة</div>
+                                                <div style={{ fontSize: '12px', color: C.danger, fontWeight: 800 , fontFamily: CAIRO}}>{t('إجمالي المتأخرات القائمة')}</div>
                                                 <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                                     {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7 , fontFamily: CAIRO}}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'end' }}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>إجمالي الأقساط المتعثرة</div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>{t('إجمالي الأقساط المتعثرة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.danger, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
 
                                     <div style={SC}>
-                                        <div style={STitle}><Info size={16} /> قائمة الأقساط المتجاوزة للموعد</div>
+                                        <div style={STitle}><Info size={16} /> {t('قائمة الأقساط المتجاوزة للموعد')}</div>
                                         <div style={{ overflowX: 'auto' }}>
                                             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary , fontFamily: CAIRO}}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                        {['العميل', 'رقم الخطة', 'القسط', 'موعد الاستحقاق', 'أيام التأخير', 'المبلغ المتبقي'].map((h, i) => (
+                                                        {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => (
                                                             <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
                                                         ))}
                                                     </tr>
@@ -288,11 +288,11 @@ export default function InstallmentReportsPage() {
                                                         <tr key={inst.id} style={{ borderBottom: idx < data.installments.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary , fontFamily: CAIRO}}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
-                                                            <td style={{ padding: '16px', color: C.textMuted }}>قسط {inst.installmentNo}</td>
+                                                            <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: C.danger, fontWeight: 800, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
                                                             <td style={{ padding: '16px' }}>
                                                                 <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 800, border: `1px solid ${C.danger}20` , fontFamily: CAIRO}}>
-                                                                    {inst.daysOverdue} يوم تأخير
+                                                                    {inst.daysOverdue} {t('يوم تأخير')}
                                                                 </div>
                                                             </td>
                                                             <td style={{ padding: '16px', color: C.danger, fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 , fontFamily: CAIRO}}>{cSymbol}</span></td>
@@ -310,10 +310,10 @@ export default function InstallmentReportsPage() {
                                     {/* Financial Dashboard Overlay */}
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
                                         {[
-                                            { label: 'عدد الخطط المعقدة', value: data.summary?.totalPlans, icon: Package, color: C.primary },
-                                            { label: 'إجمالي قيمة التعاقدات', value: fmtN(data.summary?.totalAmount || 0), icon: DollarSign, color: C.primary, suffix: cSymbol },
-                                            { label: 'إجمالي ما تم سداده', value: fmtN(data.summary?.totalPaid || 0), icon: CheckCircle2, color: '#10b981', suffix: cSymbol },
-                                            { label: 'صافي الرصيد المستحق', value: fmtN(data.summary?.totalRemaining || 0), icon: Wallet, color: C.warning, fontWeight: 900, suffix: cSymbol },
+                                            { label: t('عدد الخطط المعقدة'), value: data.summary?.totalPlans, icon: Package, color: C.primary },
+                                            { label: t('إجمالي قيمة التعاقدات'), value: fmtN(data.summary?.totalAmount || 0), icon: DollarSign, color: C.primary, suffix: cSymbol },
+                                            { label: t('إجمالي ما تم سداده'), value: fmtN(data.summary?.totalPaid || 0), icon: CheckCircle2, color: '#10b981', suffix: cSymbol },
+                                            { label: t('صافي الرصيد المستحق'), value: fmtN(data.summary?.totalRemaining || 0), icon: Wallet, color: C.warning, fontWeight: 900, suffix: cSymbol },
                                         ].map((s, i) => (
                                             <div key={i} style={{ ...SC, padding: '16px', display: 'flex', flexDirection: 'column', gap: '8px', border: `1px solid ${s.color}20` }}>
                                                 <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -337,9 +337,9 @@ export default function InstallmentReportsPage() {
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                                         <div style={{ fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>#{plan.planNumber}</div>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 700 , fontFamily: CAIRO}}>
-                                                            <Package size={14} /> {plan.productName || 'غير محدد'}
+                                                            <Package size={14} /> {plan.productName || t('غير محدد')}
                                                         </div>
-                                                        <div style={{ fontSize: '12px', color: C.textMuted , fontFamily: CAIRO}}>{plan.monthsCount} شهر</div>
+                                                        <div style={{ fontSize: '12px', color: C.textMuted , fontFamily: CAIRO}}>{plan.monthsCount} {t('شهر')}</div>
                                                     </div>
                                                     <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                                         {fmtN(plan.grandTotal)} <span style={{ fontSize: '12px', opacity: 0.6 , fontFamily: CAIRO}}>{cSymbol}</span>
@@ -349,7 +349,7 @@ export default function InstallmentReportsPage() {
                                                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' , fontFamily: CAIRO}}>
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
-                                                                {['م', 'تاريخ الاستحقاق', 'مبلغ القسط', 'القيمة المحصلة', 'المتبقي', 'الحالة'].map((h, i) => (
+                                                                {[t('م'), t('تاريخ الاستحقاق'), t('مبلغ القسط'), t('القيمة المحصلة'), t('المتبقي'), t('الحالة')].map((h, i) => (
                                                                     <th key={i} style={{ padding: '12px 24px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
                                                                 ))}
                                                             </tr>
@@ -369,7 +369,7 @@ export default function InstallmentReportsPage() {
                                                                             color: inst.status === 'paid' ? '#10b981' : C.primary,
                                                                             border: `1px solid ${inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(59,130,246,0.1)'}`
                                                                         }}>
-                                                                            {inst.status === 'paid' ? 'تم التحصيل' : 'قيد الانتظار'}
+                                                                            {inst.status === 'paid' ? t('تم التحصيل') : t('قيد الانتظار')}
                                                                         </div>
                                                                     </td>
                                                                 </tr>

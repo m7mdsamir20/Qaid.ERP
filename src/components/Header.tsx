@@ -33,16 +33,19 @@ const typeIcon: Record<string, any> = {
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
 
-const roleLabels: Record<string, string> = {
-    admin: 'مدير النظام',
-    manager: 'مدير فرع',
-    accountant: 'محاسب',
-    sales: 'مندوب مبيعات',
-    procurement: 'مسؤول مشتريات',
-    storekeeper: 'أمين مستودع',
-    hr: 'موارد بشرية',
-    cashier: 'كاشير',
-    custom: 'مستخدم'
+const getRoleLabel = (role: string, t: any) => {
+    const roles: Record<string, string> = {
+        admin: 'مدير النظام',
+        manager: 'مدير فرع',
+        accountant: 'محاسب',
+        sales: 'مندوب مبيعات',
+        procurement: 'مسؤول مشتريات',
+        storekeeper: 'أمين مستودع',
+        hr: 'موارد بشرية',
+        cashier: 'كاشير',
+        custom: 'مستخدم'
+    };
+    return t(roles[role] || 'مستخدم');
 };
 
 /* ══════════════════════════════════════════
@@ -317,7 +320,7 @@ function Actions() {
                             {sessionStatus === 'loading' ? '...' : (session?.user?.name || t('مستخدم'))}
                         </div>
                         <div style={{ fontSize: '10px', color: C.textSecondary, marginTop: '2px' }}>
-                            {sessionStatus === 'loading' ? '' : t(roleLabels[(session?.user as any)?.role] || 'مستخدم')}
+                            {sessionStatus === 'loading' ? '' : getRoleLabel((session?.user as any)?.role, t)}
                         </div>
                     </div>
                     <ChevronDown size={14} color={C.textMuted} style={{ transform: openUser ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />

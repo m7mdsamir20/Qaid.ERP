@@ -1019,7 +1019,7 @@ function NewSalePageInner() {
 
                                 {form.paymentType !== 'credit' && (
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>المبلغ المدفوع</label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المدفوع')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input
                                                 type="text"
@@ -1068,9 +1068,9 @@ function NewSalePageInner() {
                                 )}
                                 {form.paymentType === 'bank' && form.paidAmount > 0 && (
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>الحساب البنكي <span style={{ color: '#f87171' }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('الحساب البنكي')} <span style={{ color: '#f87171' }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
-                                            <CustomSelect value={form.bankId} onChange={v => { setForm((f: any) => ({ ...f, bankId: v })); clearError('bankId'); }} icon={Building2} placeholder="اختر البنك..." options={treasuries.filter(t => t.type === 'bank').map(t => ({ value: t.id, label: t.name }))} />
+                                            <CustomSelect value={form.bankId} onChange={v => { setForm((f: any) => ({ ...f, bankId: v })); clearError('bankId'); }} icon={Building2} placeholder={t("اختر البنك...")} options={treasuries.filter(t => t.type === 'bank').map(t => ({ value: t.id, label: t.name }))} />
                                             <InlineError field="bankId" />
                                         </div>
                                     </div>

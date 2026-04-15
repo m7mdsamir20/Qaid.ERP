@@ -33,22 +33,23 @@ const getCurrencyName = (code: string) => {
     return map[code] || code;
 };
 
-const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
-    active:    { label: 'نشط',           color: '#10b981', bg: 'rgba(16,185,129,0.1)'  },
-    disposed:  { label: 'مُستبعد',        color: '#fb7185', bg: 'rgba(251,113,133,0.1)'   },
-    fully_dep: { label: 'مستهلك كلياً',  color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' },
-};
-
-const METHOD_MAP: Record<string, string> = {
-    straight: 'قسط ثابت', declining: 'قسط متناقص',
-};
-
-const CATEGORIES = ['الكل', 'مركبات', 'أجهزة وحاسبات', 'أراضي ومباني', 'أثاث ومفروشات', 'معدات وآلات', 'أخرى'];
-
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function FixedAssetsReportPage() {
     const { lang, t } = useTranslation();
+
+    const STATUS_MAP: Record<string, { label: string; color: string; bg: string }> = {
+        active:    { label: t('نشط'),           color: '#10b981', bg: 'rgba(16,185,129,0.1)'  },
+        disposed:  { label: t('مُستبعد'),        color: '#fb7185', bg: 'rgba(251,113,133,0.1)'   },
+        fully_dep: { label: t('مستهلك كلياً'),  color: '#94a3b8', bg: 'rgba(148,163,184,0.1)' },
+    };
+
+    const METHOD_MAP: Record<string, string> = {
+        straight: t('قسط ثابت'), declining: t('قسط متناقص'),
+    };
+
+    const CATEGORIES = [t('الكل'), t('مركبات'), t('أجهزة وحاسبات'), t('أراضي ومباني'), t('أثاث ومفروشات'), t('معدات وآلات'), t('أخرى')];
+
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
@@ -56,7 +57,7 @@ export default function FixedAssetsReportPage() {
     const [assets, setAssets]       = useState<FixedAsset[]>([]);
     const [loading, setLoading]     = useState(true);
     const [search, setSearch]       = useState('');
-    const [catFilter, setCatFilter] = useState('الكل');
+    const [catFilter, setCatFilter] = useState(t('الكل'));
     const [statusFilter, setStatusFilter] = useState('all');
 
     /* ── Fetch from API ── */
@@ -93,16 +94,15 @@ export default function FixedAssetsReportPage() {
 
                 {/* ── Header ── */}
                 <ReportHeader
-                    title="تقرير الأصول الثابتة"
-                    subtitle="كشف تفصيلي بالأصول — التكلفة التاريخية ومجمع الإهلاك والقيمة الدفترية"
+                    title={t("تقرير الأصول الثابتة")}
+                    subtitle={t("كشف تفصيلي بالأصول — التكلفة التاريخية ومجمع الإهلاك والقيمة الدفترية")}
                     backTab="financial"
-                    
                 />
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>جاري تحميل بيانات الأصول...</span>
+                        <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل بيانات الأصول...')}</span>
                     </div>
                 ) : (
                     <>
@@ -110,10 +110,10 @@ export default function FixedAssetsReportPage() {
                         {/* ── KPI Cards ── */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: 'إجمالي التكلفة', value: fmt(totalCost), color: '#3b82f6', icon: <DollarSign size={18} /> },
-                                { label: 'مجمع الإهلاك', value: fmt(totalAccum), color: '#fb7185', icon: <TrendingDown size={18} /> },
-                                { label: 'الصافي الدفتري', value: fmt(totalNet), color: '#10b981', icon: <Building2 size={18} /> },
-                                { label: 'نسبة الاستهلاك', value: `${depPct}%`, color: '#f59e0b', icon: <FileBarChart2 size={18} /> },
+                                { label: t('إجمالي التكلفة'), value: fmt(totalCost), color: '#3b82f6', icon: <DollarSign size={18} /> },
+                                { label: t('مجمع الإهلاك'), value: fmt(totalAccum), color: '#fb7185', icon: <TrendingDown size={18} /> },
+                                { label: t('الصافي الدفتري'), value: fmt(totalNet), color: '#10b981', icon: <Building2 size={18} /> },
+                                { label: t('نسبة الاستهلاك'), value: `${depPct}%`, color: '#f59e0b', icon: <FileBarChart2 size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -150,7 +150,7 @@ export default function FixedAssetsReportPage() {
                                 focusOut(e);
                                 e.currentTarget.style.background = C.card;
                             }}
-                            placeholder="بحث شامل بالأصول (الاسم أو الكود)..."
+                            placeholder={t("بحث شامل بالأصول (الاسم أو الكود)...")}
                             style={{ 
                                 ...IS, 
                                 width: '100%', 
@@ -172,8 +172,8 @@ export default function FixedAssetsReportPage() {
                             value={catFilter} 
                             onChange={setCatFilter}
                             icon={Building2} 
-                            placeholder="الفئة"
-                            options={CATEGORIES.map(c => ({ value: c, label: c }))}
+                            placeholder={t("الفئة")}
+                            options={CATEGORIES.map(c => ({ value: c, label: c === 'الكل' ? t('الكل') : t(c) }))}
                             style={{ background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, fontFamily: CAIRO }} 
                         />
                     </div>
@@ -190,10 +190,10 @@ export default function FixedAssetsReportPage() {
                         alignItems: 'center'
                     }}>
                         {[
-                            { key: 'all',      label: 'الكل',          color: '#3b82f6' },
-                            { key: 'active',   label: 'نشط',           color: '#10b981' },
-                            { key: 'fully_dep',label: 'مستهلك كلياً',  color: '#94a3b8' },
-                            { key: 'disposed', label: 'مُستبعد',        color: '#fb7185' },
+                            { key: 'all',      label: t('الكل'),          color: '#3b82f6' },
+                            { key: 'active',   label: t('نشط'),           color: '#10b981' },
+                            { key: 'fully_dep',label: t('مستهلك كلياً'),  color: '#94a3b8' },
+                            { key: 'disposed', label: t('مُستبعد'),        color: '#fb7185' },
                         ].map(btn => (
                             <button key={btn.key} onClick={() => setStatusFilter(btn.key)} style={{
                                 height: '34px', 
@@ -214,7 +214,7 @@ export default function FixedAssetsReportPage() {
 
                 <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
                     <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
-                        عدد الأصول المفلترة: <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
+                        {t('عدد الأصول المفلترة:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '14px' }}>{filtered.length}</span>
                     </div>
                 </div>
 
@@ -223,7 +223,7 @@ export default function FixedAssetsReportPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {['الكود', 'اسم الأصل', 'الفئة', 'تاريخ الشراء', 'التكلفة', 'مجمع الإهلاك', 'الصافي الدفتري', 'المعدل', 'الحالة'].map((h, i) => (
+                                        {[t('الكود'), t('اسم الأصل'), t('الفئة'), t('تاريخ الشراء'), t('التكلفة'), t('مجمع الإهلاك'), t('الصافي الدفتري'), t('المعدل'), t('الحالة')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', 
                                                 fontSize: '12px', 
@@ -238,7 +238,7 @@ export default function FixedAssetsReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>لا توجد بيانات تطابق البحث حالياً</td></tr>
+                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
                                     ) : filtered.map((a, i) => {
                                         const st = STATUS_MAP[a.status];
                                         const depPctRow = a.purchaseCost > 0
@@ -253,18 +253,18 @@ export default function FixedAssetsReportPage() {
                                                     <span style={{ fontFamily: INTER, fontSize: '11px', color: '#a78bfa', fontWeight: 900 }}>{a.code}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{a.name}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '11.5px', color: C.textMuted, fontFamily: INTER }}>{a.purchaseDate?.split('T')[0]}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 750, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.purchaseCost)}</td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'start' }}>
                                                     <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 800, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)}</div>
-                                                    <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% مستهلك</div>
+                                                    <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13.5px', color: '#10b981', fontWeight: 950, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.netBookValue)}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: '#f59e0b', fontWeight: 800, fontFamily: INTER }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
-                                                        {st.label}
+                                                        {t(st.label)}
                                                     </span>
                                                 </td>
                                             </tr>
@@ -273,7 +273,7 @@ export default function FixedAssetsReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '12.5px', fontWeight: 850, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>إجمالي الأصول المفلترة ({filtered.length})</td>
+                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '12.5px', fontWeight: 850, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
                                         <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: C.textPrimary, textAlign: 'start', fontFamily: INTER }}>{fmt(totalCost)}</td>
                                         <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: '#fb7185', textAlign: 'start', fontFamily: INTER }}>{fmt(totalAccum)}</td>
                                         <td style={{ padding: '18px 20px', fontSize: '15px', fontWeight: 1000, color: '#10b981', textAlign: 'start', fontFamily: INTER }}>{fmt(totalNet)}</td>

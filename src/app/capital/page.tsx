@@ -189,114 +189,161 @@ export default function CapitalPage() {
                                                         <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد حركات سابقة')}</div>
                                                     </div>
                                                 ) : (
-                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '200px', overflowY: 'auto', paddingInlineEnd: '4px' }}>
-                                                        {p.changes.map((c, i) => (
-                                                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}` }}>
-                                                                <div>
-                                                                    <div style={{ fontSize: '13px', fontWeight: 900, color: c.type === 'increase' ? '#10b981' : C.danger, fontFamily: INTER }}>
-                                                                        {c.type === 'increase' ? '↑' : '↓'} {c.amount.toLocaleString('en-US')} <span style={{ fontSize: '9px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
-                                                                    </div>
-                                                                    {c.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>{c.notes}</div>}
-                                                                </div>
-                                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>
-                                                                    {new Date(c.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '20px' }}>
+                    
+                    {/* Current Partners List */}
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                        <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('المساهمة الحالية')}</div>
+                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, background: 'rgba(255,255,255,0.03)', padding: '4px 8px', borderRadius: '6px', fontFamily: INTER }}>
+                                {totalCapital.toLocaleString()} {t('ج.م')}
+                            </div>
+                        </div>
+                        
+                        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                            {loading ? (
+                                <div style={{ padding: '40px', textAlign: 'center' }}>
+                                    <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
+                                </div>
+                            ) : partners.map(p => (
+                                <div key={p.id} style={{ padding: '14px 20px', borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s' }}
+                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                >
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                        <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
+                                        <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{totalCapital > 0 ? ((p.capital / totalCapital) * 100).toFixed(1) : 0}%</div>
+                                    </div>
+                                    <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden', marginBottom: '8px' }}>
+                                        <div style={{ width: `${totalCapital > 0 ? (p.capital / totalCapital) * 100 : 0}%`, height: '100%', background: C.primary, borderRadius: '2px' }} />
+                                    </div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER, textAlign: 'end' }}>
+                                        {p.capital.toLocaleString()} {t('ج.م')}
                                     </div>
                                 </div>
-                            );
-                        })}
+                            ))}
+                        </div>
                     </div>
-                )}
 
-                {/* MODAL: Capital Change */}
-                <AppModal
-                    show={showModal !== null}
-                    onClose={() => setShowModal(null)}
-                    title={showModal ? `${t('تعديل رأس المال')} — ${showModal.name}` : ''}
-                    icon={Banknote}
-                >
-                    {showModal && (
-                        <form onSubmit={handleSave}>
-                            {/* Current Summary */}
-                            <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, borderRadius: '12px', padding: '12px', marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, marginBottom: '2px', fontFamily: CAIRO }}>{t('رأس المال الحالي')}</div>
-                                    <div style={{ fontSize: '18px', fontWeight: 950, color: C.blue, fontFamily: INTER }}>{showModal.capital.toLocaleString('en-US')} {t('ج.م')}</div>
+                    {/* Recent History */}
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                        <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <History size={18} style={{ color: C.primary }} />
+                            <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات الرأسمالية')}</div>
+                        </div>
+                        
+                        <div style={{ maxHeight: '600px', overflowY: 'auto' }}>
+                            {loading ? (
+                                <div style={{ padding: '40px', textAlign: 'center' }}>
+                                    <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
                                 </div>
-                                <div style={{ textAlign: 'end' }}>
-                                    <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, marginBottom: '2px', fontFamily: CAIRO }}>{t('نسبة المساهمة')}</div>
-                                    <div style={{ fontSize: '18px', fontWeight: 950, color: C.textSecondary, fontFamily: INTER }}>{showModal.share}%</div>
+                            ) : history.length === 0 ? (
+                                <div style={{ padding: '80px 20px', textAlign: 'center' }}>
+                                    <History size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
+                                    <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد حركات سابقة')}</p>
                                 </div>
-                            </div>
-
-                            {/* Type Toggle */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '20px' }}>
-                                <button type="button" onClick={() => setForm(f => ({ ...f, type: 'increase' }))}
-                                    style={{ 
-                                        padding: '12px', borderRadius: '12px', border: `1px solid ${form.type === 'increase' ? '#10b981' : C.border}`, 
-                                        background: form.type === 'increase' ? 'rgba(16,185,129,0.1)' : 'transparent', 
-                                        color: form.type === 'increase' ? '#10b981' : C.textSecondary, 
-                                        fontSize: '13px', fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s',
-                                        fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                                    }}>
-                                    <TrendingUp size={16} /> {t('زيادة رأس المال')}
-                                </button>
-                                <button type="button" onClick={() => setForm(f => ({ ...f, type: 'decrease' }))}
-                                    style={{ 
-                                        padding: '12px', borderRadius: '12px', border: `1px solid ${form.type === 'decrease' ? C.danger : C.border}`, 
-                                        background: form.type === 'decrease' ? `${C.danger}15` : 'transparent', 
-                                        color: form.type === 'decrease' ? C.danger : C.textSecondary, 
-                                        fontSize: '13px', fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s',
-                                        fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                                    }}>
-                                    <TrendingDown size={16} /> {t('تخفيض رأس المال')}
-                                </button>
-                            </div>
-
-                            {/* Inputs */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div>
-                                    <label style={LS}>{t('المبلغ')} ({t('ج.م')}) *</label>
-                                    <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: form.type === 'increase' ? '#10b981' : C.danger, fontWeight: 900, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
-                                </div>
-                                <div>
-                                    <label style={LS}>{t('تاريخ العملية')}</label>
-                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
-                                </div>
-                            </div>
-
-                            {/* New Balance Preview */}
-                            {form.amount && parseFloat(form.amount) > 0 && (
-                                <div style={{ background: `${C.blue}08`, border: `1px solid ${C.blue}20`, borderRadius: '12px', padding: '12px', marginBottom: '16px', textAlign: 'center' }}>
-                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال بعد المعالجة')}</div>
-                                    <div style={{ fontSize: '20px', fontWeight: 950, color: C.blue, fontFamily: INTER }}>
-                                        {(form.type === 'increase' ? showModal.capital + parseFloat(form.amount) : showModal.capital - parseFloat(form.amount)).toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                            ) : (
+                                history.map((h, i) => (
+                                    <div key={i} style={{ padding: '18px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '18px' }}>
+                                        <div style={{ 
+                                            width: '40px', height: '40px', borderRadius: '12px', 
+                                            background: h.type === 'increase' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', 
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                            color: h.type === 'increase' ? '#10b981' : C.danger, border: `1px solid ${h.type === 'increase' ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`
+                                        }}>
+                                            {h.type === 'increase' ? <ArrowUpRight size={20} /> : <ArrowDownRight size={20} />}
+                                        </div>
+                                        <div style={{ flex: 1 }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{h.type === 'increase' ? t('زيادة رأس مال') : t('تخفيض رأس مال')}</div>
+                                                <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{new Date(h.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}</div>
+                                            </div>
+                                            <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, marginBottom: '6px' }}>{h.notes || t('بدون بيان')}</div>
+                                            <div style={{ display: 'flex', gap: '14px', fontSize: '11px', color: C.textMuted, fontWeight: 800, fontFamily: INTER }}>
+                                               <span style={{ color: h.type === 'increase' ? '#10b981' : C.danger }}>{h.type === 'increase' ? '+' : '-'}{h.amount.toLocaleString()}</span>
+                                               <span style={{ opacity: 0.5 }}>→</span>
+                                               <span style={{ color: '#f1f5f9' }}>{t('الرصيد')}: {h.balanceAfter.toLocaleString()}</span>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
+                                ))
                             )}
+                        </div>
+                    </div>
+                </div>
 
-                            <div style={{ marginBottom: '24px' }}>
-                                <label style={LS}>{t('ملاحظات أو بيان')}</label>
-                                <input type="text" value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t('بيان تفصيلي لتعديل رأس المال...')} />
-                            </div>
+                {/* MODAL: Adjust Capital */}
+                <AppModal
+                    show={showModal}
+                    onClose={() => setShowModal(false)}
+                    title={t("تعديل رأس المال")}
+                    icon={TrendingUp}
+                >
+                    <form onSubmit={handleSave}>
+                        <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
+                            <div style={{ fontSize: '11px', fontWeight: 900, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>{t('رأس المال الحالي')}</div>
+                            <div style={{ fontSize: '24px', fontWeight: 950, color: '#10b981', fontFamily: INTER }}>{totalCapital.toLocaleString()} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span></div>
+                        </div>
 
-                            <div style={{ display: 'flex', gap: '12px' }}>
-                                <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1.5, height: '48px', background: form.type === 'increase' ? 'linear-gradient(135deg, #10b981, #059669)' : `linear-gradient(135deg, ${C.danger}, #dc2626)` }}>
-                                    {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Save size={18} />}
-                                    <span style={{ marginInlineEnd: '8px' }}>{t('اعتماد الحركة')}</span>
-                                </button>
-                                <button type="button" onClick={() => setShowModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
-                                    {t('إلغاء')}
-                                </button>
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={LS}>{t('اختر الشريك')} <span style={{ color: C.danger }}>*</span></label>
+                            <select required value={form.partnerId} onChange={e => setForm(f => ({ ...f, partnerId: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut}>
+                                <option value="">{t('اختر الشريك...')}</option>
+                                {partners.map(p => (
+                                    <option key={p.id} value={p.id}>{p.name} — {t('مساهمة الحالية')}: {p.capital.toLocaleString()}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+                            <button type="button" onClick={() => setForm(f => ({ ...f, type: 'increase' }))}
+                                style={{ 
+                                    height: '48px', borderRadius: '12px', border: `1px solid ${form.type === 'increase' ? '#10b981' : C.border}`, 
+                                    background: form.type === 'increase' ? 'rgba(16,185,129,0.1)' : 'transparent',
+                                    color: form.type === 'increase' ? '#10b981' : C.textSecondary,
+                                    fontSize: '14px', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO
+                                }}>
+                                <ArrowUpPlus size={18} /> {t('زيادة')}
+                            </button>
+                            <button type="button" onClick={() => setForm(f => ({ ...f, type: 'decrease' }))}
+                                style={{ 
+                                    height: '48px', borderRadius: '12px', border: `1px solid ${form.type === 'decrease' ? C.danger : C.border}`, 
+                                    background: form.type === 'decrease' ? 'rgba(239,68,68,0.1)' : 'transparent',
+                                    color: form.type === 'decrease' ? C.danger : C.textSecondary,
+                                    fontSize: '14px', fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', cursor: 'pointer', fontFamily: CAIRO
+                                }}>
+                                <ArrowDownToLine size={18} /> {t('تخفيض')}
+                            </button>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={LS}>{t('المبلغ')} <span style={{ color: C.danger }}>*</span></label>
+                                <input required type="number" min="1" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: form.type === 'increase' ? '#10b981' : C.danger, fontWeight: 900, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
                             </div>
-                        </form>
-                    )}
+                            <div>
+                                <label style={LS}>{t('تاريخ الحركة')}</label>
+                                <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={LS}>{t('ملاحظات أو بيان')}</label>
+                            <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2}
+                                style={{ ...IS, height: 'auto', padding: '12px 14px', resize: 'none' } as any}
+                                onFocus={focusIn} onBlur={focusOut} placeholder={t("بيان تفصيلي لتعديل رأس المال...")} />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), flex: 1.5, height: '48px' }}>
+                                {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={18} />}
+                                <span style={{ marginInlineEnd: '8px' }}>{t('اعتماد الحركة')}</span>
+                            </button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                                {t('إلغاء')}
+                            </button>
+                        </div>
+                    </form>
                 </AppModal>
             </div>
 

@@ -1,8 +1,7 @@
-'use client';
-
 import React, { useEffect, useState } from 'react';
 import { X, LucideIcon, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
+import { useTranslation } from '@/lib/i18n';
 
 interface AppModalProps {
     show: boolean;
@@ -38,10 +37,12 @@ const AppModal: React.FC<AppModalProps> = ({
     description,
     onConfirm,
     isSubmitting = false,
-    confirmText = 'نعم، احذف الآن',
-    cancelText = 'إلغاء',
+    confirmText,
+    cancelText,
     error
 }) => {
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const [isMounted, setIsMounted] = useState(false);
 
     useEffect(() => {
@@ -55,6 +56,10 @@ const AppModal: React.FC<AppModalProps> = ({
     if (!isMounted && !show) return null;
 
     const isDanger = variant === 'danger' || isDelete;
+
+    // Localized Defaults
+    const effectiveConfirmText = confirmText || t('نعم، احذف الآن');
+    const effectiveCancelText = cancelText || t('إلغاء');
 
     return (
         <div
@@ -70,7 +75,7 @@ const AppModal: React.FC<AppModalProps> = ({
             onClick={onClose}
         >
             <div
-                dir="rtl"
+                dir={isRtl ? 'rtl' : 'ltr'}
                 className="modal-content"
                 style={{
                     width: '94%', maxWidth: isDelete ? '420px' : maxWidth, background: C.card,
@@ -134,7 +139,7 @@ const AppModal: React.FC<AppModalProps> = ({
                     flex: 1
                 }}>
                     {isDelete ? (
-                        <div dir="rtl" style={{ textAlign: 'center', padding: '16px 0', fontFamily: CAIRO }}>
+                        <div style={{ textAlign: 'center', padding: '16px 0', fontFamily: CAIRO }}>
                             <div style={{ 
                                 width: '70px', height: '70px', borderRadius: '20px', 
                                 background: `${C.danger}15`, 
@@ -148,7 +153,7 @@ const AppModal: React.FC<AppModalProps> = ({
                             <p style={{ margin: '0 auto', color: C.textSecondary, fontSize: '14px', lineHeight: 1.7, maxWidth: '320px', fontWeight: 600 }}>
                                 {description || (
                                     <>
-                                        سيتم حذف <span style={{ color: C.danger, fontWeight: 900 }}>"{itemName || 'هذا العنصر'}"</span> نهائياً من قاعدة البيانات.
+                                        {t('سيتم حذف')} <span style={{ color: C.danger, fontWeight: 900 }}>"{itemName || t('هذا العنصر')}"</span> {t('نهائياً من قاعدة البيانات.')}
                                     </>
                                 )}
                             </p>
@@ -183,7 +188,7 @@ const AppModal: React.FC<AppModalProps> = ({
                                     {isSubmitting ? (
                                         <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} />
                                     ) : (
-                                        <><Trash2 size={18} /> {confirmText}</>
+                                        <><Trash2 size={18} /> {effectiveConfirmText}</>
                                     )}
                                 </button>
                                 
@@ -199,7 +204,7 @@ const AppModal: React.FC<AppModalProps> = ({
                                     onMouseOver={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textPrimary; }}
                                     onMouseOut={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = C.textSecondary; }}
                                 >
-                                    {cancelText}
+                                    {effectiveCancelText}
                                 </button>
                             </div>
                         </div>

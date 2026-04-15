@@ -12,7 +12,7 @@ import {
 import {
     CalendarDays, CalendarCheck, Clock, Calendar, Lock as LockIcon,
     AlertCircle, Loader2, Check, TrendingUp, TrendingDown,
-    BookOpen, Receipt, Pencil, X
+    BookOpen, Receipt, Pencil, X, PlusCircle
 } from 'lucide-react';
 
 const fmt = (d: any, locale: string = 'ar-EG-u-nu-latn') =>
@@ -142,6 +142,11 @@ export default function FinancialYearsPage() {
         direction: 'ltr', textAlign: 'end'
     };
 
+    const LS: React.CSSProperties = {
+        display: 'block', fontSize: '11px', fontWeight: 800,
+        color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO
+    };
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -168,55 +173,52 @@ export default function FinancialYearsPage() {
 
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '80px', color: C.primary }}>
-                        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
+                        <Loader2 size={32} className="animate-spin" />
+                    </div>
+                ) : !activeFY ? (
+                    <div style={{
+                        background: `${C.primary}06`, border: `1px solid ${C.primary}25`,
+                        borderRadius: '20px', padding: '48px', textAlign: 'center'
+                    }}>
+                        <div style={{
+                            width: '72px', height: '72px', borderRadius: '20px',
+                            background: `${C.primary}15`, display: 'flex', alignItems: 'center',
+                            justifyContent: 'center', color: C.primary, margin: '0 auto 20px'
+                        }}>
+                            <PlusCircle size={36} />
+                        </div>
+                        <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>
+                            {t('تأسيس السنة المالية')}
+                        </h3>
+                        <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7 }}>
+                            {t('حدد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}
+                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '28px' }}>
+                            {[
+                                { label: t('تاريخ البداية'), key: 'startDate' },
+                                { label: t('تاريخ النهاية'), key: 'endDate' },
+                            ].map(f => (
+                                <div key={f.key} style={{ textAlign: 'start' }}>
+                                    <label style={LS}>{f.label}</label>
+                                    <input type="date"
+                                        value={(createForm as any)[f.key]}
+                                        onChange={e => setCreateForm(p => ({ ...p, [f.key]: e.target.value }))}
+                                        style={IS} />
+                                </div>
+                            ))}
+                        </div>
+                        <button onClick={async () => {
+                            if (!createForm.startDate || !createForm.endDate) { showToast(t('حدد التواريخ أولاً'), 'error'); return; }
+                            if (new Date(createForm.endDate) <= new Date(createForm.startDate)) { showToast(t('تاريخ النهاية يجب أن يكون بعد البداية'), 'error'); return; }
+                            await callApi('create_first', createForm);
+                        }} disabled={isSaving}
+                            style={{ ...BTN_PRIMARY(false, isSaving), width: 'auto', height: '44px', padding: '0 32px', margin: '0 auto', fontSize: '14px' }}>
+                            {isSaving ? <Loader2 size={16} className="animate-spin" /> : <CalendarCheck size={16} />}
+                            {t('تأسيس السنة المالية')}
+                        </button>
                     </div>
                 ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-
-                        {/* ══ لا توجد سنة مالية ══ */}
-                        {!activeFY && closedYears.length === 0 && (
-                            <div style={{
-                                background: `${C.primary}06`, border: `1px solid ${C.primary}25`,
-                                borderRadius: '20px', padding: '48px', textAlign: 'center'
-                            }}>
-                                <div style={{
-                                    width: '72px', height: '72px', borderRadius: '20px',
-                                    background: `${C.primary}15`, display: 'flex', alignItems: 'center',
-                                    justifyContent: 'center', color: C.primary, margin: '0 auto 20px'
-                                }}>
-                                    <CalendarDays size={36} />
-                                </div>
-                                <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>
-                                    {t('تأسيس الدورة المحاسبية')}
-                                </h3>
-                                <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7 }}>
-                                    {t('حدد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}
-                                </p>
-                                <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '28px' }}>
-                                    {[
-                                        { label: t('تاريخ البداية'), key: 'startDate' },
-                                        { label: t('تاريخ النهاية'), key: 'endDate' },
-                                    ].map(f => (
-                                        <div key={f.key} style={{ textAlign: 'start' }}>
-                                            <label style={{ display: 'block', fontSize: '12px', color: C.textSecondary, marginBottom: '8px', fontFamily: CAIRO, fontWeight: 700 }}>{f.label}</label>
-                                            <input type="date"
-                                                value={(createForm as any)[f.key]}
-                                                onChange={e => setCreateForm(p => ({ ...p, [f.key]: e.target.value }))}
-                                                style={IS} />
-                                        </div>
-                                    ))}
-                                </div>
-                                <button onClick={async () => {
-                                    if (!createForm.startDate || !createForm.endDate) { showToast(t('حدد التواريخ أولاً'), 'error'); return; }
-                                    if (new Date(createForm.endDate) <= new Date(createForm.startDate)) { showToast(t('تاريخ النهاية يجب أن يكون بعد البداية'), 'error'); return; }
-                                    await callApi('create_first', createForm);
-                                }} disabled={isSaving}
-                                    style={{ ...BTN_PRIMARY(false, isSaving), width: 'auto', height: '44px', padding: '0 32px', margin: '0 auto', fontSize: '14px' }}>
-                                    {isSaving ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <CalendarCheck size={16} />}
-                                    {t('تأسيس السنة المالية')}
-                                </button>
-                            </div>
-                        )}
+                    <>
 
                         {/* ══ السنة النشطة ══ */}
                         {activeFY && (
@@ -430,7 +432,7 @@ export default function FinancialYearsPage() {
                             </div>
                         )}
 
-                    </div>
+                    </>
                 )}
 
                 {/* Confirm Close Modal */}

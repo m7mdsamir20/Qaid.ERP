@@ -47,15 +47,15 @@ export default function EmployeesCatalogPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="دليل بيانات الموظفين"
-                    subtitle="كشف تفصيلي ببيانات الموظفين، المسميات الوظيفية، الأقسام، وحالة العمل الحالية."
+                    title={t("دليل بيانات الموظفين")}
+                    subtitle={t("كشف تفصيلي ببيانات الموظفين، المسميات الوظيفية، الأقسام، وحالة العمل الحالية.")}
                     backTab="hr"
                     
                 />
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
                     <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                    <input placeholder="ابحث باسم الموظف، القسم، أو المسمى الوظيفي..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                    <input placeholder={t("ابحث باسم الموظف، القسم، أو المسمى الوظيفي...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                 </div>
 
                 {loading ? (
@@ -78,16 +78,16 @@ export default function EmployeesCatalogPage() {
                                         color: e.status === 'active' ? '#10b981' : e.status === 'on_vacation' ? '#3b82f6' : '#64748b',
                                         fontFamily: CAIRO
                                     }}>
-                                        {e.status === 'active' ? 'نـشط' : e.status === 'on_vacation' ? 'في إجازة' : 'غـير نشط'}
+                                        {e.status === 'active' ? t('نـشط') : e.status === 'on_vacation' ? t('في إجازة') : t('غـير نشط')}
                                     </span>
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     {[
-                                        { icon: <Briefcase size={14} />, label: 'القسم', val: e.department },
-                                        { icon: <Activity size={14} />, label: 'المسمى الوظيفي', val: e.position },
-                                        { icon: <Calendar size={14} />, label: 'تاريخ التعيين', val: new Date(e.joinDate).toLocaleDateString('en-GB') },
-                                        { icon: <Phone size={14} />, label: 'الهاتف', val: e.phone },
+                                        { icon: <Briefcase size={14} />, label: t('القسم'), val: e.department },
+                                        { icon: <Activity size={14} />, label: t('المسمى الوظيفي'), val: e.position },
+                                        { icon: <Calendar size={14} />, label: t('تاريخ التعيين'), val: new Date(e.joinDate).toLocaleDateString('en-GB') },
+                                        { icon: <Phone size={14} />, label: t('الهاتف'), val: e.phone },
                                     ].map((item, i) => (
                                         <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <div style={{ color: C.primary, opacity: 0.8 }}>{item.icon}</div>
@@ -101,6 +101,9 @@ export default function EmployeesCatalogPage() {
                     </div>
                 )}
             </div>
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
+            `}</style>
         </DashboardLayout>
     );
 }

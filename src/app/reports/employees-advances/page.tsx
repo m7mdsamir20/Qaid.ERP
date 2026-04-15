@@ -63,17 +63,17 @@ export default function EmployeesAdvancesPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
-                    title="تقرير سلف ومديونيات الموظفين"
-                    subtitle="متابعة دقيقة لجميع السلف الممنوحة للموظفين، المبالغ المسددة، والأرصدة القائمة."
+                    title={t("تقرير سلف ومديونيات الموظفين")}
+                    subtitle={t("متابعة دقيقة لجميع السلف الممنوحة للموظفين، المبالغ المسددة، والأرصدة القائمة.")}
                     backTab="hr"
                     
                 />
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'إجمالي السلف الممنوحة', value: fmt(data?.totalAdvances || 0), color: C.primary, icon: <Wallet size={18} /> },
-                        { label: 'إجمالي المبالغ المستردة', value: fmt(data?.totalRecovered || 0), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                        { label: 'إجمالي الأرصدة القائمة', value: fmt(data?.totalOutstanding || 0), color: '#ef4444', icon: <Activity size={18} /> },
+                        { label: t('إجمالي السلف الممنوحة'), value: fmt(data?.totalAdvances || 0), color: C.primary, icon: <Wallet size={18} /> },
+                        { label: t('إجمالي المبالغ المستردة'), value: fmt(data?.totalRecovered || 0), color: '#10b981', icon: <ArrowUpRight size={18} /> },
+                        { label: t('إجمالي الأرصدة القائمة'), value: fmt(data?.totalOutstanding || 0), color: '#ef4444', icon: <Activity size={18} /> },
                     ].map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}22`, borderRadius: '12px',
@@ -90,7 +90,7 @@ export default function EmployeesAdvancesPage() {
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '20px' }}>
                     <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                    <input placeholder="ابحث باسم الموظف..." value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
+                    <input placeholder={t("ابحث باسم الموظف...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                 </div>
 
                 {loading ? (
@@ -100,7 +100,7 @@ export default function EmployeesAdvancesPage() {
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                    {['الموظف', 'مبلغ السلفة', 'المسدد', 'المتبقي', 'نسبة السداد', 'الحالة'].map((h, i) => (
+                                    {[t('الموظف'), t('مبلغ السلفة'), t('المسدد'), t('المتبقي'), t('نسبة السداد'), t('الحالة')].map((h, i) => (
                                         <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i >= 1 && i <= 3 ? 'center' : 'right', fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
@@ -126,7 +126,7 @@ export default function EmployeesAdvancesPage() {
                                                     color: r.status === 'paid' ? '#10b981' : r.status === 'partial' ? '#f59e0b' : '#3b82f6',
                                                     background: r.status === 'paid' ? 'rgba(16,185,129,0.1)' : r.status === 'partial' ? 'rgba(245,158,11,0.1)' : 'rgba(59,130,246,0.1)'
                                                 }}>
-                                                    {r.status === 'paid' ? 'تم السداد' : r.status === 'partial' ? 'سداد جزئي' : 'نشطة'}
+                                                    {r.status === 'paid' ? t('تم السداد') : r.status === 'partial' ? t('سداد جزئي') : t('نشطة')}
                                                 </span>
                                             </td>
                                         </tr>
@@ -142,6 +142,7 @@ export default function EmployeesAdvancesPage() {
                     filter: invert(1) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.7);
                     cursor: pointer;
                 }
+                @keyframes spin { to { transform: rotate(360deg); } }
             `}</style>
         </DashboardLayout>
     );

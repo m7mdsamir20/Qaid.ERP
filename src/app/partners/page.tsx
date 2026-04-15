@@ -267,11 +267,11 @@ export default function PartnersPage() {
                                     {(() => {
                                         const cap = parseFloat(form.capital) || 0;
                                         const otherCap = partners
-                                            .filter(p => {
+                                            .filter(pInfo => {
                                                 if (!modal || modal === 'add') return true;
-                                                return p.id !== (modal as any).id;
+                                                return pInfo.id !== (modal as any).id;
                                             })
-                                            .reduce((s, p) => s + p.capital, 0);
+                                            .reduce((s, pInfo) => s + pInfo.capital, 0);
                                         const total = otherCap + cap;
                                         return total > 0 ? ((cap / total) * 100).toFixed(2) : '0.00';
                                     })()}%

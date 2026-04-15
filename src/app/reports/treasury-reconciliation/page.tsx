@@ -67,33 +67,33 @@ export default function TreasuryReconciliationPage() {
 
     const exportToExcel = () => {
         if (!treasuries.length) return;
-        const excelData = treasuries.map(t => {
-            const systemVal = t.balance;
-            const actualVal = parseFloat(physicalBalances[t.id]) || 0;
+        const excelData = treasuries.map(tData => {
+            const systemVal = tData.balance;
+            const actualVal = parseFloat(physicalBalances[tData.id]) || 0;
             const diff = actualVal - systemVal;
-            const hasActual = physicalBalances[t.id] !== undefined && physicalBalances[t.id] !== '';
+            const hasActual = physicalBalances[tData.id] !== undefined && physicalBalances[tData.id] !== '';
             
             return {
-                'اسم الخزينة': t.name,
-                'النوع': t.type === 'bank' ? 'بنكي' : 'نقدي',
-                'الرصيد الدفتري': systemVal,
-                'الرصيد الفعلي': hasActual ? actualVal : 'لم يجرد',
-                'الفارق': hasActual ? diff : '—',
-                'الحالة': !hasActual ? 'غير مجرود' : (diff === 0 ? 'مطابق' : (diff < 0 ? 'عجز' : 'زيادة'))
+                [t('اسم الخزينة')]: tData.name,
+                [t('النوع')]: tData.type === 'bank' ? t('بنكي') : t('نقدي'),
+                [t('الرصيد الدفتري')]: systemVal,
+                [t('الرصيد الفعلي')]: hasActual ? actualVal : t('لم يجرد'),
+                [t('الفارق')]: hasActual ? diff : '—',
+                [t('الحالة')]: !hasActual ? t('غير مجرود') : (diff === 0 ? t('مطابق') : (diff < 0 ? t('عجز') : t('زيادة')))
             };
         });
         const ws = XLSX.utils.json_to_sheet(excelData);
         const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'تقرير العجز والزيادة');
-        XLSX.writeFile(wb, `تقرير_الجرد_والعجز_${new Date().toLocaleDateString('en-GB')}.xlsx`);
+        XLSX.utils.book_append_sheet(wb, ws, t('تقرير العجز والزيادة'));
+        XLSX.writeFile(wb, `${t('تقرير_الجرد_والعجز')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader 
-                    title="تقرير الجرد والعجز والزيادة" 
-                    subtitle="مطابقة الأرصدة الفعلية بالأرصدة الدفترية المودعة في النظام للخزن والحسابات البنكية." 
+                    title={t("تقرير الجرد والعجز والزيادة")} 
+                    subtitle={t("مطابقة الأرصدة الفعلية بالأرصدة الدفترية المودعة في النظام للخزن والحسابات البنكية.")} 
                     backTab="treasury-bank"
                     
                     onExportExcel={exportToExcel}
@@ -103,10 +103,10 @@ export default function TreasuryReconciliationPage() {
                 {/* Summary Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'إجمالي الرصيد الدفتري', value: totals.systemTotal, color: '#3b82f6', icon: <HistoryIcon size={20} />, sign: 'المسجل في النظام' },
-                        { label: 'إجمالي العجز المكتشف', value: totals.totalShortage, color: DC, icon: <TrendingDown size={20} />, sign: 'نقص في الأرصدة (-)' },
-                        { label: 'إجمالي الزيادة المكتشفة', value: totals.totalSurplus, color: SC, icon: <TrendingUp size={20} />, sign: 'زيادة في الأرصدة (+)' },
-                        { label: 'نسبة الجرد المكتملة', value: treasuries.length > 0 ? (totals.reconciledCount / treasuries.length * 100) : 0, isPercent: true, color: '#a855f7', icon: <ShieldCheck size={20} />, sign: `${totals.reconciledCount} من أصل ${treasuries.length}` },
+                        { label: t('إجمالي الرصيد الدفتري'), value: totals.systemTotal, color: '#3b82f6', icon: <HistoryIcon size={20} />, sign: t('المسجل في النظام') },
+                        { label: t('إجمالي العجز المكتشف'), value: totals.totalShortage, color: DC, icon: <TrendingDown size={20} />, sign: t('نقص في الأرصدة (-)') },
+                        { label: t('إجمالي الزيادة المكتشفة'), value: totals.totalSurplus, color: SC, icon: <TrendingUp size={20} />, sign: t('زيادة في الأرصدة (+)') },
+                        { label: t('نسبة الجرد المكتملة'), value: treasuries.length > 0 ? (totals.reconciledCount / treasuries.length * 100) : 0, isPercent: true, color: '#a855f7', icon: <ShieldCheck size={20} />, sign: `${totals.reconciledCount} ${t('من أصل')} ${treasuries.length}` },
                     ].map((s: any, i: number) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -134,7 +134,7 @@ export default function TreasuryReconciliationPage() {
                     <div style={{ flex: 1, position: 'relative' }}>
                         <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
-                            placeholder="ابحث باسم الخزينة أو الحساب البنكي..."
+                            placeholder={t("ابحث باسم الخزينة أو الحساب البنكي...")}
                             value={q} onChange={e => setQ(e.target.value)}
                             style={{ 
                                 ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px', 
@@ -149,14 +149,14 @@ export default function TreasuryReconciliationPage() {
                         border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: '13px', fontWeight: 800,
                         cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO
                     }}>
-                        <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> تحديث الأرصدة
+                        <RefreshCw size={16} className={loading ? 'animate-spin' : ''} /> {t('تحديث الأرصدة')}
                     </button>
                 </div>
 
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>جاري سحب الأرصدة الدفترية...</span>
+                        <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري سحب الأرصدة الدفترية...')}</span>
                     </div>
                 ) : (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
@@ -164,7 +164,7 @@ export default function TreasuryReconciliationPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        {['المرجع المالي', 'النوع', 'الرصيد الدفتري', 'الرصيد الفعلي (عَدّ يدوي)', 'الفارق (عجز/زيادة)', 'حالة الجرد'].map((h, i) => (
+                                        {[t('المرجع المالي'), t('النوع'), t('الرصيد الدفتري'), t('الرصيد الفعلي (عَدّ يدوي)'), t('الفارق (عجز/زيادة)'), t('حالة الجرد')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                 textAlign: 'center', 
@@ -174,26 +174,26 @@ export default function TreasuryReconciliationPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {filtered.map((t, idx) => {
-                                        const systemVal = t.balance;
-                                        const actualVal = parseFloat(physicalBalances[t.id]) || 0;
+                                    {filtered.map((tData, idx) => {
+                                        const systemVal = tData.balance;
+                                        const actualVal = parseFloat(physicalBalances[tData.id]) || 0;
                                         const diff = actualVal - systemVal;
-                                        const hasActual = physicalBalances[t.id] !== undefined && physicalBalances[t.id] !== '';
+                                        const hasActual = physicalBalances[tData.id] !== undefined && physicalBalances[tData.id] !== '';
 
                                         return (
-                                            <tr key={t.id} 
+                                            <tr key={tData.id} 
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                                 <td style={{ padding: '14px 20px' }}>
-                                                    <div style={{ fontSize: '13.5px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{t.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, textAlign: 'center', fontFamily: INTER }}>ID: {t.id.substring(0, 8)}</div>
+                                                    <div style={{ fontSize: '13.5px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>{tData.name}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, textAlign: 'center', fontFamily: INTER }}>ID: {tData.id.substring(0, 8)}</div>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                    {t.type === 'bank' ? (
-                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#6366f1', padding: '4px 10px', borderRadius: '8px', background: 'rgba(99,102,241,0.1)', fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}><Landmark size={14} /> بنكي</span>
+                                                    {tData.type === 'bank' ? (
+                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#6366f1', padding: '4px 10px', borderRadius: '8px', background: 'rgba(99,102,241,0.1)', fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}><Landmark size={14} /> {t('بنكي')}</span>
                                                     ) : (
-                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#10b981', padding: '4px 10px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}><Wallet size={14} /> نقدي</span>
+                                                        <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#10b981', padding: '4px 10px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}><Wallet size={14} /> {t('نقدي')}</span>
                                                     )}
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 900, fontSize: '14.5px', fontFamily: INTER, color: C.textPrimary }}>
@@ -203,9 +203,9 @@ export default function TreasuryReconciliationPage() {
                                                     <div className="no-print" style={{ display: 'flex', justifyContent: 'center' }}>
                                                         <input
                                                             type="number"
-                                                            placeholder="أدخل المبلغ..."
-                                                            value={physicalBalances[t.id] || ''}
-                                                            onChange={e => handleActualChange(t.id, e.target.value)}
+                                                            placeholder={t("أدخل المبلغ...")}
+                                                            value={physicalBalances[tData.id] || ''}
+                                                            onChange={e => handleActualChange(tData.id, e.target.value)}
                                                             style={{ 
                                                                 width: '130px', height: '36px', textAlign: 'center', borderRadius: '8px', 
                                                                 border: `1px solid ${hasActual ? C.primary : C.border}`, 
@@ -224,14 +224,14 @@ export default function TreasuryReconciliationPage() {
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     {hasActual ? (
                                                         diff === 0 ? (
-                                                            <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><CheckCircle2 size={14} /> مطابق</span>
+                                                            <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><CheckCircle2 size={14} /> {t('مطابق')}</span>
                                                         ) : diff < 0 ? (
-                                                            <span style={{ color: DC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingDown size={14} /> عجز</span>
+                                                            <span style={{ color: DC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO, background: 'rgba(239,68,68,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingDown size={14} /> {t('عجز')}</span>
                                                         ) : (
-                                                            <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingUp size={14} /> زيادة</span>
+                                                            <span style={{ color: SC, display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '4px 10px', borderRadius: '8px' }}><TrendingUp size={14} /> {t('زيادة')}</span>
                                                         )
                                                     ) : (
-                                                        <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>غير مجرود</span>
+                                                        <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>{t('غير مجرود')}</span>
                                                     )}
                                                 </td>
                                             </tr>
@@ -252,10 +252,10 @@ export default function TreasuryReconciliationPage() {
                         <AlertTriangle size={20} />
                     </div>
                     <div>
-                        <h4 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#f59e0b', fontFamily: CAIRO }}>تعليمات الرقابة والمطابقة المالية:</h4>
+                        <h4 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#f59e0b', fontFamily: CAIRO }}>{t('تعليمات الرقابة والمطابقة المالية:')}</h4>
                         <p style={{ fontSize: '12.5px', color: '#94a3b8', lineHeight: 1.6, margin: 0, fontFamily: CAIRO }}>
-                           الرجاء إدخال الأرصدة النقدية الفعلية بعد العد اليدوي لكل صندوق أو حساب. يقوم التقرير ذاتياً بحساب الفروقات "الدفتيرية" مقابل "الفعلية". 
-                           في حال وجود <strong style={{color: DC}}>عجز</strong>، يرجى مراجعة العمليات غير المسجلة أو المصاريف النقدية. وفي حال <strong style={{color: SC}}>الزيادة</strong>، تأكد من تسجيل كافة سندات القبض بدقة.
+                           {t('الرجاء إدخال الأرصدة النقدية الفعلية بعد العد اليدوي لكل صندوق أو حساب. يقوم التقرير ذاتياً بحساب الفروقات "الدفتيرية" مقابل "الفعلية".')} 
+                           {t('في حال وجود')} <strong style={{color: DC}}>{t('عجز')}</strong>{t('، يرجى مراجعة العمليات غير المسجلة أو المصاريف النقدية. وفي حال')} <strong style={{color: SC}}>{t('زيادة')}</strong>{t('، تأكد من تسجيل كافة سندات القبض بدقة.')}
                         </p>
                     </div>
                 </div>
