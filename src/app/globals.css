@@ -865,7 +865,7 @@ select option {
   }
 
   /* ── Mobile: General fixes ── */
-  body { overflow-x: hidden; }
+  /* Note: overflow-x:hidden on body/html breaks iOS Safari scrolling - avoid it */
 
   /* Inline flex rows → column on small screens */
   .flex-row-mobile {

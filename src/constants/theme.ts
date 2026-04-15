@@ -207,6 +207,7 @@ export const TABLE_STYLE = {
     },
     table: {
         width: '100%',
+        minWidth: '600px',
         borderCollapse: 'separate' as 'separate',
         borderSpacing: 0,
         fontSize: '13px',

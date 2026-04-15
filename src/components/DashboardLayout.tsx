@@ -265,8 +265,8 @@ export default function DashboardLayout({
                         padding: 20px 16px !important;
                     }
 
-                    /* Fix overflow on containers - clip the wrapper, not the content */
-                    .app-container { overflow-x: hidden; }
+                    /* Prevent page-level horizontal scroll without breaking inner scroll containers */
+                    .dashboard-content { max-width: 100vw; }
                 }
 
                 /* Item entry form responsive */
