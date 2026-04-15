@@ -50,7 +50,7 @@ export default function LoginPage() {
     };
 
     const BRAND_NAME = t('قيد المطور'); // اسم البراند (النظام)
-    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=3' : '/logo-system.png?v=3') : '/logo-system.png?v=3';
+    const BRAND_LOGO = mounted ? (theme === 'light' ? '/logo-light.png?v=3' : '/logo-system.png?v=3') : null;
     // استخدام أيقونة التاب الموحدة المنسوخة لمجلد public
     const TAB_ICON = '/icon.png';
 
@@ -240,13 +240,6 @@ export default function LoginPage() {
                     transition: background-color 5000s ease-in-out 0s;
                 }
             `}</style>
-        </div>
-    );
-}
--webkit - text - fill - color: ${ C.textPrimary } !important;
-transition: background - color 5000s ease -in -out 0s;
-                }
-`}</style>
         </div>
     );
 }
