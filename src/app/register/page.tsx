@@ -46,6 +46,12 @@ export default function RegisterPage() {
 
     useEffect(() => {
         setMounted(true);
+        // إجبار المتصفح على تحديث الأيقونة برمجياً لضمان ظهور التعديل
+        const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
+        link.type = 'image/png';
+        link.rel = 'shortcut icon';
+        link.href = '/icon.png?v=5';
+        document.getElementsByTagName('head')[0].appendChild(link);
     }, []);
     const [selectedCountry, setSelectedCountry] = useState(COUNTRIES[0]);
     const [showCountries, setShowCountries] = useState(false);

@@ -26,6 +26,13 @@ export default function LoginPage() {
         const params = new URLSearchParams(window.location.search);
         const cb = params.get('callbackUrl');
         if (cb) setCallbackUrl(cb);
+
+        // إجبار المتصفح على تحديث الأيقونة برمجياً لضمان ظهور التعديل
+        const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
+        link.type = 'image/png';
+        link.rel = 'shortcut icon';
+        link.href = '/icon.png?v=5';
+        document.getElementsByTagName('head')[0].appendChild(link);
     }, []);
 
     const handleSubmit = async (e: React.FormEvent) => {
