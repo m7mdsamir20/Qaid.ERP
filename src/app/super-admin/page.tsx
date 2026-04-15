@@ -178,12 +178,12 @@ export default function SuperAdminPage() {
             {/* Filter Section */}
             <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}` }}>
                 <div style={{ flex: 1, position: 'relative' }}>
-                    <Search size={18} style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.7, pointerEvents: 'none' }} />
+                    <Search size={18} style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.7, pointerEvents: 'none' }} />
                     <input
                         type="text"
                         placeholder="ابحث باسم الشركة، البريد الإلكتروني، أو نوع النشاط..."
                         style={{
-                            ...IS, paddingInlineEnd: '48px', height: '48px', fontSize: '14px',
+                            ...IS, paddingInlineStart: '48px', height: '48px', fontSize: '14px',
                             background: 'rgba(255,255,255,0.02)',
                             borderRadius: '12px',
                             border: `1px solid ${C.border}`

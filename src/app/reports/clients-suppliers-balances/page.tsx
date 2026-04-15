@@ -119,7 +119,7 @@ export default function ClientsSuppliersBalancesPage() {
 
                 <div className="no-print" style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '30px' }}>
                     <div style={{ position: 'relative', width: '100%' }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
                             placeholder={t("ابحث باسم الحساب أو رقم الهاتف...")}
                             value={search} onChange={e => setSearch(e.target.value)}

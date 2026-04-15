@@ -233,7 +233,7 @@ export default function RegisterPage() {
                                     {showCountries && (
                                         <div style={{ position: 'absolute', top: 'calc(100% + 12px)', insetInlineEnd: 0, width: '240px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 25px 50px rgba(0,0,0,0.5)', zIndex: 1000, overflow: 'hidden', animation: 'fadeDown 0.2s ease', borderTop: `2px solid ${C.primary}` }}>
                                             <div style={{ padding: '12px', borderBottom: `1px solid ${C.border}`, position: 'relative', background: 'rgba(255,255,255,0.01)' }}>
-                                                <Search size={14} style={{ position: 'absolute', insetInlineEnd: '22px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                                <Search size={14} style={{ position: 'absolute', insetInlineStart: '22px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                                 <input placeholder={t("ابحث عن الدولة...")} value={countrySearch} onChange={e => setCountrySearch(e.target.value)}
                                                     style={{ width: '100%', height: '36px', padding: '0 32px 0 10px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '12.5px', outline: 'none', fontFamily: CAIRO, direction: 'rtl', boxSizing: 'border-box' }}
                                                     autoFocus

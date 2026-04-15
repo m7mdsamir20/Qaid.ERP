@@ -184,10 +184,10 @@ export const SEARCH_STYLE = {
         borderRadius: '10px', background: C.inputBg, fontSize: '13.5px',
         border: `1px solid ${C.border}`, transition: 'all 0.2s ease-in-out'
     },
-    icon: (color: string): React.CSSProperties => ({
+    icon: (color: string = C.primary): React.CSSProperties => ({
         position: 'absolute' as 'absolute', insetInlineStart: '14px', top: '50%', right: undefined, left: undefined,
         transform: 'translateY(-50%)', color: color, pointerEvents: 'none' as 'none',
-        opacity: 0.7
+        opacity: 0.85
     }),
     iconSize: 16
 };

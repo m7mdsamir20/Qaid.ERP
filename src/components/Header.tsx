@@ -100,7 +100,7 @@ function SearchBox() {
             }}>
                 {loading
                     ? <Loader2 size={16} color={C.textMuted} style={{ animation: 'spin 1s linear infinite' }} />
-                    : <Search size={16} color={C.textMuted} />
+                    : <Search size={16} color={C.primary} />
                 }
                 <input
                     value={query}

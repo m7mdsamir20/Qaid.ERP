@@ -174,12 +174,12 @@ export default function PurchasesReportPage() {
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                            <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                             <input
                                 placeholder={t("ابحث برقم الفاتورة أو اسم المورد...")}
                                 value={q} onChange={e => setQ(e.target.value)}
                                 style={{ 
-                                    ...IS, paddingInlineEnd: '45px', height: '42px', fontSize: '13.5px', 
+                                    ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px', 
                                     background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
                                     fontWeight: 500
                                 }}

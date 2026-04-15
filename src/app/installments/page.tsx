@@ -280,11 +280,11 @@ export default function InstallmentsPage() {
                 {/* ── Filters ── */}
                 <div style={{ display: 'flex', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
-                        <input 
-                            placeholder={t("ابحث باسم العميل، المنتج أو رقم الخطة...")} 
+                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                        <input
+                            placeholder={t("ابحث باسم العميل، المنتج أو رقم الخطة...")}
                             value={search} onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingInlineEnd: '40px', height: '38px', borderRadius: '8px', background: C.card }} 
+                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '38px', borderRadius: '8px', background: C.card }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>

@@ -139,12 +139,12 @@ export default function UnitsPage() {
                 {/* Independent Search Header (Sales Style - Expanded) */}
                 <div style={{ marginBottom: '16px', display: 'flex', gap: '12px', alignItems: 'center' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             placeholder={t("ابحث باسم الوحدة أو الكود...")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingInlineEnd: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
+                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>

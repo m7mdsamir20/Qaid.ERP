@@ -191,13 +191,13 @@ export default function GeneralTab({
                                             {/* Search Box */}
                                             <div style={{ padding: '8px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
                                                 <div style={{ position: 'relative' }}>
-                                                    <Search size={14} style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                                    <Search size={14} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                                     <input
                                                         autoFocus
                                                         placeholder={t("بحث عن عملة...")}
                                                         value={currencySearch}
                                                         onChange={e => setCurrencySearch(e.target.value)}
-                                                        style={{ width: '100%', height: '34px', padding: '0 32px 0 10px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '12px', outline: 'none', fontFamily: CAIRO }}
+                                                        style={{ width: '100%', height: '34px', padding: '0 10px 0 32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.2)', color: C.textPrimary, fontSize: '12px', outline: 'none', fontFamily: CAIRO }}
                                                     />
                                                 </div>
                                             </div>

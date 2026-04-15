@@ -230,12 +230,12 @@ export default function SuppliersPage() {
                 {/* Toolbar - Search */}
                 <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
                             placeholder={t("ابحث باسم المورد أو رقم الهاتف...")}
                             style={{
-                                ...IS, paddingInlineEnd: '40px', height: '40px', fontSize: '13px',
+                                ...IS, paddingInlineStart: '40px', height: '40px', fontSize: '13px',
                                 background: C.card,
                                 borderRadius: '12px'
                             }}

@@ -123,7 +123,7 @@ export default function AgingReportPage() {
 
                 <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
                     <div style={{ position: 'relative', flex: 1 }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: q ? C.primary : C.textMuted, zIndex: 10 }} />
+                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
                             placeholder="ابحث باسم العميل أو رقم الفاتورة للفلترة السريعة..."
                             value={q} onChange={e => setQ(e.target.value)}

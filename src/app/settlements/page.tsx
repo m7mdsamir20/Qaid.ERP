@@ -57,9 +57,9 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
                 <div style={{ position: 'absolute', top: 'calc(100% + 8px)', insetInlineStart: 0, insetInlineEnd: 0, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', zIndex: 1100, boxShadow: '0 10px 25px -5px rgba(0,0,0,0.5)', overflow: 'hidden', animation: 'scaleIn 0.15s ease' }}>
                     <div style={{ padding: '10px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ position: 'relative' }}>
-                            <Search size={14} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                            <Search size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                             <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder={t("ابحث في القائمة...")}
-                                style={{ ...IS, height: '36px', paddingInlineEnd: '36px', fontSize: '12px' }} />
+                                style={{ ...IS, height: '36px', paddingInlineStart: '36px', fontSize: '12px' }} />
                         </div>
                     </div>
                     <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
@@ -232,7 +232,7 @@ export default function ComprehensiveSettlementPage() {
 
                 {/* ── Search ── */}
                 <div style={{ position: 'relative', marginBottom: '14px' }}>
-                    <Search size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                    <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                     <input
                         placeholder={t("ابحث برقم القيد أو تفاصيل العملية...")}
                         value={settlementSearch}
@@ -241,7 +241,7 @@ export default function ComprehensiveSettlementPage() {
                             ...IS,
                             width: '100%',
                             height: '36px',
-                            paddingInlineEnd: '40px',
+                            paddingInlineStart: '40px',
                             boxSizing: 'border-box',
                             background: C.card,
                         }}

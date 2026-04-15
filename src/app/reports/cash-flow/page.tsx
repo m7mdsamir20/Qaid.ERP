@@ -114,7 +114,7 @@ export default function CashFlowReportPage() {
 
                         {/* ── Search Bar (Fard - Expanded) ── */}
                         <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
-                            <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
+                            <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 1 }} />
                             <input
                                 placeholder={t("ابحث بالخزينة، الطرف الآخر، أو البيان...")}
                                 value={q} onChange={e => setQ(e.target.value)}
@@ -122,8 +122,8 @@ export default function CashFlowReportPage() {
                                     ...IS,
                                     width: '100%', 
                                     height: '42px', 
-                                    paddingInlineEnd: '44px', 
-                                    paddingInlineStart: '14px', 
+                                    paddingInlineStart: '44px',
+                                    paddingInlineEnd: '14px',
                                     borderRadius: '12px', 
                                     border: `1px solid ${C.border}`, 
                                     background: C.card, 

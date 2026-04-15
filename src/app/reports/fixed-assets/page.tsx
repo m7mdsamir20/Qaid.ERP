@@ -138,7 +138,7 @@ export default function FixedAssetsReportPage() {
                 <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
                     {/* Search Field */}
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, zIndex: 1 }} />
+                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 1 }} />
                         <input 
                             value={search} 
                             onChange={e => setSearch(e.target.value)}
@@ -155,8 +155,8 @@ export default function FixedAssetsReportPage() {
                                 ...IS, 
                                 width: '100%', 
                                 height: '42px', 
-                                paddingInlineEnd: '44px', 
-                                borderRadius: '12px', 
+                                paddingInlineStart: '44px',
+                                borderRadius: '12px',
                                 background: C.card,
                                 border: `1px solid ${C.border}`,
                                 transition: 'all 0.2s ease-in-out',

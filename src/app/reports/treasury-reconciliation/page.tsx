@@ -132,7 +132,7 @@ export default function TreasuryReconciliationPage() {
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', width: '100%', padding: 0 }}>
                     <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={18} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: q ? C.primary : C.textMuted, zIndex: 10 }} />
+                        <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
                         <input
                             placeholder="ابحث باسم الخزينة أو الحساب البنكي..."
                             value={q} onChange={e => setQ(e.target.value)}
