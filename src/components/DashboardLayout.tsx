@@ -144,12 +144,16 @@ export default function DashboardLayout({
                     .mobile-menu-btn { display: flex !important; }
                     .branch-switcher-wrap { display: none !important; }
                     .sidebar-wrapper {
-                        position: fixed; top: 0; bottom: 0; width: 280px; z-index: 950;
+                        position: fixed; top: 0; bottom: 0; 
+                        width: min(300px, 85vw); 
+                        z-index: 950;
                         background: ${C.card};
+                        margin: 0 !important;
+                        box-shadow: ${isRtl ? '-10px 0 30px rgba(0,0,0,0.5)' : '10px 0 30px rgba(0,0,0,0.5)'};
                         transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
                     }
-                    .ltr-mode .sidebar-wrapper { left: 0; transform: translateX(-100%); }
-                    .rtl-mode .sidebar-wrapper { right: 0; transform: translateX(100%); }
+                    .ltr-mode .sidebar-wrapper { left: 0; right: auto; transform: translateX(-100%); }
+                    .rtl-mode .sidebar-wrapper { right: 0; left: auto; transform: translateX(100%); }
                     .sidebar-wrapper.open { transform: translateX(0) !important; }
                     .dashboard-content { margin: 0 !important; width: 100% !important; }
                 }

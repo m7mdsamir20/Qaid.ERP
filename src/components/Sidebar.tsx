@@ -193,10 +193,18 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
 
     return (
         <aside className="sidebar" style={{ width: '100%', height: '100%', position: 'relative', backgroundColor: C.card, color: C.textPrimary, display: 'flex', flexDirection: 'column', borderInlineEnd: `1px solid ${C.border}`, boxShadow: isRtl ? '-10px 0 30px var(--c-shadow)' : '10px 0 30px var(--c-shadow)', zIndex: 1001, overflow: 'hidden' }} dir={isRtl ? 'rtl' : 'ltr'}>
-            <Link href="/" style={{ height: '95px', minHeight: '95px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div style={{ position: 'relative', width: '100%', maxWidth: '240px', height: '75px' }}>
-                    <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'none' : 'auto' }} />
-                    <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s', pointerEvents: theme === 'light' ? 'auto' : 'none' }} />
+            <Link href="/" style={{ 
+                height: '100px', 
+                minHeight: '100px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                padding: '0 20px',
+                borderBottom: `1px solid ${C.border}05`
+            }}>
+                <div style={{ position: 'relative', width: '100%', maxWidth: '200px', height: '60px' }}>
+                    <img src="/logo-system.png" alt="Logo" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 0 : 1, transition: 'opacity 0.3s' }} />
+                    <img src="/logo-light.png" alt="Logo Light" style={{ position: 'absolute', inset: 0, margin: 'auto', width: '100%', height: '100%', objectFit: 'contain', opacity: theme === 'light' ? 1 : 0, transition: 'opacity 0.3s' }} />
                 </div>
             </Link>
 
