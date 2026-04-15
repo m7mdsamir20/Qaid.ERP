@@ -84,11 +84,11 @@ export default function DuePage() {
                     icon={Clock}
                 />
 
-                {/* Content Container with Filters and KPI */}
-                <div style={SC}>
+                {/* Content Container (Table & Header) */}
+                <div style={{ ...SC, background: 'transparent', border: 'none', boxShadow: 'none', padding: 0 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', gap: '20px' }}>
                         {/* Filters */}
-                        <div style={{ display: 'flex', background: 'rgba(15,23,42,0.4)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
+                        <div style={{ display: 'flex', background: C.inputBg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
                             {[
                                 { id: 'current', label: t('الشهر الحالي'), icon: <Calendar size={14} /> },
                                 { id: 'next', label: t('الشهر القادم'), icon: <ArrowLeftCircle size={14} /> },
@@ -130,7 +130,7 @@ export default function DuePage() {
                             <p style={{ fontWeight: 600 }}>{t('جاري جلب بيانات الأقساط...')}</p>
                         </div>
                     ) : (
-                        <div style={TABLE_STYLE.container}>
+                        <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>

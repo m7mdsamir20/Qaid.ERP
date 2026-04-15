@@ -303,7 +303,7 @@ export default function InstallmentsPage() {
                         <input
                             placeholder={t("ابحث باسم العميل، المنتج أو رقم الخطة...")}
                             value={search} onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '38px', borderRadius: '8px', background: C.card }}
+                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '38px', borderRadius: '8px', background: C.inputBg }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
@@ -314,7 +314,7 @@ export default function InstallmentsPage() {
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : (
-                        <div style={TABLE_STYLE.container}>
+                        <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
