@@ -57,11 +57,30 @@ export default function InstallmentsPage() {
                 fetch('/api/treasuries'),
                 fetch('/api/items'),
             ]);
-            if (pRes.ok) setPlans(await pRes.json());
-            if (cRes.ok) setCustomers(await cRes.json());
-            if (tRes.ok) setTreasuries(await tRes.json());
-            if (iRes.ok) setItems(await iRes.json());
-        } catch { } finally { setLoading(false); }
+            
+            if (pRes.ok) {
+                const data = await pRes.json();
+                setPlans(Array.isArray(data) ? data : []);
+            }
+            
+            if (cRes.ok) {
+                const data = await cRes.json();
+                setCustomers(Array.isArray(data) ? data : []);
+            }
+            
+            if (tRes.ok) {
+                const data = await tRes.json();
+                setTreasuries(Array.isArray(data) ? data : []);
+            }
+            
+            if (iRes.ok) {
+                const data = await iRes.json();
+                // Items API returns { items: [], total: ... } for pagination
+                setItems(Array.isArray(data) ? data : (data.items || []));
+            }
+        } catch (error) {
+            console.error("Fetch Error:", error);
+        } finally { setLoading(false); }
     }, []);
 
     const fetchTaxSettings = useCallback(async () => {
