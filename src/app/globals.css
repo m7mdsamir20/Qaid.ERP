@@ -551,17 +551,6 @@ input[type="date"] {
   position: relative;
 }
 
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.5) sepia(1) saturate(5) hue-rotate(200deg);
-  cursor: pointer;
-  opacity: 0.8;
-  transition: opacity 0.2s ease;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator:hover {
-  opacity: 1;
-}
-
 /* Fallback for wrapper if still used */
 .date-input-wrapper {
   position: relative;
@@ -705,11 +694,18 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   cursor: pointer;
 }
 
+/* Date/Datetime Calendar Icon - Blue in both light & dark modes */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: 0.6;
+  filter: invert(35%) sepia(99%) saturate(1474%) hue-rotate(213deg) brightness(98%) contrast(97%);
+  opacity: 0.85;
   cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover,
+input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
 }
 
 /* ==================== Universal Select ==================== */
@@ -945,11 +941,6 @@ select option {
 }
 
 /* ==================== Inputs ==================== */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-  opacity: 0.6;
-  cursor: pointer;
-}
 
 /* ==================== Hide Number Input Spinners ==================== */
 /* hides the "counter" / arrows from number inputs globally */
