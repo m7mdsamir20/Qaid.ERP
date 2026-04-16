@@ -319,7 +319,7 @@ export default function InstallmentsPage() {
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
-                                            {[t('الخطة'), t('المنتج'), t('رقم الهاتف'), t('العميل'), t('إجمالي الخطة'), t('المقدم'), t('القسط'), t('المدة'), t('الحالة'), t('إجراءات')].map((h, i) => (
+                                            {[t('الخطة'), t('المنتج'), t('الهاتف'), t('العميل'), t('إجمالي الخطة'), t('المقدم'), t('القسط'), t('المدة'), t('الحالة'), t('إجراء')].map((h, i) => (
                                                 <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
                                             ))}
                                         </tr>
@@ -382,7 +382,7 @@ export default function InstallmentsPage() {
                                                                 style={{ width: 32, height: 32, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', transition: '0.2s' }}
                                                                 onMouseEnter={e => e.currentTarget.style.color = C.primary}
                                                                 onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}
-                                                                title="عرض التفاصيل"
+                                                                title={t("عرض التفاصيل")}
                                                             >
                                                                 <Eye size={16} />
                                                             </button>
@@ -522,7 +522,6 @@ export default function InstallmentsPage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>{t('قيمة الضريبة')}</label>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('مبلغ الضريبة')} ({cSymbol})</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={fmtN(parseFloat(form.taxAmount) || 0)} 
@@ -571,7 +570,7 @@ export default function InstallmentsPage() {
                                     <CustomSelect
                                         value={form.treasuryId}
                                         onChange={v => setForm(f => ({ ...f, treasuryId: v }))}
-                                        options={treasuries.map(t => ({ value: t.id, label: t.name, sub: t.type === 'bank' ? 'حساب بنكي' : 'خزينة نقدية' }))}
+                                        options={treasuries.map(t_tr => ({ value: t_tr.id, label: t_tr.name, sub: t_tr.type === 'bank' ? t('حساب بنكي') : t('خزينة نقدية') }))}
                                         placeholder={t("اختر الخزينة...")}
                                         icon={Wallet}
                                         style={{ height: '36px' }}
@@ -651,7 +650,7 @@ export default function InstallmentsPage() {
                                                         color: isActive ? C.primary : C.textMuted
                                                     }}
                                                 >
-                                                    {m}
+                                                    {t(m)}
                                                 </div>
                                             );
                                         })}
@@ -820,7 +819,7 @@ export default function InstallmentsPage() {
                             <button type="button" onClick={() => setShowAddCustomer(false)} style={{ 
                                 flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
                                 background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
-                            }}>إلغاء</button>
+                            }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

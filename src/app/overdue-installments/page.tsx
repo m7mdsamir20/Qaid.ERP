@@ -80,8 +80,8 @@ export default function OverduePage() {
 
                 {/* Page Header (Stand alone) */}
                 <PageHeader
-                    title="المتأخرات وحالات التعثر"
-                    subtitle="الأقساط التي تجاوزت تاريخ استحقاقها وتحتاج متابعة وتحصيل فوري"
+                    title={t("المتأخرات وحالات التعثر")}
+                    subtitle={t("الأقساط التي تجاوزت تاريخ استحقاقها وتحتاج متابعة وتحصيل فوري")}
                     icon={AlertTriangle}
                 />
 
@@ -91,19 +91,19 @@ export default function OverduePage() {
                         {/* Filters */}
                         <div style={{ display: 'flex', background: C.inputBg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '4px', gap: '4px' }}>
                             {[
-                                { id: 'current', label: 'الشهر الحالي', icon: <Calendar size={14} /> },
-                                { id: 'next', label: 'الشهر القادم', icon: <ArrowLeftCircle size={14} /> },
-                                { id: 'all', label: 'كل المتأخرات', icon: <ListFilter size={14} /> },
-                            ].map(t => (
-                                <button key={t.id} onClick={() => setMonthFilter(t.id)}
+                                { id: 'current', label: t('الشهر الحالي'), icon: <Calendar size={14} /> },
+                                { id: 'next', label: t('الشهر القادم'), icon: <ArrowLeftCircle size={14} /> },
+                                { id: 'all', label: t('كل المتأخرات'), icon: <ListFilter size={14} /> },
+                            ].map(t_f => (
+                                <button key={t_f.id} onClick={() => setMonthFilter(t_f.id)}
                                     style={{
                                         padding: '8px 18px', borderRadius: '9px', fontSize: '13px', fontWeight: 700, border: 'none', cursor: 'pointer',
                                         display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s',
-                                        background: monthFilter === t.id ? C.danger : 'transparent',
-                                        color: monthFilter === t.id ? '#fff' : C.textSecondary,
-                                        boxShadow: monthFilter === t.id ? '0 4px 12px rgba(239,68,68,0.3)' : 'none',
+                                        background: monthFilter === t_f.id ? C.danger : 'transparent',
+                                        color: monthFilter === t_f.id ? '#fff' : C.textSecondary,
+                                        boxShadow: monthFilter === t_f.id ? '0 4px 12px rgba(239,68,68,0.3)' : 'none',
                                     }}>
-                                    {t.icon} {t.label}
+                                    {t_f.icon} {t_f.label}
                                 </button>
                             ))}
                         </div>
@@ -117,7 +117,7 @@ export default function OverduePage() {
                                 <Wallet size={16} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>إجمالي المتأخرات</div>
+                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>{t('إجمالي المتأخرات')}</div>
                                 <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                     {fmtN(totalOverdue)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
@@ -127,7 +127,7 @@ export default function OverduePage() {
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.danger, margin: '0 auto 16px' }} />
-                            <p style={{ fontWeight: 600 }}>جاري استخراج بيانات التعثر...</p>
+                            <p style={{ fontWeight: 600 }}>{t('جاري استخراج بيانات التعثر...')}</p>
                         </div>
                     ) : (
                         <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
@@ -135,7 +135,7 @@ export default function OverduePage() {
                                 <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
-                                            {['العميل المتأخر', 'رقم الخطة', 'القسط', 'تاريخ الاستحقاق', 'مدة التأخير', 'المبلغ المتبقي', 'إجراء'].map((h, i) => (
+                                            {[t('العميل المتأخر'), t('رقم الخطة'), t('القسط'), t('تاريخ الاستحقاق'), t('مدة التأخير'), t('المبلغ المتبقي'), t('إجراء')].map((h, i) => (
                                                 <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
                                             ))}
                                         </tr>
@@ -170,7 +170,7 @@ export default function OverduePage() {
                                                         padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 800,
                                                         background: 'rgba(239,68,68,0.12)', color: C.danger, border: `1px solid ${C.danger}22`
                                                     }}>
-                                                        {inst.daysOverdue} يوم تأخير
+                                                        {inst.daysOverdue} {t('يوم تأخير')}
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
@@ -199,7 +199,7 @@ export default function OverduePage() {
                                                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
                                                             onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
                                                         >
-                                                            تحصيل
+                                                            {t('تحصيل')}
                                                         </button>
                                                         <button onClick={() => router.push(`/installments/${inst.plan?.id}`)}
                                                             style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s' }}
@@ -217,7 +217,7 @@ export default function OverduePage() {
                                 {installments.length === 0 && (
                                     <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
                                         <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                                        <p style={{ fontSize: '15px' }}>لا توجد متأخرات مسجلة حالياً</p>
+                                        <p style={{ fontSize: '15px' }}>{t('لا توجد متأخرات مسجلة حالياً')}</p>
                                     </div>
                                 )}
                             </div>
@@ -229,18 +229,18 @@ export default function OverduePage() {
                 <AppModal
                     show={!!collectTarget}
                     onClose={() => setCollectTarget(null)}
-                    title={collectTarget ? `تحصيل القسط الراكد #${collectTarget.installmentNo}` : 'تحصيل قسط'}
+                    title={collectTarget ? `${t('تحصيل القسط الراكد')} #${collectTarget.installmentNo}` : t('تحصيل قسط')}
                     maxWidth="440px"
                 >
                     {collectTarget && (
                         <form onSubmit={handleCollect}>
                             <div style={{ background: 'rgba(251,113,133,0.03)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.danger}20`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>العميل المتعثر:</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل المتعثر')}:</span>
                                     <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800 }}>{collectTarget.plan?.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>إجمالي المتأخر:</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('إجمالي المتأخر')}:</span>
                                     <span style={{ fontSize: '15px', color: C.danger, fontWeight: 900, fontFamily: INTER }}>
                                         {fmtN(collectTarget.remaining || collectTarget.amount)} {cSymbol}
                                     </span>
@@ -248,7 +248,7 @@ export default function OverduePage() {
                             </div>
 
                             <div style={{ marginBottom: '16px' }}>
-                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '6px' }}>المبلغ المحصّل حالياً <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '6px' }}>{t('المبلغ المحصّل حالياً')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
@@ -260,20 +260,20 @@ export default function OverduePage() {
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '10px', display: 'block' }}>جهة توريد المبلغ (خزينة/بنك) <span style={{ color: C.danger }}>*</span></label>
+                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '10px', display: 'block' }}>{t('جهة توريد المبلغ (خزينة/بنك)')} <span style={{ color: C.danger }}>*</span></label>
                                 
                                 <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
                                     {[
-                                        { id: 'cash', label: 'خزينة نقدية', icon: Wallet },
-                                        { id: 'bank', label: 'حساب بنكي', icon: Banknote },
-                                    ].map(t => {
-                                        const typeMatch = treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === t.id;
-                                        const isSelectedType = (collectForm as any).selectedType === t.id || typeMatch;
+                                        { id: 'cash', label: t('خزينة نقدية'), icon: Wallet },
+                                        { id: 'bank', label: t('حساب بنكي'), icon: Banknote },
+                                    ].map(t_tr => {
+                                        const typeMatch = treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === t_tr.id;
+                                        const isSelectedType = (collectForm as any).selectedType === t_tr.id || typeMatch;
                                         return (
-                                            <div key={t.id} 
+                                            <div key={t_tr.id} 
                                                 onClick={() => {
-                                                    const firstTr = treasuries.find(tr => tr.type === t.id);
-                                                    setCollectForm(f => ({ ...f, treasuryId: firstTr?.id || '', selectedType: t.id } as any));
+                                                    const firstTr = treasuries.find(tr => tr.type === t_tr.id);
+                                                    setCollectForm(f => ({ ...f, treasuryId: firstTr?.id || '', selectedType: t_tr.id } as any));
                                                 }}
                                                 style={{
                                                     flex: 1, padding: '10px', borderRadius: '12px', cursor: 'pointer', textAlign: 'center', transition: '0.2s',
@@ -283,9 +283,9 @@ export default function OverduePage() {
                                                 }}
                                             >
                                                 <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: isSelectedType ? C.danger : 'rgba(255,255,255,0.05)', color: isSelectedType ? '#fff' : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <t.icon size={14} />
+                                                    <t_tr.icon size={14} />
                                                 </div>
-                                                <div style={{ fontSize: '11.5px', fontWeight: 800, color: isSelectedType ? C.danger : C.textSecondary }}>{t.label}</div>
+                                                <div style={{ fontSize: '11.5px', fontWeight: 800, color: isSelectedType ? C.danger : C.textSecondary }}>{t_tr.label}</div>
                                             </div>
                                         );
                                     })}
@@ -298,10 +298,10 @@ export default function OverduePage() {
                                                 value={collectForm.treasuryId}
                                                 onChange={v => setCollectForm(f => ({ ...f, treasuryId: v }))}
                                                 options={treasuries
-                                                    .filter(t => t.type === ((collectForm as any).selectedType || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type))
-                                                    .map(t => ({ value: t.id, label: t.name }))
+                                                    .filter(t_o => t_o.type === ((collectForm as any).selectedType || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type))
+                                                    .map(t_o => ({ value: t_o.id, label: t_o.name }))
                                                 }
-                                                placeholder="اختر من القائمة..."
+                                                placeholder={t("اختر من القائمة...")}
                                                 style={{ height: '40px' }}
                                             />
                                         </div>
@@ -310,9 +310,9 @@ export default function OverduePage() {
                             </div>
 
                             <div style={{ marginBottom: '24px' }}>
-                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '6px' }}>ملاحظات التسوية (اختياري)</label>
+                                <label style={{ ...LS, fontSize: '11.5px', color: C.textMuted, marginBottom: '6px' }}>{t('ملاحظات التسوية (اختياري)')}</label>
                                 <textarea 
-                                    placeholder="اكتب أي ملاحظة عن حالة السداد هنا..." 
+                                    placeholder={t("اكتب أي ملاحظة عن حالة السداد هنا...")} 
                                     value={collectForm.notes} 
                                     onChange={e => setCollectForm(f => ({ ...f, notes: e.target.value }))} 
                                     style={{ ...IS, height: '62px', padding: '10px 14px', resize: 'none', background: C.inputBg, fontSize: '12px' }} 
@@ -323,7 +323,7 @@ export default function OverduePage() {
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={collecting} 
                                     style={{ ...BTN_DANGER(false, collecting), flex: 1.5, height: '48px', borderRadius: '12px', fontSize: '14px' }}>
-                                    {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> تسوية وتحصيل</>}
+                                    {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> {t('تسوية وتحصيل')}</>}
                                 </button>
                                 <button type="button" onClick={() => setCollectTarget(null)} 
                                     style={{ 
@@ -334,7 +334,7 @@ export default function OverduePage() {
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                 >
-                                    إلغاء
+                                    {t('إلغاء')}
                                 </button>
                             </div>
                         </form>
