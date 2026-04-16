@@ -19,8 +19,6 @@ interface Voucher {
     id: string; voucherNumber: number; date: string; amount: number;
     description: string; paymentType?: 'cash' | 'bank';
     customer?: { id: string; name: string };
-    supplier?: { id: string; name: string };
-    partnerType?: 'customer' | 'supplier';
     treasury?: { id: string; name: string; type: string; bankName?: string };
 }
 interface Customer { id: string; name: string; balance: number; }
@@ -93,11 +91,11 @@ export default function ReceiptVouchersPage() {
                 <div style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
-                        <input 
-                            placeholder={t("ابحث برقم السند أو اسم العميل...")} 
+                        <input
+                            placeholder={t("ابحث برقم السند أو اسم العميل...")}
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
-                            style={SEARCH_STYLE.input} 
+                            style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
@@ -111,13 +109,13 @@ export default function ReceiptVouchersPage() {
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
                     </div>
-                    
+
                     {(searchTerm || dateFrom || dateTo) && (
-                        <button 
+                        <button
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
-                            style={{ 
+                            style={{
                                 display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
-                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
+                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
@@ -145,33 +143,33 @@ export default function ReceiptVouchersPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>{t('رقم السند')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('التاريخ')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('العميل')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('العميل')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('طريقة الدفع')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('الخزينة / البنك')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('البيان')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filtered.map((v, idx) => (
-                                        <tr key={v.id} 
+                                        <tr key={v.id}
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
-                                                {v.partnerType === 'supplier' ? 'SUP' : 'CUS'}-{String(v.voucherNumber).padStart(5, '0')}
+                                                RCP-{String(v.voucherNumber).padStart(5, '0')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, textAlign: isRtl ? 'right' : 'left' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>
                                                 {new Date(v.date).toLocaleDateString('en-GB')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: isRtl ? 'right' : 'left' }}>
-                                                {v.customer?.name || (v.supplier?.name || '—')}
+                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
+                                                {v.customer?.name || '—'}
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ 
-                                                    display: 'inline-flex', alignItems: 'center', gap: '5px', 
+                                                <div style={{
+                                                    display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                     padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
                                                     background: v.treasury?.type === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                                     color: v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
@@ -180,10 +178,10 @@ export default function ReceiptVouchersPage() {
                                                     {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, textAlign: isRtl ? 'right' : 'left' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
                                                 {v.treasury?.name || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: isRtl ? 'right' : 'left' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {v.description || '—'}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.success, fontWeight: 700, fontFamily: CAIRO }}>
@@ -191,12 +189,12 @@ export default function ReceiptVouchersPage() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); handlePrint(v); }}
-                                                            style={TABLE_STYLE.actionBtn()}
-                                                            title={t("طباعة")}>
-                                                            <Printer size={TABLE_STYLE.actionIconSize} />
-                                                        </button>
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); handlePrint(v); }}
+                                                        style={TABLE_STYLE.actionBtn()}
+                                                        title={t("طباعة")}>
+                                                        <Printer size={TABLE_STYLE.actionIconSize} />
+                                                    </button>
                                                 </div>
                                             </td>
                                         </tr>

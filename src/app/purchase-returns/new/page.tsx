@@ -122,7 +122,7 @@ export default function NewPurchaseReturnPage() {
     const selectedInvoice = Array.isArray(purchaseInvoices) ? purchaseInvoices.find(i => i.id === form.originalInvoiceId) : null;
     const cashTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => t.type !== 'bank') : [];
     const bankTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => t.type === 'bank') : [];
-    
+
     const partnerId = form.supplierId || form.customerId;
     const supplierInvoices = (partnerId && Array.isArray(purchaseInvoices))
         ? purchaseInvoices.filter(i => {
@@ -144,18 +144,18 @@ export default function NewPurchaseReturnPage() {
                 fetch('/api/purchase-returns'), fetch('/api/suppliers'), fetch('/api/customers'),
                 fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/purchases'), fetch('/api/company'),
             ]);
-            
+
             const retData = await retRes.json();
             const purData = await purRes.json();
             const suppliersData = await supRes.json();
             const customersData = await custRes.json();
             const warehousesData = await whRes.json();
             const treasuriesData = await trRes.json();
-            
+
             const returnsArray = Array.isArray(retData) ? retData : (retData.returns || []);
             const maxNum = returnsArray.reduce((m: number, r: any) => Math.max(m, r.invoiceNumber || 0), 0);
             setNextNum(maxNum + 1);
-            
+
             setSuppliers(Array.isArray(suppliersData) ? suppliersData : []);
             setCustomers(Array.isArray(customersData) ? customersData : []);
             const whs = Array.isArray(warehousesData) ? warehousesData : [];
@@ -229,7 +229,7 @@ export default function NewPurchaseReturnPage() {
         if (!form.supplierId && !form.customerId) errors.supplierId = 'يرجى اختيار المورد / العميل';
         if (!form.warehouseId) errors.warehouseId = 'يرجى اختيار المخزن';
         if (!form.originalInvoiceId) errors.originalInvoiceId = 'يرجى اختيار الفاتورة';
-        
+
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
             return;
@@ -346,7 +346,7 @@ export default function NewPurchaseReturnPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     {/* LEFT Column */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        
+
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                 <FileText size={16} /> بيانات المرتجع الأساسية
@@ -381,20 +381,20 @@ export default function NewPurchaseReturnPage() {
                                         <div style={{ position: 'relative' }}>
                                             <CustomSelect
                                                 value={form.supplierId || form.customerId}
-                                                onChange={v => { 
+                                                onChange={v => {
                                                     const p = partners.find(x => x.id === v);
                                                     if (p?.partnerType === 'customer') {
                                                         setForm((f: any) => ({ ...f, customerId: v, supplierId: '', originalInvoiceId: '' }));
                                                     } else {
                                                         setForm((f: any) => ({ ...f, supplierId: v, customerId: '', originalInvoiceId: '' }));
                                                     }
-                                                    setLines([]); 
-                                                    clearError('supplierId'); 
+                                                    setLines([]);
+                                                    clearError('supplierId');
                                                 }}
                                                 icon={UserCheck}
                                                 placeholder="اختر الطرف..."
-                                                options={partners.map(s => ({ 
-                                                    value: s.id, 
+                                                options={partners.map(s => ({
+                                                    value: s.id,
                                                     label: s.name,
                                                     sub: s.partnerType === 'supplier' ? 'مورد' : 'عميل'
                                                 }))}
@@ -419,11 +419,10 @@ export default function NewPurchaseReturnPage() {
                                                         ? selectedPartner.balance > 0 ? '#34d399' : selectedPartner.balance < 0 ? '#f87171' : '#475569'
                                                         : selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
                                                     ),
-                                                    border: `1px solid ${
-                                                        selectedPartner.partnerType === 'customer'
-                                                        ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'
-                                                        : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                                    }`,
+                                                    border: `1px solid ${selectedPartner.partnerType === 'customer'
+                                                            ? selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.06)'
+                                                            : selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                        }`,
                                                 }}>
                                                     <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                                     {selectedPartner.partnerType === 'customer'
@@ -541,35 +540,35 @@ export default function NewPurchaseReturnPage() {
                                                         <td style={{ padding: '8px 10px', color: C.textSecondary }}>{l.originalQty}</td>
                                                         <td style={{ padding: '8px 10px', color: C.danger }}>{l.alreadyReturned}</td>
                                                         <td style={{ padding: '8px 10px' }}>
-                                                            <div style={{ 
-                                                                display: 'flex', alignItems: 'center', 
-                                                                background: 'rgba(255,255,255,0.05)', 
+                                                            <div style={{
+                                                                display: 'flex', alignItems: 'center',
+                                                                background: 'rgba(255,255,255,0.05)',
                                                                 borderRadius: '8px', border: `1px solid ${l.selected ? C.primary : C.border}`,
                                                                 width: '85px', margin: '0 auto', overflow: 'hidden'
                                                             }}>
                                                                 <div style={{ flex: 1 }}>
-                                                                    <input 
+                                                                    <input
                                                                         type="number" min="0" max={l.availableQty} value={l.returnQty || ''}
                                                                         disabled={!l.selected || fullyReturned}
                                                                         onChange={e => updateReturnQty(i, parseFloat(e.target.value) || 0)}
-                                                                        style={{ 
-                                                                            width: '100%', height: '32px', textAlign: 'center', 
-                                                                            background: 'transparent', border: 'none', 
-                                                                            color: l.selected ? C.textPrimary : C.textMuted, 
+                                                                        style={{
+                                                                            width: '100%', height: '32px', textAlign: 'center',
+                                                                            background: 'transparent', border: 'none',
+                                                                            color: l.selected ? C.textPrimary : C.textMuted,
                                                                             fontSize: '13px', fontWeight: 800, padding: 0
                                                                         }}
                                                                         onFocus={focusIn} onBlur={focusOut}
                                                                     />
                                                                 </div>
                                                                 <div style={{ display: 'flex', flexDirection: 'column', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
-                                                                    <button 
+                                                                    <button
                                                                         type="button" disabled={!l.selected || l.returnQty >= l.availableQty}
                                                                         onClick={() => updateReturnQty(i, (l.returnQty || 0) + 1)}
                                                                         style={{ width: '24px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'transparent', cursor: 'pointer', color: C.textSecondary }}
                                                                     >
                                                                         <ChevronUp size={12} />
                                                                     </button>
-                                                                    <button 
+                                                                    <button
                                                                         type="button" disabled={!l.selected || (l.returnQty || 0) <= 0}
                                                                         onClick={() => updateReturnQty(i, (l.returnQty || 0) - 1)}
                                                                         style={{ width: '24px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'transparent', borderTop: `1px solid ${C.border}`, cursor: 'pointer', color: C.textSecondary }}
@@ -592,8 +591,8 @@ export default function NewPurchaseReturnPage() {
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <label style={{ ...LS, fontSize: '11px' }}>ملاحظات إضافية</label>
-                            <input 
-                                type="text" placeholder="اكتب أي توضيحات للمرتجع..." 
+                            <input
+                                type="text" placeholder="اكتب أي توضيحات للمرتجع..."
                                 value={form.notes} onChange={e => setForm((f: any) => ({ ...f, notes: e.target.value }))}
                                 style={IS} onFocus={focusIn} onBlur={focusOut}
                             />
@@ -606,7 +605,7 @@ export default function NewPurchaseReturnPage() {
                             <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                 <Banknote size={16} /> ملخص الحساب
                             </div>
-                            
+
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted }}>عدد الأصناف المرتجعة</span>
@@ -616,7 +615,7 @@ export default function NewPurchaseReturnPage() {
                                     <span style={{ fontSize: '12px', color: C.textMuted }}>إجمالي كمية المرتجع</span>
                                     <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.reduce((acc, l) => acc + l.returnQty, 0)} وحدة</span>
                                 </div>
-                                
+
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '4px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>قيمة المرتجع</span>
@@ -628,11 +627,11 @@ export default function NewPurchaseReturnPage() {
                                     </div>
                                 </div>
 
-                                <div style={{ 
-                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-                                    marginTop: '10px', padding: '14px', 
-                                    background: 'rgba(59,130,246,0.05)', borderRadius: '12px', 
-                                    border: `1px solid ${C.primary}20` 
+                                <div style={{
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    marginTop: '10px', padding: '14px',
+                                    background: 'rgba(59,130,246,0.05)', borderRadius: '12px',
+                                    border: `1px solid ${C.primary}20`
                                 }}>
                                     <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary }}>صافي المرتجع</span>
                                     <span style={{ fontSize: '20px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>{netReturnTotal.toLocaleString()} {cSymbol}</span>
@@ -642,7 +641,7 @@ export default function NewPurchaseReturnPage() {
                                     <label style={{ ...LS, fontSize: '11px' }}>طريقة الرد</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
                                         {['balance', 'cash', 'bank'].map(m => (
-                                            <button 
+                                            <button
                                                 key={m} onClick={() => setForm((f: any) => ({ ...f, refundType: m as any }))}
                                                 style={{ height: '36px', borderRadius: '8px', border: `1px solid ${form.refundType === m ? C.primary : C.border}`, background: form.refundType === m ? `${C.primary}15` : 'transparent', color: form.refundType === m ? C.primary : C.textMuted, fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '0.2s' }}
                                             >
@@ -657,7 +656,7 @@ export default function NewPurchaseReturnPage() {
                                         <div>
                                             <label style={{ ...LS, fontSize: '11px' }}>المبلغ المستلم <span style={{ color: C.danger }}>*</span></label>
                                             <div style={{ position: 'relative' }}>
-                                                <input 
+                                                <input
                                                     type="text"
                                                     inputMode="decimal"
                                                     placeholder="0.00"
@@ -669,13 +668,13 @@ export default function NewPurchaseReturnPage() {
                                                             clearError('paidAmount');
                                                         }
                                                     }}
-                                                    style={{ 
-                                                        ...IS, 
-                                                        height: '44px', 
-                                                        fontSize: '18px', 
-                                                        fontWeight: 800, 
-                                                        textAlign: 'center', 
-                                                        border: `1px solid ${C.primary}50`, 
+                                                    style={{
+                                                        ...IS,
+                                                        height: '44px',
+                                                        fontSize: '18px',
+                                                        fontWeight: 800,
+                                                        textAlign: 'center',
+                                                        border: `1px solid ${C.primary}50`,
                                                         color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.primary,
                                                         background: 'rgba(59,130,246,0.03)',
                                                         paddingInlineEnd: '40px',
@@ -697,7 +696,7 @@ export default function NewPurchaseReturnPage() {
                                                 onChange={v => { setForm((f: any) => ({ ...f, [form.refundType === 'cash' ? 'treasuryId' : 'bankId']: v })); clearError(form.refundType === 'cash' ? 'treasuryId' : 'bankId'); }}
                                                 icon={Banknote}
                                                 placeholder={form.refundType === 'cash' ? "اختر الخزينة..." : "اختر الحساب..."}
-                                                options={(form.refundType === 'cash' ? cashTreasuries : bankTreasuries).map(tr => ({ value: tr.id, label: tr.name, sub: `${t('رصيد:')} ${tr.balance.toLocaleString()} ${cSymbol}` }))}
+                                                options={(form.refundType === 'cash' ? cashTreasuries : bankTreasuries).map(t => ({ value: t.id, label: t.name, sub: `رصيد: ${t.balance.toLocaleString()} ${cSymbol}` }))}
                                             />
                                             <InlineError field={form.refundType === 'cash' ? 'treasuryId' : 'bankId'} />
                                         </div>
@@ -706,7 +705,7 @@ export default function NewPurchaseReturnPage() {
 
                                 <div style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                     <button type="button" onClick={() => handleSubmit(false)} disabled={submitting}
-                                        style={{ 
+                                        style={{
                                             width: '100%', height: '52px', borderRadius: '14px', border: 'none',
                                             background: submitting ? 'rgba(59,130,246,0.18)' : C.primary,
                                             color: submitting ? C.textMuted : '#fff', fontWeight: 800, fontSize: '15px',
@@ -719,7 +718,7 @@ export default function NewPurchaseReturnPage() {
                                     </button>
 
                                     <button type="button" onClick={() => handleSubmit(true)} disabled={submitting}
-                                        style={{ 
+                                        style={{
                                             width: '100%', height: '48px', borderRadius: '14px',
                                             border: '1px solid rgba(16,185,129,0.4)',
                                             background: 'rgba(16,185,129,0.1)',
@@ -728,7 +727,7 @@ export default function NewPurchaseReturnPage() {
                                             cursor: submitting ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
                                             opacity: submitting ? 0.6 : 1
                                         }}
-                                        onMouseEnter={e => { if(!submitting) e.currentTarget.style.background = 'rgba(16,185,129,0.18)'; }}
+                                        onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = 'rgba(16,185,129,0.18)'; }}
                                         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(16,185,129,0.1)'; }}>
                                         ترحيل وطباعة المرتجع <Printer size={18} />
                                     </button>

@@ -69,10 +69,10 @@ export default function PurchaseReturnsListPage() {
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
-                <PageHeader 
-                    title="مرتجعات المشتريات" 
-                    subtitle="إدارة المرتجعات للموردين — رد الأصناف المشتراة وتسوية المديونيات" 
-                    icon={RotateCcw} 
+                <PageHeader
+                    title="مرتجعات المشتريات"
+                    subtitle="إدارة المرتجعات للموردين — رد الأصناف المشتراة وتسوية المديونيات"
+                    icon={RotateCcw}
                     primaryButton={canCreate ? {
                         label: 'مرتجع جديد',
                         onClick: () => router.push('/purchase-returns/new'),
@@ -83,10 +83,10 @@ export default function PurchaseReturnsListPage() {
                 <div style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
-                        <input 
-                            placeholder="رقم المرتجع أو اسم المورد..." 
+                        <input
+                            placeholder="رقم المرتجع أو اسم المورد..."
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                            style={SEARCH_STYLE.input} 
+                            style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
@@ -100,13 +100,13 @@ export default function PurchaseReturnsListPage() {
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
                         </div>
                     </div>
-                    
+
                     {(searchTerm || dateFrom || dateTo) && (
-                        <button 
+                        <button
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
-                            style={{ 
+                            style={{
                                 display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
-                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
+                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
@@ -166,8 +166,8 @@ export default function PurchaseReturnsListPage() {
                                                     {fmt(inv.remaining)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ 
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px', 
+                                                    <div style={{
+                                                        display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
                                                         background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
                                                     }}>

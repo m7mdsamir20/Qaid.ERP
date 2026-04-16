@@ -57,7 +57,7 @@ export default function NewPurchasePaymentPage() {
 
                 const sData = await suppRes.json();
                 const slist = (Array.isArray(sData) ? sData : []).map(s => ({ ...s, ptype: 'supplier' }));
-                
+
                 const cData = await custRes.json();
                 const clist = (Array.isArray(cData) ? cData : []).map(c => ({ ...c, ptype: 'customer' }));
 
@@ -181,10 +181,10 @@ export default function NewPurchasePaymentPage() {
                                             }}
                                             icon={Search}
                                             placeholder="بحث باسم العميل أو المورد..."
-                                            options={partners.map(par => ({ 
-                                                value: par.id, 
-                                                label: par.name,
-                                                sub: par.ptype === 'supplier' ? t('مورد') : t('عميل')
+                                            options={partners.map(p => ({
+                                                value: p.id,
+                                                label: p.name,
+                                                sub: p.ptype === 'supplier' ? 'مورد' : 'عميل'
                                             }))}
                                         />
                                         {selectedPartner && (
@@ -205,11 +205,10 @@ export default function NewPurchasePaymentPage() {
                                                     ? selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
                                                     : selectedPartner.balance < 0 ? '#f87171' : selectedPartner.balance > 0 ? '#34d399' : '#475569'
                                                 ),
-                                                border: `1px solid ${
-                                                    selectedPartner.ptype === 'supplier'
-                                                    ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                                    : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                                }`,
+                                                border: `1px solid ${selectedPartner.ptype === 'supplier'
+                                                        ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                        : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                    }`,
                                             }}>
                                                 <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                                 {selectedPartner.ptype === 'supplier'
@@ -257,10 +256,10 @@ export default function NewPurchasePaymentPage() {
                                             onChange={v => setForm((f: any) => ({ ...f, treasuryId: v }))}
                                             icon={Building2}
                                             placeholder={form.paymentType === 'cash' ? 'اختر الخزينة...' : 'اختر الحساب...'}
-                                            options={availTreasuries.map(tr => ({
-                                                value: tr.id,
-                                                label: tr.name,
-                                                sub: `${t('رصيد:')} ${tr.balance.toLocaleString()} ${cSymbol}`,
+                                            options={availTreasuries.map(t => ({
+                                                value: t.id,
+                                                label: t.name,
+                                                sub: `رصيد: ${t.balance.toLocaleString()} ${cSymbol}`,
                                             }))}
                                         />
                                     </div>

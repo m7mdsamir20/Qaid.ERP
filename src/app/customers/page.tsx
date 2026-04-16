@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { 
-    Users, Plus, Trash2, Search, Phone, MapPin, Edit3, 
+import {
+    Users, Plus, Trash2, Search, Phone, MapPin, Edit3,
     Loader2, UserPlus, UserX, TrendingUp, TrendingDown, ShieldCheck, AlertTriangle
 } from 'lucide-react';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
@@ -18,20 +18,20 @@ import { getCountryPlaceholders } from '@/lib/placeholders';
 import { getAddressConfig } from '@/lib/addressConfig';
 
 interface Customer {
-  id: string;
-  name: string;
-  phone: string | null;
-  addressRegion: string | null;
-  addressCity: string | null;
-  addressDistrict: string | null;
-  addressStreet: string | null;
-  type: string;
-  taxNumber: string | null;
-  crNumber: string | null;
-  contactPerson: string | null;
-  balance: number;
-  creditLimit: number | null;
-  createdAt: string;
+    id: string;
+    name: string;
+    phone: string | null;
+    addressRegion: string | null;
+    addressCity: string | null;
+    addressDistrict: string | null;
+    addressStreet: string | null;
+    type: string;
+    taxNumber: string | null;
+    crNumber: string | null;
+    contactPerson: string | null;
+    balance: number;
+    creditLimit: number | null;
+    createdAt: string;
 }
 
 function formatAddress(c: Customer) {
@@ -96,22 +96,22 @@ export default function CustomersPage() {
         setSubmitting(true);
         try {
             const method = editingId ? 'PUT' : 'POST';
-            
+
             // Clean numeric fields
             const payload = {
-                name:            form.name,
-                phone:           form.phone || null,
-                addressRegion:   form.addressRegion   || null,
-                addressCity:     form.addressCity     || null,
+                name: form.name,
+                phone: form.phone || null,
+                addressRegion: form.addressRegion || null,
+                addressCity: form.addressCity || null,
                 addressDistrict: form.addressDistrict || null,
-                addressStreet:   form.addressStreet   || null,
-                type:            form.type,
-                taxNumber:     form.taxNumber || null,
-                crNumber:      form.crNumber  || null,
+                addressStreet: form.addressStreet || null,
+                type: form.type,
+                taxNumber: form.taxNumber || null,
+                crNumber: form.crNumber || null,
                 contactPerson: form.contactPerson || null,
                 openingBalance: parseFloat(form.openingBalance.replace(/,/g, '')) || 0,
-                balanceType:   form.balanceType,
-                creditLimit:   parseFloat(form.creditLimit.replace(/,/g, '')) || 0,
+                balanceType: form.balanceType,
+                creditLimit: parseFloat(form.creditLimit.replace(/,/g, '')) || 0,
                 ...(editingId ? { id: editingId } : {}),
             };
 
@@ -156,19 +156,19 @@ export default function CustomersPage() {
     const openEdit = (c: Customer) => {
         setEditingId(c.id);
         setForm({
-            name:            c.name,
-            phone:           c.phone           || '',
-            addressRegion:   c.addressRegion   || '',
-            addressCity:     c.addressCity     || '',
+            name: c.name,
+            phone: c.phone || '',
+            addressRegion: c.addressRegion || '',
+            addressCity: c.addressCity || '',
             addressDistrict: c.addressDistrict || '',
-            addressStreet:   c.addressStreet   || '',
-            type:            c.type            || 'individual',
-            taxNumber:       c.taxNumber       || '',
-            crNumber:        c.crNumber        || '',
-            contactPerson:   c.contactPerson   || '',
+            addressStreet: c.addressStreet || '',
+            type: c.type || 'individual',
+            taxNumber: c.taxNumber || '',
+            crNumber: c.crNumber || '',
+            contactPerson: c.contactPerson || '',
             openingBalance: '',
-            balanceType:   c.balance < 0 ? 'credit' : 'debit',
-            creditLimit:   c.creditLimit ? String(c.creditLimit) : ''
+            balanceType: c.balance < 0 ? 'credit' : 'debit',
+            creditLimit: c.creditLimit ? String(c.creditLimit) : ''
         });
         setShowModal(true);
     };
@@ -202,8 +202,8 @@ export default function CustomersPage() {
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
-                
-                <PageHeader 
+
+                <PageHeader
                     title={t("العملاء")}
                     subtitle={t("إدارة بيانات العملاء والشركات والمستحقات")}
                     icon={Users}
@@ -231,10 +231,10 @@ export default function CustomersPage() {
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             transition: 'all 0.2s', position: 'relative'
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
-                        onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
+                            onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                            onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                         >
-                             <div style={{ textAlign: 'start' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.value)}</span>
@@ -266,7 +266,7 @@ export default function CustomersPage() {
                             onChange={e => setSearch(e.target.value)}
                         />
                     </div>
-                    
+
                     <div style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
                         {[
                             { id: 'all', label: t('الكل') },
@@ -307,9 +307,9 @@ export default function CustomersPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>{t('العميل')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('رقم الهاتف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('العنوان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('الرصيد الحالي')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('العنوان')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الرصيد الحالي')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -322,24 +322,24 @@ export default function CustomersPage() {
                                             <td style={TABLE_STYLE.td(true)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
                                                     <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{c.name.charAt(0)}</div>
-                                                    <Link 
-                                                        href={`/reports/customer-statement?customerId=${c.id}`} 
-                                                        style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textDecoration: 'none', transition: 'all 0.2s' }} 
-                                                        onMouseEnter={e => { e.currentTarget.style.color = C.primary; }} 
+                                                    <Link
+                                                        href={`/reports/customer-statement?customerId=${c.id}`}
+                                                        style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textDecoration: 'none', transition: 'all 0.2s' }}
+                                                        onMouseEnter={e => { e.currentTarget.style.color = C.primary; }}
                                                         onMouseLeave={e => { e.currentTarget.style.color = C.textPrimary; }}
                                                     >
                                                         {c.name}
                                                     </Link>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start', fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <span style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
                                                     background: c.balance < 0 ? 'rgba(239, 68, 68, 0.12)' : (c.balance > 0 ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
                                                     color: c.balance < 0 ? '#fb7185' : (c.balance > 0 ? '#4ade80' : C.textMuted),
-                                                     border: `1px solid ${c.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : (c.balance > 0 ? 'rgba(74,222,128,0.22)' : C.border)}`,
+                                                    border: `1px solid ${c.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : (c.balance > 0 ? 'rgba(74,222,128,0.22)' : C.border)}`,
                                                 }}>
                                                     <span style={{ fontFamily: CAIRO }}>{c.balance < 0 ? t('له عندنا') : (c.balance > 0 ? t('عليه لنا') : t('متزن'))}</span>
                                                     <span style={{ fontFamily: INTER, fontSize: '13px', fontWeight: 800 }}>{fmt(Math.abs(c.balance))} <span style={{ fontFamily: CAIRO, fontSize: '10px', opacity: 0.8 }}>{cSymbol}</span></span>
@@ -355,7 +355,7 @@ export default function CustomersPage() {
                                     ))}
                                 </tbody>
                             </table>
-                            <Pagination 
+                            <Pagination
                                 total={filteredAll.length}
                                 pageSize={pageSize}
                                 currentPage={currentPage}
@@ -377,16 +377,20 @@ export default function CustomersPage() {
                                         <button
                                             type="button"
                                             onClick={() => setForm({ ...form, type: 'individual' })}
-                                            style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                            style={{
+                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
                                                 background: form.type === 'individual' ? C.primary : 'transparent',
-                                                color: form.type === 'individual' ? '#fff' : C.textSecondary }}
+                                                color: form.type === 'individual' ? '#fff' : C.textSecondary
+                                            }}
                                         >{t('فرد')}</button>
                                         <button
                                             type="button"
                                             onClick={() => setForm({ ...form, type: 'company' })}
-                                            style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                            style={{
+                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
                                                 background: form.type === 'company' ? C.primary : 'transparent',
-                                                color: form.type === 'company' ? '#fff' : C.textSecondary }}
+                                                color: form.type === 'company' ? '#fff' : C.textSecondary
+                                            }}
                                         >{t('شركة')}</button>
                                     </div>
                                 </div>
@@ -401,20 +405,20 @@ export default function CustomersPage() {
                                 <label style={LS}>{t('العنوان')}</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[0])}</label>
-                                        <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[0])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[0]}</label>
+                                        <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[0]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[1])}</label>
-                                        <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[1])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[1]}</label>
+                                        <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[1]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[2])}</label>
-                                        <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[2])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[2]}</label>
+                                        <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[2]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[3])}</label>
-                                        <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[3])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[3]}</label>
+                                        <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[3]} />
                                     </div>
                                 </div>
                             </div>
@@ -455,17 +459,17 @@ export default function CustomersPage() {
                                             0.00
                                         </div>
                                     )}
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         inputMode="decimal"
-                                        value={formatWithCommas(form.creditLimit)} 
+                                        value={formatWithCommas(form.creditLimit)}
                                         onChange={e => {
                                             const v = e.target.value.replace(/[^0-9.]/g, '');
                                             if ((v.match(/\./g) || []).length > 1) return;
                                             setForm({ ...form, creditLimit: v });
-                                        }} 
+                                        }}
                                         style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
-                                        onFocus={focusIn} onBlur={focusOut} 
+                                        onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
@@ -484,17 +488,17 @@ export default function CustomersPage() {
                                                 0.00
                                             </div>
                                         )}
-                                        <input 
-                                            type="text" 
+                                        <input
+                                            type="text"
                                             inputMode="decimal"
-                                            value={formatWithCommas(form.openingBalance)} 
+                                            value={formatWithCommas(form.openingBalance)}
                                             onChange={e => {
                                                 const v = e.target.value.replace(/[^0-9.]/g, '');
                                                 if ((v.match(/\./g) || []).length > 1) return;
                                                 setForm({ ...form, openingBalance: v });
-                                            }} 
-                                             style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
-                                            onFocus={focusIn} onBlur={focusOut} 
+                                            }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
+                                            onFocus={focusIn} onBlur={focusOut}
                                         />
                                         <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                     </div>

@@ -92,16 +92,16 @@ export default function SuppliersPage() {
     const openEdit = (s: Supplier) => {
         setEditingId(s.id);
         setForm({
-            name:            s.name,
-            phone:           s.phone           || '',
-            addressRegion:   s.addressRegion   || '',
-            addressCity:     s.addressCity     || '',
+            name: s.name,
+            phone: s.phone || '',
+            addressRegion: s.addressRegion || '',
+            addressCity: s.addressCity || '',
             addressDistrict: s.addressDistrict || '',
-            addressStreet:   s.addressStreet   || '',
-            type:            s.type            || 'individual',
-            taxNumber:       s.taxNumber       || '',
-            crNumber:        s.crNumber        || '',
-            contactPerson:   s.contactPerson   || '',
+            addressStreet: s.addressStreet || '',
+            type: s.type || 'individual',
+            taxNumber: s.taxNumber || '',
+            crNumber: s.crNumber || '',
+            contactPerson: s.contactPerson || '',
             openingBalance: '',
             balanceType: s.balance >= 0 ? 'credit' : 'debit',
         });
@@ -115,18 +115,18 @@ export default function SuppliersPage() {
         try {
             const method = editingId ? 'PUT' : 'POST';
             const payload = {
-                name:            form.name,
-                phone:           form.phone           || null,
-                addressRegion:   form.addressRegion   || null,
-                addressCity:     form.addressCity     || null,
+                name: form.name,
+                phone: form.phone || null,
+                addressRegion: form.addressRegion || null,
+                addressCity: form.addressCity || null,
                 addressDistrict: form.addressDistrict || null,
-                addressStreet:   form.addressStreet   || null,
-                type:            form.type,
-                taxNumber:     form.taxNumber || null,
-                crNumber:      form.crNumber  || null,
+                addressStreet: form.addressStreet || null,
+                type: form.type,
+                taxNumber: form.taxNumber || null,
+                crNumber: form.crNumber || null,
                 contactPerson: form.contactPerson || null,
                 openingBalance: parseFloat(form.openingBalance.replace(/,/g, '')) || 0,
-                balanceType:   form.balanceType,
+                balanceType: form.balanceType,
                 ...(editingId ? { id: editingId } : {}),
             };
 
@@ -169,8 +169,8 @@ export default function SuppliersPage() {
 
         const matchesStatus =
             statusFilter === 'all' ? true :
-            statusFilter === 'credit' ? c.balance > 0 :
-            statusFilter === 'debit' ? c.balance < 0 : true;
+                statusFilter === 'credit' ? c.balance > 0 :
+                    statusFilter === 'debit' ? c.balance < 0 : true;
 
         return (matchesSearch ?? false) && matchesStatus;
     });
@@ -210,10 +210,10 @@ export default function SuppliersPage() {
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             transition: 'all 0.2s', position: 'relative'
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = `${s.iconColor}15`}
-                        onMouseLeave={e => e.currentTarget.style.background = `${s.iconColor}08`}
+                            onMouseEnter={e => e.currentTarget.style.background = `${s.iconColor}15`}
+                            onMouseLeave={e => e.currentTarget.style.background = `${s.iconColor}08`}
                         >
-                             <div style={{ textAlign: 'start' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.value as number)}</span>
@@ -263,9 +263,9 @@ export default function SuppliersPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>{t('المورد')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('رقم الهاتف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('العنوان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('الرصيد الحالي')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('العنوان')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('الرصيد الحالي')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -291,9 +291,9 @@ export default function SuppliersPage() {
                                                         </Link>
                                                     </div>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start', fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <span style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
                                                         background: isCredit ? 'rgba(239, 68, 68, 0.12)' : (isDebit ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
@@ -336,16 +336,20 @@ export default function SuppliersPage() {
                                         <button
                                             type="button"
                                             onClick={() => setForm({ ...form, type: 'individual' })}
-                                            style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                            style={{
+                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
                                                 background: form.type === 'individual' ? C.primary : 'transparent',
-                                                color: form.type === 'individual' ? '#fff' : C.textSecondary }}
+                                                color: form.type === 'individual' ? '#fff' : C.textSecondary
+                                            }}
                                         >{t('فرد')}</button>
                                         <button
                                             type="button"
                                             onClick={() => setForm({ ...form, type: 'company' })}
-                                            style={{ flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                            style={{
+                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
                                                 background: form.type === 'company' ? C.primary : 'transparent',
-                                                color: form.type === 'company' ? '#fff' : C.textSecondary }}
+                                                color: form.type === 'company' ? '#fff' : C.textSecondary
+                                            }}
                                         >{t('شركة')}</button>
                                     </div>
                                 </div>
@@ -360,20 +364,20 @@ export default function SuppliersPage() {
                                 <label style={LS}>{t('العنوان')}</label>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginTop: '6px' }}>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[0])}</label>
-                                        <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[0])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[0]}</label>
+                                        <input value={form.addressRegion} onChange={e => setForm({ ...form, addressRegion: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[0]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[1])}</label>
-                                        <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[1])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[1]}</label>
+                                        <input value={form.addressCity} onChange={e => setForm({ ...form, addressCity: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[1]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[2])}</label>
-                                        <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[2])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[2]}</label>
+                                        <input value={form.addressDistrict} onChange={e => setForm({ ...form, addressDistrict: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[2]} />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t(addrCfg.labels[3])}</label>
-                                        <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t(addrCfg.placeholders[3])} />
+                                        <label style={{ ...LS, fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{addrCfg.labels[3]}</label>
+                                        <input value={form.addressStreet} onChange={e => setForm({ ...form, addressStreet: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={addrCfg.placeholders[3]} />
                                     </div>
                                 </div>
                             </div>

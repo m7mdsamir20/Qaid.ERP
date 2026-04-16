@@ -132,7 +132,7 @@ export default function NewReturnPage() {
     const selectedInvoice = Array.isArray(saleInvoices) ? saleInvoices.find(i => i.id === form.originalInvoiceId) : null;
     const cashTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => t.type !== 'bank') : [];
     const bankTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => t.type === 'bank') : [];
-    
+
     const partnerId = form.customerId || form.supplierId;
     const customerInvoices = (partnerId && Array.isArray(saleInvoices))
         ? saleInvoices.filter(i => {
@@ -156,18 +156,18 @@ export default function NewReturnPage() {
                 fetch('/api/sale-returns'), fetch('/api/customers'), fetch('/api/suppliers'),
                 fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/sales'), fetch('/api/company'),
             ]);
-            
+
             const retData = await retRes.json();
             const salesData = await salesRes.json();
             const customersData = await custRes.json();
             const suppliersData = await supRes.json();
             const warehousesData = await whRes.json();
             const treasuriesData = await trRes.json();
-            
+
             const returnsArray = Array.isArray(retData.returns) ? retData.returns : [];
             const maxNum = returnsArray.reduce((m: number, r: any) => Math.max(m, r.invoiceNumber || 0), 0);
             setNextNum(maxNum + 1);
-            
+
             setCustomers(Array.isArray(customersData) ? customersData : []);
             setSuppliers(Array.isArray(suppliersData) ? suppliersData : []);
             setWarehouses(Array.isArray(warehousesData) ? warehousesData : []);
@@ -246,7 +246,7 @@ export default function NewReturnPage() {
         if (!form.customerId && !form.supplierId) errors.customerId = t('يرجى اختيار الطرف');
         if (!isServices && !form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن');
         if (!form.originalInvoiceId) errors.originalInvoiceId = t('يرجى اختيار الفاتورة');
-        
+
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
             return;
@@ -264,10 +264,10 @@ export default function NewReturnPage() {
             }
         }
         if (form.refundType === 'bank') {
-            if (!form.bankId) { setFieldErrors({ bankId: t('يرجى اختيار الحساب') }); return; }
-            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: t('أدخل المبلغ') }); return; }
+            if (!form.bankId) { setFieldErrors({ bankId: 'يرجى اختيار الحساب' }); return; }
+            if (form.paidAmount <= 0) { setFieldErrors({ paidAmount: 'أدخل المبلغ' }); return; }
             if (form.paidAmount > netReturnTotal) {
-                alert(`${t('المبلغ المردود')} (${form.paidAmount}) ${t('أكبر من')} ${t('صافي المرتجع')} (${netReturnTotal.toFixed(2)})`);
+                alert(`المبلغ المحول (${form.paidAmount}) أكبر من صافي المرتجع (${netReturnTotal.toFixed(2)})`);
                 return;
             }
         }
@@ -379,135 +379,134 @@ export default function NewReturnPage() {
                                 <FileText size={16} /> {t('بيانات المرتجع الأساسية')}
                             </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
-                            {/* Row 1 */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '110px 140px 1fr', gap: '20px' }}>
-                                <div>
-                                    <label style={{ ...LS, fontSize: '11px' }}>{t('رقم المرتجع')}</label>
-                                    <div style={{
-                                        height: '42px', borderRadius: '10px',
-                                        background: 'rgba(59,130,246,0.08)',
-                                        border: `1px solid ${C.border}`,
-                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontFamily: INTER, fontWeight: 900,
-                                        fontSize: '14px', color: '#60a5fa',
-                                        letterSpacing: '1px',
-                                    }}>
-                                        RET-{String(nextNum).padStart(5, '0')}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
+                                {/* Row 1 */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '110px 140px 1fr', gap: '20px' }}>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('رقم المرتجع')}</label>
+                                        <div style={{
+                                            height: '42px', borderRadius: '10px',
+                                            background: 'rgba(59,130,246,0.08)',
+                                            border: `1px solid ${C.border}`,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            fontFamily: INTER, fontWeight: 900,
+                                            fontSize: '14px', color: '#60a5fa',
+                                            letterSpacing: '1px',
+                                        }}>
+                                            RET-{String(nextNum).padStart(5, '0')}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ المرتجع')}</label>
+                                        <input type="date" value={form.date}
+                                            onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
+                                            style={{ ...IS, background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: CAIRO }}
+                                            onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('العميل / المورد')} <span style={{ color: C.danger }}>*</span></label>
+                                        <div style={{ position: 'relative' }}>
+                                            <CustomSelect
+                                                value={form.customerId || form.supplierId}
+                                                onChange={v => {
+                                                    const p = partners.find(x => x.id === v);
+                                                    if (p?.partnerType === 'supplier') {
+                                                        setForm((f: any) => ({ ...f, supplierId: v, customerId: '', originalInvoiceId: '' }));
+                                                    } else {
+                                                        setForm((f: any) => ({ ...f, customerId: v, supplierId: '', originalInvoiceId: '' }));
+                                                    }
+                                                    setLines([]);
+                                                    clearError('customerId');
+                                                }}
+                                                icon={UserCheck}
+                                                placeholder={t("اختر الطرف...")}
+                                                options={partners.map(c => ({
+                                                    value: c.id,
+                                                    label: c.name,
+                                                    sub: c.partnerType === 'customer' ? t('عميل') : t('مورد')
+                                                }))}
+                                            />
+                                            <InlineError field="customerId" />
+
+                                            {selectedPartner && (
+                                                <div style={{
+                                                    marginTop: '10px',
+                                                    padding: '6px 14px',
+                                                    borderRadius: '24px',
+                                                    fontSize: '12px',
+                                                    fontWeight: 700,
+                                                    display: 'inline-flex',
+                                                    alignItems: 'center',
+                                                    gap: '6px',
+                                                    background: (selectedPartner?.partnerType === 'supplier'
+                                                        ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
+                                                        : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
+                                                    ),
+                                                    color: (selectedPartner?.partnerType === 'supplier'
+                                                        ? selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
+                                                        : selectedPartner.balance < 0 ? '#f87171' : selectedPartner.balance > 0 ? '#34d399' : '#475569'
+                                                    ),
+                                                    border: `1px solid ${selectedPartner?.partnerType === 'supplier'
+                                                            ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                            : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
+                                                        }`,
+                                                }}>
+                                                    <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
+                                                    {selectedPartner?.partnerType === 'supplier'
+                                                        ? (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
+                                                        : (selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
+                                                    }
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
-                                <div>
-                                    <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ المرتجع')}</label>
-                                    <input type="date" value={form.date}
-                                        onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                        style={{ ...IS, background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: CAIRO }}
-                                        onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
-                                </div>
-                                <div>
-                                    <label style={{ ...LS, fontSize: '11px' }}>{t('العميل / المورد')} <span style={{ color: C.danger }}>*</span></label>
-                                    <div style={{ position: 'relative' }}>
-                                        <CustomSelect
-                                            value={form.customerId || form.supplierId}
-                                            onChange={v => { 
-                                                const p = partners.find(x => x.id === v);
-                                                if (p?.partnerType === 'supplier') {
-                                                    setForm((f: any) => ({ ...f, supplierId: v, customerId: '', originalInvoiceId: '' }));
-                                                } else {
-                                                    setForm((f: any) => ({ ...f, customerId: v, supplierId: '', originalInvoiceId: '' }));
-                                                }
-                                                setLines([]); 
-                                                clearError('customerId'); 
-                                            }}
-                                            icon={UserCheck}
-                                            placeholder={t("اختر الطرف...")}
-                                            options={partners.map(c => ({ 
-                                                value: c.id, 
-                                                label: c.name,
-                                                sub: c.partnerType === 'customer' ? t('عميل') : t('مورد')
-                                            }))}
-                                        />
-                                        <InlineError field="customerId" />
 
-                                        {selectedPartner && (
-                                            <div style={{
-                                                marginTop: '10px',
-                                                padding: '6px 14px',
-                                                borderRadius: '24px',
-                                                fontSize: '12px',
-                                                fontWeight: 700,
-                                                display: 'inline-flex',
-                                                alignItems: 'center',
-                                                gap: '6px',
-                                                background: (selectedPartner?.partnerType === 'supplier'
-                                                    ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
-                                                    : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.08)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.08)' : 'rgba(255,255,255,0.03)'
-                                                ),
-                                                color: (selectedPartner?.partnerType === 'supplier'
-                                                    ? selectedPartner.balance > 0 ? '#f87171' : selectedPartner.balance < 0 ? '#34d399' : '#475569'
-                                                    : selectedPartner.balance < 0 ? '#f87171' : selectedPartner.balance > 0 ? '#34d399' : '#475569'
-                                                ),
-                                                border: `1px solid ${
-                                                    selectedPartner?.partnerType === 'supplier'
-                                                    ? selectedPartner.balance > 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance < 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                                    : selectedPartner.balance < 0 ? 'rgba(239,68,68,0.2)' : selectedPartner.balance > 0 ? 'rgba(52,211,153,0.2)' : 'rgba(255,255,255,0.06)'
-                                                }`,
-                                            }}>
-                                                <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
-                                                {selectedPartner?.partnerType === 'supplier'
-                                                    ? (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
-                                                    : (selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
-                                                }
-                                            </div>
-                                        )}
+                                {/* Row 2 */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('فاتورة البيع الأصلية')} <span style={{ color: C.danger }}>*</span></label>
+                                        <div style={{ position: 'relative' }}>
+                                            <CustomSelect
+                                                value={form.originalInvoiceId}
+                                                onChange={v => { setForm((f: any) => ({ ...f, originalInvoiceId: v })); clearError('originalInvoiceId'); }}
+                                                icon={Receipt}
+                                                placeholder={(partnerId && Array.isArray(saleInvoices)) ? t('اختر الفاتورة...') : t('اختر الشريك أولاً')}
+                                                disabled={!form.customerId && !form.supplierId}
+                                                options={customerInvoices.map(i => ({
+                                                    value: i.id,
+                                                    label: `SAL-${String(i.invoiceNumber).padStart(5, '0')}`,
+                                                    sub: `${new Date(i.date).toLocaleDateString('en-GB')} | ${i.total.toLocaleString()} ${cSymbol}`,
+                                                }))}
+                                            />
+                                            <InlineError field="originalInvoiceId" />
+                                        </div>
+                                    </div>
+                                    <div style={{ display: isServices ? 'none' : 'block' }}>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('المخزن المرتجع إليه')} <span style={{ color: C.danger }}>*</span></label>
+                                        <div style={{ position: 'relative' }}>
+                                            <CustomSelect
+                                                value={form.warehouseId}
+                                                onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); clearError('warehouseId'); }}
+                                                icon={Building2}
+                                                placeholder={t("اختر المخزن...")}
+                                                options={warehouses.map(w => ({ value: w.id, label: w.name }))}
+                                            />
+                                            <InlineError field="warehouseId" />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{isServices ? t("سبب الإلغاء") : t("سبب المرتجع")}</label>
+                                        <CustomSelect
+                                            value={form.reason}
+                                            onChange={v => setForm((f: any) => ({ ...f, reason: v }))}
+                                            icon={RotateCcw}
+                                            placeholder={t("اختر السبب (اختياري)...")}
+                                            options={(isServices ? SERVICE_RETURN_REASONS : RETURN_REASONS).map(r => ({ value: r, label: t(r) }))}
+                                        />
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Row 2 */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
-                                <div>
-                                    <label style={{ ...LS, fontSize: '11px' }}>{t('فاتورة البيع الأصلية')} <span style={{ color: C.danger }}>*</span></label>
-                                    <div style={{ position: 'relative' }}>
-                                        <CustomSelect
-                                            value={form.originalInvoiceId}
-                                            onChange={v => { setForm((f: any) => ({ ...f, originalInvoiceId: v })); clearError('originalInvoiceId'); }}
-                                            icon={Receipt}
-                                            placeholder={(form.customerId || form.supplierId) ? t('اختر الفاتورة...') : t('اختر الشريك أولاً')}
-                                            disabled={!form.customerId && !form.supplierId}
-                                            options={customerInvoices.map(i => ({
-                                                value: i.id,
-                                                label: `SAL-${String(i.invoiceNumber).padStart(5, '0')}`,
-                                                sub: `${new Date(i.date).toLocaleDateString('en-GB')} | ${i.total.toLocaleString()} ${cSymbol}`,
-                                            }))}
-                                        />
-                                        <InlineError field="originalInvoiceId" />
-                                    </div>
-                                </div>
-                                <div style={{ display: isServices ? 'none' : 'block' }}>
-                                    <label style={{ ...LS, fontSize: '11px' }}>{t('المخزن المرتجع إليه')} <span style={{ color: C.danger }}>*</span></label>
-                                    <div style={{ position: 'relative' }}>
-                                        <CustomSelect
-                                            value={form.warehouseId}
-                                            onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); clearError('warehouseId'); }}
-                                            icon={Building2}
-                                            placeholder={t("اختر المخزن...")}
-                                            options={warehouses.map(w => ({ value: w.id, label: w.name }))}
-                                        />
-                                        <InlineError field="warehouseId" />
-                                    </div>
-                                </div>
-                                <div>
-                                    <label style={{ ...LS, fontSize: '11px' }}>{isServices ? t("سبب الإلغاء") : t("سبب المرتجع")}</label>
-                                    <CustomSelect
-                                        value={form.reason}
-                                        onChange={v => setForm((f: any) => ({ ...f, reason: v }))}
-                                        icon={RotateCcw}
-                                        placeholder={t("اختر السبب (اختياري)...")}
-                                        options={(isServices ? SERVICE_RETURN_REASONS : RETURN_REASONS).map(r => ({ value: r, label: t(r) }))}
-                                    />
-                                </div>
-                            </div>
-                        </div>
                         </div>
 
                         {/* ── Invoice Summary Banner ── */}
@@ -518,10 +517,10 @@ export default function NewReturnPage() {
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px' }}>
                                     {[
-                                        { label: t('الإجمالي'), value: selectedInvoice.total.toLocaleString(), color: C.textPrimary },
-                                        { label: t('الخصم'), value: (selectedInvoice.discount || 0).toLocaleString(), color: C.danger },
-                                        { label: t('المدفوع'), value: selectedInvoice.paidAmount.toLocaleString(), color: '#10b981' },
-                                        { label: t('المتبقي'), value: selectedInvoice.remaining.toLocaleString(), color: C.textMuted },
+                                        { label: 'الإجمالي', value: selectedInvoice.total.toLocaleString(), color: C.textPrimary },
+                                        { label: 'الخصم', value: (selectedInvoice.discount || 0).toLocaleString(), color: C.danger },
+                                        { label: 'المدفوع', value: selectedInvoice.paidAmount.toLocaleString(), color: '#10b981' },
+                                        { label: 'المتبقي', value: selectedInvoice.remaining.toLocaleString(), color: C.textMuted },
                                     ].map((item, i) => (
                                         <div key={i} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '8px', padding: '10px', textAlign: 'center', border: `1px solid ${C.border}` }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
@@ -539,20 +538,20 @@ export default function NewReturnPage() {
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                         <RotateCcw size={16} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
                                     </div>
-                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} {t('صنف متاح')}</div>
+                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} صنف متاح</div>
                                 </div>
                                 <div style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '11px' }}>
                                         <thead>
                                             <tr style={{ background: 'rgba(0,0,0,0.1)', borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '10px', width: '30px' }}>✓</th>
-                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('الوصف') : t('الوحدة')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('الكمية') : t('الكمية المباعة')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('سابق الإلغاء') : t('سابق الإرجاع')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('كمية الإلغاء') : t('كمية الارتجاع')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('إجمالي الملغي') : t('إجمالي المرتجع')}</th>
+                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'اسم الخدمة' : 'اسم الصنف'}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'الوصف' : 'الوحدة'}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'الكمية' : 'الكمية المباعة'}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'سابق الإلغاء' : 'سابق الإرجاع'}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'كمية الإلغاء' : 'كمية الارتجاع'}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'سعر الخدمة' : 'سعر البيع'}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'إجمالي الملغي' : 'إجمالي المرتجع'}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -572,35 +571,35 @@ export default function NewReturnPage() {
                                                         <td style={{ padding: '8px 10px', color: C.textSecondary }}>{l.originalQty}</td>
                                                         <td style={{ padding: '8px 10px', color: C.danger }}>{l.alreadyReturned}</td>
                                                         <td style={{ padding: '8px 10px' }}>
-                                                            <div style={{ 
-                                                                display: 'flex', alignItems: 'center', 
-                                                                background: 'rgba(255,255,255,0.05)', 
+                                                            <div style={{
+                                                                display: 'flex', alignItems: 'center',
+                                                                background: 'rgba(255,255,255,0.05)',
                                                                 borderRadius: '8px', border: `1px solid ${l.selected ? C.primary : C.border}`,
                                                                 width: '85px', margin: '0 auto', overflow: 'hidden'
                                                             }}>
                                                                 <div style={{ flex: 1 }}>
-                                                                    <input 
+                                                                    <input
                                                                         type="number" min="0" max={l.availableQty} value={l.returnQty || ''}
                                                                         disabled={!l.selected || fullyReturned}
                                                                         onChange={e => updateReturnQty(i, parseFloat(e.target.value) || 0)}
-                                                                        style={{ 
-                                                                            width: '100%', height: '32px', textAlign: 'center', 
-                                                                            background: 'transparent', border: 'none', 
-                                                                            color: l.selected ? C.textPrimary : C.textMuted, 
+                                                                        style={{
+                                                                            width: '100%', height: '32px', textAlign: 'center',
+                                                                            background: 'transparent', border: 'none',
+                                                                            color: l.selected ? C.textPrimary : C.textMuted,
                                                                             fontSize: '13px', fontWeight: 800, padding: 0
                                                                         }}
                                                                         onFocus={focusIn} onBlur={focusOut}
                                                                     />
                                                                 </div>
                                                                 <div style={{ display: 'flex', flexDirection: 'column', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
-                                                                    <button 
+                                                                    <button
                                                                         type="button" disabled={!l.selected || l.returnQty >= l.availableQty}
                                                                         onClick={() => updateReturnQty(i, (l.returnQty || 0) + 1)}
                                                                         style={{ width: '24px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'transparent', cursor: 'pointer', color: C.textSecondary }}
                                                                     >
                                                                         <ChevronUp size={12} />
                                                                     </button>
-                                                                    <button 
+                                                                    <button
                                                                         type="button" disabled={!l.selected || (l.returnQty || 0) <= 0}
                                                                         onClick={() => updateReturnQty(i, (l.returnQty || 0) - 1)}
                                                                         style={{ width: '24px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'transparent', borderTop: `1px solid ${C.border}`, cursor: 'pointer', color: C.textSecondary }}
@@ -621,7 +620,7 @@ export default function NewReturnPage() {
                             </div>
                         )}
 
-                                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <label style={{ ...LS, fontSize: '11px' }}>{t('ملاحظات إضافية')}</label>
                             <input 
                                 type="text" placeholder={t("اكتب أي توضيحات للمرتجع...")} 
@@ -637,7 +636,7 @@ export default function NewReturnPage() {
                             <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                 <Banknote size={16} /> {t('ملخص الحساب')}
                             </div>
-                            
+
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted }}>{isServices ? t("عدد الخدمات الملغاة") : t("عدد الأصناف المرتجعة")}</span>
@@ -647,7 +646,7 @@ export default function NewReturnPage() {
                                     <span style={{ fontSize: '12px', color: C.textMuted }}>{isServices ? t("إجمالي الكمية") : t("إجمالي كمية المرتجع")}</span>
                                     <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.reduce((acc, l) => acc + l.returnQty, 0)} {isServices ? "" : t("وحدة")}</span>
                                 </div>
-                                
+
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '4px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{isServices ? t("قيمة الملغي") : t("قيمة المرتجع")}</span>
@@ -659,11 +658,11 @@ export default function NewReturnPage() {
                                     </div>
                                 </div>
 
-                                <div style={{ 
-                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-                                    marginTop: '10px', padding: '14px', 
-                                    background: 'rgba(59,130,246,0.05)', borderRadius: '12px', 
-                                    border: `1px solid ${C.primary}20` 
+                                <div style={{
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    marginTop: '10px', padding: '14px',
+                                    background: 'rgba(59,130,246,0.05)', borderRadius: '12px',
+                                    border: `1px solid ${C.primary}20`
                                 }}>
                                     <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary }}>{isServices ? t("صافي الرصيد المسترد") : t("صافي المرتجع")}</span>
                                     <span style={{ fontSize: '20px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>{netReturnTotal.toLocaleString()} {cSymbol}</span>
@@ -673,7 +672,7 @@ export default function NewReturnPage() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('طريقة الرد')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
                                         {['balance', 'cash', 'bank'].map(m => (
-                                            <button 
+                                            <button
                                                 key={m} onClick={() => setForm((f: any) => ({ ...f, refundType: m as any }))}
                                                 style={{ height: '36px', borderRadius: '8px', border: `1px solid ${form.refundType === m ? C.primary : C.border}`, background: form.refundType === m ? `${C.primary}15` : 'transparent', color: form.refundType === m ? C.primary : C.textMuted, fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '0.2s' }}
                                             >
@@ -702,11 +701,11 @@ export default function NewReturnPage() {
                                                     }}
                                                     style={{ 
                                                         ...IS, 
-                                                        height: '44px', 
-                                                        fontSize: '18px', 
-                                                        fontWeight: 800, 
-                                                        textAlign: 'center', 
-                                                        border: `1px solid ${C.primary}50`, 
+                                                        height: '44px',
+                                                        fontSize: '18px',
+                                                        fontWeight: 800,
+                                                        textAlign: 'center',
+                                                        border: `1px solid ${C.primary}50`,
                                                         color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.primary,
                                                         background: 'rgba(59,130,246,0.03)',
                                                         paddingInlineEnd: '40px',
@@ -739,7 +738,7 @@ export default function NewReturnPage() {
                                     <button type="button" onClick={() => handleSubmit(false)} disabled={submitting}
                                         style={{ 
                                             width: '100%', height: '52px', borderRadius: '14px', border: 'none',
-                                            background: submitting ? 'rgba(59,130,246,0.18)' : C.primary,
+                                            background: submitting ? 'rgba(59,130,246,0.18)' : C.primary, 
                                             color: submitting ? C.textMuted : '#fff', fontWeight: 800, fontSize: '15px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                                             cursor: submitting ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
@@ -748,7 +747,6 @@ export default function NewReturnPage() {
                                         }}>
                                         {submitting ? <Loader2 size={20} className="spin" /> : <>{t('ترحيل المرتجع')} <CheckCircle2 size={20} /></>}
                                     </button>
-
                                     <button type="button" onClick={() => handleSubmit(true)} disabled={submitting}
                                         style={{ 
                                             width: '100%', height: '48px', borderRadius: '14px',

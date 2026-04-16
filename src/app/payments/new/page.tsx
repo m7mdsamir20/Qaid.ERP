@@ -173,55 +173,55 @@ export default function NewPaymentPage() {
                         {/* 1. Basic Info */}
                         <div style={SC}>
                             <div style={STitle}>البيانات الأساسية للصرف</div>
-                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '16px' }}>
-                                 <div>
-                                     <label style={LS}>رقم السند</label>
-                                     <div style={{
-                                         height: '42px', borderRadius: '10px',
-                                         background: 'rgba(244, 63, 94, 0.08)',
-                                         border: `1px solid ${C.border}`,
-                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                         fontFamily: CAIRO, fontWeight: 900,
-                                         fontSize: '13px', color: '#f43f5e',
-                                         letterSpacing: '1px',
-                                         boxSizing: 'border-box'
-                                     }}>
-                                         PMT-{String(nextNum).padStart(5, '0')}
-                                     </div>
-                                 </div>
-                                 <div>
-                                     <label style={LS}>تاريخ السند <span style={{ color: C.danger }}>*</span></label>
-                                     <input type="date" value={form.date}
-                                         onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                         style={{ ...IS, direction: 'ltr', textAlign: 'end', background: C.card, height: '42px', borderRadius: '10px', fontSize: '13px', fontFamily: CAIRO }}
-                                         className="blue-date-icon" onFocus={focusIn} onBlur={focusOut}
-                                     />
-                                 </div>
-                                 <div>
-                                     <label style={LS}>المورد (المُستلِم) <span style={{ color: C.danger }}>*</span></label>
-                                     <div style={{ position: 'relative' }}>
-                                         <CustomSelect
-                                             value={form.supplierId}
-                                             onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
-                                             icon={Search}
-                                             placeholder="ابحث واختر المورد..."
-                                             options={suppliers.map(sup => ({
-                                                 value: sup.id,
-                                                 label: sup.name,
-                                                 sub: sup.balance < 0 ? `${t('له عندنا')}: ${Math.abs(sup.balance).toLocaleString()} ${cSymbol}` : sup.balance > 0 ? `${t('عليه لنا')}: ${sup.balance.toLocaleString()} ${cSymbol}` : t('متزن')
-                                             }))}
-                                         />
-                                         <InlineError field="supplierId" />
-                                     </div>
-                                     {selectedSupplier && (
-                                         <div style={{ marginTop: '8px' }}>
-                                             <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '20px', fontWeight: 700, background: selectedSupplier.balance < 0 ? `${C.success}15` : `${C.danger}15`, color: selectedSupplier.balance < 0 ? C.success : C.danger, border: `1px solid ${selectedSupplier.balance < 0 ? C.success : C.danger}30` }}>
-                                                 {selectedSupplier.balance < 0 ? `للمورد طرفنا ${Math.abs(selectedSupplier.balance).toLocaleString()} ${cSymbol}` : selectedSupplier.balance > 0 ? `على المورد طرفنا ${selectedSupplier.balance.toLocaleString()} ${cSymbol}` : 'رصيد المورد صفر'}
-                                             </span>
-                                         </div>
-                                     )}
-                                 </div>
-                             </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '16px' }}>
+                                <div>
+                                    <label style={LS}>رقم السند</label>
+                                    <div style={{
+                                        height: '42px', borderRadius: '10px',
+                                        background: 'rgba(244, 63, 94, 0.08)',
+                                        border: `1px solid ${C.border}`,
+                                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                        fontFamily: CAIRO, fontWeight: 900,
+                                        fontSize: '13px', color: '#f43f5e',
+                                        letterSpacing: '1px',
+                                        boxSizing: 'border-box'
+                                    }}>
+                                        PMT-{String(nextNum).padStart(5, '0')}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style={LS}>تاريخ السند <span style={{ color: C.danger }}>*</span></label>
+                                    <input type="date" value={form.date}
+                                        onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
+                                        style={{ ...IS, direction: 'ltr', textAlign: 'end', background: C.card, height: '42px', borderRadius: '10px', fontSize: '13px', fontFamily: CAIRO }}
+                                        className="blue-date-icon" onFocus={focusIn} onBlur={focusOut}
+                                    />
+                                </div>
+                                <div>
+                                    <label style={LS}>المورد (المُستلِم) <span style={{ color: C.danger }}>*</span></label>
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect
+                                            value={form.supplierId}
+                                            onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
+                                            icon={Search}
+                                            placeholder="ابحث واختر المورد..."
+                                            options={suppliers.map(s => ({
+                                                value: s.id,
+                                                label: s.name,
+                                                sub: s.balance < 0 ? `له: ${Math.abs(s.balance).toLocaleString()} ${cSymbol}` : s.balance > 0 ? `عليه: ${s.balance.toLocaleString()} ${cSymbol}` : 'رصيد: صفر'
+                                            }))}
+                                        />
+                                        <InlineError field="supplierId" />
+                                    </div>
+                                    {selectedSupplier && (
+                                        <div style={{ marginTop: '8px' }}>
+                                            <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '20px', fontWeight: 700, background: selectedSupplier.balance < 0 ? `${C.success}15` : `${C.danger}15`, color: selectedSupplier.balance < 0 ? C.success : C.danger, border: `1px solid ${selectedSupplier.balance < 0 ? C.success : C.danger}30` }}>
+                                                {selectedSupplier.balance < 0 ? `للمورد طرفنا ${Math.abs(selectedSupplier.balance).toLocaleString()} ${cSymbol}` : selectedSupplier.balance > 0 ? `على المورد طرفنا ${selectedSupplier.balance.toLocaleString()} ${cSymbol}` : 'رصيد المورد صفر'}
+                                            </span>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
 
                             <div style={{ marginBottom: '20px' }}>
                                 <label style={LS}>طريقة الصرف <span style={{ color: C.danger }}>*</span></label>
@@ -264,10 +264,10 @@ export default function NewPaymentPage() {
                                         onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }}
                                         icon={Building2}
                                         placeholder={form.paymentType === 'cash' ? 'اختر الخزينة...' : 'اختر الحساب...'}
-                                        options={availTreasuries.map(tr => ({
-                                            value: tr.id,
-                                            label: tr.name,
-                                            sub: `${t('رصيد:')} ${tr.balance.toLocaleString()} ${cSymbol}`,
+                                        options={availTreasuries.map(t => ({
+                                            value: t.id,
+                                            label: t.name,
+                                            sub: `رصيد الحالي: ${t.balance.toLocaleString()} ${cSymbol}`,
                                         }))}
                                     />
                                     <InlineError field="treasuryId" />

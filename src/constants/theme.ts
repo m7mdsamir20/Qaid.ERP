@@ -219,7 +219,7 @@ export const TABLE_STYLE = {
     },
     th: (isFirst: boolean) => ({
         padding: '16px 20px',
-        textAlign: (isFirst ? 'start' : 'center') as 'start' | 'center',
+        textAlign: (isFirst ? 'right' : 'center') as 'right' | 'center',
         fontSize: '12px',
         fontWeight: 700,
         color: C.textMuted,
@@ -235,7 +235,7 @@ export const TABLE_STYLE = {
     }),
     td: (isFirst: boolean) => ({
         padding: '16px 20px',
-        textAlign: (isFirst ? 'start' : 'center') as 'start' | 'center',
+        textAlign: (isFirst ? 'right' : 'center') as 'right' | 'center',
         verticalAlign: 'middle' as 'middle'
     }),
     /** Action Button Standard (30x30, Icon 14) */

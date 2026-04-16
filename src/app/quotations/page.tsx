@@ -3,8 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { 
-    FileText, Plus, Search, Eye, Trash2, Loader2, 
+import {
+    FileText, Plus, Search, Eye, Trash2, Loader2,
     CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer, Send
 } from 'lucide-react';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
@@ -100,8 +100,8 @@ export default function QuotationsPage() {
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
-                
-                <PageHeader 
+
+                <PageHeader
                     title={t("عروض الأسعار")}
                     subtitle={t("إدارة عروض الأسعار المقدمة للعملاء وتحويلها لفواتير")}
                     icon={FileText}
@@ -116,10 +116,10 @@ export default function QuotationsPage() {
                 <div style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
-                        <input 
+                        <input
                             placeholder={t("رقم العرض أو اسم العميل...")}
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                            style={SEARCH_STYLE.input} 
+                            style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
@@ -133,13 +133,13 @@ export default function QuotationsPage() {
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }} />
                         </div>
                     </div>
-                    
+
                     {(searchTerm || dateFrom || dateTo) && (
-                        <button 
+                        <button
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
-                            style={{ 
+                            style={{
                                 display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
-                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
+                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
@@ -164,14 +164,14 @@ export default function QuotationsPage() {
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
-                             <table style={TABLE_STYLE.table}>
+                            <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>{t("رقم العرض")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("العميل")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("التاريخ")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الإجمالي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الحالة")}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t("العميل")}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t("التاريخ")}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t("الإجمالي")}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t("الحالة")}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t("إجراءات")}</th>
                                     </tr>
                                 </thead>
@@ -196,8 +196,8 @@ export default function QuotationsPage() {
                                                     {fmt(quo.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}>
-                                                    <div style={{ 
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px', 
+                                                    <div style={{
+                                                        display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
                                                         background: status.bg, color: status.color, border: `1px solid ${status.color}30`, fontFamily: CAIRO
                                                     }}>
@@ -207,7 +207,7 @@ export default function QuotationsPage() {
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
-                                                        <button 
+                                                        <button
                                                             onClick={() => window.open(`/print/quotation/${quo.id}`, '_blank')}
                                                             title={t("طباعة")}
                                                             style={TABLE_STYLE.actionBtn()}
@@ -227,14 +227,14 @@ export default function QuotationsPage() {
                             </table>
                         </div>
                     )}
-                    
+
                     {filteredAll.length > pageSize && (
                         <div style={{ padding: '15px', borderTop: `1px solid ${C.border}` }}>
-                            <Pagination 
-                                currentPage={currentPage} 
-                                total={filteredAll.length} 
-                                pageSize={pageSize} 
-                                onPageChange={setCurrentPage} 
+                            <Pagination
+                                currentPage={currentPage}
+                                total={filteredAll.length}
+                                pageSize={pageSize}
+                                onPageChange={setCurrentPage}
                             />
                         </div>
                     )}

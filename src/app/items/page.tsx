@@ -378,11 +378,11 @@ export default function ItemsPage() {
                                         <th style={{ ...TABLE_STYLE.th(true), textAlign: isRtl ? 'right' : 'left' }}>{t("الكود")}</th>
                                         {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الباركود")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("الكمية")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("سعر التكلفة")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("متوسط التكلفة")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("إجمالي التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الكمية")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("سعر التكلفة")}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("متوسط التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجمالي التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
                                     </tr>
                                 </thead>
@@ -402,17 +402,17 @@ export default function ItemsPage() {
                                                 )}
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, textAlign: 'start' }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, textAlign: 'center' }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textPrimary, textAlign: 'start' }}>{fmt(item.costPrice)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textPrimary, textAlign: 'center' }}>{fmt(item.costPrice)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textPrimary, textAlign: 'start' }}>{fmt(item.sellPrice)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textPrimary, textAlign: 'center' }}>{fmt(item.sellPrice)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.teal, textAlign: 'start' }}>{fmt(avgCost)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.teal, textAlign: 'center' }}>{fmt(avgCost)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 900, color: C.primary, textAlign: 'start' }}>{fmt(totalCost)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 900, color: C.primary, textAlign: 'center' }}>{fmt(totalCost)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
                                                 )}
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
