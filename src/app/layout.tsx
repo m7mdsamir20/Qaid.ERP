@@ -53,8 +53,7 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 5, // Allow zooming for better accessibility on mobile browser
-  themeColor: "#070d1a",
+  maximumScale: 1,
 };
 
 import { SpeedInsights } from "@vercel/speed-insights/next";

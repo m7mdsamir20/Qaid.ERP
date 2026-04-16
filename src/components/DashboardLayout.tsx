@@ -146,7 +146,7 @@ export default function DashboardLayout({
                     .sidebar-wrapper {
                         position: fixed; top: 0; bottom: 0; 
                         width: min(300px, 85vw); 
-                        z-index: 2000;
+                        z-index: 950;
                         background: ${C.card};
                         margin: 0 !important;
                         box-shadow: ${isRtl ? '-10px 0 30px rgba(0,0,0,0.5)' : '10px 0 30px rgba(0,0,0,0.5)'};
@@ -156,11 +156,6 @@ export default function DashboardLayout({
                     .rtl-mode .sidebar-wrapper { right: 0; left: auto; transform: translateX(100%); }
                     .sidebar-wrapper.open { transform: translateX(0) !important; }
                     .dashboard-content { margin: 0 !important; width: 100% !important; }
-                    
-                    /* Utility classes for mobile browser experience */
-                    main { padding: 76px 12px 20px !important; }
-                    .stats-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
-                }
                 }
 
                 @keyframes slideUp {

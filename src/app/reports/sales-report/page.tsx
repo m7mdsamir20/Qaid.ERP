@@ -56,7 +56,7 @@ export default function SalesReportPage() {
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
             if (Array.isArray(d)) setBranches(d);
-        }).catch(() => {});
+        }).catch(() => { });
     }, []);
 
     const fetchReport = async () => {
@@ -83,17 +83,17 @@ export default function SalesReportPage() {
                     title={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير المبيعات")}
                     subtitle={isServices ? t("تحليل تفصيلي لجميع فواتير الخدمات الصادرة.") : t("تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية.")}
                     backTab="sales-purchases"
-                    
+
                     printTitle={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير مبيعات الأصناف")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
 
-                <div className="no-print filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
-                    <div className="mobile-column" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
+                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
-                        <div className="mobile-full" style={{ width: '170px' }}>
+                        <div style={{ width: '170px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-                                style={{ 
+                                style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
@@ -102,9 +102,9 @@ export default function SalesReportPage() {
                             />
                         </div>
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
-                        <div className="mobile-full" style={{ width: '170px' }}>
+                        <div style={{ width: '170px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
-                                style={{ 
+                                style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
@@ -113,7 +113,7 @@ export default function SalesReportPage() {
                             />
                         </div>
                         {branches.length > 1 && (
-                            <div className="mobile-full" style={{ minWidth: '180px' }}>
+                            <div style={{ minWidth: '180px' }}>
                                 <CustomSelect
                                     value={branchId}
                                     onChange={v => setBranchId(v)}
@@ -127,7 +127,7 @@ export default function SalesReportPage() {
                                 />
                             </div>
                         )}
-                        <button onClick={fetchReport} className="mobile-full" style={{
+                        <button onClick={fetchReport} style={{
                             height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
@@ -184,25 +184,25 @@ export default function SalesReportPage() {
                             <input
                                 placeholder={t("ابحث برقم الفاتورة أو اسم العميل...")}
                                 value={q} onChange={e => setQ(e.target.value)}
-                                style={{ 
-                                    ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px', 
+                                style={{
+                                    ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px',
                                     background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
                                     fontWeight: 500
                                 }}
                             />
                         </div>
 
-                        <div className="scroll-table" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                         {[t('رقم الفاتورة'), t('التاريخ'), t('اسم العميل'), t('صافي القيمة'), t('الخصم'), t('المحصل'), t('المتبقي')].map((h, i) => (
-                                            <th key={i} style={{ 
-                                                padding: '16px 20px', 
-                                                fontSize: '12px', 
-                                                fontWeight: 800, 
-                                                color: C.textSecondary, 
-                                                textAlign: i >= 3 ? 'center' : 'right', 
+                                            <th key={i} style={{
+                                                padding: '16px 20px',
+                                                fontSize: '12px',
+                                                fontWeight: 800,
+                                                color: C.textSecondary,
+                                                textAlign: i >= 3 ? 'center' : 'right',
                                                 fontFamily: CAIRO,
                                                 borderBottom: `1px solid ${C.border}`
                                             }}>{h}</th>
@@ -212,9 +212,9 @@ export default function SalesReportPage() {
                                 <tbody>
                                     {data.invoices.filter(inv => {
                                         const code = `SAL-${String(inv.invoiceNumber).padStart(5, '0')}`;
-                                        return code.includes(q.toUpperCase()) || 
-                                               String(inv.invoiceNumber).includes(q) || 
-                                               (inv.customer?.name || 'عميل نقدي').toLowerCase().includes(q.toLowerCase());
+                                        return code.includes(q.toUpperCase()) ||
+                                            String(inv.invoiceNumber).includes(q) ||
+                                            (inv.customer?.name || 'عميل نقدي').toLowerCase().includes(q.toLowerCase());
                                     }).map((inv, idx) => (
                                         <tr key={inv.id}
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
@@ -231,7 +231,7 @@ export default function SalesReportPage() {
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                <span style={{ 
+                                                <span style={{
                                                     fontSize: '11px', fontWeight: 1000, direction: 'ltr', fontFamily: INTER,
                                                     color: inv.remaining > 0 ? '#fb7185' : '#10b981',
                                                     background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',

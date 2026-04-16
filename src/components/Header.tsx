@@ -209,10 +209,9 @@ function Actions() {
     };
 
     return (
-        <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             {/* Language Switcher */}
             <button
-                className="mobile-hide"
                 onClick={() => toggleLang()}
                 style={{
                     height: '36px', padding: '0 12px', borderRadius: '10px',
@@ -304,8 +303,9 @@ function Actions() {
                 )}
             </div>
 
-            <div style={{ width: '1px', height: '24px', background: C.border, margin: '0 4px' }} className="mobile-hide" />
-            
+            <div style={{ width: '1px', height: '24px', background: C.border, margin: '0 4px' }} />
+
+            {/* User Menu */}
             <div ref={userRef} style={{ position: 'relative' }}>
                 <button onClick={() => setOpenUser(!openUser)}
                     style={{
@@ -317,7 +317,7 @@ function Actions() {
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
-                    <div className="user-badge-name" style={{ textAlign: 'start' }}>
+                    <div style={{ textAlign: 'start' }}>
                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
                             {sessionStatus === 'loading' ? '...' : (session?.user?.name || t('مستخدم'))}
                         </div>
