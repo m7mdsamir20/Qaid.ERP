@@ -354,6 +354,7 @@ export default function NewCompanyPage() {
                                     placeholder="اختر الدولة..."
                                     icon={Globe}
                                     maxHeight="160px"
+                                    openUp={true}
                                 />
                             </div>
                             <div>
@@ -365,6 +366,7 @@ export default function NewCompanyPage() {
                                     placeholder="اختر النشاط..."
                                     icon={Activity}
                                     maxHeight="160px"
+                                    openUp={true}
                                 />
                             </div>
                         </div>
