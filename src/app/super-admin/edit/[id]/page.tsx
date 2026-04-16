@@ -7,9 +7,10 @@ import { navSections } from '@/constants/navigation';
 import {
     Shield, ArrowRight, Building2, User, CreditCard,
     Check, ChevronDown, ChevronUp, Loader2, CheckSquare,
-    Square, Key, Eye, EyeOff, X, Phone, Mail, UserCircle, Activity
+    Square, Key, Eye, EyeOff, X, Phone, Mail, UserCircle, Activity, Globe
 } from 'lucide-react';
 import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
+import CustomSelect from '@/components/CustomSelect';
 
 const PLANS = {
     trial: { label: 'تجريبي 14 يوم', color: '#fb923c', days: 14 },
@@ -32,6 +33,26 @@ const BUSINESS_TYPES = [
         label: "نشاط خدمات (استشارات، صيانة، إلخ)",
         modules: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports']
     },
+];
+
+const COUNTRIES = [
+    { value: 'EG', label: '🇪🇬 مصر' },
+    { value: 'SA', label: '🇸🇦 السعودية' },
+    { value: 'AE', label: '🇦🇪 الإمارات' },
+    { value: 'KW', label: '🇰🇼 الكويت' },
+    { value: 'QA', label: '🇶🇦 قطر' },
+    { value: 'BH', label: '🇧🇭 البحرين' },
+    { value: 'OM', label: '🇴🇲 عمان' },
+    { value: 'JO', label: '🇯🇴 الأردن' },
+    { value: 'IQ', label: '🇮🇶 العراق' },
+    { value: 'LY', label: '🇱🇾 ليبيا' },
+    { value: 'SD', label: '🇸🇩 السودان' },
+    { value: 'LB', label: '🇱🇧 لبنان' },
+    { value: 'SY', label: '🇸🇾 سوريا' },
+    { value: 'YE', label: '🇾🇪 اليمن' },
+    { value: 'TN', label: '🇹🇳 تونس' },
+    { value: 'DZ', label: '🇩🇿 الجزائر' },
+    { value: 'MA', label: '🇲🇦 المغرب' },
 ];
 
 // بناء features لكل الأقسام المتاحة (تحديد الكل)
@@ -407,51 +428,25 @@ export default function EditCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>الدولة <span style={{ color: C.danger }}>*</span></label>
-                                <div style={{ position: 'relative' }}>
-                                    <select 
-                                        value={form.countryCode} 
-                                        onChange={e => setForm(f => ({ ...f, countryCode: e.target.value }))}
-                                        onFocus={focusIn} onBlur={focusOut}
-                                        style={{ ...IS, appearance: 'none', cursor: 'pointer', paddingInlineEnd: '40px' }}
-                                    >
-                                        <option value="EG">🇪🇬 مصر</option>
-                                        <option value="SA">🇸🇦 السعودية</option>
-                                        <option value="AE">🇦🇪 الإمارات</option>
-                                        <option value="KW">🇰🇼 الكويت</option>
-                                        <option value="QA">🇶🇦 قطر</option>
-                                        <option value="BH">🇧🇭 البحرين</option>
-                                        <option value="OM">🇴🇲 عمان</option>
-                                        <option value="JO">🇯🇴 الأردن</option>
-                                        <option value="IQ">🇮🇶 العراق</option>
-                                        <option value="LY">🇱🇾 ليبيا</option>
-                                        <option value="SD">🇸🇩 السودان</option>
-                                        <option value="LB">🇱🇧 لبنان</option>
-                                        <option value="SY">🇸🇾 سوريا</option>
-                                        <option value="YE">🇾🇪 اليمن</option>
-                                        <option value="TN">🇹🇳 تونس</option>
-                                        <option value="DZ">🇩🇿 الجزائر</option>
-                                        <option value="MA">🇲🇦 المغرب</option>
-                                    </select>
-                                    <ChevronDown size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none' }} />
-                                </div>
+                                <CustomSelect 
+                                    value={form.countryCode}
+                                    onChange={val => setForm(f => ({ ...f, countryCode: val }))}
+                                    options={COUNTRIES}
+                                    placeholder="اختر الدولة..."
+                                    icon={Globe}
+                                    maxHeight="160px"
+                                />
                             </div>
                             <div>
                                 <label style={LS}>نوع النشاط <span style={{ color: C.danger }}>*</span></label>
-                                <div style={{ position: 'relative' }}>
-                                    <select 
-                                        value={form.businessType} 
-                                        onChange={e => setForm(f => ({ ...f, businessType: e.target.value }))}
-                                        onFocus={focusIn} onBlur={focusOut}
-                                        style={{ ...IS, appearance: 'none', cursor: 'pointer', paddingInlineEnd: '40px' }}
-                                    >
-                                        {BUSINESS_TYPES.map(b => (
-                                            <option key={b.value} value={b.value}>
-                                                {b.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <ChevronDown size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none' }} />
-                                </div>
+                                <CustomSelect 
+                                    value={form.businessType}
+                                    onChange={val => setForm(f => ({ ...f, businessType: val }))}
+                                    options={BUSINESS_TYPES.map(b => ({ value: b.value, label: b.label }))}
+                                    placeholder="اختر النشاط..."
+                                    icon={Activity}
+                                    maxHeight="160px"
+                                />
                             </div>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '36px' }}>
