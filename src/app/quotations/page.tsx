@@ -168,10 +168,10 @@ export default function QuotationsPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>{t("رقم العرض")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("العميل")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("التاريخ")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("الإجمالي")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("الحالة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("العميل")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الإجمالي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الحالة")}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t("إجراءات")}</th>
                                     </tr>
                                 </thead>

@@ -329,7 +329,7 @@ export default function NewQuotationPage() {
                                     </thead>
                                     <tbody>
                                         {lines.map((l, idx) => (
-                                            <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44`, background: 'rgba(0,0,0,0.1)' }}>
+                                            <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44`, background: 'transparent' }}>
                                                 <td style={{ padding: '12px' }}>
                                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
                                                 </td>
@@ -368,8 +368,8 @@ export default function NewQuotationPage() {
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
-                                    <span style={{ color: '#64748b' }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
-                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: '#e2e8f0' }}>{fmt(subtotal)} <small style={{fontFamily: CAIRO, fontSize: '10px'}}>{cSymbol}</small> </span>
+                                    <span style={{ color: C.textMuted }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
+                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: C.textPrimary }}>{fmt(subtotal)} <small style={{fontFamily: CAIRO, fontSize: '10px'}}>{cSymbol}</small> </span>
                                 </div>
 
                                 {/* Discount Section */}
@@ -380,7 +380,7 @@ export default function NewQuotationPage() {
                                     border: `1px solid rgba(255,255,255,0.06)` 
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: '#64748b' }}>{t('الخصم')}</label>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{t('الخصم')}</label>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
@@ -389,7 +389,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }} 
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }} 
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'transparent', borderRadius: '8px' }} 
                                                 placeholder="0.00"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
@@ -400,7 +400,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
                                                 }} 
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }} 
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'transparent', borderRadius: '8px' }} 
                                                 placeholder="0"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
@@ -420,14 +420,14 @@ export default function NewQuotationPage() {
                                         background: 'rgba(255,255,255,0.02)'
                                     }}>
                                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: '#64748b' }}>
+                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>
                                                 {taxSettings.label || 'VAT'}
                                             </label>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                             <div style={{ 
                                                 height: '34px', borderRadius: '8px', border: `1px solid ${C.border}`, 
-                                                background: 'rgba(0,0,0,0.1)', color: '#60a5fa',
+                                                background: 'transparent', color: '#60a5fa',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 fontFamily: INTER, fontSize: '13px', fontWeight: 800, position: 'relative'
                                             }}>
@@ -440,7 +440,7 @@ export default function NewQuotationPage() {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }} 
-                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }} 
+                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'transparent', borderRadius: '8px' }} 
                                                 />
                                                 <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>

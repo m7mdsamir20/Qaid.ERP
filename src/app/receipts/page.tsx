@@ -19,6 +19,8 @@ interface Voucher {
     id: string; voucherNumber: number; date: string; amount: number;
     description: string; paymentType?: 'cash' | 'bank';
     customer?: { id: string; name: string };
+    supplier?: { id: string; name: string };
+    partnerType?: 'customer' | 'supplier';
     treasury?: { id: string; name: string; type: string; bankName?: string };
 }
 interface Customer { id: string; name: string; balance: number; }
@@ -143,11 +145,11 @@ export default function ReceiptVouchersPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>{t('رقم السند')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('العميل')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('التاريخ')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('العميل')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('طريقة الدفع')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('الخزينة / البنك')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t('البيان')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
@@ -159,13 +161,13 @@ export default function ReceiptVouchersPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
-                                                RCP-{String(v.voucherNumber).padStart(5, '0')}
+                                                {v.partnerType === 'supplier' ? 'SUP' : 'CUS'}-{String(v.voucherNumber).padStart(5, '0')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, textAlign: isRtl ? 'right' : 'left' }}>
                                                 {new Date(v.date).toLocaleDateString('en-GB')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
-                                                {v.customer?.name || '—'}
+                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: isRtl ? 'right' : 'left' }}>
+                                                {v.customer?.name || (v.supplier?.name || '—')}
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ 
@@ -178,10 +180,10 @@ export default function ReceiptVouchersPage() {
                                                     {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, textAlign: isRtl ? 'right' : 'left' }}>
                                                 {v.treasury?.name || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', textAlign: isRtl ? 'right' : 'left' }}>
                                                 {v.description || '—'}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.success, fontWeight: 700, fontFamily: CAIRO }}>

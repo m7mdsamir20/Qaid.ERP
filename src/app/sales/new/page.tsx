@@ -626,7 +626,7 @@ function NewSalePageInner() {
                                             <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('مخزن الصرف')}</label>
                                         </div>
                                         <div style={{ position: 'relative' }}>
-                                            <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} placeholder={t("اختر المكان...")} options={warehouses.map(w => ({ value: w.id, label: t(w.name) }))} />
+                                            <CustomSelect value={form.warehouseId} onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); localStorage.setItem('last_warehouse_id', v); clearError('warehouseId'); }} icon={Building2} placeholder={t("اختر المكان...")} options={warehouses.map(w => ({ value: w.id, label: w.name }))} />
                                             <InlineError field="warehouseId" />
                                         </div>
                                     </div>
