@@ -302,10 +302,10 @@ export default function NewReceiptPage() {
                                                 onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }}
                                                 icon={Building2}
                                                 placeholder={form.paymentType === 'cash' ? t('اختر الخزينة...') : t('اختر الحساب...')}
-                                                options={availTreasuries.map(t => ({
-                                                    value: t.id,
-                                                    label: t.name,
-                                                    sub: `${t('رصيد:')} ${t.balance.toLocaleString()} ${cSymbol}`,
+                                                options={availTreasuries.map(tr => ({
+                                                    value: tr.id,
+                                                    label: tr.name,
+                                                    sub: `${t('رصيد:')} ${tr.balance.toLocaleString()} ${cSymbol}`,
                                                 }))}
                                             />
                                             <InlineError field="treasuryId" />
