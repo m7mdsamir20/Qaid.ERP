@@ -324,47 +324,53 @@ export default function NewCompanyPage() {
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     style={IS} />
                             </div>
-                            <div style={{ gridColumn: 'span 2' }}>
+                            <div>
                                 <label style={LS}>الدولة <span style={{ color: C.danger }}>*</span></label>
-                                <select 
-                                    value={form.countryCode} 
-                                    onChange={e => setForm(f => ({ ...f, countryCode: e.target.value }))}
-                                    onFocus={focusIn} onBlur={focusOut}
-                                    style={{ ...IS, appearance: 'none', cursor: 'pointer' }}
-                                >
-                                    <option value="EG">🇪🇬 مصر</option>
-                                    <option value="SA">🇸🇦 السعودية</option>
-                                    <option value="AE">🇦🇪 الإمارات</option>
-                                    <option value="KW">🇰🇼 الكويت</option>
-                                    <option value="QA">🇶🇦 قطر</option>
-                                    <option value="BH">🇧🇭 البحرين</option>
-                                    <option value="OM">🇴🇲 عمان</option>
-                                    <option value="JO">🇯🇴 الأردن</option>
-                                    <option value="IQ">🇮🇶 العراق</option>
-                                    <option value="LY">🇱🇾 ليبيا</option>
-                                    <option value="SD">🇸🇩 السودان</option>
-                                    <option value="LB">🇱🇧 لبنان</option>
-                                    <option value="SY">🇸🇾 سوريا</option>
-                                    <option value="YE">🇾🇪 اليمن</option>
-                                    <option value="TN">🇹🇳 تونس</option>
-                                    <option value="DZ">🇩🇿 الجزائر</option>
-                                    <option value="MA">🇲🇦 المغرب</option>
-                                </select>
+                                <div style={{ position: 'relative' }}>
+                                    <select 
+                                        value={form.countryCode} 
+                                        onChange={e => setForm(f => ({ ...f, countryCode: e.target.value }))}
+                                        onFocus={focusIn} onBlur={focusOut}
+                                        style={{ ...IS, appearance: 'none', cursor: 'pointer', paddingInlineEnd: '40px' }}
+                                    >
+                                        <option value="EG">🇪🇬 مصر</option>
+                                        <option value="SA">🇸🇦 السعودية</option>
+                                        <option value="AE">🇦🇪 الإمارات</option>
+                                        <option value="KW">🇰🇼 الكويت</option>
+                                        <option value="QA">🇶🇦 قطر</option>
+                                        <option value="BH">🇧🇭 البحرين</option>
+                                        <option value="OM">🇴🇲 عمان</option>
+                                        <option value="JO">🇯🇴 الأردن</option>
+                                        <option value="IQ">🇮🇶 العراق</option>
+                                        <option value="LY">🇱🇾 ليبيا</option>
+                                        <option value="SD">🇸🇩 السودان</option>
+                                        <option value="LB">🇱🇧 لبنان</option>
+                                        <option value="SY">🇸🇾 سوريا</option>
+                                        <option value="YE">🇾🇪 اليمن</option>
+                                        <option value="TN">🇹🇳 تونس</option>
+                                        <option value="DZ">🇩🇿 الجزائر</option>
+                                        <option value="MA">🇲🇦 المغرب</option>
+                                    </select>
+                                    <ChevronDown size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none' }} />
+                                </div>
                             </div>
-                            <div style={{ gridColumn: 'span 2' }}>
+                            <div>
                                 <label style={LS}>نوع النشاط <span style={{ color: C.danger }}>*</span></label>
-                                <select 
-                                    value={form.businessType} 
-                                    onChange={e => setForm(f => ({ ...f, businessType: e.target.value }))}
-                                    onFocus={focusIn} onBlur={focusOut}
-                                    style={{ ...IS, appearance: 'none', cursor: 'pointer' }}
-                                >
-                                    {BUSINESS_TYPES.map(b => (
-                                        <option key={b.value} value={b.value}>
-                                            {b.label}
-                                        </option>
-                                    ))}
-                                </select>
+                                <div style={{ position: 'relative' }}>
+                                    <select 
+                                        value={form.businessType} 
+                                        onChange={e => setForm(f => ({ ...f, businessType: e.target.value }))}
+                                        onFocus={focusIn} onBlur={focusOut}
+                                        style={{ ...IS, appearance: 'none', cursor: 'pointer', paddingInlineEnd: '40px' }}
+                                    >
+                                        {BUSINESS_TYPES.map(b => (
+                                            <option key={b.value} value={b.value}>
+                                                {b.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <ChevronDown size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, pointerEvents: 'none' }} />
+                                </div>
                             </div>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '32px' }}>
