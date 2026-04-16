@@ -7,10 +7,16 @@ export const POST = withProtection(async (request, session, body) => {
         const userId = (session.user as any).id;
         const { name, email, phone, gender, avatar } = body;
 
-        await prisma.$executeRawUnsafe(
-            `UPDATE User SET name = ?, email = ?, phone = ?, gender = ?, avatar = ? WHERE id = ?`,
-            name, email, phone, gender || 'male', avatar || 'm1', userId
-        );
+        await prisma.user.update({
+            where: { id: userId },
+            data: { 
+                name, 
+                email, 
+                phone, 
+                gender: gender || 'male', 
+                avatar: avatar || 'm1' 
+            }
+        });
 
         return NextResponse.json({
             success: true,

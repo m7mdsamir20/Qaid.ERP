@@ -14,11 +14,11 @@ import CustomSelect from '@/components/CustomSelect';
 
 // We'll use theme constants instead of these local ones
 const PLANS = {
-    trial:   { label: 'تجريبي 14 يوم', color: '#fb923c', days: 14  },
-    basic:   { label: 'أساسي',          color: '#60a5fa', days: 365 },
-    pro:     { label: 'متقدم',          color: '#a78bfa', days: 365 },
-    premium: { label: 'بريميوم',        color: '#fbbf24', days: 365 },
-    custom:  { label: 'مخصص',          color: '#34d399', days: 0   },
+    trial: { label: 'تجريبي 14 يوم', color: '#fb923c', days: 14 },
+    basic: { label: 'أساسي', color: '#60a5fa', days: 365 },
+    pro: { label: 'متقدم', color: '#a78bfa', days: 365 },
+    premium: { label: 'بريميوم', color: '#fbbf24', days: 365 },
+    custom: { label: 'مخصص', color: '#34d399', days: 0 },
 };
 
 // الـ featureKeys الصحيحة من navSections:
@@ -75,7 +75,7 @@ export default function NewCompanyPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
-    const [step, setStep]           = useState(1); // 1: شركة, 2: مدير, 3: اشتراك, 4: صلاحيات
+    const [step, setStep] = useState(1); // 1: شركة, 2: مدير, 3: اشتراك, 4: صلاحيات
     const [submitting, setSubmitting] = useState(false);
     const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
 
@@ -87,8 +87,8 @@ export default function NewCompanyPage() {
         // الاشتراك
         plan: 'trial',
         startDate: new Date().toISOString().split('T')[0],
-        endDate:   new Date(Date.now() + 14*24*60*60*1000).toISOString().split('T')[0],
-        maxUsers:    '5',
+        endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        maxUsers: '5',
         maxBranches: '1',
         // الصلاحيات
         features: {} as Record<string, string[]>,
@@ -121,16 +121,16 @@ export default function NewCompanyPage() {
     /* ─── Helpers ─── */
     const updatePlan = (plan: string) => {
         const days = PLANS[plan as keyof typeof PLANS]?.days || 365;
-        const end  = plan === 'custom' ? form.endDate
-            : new Date(Date.now() + days*24*60*60*1000).toISOString().split('T')[0];
+        const end = plan === 'custom' ? form.endDate
+            : new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
         setForm(f => ({ ...f, plan, endDate: end }));
     };
 
     const toggleSection = (featureKey: string, links: any[]) => {
         setForm(f => {
             const current = f.features[featureKey] || [];
-            const allIds  = links.map((l: any) => l.id);
-            const hasAll  = allIds.every(id => current.includes(id));
+            const allIds = links.map((l: any) => l.id);
+            const hasAll = allIds.every(id => current.includes(id));
             return {
                 ...f,
                 features: {
@@ -192,22 +192,22 @@ export default function NewCompanyPage() {
 
     /* ─── Steps Config ─── */
     const steps = [
-        { num: 1, label: 'بيانات الشركة',  icon: <Building2 size={16} /> },
-        { num: 2, label: 'بيانات المدير',   icon: <User size={16} />      },
-        { num: 3, label: 'الاشتراك',        icon: <CreditCard size={16} /> },
-        { num: 4, label: 'الصلاحيات',       icon: <Shield size={16} />    },
+        { num: 1, label: 'بيانات الشركة', icon: <Building2 size={16} /> },
+        { num: 2, label: 'بيانات المدير', icon: <User size={16} /> },
+        { num: 3, label: 'الاشتراك', icon: <CreditCard size={16} /> },
+        { num: 4, label: 'الصلاحيات', icon: <Shield size={16} /> },
     ];
 
     // إزالة التكرار في الـ featureKey ودمج الروابط
     const uniqueSections = (() => {
         const map = new Map<string, any>();
-        
+
         navSections.forEach(s => {
             if (!s.featureKey) return;
             if (!s.links || s.links.length === 0) return;
 
             let section = { ...s };
-            
+
             // ✅ تعديلات ديناميكية للمسميات بناءً على نوع النشاط
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
@@ -280,8 +280,8 @@ export default function NewCompanyPage() {
                                     background: step === s.num
                                         ? 'linear-gradient(135deg,#6366f1,#4f46e5)'
                                         : step > s.num
-                                        ? 'rgba(52,211,153,0.15)'
-                                        : 'rgba(255,255,255,0.04)',
+                                            ? 'rgba(52,211,153,0.15)'
+                                            : 'rgba(255,255,255,0.04)',
                                     border: `1px solid ${step === s.num ? 'rgba(99,102,241,0.5)' : step > s.num ? 'rgba(52,211,153,0.3)' : 'rgba(255,255,255,0.08)'}`,
                                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                                     color: step === s.num ? '#fff' : step > s.num ? '#34d399' : '#475569',
@@ -347,7 +347,7 @@ export default function NewCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>الدولة <span style={{ color: C.danger }}>*</span></label>
-                                <CustomSelect 
+                                <CustomSelect
                                     value={form.countryCode}
                                     onChange={val => setForm(f => ({ ...f, countryCode: val }))}
                                     options={COUNTRIES}
@@ -359,7 +359,7 @@ export default function NewCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>نوع النشاط <span style={{ color: C.danger }}>*</span></label>
-                                <CustomSelect 
+                                <CustomSelect
                                     value={form.businessType}
                                     onChange={val => setForm(f => ({ ...f, businessType: val }))}
                                     options={BUSINESS_TYPES.map(b => ({ value: b.value, label: b.label }))}
@@ -383,7 +383,7 @@ export default function NewCompanyPage() {
                 {step === 2 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
                         <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
-                           <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.blue}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
+                            <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.blue}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
                                 <User size={22} />
                             </div>
                             بيانات مدير الشركة
@@ -437,7 +437,7 @@ export default function NewCompanyPage() {
                             </div>
                         </div>
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', marginTop: '32px' }}>
-                            <button onClick={() => setStep(1)} 
+                            <button onClick={() => setStep(1)}
                                 style={{ height: '48px', padding: '0 28px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}>
                                 السابق
                             </button>
@@ -498,10 +498,10 @@ export default function NewCompanyPage() {
                             <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700, marginBottom: '8px' }}>ملخص الاشتراك</div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
                                 {[
-                                    { label: 'الباقة',           value: PLANS[form.plan as keyof typeof PLANS]?.label },
-                                    { label: 'مدة الاشتراك',     value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000*60*60*24))} يوم` },
-                                    { label: 'عدد المستخدمين',  value: form.maxUsers },
-                                    { label: 'عدد الفروع',      value: form.maxBranches },
+                                    { label: 'الباقة', value: PLANS[form.plan as keyof typeof PLANS]?.label },
+                                    { label: 'مدة الاشتراك', value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000 * 60 * 60 * 24))} يوم` },
+                                    { label: 'عدد المستخدمين', value: form.maxUsers },
+                                    { label: 'عدد الفروع', value: form.maxBranches },
                                 ].map((item, i) => (
                                     <div key={i} style={{ textAlign: 'center' }}>
                                         <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '3px' }}>{item.label}</div>
@@ -547,8 +547,8 @@ export default function NewCompanyPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                 {uniqueSections.map(section => {
                                     const featureKey = section.featureKey!;
-                                    const isActive   = isSectionActive(featureKey, section.links);
-                                    const isPartial  = isSectionPartial(featureKey, section.links);
+                                    const isActive = isSectionActive(featureKey, section.links);
+                                    const isPartial = isSectionPartial(featureKey, section.links);
                                     const isExpanded = expandedSections[featureKey];
                                     const SectionIcon = section.icon;
 
@@ -563,8 +563,8 @@ export default function NewCompanyPage() {
                                                     {isActive
                                                         ? <CheckSquare size={20} />
                                                         : isPartial
-                                                        ? <CheckSquare size={20} style={{ opacity: 0.6 }} />
-                                                        : <Square size={20} />
+                                                            ? <CheckSquare size={20} style={{ opacity: 0.6 }} />
+                                                            : <Square size={20} />
                                                     }
                                                 </button>
 
