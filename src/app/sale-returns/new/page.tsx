@@ -728,7 +728,7 @@ export default function NewReturnPage() {
                                                 onChange={v => { setForm((f: any) => ({ ...f, [form.refundType === 'cash' ? 'treasuryId' : 'bankId']: v })); clearError(form.refundType === 'cash' ? 'treasuryId' : 'bankId'); }}
                                                 icon={Banknote}
                                                 placeholder={form.refundType === 'cash' ? t("اختر الخزينة...") : t("اختر الحساب...")}
-                                                options={(form.refundType === 'cash' ? cashTreasuries : bankTreasuries).map(t => ({ value: t.id, label: t.name, sub: `${t('رصيد:')} ${t.balance.toLocaleString()} ${cSymbol}` }))}
+                                                options={(form.refundType === 'cash' ? cashTreasuries : bankTreasuries).map(tr => ({ value: tr.id, label: tr.name, sub: `${t('رصيد:')} ${tr.balance.toLocaleString()} ${cSymbol}` }))}
                                             />
                                             <InlineError field={form.refundType === 'cash' ? 'treasuryId' : 'bankId'} />
                                         </div>

@@ -181,10 +181,10 @@ export default function NewPurchasePaymentPage() {
                                             }}
                                             icon={Search}
                                             placeholder="بحث باسم العميل أو المورد..."
-                                            options={partners.map(p => ({ 
-                                                value: p.id, 
-                                                label: p.name,
-                                                sub: p.ptype === 'supplier' ? 'مورد' : 'عميل'
+                                            options={partners.map(par => ({ 
+                                                value: par.id, 
+                                                label: par.name,
+                                                sub: par.ptype === 'supplier' ? t('مورد') : t('عميل')
                                             }))}
                                         />
                                         {selectedPartner && (
@@ -257,10 +257,10 @@ export default function NewPurchasePaymentPage() {
                                             onChange={v => setForm((f: any) => ({ ...f, treasuryId: v }))}
                                             icon={Building2}
                                             placeholder={form.paymentType === 'cash' ? 'اختر الخزينة...' : 'اختر الحساب...'}
-                                            options={availTreasuries.map(t => ({
-                                                value: t.id,
-                                                label: t.name,
-                                                sub: `رصيد: ${t.balance.toLocaleString()} ${cSymbol}`,
+                                            options={availTreasuries.map(tr => ({
+                                                value: tr.id,
+                                                label: tr.name,
+                                                sub: `${t('رصيد:')} ${tr.balance.toLocaleString()} ${cSymbol}`,
                                             }))}
                                         />
                                     </div>

@@ -205,10 +205,10 @@ export default function NewPaymentPage() {
                                              onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
                                              icon={Search}
                                              placeholder="ابحث واختر المورد..."
-                                             options={suppliers.map(s => ({
-                                                 value: s.id,
-                                                 label: s.name,
-                                                 sub: s.balance < 0 ? `له: ${Math.abs(s.balance).toLocaleString()} ${cSymbol}` : s.balance > 0 ? `عليه: ${s.balance.toLocaleString()} ${cSymbol}` : 'رصيد: صفر'
+                                             options={suppliers.map(sup => ({
+                                                 value: sup.id,
+                                                 label: sup.name,
+                                                 sub: sup.balance < 0 ? `${t('له عندنا')}: ${Math.abs(sup.balance).toLocaleString()} ${cSymbol}` : sup.balance > 0 ? `${t('عليه لنا')}: ${sup.balance.toLocaleString()} ${cSymbol}` : t('متزن')
                                              }))}
                                          />
                                          <InlineError field="supplierId" />
@@ -264,10 +264,10 @@ export default function NewPaymentPage() {
                                         onChange={v => { setForm((f: any) => ({ ...f, treasuryId: v })); clearError('treasuryId'); }}
                                         icon={Building2}
                                         placeholder={form.paymentType === 'cash' ? 'اختر الخزينة...' : 'اختر الحساب...'}
-                                        options={availTreasuries.map(t => ({
-                                            value: t.id,
-                                            label: t.name,
-                                            sub: `رصيد الحالي: ${t.balance.toLocaleString()} ${cSymbol}`,
+                                        options={availTreasuries.map(tr => ({
+                                            value: tr.id,
+                                            label: tr.name,
+                                            sub: `${t('رصيد:')} ${tr.balance.toLocaleString()} ${cSymbol}`,
                                         }))}
                                     />
                                     <InlineError field="treasuryId" />
