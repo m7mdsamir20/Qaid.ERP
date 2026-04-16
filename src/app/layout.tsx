@@ -20,7 +20,6 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "قيد - QAID | نظام إدارة موارد المؤسسات",
   description: "نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة.",
-  manifest: "/manifest.json",
   openGraph: {
     title: "قيد - QAID | نظام إدارة موارد المؤسسات",
     description: "نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة.",
@@ -42,11 +41,6 @@ export const metadata: Metadata = {
     description: "نظام قيد السحابي المتكامل لإدارة المبيعات والحسابات.",
     images: ["/icon.png"],
   },
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "default",
-    title: "QAID ERP",
-  },
   formatDetection: {
     telephone: false,
   },
@@ -59,7 +53,7 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
+  maximumScale: 5, // Allow zooming for better accessibility on mobile browser
   themeColor: "#070d1a",
 };
 
