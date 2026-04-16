@@ -88,10 +88,10 @@ export default function SalesReportPage() {
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
 
-                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <div className="no-print filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
+                    <div className="mobile-column" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
-                        <div style={{ width: '170px' }}>
+                        <div className="mobile-full" style={{ width: '170px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{ 
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
@@ -102,7 +102,7 @@ export default function SalesReportPage() {
                             />
                         </div>
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
-                        <div style={{ width: '170px' }}>
+                        <div className="mobile-full" style={{ width: '170px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{ 
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
@@ -113,7 +113,7 @@ export default function SalesReportPage() {
                             />
                         </div>
                         {branches.length > 1 && (
-                            <div style={{ minWidth: '180px' }}>
+                            <div className="mobile-full" style={{ minWidth: '180px' }}>
                                 <CustomSelect
                                     value={branchId}
                                     onChange={v => setBranchId(v)}
@@ -127,7 +127,7 @@ export default function SalesReportPage() {
                                 />
                             </div>
                         )}
-                        <button onClick={fetchReport} style={{
+                        <button onClick={fetchReport} className="mobile-full" style={{
                             height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
@@ -192,7 +192,7 @@ export default function SalesReportPage() {
                             />
                         </div>
 
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="scroll-table" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>

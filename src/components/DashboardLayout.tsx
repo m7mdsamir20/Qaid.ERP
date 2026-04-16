@@ -125,12 +125,9 @@ export default function DashboardLayout({
                 .app-container.ltr-mode { direction: ltr; }
                 .app-container.rtl-mode { direction: rtl; }
 
-                /* Desktop sidebar logic (Only for Large Desktop) */
-                @media (min-width: 1201px) {
-                    .sidebar-wrapper { 
-                        width: 260px; position: fixed; top: 0; bottom: 0; z-index: 950; 
-                        transform: none !important; opacity: 1 !important; visibility: visible !important;
-                    }
+                /* Desktop sidebar logic */
+                @media (min-width: 1024px) {
+                    .sidebar-wrapper { width: 260px; position: fixed; top: 0; bottom: 0; z-index: 950; }
                     .ltr-mode .sidebar-wrapper { left: 0; border-right: 1px solid ${C.border}; }
                     .rtl-mode .sidebar-wrapper { right: 0; border-left: 1px solid ${C.border}; }
 
@@ -139,77 +136,31 @@ export default function DashboardLayout({
                     
                     .ltr-mode .main-header { left: 260px; right: 0; }
                     .rtl-mode .main-header { right: 260px; left: 0; }
-                    .mobile-menu-btn { display: none !important; }
                 }
 
-                /* Mobile & Tablet Logic (Hidden Sidebar by default) */
-                @media (max-width: 1200px) {
-                    .main-header { left: 0 !important; right: 0 !important; width: 100% !important; padding: 0 12px !important; }
-                    .mobile-menu-btn { display: flex !important; margin-top: 4px; }
+                /* Mobile sidebar logic */
+                @media (max-width: 1023px) {
+                    .main-header { left: 0 !important; right: 0 !important; width: 100% !important; padding: 0 16px !important; }
+                    .mobile-menu-btn { display: flex !important; }
                     .branch-switcher-wrap { display: none !important; }
-                    
                     .sidebar-wrapper {
                         position: fixed; top: 0; bottom: 0; 
-                        width: min(280px, 80vw); 
-                        z-index: 2000; /* Extremely high to be above everything */
+                        width: min(300px, 85vw); 
+                        z-index: 2000;
                         background: ${C.card};
                         margin: 0 !important;
-                        box-shadow: ${isRtl ? '-15px 0 40px rgba(0,0,0,0.7)' : '15px 0 40px rgba(0,0,0,0.7)'};
-                        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
-                        border-inline-end: 1px solid ${C.border};
-                        visibility: hidden;
+                        box-shadow: ${isRtl ? '-10px 0 30px rgba(0,0,0,0.5)' : '10px 0 30px rgba(0,0,0,0.5)'};
+                        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
                     }
-                    
-                    .ltr-mode .sidebar-wrapper { left: 0; right: auto; transform: translateX(-105%); }
-                    .rtl-mode .sidebar-wrapper { right: 0; left: auto; transform: translateX(105%); }
-                    
-                    .sidebar-wrapper.open { 
-                        transform: translateX(0) !important; 
-                        visibility: visible;
-                    }
-                    
+                    .ltr-mode .sidebar-wrapper { left: 0; right: auto; transform: translateX(-100%); }
+                    .rtl-mode .sidebar-wrapper { right: 0; left: auto; transform: translateX(100%); }
+                    .sidebar-wrapper.open { transform: translateX(0) !important; }
                     .dashboard-content { margin: 0 !important; width: 100% !important; }
-                    main { padding: 68px 10px 24px !important; }
-                }
-
-                    /* Optimize Main Body and Grid */
-                    main { padding: 68px 10px 24px !important; }
-                    .stats-grid, .kpi-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
                     
-                    /* Table-to-Card Magic Toggle */
-                    @media (max-width: 768px) {
-                        .responsive-table table, 
-                        .responsive-table thead, 
-                        .responsive-table tbody, 
-                        .responsive-table th, 
-                        .responsive-table td, 
-                        .responsive-table tr { display: block !important; width: 100% !important; height: auto !important; }
-                        
-                        .responsive-table thead { display: none !important; } /* Hide headers */
-                        .responsive-table tr { 
-                            margin-bottom: 12px !important; 
-                            background: ${C.card} !important;
-                            border: 1px solid ${C.border} !important;
-                            border-radius: 12px !important;
-                            padding: 8px !important;
-                            box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
-                        }
-                        .responsive-table td {
-                            text-align: ${isRtl ? 'right' : 'left'} !important;
-                            padding: 6px 12px !important;
-                            border: none !important;
-                            display: flex !important;
-                            justify-content: space-between !important;
-                            align-items: center !important;
-                        }
-                        .responsive-table td:not(:last-child) { border-bottom: 1px dashed ${C.border} !important; }
-                        .responsive-table td::before {
-                            content: attr(data-label) ": ";
-                            font-weight: 700;
-                            color: ${C.textMuted};
-                            font-size: 11px;
-                        }
-                    }
+                    /* Utility classes for mobile browser experience */
+                    main { padding: 76px 12px 20px !important; }
+                    .stats-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                }
                 }
 
                 @keyframes slideUp {

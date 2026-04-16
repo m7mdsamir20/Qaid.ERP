@@ -1094,11 +1094,49 @@ nput[type="number"] {
     gap: 12px !important;
   }
 
+  /* Settings Sidebar Horizontal Scroll for Mobile */
+  .settings-sidebar {
+    width: 100% !important;
+    position: relative !important;
+    top: 0 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    white-space: nowrap !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    padding: 10px 4px !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    gap: 8px !important;
+  }
+  .settings-sidebar::-webkit-scrollbar { display: none !important; }
+  .settings-sidebar > button {
+    flex-shrink: 0 !important;
+    width: auto !important;
+    margin: 0 !important;
+    background: var(--c-card) !important;
+    border: 1px solid var(--c-border) !important;
+    border-radius: 40px !important;
+    padding: 8px 16px !important;
+  }
+  .settings-sidebar > button span {
+    display: inline !important;
+  }
+
   /* Modals full width */
   .modal-content, [role="dialog"] {
     width: 95vw !important;
     max-width: 95vw !important;
     padding: 24px 16px !important;
+  }
+
+  /* General Search/Filter bars in Reports/Invoices */
+  .filter-bar, .search-container {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
   }
 }
 
@@ -1107,9 +1145,20 @@ nput[type="number"] {
     grid-template-columns: 1fr !important;
   }
 
+  /* Improved Header for very small screens */
+  .main-header {
+    height: 60px !important;
+  }
+  .header-actions {
+    gap: 6px !important;
+  }
+  .user-badge-name {
+    display: none !important;
+  }
+
   /* Better padding for mobile */
-  .main-content {
-    padding: 0 10px 80px !important; /* Extra bottom padding for floating actions */
+  .main-content, .dashboard-content main {
+    padding: 68px 8px 80px !important; 
   }
 
   /* Buttons full width on small screens */
