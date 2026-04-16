@@ -147,7 +147,7 @@ export default function QuotationViewPage() {
                                     </thead>
                                     <tbody>
                                         {quotation.lines?.map((l: any, idx: number) => (
-                                            <tr key={idx} style={{ borderBottom: idx === quotation.lines.length - 1 ? 'none' : `1px solid ${C.border}44`, background: 'rgba(0,0,0,0.1)' }}>
+                                            <tr key={idx} style={{ borderBottom: idx === quotation.lines.length - 1 ? 'none' : `1px solid ${C.border}44`, background: 'rgba(255,255,255,0.02)' }}>
                                                 <td style={{ padding: '15px 20px' }}>
                                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
                                                     {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '3px' }}>{l.description}</div>}

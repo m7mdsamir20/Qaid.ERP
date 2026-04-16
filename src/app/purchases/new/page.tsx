@@ -536,7 +536,7 @@ export default function NewPurchasePage() {
                                     </thead>
                                     <tbody>
                                         {lines.map((l, i) => (
-                                            <tr key={i} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: `1px solid ${C.border}` }}>
+                                            <tr key={i} style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{l.itemName}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>

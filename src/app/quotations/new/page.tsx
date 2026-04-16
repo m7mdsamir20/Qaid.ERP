@@ -186,7 +186,7 @@ export default function NewQuotationPage() {
             const body = {
                 ...form,
                 taxInclusive: !!taxSettings?.isInclusive,
-                taxLabel: taxSettings?.label || 'الضريبة',
+                taxLabel: taxSettings?.label || t('الضريبة'),
                 subtotal,
                 taxAmount,
                 total: finalTotal,
@@ -329,7 +329,7 @@ export default function NewQuotationPage() {
                                     </thead>
                                     <tbody>
                                         {lines.map((l, idx) => (
-                                            <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44`, background: 'rgba(0,0,0,0.1)' }}>
+                                            <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44`, background: 'rgba(255,255,255,0.02)' }}>
                                                 <td style={{ padding: '12px' }}>
                                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
                                                 </td>
@@ -389,7 +389,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 placeholder="0.00"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
@@ -400,7 +400,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 placeholder="0"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
@@ -427,7 +427,7 @@ export default function NewQuotationPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                             <div style={{
                                                 height: '34px', borderRadius: '8px', border: `1px solid ${C.border}`,
-                                                background: 'rgba(0,0,0,0.1)', color: '#60a5fa',
+                                                background: C.card, color: '#60a5fa',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 fontFamily: INTER, fontSize: '13px', fontWeight: 800, position: 'relative'
                                             }}>
@@ -440,7 +440,7 @@ export default function NewQuotationPage() {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }}
-                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: 'rgba(0,0,0,0.1)', borderRadius: '8px' }}
+                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 />
                                                 <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>

@@ -784,7 +784,7 @@ function NewSalePageInner() {
                                     </thead>
                                     <tbody>
                                         {lines.map((l, i) => (
-                                            <tr key={i} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: `1px solid ${C.border}` }}>
+                                            <tr key={i} style={{ borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
                                                     <div>{l.itemName}</div>
                                                     {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontWeight: 400 }}>{l.description}</div>}

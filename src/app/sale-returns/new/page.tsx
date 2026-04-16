@@ -538,20 +538,20 @@ export default function NewReturnPage() {
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                         <RotateCcw size={16} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
                                     </div>
-                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} صنف متاح</div>
+                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} {t('صنف متاح')}</div>
                                 </div>
                                 <div style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '11px' }}>
                                         <thead>
-                                            <tr style={{ background: 'rgba(0,0,0,0.1)', borderBottom: `1px solid ${C.border}` }}>
+                                            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '10px', width: '30px' }}>✓</th>
-                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'اسم الخدمة' : 'اسم الصنف'}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'الوصف' : 'الوحدة'}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'الكمية' : 'الكمية المباعة'}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'سابق الإلغاء' : 'سابق الإرجاع'}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'كمية الإلغاء' : 'كمية الارتجاع'}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'سعر الخدمة' : 'سعر البيع'}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? 'إجمالي الملغي' : 'إجمالي المرتجع'}</th>
+                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('الوصف') : t('الوحدة')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('الكمية') : t('الكمية المباعة')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('سابق الإلغاء') : t('سابق الإرجاع')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('كمية الإلغاء') : t('كمية الارتجاع')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('إجمالي الملغي') : t('إجمالي المرتجع')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>

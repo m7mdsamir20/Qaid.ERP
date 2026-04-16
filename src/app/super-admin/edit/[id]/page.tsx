@@ -650,7 +650,7 @@ export default function EditCompanyPage() {
                                             </div>
 
                                             {isExpanded && (
-                                                <div style={{ borderTop: `1px solid ${C.border}`, padding: '16px 20px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px', background: 'rgba(0,0,0,0.1)' }}>
+                                                <div style={{ borderTop: `1px solid ${C.border}`, padding: '16px 20px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
                                                     {section.links.map((link: any) => {
                                                         const active = (form.features[fk] || []).includes(link.id);
                                                         return (

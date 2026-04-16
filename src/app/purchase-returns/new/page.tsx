@@ -288,7 +288,7 @@ export default function NewPurchaseReturnPage() {
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#475569', flexDirection: 'column', gap: '12px' }}>
                 <Loader2 size={36} className="spin" />
-                <span style={{ fontSize: '14px' }}>جاري التحميل...</span>
+                <span style={{ fontSize: '14px' }}>{t('جاري التحميل...')}</span>
             </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}} .spin{animation:spin 1s linear infinite;}`}</style>
         </DashboardLayout>
@@ -315,8 +315,8 @@ export default function NewPurchaseReturnPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100vh', fontFamily: CAIRO }}>
                 <PageHeader
-                    title="مرتجع مشتريات جديد"
-                    subtitle="إرجاع أصناف للمورد وتسوية حسابه المالي والمخزني"
+                    title={t("مرتجع مشتريات جديد")}
+                    subtitle={t("إرجاع أصناف للمورد وتسوية حسابه المالي والمخزني")}
                     icon={RotateCcw}
                     backUrl="/purchase-returns"
                 />
@@ -334,10 +334,10 @@ export default function NewPurchaseReturnPage() {
                         <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
                         <div>
                             <div style={{ fontSize: '14px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
-                                يرجى تحديد فرع أولاً
+                                {t('يرجى تحديد فرع أولاً')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
-                                أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء المرتجع
+                                {t('أنت حالياً على وضع "كل الفروع" — اختر فرعاً محدداً من القائمة المنسدلة في الأعلى قبل إنشاء المرتجع')}
                             </div>
                         </div>
                     </div>
@@ -349,14 +349,14 @@ export default function NewPurchaseReturnPage() {
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                             <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                <FileText size={16} /> بيانات المرتجع الأساسية
+                                <FileText size={16} /> {t('بيانات المرتجع الأساسية')}
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
                                 {/* Row 1 */}
                                 <div style={{ display: 'grid', gridTemplateColumns: '110px 140px 1fr', gap: '20px' }}>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>رقم المرتجع</label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('رقم المرتجع')}</label>
                                         <div style={{
                                             height: '42px', borderRadius: '10px',
                                             background: 'rgba(59,130,246,0.08)',
@@ -370,14 +370,14 @@ export default function NewPurchaseReturnPage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>تاريخ المرتجع</label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ المرتجع')}</label>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
                                             style={{ ...IS, background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: CAIRO }}
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>المورد / العميل <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('المورد / العميل')} <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
                                             <CustomSelect
                                                 value={form.supplierId || form.customerId}
@@ -392,11 +392,11 @@ export default function NewPurchaseReturnPage() {
                                                     clearError('supplierId');
                                                 }}
                                                 icon={UserCheck}
-                                                placeholder="اختر الطرف..."
+                                                placeholder={t("اختر الطرف...")}
                                                 options={partners.map(s => ({
                                                     value: s.id,
                                                     label: s.name,
-                                                    sub: s.partnerType === 'supplier' ? 'مورد' : 'عميل'
+                                                    sub: s.partnerType === 'supplier' ? t('مورد') : t('عميل')
                                                 }))}
                                             />
                                             <InlineError field="supplierId" />
@@ -426,8 +426,8 @@ export default function NewPurchaseReturnPage() {
                                                 }}>
                                                     <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                                     {selectedPartner.partnerType === 'customer'
-                                                        ? (selectedPartner.balance > 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
-                                                        : (selectedPartner.balance > 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                        ? (selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
+                                                        : (selectedPartner.balance > 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('رصيده الحالي: صفر'))
                                                     }
                                                 </div>
                                             )}
@@ -438,13 +438,13 @@ export default function NewPurchaseReturnPage() {
                                 {/* Row 2 */}
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>فاتورة الشراء الأصلية <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('فاتورة الشراء الأصلية')} <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
                                             <CustomSelect
                                                 value={form.originalInvoiceId}
                                                 onChange={v => { setForm((f: any) => ({ ...f, originalInvoiceId: v })); clearError('originalInvoiceId'); }}
                                                 icon={Receipt}
-                                                placeholder={(form.supplierId || form.customerId) ? 'اختر الفاتورة...' : 'اختر المورد / العميل أولاً'}
+                                                placeholder={(form.supplierId || form.customerId) ? t('اختر الفاتورة...') : t('اختر المورد / العميل أولاً')}
                                                 disabled={!form.supplierId && !form.customerId}
                                                 options={supplierInvoices.map(i => ({
                                                     value: i.id,
@@ -456,26 +456,26 @@ export default function NewPurchaseReturnPage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>المخزن المستلم <span style={{ color: C.danger }}>*</span></label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('المخزن المستلم')} <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
                                             <CustomSelect
                                                 value={form.warehouseId}
                                                 onChange={v => { setForm((f: any) => ({ ...f, warehouseId: v })); clearError('warehouseId'); }}
                                                 icon={Building2}
-                                                placeholder="اختر المخزن..."
+                                                placeholder={t("اختر المخزن...")}
                                                 options={warehouses.map(w => ({ value: w.id, label: w.name }))}
                                             />
                                             <InlineError field="warehouseId" />
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={{ ...LS, fontSize: '11px' }}>سبب الإرجاع</label>
+                                        <label style={{ ...LS, fontSize: '11px' }}>{t('سبب الإرجاع')}</label>
                                         <CustomSelect
                                             value={form.reason}
                                             onChange={v => setForm((f: any) => ({ ...f, reason: v }))}
                                             icon={RotateCcw}
-                                            placeholder="اختر السبب (اختياري)..."
-                                            options={RETURN_REASONS.map(r => ({ value: r, label: r }))}
+                                            placeholder={t("اختر السبب (اختياري)...")}
+                                            options={RETURN_REASONS.map(r => ({ value: r, label: t(r) }))}
                                         />
                                     </div>
                                 </div>
@@ -485,16 +485,16 @@ export default function NewPurchaseReturnPage() {
                         {selectedInvoice && (
                             <div style={{ background: 'rgba(59,130,246,0.04)', border: `1px solid ${C.primary}30`, borderRadius: '12px', padding: '16px' }}>
                                 <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                    <Info size={16} /> ملخص فاتورة الشراء الأصلية
+                                    <Info size={16} /> {t('ملخص فاتورة الشراء الأصلية')}
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px' }}>
                                     {[
-                                        { label: 'الإجمالي', value: `${selectedInvoice.total.toLocaleString()} ${cSymbol}`, color: C.textPrimary },
-                                        { label: 'الخصم', value: `${(selectedInvoice.discount || 0).toLocaleString()} ${cSymbol}`, color: C.danger },
-                                        { label: 'المدفوع', value: `${selectedInvoice.paidAmount.toLocaleString()} ${cSymbol}`, color: '#10b981' },
-                                        { label: 'المتبقي', value: `${selectedInvoice.remaining.toLocaleString()} ${cSymbol}`, color: C.textMuted },
+                                        { label: t('الإجمالي'), value: `${selectedInvoice.total.toLocaleString()} ${cSymbol}`, color: C.textPrimary },
+                                        { label: t('الخصم'), value: `${(selectedInvoice.discount || 0).toLocaleString()} ${cSymbol}`, color: C.danger },
+                                        { label: t('المدفوع'), value: `${selectedInvoice.paidAmount.toLocaleString()} ${cSymbol}`, color: '#10b981' },
+                                        { label: t('المتبقي'), value: `${selectedInvoice.remaining.toLocaleString()} ${cSymbol}`, color: C.textMuted },
                                     ].map((item, i) => (
-                                        <div key={i} style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '8px', padding: '10px', textAlign: 'center', border: `1px solid ${C.border}` }}>
+                                        <div key={i} style={{ borderRadius: '8px', padding: '10px', textAlign: 'center', border: `1px solid ${C.border}` }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
                                             <div style={{ fontSize: '13px', color: item.color, fontWeight: 700, fontFamily: CAIRO }}>{item.value}</div>
                                         </div>
@@ -505,24 +505,24 @@ export default function NewPurchaseReturnPage() {
 
                         {lines.length > 0 && (
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-                                <div style={{ padding: '12px 20px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ padding: '12px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                        <RotateCcw size={16} /> الأصناف المرتجعة
+                                        <RotateCcw size={16} /> {t('الأصناف المرتجعة')}
                                     </div>
-                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} صنف متاح</div>
+                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} {t('صنف متاح')}</div>
                                 </div>
                                 <div style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '11px' }}>
                                         <thead>
-                                            <tr style={{ background: 'rgba(0,0,0,0.1)', borderBottom: `1px solid ${C.border}` }}>
+                                            <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '10px', width: '30px' }}>✓</th>
-                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>اسم الصنف</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>الوحدة</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>الكمية المشتراة</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>سابق الإرجاع</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>كمية الإرجاع</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>سعر التكلفة</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>إجمالي المرتجع</th>
+                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>{t('اسم الصنف')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('الوحدة')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('الكمية المشتراة')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('سابق الإرجاع')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('كمية الإرجاع')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('سعر التكلفة')}</th>
+                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('إجمالي المرتجع')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -542,7 +542,6 @@ export default function NewPurchaseReturnPage() {
                                                         <td style={{ padding: '8px 10px' }}>
                                                             <div style={{
                                                                 display: 'flex', alignItems: 'center',
-                                                                background: 'rgba(255,255,255,0.05)',
                                                                 borderRadius: '8px', border: `1px solid ${l.selected ? C.primary : C.border}`,
                                                                 width: '85px', margin: '0 auto', overflow: 'hidden'
                                                             }}>
@@ -560,7 +559,7 @@ export default function NewPurchaseReturnPage() {
                                                                         onFocus={focusIn} onBlur={focusOut}
                                                                     />
                                                                 </div>
-                                                                <div style={{ display: 'flex', flexDirection: 'column', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
+                                                                <div style={{ display: 'flex', flexDirection: 'column', borderInlineStart: `1px solid ${C.border}` }}>
                                                                     <button
                                                                         type="button" disabled={!l.selected || l.returnQty >= l.availableQty}
                                                                         onClick={() => updateReturnQty(i, (l.returnQty || 0) + 1)}
@@ -590,9 +589,9 @@ export default function NewPurchaseReturnPage() {
                         )}
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-                            <label style={{ ...LS, fontSize: '11px' }}>ملاحظات إضافية</label>
+                            <label style={{ ...LS, fontSize: '11px' }}>{t('ملاحظات إضافية')}</label>
                             <input
-                                type="text" placeholder="اكتب أي توضيحات للمرتجع..."
+                                type="text" placeholder={t("اكتب أي توضيحات للمرتجع...")}
                                 value={form.notes} onChange={e => setForm((f: any) => ({ ...f, notes: e.target.value }))}
                                 style={IS} onFocus={focusIn} onBlur={focusOut}
                             />
@@ -603,26 +602,26 @@ export default function NewPurchaseReturnPage() {
                     <div style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', minHeight: '400px' }}>
                             <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
-                                <Banknote size={16} /> ملخص الحساب
+                                <Banknote size={16} /> {t('ملخص الحساب')}
                             </div>
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted }}>عدد الأصناف المرتجعة</span>
-                                    <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.length} صنف</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted }}>{t('عدد الأصناف المرتجعة')}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.length} {t('صنف')}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted }}>إجمالي كمية المرتجع</span>
-                                    <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.reduce((acc, l) => acc + l.returnQty, 0)} وحدة</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted }}>{t('إجمالي كمية المرتجع')}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.reduce((acc, l) => acc + l.returnQty, 0)} {t('وحدة')}</span>
                                 </div>
 
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '4px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-                                        <span style={{ fontSize: '13px', color: C.textMuted }}>قيمة المرتجع</span>
+                                        <span style={{ fontSize: '13px', color: C.textMuted }}>{t('قيمة المرتجع')}</span>
                                         <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>{returnSubtotal.toLocaleString()} {cSymbol}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '13px', color: C.textMuted }}>خصم مسترد (-)</span>
+                                        <span style={{ fontSize: '13px', color: C.textMuted }}>{t('خصم مسترد (-)')}</span>
                                         <span style={{ fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{totalDiscountOnReturn.toLocaleString()} {cSymbol}</span>
                                     </div>
                                 </div>
@@ -633,19 +632,19 @@ export default function NewPurchaseReturnPage() {
                                     background: 'rgba(59,130,246,0.05)', borderRadius: '12px',
                                     border: `1px solid ${C.primary}20`
                                 }}>
-                                    <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary }}>صافي المرتجع</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary }}>{t('صافي المرتجع')}</span>
                                     <span style={{ fontSize: '20px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>{netReturnTotal.toLocaleString()} {cSymbol}</span>
                                 </div>
 
                                 <div style={{ marginTop: '10px' }}>
-                                    <label style={{ ...LS, fontSize: '11px' }}>طريقة الرد</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('طريقة الرد')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '6px' }}>
                                         {['balance', 'cash', 'bank'].map(m => (
                                             <button
                                                 key={m} onClick={() => setForm((f: any) => ({ ...f, refundType: m as any }))}
                                                 style={{ height: '36px', borderRadius: '8px', border: `1px solid ${form.refundType === m ? C.primary : C.border}`, background: form.refundType === m ? `${C.primary}15` : 'transparent', color: form.refundType === m ? C.primary : C.textMuted, fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '0.2s' }}
                                             >
-                                                {m === 'balance' ? 'رصيد' : m === 'cash' ? 'نقدي' : 'بنكي'}
+                                                {m === 'balance' ? t('رصيد') : m === 'cash' ? t('نقدي') : t('بنكي')}
                                             </button>
                                         ))}
                                     </div>
@@ -654,7 +653,7 @@ export default function NewPurchaseReturnPage() {
                                 {(form.refundType === 'cash' || form.refundType === 'bank') && (
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '10px' }}>
                                         <div>
-                                            <label style={{ ...LS, fontSize: '11px' }}>المبلغ المستلم <span style={{ color: C.danger }}>*</span></label>
+                                            <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المستلم')} <span style={{ color: C.danger }}>*</span></label>
                                             <div style={{ position: 'relative' }}>
                                                 <input
                                                     type="text"
@@ -695,8 +694,8 @@ export default function NewPurchaseReturnPage() {
                                                 value={form.refundType === 'cash' ? form.treasuryId : form.bankId}
                                                 onChange={v => { setForm((f: any) => ({ ...f, [form.refundType === 'cash' ? 'treasuryId' : 'bankId']: v })); clearError(form.refundType === 'cash' ? 'treasuryId' : 'bankId'); }}
                                                 icon={Banknote}
-                                                placeholder={form.refundType === 'cash' ? "اختر الخزينة..." : "اختر الحساب..."}
-                                                options={(form.refundType === 'cash' ? cashTreasuries : bankTreasuries).map(t => ({ value: t.id, label: t.name, sub: `رصيد: ${t.balance.toLocaleString()} ${cSymbol}` }))}
+                                                placeholder={form.refundType === 'cash' ? t("اختر الخزينة...") : t("اختر الحساب...")}
+                                                options={(form.refundType === 'cash' ? cashTreasuries : bankTreasuries).map(t => ({ value: t.id, label: t.name, sub: `${t('رصيد:')} ${t.balance.toLocaleString()} ${cSymbol}` }))}
                                             />
                                             <InlineError field={form.refundType === 'cash' ? 'treasuryId' : 'bankId'} />
                                         </div>
@@ -714,7 +713,7 @@ export default function NewPurchaseReturnPage() {
                                             boxShadow: submitting ? 'none' : '0 8px 16px -4px rgba(37,106,244,0.3)',
                                             opacity: submitting ? 0.6 : 1
                                         }}>
-                                        {submitting ? <Loader2 size={20} className="spin" /> : <>ترحيل المرتجع <CheckCircle2 size={20} /></>}
+                                        {submitting ? <Loader2 size={20} className="spin" /> : <>{t('ترحيل المرتجع')} <CheckCircle2 size={20} /></>}
                                     </button>
 
                                     <button type="button" onClick={() => handleSubmit(true)} disabled={submitting}
@@ -729,7 +728,7 @@ export default function NewPurchaseReturnPage() {
                                         }}
                                         onMouseEnter={e => { if (!submitting) e.currentTarget.style.background = 'rgba(16,185,129,0.18)'; }}
                                         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(16,185,129,0.1)'; }}>
-                                        ترحيل وطباعة المرتجع <Printer size={18} />
+                                        {t('ترحيل وطباعة المرتجع')} <Printer size={18} />
                                     </button>
                                 </div>
                             </div>
