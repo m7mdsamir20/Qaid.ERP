@@ -326,58 +326,45 @@ export default function NewCompanyPage() {
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
                                 <label style={LS}>الدولة <span style={{ color: C.danger }}>*</span></label>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
-                                    {[
-                                        { code: 'EG', name: 'مصر', flag: '🇪🇬' },
-                                        { code: 'SA', name: 'السعودية', flag: '🇸🇦' },
-                                        { code: 'AE', name: 'الإمارات', flag: '🇦🇪' },
-                                        { code: 'KW', name: 'الكويت', flag: '🇰🇼' },
-                                        { code: 'QA', name: 'قطر', flag: '🇶🇦' },
-                                        { code: 'BH', name: 'البحرين', flag: '🇧🇭' },
-                                        { code: 'OM', name: 'عمان', flag: '🇴🇲' },
-                                        { code: 'JO', name: 'الأردن', flag: '🇯🇴' },
-                                        { code: 'IQ', name: 'العراق', flag: '🇮🇶' },
-                                        { code: 'LY', name: 'ليبيا', flag: '🇱🇾' },
-                                        { code: 'SD', name: 'السودان', flag: '🇸🇩' },
-                                        { code: 'LB', name: 'لبنان', flag: '🇱🇧' },
-                                        { code: 'SY', name: 'سوريا', flag: '🇸🇾' },
-                                        { code: 'YE', name: 'اليمن', flag: '🇾🇪' },
-                                        { code: 'TN', name: 'تونس', flag: '🇹🇳' },
-                                        { code: 'DZ', name: 'الجزائر', flag: '🇩🇿' },
-                                        { code: 'MA', name: 'المغرب', flag: '🇲🇦' },
-                                    ].map(c => (
-                                        <button key={c.code} type="button" onClick={() => setForm(f => ({ ...f, countryCode: c.code }))}
-                                            style={{
-                                                height: '44px', borderRadius: '10px',
-                                                border: `1px solid ${form.countryCode === c.code ? C.primary : 'rgba(255,255,255,0.06)'}`,
-                                                background: form.countryCode === c.code ? `${C.primary}15` : 'rgba(255,255,255,0.02)',
-                                                color: form.countryCode === c.code ? C.primary : C.textSecondary,
-                                                fontSize: '12px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px'
-                                            }}>
-                                            <span style={{ fontSize: '16px' }}>{c.flag}</span>
-                                            {c.name}
-                                        </button>
-                                    ))}
-                                </div>
+                                <select 
+                                    value={form.countryCode} 
+                                    onChange={e => setForm(f => ({ ...f, countryCode: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut}
+                                    style={{ ...IS, appearance: 'none', cursor: 'pointer' }}
+                                >
+                                    <option value="EG">🇪🇬 مصر</option>
+                                    <option value="SA">🇸🇦 السعودية</option>
+                                    <option value="AE">🇦🇪 الإمارات</option>
+                                    <option value="KW">🇰🇼 الكويت</option>
+                                    <option value="QA">🇶🇦 قطر</option>
+                                    <option value="BH">🇧🇭 البحرين</option>
+                                    <option value="OM">🇴🇲 عمان</option>
+                                    <option value="JO">🇯🇴 الأردن</option>
+                                    <option value="IQ">🇮🇶 العراق</option>
+                                    <option value="LY">🇱🇾 ليبيا</option>
+                                    <option value="SD">🇸🇩 السودان</option>
+                                    <option value="LB">🇱🇧 لبنان</option>
+                                    <option value="SY">🇸🇾 سوريا</option>
+                                    <option value="YE">🇾🇪 اليمن</option>
+                                    <option value="TN">🇹🇳 تونس</option>
+                                    <option value="DZ">🇩🇿 الجزائر</option>
+                                    <option value="MA">🇲🇦 المغرب</option>
+                                </select>
                             </div>
                             <div style={{ gridColumn: 'span 2' }}>
                                 <label style={LS}>نوع النشاط <span style={{ color: C.danger }}>*</span></label>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                                <select 
+                                    value={form.businessType} 
+                                    onChange={e => setForm(f => ({ ...f, businessType: e.target.value }))}
+                                    onFocus={focusIn} onBlur={focusOut}
+                                    style={{ ...IS, appearance: 'none', cursor: 'pointer' }}
+                                >
                                     {BUSINESS_TYPES.map(b => (
-                                        <button key={b.value} type="button" onClick={() => setForm(f => ({ ...f, businessType: b.value }))}
-                                            style={{
-                                                height: '52px', borderRadius: '12px', border: `1px solid ${form.businessType === b.value ? C.primary : 'rgba(255,255,255,0.06)'}`,
-                                                background: form.businessType === b.value ? `${C.primary}15` : 'rgba(255,255,255,0.02)',
-                                                color: form.businessType === b.value ? C.primary : C.textSecondary,
-                                                fontSize: '14px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.15s',
-                                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-                                            }}>
-                                            {form.businessType === b.value ? <CheckCircle size={16} /> : <Activity size={16} />}
+                                        <option key={b.value} value={b.value}>
                                             {b.label}
-                                        </button>
+                                        </option>
                                     ))}
-                                </div>
+                                </select>
                             </div>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '32px' }}>
