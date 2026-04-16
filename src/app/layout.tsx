@@ -18,8 +18,38 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "نظام ERP | إدارة موارد المؤسسات",
-  description: "نظام شامل لإدارة موارد المؤسسات - المحاسبة، المخزون، المبيعات، المشتريات",
+  title: "قيد - QAID | نظام إدارة موارد المؤسسات",
+  description: "نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة.",
+  manifest: "/manifest.json",
+  openGraph: {
+    title: "قيد - QAID | نظام إدارة موارد المؤسسات",
+    description: "نظام قيد السحابي المتكامل لإدارة المبيعات، الحسابات، والمخزون بذكاء وسهولة.",
+    url: "https://qaid-erp.vercel.app/",
+    siteName: "QAID ERP",
+    images: [
+      {
+        url: "/icon.png",
+        width: 512,
+        height: 512,
+      },
+    ],
+    locale: "ar_EG",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "قيد - QAID",
+    description: "نظام قيد السحابي المتكامل لإدارة المبيعات والحسابات.",
+    images: ["/icon.png"],
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "QAID ERP",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   icons: {
     icon: "/icon.png",
     apple: "/icon.png",
@@ -30,6 +60,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#070d1a",
 };
 
 import { SpeedInsights } from "@vercel/speed-insights/next";

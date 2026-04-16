@@ -1037,24 +1037,95 @@ nput[type="number"] {
   -moz-appearance: textfield;
 }
 
-/* ==================== Autofill Styling (Universal Fix) ==================== */
-/* 
-   Chrome/Edge/Safari apply a yellow/white background to autofilled inputs.
-   This fix forces the theme's dark colors even when autofill is active.
-*/
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
-  -webkit-text-fill-color: var(--c-text-primary) !important;
-  -webkit-box-shadow: 0 0 0px 1000px var(--c-autofill-bg) inset !important;
-  box-shadow: 0 0 0px 1000px var(--c-autofill-bg) inset !important;
-  caret-color: var(--c-text-primary) !important;
-  transition: background-color 5000s ease-in-out 0s;
+/* ==================== Responsive Pass (Comprehensive) ==================== */
+@media (max-width: 1024px) {
+  /* Common Grid Stacker */
+  .grid-2-col, .grid-3-col, .grid-4-col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Utility to force column on mobile */
+  .mobile-column {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+  }
+
+  /* Full width utility */
+  .mobile-full {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+
+  /* Hide elements on mobile */
+  .mobile-hide {
+    display: none !important;
+  }
+
+  /* Show elements only on mobile */
+  .mobile-only {
+    display: block !important;
+  }
+
+  /* Responsive Table Wrap */
+  .scroll-table {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+    border-radius: 12px;
+  }
+
+  .scroll-table table {
+    min-width: 700px; /* Forces a scroll on mobile for data clarity */
+  }
+
+  /* Page headers stack on mobile */
+  .page-header-wrap {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+
+  /* Stats/KPI Grid */
+  .stats-grid, .kpi-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Modals full width */
+  .modal-content, [role="dialog"] {
+    width: 95vw !important;
+    max-width: 95vw !important;
+    padding: 24px 16px !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-grid, .kpi-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Better padding for mobile */
+  .main-content {
+    padding: 0 10px 80px !important; /* Extra bottom padding for floating actions */
+  }
+
+  /* Buttons full width on small screens */
+  .mobile-btn-full {
+    width: 100% !important;
+  }
+
+  /* Improve touch targets */
+  input, select, textarea, button {
+    min-height: 48px !important; 
+  }
+}
+
+/* Fix for overlapping sidebar on desktop when resized */
+@media (min-width: 1025px) {
+  .mobile-only {
+    display: none !important;
+  }
 }
