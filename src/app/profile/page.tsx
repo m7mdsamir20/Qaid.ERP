@@ -13,6 +13,7 @@ import {
 import { Avatar, AVATAR_OPTIONS } from '@/components/UserAvatar';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
+import { CAIRO } from '@/constants/theme';
 
 export default function ProfilePage() {
     const { lang, t } = useTranslation();
@@ -96,16 +97,16 @@ export default function ProfilePage() {
     );
 
     const roles: Record<string, string> = {
-        admin: 'مدير النظام',
-        accountant: 'محاسب',
-        sales: 'مندوب مبيعات',
-        storekeeper: 'أمين مستودع',
-        user: 'مستخدم'
+        admin: t('مدير النظام'),
+        accountant: t('محاسب'),
+        sales: t('مندوب مبيعات'),
+        storekeeper: t('أمين مستودع'),
+        user: t('مستخدم')
     };
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ maxWidth: '900px', margin: '0 auto', padding: '20px 0', fontFamily: "'Cairo', sans-serif" }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ maxWidth: '900px', margin: '0 auto', padding: '20px 0', fontFamily: CAIRO }}>
 
                 {/* Header */}
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
@@ -195,9 +196,9 @@ export default function ProfilePage() {
                             {/* Form side */}
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-text-secondary)', [isRtl ? 'paddingRight' : 'paddingLeft']: '4px' }}>{t('الاسم الكامل')}</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-text-secondary)', paddingInlineStart: '4px' }}>{t('الاسم الكامل')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <User size={16} style={{ position: 'absolute', top: '12px', [isRtl ? 'right' : 'left']: '14px', color: 'var(--c-primary)' }} />
+                                        <User size={16} style={{ position: 'absolute', top: '12px', insetInlineStart: '14px', color: 'var(--c-primary)' }} />
                                         <input
                                             readOnly={!isEditMode}
                                             value={form.name}
@@ -205,8 +206,8 @@ export default function ProfilePage() {
                                             style={{ 
                                                 width: '100%', 
                                                 paddingBlock: '10px', 
-                                                [isRtl ? 'paddingRight' : 'paddingLeft']: '40px', 
-                                                [isRtl ? 'paddingLeft' : 'paddingRight']: '14px', 
+                                                paddingInlineStart: '40px', 
+                                                paddingInlineEnd: '14px', 
                                                 background: isEditMode ? 'var(--c-input-bg)' : 'transparent', 
                                                 border: isEditMode ? '1px solid var(--c-primary-border)' : '1px solid transparent', 
                                                 borderRadius: '12px', 
@@ -221,9 +222,9 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-text-secondary)', [isRtl ? 'paddingRight' : 'paddingLeft']: '4px' }}>{t('البريد الإلكتروني')}</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-text-secondary)', paddingInlineStart: '4px' }}>{t('البريد الإلكتروني')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Mail size={16} style={{ position: 'absolute', top: '12px', [isRtl ? 'right' : 'left']: '14px', color: 'var(--c-primary)' }} />
+                                        <Mail size={16} style={{ position: 'absolute', top: '12px', insetInlineStart: '14px', color: 'var(--c-primary)' }} />
                                         <input
                                             readOnly={!isEditMode}
                                             value={form.email}
@@ -231,8 +232,8 @@ export default function ProfilePage() {
                                             style={{ 
                                                 width: '100%', 
                                                 paddingBlock: '10px', 
-                                                [isRtl ? 'paddingRight' : 'paddingLeft']: '40px', 
-                                                [isRtl ? 'paddingLeft' : 'paddingRight']: '14px', 
+                                                paddingInlineStart: '40px', 
+                                                paddingInlineEnd: '14px', 
                                                 background: isEditMode ? 'var(--c-input-bg)' : 'transparent', 
                                                 border: isEditMode ? '1px solid var(--c-primary-border)' : '1px solid transparent', 
                                                 borderRadius: '12px', 
@@ -247,9 +248,9 @@ export default function ProfilePage() {
                                 </div>
 
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-text-secondary)', [isRtl ? 'paddingRight' : 'paddingLeft']: '4px' }}>{t('رقم الهاتف')}</label>
+                                    <label style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-text-secondary)', paddingInlineStart: '4px' }}>{t('رقم الهاتف')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Phone size={16} style={{ position: 'absolute', top: '12px', [isRtl ? 'right' : 'left']: '14px', color: 'var(--c-primary)' }} />
+                                        <Phone size={16} style={{ position: 'absolute', top: '12px', insetInlineStart: '14px', color: 'var(--c-primary)' }} />
                                         <input
                                             readOnly={!isEditMode}
                                             value={form.phone}
@@ -258,8 +259,8 @@ export default function ProfilePage() {
                                             style={{ 
                                                 width: '100%', 
                                                 paddingBlock: '10px', 
-                                                [isRtl ? 'paddingRight' : 'paddingLeft']: '40px', 
-                                                [isRtl ? 'paddingLeft' : 'paddingRight']: '14px', 
+                                                paddingInlineStart: '40px', 
+                                                paddingInlineEnd: '14px', 
                                                 background: isEditMode ? 'var(--c-input-bg)' : 'transparent', 
                                                 border: isEditMode ? '1px solid var(--c-primary-border)' : '1px solid transparent', 
                                                 borderRadius: '12px', 
@@ -318,7 +319,7 @@ export default function ProfilePage() {
                                                 }}
                                             />
                                             {form.avatar === opt.id && (
-                                                <div style={{ position: 'absolute', top: '-4px', [isRtl ? 'right' : 'left']: '-4px', background: 'var(--c-success)', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--c-card)' }}>
+                                                <div style={{ position: 'absolute', top: '-4px', insetInlineStart: '-4px', background: 'var(--c-success)', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--c-card)' }}>
                                                     <Check size={10} color="#fff" />
                                                 </div>
                                             )}
@@ -356,7 +357,7 @@ export default function ProfilePage() {
 
                 {/* Toast Notification */}
                 {toast && (
-                    <div style={{ position: 'fixed', bottom: '30px', [isRtl ? 'right' : 'left']: '30px', padding: '14px 28px', borderRadius: '15px', background: toast.type === 'success' ? 'var(--c-success)' : 'var(--c-danger)', color: '#fff', boxShadow: '0 10px 40px var(--c-shadow)', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 2000, animation: 'fadeLeft 0.3s ease' }}>
+                    <div style={{ position: 'fixed', bottom: '30px', insetInlineStart: '30px', padding: '14px 28px', borderRadius: '15px', background: toast.type === 'success' ? 'var(--c-success)' : 'var(--c-danger)', color: '#fff', boxShadow: '0 10px 40px var(--c-shadow)', display: 'flex', alignItems: 'center', gap: '12px', zIndex: 2000, animation: 'fadeLeft 0.3s ease' }}>
                         {toast.type === 'success' ? <CheckCircle2 size={20} /> : <AlertCircle size={20} />}
                         <span style={{ fontWeight: 700 }}>{toast.msg}</span>
                     </div>

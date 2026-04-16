@@ -167,7 +167,6 @@
 }
 
 html {
-  direction: rtl;
   scroll-behavior: smooth;
 }
 
@@ -218,11 +217,11 @@ h6 {
 
 .main-wrapper {
   flex: 1;
-  margin-right: 260px;
+  margin-inline-end: 260px;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  transition: margin-right 0.3s ease;
+  transition: margin-inline-end 0.3s ease;
 }
 
 .main-content {
@@ -251,12 +250,12 @@ h6 {
 /* ==================== Sidebar ==================== */
 .sidebar {
   position: fixed;
-  right: 0;
+  inset-inline-end: 0;
   top: 0;
   width: 280px;
   height: 100vh;
   background: var(--surface-800);
-  border-left: 1px solid var(--border-color);
+  border-inline-start: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   z-index: 50;
@@ -594,7 +593,7 @@ input[type="date"] {
 
 .table th {
   padding: 14px 20px;
-  text-align: right;
+  text-align: start;
   font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
@@ -691,12 +690,12 @@ input[type="date"] {
 
 /* ==================== Tree View ==================== */
 .tree-item {
-  border-right: 2px solid transparent;
+  border-inline-start: 2px solid transparent;
   transition: all 0.2s ease;
 }
 
 .tree-item:hover {
-  border-right-color: var(--primary-500);
+  border-inline-start-color: var(--primary-500);
   background: rgba(255, 255, 255, 0.02);
 }
 
@@ -734,8 +733,8 @@ select {
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: left 10px center;
-  padding-left: 32px;
+  background-position: inline-start 10px center;
+  padding-inline-start: 32px;
   outline: none;
   cursor: pointer;
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -788,7 +787,7 @@ select option {
 }
 
 .tree-children {
-  padding-right: 24px;
+  padding-inline-start: 24px;
 }
 
 /* ==================== Empty State ==================== */

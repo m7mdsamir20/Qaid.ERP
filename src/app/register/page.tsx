@@ -128,7 +128,7 @@ export default function RegisterPage() {
                 value={(form as any)[name]}
                 onChange={e => setForm({ ...form, [name]: e.target.value })}
                 placeholder={placeholder}
-                style={{ ...IS, height: '44px', textAlign: isRtl ? 'right' : 'left' }}
+                style={{ ...IS, height: '44px', textAlign: 'start' }}
                 onFocus={focusIn}
                 onBlur={focusOut}
                 spellCheck={false}
@@ -271,7 +271,7 @@ export default function RegisterPage() {
                                             <div style={{ padding: '12px', borderBottom: `1px solid ${C.border}`, position: 'relative', background: 'rgba(255,255,255,0.01)' }}>
                                                 <Search size={14} style={{ position: 'absolute', insetInlineStart: '22px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                                 <input placeholder={t("ابحث عن الدولة...")} value={countrySearch} onChange={e => setCountrySearch(e.target.value)}
-                                                    style={{ width: '100%', height: '36px', padding: '0 32px 0 10px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '12.5px', outline: 'none', fontFamily: CAIRO, direction: 'rtl', boxSizing: 'border-box' }}
+                                                    style={{ width: '100%', height: '36px', padding: '0 32px 0 10px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '12.5px', outline: 'none', fontFamily: CAIRO, direction: 'inherit', boxSizing: 'border-box' }}
                                                     autoFocus
                                                 />
                                             </div>
@@ -360,7 +360,7 @@ export default function RegisterPage() {
                                             ...IS, height: '44px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: 'ltr', textAlign: isRtl ? 'right' : 'left'
+                                            direction: 'ltr', textAlign: 'start'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
@@ -386,7 +386,7 @@ export default function RegisterPage() {
                                             ...IS, height: '44px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: 'ltr', textAlign: isRtl ? 'right' : 'left'
+                                            direction: 'ltr', textAlign: 'start'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}

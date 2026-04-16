@@ -226,7 +226,7 @@ export default function FixedAssetsPage() {
 
                 {/* Main Table */}
                 <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                 {[

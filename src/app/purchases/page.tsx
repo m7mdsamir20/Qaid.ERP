@@ -150,13 +150,13 @@ export default function PurchasesListPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true), textAlign: isRtl ? 'right' : 'left' }}>{t("رقم الفاتورة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("التاريخ")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("المورد")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الإجمالي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("المدفوع")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("المتبقي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{t("الحالة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true), textAlign: 'start' }}>{t("رقم الفاتورة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("المورد")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("الإجمالي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("المدفوع")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("المتبقي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("الحالة")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
                                     </tr>
                                 </thead>
@@ -169,21 +169,21 @@ export default function PurchasesListPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: isRtl ? 'right' : 'left' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: 'start' }}>
                                                     PUR-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: isRtl ? 'right' : 'left' }}>{inv.supplier?.name || inv.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER, textAlign: 'start' }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>{inv.supplier?.name || inv.customer?.name || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: INTER, textAlign: 'start' }}>
                                                     {fmt(inv.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: INTER, textAlign: 'start' }}>
                                                     {fmt(inv.paidAmount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: INTER, textAlign: isRtl ? 'right' : 'left' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: INTER, textAlign: 'start' }}>
                                                     {fmt(inv.remaining)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
                                                     <div style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,

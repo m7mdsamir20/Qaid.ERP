@@ -153,7 +153,7 @@ function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
       border: `1px solid ${C.border}`,
       borderRadius: '12px', padding: '12px 16px',
       fontSize: '13px', color: C.textPrimary,
-      direction: 'rtl', boxShadow: '0 10px 25px rgba(0,0,0,0.4)',
+      direction: 'inherit', boxShadow: '0 10px 25px rgba(0,0,0,0.4)',
       backdropFilter: 'blur(8px)'
     }}>
       <div style={{ fontWeight: 700, marginBottom: '8px', color: C.textSecondary, fontFamily: CAIRO }}>{label}</div>

@@ -68,7 +68,7 @@ export default function DailyReportPage() {
                         <div style={{ width: '180px' }}>
                             <input type="date" value={date} onChange={e => setDate(e.target.value)}
                                 style={{
-                                    width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
+                                    width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '8px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textSecondary, fontSize: '13px',
                                     fontWeight: 500, outline: 'none', fontFamily: INTER

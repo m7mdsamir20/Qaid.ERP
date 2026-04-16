@@ -335,7 +335,7 @@ export default function ItemsPage() {
                         {kpiFilter !== 'all' && (
                             <button onClick={() => setKpiFilter('all')}
                                 style={{
-                                    position: 'absolute', [isRtl ? 'left' : 'right']: '12px', top: '50%', transform: 'translateY(-50%)',
+                                    position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)',
                                     background: 'rgba(255,255,255,0.05)', border: 'none', color: C.textMuted,
                                     borderRadius: '4px', fontSize: '10px', padding: '2px 6px', cursor: 'pointer'
                                 }}
@@ -375,9 +375,9 @@ export default function ItemsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true), textAlign: isRtl ? 'right' : 'left' }}>{t("الكود")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true), textAlign: 'start' }}>{t("الكود")}</th>
                                         {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الباركود")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: isRtl ? 'right' : 'left' }}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الكمية")}</th>}
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("سعر التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
@@ -396,11 +396,11 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: isRtl ? 'right' : 'left' }}><div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}><div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                     <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: INTER, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'right' : 'left' }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, textAlign: 'center' }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}

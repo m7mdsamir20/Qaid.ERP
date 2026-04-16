@@ -51,7 +51,7 @@ export default function TrialBanner() {
             display:      'flex',
             alignItems:   'center',
             gap:          '12px',
-            direction:    'rtl',
+            direction: 'inherit',
         }}>
             <span style={{ fontSize: '18px' }}>{icon}</span>
 

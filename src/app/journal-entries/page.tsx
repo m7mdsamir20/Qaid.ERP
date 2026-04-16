@@ -349,7 +349,7 @@ export default function JournalEntriesPage() {
                                                     <tr style={{ background: 'rgba(37,106,244,0.03)' }}>
                                                         <td colSpan={7} style={{ padding: '0 20px 20px' }}>
                                                             <div style={{ animation: 'fadeIn 0.2s ease', background: 'rgba(0,0,0,0.15)', borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden', marginTop: '10px' }}>
-                                                                <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
+                                                                <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
                                                                     <thead>
                                                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                                             <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب')}</th>
@@ -463,7 +463,7 @@ export default function JournalEntriesPage() {
 
                                 {/* Lines Table */}
                                 <div style={{ border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', marginBottom: '20px' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
                                         <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                                             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>

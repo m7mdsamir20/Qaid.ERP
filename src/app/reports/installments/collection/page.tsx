@@ -21,7 +21,7 @@ const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const IS: React.CSSProperties = {
-    height: '38px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
+    height: '38px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
     borderRadius: '8px', border: `1px solid ${C.border}`,
     background: 'rgba(255,255,255,0.04)', color: '#e2e8f0',
     fontSize: '12px', outline: 'none', boxSizing: 'border-box',
@@ -92,7 +92,7 @@ export default function CollectionReportPage() {
                         <input type="date" value={form.from}
                             onChange={e => setForm(f => ({ ...f, from: e.target.value }))}
                             style={{ 
-                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
+                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                 borderRadius: '12px', border: `1px solid ${C.border}`,
                                 background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                 fontWeight: 600, outline: 'none', fontFamily: INTER
@@ -105,7 +105,7 @@ export default function CollectionReportPage() {
                         <input type="date" value={form.to}
                             onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
                             style={{ 
-                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'rtl',
+                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                 borderRadius: '12px', border: `1px solid ${C.border}`,
                                 background: C.card, color: C.textPrimary, fontSize: '13.5px',
                                 fontWeight: 600, outline: 'none', fontFamily: INTER

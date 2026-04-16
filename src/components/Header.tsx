@@ -447,7 +447,7 @@ function BranchSwitcher() {
                                 style={{
                                     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
                                     padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: isRtl ? 'right' : 'left', boxSizing: 'border-box',
+                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box',
                                     background: !activeBranchId || activeBranchId === 'all' ? `${C.primary}15` : 'transparent',
                                     color: !activeBranchId || activeBranchId === 'all' ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: (!activeBranchId || activeBranchId === 'all') ? 800 : 600,
@@ -464,7 +464,7 @@ function BranchSwitcher() {
                                 style={{
                                     width: '100%', display: 'flex', alignItems: 'center', gap: '10px',
                                     padding: '10px 14px', borderRadius: '12px', border: 'none', cursor: 'pointer',
-                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: isRtl ? 'right' : 'left', boxSizing: 'border-box',
+                                    fontFamily: CAIRO, fontSize: '13.5px', textAlign: 'start', boxSizing: 'border-box',
                                     background: activeBranchId === b.id ? `${C.primary}15` : 'transparent',
                                     color: activeBranchId === b.id ? C.primary : C.textSecondary,
                                     transition: '0.15s', fontWeight: activeBranchId === b.id ? 800 : 500,

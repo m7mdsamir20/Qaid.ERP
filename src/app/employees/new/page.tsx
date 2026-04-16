@@ -119,7 +119,7 @@ export default function NewEmployeePage() {
                                         <input type="text" value={form.nationalId} onChange={e => set('nationalId')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("الرقم القومي المكون من 14 رقم")} maxLength={14} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: INTER }} />
                                     </Field>
                                     <Field label={t("تاريخ الميلاد")}>
-                                        <input type="date" value={form.birthDate} onChange={e => set('birthDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'rtl' }} />
+                                        <input type="date" value={form.birthDate} onChange={e => set('birthDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'inherit' }} />
                                     </Field>
                                     <Field label={t("الجنس")}>
                                         <CustomSelect 
@@ -161,7 +161,7 @@ export default function NewEmployeePage() {
                                         <input type="text" value={form.position} onChange={e => set('position')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("مثال: محاسب أول")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px' }} />
                                     </Field>
                                     <Field label={t("تاريخ التعيين")} required>
-                                        <input type="date" required value={form.hireDate} onChange={e => set('hireDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'rtl' }} />
+                                        <input type="date" required value={form.hireDate} onChange={e => set('hireDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'inherit' }} />
                                     </Field>
                                     <Field label={t("حالة الموظف")}>
                                         <CustomSelect 

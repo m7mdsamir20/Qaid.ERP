@@ -217,7 +217,7 @@ export default function DepreciationPage() {
                                 <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: INTER }}>{fmt(totalCalculatedDep)} {t('ج.م')}</b></span>
                             </div>
                         </div>
-                        <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                     {[

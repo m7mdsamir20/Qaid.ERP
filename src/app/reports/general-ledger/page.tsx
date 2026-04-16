@@ -31,7 +31,7 @@ const getCurrencyName = (code: string) => {
 };
 
 const IS_LOCAL: React.CSSProperties = {
-    width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: 'rtl',
+    width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: 'inherit',
     borderRadius: '10px', border: `1px solid ${C.border}`,
     background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '12px',
     fontWeight: 500, outline: 'none', transition: 'border-color 0.15s', boxSizing: 'border-box',

@@ -105,7 +105,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 {/* Print Branding (Hidden in Web) */}
                 <div className="print-only" style={{ display: 'none', textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: '30px', marginBottom: '30px' }}>
                     <h1 style={{ fontSize: '28px', color: '#000', margin: '0 0 10px 0' }}>{t('كشف حساب تفصيلي')}</h1>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'rtl', textAlign: 'start', fontSize: '14px', color: '#000' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'inherit', textAlign: 'start', fontSize: '14px', color: '#000' }}>
                         <div><strong>{t('اسم العميل:')}</strong> {customer.name}</div>
                         {customer.phone && <div><strong>{t('رقم الهاتف:')}</strong> {customer.phone}</div>}
                         <div><strong>{t('تاريخ الطباعة:')}</strong> {new Date().toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}</div>

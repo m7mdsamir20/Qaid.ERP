@@ -457,7 +457,7 @@ export default function ComprehensiveSettlementPage() {
                             </div>
 
                             <div style={{ border: `1px solid ${C.border}`, borderRadius: '8px', overflow: 'hidden' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'rtl' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                                         <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ padding: '10px 16px', textAlign: 'start', color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>{t('الحساب المتأثر')}</th>

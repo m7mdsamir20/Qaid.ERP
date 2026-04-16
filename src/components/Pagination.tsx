@@ -48,7 +48,7 @@ export default function Pagination({ total, pageSize, currentPage, onPageChange 
                     <ChevronRight size={18} />
                 </button>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', direction: 'rtl' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', direction: 'inherit' }}>
                     <div style={{ 
                         height: '36px', padding: '0 16px', borderRadius: '10px', 
                         background: C.primaryBg, border: `1px solid ${C.primaryBorder}`,
