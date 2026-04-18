@@ -244,7 +244,8 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
         ${isBilingual ? `<div class="inv-title-en">${!isTrading || isServicesLine ? (isSale ? 'Service Invoice' : 'Purchase Service Invoice') : titleEn}</div>` : ''}
         ${isSaudi ? `<div style="font-size:10px;color:#888;margin-top:2px">فاتورة ضريبية مبسطة / Simplified Tax Invoice</div>` : ''}
-        <div class="inv-num">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</div>
+        <div class="inv-num" style="margin-top:6px; font-size:13px;">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</div>
+        <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
     </div>
     <div class="co-block" style="flex:1; text-align:left">
         ${isSaudi ? `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}" style="width:80px;height:80px;display:inline-block;" alt="ZATCA QR" />` : ''}
@@ -289,15 +290,7 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
         </div>
     </div>
 
-    <!-- بيانات الفاتورة -->
-    <div class="info-box">
-        <div class="info-title">${blInline('بيانات الفاتورة', 'Invoice Details')}</div>
-        <div class="info-body">
-            <div class="info-row"><span class="ik">${blInline('رقم الفاتورة', 'Invoice No.')}:</span><span class="iv">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</span></div>
-            <div class="info-row"><span class="ik">${blInline('التاريخ', 'Date')}:</span><span class="iv">${date}</span></div>
-            ${invoice.dueDate ? `<div class="info-row"><span class="ik">${blInline('تاريخ الاستحقاق', 'Due Date')}:</span><span class="iv">${new Date(invoice.dueDate).toLocaleDateString('en-GB')}</span></div>` : ''}
-        </div>
-    </div>
+
 </div>
 
 <table>
@@ -351,97 +344,82 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
     </tbody>
 </table>
 
-<div class="bottom-wrap">
-    <div style="flex:1">
-        ${(() => {
-            const cleanNotes = (invoice.notes || '').replace(/\(تم التحويل من عرض سعر رقم: \d+\)/g, '').trim();
-            if (!cleanNotes) return '';
-            return `
-        <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-top:10px">
-            <strong>${blInline('ملاحظات', 'Notes')}: </strong>${cleanNotes}
-        </div>`;
-        })()}
+<div class="bottom-wrap" style="flex-direction: column; gap: 0;">
+    ${(() => {
+        const cleanNotes = (invoice.notes || '').replace(/\(تم التحويل من عرض سعر رقم: \d+\)/g, '').trim();
+        if (!cleanNotes) return '';
+        return `
+    <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-bottom:10px; width:100%">
+        <strong>${blInline('ملاحظات', 'Notes')}: </strong>${cleanNotes}
+    </div>`;
+    })()}
+    
+    <!-- Totals Table Structure -->
+    <div style="width: 100%; display: flex; gap: 8px; margin-top: 10px;">
+        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
+            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('الإجمالي غير شامل الضريبة', 'Total (Excluding VAT)') : bl('الإجمالي (قبل الخصم)', 'Subtotal')}</div>
+            <div style="font-size: 13px; font-weight: 900; color: #111;">${subtotal.toLocaleString()} ${sym}</div>
+        </div>
+        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
+            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('مجموع الخصومات', 'Total Discounts') : bl('الخصم', 'Discount')}</div>
+            <div style="font-size: 13px; font-weight: 900; color: #111;">${discount.toLocaleString()} ${sym}</div>
+        </div>
+        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
+            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('الإجمالي الخاضع للضريبة', 'Total Taxable Amount') : bl('الإجمالي الخاضع للضريبة', 'Total Taxable Amount')}</div>
+            <div style="font-size: 13px; font-weight: 900; color: #111;">${(subtotal - discount).toLocaleString()} ${sym}</div>
+        </div>
+        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
+            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">
+                ${isSaudi ? bl('مجموع ضريبة القيمة المضافة', 'Total VAT') : bl('إجمالي الضريبة', 'Total VAT')}
+            </div>
+            <div style="font-size: 13px; font-weight: 900; color: #111;">
+                ${(() => {
+                    const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+                        : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+                    return displayTax.toLocaleString();
+                })()} ${sym}
+            </div>
+        </div>
     </div>
     
-    <div class="totals">
-        <!-- الإجمالي -->
-        <div class="t-row">
-            <span>${isSaudi ? bl('الإجمالي غير شامل الضريبة', 'Total (Excluding VAT)') : bl('الإجمالي (قبل الخصم)', 'Subtotal')}</span>
-            <span>${subtotal.toLocaleString()} ${sym}</span>
+    <div style="width: 100%; display: flex; gap: 8px; margin-top: 8px;">
+        <div style="flex:1; border: 2px solid #111; border-radius: 8px; text-align: center; padding: 6px; background: #f0f0f0;">
+            <div style="font-size: 10px; color: #333; margin-bottom: 4px; font-weight: 900;">${isSaudi ? bl('إجمالي المبلغ المستحق', 'Total Amount Due') : bl('صافي هذه الفاتورة', 'Net Invoice')}</div>
+            <div style="font-size: 15px; font-weight: 900; color: #111;">${total.toLocaleString()} ${sym}</div>
         </div>
-
-        <!-- الخصومات -->
-        ${(discount > 0 || isSaudi) ? `
-        <div class="t-row">
-            <span>${isSaudi ? bl('مجموع الخصومات', 'Total Discounts') : bl('الخصم', 'Discount')}</span>
-            <span>${discount.toLocaleString()} ${sym}</span>
-        </div>` : ''}
-
-        <!-- الإجمالي الخاضع للضريبة (يظهر في السعودية) -->
-        ${isSaudi ? `
-        <div class="t-row" style="background:#f9fafb">
-            <span>${bl('الإجمالي الخاضع لضريبة القيمة المضافة', 'Total Taxable Amount')}</span>
-            <span>${(subtotal - discount).toLocaleString()} ${sym}</span>
-        </div>` : ''}
-
-        <!-- الضريبة -->
-        ${(() => {
-            const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
-                : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
-            if (displayTax === 0 && !isSaudi) return '';
-            return `
-        <div class="t-row" style="background:#fffbe6;font-weight:800">
-            <span>${isSaudi ? bl('مجموع ضريبة القيمة المضافة', 'Total VAT') : bl('إجمالي الضريبة', 'Total VAT')} (${invoiceTaxRate}%)</span>
-            <span>${displayTax.toLocaleString()} ${sym}</span>
-        </div>`;
-        })()}
-
-        <div class="t-main t-row" style="background:#f0f0f0; border-top: 1.5px solid #111">
-            <span>${isSaudi ? bl('إجمالي المبلغ المستحق', 'Total Amount Due') : bl('صافي هذه الفاتورة', 'Net Invoice')}</span>
-            <span>${total.toLocaleString()} ${sym}</span>
+        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
+            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('المبلغ المدفوع', 'Amount Paid') : bl('المبلغ المدفوع حالياً', 'Amount Paid')}</div>
+            <div style="font-size: 13px; font-weight: 900; color: #111;">${paid.toLocaleString()} ${sym}</div>
         </div>
-
-        ${(partyBalance !== null && !isSaudi) ? (() => {
-            const currentTransaction = isSale ? (total - paid) : (paid - total);
-            const oldBalance = Number(partyBalance) - currentTransaction;
-            const formatBal = (val: number) => {
-                const abs = Math.abs(val).toLocaleString();
-                const suffix = isSale
-                    ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
-                    : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-                return `${abs} ${sym}${suffix}`;
-            };
-            return `
-            <div class="t-row t-subtotal">
-                <span>${bl('الرصيد السابق لـ ' + partyLabel, 'Previous Balance')}</span>
-                <span>${formatBal(oldBalance)}</span>
-            </div>`;
-        })() : ''}
-
-        <div class="t-row">
-            <span>${isSaudi ? bl('المبلغ المدفوع', 'Amount Paid') : bl('المبلغ المدفوع حالياً', 'Amount Paid')}</span>
-            <span>${paid.toLocaleString()} ${sym}</span>
+        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
+            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('المتبقي المستحق', 'Remaining Amount') : bl('متبقي من هذه الفاتورة', 'Remaining')}</div>
+            <div style="font-size: 13px; font-weight: 900; color: #111;">${remaining.toLocaleString()} ${sym}</div>
         </div>
-        <div class="t-row">
-            <span>${isSaudi ? bl('المتبقي المستحق', 'Remaining Amount') : bl('متبقي من هذه الفاتورة', 'Remaining')}</span>
-            <span>${remaining.toLocaleString()} ${sym}</span>
-        </div>
-
-        ${(partyBalance !== null && !isSaudi) ? (() => {
-            const formatBal = (val: number) => {
-                const abs = Math.abs(val).toLocaleString();
-                const suffix = isSale
-                    ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
-                    : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-                return `${abs} ${sym}${suffix}`;
-            };
-            return `
-            <div class="t-row t-main" style="border-top: 1.5px solid #888; border-bottom: none">
-                <span>${bl('إجمالي رصيد ' + partyLabel + ' نهائياً', 'Total ' + partyLabelEn + ' Balance')}</span>
-                <span>${formatBal(Number(partyBalance))}</span>
-            </div>`;
-        })() : ''}
     </div>
+
+    ${(partyBalance !== null && !isSaudi) ? (() => {
+        const currentTransaction = isSale ? (total - paid) : (paid - total);
+        const oldBalance = Number(partyBalance) - currentTransaction;
+        const formatBal = (val: number) => {
+            const abs = Math.abs(val).toLocaleString();
+            const suffix = isSale
+                ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
+                : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
+            return `${abs} ${sym}${suffix}`;
+        };
+        return `
+        <div style="width: 100%; display: flex; gap: 8px; margin-top: 8px;">
+            <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #f9fafb;">
+                <div style="font-size: 10.5px; color: #555; margin-bottom: 4px; font-weight: 700;">${bl('الرصيد السابق لـ ' + partyLabel, 'Previous Balance')}</div>
+                <div style="font-size: 12px; font-weight: 800; color: #111;">${formatBal(oldBalance)}</div>
+            </div>
+            <div style="flex:1; border: 2px solid #888; border-radius: 8px; text-align: center; padding: 6px; background: #f0f0f0;">
+                <div style="font-size: 10.5px; color: #333; margin-bottom: 4px; font-weight: 900;">${bl('إجمالي رصيد ' + partyLabel + ' نهائياً', 'Total ' + partyLabelEn + ' Balance')}</div>
+                <div style="font-size: 14px; font-weight: 900; color: #111;">${formatBal(Number(partyBalance))}</div>
+            </div>
+            <div style="flex:1;"></div>
+        </div>`;
+    })() : ''}
 </div>
 
 <div class="footer">
