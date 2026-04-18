@@ -194,7 +194,7 @@ export function generateA4HTML(
     --page-padding: ${isA5 ? '3mm 5mm' : '4mm 8mm'};
 }
 body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
-.page{width:100%; max-width: ${paperW}; min-height: ${paperH}; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column;gap:${isA5 ? '3px' : '5px'}}
+.page{width:100%; max-width: 850px; min-height: ${paperH}; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column;gap:${isA5 ? '3px' : '5px'}; background: #fff;}
 @media print {
     @page { 
         size: ${isA5 ? 'A5 portrait' : 'A4 portrait'}; 
