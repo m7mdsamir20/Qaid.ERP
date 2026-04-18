@@ -182,11 +182,11 @@ export function generateA4HTML(
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-size:12px;background:#fff;direction:rtl}
-.page{width:100%;max-width: ${tConfig.paperSize === 'A5' ? '148mm' : '100%'}; margin:0 auto;padding:5mm 10mm;display:flex;flex-direction:column;gap:8px}
+body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-size:11px;background:#fff;direction:rtl}
+.page{width:100%; max-width: ${tConfig.paperSize === 'A5' ? '148mm' : '100%'}; min-height: ${tConfig.paperSize === 'A5' ? '210mm' : 'auto'}; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column;gap:5px}
 
 /* ── HEADER ── */
-.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid #111;margin-bottom:0px}
+.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
 .co-block{flex:1;text-align:right}
 .co-name{font-size:16px;font-weight:900;color:#111;margin-bottom:2px}
 .co-name-en{font-size:13px;font-weight:700;color:#555;margin-bottom:2px;font-family:sans-serif}
@@ -209,13 +209,13 @@ body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-s
 
 table{width:100%;border-collapse:collapse;border:${tableBorder}}
 thead{background:#f0f0f0; color: #111;}
-thead th{padding:6px 8px;font-size:10.5px;font-weight:900;color:#111;text-align:center;border:${tableBorder};line-height:1.3;white-space:nowrap}
-tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border-left:${cellBorder};border-right:${cellBorder};vertical-align:middle;white-space:nowrap}
+thead th{padding:4px 3px;font-size:10px;font-weight:900;color:#111;text-align:center;border:${tableBorder};line-height:1.2;white-space:nowrap}
+tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border-left:${cellBorder};border-right:${cellBorder};vertical-align:middle;white-space:nowrap}
 tbody tr{border-bottom:${rowBorder}; background: #fff;}
 tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fafb' : '#fff'};}
-.item-name{font-weight:800;font-size:11px}
+.item-name{font-weight:800;font-size:10px}
 
-.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-top:8px}
+.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-top:5px}
 .totals{min-width:260px;border:1.5px solid #333;border-radius:8px;overflow:hidden;background:#fff}
 .t-row{display:flex;justify-content:space-between;padding:4px 10px;border-bottom:1px solid #ddd;font-size:11px}
 .t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #333}
@@ -738,16 +738,16 @@ export function generateQuotationHTML(
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;direction:rtl}
-.page{width:100%;margin:0 auto;padding:5mm 10mm;display:flex;flex-direction:column;gap:8px}
-.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid #111;margin-bottom:0px}
+body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;direction:rtl}
+.page{width:100%;margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column;gap:5px}
+.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
 .co-block{flex:1;text-align:right}
 .co-name{font-size:16px;font-weight:900;color:#111;margin-bottom:2px}
 .co-name-en{font-size:13px;font-weight:700;color:#555;margin-bottom:2px;font-family:sans-serif}
 .co-line{font-size:10px;color:#444;line-height:1.6}
 .header-center{flex:1;text-align:center}
-.inv-title{font-size:17px;font-weight:900;color:#111;background:#f5f5f5;padding:4px 18px;border-radius:8px;display:inline-block;border:1.5px solid #ccc}
-.inv-title-en{font-size:13px;font-weight:700;color:#555;margin-top:2px;font-family:sans-serif}
+.inv-title{font-size:16px;font-weight:900;color:#111;background:#f5f5f5;padding:3px 15px;border-radius:8px;display:inline-block;border:1.5px solid #ccc}
+.inv-title-en{font-size:12px;font-weight:700;color:#555;margin-top:2px;font-family:sans-serif}
 .inv-num{font-size:11px;color:#333;margin-top:3px;font-family:monospace;font-weight:700}
 .logo-block{flex:1;text-align:left}
 .logo-block img{max-height:80px;max-width:150px;object-fit:contain}
@@ -757,10 +757,10 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 .info-row{font-size:10.5px;margin-bottom:3px}
 .ik{color:#777;min-width:80px;display:inline-block}
 .iv{color:#111;font-weight:800}
-table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-top:8px}
+table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-top:5px}
 thead{background:#f0f0f0}
-thead th{padding:6px 4px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333;white-space:nowrap}
-tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border:1px solid #666;vertical-align:middle;white-space:nowrap}
+thead th{padding:4px 3px;font-size:10px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333;white-space:nowrap}
+tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1px solid #666;vertical-align:middle;white-space:nowrap}
 .summary-wrap{display:flex;justify-content:flex-end;margin-top:8px}
 .totals{min-width:260px;border:1.5px solid #333;border-radius:8px;overflow:hidden}
 .t-row{display:flex;justify-content:space-between;padding:4px 10px;border-bottom:1px solid #ddd;font-size:11px}
