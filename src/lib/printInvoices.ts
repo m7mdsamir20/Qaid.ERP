@@ -208,8 +208,8 @@ body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-s
 .iv{color:#111;font-weight:800}
 
 table{width:100%;border-collapse:collapse;border:${tableBorder}}
-thead{background:${tConfig.primaryColor}; color: #fff;}
-thead th{padding:6px 8px;font-size:10.5px;font-weight:900;color:#fff;text-align:center;border:${tableBorder};line-height:1.3;white-space:nowrap}
+thead{background:#f0f0f0; color: #111;}
+thead th{padding:6px 8px;font-size:10.5px;font-weight:900;color:#111;text-align:center;border:${tableBorder};line-height:1.3;white-space:nowrap}
 tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border-left:${cellBorder};border-right:${cellBorder};vertical-align:middle;white-space:nowrap}
 tbody tr{border-bottom:${rowBorder}; background: #fff;}
 tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fafb' : '#fff'};}
@@ -218,7 +218,7 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
 .bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-top:8px}
 .totals{min-width:260px;border:1.5px solid #333;border-radius:8px;overflow:hidden;background:#fff}
 .t-row{display:flex;justify-content:space-between;padding:4px 10px;border-bottom:1px solid #ddd;font-size:11px}
-.t-main{background:${tConfig.primaryColor};color:#fff;font-weight:900;border-bottom:1px solid #333}
+.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #333}
 .t-subtotal{background:#f9fafb;color:#111;font-weight:700}
 
 .footer{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc}
@@ -241,7 +241,7 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
         ${isSaudi 
             ? (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : `<span style="font-size:16px;font-weight:900;">${co.name}</span>`)
             : (country === 'EG' 
-                ? `<div style="text-align:right; border-right: 5px solid #2563eb; padding-right: 15px;">
+                ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
                      <div style="font-size:13px; color:#333; margin-top:4px; font-weight:700;">${co.addrLines.map(a => a.value).join(' - ')}</div>
                      ${co.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${co.phone}</div>` : ''}
@@ -590,7 +590,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
     <div class="co-block">
       <div style="text-align:right">
         ${country === 'EG' 
-          ? `<div style="border-right: 5px solid #2563eb; padding-right: 15px;">
+          ? `<div style="text-align:right;">
                <div style="font-size:22px; font-weight:900; color:#000;">${company.name || ''}</div>
                <div style="font-size:13px; color:#333; margin-top:4px; font-weight:700;">
                   ${[company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - ')}
@@ -759,7 +759,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:12px;background:#fff;di
 .iv{color:#111;font-weight:800}
 table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-top:8px}
 thead{background:#f0f0f0}
-thead th{padding:6px 8px;font-size:10.5px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333;white-space:nowrap}
+thead th{padding:6px 4px;font-size:11px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333;white-space:nowrap}
 tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border:1px solid #666;vertical-align:middle;white-space:nowrap}
 .summary-wrap{display:flex;justify-content:flex-end;margin-top:8px}
 .totals{min-width:260px;border:1.5px solid #333;border-radius:8px;overflow:hidden}
@@ -777,7 +777,7 @@ tbody td{padding:5px 8px;font-size:11px;color:#1a1a1a;text-align:center;border:1
         <div class="co-block">
             <div style="text-align:right">
               ${country === 'EG' 
-                ? `<div style="border-right: 5px solid #2563eb; padding-right: 15px;">
+                ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
                      <div style="font-size:13px; color:#333; margin-top:4px; font-weight:700;">
                         ${co.addrLines.map(a => a.value).join(' - ')}
