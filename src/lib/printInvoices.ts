@@ -428,14 +428,14 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
                     const formatBal = (val: number) => {
                         const abs = Math.abs(val).toLocaleString();
                         const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-                        return \`\${abs} \${sym}\${suffix}\`;
+                        return `${abs} ${sym}${suffix}`;
                     };
-                    return \`
+                    return `
                     <td rowspan="3" style="width:40%; text-align:center; vertical-align:middle; background:#f9fafb; border: 1px solid #ccc; padding: 10px;">
-                        <div style="font-size:12px; font-weight:700; color:#555; margin-bottom:4px;">الرصيد السابق لـ \${partyLabel}</div>
-                        <div style="font-size:18px; font-weight:900; color:#111;">\${formatBal(oldBalance)}</div>
+                        <div style="font-size:12px; font-weight:700; color:#555; margin-bottom:4px;">الرصيد السابق لـ ${partyLabel}</div>
+                        <div style="font-size:18px; font-weight:900; color:#111;">${formatBal(oldBalance)}</div>
                     </td>
-                    \`;
+                    `;
                 })() : '<td rowspan="3" style="width:40%; border: 1px solid #ccc;"></td>'}
             </tr>
             <tr>
@@ -454,22 +454,22 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
                 const formatBal = (val: number) => {
                     const abs = Math.abs(val).toLocaleString();
                     const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-                    return \`\${abs} \${sym}\${suffix}\`;
+                    return `${abs} ${sym}${suffix}`;
                 };
                 
-                return \`
+                return `
             <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">إجمالي الضريبة \${invoiceTaxRate > 0 ? \`(\${invoiceTaxRate}%)\` : ''}</td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">\${displayTax.toLocaleString()} \${sym}</td>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString()} ${sym}</td>
                 
-                \${(partyBalance !== null) ? \`
+                ${(partyBalance !== null) ? `
                 <td rowspan="4" style="width:40%; text-align:center; vertical-align:middle; background:#e8edf5; border: 1.5px solid #111; padding: 10px;">
-                    <div style="font-size:12px; font-weight:900; color:#111; margin-bottom:4px;">إجمالي رصيد \${partyLabel} نهائياً</div>
-                    <div style="font-size:20px; font-weight:900; color:#111;">\${formatBal(Number(partyBalance))}</div>
+                    <div style="font-size:12px; font-weight:900; color:#111; margin-bottom:4px;">إجمالي رصيد ${partyLabel} نهائياً</div>
+                    <div style="font-size:20px; font-weight:900; color:#111;">${formatBal(Number(partyBalance))}</div>
                 </td>
-                \` : '<td rowspan="4" style="width:40%; border: 1px solid #ccc;"></td>'}
+                ` : '<td rowspan="4" style="width:40%; border: 1px solid #ccc;"></td>'}
             </tr>
-            \`;
+            `;
             })()}
             
             <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
