@@ -237,8 +237,16 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
 <body>
 <div class="page">
 <div class="header">
-    <div class="logo-block" style="flex:1; text-align:right">
-        ${co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : `<span style="font-size:16px;font-weight:900;">${co.name}</span>`}
+    <div class="logo-block" style="flex:1.2; text-align:right">
+        ${isSaudi 
+            ? (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : `<span style="font-size:16px;font-weight:900;">${co.name}</span>`)
+            : `<div style="font-size:15px; font-weight:900; margin-bottom:4px; color:#111;">${co.name}</div>
+               ${co.addrLines.map(a => `<div style="font-size:11px; color:#444; margin-bottom:2px;">${a.value}</div>`).join('')}
+               ${co.phone ? `<div style="font-size:11px; color:#444; margin-bottom:2px;">الهاتف: &rlm;${co.phone}</div>` : ''}
+               ${co.tax ? `<div style="font-size:11px; color:#444; margin-bottom:2px;">رقم ضريبي: &rlm;${co.tax}</div>` : ''}
+               ${co.cr ? `<div style="font-size:11px; color:#444;">سجل تجاري: &rlm;${co.cr}</div>` : ''}
+              `
+        }
     </div>
     <div class="header-center" style="flex:1; text-align:center">
         <div class="inv-title">${!isTrading || isServicesLine ? (isSale ? 'فاتورة خدمات' : 'فاتورة مشتريات خدمات') : title}</div>
@@ -247,13 +255,17 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
         <div class="inv-num" style="margin-top:6px; font-size:13px;">${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</div>
         <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
     </div>
-    <div class="co-block" style="flex:1; text-align:left">
-        ${isSaudi ? `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}" style="width:80px;height:80px;display:inline-block;" alt="ZATCA QR" />` : ''}
+    <div class="co-block" style="flex:1.2; text-align:left">
+        ${isSaudi 
+            ? `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}" style="width:80px;height:80px;display:inline-block;" alt="ZATCA QR" />`
+            : (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : '')
+        }
     </div>
 </div>
 
 <div class="info-wrap">
     <!-- بيانات البائع -->
+    ${isSaudi ? `
     <div class="info-box">
         <div class="info-title">${blInline('بيانات البائع', 'Seller Info')}</div>
         <div class="info-body">
@@ -267,6 +279,7 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
             ${co.cr ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R')}:</span><span class="iv">&rlm;${co.cr}</span></div>` : ''}
         </div>
     </div>
+    ` : ''}
 
     <!-- بيانات الطرف -->
     <div class="info-box">
@@ -355,20 +368,21 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
     })()}
     
     <!-- Totals Table -->
+    ${isSaudi ? `
     <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
         <tbody>
             <tr>
-                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'الإجمالي غير شامل الضريبة' : 'الإجمالي (قبل الخصم)'}</td>
+                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي غير شامل الضريبة</td>
                 <td style="width:20%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${subtotal.toLocaleString()} ${sym}</td>
-                <td style="width:40%; text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'Total (Excluding VAT)' : 'Subtotal'}</td>
+                <td style="width:40%; text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total (Excluding VAT)</td>
             </tr>
             <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'مجموع الخصومات' : 'الخصم'}</td>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">مجموع الخصومات</td>
                 <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString()} ${sym}</td>
-                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'Total Discounts' : 'Discount'}</td>
+                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total Discounts</td>
             </tr>
             <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'الإجمالي الخاضع للضريبة' : 'الإجمالي الخاضع للضريبة'}</td>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي الخاضع للضريبة</td>
                 <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString()} ${sym}</td>
                 <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total Taxable Amount</td>
             </tr>
@@ -378,16 +392,16 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
                 return `
             <tr>
                 <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">
-                    ${isSaudi ? 'مجموع ضريبة القيمة المضافة' : 'إجمالي الضريبة'} ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}
+                    مجموع ضريبة القيمة المضافة ${invoiceTaxRate > 0 ? `(\${invoiceTaxRate}%)` : ''}
                 </td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString()} ${sym}</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">\${displayTax.toLocaleString()} \${sym}</td>
                 <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total VAT</td>
             </tr>`;
             })()}
             <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
-                <td style="text-align:right; font-weight:900; color:#111; padding: 8px;">${isSaudi ? 'إجمالي المبلغ المستحق' : 'صافي الفاتورة'}</td>
+                <td style="text-align:right; font-weight:900; color:#111; padding: 8px;">إجمالي المبلغ المستحق</td>
                 <td style="text-align:center; font-weight:900; font-size:14px; color:#111; padding: 8px;">${total.toLocaleString()} ${sym}</td>
-                <td style="text-align:left; font-weight:900; color:#111; padding: 8px;">${isSaudi ? 'Total Amount Due' : 'Net Invoice'}</td>
+                <td style="text-align:left; font-weight:900; color:#111; padding: 8px;">Total Amount Due</td>
             </tr>
             <tr>
                 <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع</td>
@@ -401,37 +415,78 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
             </tr>
         </tbody>
     </table>
-
-    ${(partyBalance !== null && !isSaudi) ? (() => {
-        const currentTransaction = isSale ? (total - paid) : (paid - total);
-        const oldBalance = Number(partyBalance) - currentTransaction;
-        const formatBal = (val: number) => {
-            const abs = Math.abs(val).toLocaleString();
-            const suffix = isSale
-                ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '')
-                : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-            return `${abs} ${sym}${suffix}`;
-        };
-        return `
-        <div style="width: 100%; display: flex; justify-content: space-between; gap: 10px; margin-top: 10px;">
-            <div style="flex:1; border: 1px solid #333; border-radius: 4px; padding: 8px; text-align: center; background: #f9fafb;">
-                <div style="font-size: 11px; font-weight: 700; color: #333; margin-bottom: 4px;">
-                    <span style="float:right">الرصيد السابق لـ ${partyLabel}</span>
-                    <span style="float:left; color:#666;">Previous Balance</span>
-                    <div style="clear:both"></div>
-                </div>
-                <div style="font-size: 13px; font-weight: 800;">${formatBal(oldBalance)}</div>
-            </div>
-            <div style="flex:1; border: 2px solid #555; border-radius: 4px; padding: 8px; text-align: center; background: #f0f0f0;">
-                <div style="font-size: 11px; font-weight: 900; color: #111; margin-bottom: 4px;">
-                    <span style="float:right">إجمالي رصيد ${partyLabel} نهائياً</span>
-                    <span style="float:left; color:#555;">Total Balance</span>
-                    <div style="clear:both"></div>
-                </div>
-                <div style="font-size: 14px; font-weight: 900;">${formatBal(Number(partyBalance))}</div>
-            </div>
-        </div>`;
-    })() : ''}
+    ` : `
+    <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
+        <tbody>
+            <tr>
+                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي (قبل الخصم)</td>
+                <td style="width:20%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${subtotal.toLocaleString()} ${sym}</td>
+                
+                ${(partyBalance !== null) ? (() => {
+                    const currentTransaction = isSale ? (total - paid) : (paid - total);
+                    const oldBalance = Number(partyBalance) - currentTransaction;
+                    const formatBal = (val: number) => {
+                        const abs = Math.abs(val).toLocaleString();
+                        const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
+                        return \`\${abs} \${sym}\${suffix}\`;
+                    };
+                    return \`
+                    <td rowspan="3" style="width:40%; text-align:center; vertical-align:middle; background:#f9fafb; border: 1px solid #ccc; padding: 10px;">
+                        <div style="font-size:12px; font-weight:700; color:#555; margin-bottom:4px;">الرصيد السابق لـ \${partyLabel}</div>
+                        <div style="font-size:18px; font-weight:900; color:#111;">\${formatBal(oldBalance)}</div>
+                    </td>
+                    \`;
+                })() : '<td rowspan="3" style="width:40%; border: 1px solid #ccc;"></td>'}
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الخصم</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString()} ${sym}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي الخاضع للضريبة</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString()} ${sym}</td>
+            </tr>
+            
+            ${(() => {
+                const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+                    : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+                
+                const formatBal = (val: number) => {
+                    const abs = Math.abs(val).toLocaleString();
+                    const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
+                    return \`\${abs} \${sym}\${suffix}\`;
+                };
+                
+                return \`
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">إجمالي الضريبة \${invoiceTaxRate > 0 ? \`(\${invoiceTaxRate}%)\` : ''}</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">\${displayTax.toLocaleString()} \${sym}</td>
+                
+                \${(partyBalance !== null) ? \`
+                <td rowspan="4" style="width:40%; text-align:center; vertical-align:middle; background:#e8edf5; border: 1.5px solid #111; padding: 10px;">
+                    <div style="font-size:12px; font-weight:900; color:#111; margin-bottom:4px;">إجمالي رصيد \${partyLabel} نهائياً</div>
+                    <div style="font-size:20px; font-weight:900; color:#111;">\${formatBal(Number(partyBalance))}</div>
+                </td>
+                \` : '<td rowspan="4" style="width:40%; border: 1px solid #ccc;"></td>'}
+            </tr>
+            \`;
+            })()}
+            
+            <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
+                <td style="text-align:right; font-weight:900; color:#111; padding: 8px;">صافي الفاتورة</td>
+                <td style="text-align:center; font-weight:900; font-size:14px; color:#111; padding: 8px;">${total.toLocaleString()} ${sym}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع حالياً</td>
+                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${paid.toLocaleString()} ${sym}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">متبقي من هذه الفاتورة</td>
+                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${remaining.toLocaleString()} ${sym}</td>
+            </tr>
+        </tbody>
+    </table>
+    `}
 </div>
 
 </div>
