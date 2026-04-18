@@ -8,7 +8,7 @@ import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import {
     Settings as SettingsIcon, Building2, Globe, Bell,
-    Shield, Database, AlertCircle,
+    Shield, Database, AlertCircle, FileText,
     CreditCard, CheckCircle2, Percent, Loader2, Store
 } from 'lucide-react';
 import {
@@ -26,6 +26,7 @@ import UsersTab from './_tabs/UsersTab';
 import SubscriptionTab from './_tabs/SubscriptionTab';
 import BranchesTab from './_tabs/BranchesTab';
 import DatabaseTab from './_tabs/DatabaseTab';
+import InvoiceTemplatesTab from './_tabs/InvoiceTemplatesTab';
 
 /* ══════════════════════════════════════════
    MAIN PAGE
@@ -714,6 +715,7 @@ function SettingsContent() {
         { id: 'branches', icon: Store, label: t('الفروع'), featureKey: 'settings', pageId: '/settings/branches' },
         { id: 'notifications', icon: Bell, label: t('الإشعارات'), featureKey: 'settings', pageId: '/settings/notifications' },
         { id: 'tax', icon: Percent, label: t('الضريبة'), featureKey: 'settings', pageId: '/settings/tax' },
+        { id: 'invoice_templates', icon: FileText, label: t('قوالب الطباعة'), featureKey: 'settings', pageId: '/settings/invoice_templates' },
         { id: 'users', icon: Shield, label: t('المستخدمين والصلاحيات'), featureKey: 'settings', pageId: '/settings/users' },
         { id: 'subscription', icon: CreditCard, label: t('الاشتراك والخطة'), featureKey: 'settings', pageId: '/settings/subscription' },
         { id: 'database', icon: Database, label: t('قواعد البيانات'), featureKey: 'settings', pageId: '/settings/database' },
@@ -922,6 +924,13 @@ function SettingsContent() {
                                 setSelectedWarehouseId={setSelectedWarehouseId}
                                 handleImportFileChange={handleImportFileChange}
                                 processImport={processImport}
+                            />
+                        )}
+
+                        {activeTab === 'invoice_templates' && (
+                            <InvoiceTemplatesTab
+                                company={company}
+                                showToast={showToast}
                             />
                         )}
 
