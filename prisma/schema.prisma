@@ -70,7 +70,7 @@ model Company {
   quotations           Quotation[]
   warehouses           Warehouse[]
   warehouseTransfers   WarehouseTransfer[]
-  invoiceTemplates     InvoiceTemplate[]
+
 }
 
 model Branch {
@@ -857,19 +857,4 @@ model QuotationLine {
   taxAmount   Float?    @default(0)
   item        Item      @relation(fields: [itemId], references: [id])
   quotation   Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
-}
-
-model InvoiceTemplate {
-  id             String   @id @default(cuid())
-  name           String
-  invoiceType    String   // sales | purchase | sales_return | purchase_return
-  taxInvoiceType String   @default("simplified") // standard | simplified
-  isDefault      Boolean  @default(false)
-  layoutConfig   Json     // JSONB — stores all toggle/design settings
-  companyId      String
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  company        Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
-
-  @@index([companyId, invoiceType])
 }
