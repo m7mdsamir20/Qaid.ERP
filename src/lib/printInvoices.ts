@@ -174,6 +174,10 @@ export function generateA4HTML(
     const cellBorder = tConfig.tableStyle === 'striped' ? 'none' : (tConfig.tableStyle === 'minimal' ? 'none' : '1px solid #666');
     const rowBorder = tConfig.tableStyle === 'striped' ? '1px solid #ccc' : 'none';
 
+    const isA5 = tConfig.paperSize === 'A5';
+    const paperW = isA5 ? '148mm' : '210mm';
+    const paperH = isA5 ? '210mm' : 'auto';
+
     const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -182,8 +186,20 @@ export function generateA4HTML(
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-size:11px;background:#fff;direction:rtl}
-.page{width:100%; max-width: ${tConfig.paperSize === 'A5' ? '148mm' : '100%'}; min-height: ${tConfig.paperSize === 'A5' ? '210mm' : 'auto'}; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column;gap:5px}
+:root {
+    --base-font: ${isA5 ? '9px' : '11px'};
+    --header-name: ${isA5 ? '16px' : '21px'};
+    --title-font: ${isA5 ? '13px' : '17px'};
+    --logo-h: ${isA5 ? '45px' : '75px'};
+    --page-padding: ${isA5 ? '3mm 5mm' : '4mm 8mm'};
+}
+body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
+.page{width:100%; max-width: ${paperW}; min-height: ${paperH}; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column;gap:${isA5 ? '3px' : '5px'}}
+@media print {
+    @page { size: ${isA5 ? 'A5' : 'A4'}; margin: 0; }
+    body { background: #fff; }
+    .page { box-shadow: none; margin: 0; width: 100%; max-width: none; }
+}
 
 /* ── HEADER ── */
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
@@ -215,17 +231,17 @@ tbody tr{border-bottom:${rowBorder}; background: #fff;}
 tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fafb' : '#fff'};}
 .item-name{font-weight:800;font-size:10px}
 
-.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-top:5px}
-.totals{min-width:260px;border:1.5px solid #333;border-radius:8px;overflow:hidden;background:#fff}
-.t-row{display:flex;justify-content:space-between;padding:4px 10px;border-bottom:1px solid #ddd;font-size:11px}
-.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #333}
+.bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-top:3px}
+.totals{min-width:${isA5 ? '180px' : '260px'};border:1px solid #333;border-radius:6px;overflow:hidden;background:#fff}
+.t-row{display:flex;justify-content:space-between;padding:${isA5 ? '2px 6px' : '4px 10px'};border-bottom:1px solid #ddd;font-size:${isA5 ? '8.5px' : '10px'}}
+.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #333;font-size:${isA5 ? '10px' : '12px'}}
 .t-subtotal{background:#f9fafb;color:#111;font-weight:700}
 
-.footer{margin-top:8px;padding-top:8px;border-top:1px dashed #ccc}
+.footer{margin-top:5px;padding-top:4px;border-top:1px dashed #ccc}
 .footer-inner{display:flex;justify-content:space-between;align-items:flex-end}
-.sig-box{text-align:center;min-width:130px}
-.sig-label{font-size:10px;font-weight:800;color:#333;margin-bottom:26px}
-.sig-line{border-top:1px solid #111;padding-top:3px;font-size:10px;font-weight:800}
+.sig-box{text-align:center;min-width:${isA5 ? '100px' : '130px'}}
+.sig-label{font-size:${isA5 ? '8.5px' : '9.5px'};font-weight:800;color:#333;margin-bottom:${isA5 ? '15px' : '22px'}}
+.sig-line{border-top:1px solid #111;padding-top:2px;font-size:${isA5 ? '8.5px' : '9.5px'};font-weight:800}
 .qr-box{text-align:center;padding:4px}
 .qr-box canvas{display:block;margin:0 auto}
 .qr-label{font-size:10px;color:#666;margin-top:2px}
