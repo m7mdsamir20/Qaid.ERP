@@ -354,46 +354,61 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
     </div>`;
     })()}
     
-    <!-- Totals Table Structure -->
-    <div style="width: 100%; display: flex; gap: 8px; margin-top: 10px;">
-        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
-            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('الإجمالي غير شامل الضريبة', 'Total (Excluding VAT)') : bl('الإجمالي (قبل الخصم)', 'Subtotal')}</div>
-            <div style="font-size: 13px; font-weight: 900; color: #111;">${subtotal.toLocaleString()} ${sym}</div>
-        </div>
-        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
-            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('مجموع الخصومات', 'Total Discounts') : bl('الخصم', 'Discount')}</div>
-            <div style="font-size: 13px; font-weight: 900; color: #111;">${discount.toLocaleString()} ${sym}</div>
-        </div>
-        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
-            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('الإجمالي الخاضع للضريبة', 'Total Taxable Amount') : bl('الإجمالي الخاضع للضريبة', 'Total Taxable Amount')}</div>
-            <div style="font-size: 13px; font-weight: 900; color: #111;">${(subtotal - discount).toLocaleString()} ${sym}</div>
-        </div>
-        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
-            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">
-                ${isSaudi ? bl('مجموع ضريبة القيمة المضافة', 'Total VAT') : bl('إجمالي الضريبة', 'Total VAT')}
+    <!-- Totals Table -->
+    <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
+        <tbody>
+            <tr>
+                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'الإجمالي غير شامل الضريبة' : 'الإجمالي (قبل الخصم)'}</td>
+                <td style="width:20%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${subtotal.toLocaleString()} ${sym}</td>
+                <td style="width:40%; text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'Total (Excluding VAT)' : 'Subtotal'}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'مجموع الخصومات' : 'الخصم'}</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString()} ${sym}</td>
+                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'Total Discounts' : 'Discount'}</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">${isSaudi ? 'الإجمالي الخاضع للضريبة' : 'الإجمالي الخاضع للضريبة'}</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString()} ${sym}</td>
+                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total Taxable Amount</td>
+            </tr>
+            ${(() => {
+                const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+                    : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+                return `
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">
+                    ${isSaudi ? 'مجموع ضريبة القيمة المضافة' : 'إجمالي الضريبة'} ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}
+                </td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString()} ${sym}</td>
+                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total VAT</td>
+            </tr>`;
+            })()}
+            <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
+                <td style="text-align:right; font-weight:900; color:#111; padding: 8px;">${isSaudi ? 'إجمالي المبلغ المستحق' : 'صافي الفاتورة'}</td>
+                <td style="text-align:center; font-weight:900; font-size:14px; color:#111; padding: 8px;">${total.toLocaleString()} ${sym}</td>
+                <td style="text-align:left; font-weight:900; color:#111; padding: 8px;">${isSaudi ? 'Total Amount Due' : 'Net Invoice'}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- Paid & Remaining Row -->
+    <div style="width: 100%; display: flex; justify-content: space-between; gap: 10px; margin-top: 10px;">
+        <div style="flex:1; border: 1px solid #111; border-radius: 4px; padding: 8px; text-align: center; background: #fff;">
+            <div style="font-size: 11px; font-weight: 700; color: #333; margin-bottom: 4px;">
+                <span style="float:right">المبلغ المدفوع</span>
+                <span style="float:left; color:#666;">Amount Paid</span>
+                <div style="clear:both"></div>
             </div>
-            <div style="font-size: 13px; font-weight: 900; color: #111;">
-                ${(() => {
-                    const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
-                        : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
-                    return displayTax.toLocaleString();
-                })()} ${sym}
+            <div style="font-size: 14px; font-weight: 900;">${paid.toLocaleString()} ${sym}</div>
+        </div>
+        <div style="flex:1; border: 1px solid #111; border-radius: 4px; padding: 8px; text-align: center; background: #fff;">
+            <div style="font-size: 11px; font-weight: 700; color: #333; margin-bottom: 4px;">
+                <span style="float:right">المتبقي المستحق</span>
+                <span style="float:left; color:#666;">Remaining Amount</span>
+                <div style="clear:both"></div>
             </div>
-        </div>
-    </div>
-    
-    <div style="width: 100%; display: flex; gap: 8px; margin-top: 8px;">
-        <div style="flex:1; border: 2px solid #111; border-radius: 8px; text-align: center; padding: 6px; background: #f0f0f0;">
-            <div style="font-size: 10px; color: #333; margin-bottom: 4px; font-weight: 900;">${isSaudi ? bl('إجمالي المبلغ المستحق', 'Total Amount Due') : bl('صافي هذه الفاتورة', 'Net Invoice')}</div>
-            <div style="font-size: 15px; font-weight: 900; color: #111;">${total.toLocaleString()} ${sym}</div>
-        </div>
-        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
-            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('المبلغ المدفوع', 'Amount Paid') : bl('المبلغ المدفوع حالياً', 'Amount Paid')}</div>
-            <div style="font-size: 13px; font-weight: 900; color: #111;">${paid.toLocaleString()} ${sym}</div>
-        </div>
-        <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #fff;">
-            <div style="font-size: 10px; color: #555; margin-bottom: 4px; font-weight: 700;">${isSaudi ? bl('المتبقي المستحق', 'Remaining Amount') : bl('متبقي من هذه الفاتورة', 'Remaining')}</div>
-            <div style="font-size: 13px; font-weight: 900; color: #111;">${remaining.toLocaleString()} ${sym}</div>
+            <div style="font-size: 14px; font-weight: 900;">${remaining.toLocaleString()} ${sym}</div>
         </div>
     </div>
 
@@ -408,16 +423,23 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
             return `${abs} ${sym}${suffix}`;
         };
         return `
-        <div style="width: 100%; display: flex; gap: 8px; margin-top: 8px;">
-            <div style="flex:1; border: 1.5px solid #333; border-radius: 8px; text-align: center; padding: 6px; background: #f9fafb;">
-                <div style="font-size: 10.5px; color: #555; margin-bottom: 4px; font-weight: 700;">${bl('الرصيد السابق لـ ' + partyLabel, 'Previous Balance')}</div>
-                <div style="font-size: 12px; font-weight: 800; color: #111;">${formatBal(oldBalance)}</div>
+        <div style="width: 100%; display: flex; justify-content: space-between; gap: 10px; margin-top: 10px;">
+            <div style="flex:1; border: 1px solid #333; border-radius: 4px; padding: 8px; text-align: center; background: #f9fafb;">
+                <div style="font-size: 11px; font-weight: 700; color: #333; margin-bottom: 4px;">
+                    <span style="float:right">الرصيد السابق لـ ${partyLabel}</span>
+                    <span style="float:left; color:#666;">Previous Balance</span>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="font-size: 13px; font-weight: 800;">${formatBal(oldBalance)}</div>
             </div>
-            <div style="flex:1; border: 2px solid #888; border-radius: 8px; text-align: center; padding: 6px; background: #f0f0f0;">
-                <div style="font-size: 10.5px; color: #333; margin-bottom: 4px; font-weight: 900;">${bl('إجمالي رصيد ' + partyLabel + ' نهائياً', 'Total ' + partyLabelEn + ' Balance')}</div>
-                <div style="font-size: 14px; font-weight: 900; color: #111;">${formatBal(Number(partyBalance))}</div>
+            <div style="flex:1; border: 2px solid #555; border-radius: 4px; padding: 8px; text-align: center; background: #f0f0f0;">
+                <div style="font-size: 11px; font-weight: 900; color: #111; margin-bottom: 4px;">
+                    <span style="float:right">إجمالي رصيد ${partyLabel} نهائياً</span>
+                    <span style="float:left; color:#555;">Total Balance</span>
+                    <div style="clear:both"></div>
+                </div>
+                <div style="font-size: 14px; font-weight: 900;">${formatBal(Number(partyBalance))}</div>
             </div>
-            <div style="flex:1;"></div>
         </div>`;
     })() : ''}
 </div>
