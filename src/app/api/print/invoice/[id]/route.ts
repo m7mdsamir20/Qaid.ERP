@@ -30,8 +30,12 @@ export const GET = withProtection(async (request, session, body, context) => {
 
         if (!invoice) return NextResponse.json({ error: 'الفاتورة غير موجودة' }, { status: 404 });
 
+        const template = await prisma.invoiceTemplate.findFirst({
+            where: { companyId, invoiceType: invoice.type || 'sale', isDefault: true }
+        });
+
         const branchName = (session.user as any).branchName || '';
-        return NextResponse.json({ invoice, company: { ...company, branchName } });
+        return NextResponse.json({ invoice, company: { ...company, branchName }, templateConfig: template?.layoutConfig });
     } catch (error: any) {
         return NextResponse.json({ error: 'فشل جلب البيانات', details: error.message }, { status: 500 });
     }
