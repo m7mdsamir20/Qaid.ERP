@@ -389,28 +389,18 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
                 <td style="text-align:center; font-weight:900; font-size:14px; color:#111; padding: 8px;">${total.toLocaleString()} ${sym}</td>
                 <td style="text-align:left; font-weight:900; color:#111; padding: 8px;">${isSaudi ? 'Total Amount Due' : 'Net Invoice'}</td>
             </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع</td>
+                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${paid.toLocaleString()} ${sym}</td>
+                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Amount Paid</td>
+            </tr>
+            <tr>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المتبقي المستحق</td>
+                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${remaining.toLocaleString()} ${sym}</td>
+                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Remaining Amount</td>
+            </tr>
         </tbody>
     </table>
-
-    <!-- Paid & Remaining Row -->
-    <div style="width: 100%; display: flex; justify-content: space-between; gap: 10px; margin-top: 10px;">
-        <div style="flex:1; border: 1px solid #111; border-radius: 4px; padding: 8px; text-align: center; background: #fff;">
-            <div style="font-size: 11px; font-weight: 700; color: #333; margin-bottom: 4px;">
-                <span style="float:right">المبلغ المدفوع</span>
-                <span style="float:left; color:#666;">Amount Paid</span>
-                <div style="clear:both"></div>
-            </div>
-            <div style="font-size: 14px; font-weight: 900;">${paid.toLocaleString()} ${sym}</div>
-        </div>
-        <div style="flex:1; border: 1px solid #111; border-radius: 4px; padding: 8px; text-align: center; background: #fff;">
-            <div style="font-size: 11px; font-weight: 700; color: #333; margin-bottom: 4px;">
-                <span style="float:right">المتبقي المستحق</span>
-                <span style="float:left; color:#666;">Remaining Amount</span>
-                <div style="clear:both"></div>
-            </div>
-            <div style="font-size: 14px; font-weight: 900;">${remaining.toLocaleString()} ${sym}</div>
-        </div>
-    </div>
 
     ${(partyBalance !== null && !isSaudi) ? (() => {
         const currentTransaction = isSale ? (total - paid) : (paid - total);
@@ -444,21 +434,6 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
     })() : ''}
 </div>
 
-<div class="footer">
-    <div class="footer-inner">
-        <div class="sig-box">
-            <div class="sig-label">${bl('توقيع ' + partyLabel, partyLabelEn + ' Signature')}</div>
-            <div class="sig-line">${bl('الاسم والتوقيع', 'Name & Signature')}</div>
-        </div>
-        <div style="text-align:center;font-size:10px;color:#666">
-            ${blInline('شكراً لتعاملكم معنا', 'Thank you for your business')}
-        </div>
-        <div class="sig-box">
-            <div class="sig-label">${bl('توقيع المسؤول', 'Authorized Signature')}</div>
-            <div class="sig-line">${bl('الختم والتوقيع', 'Stamp & Signature')}</div>
-        </div>
-    </div>
-</div>
 </div>
 ${options.noAutoPrint ? '' : (isSaudi ? `
 <script>
