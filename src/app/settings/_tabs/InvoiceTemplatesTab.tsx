@@ -174,7 +174,7 @@ export default function InvoiceTemplatesTab({ showToast, company }: { showToast:
                 noAutoPrint: true,
                 templateConfig: activeTemplate.layoutConfig
             });
-            iframeRef.current.srcDoc = html;
+            iframeRef.current.srcdoc = html;
         }
     }, [activeTemplate, company]);
 
