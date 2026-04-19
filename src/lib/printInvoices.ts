@@ -1113,6 +1113,9 @@ ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.pr
 
 export function printInstallmentPlan(plan: any, company: CompanyInfo = {}) {
     const html = generateInstallmentPlanHTML(plan, company);
-    const win = window.open('', '_blank');
-    if (win) { win.document.write(html); win.document.close(); }
+    const win = window.open('', '_blank', 'width=1000,height=900');
+    if (win) {
+        win.document.write(html);
+        win.document.close();
+    }
 }
