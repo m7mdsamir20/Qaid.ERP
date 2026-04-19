@@ -321,10 +321,21 @@ export default function InstallmentDetailPage() {
                                                             )}
                                                             {inst.status === 'paid' && (
                                                             <button
-                                                                onClick={() => window.open(`/print/installment/${plan.id}`, '_blank')}
-                                                                title={t('طباعة جدول الأقساط')}
+                                                                onClick={() => {
+                                                                    const p = new URLSearchParams({
+                                                                        customerName: plan?.customer?.name || '—',
+                                                                        amount:       String(inst.paidAmount || inst.amount || 0),
+                                                                        paymentType:  'cash',
+                                                                        treasuryName: '',
+                                                                        instNo:       String(inst.installmentNo),
+                                                                        planCode:     `PLAN-${String(plan?.planNumber || 1).padStart(4, '0')}`,
+                                                                        notes:        '',
+                                                                    });
+                                                                    window.open(`/print/installment-receipt?${p.toString()}`, '_blank');
+                                                                }}
+                                                                title={t('طباعة سند قبض')}
                                                                 style={{ width: '32px', height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s', flexShrink: 0 }}
-                                                                onMouseEnter={e => { e.currentTarget.style.color = C.primary; e.currentTarget.style.borderColor = C.primary; }}
+                                                                onMouseEnter={e => { e.currentTarget.style.color = '#10b981'; e.currentTarget.style.borderColor = '#10b981'; }}
                                                                 onMouseLeave={e => { e.currentTarget.style.color = C.textSecondary; e.currentTarget.style.borderColor = C.border; }}
                                                             >
                                                                 <Printer size={14} />

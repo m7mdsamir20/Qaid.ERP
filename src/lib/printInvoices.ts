@@ -543,143 +543,135 @@ export function printA4Invoice(
 }
 
 
-export function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}, options: { noAutoPrint?: boolean } = {}): string {
+export function generateThermalVoucherHTML(voucher: any, type: VoucherType, company: CompanyInfo = {}, options: { noAutoPrint?: boolean; isA5?: boolean } = {}): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
+    const isA5 = options.isA5 || false;
+    
+    const co = {
+        name: company.name || 'اسم الشركة',
+        nameEn: company.nameEn || '',
+        addr: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - '),
+        phone: company.phone || '',
+        logo: company.logo || '',
+        tax: company.taxNumber || '',
+    };
+
     const isReceipt = type === 'receipt';
     const title = isReceipt ? 'سند قبض' : 'سند صرف';
     const titleEn = isReceipt ? 'Receipt Voucher' : 'Payment Voucher';
     const vNum = String(voucher.voucherNumber || 1).padStart(5, '0');
-    const prefix = isReceipt ? 'RCV' : 'PAY';
     const date = new Date(voucher.date || new Date()).toLocaleDateString('en-GB');
-    const amount = Number(voucher.amount || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const partyName = voucher.customer?.name || voucher.supplier?.name || '—';
-    const treasuryName = voucher.treasury?.name || '';
-    const paymentType = voucher.paymentType === 'bank' ? 'تحويل بنكي' : 'نقداً';
 
-    const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-family:sans-serif">${en}</span>` : ar;
-
-    const addrLines = [
-        company.addressRegion   ? `${isBilingual ? 'المنطقة / Region' : 'المنطقة'}: ${company.addressRegion}` : null,
-        company.addressCity     ? `${isBilingual ? 'المدينة / City'   : 'المدينة'}: ${company.addressCity}`   : null,
-    ].filter(Boolean) as string[];
+    const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
+    const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
 
     return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
-<title>${title} - ${prefix}-${vNum}</title>
+<title>${title} - ${vNum}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;direction:rtl}
-.page{width:100%; max-width: 850px; min-height: 282mm; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column; background: #fff;}
-.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
-.co-block{flex:1.2;text-align:right}
-.co-name{font-size:21px;font-weight:900;color:#111;margin-bottom:1px}
-.co-name-en{font-size:9.5px;color:#444;line-height:1.4}
-.co-line{font-size:10px;color:#444;line-height:1.4}
-.title-block{flex:1;text-align:center}
-.v-title{font-size:17px;font-weight:900;background:#f5f5f5;border:1px solid #ccc;border-radius:6px;padding:2px 14px;display:inline-block}
-.v-title-en{font-size:11px;color:#555;font-family:sans-serif;margin-top:1px}
-.v-num{font-size:13px;color:#333;font-family:monospace;font-weight:700;margin-top:6px}
-.logo-block{flex:1.2;text-align:left}
-.logo-block img{max-height:80px;max-width:150px;object-fit:contain}
-.info-wrap{display:flex;gap:8px;margin-top:6px;margin-bottom:10px}
-.info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
-.info-title{background:#f5f5f5;padding:3px 8px;font-weight:900;font-size:10px;border-bottom:1px solid #333}
-.info-body{padding:4px 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
-.info-row{font-size:13px;margin-bottom:1px;display:flex;gap:4px}
-.d-label{color:#666;min-width:110px;flex-shrink:0}
-.d-value{font-weight:800;color:#111}
-.amount-section{border:1.5px solid #333;border-radius:6px;padding:10px 20px;text-align:center;background:#f9fafb; margin: 15px auto; width: fit-content; min-width: 250px;}
-.amount-label{font-size:11px;color:#555;margin-bottom:4px;font-weight:600}
-.amount-value{font-size:20px;font-weight:900;color:#111}
-.footer{margin-top: auto; padding-top: 30px; border-top: none; width: 100%;}
-.footer-inner{display:flex;justify-content:space-between;align-items:flex-end; width: 100%;}
-.sig-box{text-align:center;width:220px}
-.sig-label{font-size:10.5px;font-weight:900;color:#000;margin-bottom:25px}
-.sig-line{border-top:1.5px solid #111;padding-top:5px;font-size:8.5px;color:#444;font-weight:600}
-@media screen{.page{min-height:100vh}}
-@media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root {
+        --base-font: ${isA5 ? '9px' : '11px'};
+        --header-name: ${isA5 ? '16px' : '21px'};
+        --title-font: ${isA5 ? '13px' : '17px'};
+        --logo-h: ${isA5 ? '45px' : '75px'};
+        --page-padding: ${isA5 ? '3mm 5mm' : '4mm 8mm'};
+    }
+    body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
+    .page{width:100%; max-width: 850px; min-height: 282mm; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column; background: #fff;}
+    
+    .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:2px solid #111;margin-bottom:20px}
+    .co-block{flex:1;text-align:right}
+    .co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:1px}
+    .co-line{font-size:${isA5 ? '8.5px' : '10px'};color:#444;line-height:1.4}
+    .header-center{flex:1;text-align:center}
+    .inv-title{font-size:var(--title-font);font-weight:900;color:#111;background:#f5f5f5;padding:2px 14px;border-radius:6px;display:inline-block;border:1px solid #ccc}
+    .inv-num{font-size:${isA5 ? '10px' : '13px'};color:#333;font-family:monospace;font-weight:700;margin-top:6px}
+    .logo-block{flex:1;text-align:left}
+    .logo-block img{max-height:var(--logo-h);max-width:150px;object-fit:contain}
+    
+    .amount-box{margin-top:20px;border:2px solid #111;padding:15px;border-radius:10px;text-align:center;background:#fcfcfc}
+    .amount-label{font-size:12px;font-weight:900;margin-bottom:5px}
+    .amount-val{font-size:24px;font-weight:900;color:#111;font-family:monospace}
+    
+    .info-wrap{margin-top:20px;border:1px solid #333;border-radius:8px;overflow:hidden}
+    .info-row{display:flex;border-bottom:1px solid #333}
+    .info-row:last-child{border-bottom:none}
+    .ik{width:${isA5 ? '130px' : '180px'};background:#f5f5f5;padding:10px;font-weight:900;border-left:1px solid #333; font-size:${isA5 ? '9px' : '10.5px'}}
+    .iv{flex:1;padding:10px;font-weight:800; font-size:${isA5 ? '9.5px' : '11.5px'}}
+    
+    .footer{margin-top: auto; padding-top: 30px; border-top: none; width: 100%;}
+    .footer-inner{display:flex;justify-content:space-between;align-items:flex-end; width: 100%;}
+    .sig-box{text-align:center;width:${isA5 ? '120px' : '220px'}}
+    .sig-label{font-size:10.5px;font-weight:900;color:#000;margin-bottom:25px}
+    .sig-line{border-top:1.5px solid #111;padding-top:5px;font-size:8.5px;color:#444;font-weight:600}
+
+    @media screen { .page { min-height: 100vh; } }
+    @media print {
+        @page { size: ${isA5 ? 'A5 portrait' : 'A4 portrait'}; margin: 5mm; }
+        body { background: #fff; -webkit-print-color-adjust: exact; }
+        .page { min-height: auto !important; width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none; }
+    }
 </style>
 </head>
 <body>
 <div class="page">
-  <div class="header">
-    <div class="co-block">
-      <div style="text-align:right">
-        ${country === 'EG' 
-          ? `<div style="text-align:right;">
-               <div style="font-size:22px; font-weight:900; color:#000;">${company.name || ''}</div>
-               <div style="font-size:10px; color:#444; margin-top:3px;">
-                  ${[company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - ')}
-               </div>
-               ${company.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${company.phone}</div>` : ''}
-               ${company.taxNumber ? `<div style="font-size:11px; color:#555;">رقم ضريبي: ${company.taxNumber}</div>` : ''}
-               ${company.commercialRegister ? `<div style="font-size:11px; color:#555;">سجل تجاري: ${company.commercialRegister}</div>` : ''}
-             </div>`
-          : `<div>
-               <span class="co-name">${company.name || ''}</span>${`${company.nameEn ? `<span style="color:#999;font-size:13px;margin:0 4px">/</span><span class="co-name-en">${company.nameEn}</span>` : ''}`}
-             </div>
-             <div class="co-line">
-               ${[company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - ')}
-             </div>
-             <div class="co-line">
-               ${company.phone ? `الهاتف: ${company.phone}` : ''}
-               ${company.taxNumber ? ` ${company.phone ? '| ' : ''}${blInline('الرقم الضريبي','VAT No.')}: <strong>${company.taxNumber}</strong>` : ''}
-             </div>`
-        }
-      </div>
+    <div class="header">
+        <div class="co-block">
+            <div class="co-name">${co.name}</div>
+            <div class="co-line">${co.addr}</div>
+            ${co.phone ? `<div class="co-line">الهاتف: ${co.phone}</div>` : ''}
+            ${co.tax ? `<div class="co-line">رقم ضريبي: ${co.tax}</div>` : ''}
+        </div>
+        <div class="header-center">
+            <div class="inv-title">${blInline(title, titleEn)}</div>
+            <div class="inv-num">VCH-${vNum}</div>
+            <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
+        </div>
+        <div class="logo-block">
+            ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
+        </div>
     </div>
-    <div class="title-block">
-      <div class="v-title">${title}</div>
-      ${isBilingual ? `<div class="v-title-en">${titleEn}</div>` : ''}
-      <div class="v-num">VCH-${vNum}</div>
-      <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
-    </div>
-    <div class="logo-block">
-      ${company.logo ? `<img src="${company.logo}" alt=""/>` : ''}
-    </div>
-  </div>
 
-  <div class="info-wrap">
-    <div class="info-box">
-      <div class="info-title">${blInline('بيانات السند','Voucher Info')}</div>
-      <div class="info-body">
-        <div class="info-row" style="grid-column: span 2;"><span class="d-label">${blInline(isReceipt ? 'استلمنا من' : 'صرفنا لـ', isReceipt ? 'Received From' : 'Paid To')}:</span><span class="d-value">${partyName}</span></div>
-        <div class="info-row"><span class="d-label">${blInline('طريقة الدفع','Payment Method')}:</span><span class="d-value">${paymentType}</span></div>
-        ${voucher.description ? `<div class="info-row"><span class="d-label">${blInline('البيان','Description')}:</span><span class="d-value">${voucher.description}</span></div>` : ''}
-      </div>
+    <div class="amount-box">
+        <div class="amount-label">${blInline('المبلغ', 'Amount')}</div>
+        <div class="amount-val">${Number(voucher.amount).toLocaleString()} ${sym}</div>
     </div>
-  </div>
 
-  <div class="amount-section">
-    <div class="amount-label">${blInline(isReceipt ? 'المبلغ المستلم' : 'المبلغ المصروف', isReceipt ? 'Amount Received' : 'Amount Paid')}</div>
-    <div class="amount-value">${amount} ${sym}</div>
-  </div>
-
-  <div class="footer">
-    <div class="footer-inner">
-      <div class="sig-box">
-        <div class="sig-label">${blInline('توقيع المستلم','Recipient Signature')}</div>
-        <div class="sig-line">${blInline('الاسم والتوقيع','Name & Signature')}</div>
-      </div>
-      <div style="text-align: center; color: #aaa; font-size: 9.5px; margin-bottom: 5px; font-weight: 600;">
-        شكراً لتعاملكم معنا
-      </div>
-      <div class="sig-box">
-        <div class="sig-label">${blInline('توقيع المسؤول','Authorized Signature')}</div>
-        <div class="sig-line">${blInline('الختم والتوقيع','Stamp & Signature')}</div>
-      </div>
+    <div class="info-wrap">
+        <div class="info-row"><div class="ik">${blInline(isReceipt ? 'استلمنا من السيد' : 'صرف بـأمر السيد', isReceipt ? 'Received From' : 'Payable To')}</div><div class="iv">${voucher.customer?.name || voucher.supplier?.name || '—'}</div></div>
+        <div class="info-row"><div class="ik">${blInline('طريقة الدفع', 'Payment method')}</div><div class="iv">${blInline(voucher.paymentType === 'bank' ? 'تحويل بنكي' : 'نقداً', voucher.paymentType === 'bank' ? 'Bank Transfer' : 'Cash')}</div></div>
+        <div class="info-row"><div class="ik">${blInline('وذلك عن / البيان', 'Being For / Desc.')}</div><div class="iv">${voucher.description || '—'}</div></div>
+        ${voucher.treasury ? `<div class="info-row"><div class="ik">${blInline('الحساب المتأثر', 'Account')}</div><div class="iv">${voucher.treasury.name}</div></div>` : ''}
     </div>
-  </div>
+
+    <div class="footer">
+        <div class="footer-inner">
+            <div class="sig-box">
+                <div class="sig-label">${blInline('توقيع المقر بما فيه', 'Signature')}</div>
+                <div class="sig-line">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+            </div>
+            <div style="text-align: center; color: #aaa; font-size: 9.5px; margin-bottom: 5px; font-weight: 600;">
+                شكراً لتعاملكم معنا
+            </div>
+            <div class="sig-box">
+                <div class="sig-label">${blInline('توقيع المحاسب', 'Authorized')}</div>
+                <div class="sig-line">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
+            </div>
+        </div>
+    </div>
 </div>
 ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
 </body>
 </html>`;
 }
+
+
 
 export function printThermalVoucher(voucher: any, type: VoucherType, company: CompanyInfo = {}) {
     const html = generateThermalVoucherHTML(voucher, type, company);
@@ -962,10 +954,14 @@ export function printQuotation(
 // ═══════════════════════════════════════════════
 //  A4 INSTALLMENT PLAN (جدول أقساط)
 // ═══════════════════════════════════════════════
-export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}, options: { noAutoPrint?: boolean } = {}): string {
+// ═══════════════════════════════════════════════
+//  A4 INSTALLMENT PLAN (جدول أقساط)
+// ═══════════════════════════════════════════════
+export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}, options: { noAutoPrint?: boolean; isA5?: boolean } = {}): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
+    const isA5 = options.isA5 || false;
     
     const co = {
         name: company.name || 'اسم الشركة',
@@ -990,6 +986,9 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
         cancelled: 'ملغى'
     };
 
+    const tableBorder = '1.5px solid #111';
+    const cellBorder = '1px solid #999';
+
     return `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -998,46 +997,61 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;direction:rtl}
-    .page{width:100%; max-width: 850px; min-height: 282mm; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column; background: #fff;}
+    :root {
+        --base-font: ${isA5 ? '9px' : '11px'};
+        --header-name: ${isA5 ? '16px' : '21px'};
+        --title-font: ${isA5 ? '13px' : '17px'};
+        --logo-h: ${isA5 ? '45px' : '75px'};
+        --page-padding: ${isA5 ? '3mm 5mm' : '4mm 8mm'};
+    }
+    body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
+    .page{width:100%; max-width: 850px; min-height: 282mm; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column; background: #fff;}
+    
     .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
-    .co-block{flex:1.2;text-align:right}
-    .co-name{font-size:21px;font-weight:900;color:#111;margin-bottom:1px}
-    .co-line{font-size:10px;color:#444;line-height:1.4}
+    .co-block{flex:1;text-align:right}
+    .co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:1px}
+    .co-line{font-size:${isA5 ? '8.5px' : '10px'};color:#444;line-height:1.4}
     .header-center{flex:1;text-align:center}
-    .inv-title{font-size:17px;font-weight:900;color:#111;background:#f5f5f5;padding:2px 14px;border-radius:6px;display:inline-block;border:1px solid #ccc}
-    .inv-num{font-size:13px;color:#333;font-family:monospace;font-weight:700;margin-top:6px}
-    .logo-block{flex:1.2;text-align:left}
-    .logo-block img{max-height:80px;max-width:150px;object-fit:contain}
-    .info-wrap{display:flex;gap:8px;margin-top:6px;margin-bottom:5px}
+    .inv-title{font-size:var(--title-font);font-weight:900;color:#111;background:#f5f5f5;padding:2px 14px;border-radius:6px;display:inline-block;border:1px solid #ccc}
+    .inv-num{font-size:${isA5 ? '10px' : '13px'};color:#333;font-family:monospace;font-weight:700;margin-top:6px}
+    .logo-block{flex:1;text-align:left}
+    .logo-block img{max-height:var(--logo-h);max-width:150px;object-fit:contain}
+    
+    .info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'};margin-bottom:5px}
     .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
-    .info-title{background:#f5f5f5;padding:3px 8px;font-weight:900;font-size:10px;border-bottom:1px solid #333}
-    .info-body{padding:4px 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
-    .info-row{font-size:9.5px;margin-bottom:1px;display:flex;gap:4px}
-    .ik{color:#666;min-width:80px}
+    .info-title{background:#f5f5f5;padding:${isA5 ? '2px 6px' : '3px 8px'};font-weight:900;font-size:${isA5 ? '9px' : '10px'};border-bottom:1px solid #333}
+    .info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
+    .info-row{font-size:${isA5 ? '8.5px' : '9.5px'};margin-bottom:${isA5 ? '0px' : '1px'};display:flex;gap:4px}
+    .ik{color:#666;min-width:${isA5 ? '60px' : '80px'}; flex-shrink: 0;}
     .iv{color:#111;font-weight:800}
-    table{width:100%;border-collapse:collapse;border:1px solid #999;margin-top:6px}
-    thead th{background:#f0f0f0;padding:6px;font-size:10px;font-weight:900;border:1px solid #999}
-    tbody td{padding:5px;font-size:10px;border:1px solid #999;text-align:center;font-weight:700}
+    
+    table{width:100%;border-collapse:collapse;border:${tableBorder};margin-top:6px}
+    thead th{background:#f0f0f0;padding:${isA5 ? '4px' : '6px'};font-size:${isA5 ? '8.5px' : '10px'};font-weight:900;border:${cellBorder}; color:#000}
+    tbody td{padding:${isA5 ? '3px' : '5px'};font-size:${isA5 ? '8.5px' : '10px'};border:${cellBorder};text-align:center;font-weight:700; color:#111}
     .status-paid{color:#10b981} .status-overdue{color:#ef4444}
+    
     .footer{margin-top: auto; padding-top: 30px; border-top: none; width: 100%;}
     .footer-inner{display:flex;justify-content:space-between;align-items:flex-end; width: 100%;}
-    .sig-box{text-align:center;width:220px}
-    .sig-label{font-size:10.5px;font-weight:900;color:#000;margin-bottom:25px}
-    .sig-line{border-top:1.5px solid #111;padding-top:5px;font-size:8.5px;color:#444;font-weight:600}
+    .sig-box{text-align:center;width:${isA5 ? '150px' : '220px'}}
+    .sig-label{font-size:${isA5 ? '9px' : '10.5px'};font-weight:900;color:#000;margin-bottom:${isA5 ? '15px' : '25px'}}
+    .sig-line{border-top:1.5px solid #111;padding-top:5px;font-size:${isA5 ? '8px' : '8.5px'};color:#444;font-weight:600}
+
     @media screen { .page { min-height: 100vh; } }
     @media print {
-        @page { size: auto; margin: 6mm 8mm; }
-        html, body { width: 100%; height: auto; }
+        @page { 
+            size: ${isA5 ? 'A5 portrait' : 'A4 portrait'}; 
+            margin: 5mm; 
+        }
+        body { background: #fff; -webkit-print-color-adjust: exact; }
         .page { 
-            min-height: 0 !important; 
+            min-height: auto !important; 
             width: 100% !important; 
             max-width: none !important; 
             padding: 0 !important; 
             margin: 0 !important;
+            box-shadow: none;
         }
     }
-
 </style>
 </head>
 <body>
@@ -1119,6 +1133,102 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
     </div>
 </div>
 ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
+</body>
+</html>`;
+}
+
+// ═══════════════════════════════════════════════
+//  GENERAL REPORTS (التقارير بجميع أنواعها)
+// ═══════════════════════════════════════════════
+export function generateReportHTML(
+    title: string, 
+    content: string, 
+    company: CompanyInfo = {}, 
+    options: { noAutoPrint?: boolean; isA5?: boolean; subtitle?: string } = {}
+): string {
+    const sym = getCurrencySymbol(company.currency || 'EGP');
+    const isA5 = options.isA5 || false;
+    const isBilingual = (company.countryCode || 'EG').toUpperCase() !== 'EG';
+    
+    const co = {
+        name: company.name || 'اسم الشركة',
+        nameEn: company.nameEn || '',
+        addr: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - '),
+        phone: company.phone || '',
+        logo: company.logo || '',
+    };
+
+    const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
+
+    return `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<title>${title}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root {
+        --base-font: ${isA5 ? '9px' : '11px'};
+        --header-name: ${isA5 ? '16px' : '21px'};
+        --title-font: ${isA5 ? '13px' : '17px'};
+        --logo-h: ${isA5 ? '45px' : '75px'};
+    }
+    body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
+    .page{width:100%; max-width: 900px; min-height: 282mm; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column; background: #fff;}
+    
+    .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:15px}
+    .co-block{flex:1;text-align:right}
+    .co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:1px}
+    .co-line{font-size:${isA5 ? '8.5px' : '10px'};color:#444;line-height:1.4}
+    .header-center{flex:1.2;text-align:center}
+    .report-title{font-size:var(--title-font);font-weight:900;color:#111;background:#f5f5f5;padding:2px 20px;border-radius:6px;display:inline-block;border:1px solid #333}
+    .report-subtitle{font-size:10px;color:#555;font-weight:700;margin-top:4px}
+    .logo-block{flex:1;text-align:left}
+    .logo-block img{max-height:var(--logo-h);max-width:150px;object-fit:contain}
+    
+    table{width:100%;border-collapse:collapse;border:1.5px solid #111;margin-top:10px}
+    thead th{background:#f0f0f0;padding:8px;font-size:10px;font-weight:900;border:1px solid #111; color:#000; text-align:center; white-space:nowrap}
+    tbody td{padding:7px;font-size:10.5px;border:1px solid #ccc;text-align:center;font-weight:700; color:#111}
+    tbody tr:nth-child(even){background:#fcfcfc}
+    
+    .footer{margin-top: auto; padding-top: 20px; width: 100%; font-size: 9px; color: #888; text-align: center; border-top: 1px solid #eee}
+
+    @media print {
+        @page { size: auto; margin: 5mm; }
+        body { background: #fff; -webkit-print-color-adjust: exact; }
+        .page { width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; }
+        thead { display: table-header-group; }
+    }
+</style>
+</head>
+<body>
+<div class="page">
+    <div class="header">
+        <div class="co-block">
+            <div class="co-name">${co.name}</div>
+            <div class="co-line">${co.addr}</div>
+            ${co.phone ? `<div class="co-line">الهاتف: ${co.phone}</div>` : ''}
+        </div>
+        <div class="header-center">
+            <div class="report-title">${title}</div>
+            ${options.subtitle ? `<div class="report-subtitle">${options.subtitle}</div>` : ''}
+            <div style="font-size:9.5px; color:#555; margin-top:2px;">بتاريخ: ${new Date().toLocaleDateString('en-GB')}</div>
+        </div>
+        <div class="logo-block">
+            ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
+        </div>
+    </div>
+
+    <div class="report-content">
+        ${content}
+    </div>
+
+    <div class="footer">
+        طُبع بواسطة نظام الـ ERP | ${new Date().toLocaleString()}
+    </div>
+</div>
+${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),500);</script>'}
 </body>
 </html>`;
 }

@@ -14,6 +14,7 @@ import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import CustomSelect from '@/components/CustomSelect';
+import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -29,6 +30,7 @@ export default function InstallmentReportsPage() {
     const [customers, setCustomers] = useState<any[]>([]);
     const [data,      setData]      = useState<any>(null);
     const [loading,   setLoading]   = useState(false);
+    const [company,   setCompany]   = useState<CompanyInfo>({});
 
     const [collectionForm, setCollectionForm] = useState({
         from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
@@ -39,6 +41,7 @@ export default function InstallmentReportsPage() {
 
     useEffect(() => {
         fetch('/api/customers').then(r => r.json()).then(setCustomers).catch(() => {});
+        fetch('/api/settings').then(r => r.json()).then(d => setCompany(d.company || {})).catch(() => {});
     }, []);
 
     const fetchReport = async () => {
@@ -59,12 +62,38 @@ export default function InstallmentReportsPage() {
     };
 
     const handlePrint = () => {
-        const tables = Array.from(document.querySelectorAll('table'));
+        const tables = Array.from(document.querySelectorAll('.report-content table'));
         if (!tables.length) return;
-        const tablesHTML = tables.map(t => t.outerHTML).join('');
-        const html = `<!DOCTYPE html><html lang="${lang}" dir="${isRtl ? 'rtl' : 'ltr'}"><head><meta charset="UTF-8"/><title>${t('تقرير الأقساط')}</title><link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet"><style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Cairo',sans-serif;direction:${isRtl ? 'rtl' : 'ltr'};background:#fff;color:#111;padding:10mm}table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-bottom:16px}th{padding:8px 10px;font-size:11px;font-weight:900;background:#f0f0f0;color:#111;text-align:center;border:1px solid #999}td{padding:7px 10px;font-size:11.5px;color:#111;text-align:center;border:1px solid #ccc;background:#fff}td span{background:transparent!important;border:none!important;padding:0!important;color:#111!important}@media print{@page{margin:6mm 8mm}thead{display:table-header-group}}</style></head><body>${tablesHTML}</body></html>`;
-        const win = window.open('', '_blank', 'width=1000,height=750');
-        if (win) { win.document.write(html); win.document.close(); win.focus(); setTimeout(() => win.print(), 800); }
+        
+        const tablesHTML = tables.map(t => {
+            // كود تنظيف بسيط للجداول قبل الطباعة لضمان المظهر الرسمي
+            const clone = t.cloneNode(true) as HTMLTableElement;
+            return clone.outerHTML;
+        }).join('<div style="height:20px"></div>');
+
+        const companyInfo: CompanyInfo = company;
+        const titleMap = {
+            collection: t('تقرير تحصيلات الأقساط'),
+            overdue:    t('تقرير الأقساط المتأخرة'),
+            customer:   t('كشف حساب أقساط عميل')
+        };
+
+        const subtitle = activeTab === 'collection' 
+            ? `${t('من تاريخ')} ${collectionForm.from} ${t('إلى')} ${collectionForm.to}`
+            : activeTab === 'customer' 
+                ? `${t('العميل')}: ${customers.find(c => c.id === customerReport)?.name || ''}`
+                : t('جميع المتعثرين');
+
+        const html = generateReportHTML(
+            titleMap[activeTab], 
+            tablesHTML, 
+            companyInfo, 
+            { subtitle, noAutoPrint: false }
+        );
+
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', titleMap[activeTab]);
+        window.open('/print/report', '_blank');
     };
 
     const tabs = [
