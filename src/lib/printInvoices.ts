@@ -193,7 +193,7 @@ export function generateA4HTML(
     --page-padding: ${isA5 ? '3mm 5mm' : '4mm 8mm'};
 }
 body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
-.page{width:100%; max-width: 850px; min-height: ${paperH}; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column;gap:${isA5 ? '3px' : '5px'}; background: #fff;}
+.page{width:100%; max-width: 850px; min-height: 282mm; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column; background: #fff;}
 @media print {
     @page { 
         size: ${isA5 ? 'A5 portrait' : 'A4 portrait'}; 
@@ -536,20 +536,20 @@ tbody tr:nth-child(even){background: #fff;}
     `;
     })()}
 
-    <div class="footer" style="margin-top: auto; padding-top: 25px; border-top: 1px solid #eee;">
+    <div class="footer" style="margin-top: auto; padding-top: 35px; border-top: 1px solid #eee;">
         <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 14px; margin-bottom: 30px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 11px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
             
-            <div style="text-align: center; color: #888; font-size: 12px; margin-bottom: 8px; font-weight: 600;">
+            <div style="text-align: center; color: #999; font-size: 11px; margin-bottom: 5px; font-weight: 600; flex: 1;">
                 شكراً لتعاملكم معنا
             </div>
             
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 14px; margin-bottom: 30px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 11px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
     </div>
@@ -630,10 +630,10 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
 .amount-section{border:2px solid #111;border-radius:10px;padding:16px 24px;text-align:center;background:#f9fafb}
 .amount-label{font-size:13px;color:#555;margin-bottom:6px}
 .amount-value{font-size:28px;font-weight:900;color:#111}
-.sigs{display:flex;justify-content:space-between;margin-top:auto;padding-top:25px;border-top:1px solid #eee;align-items:flex-end}
+.sigs{display:flex;justify-content:space-between;margin-top:auto;padding-top:30px;border-top:1px solid #eee;align-items:flex-end}
 .sig-box{text-align:center;width:220px}
-.sig-label{font-size:14px;font-weight:900;color:#000;margin-bottom:30px}
-.sig-line{border-top:1.5px solid #111;padding-top:6px;font-size:11px;color:#444;font-weight:600}
+.sig-label{font-size:13px;font-weight:900;color:#000;margin-bottom:25px}
+.sig-line{border-top:1.5px solid #111;padding-top:6px;font-size:10px;color:#444;font-weight:600}
 @media screen{.page{min-height:100vh}}
 @media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
 </style>
@@ -927,20 +927,20 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <div>${options.terms || quotation.notes}</div>
     </div>` : ''}
 
-    <div class="footer" style="margin-top: auto; padding-top: 25px; border-top: 1px solid #eee;">
+    <div class="footer" style="margin-top: auto; padding-top: 35px; border-top: 1px solid #eee;">
         <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end;">
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 14px; margin-bottom: 30px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 11px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
             
-            <div style="text-align: center; color: #888; font-size: 12px; margin-bottom: 8px; font-weight: 600;">
+            <div style="text-align: center; color: #999; font-size: 11px; margin-bottom: 5px; font-weight: 600; flex: 1;">
                 شكراً لتعاملكم معنا
             </div>
             
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 14px; margin-bottom: 30px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 11px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
     </div>
