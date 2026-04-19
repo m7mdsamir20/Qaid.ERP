@@ -22,7 +22,7 @@ interface InvoiceLine { itemId: string; itemCode: string; itemName: string; unit
 // Using global theme constants instead of local variables
 
 const getUnitName = (u: any) => !u ? '' : typeof u === 'string' ? u : (u.name || u.nameEn || '');
-const fmt = (v: any) => {
+const fmtNum = (v: any) => {
     if (v === '' || v === undefined || v === null) return '';
     const s = v.toString().replace(/,/g, '');
     const parts = s.split('.');
@@ -44,7 +44,7 @@ function NewSalePageInner() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoney } = useCurrency();
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [suppliers, setSuppliers] = useState<any[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
@@ -616,7 +616,7 @@ function NewSalePageInner() {
                                             display: 'flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '30px', width: 'fit-content'
                                         }}>
                                             <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
-                                            {selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('متزن')}
+                                            {selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${fMoney(Math.abs(selectedPartner.balance))}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${fMoney(Math.abs(selectedPartner.balance))}` : t('متزن')}
                                         </div>
                                     )}
                                 </div>
@@ -708,7 +708,7 @@ function NewSalePageInner() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)}
+                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmtNum(entryQty)}
                                             disabled={!entryItemId}
                                             onChange={e => {
                                                 const v = e.target.value.replace(/,/g, '');
@@ -726,7 +726,7 @@ function NewSalePageInner() {
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <input ref={priceRef} type="text" inputMode="decimal"
-                                            value={entryPrice === '' ? '0' : fmt(entryPrice)}
+                                            value={entryPrice === '' ? '0' : fmtNum(entryPrice)}
                                             placeholder="0"
                                             disabled={!entryItemId}
                                             onChange={e => {
@@ -908,7 +908,7 @@ function NewSalePageInner() {
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00"
-                                                value={fmt(form.discountAmt || '')}
+                                                value={fmtNum(form.discountAmt || '')}
                                                 onChange={e => {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') {
@@ -922,7 +922,6 @@ function NewSalePageInner() {
                                                 }}
                                                 style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '32px' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                         </div>
                                         <div style={{ position: 'relative' }}>
                                             <input type="number" min="0" max="100" placeholder="0"
@@ -957,7 +956,7 @@ function NewSalePageInner() {
                                                 <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
-                                                <input type="text" inputMode="decimal" value={fmt(form.taxAmount.toFixed(2))}
+                                                <input type="text" inputMode="decimal" value={fmtNum(form.taxAmount.toFixed(2))}
                                                     onChange={e => {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') {
@@ -972,7 +971,6 @@ function NewSalePageInner() {
                                                     }}
                                                     style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                             </div>
                                         </div>
                                     </div>
@@ -987,7 +985,7 @@ function NewSalePageInner() {
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
                                     <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
-                                        {netTotal.toLocaleString()} {cSymbol}
+                                        {fMoney(netTotal)}
                                     </span>
                                     <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
@@ -1025,7 +1023,7 @@ function NewSalePageInner() {
                                                 type="text"
                                                 inputMode="decimal"
                                                 placeholder="0.00"
-                                                value={fmt(form.paidAmount)}
+                                                value={fmtNum(form.paidAmount)}
                                                 onChange={e => {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') {
@@ -1098,8 +1096,8 @@ function NewSalePageInner() {
                                             }`,
                                     }}>
                                         <span>
-                                            {diff > 0 ? `${t('متبقي:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}`
-                                                : diff < 0 ? `${t('زيادة:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}`
+                                            {diff > 0 ? `${t('متبقي:')} ${fMoney(Math.abs(diff))}`
+                                                : diff < 0 ? `${t('زيادة:')} ${fMoney(Math.abs(diff))}`
                                                     : t('تم السداد بالكامل ✓')}
                                         </span>
                                         {diff !== 0 && (
