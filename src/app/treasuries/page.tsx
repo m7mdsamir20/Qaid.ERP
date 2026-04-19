@@ -94,7 +94,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                 style={{
                                     padding: '10px', borderRadius: '12px', border: '1px solid',
                                     borderColor: form.type === opt.val ? opt.color : C.border,
-                                    background: form.type === opt.val ? `${opt.color}15` : 'rgba(255,255,255,0.01)',
+                                    background: form.type === opt.val ? `${opt.color}15` : C.subtle,
                                     cursor: 'pointer', transition: 'all 0.2s',
                                     display: 'flex', alignItems: 'center', gap: '10px',
                                     justifyContent: 'center', fontSize: '13px', fontWeight: 800, fontFamily: CAIRO,
@@ -168,7 +168,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                             alignItems: 'center', justifyContent: 'center', gap: '8px',
                             fontFamily: CAIRO 
                         }}
-                        onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textPrimary; }}
+                        onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
                         {t('إلغاء')}
                     </button>
@@ -306,7 +306,7 @@ export default function TreasuriesPage() {
                     </div>
                 ) : treasuries.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
-                        <div style={{ width: 72, height: 72, borderRadius: '20px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textMuted, margin: '0 auto 20px' }}>
+                        <div style={{ width: 72, height: 72, borderRadius: '20px', background: C.subtle, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textMuted, margin: '0 auto 20px' }}>
                             <Landmark size={36} />
                         </div>
                         <h3 style={{ margin: '0 0 10px', color: C.textPrimary, fontWeight: 800, fontSize: '18px', fontFamily: CAIRO }}>{t('لا توجد بيانات')}</h3>

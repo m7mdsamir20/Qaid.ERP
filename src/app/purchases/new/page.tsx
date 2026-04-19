@@ -530,13 +530,13 @@ export default function NewPurchasePage() {
                             <div className="table-container">
                                 <table className="table">
                                     <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
+                                        <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             {[t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>)}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {lines.map((l, i) => (
-                                            <tr key={i} style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                                            <tr key={i} style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{l.itemName}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
@@ -568,7 +568,7 @@ export default function NewPurchasePage() {
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> {t('المرفقات')}</div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <div style={{ flex: 1, border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '8px', textAlign: 'center', position: 'relative', cursor: 'pointer', background: 'rgba(255,255,255,0.01)' }}>
+                                <div style={{ flex: 1, border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '8px', textAlign: 'center', position: 'relative', cursor: 'pointer', background: C.subtle }}>
                                     <input type="file" multiple onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
                                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> {t('رفع ملفات')}</div>
                                 </div>
@@ -600,7 +600,7 @@ export default function NewPurchasePage() {
                                     <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
                                     <span style={{ color: '#64748b' }}>{t('إجمالي الأصناف')}</span>
                                 </div>
-                                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '8px 12px' }}>
+                                <div style={{ background: C.subtle, border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '8px 12px' }}>
                                     <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
@@ -616,7 +616,7 @@ export default function NewPurchasePage() {
 
                                 {/* الضريبة */}
                                 {taxSettings?.enabled && (
-                                    <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
+                                    <div style={{ padding: '8px 12px', background: C.subtle, borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                                             <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
                                         </div>
@@ -745,7 +745,7 @@ export default function NewPurchasePage() {
                         } else alert(t('فشل في الإضافة'));
                     } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                 }}>
-                    <div style={{ marginBottom: '16px', display: 'flex', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', padding: '4px' }}>
+                    <div style={{ marginBottom: '16px', display: 'flex', background: C.subtle, borderRadius: '12px', padding: '4px' }}>
                         <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
                         <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
                     </div>

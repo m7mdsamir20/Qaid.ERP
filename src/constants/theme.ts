@@ -27,6 +27,7 @@ export const THEME = {
         hover: 'var(--c-hover, rgba(255,255,255,0.04))',
         border: 'var(--c-border, rgba(255,255,255,0.15))',
         inputBg: 'var(--c-input-bg, rgba(14, 23, 41, 0.4))',
+        subtle: 'var(--c-subtle, rgba(255,255,255,0.02))',
 
         textPrimary: 'var(--c-text-primary, #f8fafc)',
         textSecondary: 'var(--c-text-secondary, #94a3b8)',
@@ -214,7 +215,7 @@ export const TABLE_STYLE = {
         color: C.textPrimary
     },
     thead: {
-        background: 'rgba(255,255,255,0.02)',
+        background: C.subtle,
         borderBottom: `1px solid ${C.border}`
     },
     th: (isFirst: boolean) => ({
@@ -241,7 +242,7 @@ export const TABLE_STYLE = {
     /** Action Button Standard (30x30, Icon 14) */
     actionBtn: (color: string = C.textSecondary): React.CSSProperties => ({
         width: '30px', height: '30px', borderRadius: '8px',
-        border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)',
+        border: `1px solid ${C.border}`, background: C.subtle,
         color: color, cursor: 'pointer', display: 'flex',
         alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
     }),
