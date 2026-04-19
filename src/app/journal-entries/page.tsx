@@ -346,12 +346,12 @@ export default function JournalEntriesPage() {
                                                 </tr>
 
                                                 {isExpanded && (
-                                                    <tr style={{ background: 'rgba(37,106,244,0.03)' }}>
+                                                    <tr style={{ background: C.primaryBg }}>
                                                         <td colSpan={7} style={{ padding: '0 20px 20px' }}>
-                                                            <div style={{ animation: 'fadeIn 0.2s ease', background: 'rgba(0,0,0,0.15)', borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden', marginTop: '10px' }}>
+                                                            <div style={{ animation: 'fadeIn 0.2s ease', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden', marginTop: '10px', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
                                                                 <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
                                                                     <thead>
-                                                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                                                                        <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                                             <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب')}</th>
                                                                             <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('مراكز التكلفة')}</th>
                                                                             <th style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('البيان')}</th>
@@ -368,23 +368,23 @@ export default function JournalEntriesPage() {
                                                                                 </td>
                                                                                 <td style={{ padding: '12px 16px' }}>
                                                                                     {line.costCenter?.name ? (
-                                                                                        <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '4px', border: `1px solid ${C.border}`, fontFamily: CAIRO }}>
+                                                                                        <span style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, background: C.subtle, padding: '2px 8px', borderRadius: '4px', border: `1px solid ${C.border}`, fontFamily: CAIRO }}>
                                                                                             {line.costCenter.name}
                                                                                         </span>
                                                                                     ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
                                                                                 </td>
                                                                                 <td style={{ padding: '12px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{line.description || '—'}</td>
-                                                                                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: line.debit > 0 ? C.success : 'rgba(255,255,255,0.05)', fontFamily: INTER }}>
+                                                                                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: line.debit > 0 ? C.success : 'transparent', fontFamily: INTER }}>
                                                                                     {line.debit > 0 ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><ArrowUpRight size={14} />{fmt(line.debit)}</div> : '—'}
                                                                                 </td>
-                                                                                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: line.credit > 0 ? C.danger : 'rgba(255,255,255,0.05)', fontFamily: INTER }}>
+                                                                                <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: line.credit > 0 ? C.danger : 'transparent', fontFamily: INTER }}>
                                                                                     {line.credit > 0 ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><ArrowDownRight size={14} />{fmt(line.credit)}</div> : '—'}
                                                                                 </td>
                                                                             </tr>
                                                                         ))}
                                                                     </tbody>
                                                                     <tfoot>
-                                                                        <tr style={{ background: 'rgba(255,255,255,0.015)', borderTop: `1px solid ${C.border}` }}>
+                                                                        <tr style={{ background: C.subtle, borderTop: `1px solid ${C.border}` }}>
                                                                             <td colSpan={3} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 900, color: C.textMuted, fontFamily: CAIRO }}>{t('الإجمالي المتزن')}</td>
                                                                             <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: INTER }}>{fmt(dr)}</td>
                                                                             <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fmt(dr)}</td>
@@ -415,7 +415,7 @@ export default function JournalEntriesPage() {
                 <div style={{ animation: 'fadeIn 0.3s ease' }}>
                     <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.primaryBorder}`, boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
                         {/* Header */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '20px 24px', borderBottom: `1px solid ${C.border}`, background: C.subtle }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: C.primaryBg, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                     <Plus size={20} />
@@ -464,7 +464,7 @@ export default function JournalEntriesPage() {
                                 {/* Lines Table */}
                                 <div style={{ border: `1px solid ${C.border}`, borderRadius: '12px', overflow: 'hidden', marginBottom: '20px' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
-                                        <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
+                                        <thead style={{ background: C.subtle }}>
                                             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
                                                 <th style={{ padding: '14px', fontSize: '12px', fontWeight: 800, color: C.textMuted, textAlign: 'start', width: '220px', fontFamily: CAIRO }}>{t('مراكز التكلفة')}</th>
@@ -474,7 +474,7 @@ export default function JournalEntriesPage() {
                                                 <th style={{ width: '50px' }}></th>
                                             </tr>
                                         </thead>
-                                        <tbody style={{ background: 'rgba(255,255,255,0.01)' }}>
+                                        <tbody style={{ background: 'transparent' }}>
                                             {form.lines.map((line, idx) => (
                                                 <tr key={idx} style={{ borderBottom: idx < form.lines.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                     <td style={{ padding: '12px 8px' }}>
@@ -514,7 +514,7 @@ export default function JournalEntriesPage() {
                                                 </tr>
                                             ))}
                                         </tbody>
-                                        <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `1px solid ${C.border}` }}>
+                                        <tfoot style={{ background: C.subtle, borderTop: `1px solid ${C.border}` }}>
                                             <tr>
                                                 <td colSpan={3} style={{ padding: '16px 20px' }}>
                                                     <button type="button" onClick={addLine} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: C.primary, color: '#fff', border: 'none', padding: '8px 20px', borderRadius: '10px', cursor: 'pointer', fontSize: '13px', fontWeight: 700, fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(37,106,244,0.3)' }}>
@@ -557,7 +557,7 @@ export default function JournalEntriesPage() {
                         </div>
 
                         {/* Footer Actions */}
-                        <div style={{ display: 'flex', gap: '16px', padding: '24px', background: 'rgba(255,255,255,0.01)', borderTop: `1px solid ${C.border}` }}>
+                        <div style={{ display: 'flex', gap: '16px', padding: '24px', background: C.subtle, borderTop: `1px solid ${C.border}` }}>
                             <button type="button" 
                                 onClick={() => { setView('list'); setForm({ date: new Date().toISOString().split('T')[0], description: '', reference: '', lines: [emptyLine(), emptyLine()] }); }} 
                                 style={{ height: '48px', padding: '0 30px', borderRadius: '12px', background: 'transparent', color: C.textSecondary, border: `1px solid ${C.border}`, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}
