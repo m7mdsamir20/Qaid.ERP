@@ -475,69 +475,69 @@ tbody tr:nth-child(even){background: #fff;}
             : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
 
         return `
-    <div style="display: flex; flex-direction: row-reverse; gap: 15px; margin-top: 15px; align-items: stretch;">
-        <!-- Right Side: Invoice & Payment Details (More wide) -->
-        <div style="flex: 1.5;">
-            <table style="width:100%; border-collapse:collapse; border: 1.5px solid #333;">
+    <div style="display: flex; justify-content: flex-start; margin-top: 20px;">
+        <div style="width: 320px;">
+            <table style="width:100%; border-collapse:collapse; border: 1.5px solid #333; font-size: 13px;">
                 <tbody>
+                    <!-- Subtotal Entry -->
                     <tr style="height: 32px;">
-                        <td style="width:60%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 4px 8px;">الإجمالي قبل الخصم والضريبة</td>
-                        <td style="width:40%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 4px 8px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                        <td style="width:60%; text-align:right; font-weight:500; border: 1px solid #ccc; padding: 4px 10px; color: #555;">الإجمالي قبل الخصم والضريبة</td>
+                        <td style="width:40%; text-align:left; font-weight:700; border: 1px solid #ccc; padding: 4px 10px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
                     </tr>
+
+                    <!-- Optional Discount -->
                     ${showDiscount ? `
                     <tr style="height: 32px;">
-                        <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 4px 8px;">الخصم</td>
-                        <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 4px 8px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 4px 10px; color: #555;">الخصم</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 4px 10px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td>
                     </tr>` : ''}
+
+                    <!-- Optional Tax -->
                     ${showTax ? `
                     <tr style="height: 32px;">
-                        <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 4px 8px;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
-                        <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 4px 8px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 4px 10px; color: #555;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 4px 10px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
                     </tr>` : ''}
-                    <tr style="background:#f8f9fa; height: 35px;">
-                        <td style="text-align:right; font-weight:900; padding: 6px 8px; border: 1.5px solid #333;">إجمالي الفاتورة</td>
-                        <td style="text-align:center; font-weight:900; font-size:15px; padding: 6px 8px; border: 1.5px solid #333;">${total.toLocaleString('en-US')} ${sym}</td>
+
+                    <!-- Total Invoice (Important Row) -->
+                    <tr style="background:#f2f2f2; height: 35px; border: 1.5px solid #333;">
+                        <td style="text-align:right; font-weight:900; padding: 6px 10px; color: #000;">إجمالي الفاتورة</td>
+                        <td style="text-align:left; font-weight:900; font-size:15px; padding: 6px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td>
+                    </tr>
+
+                    <!-- Paid Entry -->
+                    <tr style="height: 32px;">
+                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 4px 10px; color: #555;">المبلغ المدفوع</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 4px 10px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
+                    </tr>
+
+                    <!-- Remaining Entry -->
+                    <tr style="height: 32px;">
+                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 4px 10px; color: #555;">المبلغ المتبقي</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 4px 10px; color: ${remaining > 0 ? '#d32f2f' : '#2e7d32'};">${remaining.toLocaleString('en-US')} ${sym}</td>
+                    </tr>
+
+                    <!-- Optional Balance Section -->
+                    ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
+                    <tr style="height: 32px;">
+                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 4px 10px; color: #555;">الرصيد السابق لـ ${partyLabel}</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 4px 10px;">${formatBal(prevBal)}</td>
                     </tr>
                     <tr style="height: 32px;">
-                        <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 4px 8px;">المبلغ المدفوع</td>
-                        <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 4px 8px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 4px 10px; color: #555;">صافي تأثير الفاتورة</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 4px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
                     </tr>
-                    <tr style="height: 32px;">
-                        <td style="text-align:right; font-weight:900; border: 1.5px solid #333; padding: 4px 8px; background:#f0f7f0;">المبلغ المتبقي</td>
-                        <td style="text-align:center; font-weight:900; border: 1.5px solid #333; padding: 4px 8px; color: ${remaining > 0 ? '#d32f2f' : '#2e7d32'};">${remaining.toLocaleString('en-US')} ${sym}</td>
+                    <tr style="background:#f2f2f2; height: 35px; border: 1.5px solid #333;">
+                        <td style="text-align:right; font-weight:900; padding: 6px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td>
+                        <td style="text-align:left; font-weight:900; font-size:15px; padding: 6px 10px; color: #000;">${formatBal(finalBal)}</td>
                     </tr>
+                    ` : ''}
                 </tbody>
             </table>
         </div>
-
-        <!-- Left Side: Balance Analysis (More compact) -->
-        ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
-        <div style="flex: 1;">
-            <table style="width:100%; height: 100%; border-collapse:collapse; border: 1.5px solid #333;">
-                <tbody>
-                    <tr style="height: 32px;">
-                        <td style="width:50%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 4px 8px;">الرصيد السابق لـ ${partyLabel}</td>
-                        <td style="width:50%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 4px 8px;">${formatBal(prevBal)}</td>
-                    </tr>
-                    <tr style="height: 32px;">
-                        <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 4px 8px;">صافي تأثير الفاتورة</td>
-                        <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 4px 8px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
-                    </tr>
-                    <tr style="background:#eef2f7; height: 35px;">
-                        <td style="text-align:right; font-weight:900; padding: 6px 8px; border: 1.5px solid #333;">إجمالي رصيد ${partyLabel} الحالي</td>
-                        <td style="text-align:center; font-weight:900; font-size:15px; padding: 6px 8px; border: 1.5px solid #333;">${formatBal(finalBal)}</td>
-                    </tr>
-                    <!-- Filling rows to match height if needed -->
-                    <tr style="height: auto;"><td colspan="2" style="border: none;"></td></tr>
-                </tbody>
-            </table>
-        </div>` : ''}
-    </div>
     </div>
     `;
     })()}
-</div>
-
 </div>
 ${options.noAutoPrint ? '' : (isSaudi ? `
 <script>
