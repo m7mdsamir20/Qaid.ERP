@@ -32,7 +32,7 @@ export default function PrintInstallmentPage() {
     const handleIframeLoad = useCallback(() => {
         if (autoPrinted.current) return;
         autoPrinted.current = true;
-        // No auto-print — user controls this via the toolbar buttons
+        setTimeout(() => iframeRef.current?.contentWindow?.print(), 400);
     }, []);
 
     const handlePrint = () => iframeRef.current?.contentWindow?.print();
