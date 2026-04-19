@@ -593,9 +593,9 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;di
 .info-row{font-size:13px;margin-bottom:1px;display:flex;gap:4px}
 .d-label{color:#666;min-width:110px;flex-shrink:0}
 .d-value{font-weight:800;color:#111}
-.amount-section{border:2px solid #111;border-radius:10px;padding:16px 24px;text-align:center;background:#f9fafb; margin-top: 15px;}
-.amount-label{font-size:13px;color:#555;margin-bottom:6px}
-.amount-value{font-size:28px;font-weight:900;color:#111}
+.amount-section{border:1.5px solid #333;border-radius:6px;padding:10px 20px;text-align:center;background:#f9fafb; margin: 15px auto; width: fit-content; min-width: 250px;}
+.amount-label{font-size:11px;color:#555;margin-bottom:4px;font-weight:600}
+.amount-value{font-size:20px;font-weight:900;color:#111}
 .footer{margin-top: auto; padding-top: 30px; border-top: none; width: 100%;}
 .footer-inner{display:flex;justify-content:space-between;align-items:flex-end; width: 100%;}
 .sig-box{text-align:center;width:220px}
@@ -871,7 +871,8 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
                 const lineTaxRate = Number(l.taxRate || 0) || Number(quotation.taxRate || 0);
                 const lineBase = Number(l.quantity || 0) * Number(l.price || 0);
                 const lineTaxAmt = (lineBase * lineTaxRate) / 100;
-                const lineTotal = Number(l.total || lineBase + lineTaxAmt);
+                // الحساب الصحيح: السعر الأساسي + مبلغ الضريبة
+                const lineTotal = lineBase + lineTaxAmt;
                 
                 return `
             <tr>
