@@ -122,7 +122,12 @@ export function generateA4HTML(
     const isSale = type === 'sale' || type === 'sale-return';
     const isTrading = company.businessType?.toUpperCase() === 'TRADING';
 
-    const party = isSale ? (invoice.customer || invoice.supplier) : (invoice.supplier || invoice.customer);
+    // Try all possible ways to find the party name and details
+    const party = isSale 
+        ? (invoice.customer || invoice.supplier || invoice.Contact || null) 
+        : (invoice.supplier || invoice.customer || invoice.Contact || null);
+    
+    const partyName = party?.name || (isSale ? 'عميل نقدي' : 'مورد نقدي');
     const partyLabel = isSale ? 'العميل' : 'المورد';
     const partyLabelEn = isSale ? 'Customer' : 'Supplier';
 
@@ -319,7 +324,7 @@ tbody tr:nth-child(even){background: #fff;}
     <div class="info-box">
         <div class="info-title">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}</div>
         <div class="info-body">
-            <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${party?.name || (isSale ? 'عميل نقدي' : 'مورد نقدي')}</span></div>
+            <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${partyName}</span></div>
             ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
             ${(() => {
                 const parts = [party?.addressRegion, party?.addressCity, party?.addressDistrict, party?.addressStreet].filter(Boolean) as string[];
@@ -449,106 +454,66 @@ tbody tr:nth-child(even){background: #fff;}
             </tr>
         </tbody>
     </table>
-    ` : (() => {
-        const isSale = type === 'sale' || type === 'sale-return';
-        const showDiscount = discount > 0;
-        const showTax = invoiceTaxRate > 0 || invoiceTaxAmount > 0;
-        
-        // Dynamic balance calculation
-        const prevBal = isSale 
-            ? (invoice.customerPrevBalance ?? (Number(partyBalance) - (total - paid))) 
-            : (invoice.supplierPrevBalance ?? (Number(partyBalance) - (paid - total)));
-            
-        const finalBal = isSale 
-            ? (invoice.customerNewBalance ?? Number(partyBalance))
-            : (invoice.supplierNewBalance ?? Number(partyBalance));
+    <!-- Summary Section -->
+    <div style="width: 100%; text-align: left; margin-top: 15px; clear: both; display: block;">
+        <div style="width: 320px; display: inline-block; vertical-align: top;">
+            ${(() => {
+                const showDiscount = discount > 0;
+                const showTax = invoiceTaxRate > 0 || invoiceTaxAmount > 0;
+                
+                const prevBal = isSale 
+                    ? (invoice.customerPrevBalance ?? (Number(partyBalance) - (total - paid))) 
+                    : (invoice.supplierPrevBalance ?? (Number(partyBalance) - (paid - total)));
+                    
+                const finalBal = isSale 
+                    ? (invoice.customerNewBalance ?? Number(partyBalance))
+                    : (invoice.supplierNewBalance ?? Number(partyBalance));
 
-        const effect = total - paid;
-        
-        const formatBal = (val: number) => {
-            const abs = Math.abs(val).toLocaleString('en-US');
-            const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-            return `${abs} ${sym}${suffix}`;
-        };
+                const effect = total - paid;
+                const formatBal = (val: number) => {
+                    const abs = Math.abs(val).toLocaleString('en-US');
+                    const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
+                    return `${abs} ${sym}${suffix}`;
+                };
 
-        const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
-            : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+                const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+                    : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
 
-        return `
-    <div style="width: 100%; text-align: left; margin-top: 8px; clear: both;">
-        <div style="width: 310px; display: inline-block; text-align: right;">
-            <table style="width:100%; border-collapse:collapse; border: 1px solid #999; font-size: 13px;">
-                <tbody>
-                    <!-- Subtotal Entry -->
-                    <tr style="height: 30px;">
-                        <td style="width:60%; text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">الإجمالي قبل الخصم والضريبة</td>
-                        <td style="width:40%; text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
-                    </tr>
+                return `
+                <table style="width:100%; border-collapse:collapse; border: 1px solid #111; font-size: 13px;">
+                    <tbody>
+                        <tr style="height: 30px;">
+                            <td style="width:60%; text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الإجمالي قبل الخصم والضريبة</td>
+                            <td style="width:40%; text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                        </tr>
+                        ${showDiscount ? `<tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الخصم</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td></tr>` : ''}
+                        ${showTax ? `<tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">إجمالي الضريبة</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${displayTax.toLocaleString('en-US')} ${sym}</td></tr>` : ''}
+                        <tr style="background:#f2f2f2; height: 30px;"><td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td><td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td></tr>
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المدفوع</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${paid.toLocaleString('en-US')} ${sym}</td></tr>
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المتبقي</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${remaining.toLocaleString('en-US')} ${sym}</td></tr>
+                        ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatBal(prevBal)}</td></tr>
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td></tr>
+                        <tr style="background:#f2f2f2; height: 30px;"><td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td><td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${formatBal(finalBal)}</td></tr>
+                        ` : ''}
+                    </tbody>
+                </table>`;
+            })()}
+        </div>
+    </div>
 
-                    <!-- Optional Discount -->
-                    ${showDiscount ? `
-                    <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">الخصم</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td>
-                    </tr>` : ''}
-
-                    <!-- Optional Tax -->
-                    ${showTax ? `
-                    <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
-                    </tr>` : ''}
-
-                    <!-- Total Invoice -->
-                    <tr style="background:#f2f2f2; height: 30px;">
-                        <td style="text-align:right; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td>
-                        <td style="text-align:left; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td>
-                    </tr>
-
-                    <!-- Paid Entry -->
-                    <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المدفوع</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #000;">${paid.toLocaleString('en-US')} ${sym}</td>
-                    </tr>
-
-                    <!-- Remaining Entry -->
-                    <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المتبقي</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #000;">${remaining.toLocaleString('en-US')} ${sym}</td>
-                    </tr>
-
-                    <!-- Optional Balance Section -->
-                    ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
-                    <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px;">${formatBal(prevBal)}</td>
-                    </tr>
-                    <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
-                    </tr>
-                    <tr style="background:#f2f2f2; height: 30px;">
-                        <td style="text-align:right; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td>
-                        <td style="text-align:left; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">${formatBal(finalBal)}</td>
-                    </tr>
-                    ` : ''}
-                </tbody>
-    `;
-    })()}
-
-    <div class="footer" style="margin-top: auto; padding-top: 35px; border-top: 1px solid #eee;">
-        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end;">
+    <!-- Final Footer (Signatures) -->
+    <div class="footer" style="margin-top: auto; padding-top: 40px; border-top: 1px solid #eee; width: 100%;">
+        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 30px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 11px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
-            
-            <div style="text-align: center; color: #999; font-size: 11px; margin-bottom: 5px; font-weight: 600; flex: 1;">
+            <div style="text-align: center; color: #999; font-size: 11px; margin-bottom: 5px; font-weight: 600;">
                 شكراً لتعاملكم معنا
             </div>
-            
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 30px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
                 <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
