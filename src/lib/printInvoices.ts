@@ -92,19 +92,19 @@ export function generateA4HTML(
     const isSaudi = country === 'SA';
     const isBilingual = country !== 'EG'; // كل الدول العربية ماعدا مصر
     const addrLabels = {
-        region:   isBilingual ? 'المنطقة / Region'  : 'المنطقة',
-        city:     isBilingual ? 'المدينة / City'     : 'المدينة',
-        district: isBilingual ? 'الحي / District'    : 'الحي',
-        street:   isBilingual ? 'الشارع / Street'    : 'الشارع',
+        region: isBilingual ? 'المنطقة / Region' : 'المنطقة',
+        city: isBilingual ? 'المدينة / City' : 'المدينة',
+        district: isBilingual ? 'الحي / District' : 'الحي',
+        street: isBilingual ? 'الشارع / Street' : 'الشارع',
     };
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
         addrLines: [
-            company.addressRegion   ? { label: addrLabels.region,   value: company.addressRegion }   : null,
-            company.addressCity     ? { label: addrLabels.city,     value: company.addressCity }     : null,
+            company.addressRegion ? { label: addrLabels.region, value: company.addressRegion } : null,
+            company.addressCity ? { label: addrLabels.city, value: company.addressCity } : null,
             company.addressDistrict ? { label: addrLabels.district, value: company.addressDistrict } : null,
-            company.addressStreet   ? { label: addrLabels.street,   value: company.addressStreet }   : null,
+            company.addressStreet ? { label: addrLabels.street, value: company.addressStreet } : null,
         ].filter(Boolean) as { label: string; value: string }[],
         phone: company.phone || '',
         email: company.email || '',
@@ -123,10 +123,10 @@ export function generateA4HTML(
     const isTrading = company.businessType?.toUpperCase() === 'TRADING';
 
     // Try all possible ways to find the party name and details
-    const party = isSale 
-        ? (invoice.customer || invoice.supplier || invoice.Contact || null) 
+    const party = isSale
+        ? (invoice.customer || invoice.supplier || invoice.Contact || null)
         : (invoice.supplier || invoice.customer || invoice.Contact || null);
-    
+
     const partyName = party?.name || (isSale ? 'عميل نقدي' : 'مورد نقدي');
     const partyLabel = isSale ? 'العميل' : 'المورد';
     const partyLabelEn = isSale ? 'Customer' : 'Supplier';
@@ -267,9 +267,9 @@ tbody tr:nth-child(even){background: #fff;}
 <div class="page">
 <div class="header">
     <div class="logo-block" style="flex:1.2; text-align:right">
-        ${isSaudi 
+        ${isSaudi
             ? (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : `<span style="font-size:16px;font-weight:900;">${co.name}</span>`)
-            : (country === 'EG' 
+            : (country === 'EG'
                 ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
                      <div style="font-size:10px; color:#444; margin-top:3px;">${co.addrLines.map(a => a.value).join(' - ')}</div>
@@ -284,7 +284,7 @@ tbody tr:nth-child(even){background: #fff;}
                       ${co.tax ? ` ${co.phone ? '| ' : ''}رقم ضريبي: &rlm;${co.tax}` : ''}
                       ${co.cr ? ` ${(co.phone || co.tax) ? '| ' : ''}سجل تجاري: &rlm;${co.cr}` : ''}
                    </div>`
-              )
+            )
         }
     </div>
     <div class="header-center" style="flex:1; text-align:center">
@@ -295,7 +295,7 @@ tbody tr:nth-child(even){background: #fff;}
         <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
     </div>
     <div class="co-block" style="flex:1.2; text-align:left">
-        ${isSaudi 
+        ${isSaudi
             ? `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(zatcaQR)}" style="width:80px;height:80px;display:inline-block;" alt="ZATCA QR" />`
             : (co.logo ? `<img src="${co.logo}" style="max-height:80px; max-width:150px; object-fit:contain" alt=""/>` : '')
         }
@@ -327,16 +327,16 @@ tbody tr:nth-child(even){background: #fff;}
             <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${partyName}</span></div>
             ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
             ${(() => {
-                const parts = [party?.addressRegion, party?.addressCity, party?.addressDistrict, party?.addressStreet].filter(Boolean) as string[];
-                if (!parts.length) return '';
-                if (!isBilingual) return `<div class="info-row"><span class="ik">العنوان:</span><span class="iv">${parts.join('، ')}</span></div>`;
-                return ([
-                    party?.addressRegion   ? { label: blInline('المنطقة','Region'),   value: party.addressRegion }   : null,
-                    party?.addressCity     ? { label: blInline('المدينة','City'),      value: party.addressCity }     : null,
-                    party?.addressDistrict ? { label: blInline('الحي','District'),     value: party.addressDistrict } : null,
-                    party?.addressStreet   ? { label: blInline('الشارع','Street'),     value: party.addressStreet }   : null,
-                ].filter(Boolean) as {label:string;value:string}[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('');
-            })()}
+            const parts = [party?.addressRegion, party?.addressCity, party?.addressDistrict, party?.addressStreet].filter(Boolean) as string[];
+            if (!parts.length) return '';
+            if (!isBilingual) return `<div class="info-row"><span class="ik">العنوان:</span><span class="iv">${parts.join('، ')}</span></div>`;
+            return ([
+                party?.addressRegion ? { label: blInline('المنطقة', 'Region'), value: party.addressRegion } : null,
+                party?.addressCity ? { label: blInline('المدينة', 'City'), value: party.addressCity } : null,
+                party?.addressDistrict ? { label: blInline('الحي', 'District'), value: party.addressDistrict } : null,
+                party?.addressStreet ? { label: blInline('الشارع', 'Street'), value: party.addressStreet } : null,
+            ].filter(Boolean) as { label: string; value: string }[]).map(a => `<div class="info-row"><span class="ik">${a.label}:</span><span class="iv">${a.value}</span></div>`).join('');
+        })()}
             ${party?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${party.taxNumber}</span></div>` : ''}
             ${party?.commercialRegister ? `<div class="info-row"><span class="ik">${blInline('السجل التجاري', 'C.R.')}:</span><span class="iv">${party.commercialRegister}</span></div>` : ''}
         </div>
@@ -364,18 +364,18 @@ tbody tr:nth-child(even){background: #fff;}
     </thead>
     <tbody>
         ${lines.length === 0 ? '<tr><td colspan="10" style="padding:20px;color:#999">لا توجد بنود في هذه الفاتورة</td></tr>' : lines.map((l: any, i: number) => {
-        const unit = l.item?.unit?.name || l.unit?.name || l.unit || '—';
-        const name = l.item?.name || l.itemName || l.name || 'صنف غير معروف';
-        const desc = l.description || '';
-        const qty = Number(l.quantity || 0);
-        const price = Number(l.price || 0);
-        const lineBase = qty * price;
-        // per-line tax: use line's own taxAmount if set, otherwise distribute invoice tax rate
-        const lineTaxRate = Number(l.taxRate || 0) || invoiceTaxRate;
-        const lineTaxAmount = Number(l.taxAmount || 0) || (taxInclusive ? 0 : parseFloat((lineBase * lineTaxRate / 100).toFixed(2)));
-        const lineTotal = taxInclusive ? lineBase : lineBase + lineTaxAmount;
+            const unit = l.item?.unit?.name || l.unit?.name || l.unit || '—';
+            const name = l.item?.name || l.itemName || l.name || 'صنف غير معروف';
+            const desc = l.description || '';
+            const qty = Number(l.quantity || 0);
+            const price = Number(l.price || 0);
+            const lineBase = qty * price;
+            // per-line tax: use line's own taxAmount if set, otherwise distribute invoice tax rate
+            const lineTaxRate = Number(l.taxRate || 0) || invoiceTaxRate;
+            const lineTaxAmount = Number(l.taxAmount || 0) || (taxInclusive ? 0 : parseFloat((lineBase * lineTaxRate / 100).toFixed(2)));
+            const lineTotal = taxInclusive ? lineBase : lineBase + lineTaxAmount;
 
-        return `<tr>
+            return `<tr>
                 <td>${i + 1}</td>
                 <td style="text-align:right">
                     <div class="item-name">${name}</div>
@@ -392,19 +392,19 @@ tbody tr:nth-child(even){background: #fff;}
                 ` : ''}
                 <td><strong>${lineTotal.toLocaleString('en-US')} ${sym}</strong></td>
             </tr>`;
-    }).join('')}
+        }).join('')}
     </tbody>
 </table>
 
 <div class="bottom-wrap" style="flex-direction: column; gap: 0;">
     ${(() => {
-        const cleanNotes = (invoice.notes || '').replace(/\(تم التحويل من عرض سعر رقم: \d+\)/g, '').trim();
-        if (!cleanNotes) return '';
-        return `
+            const cleanNotes = (invoice.notes || '').replace(/\(تم التحويل من عرض سعر رقم: \d+\)/g, '').trim();
+            if (!cleanNotes) return '';
+            return `
     <div style="border:1.5px solid #ccc;padding:10px;font-size:11px;color:#555;border-radius:8px;margin-bottom:10px; width:100%">
         <strong>${blInline('ملاحظات', 'Notes')}: </strong>${cleanNotes}
     </div>`;
-    })()}
+        })()}
     
     ${isSaudi ? `
     <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
@@ -458,28 +458,28 @@ tbody tr:nth-child(even){background: #fff;}
     <div style="width: 100%; text-align: left; margin-top: 8px; clear: both; display: block;">
         <div style="width: 320px; display: inline-block; vertical-align: top;">
             ${(() => {
-                const showDiscount = discount > 0;
-                const showTax = invoiceTaxRate > 0 || invoiceTaxAmount > 0;
-                
-                const prevBal = isSale 
-                    ? (invoice.customerPrevBalance ?? (Number(partyBalance) - (total - paid))) 
-                    : (invoice.supplierPrevBalance ?? (Number(partyBalance) - (paid - total)));
-                    
-                const finalBal = isSale 
-                    ? (invoice.customerNewBalance ?? Number(partyBalance))
-                    : (invoice.supplierNewBalance ?? Number(partyBalance));
+            const showDiscount = discount > 0;
+            const showTax = invoiceTaxRate > 0 || invoiceTaxAmount > 0;
 
-                const effect = total - paid;
-                const formatBal = (val: number) => {
-                    const abs = Math.abs(val).toLocaleString('en-US');
-                    const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-                    return `${abs} ${sym}${suffix}`;
-                };
+            const prevBal = isSale
+                ? (invoice.customerPrevBalance ?? (Number(partyBalance) - (total - paid)))
+                : (invoice.supplierPrevBalance ?? (Number(partyBalance) - (paid - total)));
 
-                const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
-                    : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+            const finalBal = isSale
+                ? (invoice.customerNewBalance ?? Number(partyBalance))
+                : (invoice.supplierNewBalance ?? Number(partyBalance));
 
-                return `
+            const effect = total - paid;
+            const formatBal = (val: number) => {
+                const abs = Math.abs(val).toLocaleString('en-US');
+                const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
+                return `${abs} ${sym}${suffix}`;
+            };
+
+            const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+                : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+
+            return `
                 <table style="width:100%; border-collapse:collapse; border: 1px solid #111; font-size: 13px;">
                     <tbody>
                         <tr style="height: 30px;">
@@ -498,7 +498,7 @@ tbody tr:nth-child(even){background: #fff;}
                         ` : ''}
                     </tbody>
                 </table>`;
-            })()}
+        })()}
         </div>
     </div>
     `}
@@ -548,7 +548,7 @@ export function generateThermalVoucherHTML(voucher: any, type: VoucherType, comp
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
     const isA5 = options.isA5 || false;
-    
+
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
@@ -710,21 +710,21 @@ export function generateQuotationHTML(
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
-    
+
     const qAddrLabels = {
-        region:   isBilingual ? 'المنطقة / Region'  : 'المنطقة',
-        city:     isBilingual ? 'المدينة / City'     : 'المدينة',
-        district: isBilingual ? 'الحي / District'    : 'الحي',
-        street:   isBilingual ? 'الشارع / Street'    : 'الشارع',
+        region: isBilingual ? 'المنطقة / Region' : 'المنطقة',
+        city: isBilingual ? 'المدينة / City' : 'المدينة',
+        district: isBilingual ? 'الحي / District' : 'الحي',
+        street: isBilingual ? 'الشارع / Street' : 'الشارع',
     };
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
         addrLines: [
-            company.addressRegion   ? { label: qAddrLabels.region,   value: company.addressRegion }   : null,
-            company.addressCity     ? { label: qAddrLabels.city,     value: company.addressCity }     : null,
+            company.addressRegion ? { label: qAddrLabels.region, value: company.addressRegion } : null,
+            company.addressCity ? { label: qAddrLabels.city, value: company.addressCity } : null,
             company.addressDistrict ? { label: qAddrLabels.district, value: company.addressDistrict } : null,
-            company.addressStreet   ? { label: qAddrLabels.street,   value: company.addressStreet }   : null,
+            company.addressStreet ? { label: qAddrLabels.street, value: company.addressStreet } : null,
         ].filter(Boolean) as { label: string; value: string }[],
         phone: company.phone || '',
         email: company.email || '',
@@ -797,15 +797,15 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
     <div class="header">
         <div class="co-block">
             <div style="text-align:right">
-              ${country === 'EG' 
-                ? `<div style="text-align:right;">
+              ${country === 'EG'
+            ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
                      <div style="font-size:10px; color:#444; margin-top:3px;">${co.addrLines.map(a => a.value).join(' - ')}</div>
                      ${co.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${co.phone}</div>` : ''}
                      ${co.tax ? `<div style="font-size:11px; color:#555;">رقم ضريبي: ${co.tax}</div>` : ''}
                      ${co.cr ? `<div style="font-size:11px; color:#555;">سجل تجاري: ${co.cr}</div>` : ''}
                    </div>`
-                : `<div>
+            : `<div>
                      <span class="co-name">${co.name}</span>${co.nameEn ? `<span style="color:#999;font-size:13px;margin:0 4px">/</span><span class="co-name-en">${co.nameEn}</span>` : ''}
                    </div>
                    <div class="co-line">${co.addrLines.map(a => a.value).join(' - ')}</div>
@@ -813,7 +813,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
                        ${co.phone ? `الهاتف: ${co.phone}` : ''}
                        ${co.tax ? ` ${co.phone ? '| ' : ''}${blInline('الرقم الضريبي', 'VAT No.')}: <strong>${co.tax}</strong>` : ''}
                    </div>`
-              }
+        }
             </div>
         </div>
         <div class="header-center">
@@ -835,10 +835,10 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
                 ${quotation.customer?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${quotation.customer.phone}</span></div>` : ''}
                 ${quotation.customer?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${quotation.customer.taxNumber}</span></div>` : ''}
                 ${(() => {
-                    const parts = [quotation.customer?.addressRegion, quotation.customer?.addressCity, quotation.customer?.addressDistrict, quotation.customer?.addressStreet].filter(Boolean) as string[];
-                    if (!parts.length) return '';
-                    return `<div class="info-row"><span class="ik">${blInline('العنوان', 'Address')}:</span><span class="iv">${parts.join('، ')}</span></div>`;
-                })()}
+            const parts = [quotation.customer?.addressRegion, quotation.customer?.addressCity, quotation.customer?.addressDistrict, quotation.customer?.addressStreet].filter(Boolean) as string[];
+            if (!parts.length) return '';
+            return `<div class="info-row"><span class="ik">${blInline('العنوان', 'Address')}:</span><span class="iv">${parts.join('، ')}</span></div>`;
+        })()}
             </div>
         </div>
     </div>
@@ -860,13 +860,13 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         </thead>
         <tbody>
             ${lines.map((l: any, i: number) => {
-                const lineTaxRate = Number(l.taxRate || 0) || Number(quotation.taxRate || 0);
-                const lineBase = Number(l.quantity || 0) * Number(l.price || 0);
-                const lineTaxAmt = (lineBase * lineTaxRate) / 100;
-                // الحساب الصحيح: السعر الأساسي + مبلغ الضريبة
-                const lineTotal = lineBase + lineTaxAmt;
-                
-                return `
+            const lineTaxRate = Number(l.taxRate || 0) || Number(quotation.taxRate || 0);
+            const lineBase = Number(l.quantity || 0) * Number(l.price || 0);
+            const lineTaxAmt = (lineBase * lineTaxRate) / 100;
+            // الحساب الصحيح: السعر الأساسي + مبلغ الضريبة
+            const lineTotal = lineBase + lineTaxAmt;
+
+            return `
             <tr>
                 <td>${i + 1}</td>
                 <td style="text-align:right">
@@ -882,7 +882,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
                 ` : ''}
                 <td><strong>${lineTotal.toLocaleString('en-US')} ${sym}</strong></td>
             </tr>`;
-            }).join('')}
+        }).join('')}
         </tbody>
     </table>
 
@@ -962,7 +962,7 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
     const country = (company.countryCode || 'EG').toUpperCase();
     const isBilingual = country !== 'EG';
     const isA5 = options.isA5 || false;
-    
+
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
@@ -974,7 +974,7 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
 
     const date = new Date(plan.startDate || new Date()).toLocaleDateString('en-GB');
     const planNum = String(plan.planNumber || 1).padStart(4, '0');
-    
+
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
 
@@ -1098,12 +1098,12 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
         </thead>
         <tbody>
             ${(plan.installments || []).map((i: any) => {
-                const isOverdue = i.status !== 'paid' && i.status !== 'cancelled' && new Date(i.dueDate) < new Date();
-                const statusTxt = isOverdue ? 'متأخر' : (statusMap[i.status] || i.status);
-                const statusClass = isOverdue ? 'status-overdue' : (i.status === 'paid' ? 'status-paid' : '');
-                const instCode = `INST-${planNum}-${String(i.installmentNo).padStart(2, '0')}`;
-                
-                return `
+        const isOverdue = i.status !== 'paid' && i.status !== 'cancelled' && new Date(i.dueDate) < new Date();
+        const statusTxt = isOverdue ? 'متأخر' : (statusMap[i.status] || i.status);
+        const statusClass = isOverdue ? 'status-overdue' : (i.status === 'paid' ? 'status-paid' : '');
+        const instCode = `INST-${planNum}-${String(i.installmentNo).padStart(2, '0')}`;
+
+        return `
             <tr>
                 <td style="font-family:monospace; color:#5286ed;">${instCode}</td>
                 <td style="font-family:sans-serif">${new Date(i.dueDate).toLocaleDateString('en-GB')}</td>
@@ -1112,7 +1112,7 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
                 <td>${Number(i.remaining || 0).toLocaleString()} ${sym}</td>
                 <td class="${statusClass}">${statusTxt}</td>
             </tr>`;
-            }).join('')}
+    }).join('')}
         </tbody>
     </table>
 
@@ -1138,12 +1138,12 @@ ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.pr
 }
 
 // ═══════════════════════════════════════════════
-//  GENERAL REPORTS (التصاميم الموحدة للتقارير)
+//  GENERAL REPORTS (المحرك الموحد للتقارير)
 // ═══════════════════════════════════════════════
 export function generateReportHTML(
-    title: string, 
-    content: string, 
-    company: CompanyInfo = {}, 
+    title: string,
+    content: string,
+    company: CompanyInfo = {},
     options: { 
         noAutoPrint?: boolean; 
         isA5?: boolean; 
@@ -1151,21 +1151,20 @@ export function generateReportHTML(
         dateFrom?: string;
         dateTo?: string;
         generatedBy?: string;
-        metadata?: { label: string; value: any }[]; // For Customer Name, Balance etc.
-        summary?: { label: string; value: any; isTotal?: boolean }[];
+        metadata?: Array<{ label: string; value: string | number }>;
+        summary?: Array<{ label: string; value: string | number; isTotal?: boolean }>;
     } = {}
 ): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const isA5 = options.isA5 || false;
     const isBilingual = (company.countryCode || 'EG').toUpperCase() !== 'EG';
-    
+
     const co = {
         name: company.name || 'اسم الشركة',
         nameEn: company.nameEn || '',
         addr: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - '),
         phone: company.phone || '',
         logo: company.logo || '',
-        branch: company.branchName || 'المركز الرئيسي',
     };
 
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
@@ -1179,124 +1178,109 @@ export function generateReportHTML(
 <style>
     *{margin:0;padding:0;box-sizing:border-box}
     :root {
-        --base-font: ${isA5 ? '10px' : '11px'};
-        --header-name: ${isA5 ? '18px' : '22px'};
-        --title-font: ${isA5 ? '15px' : '18px'};
+        --base-font: ${isA5 ? '9px' : '11px'};
+        --header-name: ${isA5 ? '16px' : '22px'};
+        --title-font: ${isA5 ? '13px' : '18px'};
+        --logo-h: ${isA5 ? '45px' : '85px'};
     }
-    body{font-family:'Cairo',sans-serif;color:#000;font-size:var(--base-font);background:#fff;direction:rtl}
-    .page{width:100%; max-width: 100%; min-height: 297mm; margin:0; padding:10mm 15mm; display:flex; flex-direction:column; background: #fff;}
+    body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
+    .page{width:100%; max-width: 900px; min-height: 282mm; margin:0 auto;padding:6mm 10mm;display:flex;flex-direction:column; background: #fff;}
     
-    /* ── HEADER AREA ── */
-    .header{display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:15px; border-bottom:1.5px solid #000; margin-bottom:20px}
+    /* Header Section */
+    .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:3px solid #111;margin-bottom:15px}
     .co-block{flex:1;text-align:right}
-    .co-name{font-size:var(--header-name); font-weight:900; color:#000; margin-bottom:5px}
-    .co-line{font-size:11px; color:#444; line-height:1.6}
-    .header-center{flex:1.5; text-align:center; padding: 0 10px;}
-    .report-title{font-size:var(--title-font); font-weight:900; color:#000; margin-bottom:8px; text-decoration: underline;}
-    .report-dates{font-size:11px; font-weight:700; color:#333; background:#f0f0f0; padding:4px 12px; border-radius:4px; display:inline-block;}
-    .logo-block{flex:1; text-align:left}
-    .logo-block img{max-height:85px; max-width:160px; object-fit:contain}
+    .co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:2px}
+    .co-line{font-size:${isA5 ? '8.5px' : '10.5px'};color:#444;line-height:1.4}
+    .header-center{flex:1.2;text-align:center}
+    .report-title{font-size:var(--title-font);font-weight:900;color:#111;background:#f8f9fa;padding:4px 25px;border-radius:10px;display:inline-block;border:1.5px solid #111;box-shadow: 0 4px 0 #111}
+    .report-dates{font-size:9.5px;color:#333;font-weight:700;margin-top:10px}
+    .logo-block{flex:1;text-align:left}
+    .logo-block img{max-height:var(--logo-h);max-width:160px;object-fit:contain}
     
-    /* ── METADATA AREA (VERTICAL STACKED) ── */
-    .metadata-wrap{margin-bottom:20px; display: flex; flex-direction: column; gap: 4px;}
-    .meta-row{display:flex; font-size:12px; border-bottom:1px solid #eee; padding:4px 0;}
-    .meta-label{font-weight:900; width:150px; color:#555;}
-    .meta-value{font-weight:700; color:#000;}
+    /* Metadata Section */
+    .meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; border: 1.5px solid #111; border-radius: 8px; overflow: hidden; }
+    .meta-item { display: flex; align-items: center; border-bottom: 1px solid #eee; }
+    .meta-item:last-child, .meta-item:nth-last-child(2) { border-bottom: none; }
+    .meta-label { width: 140px; background: #f8f9fa; padding: 6px 12px; font-weight: 900; font-size: 10px; color: #444; border-left: 1.5px solid #111; }
+    .meta-value { padding: 6px 12px; font-weight: 700; font-size: 11px; flex: 1; }
 
-    /* ── TABLE DESIGN (STANDARD) ── */
-    table{width:100%; border-collapse:collapse; margin-top:10px; table-layout: auto;}
-    thead{display: table-header-group;}
-    thead th{background:#f2f2f2; padding:10px 8px; font-size:11px; font-weight:900; border:1px solid #ccc; color:#000; text-align:center; white-space:nowrap}
-    tbody td{padding:8px; font-size:11px; border:1px solid #ccc; text-align:center; font-weight:600; color:#111; vertical-align:middle; line-height:1.4}
+    /* Content Area */
+    .report-content { flex: 1; }
+    table{width:100%;border-collapse:collapse;border:2px solid #111;margin-top:10px}
+    thead th{background:#f0f1f3;padding:10px;font-size:10px;font-weight:900;border:1.5px solid #111; color:#000; text-align:center; white-space:nowrap}
+    tbody td{padding:8px 10px;font-size:10.5px;border:1px solid #111;text-align:center;font-weight:700; color:#111}
+    tbody tr:nth-child(even){background:#fcfcfc}
     
-    /* Grayscale/Print Friendly */
-    tbody tr:nth-child(even){background:transparent}
-    
-    /* ── SUMMARY SECTION ── */
-    .summary-wrap{margin-top:25px; border-top:2px solid #000; padding-top:15px; display:flex; flex-direction:column; align-items:flex-end;}
-    .summary-box{width:320px; background:#f9f9f9; border:1.5px solid #000; border-radius:4px; overflow:hidden}
-    .sum-row{display:flex; justify-content:space-between; padding:8px 15px; border-bottom:1px solid #ddd; font-size:12px;}
-    .sum-row.total{background:#f2f2f2; font-weight:900; font-size:14px; border-bottom:none}
-    
-    .footer-metadata{margin-top: auto; padding-top: 15px; border-top: 1px solid #eee; display:flex; justify-content:space-between; font-size:10px; color:#777}
+    /* Summary Section */
+    .summary-section { margin-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: flex-start; }
+    .summary-table { width: 320px; margin-right: auto; margin-left: 0; border: 2px solid #111; border-radius: 8px; overflow: hidden; background: #fff; }
+    .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-label { padding: 8px 15px; font-weight: 900; background: #f8f9fa; flex: 1; text-align: right; }
+    .summary-value { padding: 8px 15px; font-weight: 900; text-align: left; min-width: 120px; font-family: monospace; font-size: 12px; border-right: 1.5px solid #111; }
+    .summary-total { background: #111 !important; color: #fff !important; }
+    .summary-total .summary-value { border-right-color: #444; }
+
+    .footer{margin-top: 30px; padding-top: 15px; width: 100%; font-size: 9px; color: #666; text-align: center; border-top: 1px dotted #ccc; display: flex; justify-content: space-between; align-items: center;}
+    .footer span { font-weight: 700; }
 
     @media print {
-        @page { size: auto; margin: 0; }
-        body { background: #fff; }
-        .page { padding: 15mm !important; }
+        @page { size: auto; margin: 4mm 6mm; }
+        body { background: #fff; -webkit-print-color-adjust: exact; }
+        .page { width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; min-height: 0 !important; }
         thead { display: table-header-group; }
-        .no-print { display: none; }
     }
 </style>
 </head>
 <body>
 <div class="page">
-    <!-- Header Area -->
     <div class="header">
         <div class="co-block">
             <div class="co-name">${co.name}</div>
-            <div class="co-line">${blInline('الفرع', 'Branch')}: <strong>${co.branch}</strong></div>
-            ${co.phone ? `<div class="co-line">${blInline('الهاتف', 'Phone')}: ${co.phone}</div>` : ''}
+            <div class="co-line">${co.addr}</div>
+            ${co.phone ? `<div class="co-line">الهاتف: ${co.phone}</div>` : ''}
         </div>
         <div class="header-center">
             <div class="report-title">${title}</div>
-            <div class="report-dates">
-                ${options.dateFrom && options.dateTo 
-                    ? `${blInline('من', 'From')}: ${options.dateFrom} &nbsp; ${blInline('إلى', 'To')}: ${options.dateTo}`
-                    : options.subtitle || ''}
-            </div>
+            <div class="report-dates">${options.dateFrom ? `من: ${options.dateFrom}` : ''} ${options.dateTo ? ` إلى: ${options.dateTo}` : ''}</div>
+            ${options.subtitle ? `<div class="report-subtitle">${options.subtitle}</div>` : ''}
         </div>
         <div class="logo-block">
             ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
         </div>
     </div>
 
-    <!-- Metadata Section -->
-    <div class="metadata-wrap">
-        ${(options.metadata || []).map(m => `
-            <div class="meta-row">
-                <span class="meta-label">${m.label}:</span>
-                <span class="meta-value">${m.value}</span>
-            </div>
-        `).join('')}
-    </div>
+    ${(options.metadata && options.metadata.length > 0) ? `
+    <div class="meta-grid">
+        ${options.metadata.map(m => `
+        <div class="meta-item">
+            <div class="meta-label">${m.label}</div>
+            <div class="meta-value">${m.value}</div>
+        </div>`).join('')}
+    </div>` : ''}
 
-    <!-- Main Data Table -->
-    <div class="report-content" style="flex:1">
+    <div class="report-content">
         ${content}
     </div>
 
-    <!-- Summary Section -->
-    ${options.summary && options.summary.length > 0 ? `
-    <div class="summary-wrap">
-        <div class="summary-box">
+    ${(options.summary && options.summary.length > 0) ? `
+    <div class="summary-section">
+        <div class="summary-table">
             ${options.summary.map(s => `
-                <div class="sum-row ${s.isTotal ? 'total' : ''}">
-                    <span>${s.label}:</span>
-                    <span>${typeof s.value === 'number' ? s.value.toLocaleString() + ' ' + sym : s.value}</span>
-                </div>
-            `).join('')}
+            <div class="summary-row ${s.isTotal ? 'summary-total' : ''}">
+                <div class="summary-label">${s.label}</div>
+                <div class="summary-value">${typeof s.value === 'number' ? s.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + sym : s.value}</div>
+            </div>`).join('')}
         </div>
-    </div>
-    ` : ''}
+    </div>` : ''}
 
-    <!-- Footer Metadata -->
-    <div class="footer-metadata">
-        <span>${blInline('تم الاستخراج بواسطة', 'Generated By')}: <strong>${options.generatedBy || '—'}</strong></span>
-        <span>${blInline('تاريخ الطباعة', 'Print Date')}: ${new Date().toLocaleString('ar-EG')}</span>
+    <div class="footer">
+        <div>طُبع بواسطة نظام الـ ERP | <span>${options.generatedBy || 'النظام'}</span></div>
+        <div>تاريخ الطباعة: <span>${new Date().toLocaleString('ar-EG')}</span></div>
+        <div>صفحة 1 من 1</div>
     </div>
 </div>
-
-${options.noAutoPrint ? '' : `
-<script>
-    window.onload = () => {
-        setTimeout(() => {
-            window.print();
-            // window.close(); // Optional: close tab after print
-        }, 500);
-    };
-</script>
-`}
+${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),550);</script>'}
 </body>
 </html>`;
 }

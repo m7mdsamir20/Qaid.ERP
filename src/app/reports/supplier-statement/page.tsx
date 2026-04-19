@@ -9,7 +9,6 @@ import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
 import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown, History, Printer, FileText, ArrowRightLeft, FileDown, Activity, UserCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
-import { generateReportHTML } from '@/lib/printInvoices';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -83,85 +82,7 @@ export default function SupplierStatementPage() {
         }
     }, []);
 
-    const handlePrint = () => {
-        if (!data) return;
-        const company = session?.user as any;
-        
-        let tableHtml = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>${t('التاريخ')}</th>
-                        <th>${t('الحركة')}</th>
-                        <th>${t('المرجع')}</th>
-                        <th style="text-align:right">${t('البيان')}</th>
-                        <th>${t('مسدد (مدين)')}</th>
-                        <th>${t('مستحق (دائن)')}</th>
-                        <th>${t('الرصيد')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        // Initial Balance Row
-        if (data.initialBalance !== 0) {
-            tableHtml += `
-                <tr>
-                    <td>${dateFrom || '—'}</td>
-                    <td>${t('رصيد سابق')}</td>
-                    <td>—</td>
-                    <td style="text-align:right">${t('رصيد ما قبل فترة التقرير')}</td>
-                    <td>${data.initialBalance < 0 ? Math.abs(data.initialBalance).toLocaleString() : '—'}</td>
-                    <td>${data.initialBalance > 0 ? data.initialBalance.toLocaleString() : '—'}</td>
-                    <td>${Math.abs(data.initialBalance).toLocaleString()}</td>
-                </tr>
-            `;
-        }
-
-        // Statement Rows
-        data.statement.forEach((row: StatementRow) => {
-            tableHtml += `
-            <tr>
-                <td>${new Date(row.date).toLocaleDateString('en-GB')}</td>
-                <td>${t(row.type)}</td>
-                <td>${row.ref || '—'}</td>
-                <td style="text-align:right">${row.description}</td>
-                <td>${row.debit > 0 ? row.debit.toLocaleString() : '—'}</td>
-                <td>${row.credit > 0 ? row.credit.toLocaleString() : '—'}</td>
-                <td>${Math.abs(row.balance).toLocaleString()}</td>
-            </tr>`;
-        });
-
-        tableHtml += `</tbody></table>`;
-
-        const html = generateReportHTML(
-            t("كشف حساب مورد"),
-            tableHtml,
-            company,
-            {
-                dateFrom: dateFrom || '—',
-                dateTo: dateTo || new Date().toLocaleDateString('en-CA'),
-                generatedBy: session?.user?.name || '',
-                metadata: [
-                    { label: t('اسم المورد'), value: data.supplier.name },
-                    { label: t('كود المورد'), value: data.supplier.id.slice(-6).toUpperCase() },
-                    { label: t('الرصيد الافتتاحي'), value: data.initialBalance.toLocaleString() + ' ' + getCurrencyName(currency) },
-                    { label: t('الرصيد الختامي'), value: data.finalBalance.toLocaleString() + ' ' + getCurrencyName(currency) },
-                ],
-                summary: [
-                    { label: t('إجمالي المدفوعات (عليه)'), value: data.statement.reduce((s, l) => s + l.debit, 0) },
-                    { label: t('إجمالي المشتريات (له)'), value: data.statement.reduce((s, l) => s + l.credit, 0) },
-                    { label: t('صافي المستحقات النهائية'), value: data.finalBalance, isTotal: true },
-                ]
-            }
-        );
-
-        const win = window.open('', '_blank');
-        if (win) {
-            win.document.write(html);
-            win.document.close();
-        }
-    };
+    const handlePrint = () => window.print();
 
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
@@ -200,9 +121,8 @@ export default function SupplierStatementPage() {
                     title={t("كشف حساب مورد تفصيلي")}
                     subtitle={t("استخراج بيان بكافة مشتريات، مدفوعات، ومرتجعات مورد محدد خلال فترة زمنية مختارة.")}
                     backTab="partners"
-                    
+
                     onExportExcel={exportToExcel}
-                    onPrint={handlePrint}
                     printTitle={t("كشف حساب مورد تفصيلي")}
                     printDate={data ? data.supplier.name : undefined}
                 />
@@ -217,20 +137,20 @@ export default function SupplierStatementPage() {
                                 { value: '', label: `-- ${t('اختر مورداً من القائمة')} --` },
                                 ...suppliers.map(s => ({ value: s.id, label: s.name }))
                             ]}
-                            style={{ 
-                                width: '100%', height: '42px', padding: '0 15px', 
-                                borderRadius: '12px', border: `1px solid ${C.border}`, 
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px', 
-                                fontFamily: CAIRO, fontWeight: 500 
+                            style={{
+                                width: '100%', height: '42px', padding: '0 15px',
+                                borderRadius: '12px', border: `1px solid ${C.border}`,
+                                background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                fontFamily: CAIRO, fontWeight: 500
                             }}
                         />
                     </div>
-                    
+
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
                         <div style={{ width: '170px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
-                                style={{ 
+                                style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
@@ -241,7 +161,7 @@ export default function SupplierStatementPage() {
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
                         <div style={{ width: '170px' }}>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
-                                style={{ 
+                                style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
@@ -249,14 +169,14 @@ export default function SupplierStatementPage() {
                                 }}
                             />
                         </div>
-                        <button onClick={() => fetchStatement()} disabled={loading} style={{ 
-                            height: '42px', padding: '0 24px', borderRadius: '12px', 
+                        <button onClick={() => fetchStatement()} disabled={loading} style={{
+                            height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
                             boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                         }}>
-                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
+                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                             {t('تحديث البيانات')}
                         </button>
                     </div>
@@ -309,10 +229,10 @@ export default function SupplierStatementPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             {[t('التاريخ'), t('طبيعة الحركة'), t('المـرجع'), t('البيان والتفاصيل'), t('مسدد (مدين)'), t('مستحق (دائن)'), t('الرصيد')].map((h, i) => (
-                                                <th key={i} style={{ 
-                                                    padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
-                                                    textAlign: 'center', 
-                                                    fontWeight: 800, fontFamily: CAIRO 
+                                                <th key={i} style={{
+                                                    padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
+                                                    textAlign: 'center',
+                                                    fontWeight: 800, fontFamily: CAIRO
                                                 }}>{h}</th>
                                             ))}
                                         </tr>
@@ -334,7 +254,7 @@ export default function SupplierStatementPage() {
                                             </tr>
                                         )}
                                         {data.statement.map((row: StatementRow, i: number) => (
-                                            <tr key={row.id + i} 
+                                            <tr key={row.id + i}
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
@@ -342,9 +262,9 @@ export default function SupplierStatementPage() {
                                                     {new Date(row.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                    <span style={{ 
+                                                    <span style={{
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
-                                                        background: row.type.includes('مشتريات') ? 'rgba(239,68,68,0.1)' : row.type.includes('صرف') ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)', 
+                                                        background: row.type.includes('مشتريات') ? 'rgba(239,68,68,0.1)' : row.type.includes('صرف') ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)',
                                                         color: row.type.includes('مشتريات') ? '#ef4444' : row.type.includes('صرف') ? '#10b981' : C.textMuted
                                                     }}>
                                                         {t(row.type)}

@@ -11,7 +11,6 @@ import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
-import { generateReportHTML } from '@/lib/printInvoices';
 import { Package, Search, Activity, Box, DollarSign, Loader2 } from 'lucide-react';
 import { TABLE_STYLE, SEARCH_STYLE, focusIn, focusOut } from '@/constants/theme';
 
@@ -49,76 +48,9 @@ export default function InventoryReportPage() {
             .finally(() => setLoading(false));
     }, []);
 
-    const handlePrint = () => {
-        if (!data) return;
-        const company = session?.user as any;
-        const reportTitle = isServices ? t("قائمة أسعار الخدمات") : t("تقرير أرصدة المخزون");
-        
-        let tableHtml = '<table><thead><tr>';
-        if (isServices) {
-            tableHtml += `
-                <th>${t('كود الخدمة')}</th>
-                <th style="text-align:right">${t('اسم الخدمة')}</th>
-                <th style="text-align:center">${t('سعر الخدمة')}</th>
-            `;
-        } else {
-            tableHtml += `
-                <th>${t('كود الصنف')}</th>
-                <th style="text-align:right">${t('اسم الصنف')}</th>
-                <th style="text-align:center">${t('المخزن')}</th>
-                <th style="text-align:center">${t('الكمية')}</th>
-                <th style="text-align:center">${t('التكلفة')}</th>
-                <th style="text-align:center">${t('القيمة')}</th>
-            `;
-        }
-        tableHtml += '</tr></thead><tbody>';
-
-        filtered.forEach(st => {
-            if (isServices) {
-                tableHtml += `
-                    <tr>
-                        <td>${st.item?.code || '-'}</td>
-                        <td style="text-align:right">${st.item?.name || '-'}</td>
-                        <td style="text-align:center">${st.item?.sellPrice?.toLocaleString() || '0.00'}</td>
-                    </tr>
-                `;
-            } else {
-                tableHtml += `
-                    <tr>
-                        <td>${st.item?.code || '-'}</td>
-                        <td style="text-align:right">${st.item?.name || '-'}</td>
-                        <td style="text-align:center">${st.warehouse?.name || '-'}</td>
-                        <td style="text-align:center; font-weight:900">${st.quantity.toLocaleString()}</td>
-                        <td style="text-align:center">${st.item?.costPrice?.toLocaleString() || '0.00'}</td>
-                        <td style="text-align:center; font-weight:900">${(st.quantity * (st.item?.costPrice || 0)).toLocaleString()}</td>
-                    </tr>
-                `;
-            }
-        });
-        tableHtml += '</tbody></table>';
-
-        const html = generateReportHTML(
-            reportTitle,
-            tableHtml,
-            company,
-            {
-                generatedBy: session?.user?.name || '',
-                summary: isServices ? [
-                    { label: t('إجمالي عدد الخدمات المتوفرة'), value: data.totalItems }
-                ] : [
-                    { label: t('إجمالي عدد الأصناف بالجرد'), value: data.totalItems },
-                    { label: t('إجمالي الكميات المتوفرة'), value: data.totalQuantity },
-                    { label: t('إجمالي قيمة المخزون الحالية (تكلفة)'), value: data.totalValue, isTotal: true },
-                ]
-            }
-        );
-        const win = window.open('', '_blank');
-        if (win) { win.document.write(html); win.document.close(); }
-    };
-
     const filtered = data?.stocks.filter(s =>
-        (s.item?.name?.toLowerCase() || '').includes(search.toLowerCase()) || 
-        (s.item?.code?.toLowerCase() || '').includes(search.toLowerCase()) || 
+        (s.item?.name?.toLowerCase() || '').includes(search.toLowerCase()) ||
+        (s.item?.code?.toLowerCase() || '').includes(search.toLowerCase()) ||
         (s.warehouse?.name?.toLowerCase() || '').includes(search.toLowerCase())
     ) || [];
 
@@ -129,8 +61,7 @@ export default function InventoryReportPage() {
                     title={isServices ? t("قائمة أسعار الخدمات") : t("تقرير أرصدة المخزون")}
                     subtitle={isServices ? t("عرض قائمة بجميع الخدمات المسجلة وأسعار البيع المقترحة.") : t("عرض أرصدة جميع الأصناف في كل مخزن مع القيمة الإجمالية والتكلفة.")}
                     backTab="inventory"
-                    
-                    onPrint={handlePrint}
+
                     printTitle={isServices ? t("قائمة أسعار الخدمات") : t("جرد المخازن (Inventory Statement)")}
                 />
 
@@ -216,8 +147,8 @@ export default function InventoryReportPage() {
                                                 <>
                                                     <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{st.warehouse?.name || t('مخزن غير معرف')}</span></td>
                                                     <td style={TABLE_STYLE.td(false)}>
-                                                        <span style={{ 
-                                                            fontSize: '13px', fontWeight: 900, color: st.quantity <= 0 ? '#ef4444' : st.quantity <= 10 ? '#f59e0b' : '#10b981', 
+                                                        <span style={{
+                                                            fontSize: '13px', fontWeight: 900, color: st.quantity <= 0 ? '#ef4444' : st.quantity <= 10 ? '#f59e0b' : '#10b981',
                                                             fontFamily: INTER, background: st.quantity <= 0 ? 'rgba(239, 68, 68, 0.1)' : st.quantity <= 10 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                                             padding: '4px 10px', borderRadius: '10px'
                                                         }}>

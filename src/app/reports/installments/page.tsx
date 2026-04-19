@@ -15,9 +15,8 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import CustomSelect from '@/components/CustomSelect';
 import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
-import ReportHeader from '@/components/ReportHeader';
 
-const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function InstallmentReportsPage() {
@@ -29,20 +28,20 @@ export default function InstallmentReportsPage() {
     const { symbol: cSymbol } = useCurrency();
     const [activeTab, setActiveTab] = useState<'collection' | 'overdue' | 'customer'>('collection');
     const [customers, setCustomers] = useState<any[]>([]);
-    const [data,      setData]      = useState<any>(null);
-    const [loading,   setLoading]   = useState(false);
-    const [company,   setCompany]   = useState<CompanyInfo>({});
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(false);
+    const [company, setCompany] = useState<CompanyInfo>({});
 
     const [collectionForm, setCollectionForm] = useState({
         from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
-        to:   new Date().toISOString().split('T')[0],
+        to: new Date().toISOString().split('T')[0],
     });
-    const [overdueCustomer, setOverdueCustomer]   = useState('');
-    const [customerReport,  setCustomerReport]    = useState('');
+    const [overdueCustomer, setOverdueCustomer] = useState('');
+    const [customerReport, setCustomerReport] = useState('');
 
     useEffect(() => {
-        fetch('/api/customers').then(r => r.json()).then(setCustomers).catch(() => {});
-        fetch('/api/settings').then(r => r.json()).then(d => setCompany(d.company || {})).catch(() => {});
+        fetch('/api/customers').then(r => r.json()).then(setCustomers).catch(() => { });
+        fetch('/api/settings').then(r => r.json()).then(d => setCompany(d.company || {})).catch(() => { });
     }, []);
 
     const fetchReport = async () => {
@@ -63,155 +62,53 @@ export default function InstallmentReportsPage() {
     };
 
     const handlePrint = () => {
-        if (!data) return;
-        
+        const tables = Array.from(document.querySelectorAll('.report-content table'));
+        if (!tables.length) return;
+
+        const tablesHTML = tables.map(t => {
+            // كود تنظيف بسيط للجداول قبل الطباعة لضمان المظهر الرسمي
+            const clone = t.cloneNode(true) as HTMLTableElement;
+            return clone.outerHTML;
+        }).join('<div style="height:20px"></div>');
+
+        const companyInfo: CompanyInfo = company;
         const titleMap = {
             collection: t('تقرير تحصيلات الأقساط'),
-            overdue:    t('تقرير الأقساط المتأخرة'),
-            customer:   t('كشف حساب أقساط عميل')
+            overdue: t('تقرير الأقساط المتأخرة'),
+            customer: t('كشف حساب أقساط عميل')
         };
 
-        let contentHtml = '';
-        let metadata: any[] = [];
-        let summary: any[] = [];
-
-        if (activeTab === 'collection') {
-            contentHtml = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>${t('تاريخ العملية')}</th>
-                            <th style="text-align:right">${t('العميل')}</th>
-                            <th style="text-align:right">${t('البيان')}</th>
-                            <th>${t('رقم الخطة')}</th>
-                            <th>${t('المبلغ المحصّل')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${data.installments?.map((inst: any) => `
-                        <tr>
-                            <td>${inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
-                            <td style="text-align:right">${inst.plan?.customer?.name}</td>
-                            <td style="text-align:right">${t('قسط رقم')} ${inst.installmentNo}</td>
-                            <td>#${inst.plan?.planNumber}</td>
-                            <td>${fmtN(inst.paidAmount || 0)}</td>
-                        </tr>`).join('')}
-                    </tbody>
-                </table>
-            `;
-            metadata = [
-                { label: t('الفترة من'), value: collectionForm.from },
-                { label: t('الفترة إلى'), value: collectionForm.to },
-            ];
-            summary = [
-                { label: t('عدد العمليات'), value: data.installments?.length || 0 },
-                { label: t('إجمالي المبالغ المحصلة'), value: data.total, isTotal: true },
-            ];
-        } else if (activeTab === 'overdue') {
-            contentHtml = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="text-align:right">${t('العميل')}</th>
-                            <th>${t('رقم الخطة')}</th>
-                            <th>${t('القسط')}</th>
-                            <th>${t('موعد الاستحقاق')}</th>
-                            <th>${t('أيام التأخير')}</th>
-                            <th>${t('المبلغ المتبقي')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${data.installments?.map((inst: any) => `
-                        <tr>
-                            <td style="text-align:right">${inst.plan?.customer?.name}</td>
-                            <td>#${inst.plan?.planNumber}</td>
-                            <td>${inst.installmentNo}</td>
-                            <td style="color:#ef4444">${fmt(inst.dueDate)}</td>
-                            <td>${inst.daysOverdue} ${t('يوم')}</td>
-                            <td>${fmtN(inst.remaining || 0)}</td>
-                        </tr>`).join('')}
-                    </tbody>
-                </table>
-            `;
-            metadata = [
-                { label: t('العميل المستهدف'), value: customers.find(c => c.id === overdueCustomer)?.name || t('جميع العملاء المديونين') },
-            ];
-            summary = [
-                { label: t('عدد الأقساط المتعثرة'), value: data.installments?.length || 0 },
-                { label: t('إجمالي مبالغ التعثر القائمة'), value: data.total, isTotal: true },
-            ];
-        } else if (activeTab === 'customer') {
-            contentHtml = data.plans?.map((plan: any) => `
-                <div style="margin-bottom:30px">
-                    <h3 style="font-size:12px; margin-bottom:10px; border-bottom:1.5px solid #000; padding-bottom:5px">
-                        ${t('خطة تقسيط')} #${plan.planNumber} - ${plan.productName || '—'}
-                    </h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>${t('رقم القسط')}</th>
-                                <th>${t('تاريخ الاستحقاق')}</th>
-                                <th>${t('مبلغ القسط')}</th>
-                                <th>${t('المحصل')}</th>
-                                <th>${t('المتبقي')}</th>
-                                <th>${t('الحالة')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${plan.installments?.map((inst: any) => `
-                            <tr>
-                                <td>${inst.installmentNo}</td>
-                                <td>${fmt(inst.dueDate)}</td>
-                                <td>${fmtN(inst.amount)}</td>
-                                <td>${fmtN(inst.paidAmount || 0)}</td>
-                                <td>${fmtN(inst.remaining || 0)}</td>
-                                <td>${inst.status === 'paid' ? t('تم التحصيل') : t('معلق')}</td>
-                            </tr>`).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `).join('');
-
-            metadata = [
-                { label: t('اسم العميل'), value: customers.find(c => c.id === customerReport)?.name || '—' },
-                { label: t('كود العميل'), value: customerReport.slice(-6).toUpperCase() },
-            ];
-            summary = [
-                { label: t('إجمالي قيمة التعاقدات'), value: data.summary?.totalAmount },
-                { label: t('إجمالي ما تم سداده'), value: data.summary?.totalPaid },
-                { label: t('صافي الرصيد المستحق'), value: data.summary?.totalRemaining, isTotal: true },
-            ];
-        }
+        const subtitle = activeTab === 'collection'
+            ? `${t('من تاريخ')} ${collectionForm.from} ${t('إلى')} ${collectionForm.to}`
+            : activeTab === 'customer'
+                ? `${t('العميل')}: ${customers.find(c => c.id === customerReport)?.name || ''}`
+                : t('جميع المتعثرين');
 
         const html = generateReportHTML(
-            titleMap[activeTab], 
-            contentHtml, 
-            company, 
-            { 
-               dateFrom: activeTab === 'collection' ? collectionForm.from : undefined,
-               dateTo: activeTab === 'collection' ? collectionForm.to : undefined,
-               generatedBy: session?.user?.name || '',
-               metadata,
-               summary
-            }
+            titleMap[activeTab],
+            tablesHTML,
+            companyInfo,
+            { subtitle, noAutoPrint: false }
         );
 
-        const win = window.open('', '_blank');
-        if (win) { win.document.write(html); win.document.close(); }
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', titleMap[activeTab]);
+        window.open('/print/report', '_blank');
     };
 
     const tabs = [
         { id: 'collection', label: t('تقرير التحصيلات'), icon: CheckCircle2, sub: t('مراجعة المبالغ الواردة') },
-        { id: 'overdue',    label: t('تقرير المتأخرات'), icon: AlertTriangle, sub: t('تتبع حالات التعثر') },
-        { id: 'customer',   label: t('كشف حساب عميل'), icon: FileText, sub: t('سجل الأقساط التاريخي') },
+        { id: 'overdue', label: t('تقرير المتأخرات'), icon: AlertTriangle, sub: t('تتبع حالات التعثر') },
+        { id: 'customer', label: t('كشف حساب عميل'), icon: FileText, sub: t('سجل الأقساط التاريخي') },
     ];
 
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
-                
+
                 {/* Print Styles */}
-                <style dangerouslySetInnerHTML={{ __html: `
+                <style dangerouslySetInnerHTML={{
+                    __html: `
                     @media print {
                         .no-print { display: none !important; }
                         body { background: white !important; color: black !important; padding: 0 !important; }
@@ -220,15 +117,15 @@ export default function InstallmentReportsPage() {
                     }
                     @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
                 ` }} />
-                
+
                 {/* Header Section */}
-                {/* Header Section */}
-                <ReportHeader
-                    title={t("تقارير الأقساط")}
-                    subtitle={t("تحليل التحصيلات، متابعة المديونيات المتأخرة، وإصدار كشوف الحسابات التفصيلية")}
-                    backTab="all"
-                    onPrint={data ? handlePrint : undefined}
-                />
+                <div className="no-print">
+                    <PageHeader
+                        title={t("تقارير الأقساط")}
+                        subtitle={t("تحليل التحصيلات، متابعة المديونيات المتأخرة، وإصدار كشوف الحسابات التفصيلية")}
+                        icon={BarChart3}
+                    />
+                </div>
 
                 {/* Tabs Selector */}
                 <div className="no-print" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '24px' }}>
@@ -246,8 +143,8 @@ export default function InstallmentReportsPage() {
                                     <tab.icon size={22} />
                                 </div>
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontSize: '12px', fontWeight: 800 , fontFamily: CAIRO}}>{tab.label}</div>
-                                    <div style={{ fontSize: '11px', fontWeight: 600, color: active ? C.primary : C.textMuted, marginTop: '2px' , fontFamily: CAIRO}}>{tab.sub}</div>
+                                    <div style={{ fontSize: '12px', fontWeight: 800, fontFamily: CAIRO }}>{tab.label}</div>
+                                    <div style={{ fontSize: '11px', fontWeight: 600, color: active ? C.primary : C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{tab.sub}</div>
                                 </div>
                             </button>
                         );
@@ -257,9 +154,9 @@ export default function InstallmentReportsPage() {
                 {/* Filters Section */}
                 <div className="no-print" style={{ ...SC, marginBottom: '24px', position: 'relative' }}>
                     <div style={STitle}><TrendingUp size={16} /> {t('تصفية النتائج واستخراج التقرير')}</div>
-                    
+
                     <div style={{ display: 'flex', alignItems: 'flex-end', gap: '20px', flexWrap: 'wrap' }}>
-                        
+
                         {activeTab === 'collection' && (
                             <>
                                 <div style={{ minWidth: '200px' }}>
@@ -282,8 +179,8 @@ export default function InstallmentReportsPage() {
                         {activeTab === 'overdue' && (
                             <div style={{ flex: 1, minWidth: '300px' }}>
                                 <label style={LS}>{t('فلترة حسب العميل (اختياري)')}</label>
-                                <CustomSelect 
-                                    value={overdueCustomer} 
+                                <CustomSelect
+                                    value={overdueCustomer}
                                     onChange={setOverdueCustomer}
                                     options={[{ value: '', label: t('جميع العملاء المديونين') }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
                                     placeholder={t("اختر عميلاً للفلترة...")}
@@ -295,8 +192,8 @@ export default function InstallmentReportsPage() {
                         {activeTab === 'customer' && (
                             <div style={{ flex: 1, minWidth: '300px' }}>
                                 <label style={LS}>{t('اختر العميل المعني بكشف الحساب')}</label>
-                                <CustomSelect 
-                                    value={customerReport} 
+                                <CustomSelect
+                                    value={customerReport}
                                     onChange={setCustomerReport}
                                     options={customers.map(c => ({ value: c.id, label: c.name, sub: `${t('رصيد العميل الحالي:')} ${fmtN(c.balance)} ${cSymbol}` }))}
                                     placeholder={t("ابحث واختر العميل من القائمة...")}
@@ -310,6 +207,11 @@ export default function InstallmentReportsPage() {
                                 style={{ ...BTN_PRIMARY(false, loading), height: '42px', width: 'auto', padding: '0 24px', opacity: (activeTab === 'customer' && !customerReport) ? 0.5 : 1 }}>
                                 {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} /> {t('عرض النتائج')}</>}
                             </button>
+                            {data && (
+                                <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
+                                    <Printer size={18} /> {t('طباعة')}
+                                </button>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -319,18 +221,18 @@ export default function InstallmentReportsPage() {
                     {loading ? (
                         <div style={{ textAlign: 'center', padding: '120px 0', color: C.textMuted }}>
                             <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '16px' }} />
-                            <p style={{ fontSize: '12px', fontWeight: 600 , fontFamily: CAIRO}}>{t('جاري استخراج وتحليل بيانات التقرير...')}</p>
+                            <p style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استخراج وتحليل بيانات التقرير...')}</p>
                         </div>
                     ) : !data ? (
                         <div style={{ textAlign: 'center', padding: '120px 0', color: C.textMuted }}>
                             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <BarChart3 size={40} style={{ opacity: 0.1 }} />
                             </div>
-                            <p style={{ fontSize: '15px', fontWeight: 500 , fontFamily: CAIRO}}>{t('حدد معايير البحث ثم اضغط على زر "عرض النتائج" لإنشاء التقرير')}</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, fontFamily: CAIRO }}>{t('حدد معايير البحث ثم اضغط على زر "عرض النتائج" لإنشاء التقرير')}</p>
                         </div>
                     ) : (
                         <div className="report-content">
-                            
+
                             {/* Detailed Sections based on Tab */}
                             {activeTab === 'collection' && (
                                 <>
@@ -340,14 +242,14 @@ export default function InstallmentReportsPage() {
                                                 <DollarSign size={24} />
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 800 , fontFamily: CAIRO}}>{t('إجمالي التحصيلات للفترة')}</div>
+                                                <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 800, fontFamily: CAIRO }}>{t('إجمالي التحصيلات للفترة')}</div>
                                                 <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
-                                                    {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7 , fontFamily: CAIRO}}>{cSymbol}</span>
+                                                    {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'end' }}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>{t('عدد العمليات الصالحة')}</div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('عدد العمليات الصالحة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
@@ -355,11 +257,11 @@ export default function InstallmentReportsPage() {
                                     <div style={SC}>
                                         <div style={STitle}><Info size={16} /> {t('قائمة العمليات المسجلة')}</div>
                                         <div style={{ overflowX: 'auto' }}>
-                                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary , fontFamily: CAIRO}}>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                         {[t('تاريخ العملية'), t('العميل'), t('البيان'), t('رقم الخطة'), t('المبلغ المحصّل')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
@@ -367,10 +269,10 @@ export default function InstallmentReportsPage() {
                                                     {data.installments?.map((inst: any, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < data.installments.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
-                                                            <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary , fontFamily: CAIRO}}>{inst.plan?.customer?.name}</td>
+                                                            <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط رقم')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
-                                                            <td style={{ padding: '16px', color: '#10b981', fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 , fontFamily: CAIRO}}>{cSymbol}</span></td>
+                                                            <td style={{ padding: '16px', color: '#10b981', fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -388,14 +290,14 @@ export default function InstallmentReportsPage() {
                                                 <AlertTriangle size={24} />
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '12px', color: C.danger, fontWeight: 800 , fontFamily: CAIRO}}>{t('إجمالي المتأخرات القائمة')}</div>
+                                                <div style={{ fontSize: '12px', color: C.danger, fontWeight: 800, fontFamily: CAIRO }}>{t('إجمالي المتأخرات القائمة')}</div>
                                                 <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
-                                                    {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7 , fontFamily: CAIRO}}>{cSymbol}</span>
+                                                    {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'end' }}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>{t('إجمالي الأقساط المتعثرة')}</div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الأقساط المتعثرة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.danger, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
@@ -403,27 +305,27 @@ export default function InstallmentReportsPage() {
                                     <div style={SC}>
                                         <div style={STitle}><Info size={16} /> {t('قائمة الأقساط المتجاوزة للموعد')}</div>
                                         <div style={{ overflowX: 'auto' }}>
-                                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary , fontFamily: CAIRO}}>
+                                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>
                                                 <thead>
                                                     <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                         {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     {data.installments?.map((inst: any, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < data.installments.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                                            <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary , fontFamily: CAIRO}}>{inst.plan?.customer?.name}</td>
+                                                            <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
                                                             <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: C.danger, fontWeight: 800, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
                                                             <td style={{ padding: '16px' }}>
-                                                                <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 800, border: `1px solid ${C.danger}20` , fontFamily: CAIRO}}>
+                                                                <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 800, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
                                                                     {inst.daysOverdue} {t('يوم تأخير')}
                                                                 </div>
                                                             </td>
-                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 , fontFamily: CAIRO}}>{cSymbol}</span></td>
+                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -448,9 +350,9 @@ export default function InstallmentReportsPage() {
                                                     <s.icon size={16} />
                                                 </div>
                                                 <div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700 , fontFamily: CAIRO}}>{s.label}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{s.label}</div>
                                                     <div style={{ fontSize: '15px', fontWeight: 900, color: s.color, fontFamily: INTER }}>
-                                                        {s.value} <span style={{ fontSize: '11px', opacity: 0.5 , fontFamily: CAIRO}}>{s.suffix}</span>
+                                                        {s.value} <span style={{ fontSize: '11px', opacity: 0.5, fontFamily: CAIRO }}>{s.suffix}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -464,21 +366,21 @@ export default function InstallmentReportsPage() {
                                                 <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                                                         <div style={{ fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>#{plan.planNumber}</div>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 700 , fontFamily: CAIRO}}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
                                                             <Package size={14} /> {plan.productName || t('غير محدد')}
                                                         </div>
-                                                        <div style={{ fontSize: '12px', color: C.textMuted , fontFamily: CAIRO}}>{plan.monthsCount} {t('شهر')}</div>
+                                                        <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{plan.monthsCount} {t('شهر')}</div>
                                                     </div>
                                                     <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
-                                                        {fmtN(plan.grandTotal)} <span style={{ fontSize: '12px', opacity: 0.6 , fontFamily: CAIRO}}>{cSymbol}</span>
+                                                        {fmtN(plan.grandTotal)} <span style={{ fontSize: '12px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                     </div>
                                                 </div>
                                                 <div style={{ overflowX: 'auto' }}>
-                                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' , fontFamily: CAIRO}}>
+                                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px', fontFamily: CAIRO }}>
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
                                                                 {[t('م'), t('تاريخ الاستحقاق'), t('مبلغ القسط'), t('القيمة المحصلة'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                                    <th key={i} style={{ padding: '12px 24px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textMuted , fontFamily: CAIRO}}>{h}</th>
+                                                                    <th key={i} style={{ padding: '12px 24px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                                 ))}
                                                             </tr>
                                                         </thead>
@@ -487,11 +389,11 @@ export default function InstallmentReportsPage() {
                                                                 <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: '0.2s' }}>
                                                                     <td style={{ padding: '12px 24px', color: C.primary, fontWeight: 800, fontFamily: INTER }}>{inst.installmentNo}</td>
                                                                     <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
-                                                                    <td style={{ padding: '12px 24px', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.amount)} <span style={{ fontSize: '10px', opacity: 0.5 , fontFamily: CAIRO}}>{cSymbol}</span></td>
-                                                                    <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', opacity: 0.5 , fontFamily: CAIRO}}>{cSymbol}</span></td>
-                                                                    <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', opacity: 0.5 , fontFamily: CAIRO}}>{cSymbol}</span></td>
+                                                                    <td style={{ padding: '12px 24px', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.amount)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                                    <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                                    <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                                     <td style={{ padding: '12px 24px' }}>
-                                                                        <div style={{ 
+                                                                        <div style={{
                                                                             display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 800,
                                                                             background: inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(59,130,246,0.1)',
                                                                             color: inst.status === 'paid' ? '#10b981' : C.primary,
@@ -514,7 +416,8 @@ export default function InstallmentReportsPage() {
                     )}
                 </div>
             </div>
-            <style dangerouslySetInnerHTML={{ __html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
             ` }} />
         </DashboardLayout>
