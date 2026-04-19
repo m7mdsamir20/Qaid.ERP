@@ -22,8 +22,7 @@ export default function PrintInvoicePage() {
                 const type = data.invoice?.type || 'sale';
                 const generated = generateA4HTML(data.invoice, type, data.company, {
                     partyBalance: data.invoice?.customer?.balance ?? data.invoice?.supplier?.balance,
-                    noAutoPrint: true,
-                    templateConfig: data.templateConfig
+                    noAutoPrint: true
                 });
                 setInvoiceNum(String(data.invoice?.invoiceNumber || id).padStart(5, '0'));
                 setHtml(generated);

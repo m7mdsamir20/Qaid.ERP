@@ -107,7 +107,7 @@ export default function GeneralTab({
 
                     {/* ── الدولة ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: C.subtle }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><MapPin size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الدولة')}</span>
                         </div>
@@ -169,7 +169,7 @@ export default function GeneralTab({
 
                     {/* ── العملة ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: C.subtle }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Coins size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('العملة الأساسية')}</span>
                         </div>
@@ -275,7 +275,7 @@ export default function GeneralTab({
 
                     {/* ── المنطقة الزمنية ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: C.subtle }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Globe size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('المنطقة الزمنية')}</span>
                         </div>
@@ -316,7 +316,7 @@ export default function GeneralTab({
 
                     {/* ── نوع التقويم ── */}
                     <div style={{ display: 'flex', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: C.subtle }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Calendar size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('نوع التقويم')}</span>
                         </div>
@@ -342,7 +342,7 @@ export default function GeneralTab({
 
                     {/* ── تنسيق التاريخ ── */}
                     <div style={{ display: 'flex', alignItems: 'center' }}>
-                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                        <div style={{ width: '180px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: C.subtle }}>
                             <div style={{ color: isEditMode ? C.primary : C.textMuted }}><Clock size={15} /></div>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تنسيق التاريخ')}</span>
                         </div>

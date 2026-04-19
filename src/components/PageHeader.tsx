@@ -54,12 +54,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 {backUrl && (
                     <button onClick={() => router.push(backUrl)} 
                         style={{ 
-                            width: '38px', height: '38px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', 
+                            width: '38px', height: '38px', borderRadius: '12px', background: C.subtle, 
                             border: `1px solid ${C.border}`, color: C.textSecondary, flexShrink: 0,
                             display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s'
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
+                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                        onMouseLeave={e => e.currentTarget.style.background = C.subtle}>
                         <BackIcon size={22} />
                     </button>
                 )}
@@ -68,12 +68,12 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                         style={{ 
                             display: 'flex', alignItems: 'center', gap: '6px', flexShrink: 0,
                             padding: '0 12px', height: '38px', borderRadius: '12px', 
-                            background: 'rgba(255,255,255,0.03)', 
+                            background: C.subtle, 
                             border: `1px solid ${C.border}`, color: C.textSecondary,
                             cursor: 'pointer', transition: '0.2s', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                        onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}>
+                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                        onMouseLeave={e => e.currentTarget.style.background = C.subtle}>
                         <BackIcon size={18} /> {backButton.label}
                     </button>
                 )}

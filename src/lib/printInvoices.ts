@@ -1,5 +1,5 @@
 import { getCurrencySymbol } from './currency';
-import { InvoiceTemplateConfig, getDefaultTemplateConfig } from './invoiceTemplateDefaults';
+
 
 export interface CompanyInfo {
     name?: string;
@@ -85,7 +85,6 @@ export function generateA4HTML(
         partyBalance?: number;
         forDownload?: boolean; // إذا true لا يتم تشغيل window.print تلقائياً
         noAutoPrint?: boolean; // لصفحات الطباعة المستقلة
-        templateConfig?: InvoiceTemplateConfig;
     } = {}
 ): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
@@ -169,14 +168,14 @@ export function generateA4HTML(
     const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
 
-    const tConfig = options.templateConfig || getDefaultTemplateConfig(isSaudi ? 'standard' : 'simplified');
-    const tableBorder = tConfig.tableStyle === 'minimal' ? '0' : '1.5px solid #333';
-    const cellBorder = tConfig.tableStyle === 'striped' ? 'none' : (tConfig.tableStyle === 'minimal' ? 'none' : '1px solid #666');
-    const rowBorder = tConfig.tableStyle === 'striped' ? '1px solid #ccc' : 'none';
+    const tableStyle = 'bordered'; // Hardcoded default
+    const tableBorder = '1.5px solid #333';
+    const cellBorder = '1px solid #666';
+    const rowBorder = 'none';
 
-    const isA5 = tConfig.paperSize === 'A5';
-    const paperW = isA5 ? '148mm' : '210mm';
-    const paperH = isA5 ? '210mm' : 'auto';
+    const isA5 = false; // Default A4
+    const paperW = '210mm';
+    const paperH = 'auto';
 
     const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
@@ -193,7 +192,7 @@ export function generateA4HTML(
     --logo-h: ${isA5 ? '45px' : '75px'};
     --page-padding: ${isA5 ? '3mm 5mm' : '4mm 8mm'};
 }
-body{font-family:'${tConfig.fontFamily || 'Cairo'}',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
+body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
 .page{width:100%; max-width: 850px; min-height: ${paperH}; margin:0 auto;padding:var(--page-padding);display:flex;flex-direction:column;gap:${isA5 ? '3px' : '5px'}; background: #fff;}
 @media print {
     @page { 
@@ -238,7 +237,7 @@ thead{background:#f0f0f0; color: #111;}
 thead th{padding:${isA5 ? '2px 3px' : '4px 3px'};font-size:${isA5 ? '8.5px' : '10px'};font-weight:900;color:#111;text-align:center;border:${tableBorder};line-height:1.1;white-space:nowrap}
 tbody td{padding:${isA5 ? '2px 3px' : '3px 4px'};font-size:${isA5 ? '8.5px' : '10px'};color:#1a1a1a;text-align:center;border-left:${cellBorder};border-right:${cellBorder};vertical-align:middle;white-space:nowrap}
 tbody tr{border-bottom:${rowBorder}; background: #fff;}
-tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fafb' : '#fff'};}
+tbody tr:nth-child(even){background: #fff;}
 .item-name{font-weight:800;font-size:10px}
 
 .bottom-wrap{display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-top:3px}
@@ -344,18 +343,18 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
 <table>
     <thead>
         <tr>
-            ${tConfig.columns.index ? `<th style="width:5%">${bl('م', '#')}</th>` : ''}
+            <th style="width:5%">${bl('م', '#')}</th>
             <th style="width:45%;text-align:right">${isServicesLine ? bl('الخدمة / الوصف', 'Service / Description') : bl('الصنف', 'Item')}</th>
-            ${!isServicesLine && tConfig.columns.unit ? `<th style="width:10%">${bl('الوحدة', 'Unit')}</th>` : ''}
-            ${tConfig.columns.quantity ? `<th style="width:10%">${bl('الكمية', 'Qty')}</th>` : ''}
-            ${tConfig.columns.price ? `<th style="width:10%">${bl('السعر', 'Price')}</th>` : ''}
-            ${invoiceTaxRate > 0 && tConfig.columns.taxRate ? `
+            ${!isServicesLine ? `<th style="width:10%">${bl('الوحدة', 'Unit')}</th>` : ''}
+            <th style="width:10%">${bl('الكمية', 'Qty')}</th>
+            <th style="width:10%">${bl('السعر', 'Price')}</th>
+            ${invoiceTaxRate > 0 ? `
                 <th style="width:8%">${bl('نسبة الضريبة', 'Tax %')}</th>
             ` : ''}
-            ${invoiceTaxRate > 0 && tConfig.columns.taxAmount ? `
+            ${invoiceTaxRate > 0 ? `
                 <th style="width:10%">${bl('قيمة الضريبة', 'Tax Amt')}</th>
             ` : ''}
-            ${tConfig.columns.total ? `<th style="width:10%">${bl('الإجمالي', 'Total')}</th>` : ''}
+            <th style="width:10%">${bl('الإجمالي', 'Total')}</th>
         </tr>
     </thead>
     <tbody>
@@ -372,21 +371,21 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
         const lineTotal = taxInclusive ? lineBase : lineBase + lineTaxAmount;
 
         return `<tr>
-                ${tConfig.columns.index ? `<td>${i + 1}</td>` : ''}
+                <td>${i + 1}</td>
                 <td style="text-align:right">
                     <div class="item-name">${name}</div>
                     ${desc ? `<div style="font-size:11px;color:#444;margin-top:2px;font-weight:700">${desc}</div>` : ''}
                 </td>
-                ${!isServicesLine && tConfig.columns.unit ? `<td>${unit}</td>` : ''}
-                ${tConfig.columns.quantity ? `<td><strong>${qty.toLocaleString('en-US')}</strong></td>` : ''}
-                ${tConfig.columns.price ? `<td>${price.toLocaleString('en-US')} ${sym}</td>` : ''}
-                ${invoiceTaxRate > 0 && tConfig.columns.taxRate ? `
+                ${!isServicesLine ? `<td>${unit}</td>` : ''}
+                <td><strong>${qty.toLocaleString('en-US')}</strong></td>
+                <td>${price.toLocaleString('en-US')} ${sym}</td>
+                ${invoiceTaxRate > 0 ? `
                     <td>${lineTaxRate}%</td>
                 ` : ''}
-                ${invoiceTaxRate > 0 && tConfig.columns.taxAmount ? `
+                ${invoiceTaxRate > 0 ? `
                     <td>${lineTaxAmount.toLocaleString('en-US')} ${sym}</td>
                 ` : ''}
-                ${tConfig.columns.total ? `<td><strong>${lineTotal.toLocaleString('en-US')} ${sym}</strong></td>` : ''}
+                <td><strong>${lineTotal.toLocaleString('en-US')} ${sym}</strong></td>
             </tr>`;
     }).join('')}
     </tbody>
@@ -450,11 +449,19 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
             </tr>
         </tbody>
     </table>
-    ` : `
+    ` : (() => {
+        const showDiscount = discount > 0;
+        const showTax = invoiceTaxRate > 0 || invoiceTaxAmount > 0;
+        
+        // Calculate dynamic rowspan for balance columns
+        const topRowsCount = 1 + (showDiscount ? 1 : 0) + (showTax ? 1 : 0);
+        const bottomRowsCount = 3 + (showTax ? 1 : 0);
+        
+        return `
     <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
         <tbody>
             <tr>
-                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي (قبل الخصم)</td>
+                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">اجمالي الفاتورة</td>
                 <td style="width:20%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
                 
                 ${(partyBalance !== null) ? (() => {
@@ -466,21 +473,25 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
                         return `${abs} ${sym}${suffix}`;
                     };
                     return `
-                    <td rowspan="3" style="width:40%; text-align:center; vertical-align:middle; background:#f9fafb; border: 1px solid #ccc; padding: 10px;">
+                    <td rowspan="${topRowsCount}" style="width:40%; text-align:center; vertical-align:middle; background:#f9fafb; border: 1px solid #ccc; padding: 10px;">
                         <div style="font-size:12px; font-weight:700; color:#555; margin-bottom:4px;">الرصيد السابق لـ ${partyLabel}</div>
                         <div style="font-size:18px; font-weight:900; color:#111;">${formatBal(oldBalance)}</div>
                     </td>
                     `;
-                })() : '<td rowspan="3" style="width:40%; border: 1px solid #ccc;"></td>'}
+                })() : `<td rowspan="${topRowsCount}" style="width:40%; border: 1px solid #ccc;"></td>`}
             </tr>
+            
+            ${showDiscount ? `
             <tr>
                 <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الخصم</td>
                 <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString('en-US')} ${sym}</td>
-            </tr>
+            </tr>` : ''}
+            
+            ${showTax ? `
             <tr>
                 <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي الخاضع للضريبة</td>
                 <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString('en-US')} ${sym}</td>
-            </tr>
+            </tr>` : ''}
             
             ${(() => {
                 const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
@@ -493,26 +504,33 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
                 };
                 
                 return `
+            ${showTax ? `
             <tr>
                 <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
                 <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
-                
                 ${(partyBalance !== null) ? `
-                <td rowspan="4" style="width:40%; text-align:center; vertical-align:middle; background:#e8edf5; border: 1.5px solid #111; padding: 10px;">
+                <td rowspan="${bottomRowsCount}" style="width:40%; text-align:center; vertical-align:middle; background:#e8edf5; border: 1.5px solid #111; padding: 10px;">
                     <div style="font-size:12px; font-weight:900; color:#111; margin-bottom:4px;">إجمالي رصيد ${partyLabel} نهائياً</div>
                     <div style="font-size:20px; font-weight:900; color:#111;">${formatBal(Number(partyBalance))}</div>
                 </td>
-                ` : '<td rowspan="4" style="width:40%; border: 1px solid #ccc;"></td>'}
-            </tr>
-            `;
-            })()}
+                ` : `<td rowspan="${bottomRowsCount}" style="width:40%; border: 1px solid #ccc;"></td>`}
+            </tr>` : ''}
             
             <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
                 <td style="text-align:right; font-weight:900; color:#111; padding: 8px;">صافي الفاتورة</td>
                 <td style="text-align:center; font-weight:900; font-size:14px; color:#111; padding: 8px;">${total.toLocaleString('en-US')} ${sym}</td>
+                ${!showTax ? (partyBalance !== null ? `
+                <td rowspan="${bottomRowsCount}" style="width:40%; text-align:center; vertical-align:middle; background:#e8edf5; border: 1.5px solid #111; padding: 10px;">
+                    <div style="font-size:12px; font-weight:900; color:#111; margin-bottom:4px;">إجمالي رصيد ${partyLabel} نهائياً</div>
+                    <div style="font-size:20px; font-weight:900; color:#111;">${formatBal(Number(partyBalance))}</div>
+                </td>
+                ` : `<td rowspan="${bottomRowsCount}" style="width:40%; border: 1px solid #ccc;"></td>`) : ''}
             </tr>
+            `;
+            })()}
+            
             <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع حالياً</td>
+                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع</td>
                 <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${paid.toLocaleString('en-US')} ${sym}</td>
             </tr>
             <tr>
@@ -521,7 +539,8 @@ tbody tr:nth-child(even){background: ${tConfig.tableStyle === 'striped' ? '#f9fa
             </tr>
         </tbody>
     </table>
-    `}
+    `;
+    })()}
 </div>
 
 </div>
