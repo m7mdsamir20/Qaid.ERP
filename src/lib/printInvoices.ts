@@ -229,7 +229,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);backgr
 .logo-block img{max-height:var(--logo-h);max-width:130px;object-fit:contain}
 
 /* ── TABLES ── */
-.info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'}}
+.info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'};margin-bottom:15px}
 .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
 .info-title{background:#f5f5f5;padding:${isA5 ? '2px 6px' : '3px 8px'};font-weight:900;font-size:${isA5 ? '9px' : '10px'};border-bottom:1px solid #333}
 .info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
@@ -345,7 +345,7 @@ tbody tr:nth-child(even){background: #fff;}
 
 </div>
 
-<table>
+<table style="margin-top: 15px;">
     <thead>
         <tr>
             <th style="width:5%">${bl('م', '#')}</th>
@@ -507,15 +507,15 @@ tbody tr:nth-child(even){background: #fff;}
     <div class="footer" style="margin-top: auto; padding-top: 40px; border-top: 1px solid #eee; width: 100%;">
         <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 13px; margin-bottom: 30px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+                <div style="font-weight: 900; font-size: 11px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 9px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
-            <div style="text-align: center; color: #999; font-size: 11px; margin-bottom: 5px; font-weight: 600;">
+            <div style="text-align: center; color: #999; font-size: 10px; margin-bottom: 5px; font-weight: 600;">
                 شكراً لتعاملكم معنا
             </div>
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 13px; margin-bottom: 30px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
+                <div style="font-weight: 900; font-size: 11px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 9px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
     </div>
