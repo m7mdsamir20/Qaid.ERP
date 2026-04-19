@@ -56,10 +56,17 @@ export const GET = withProtection(async (request, session) => {
                 safeQuery(() => prisma.item.count({ where: { companyId } }), 0),
             ]),
             // Treasuries
-            safeQuery(() => prisma.treasury.aggregate({
-                where: { companyId, ...branchFilter },
-                _sum: { balance: true }
-            }), { _sum: { balance: 0 } }),
+            Promise.all([
+                safeQuery(() => prisma.treasury.aggregate({
+                    where: { companyId, ...branchFilter },
+                    _sum: { balance: true }
+                }), { _sum: { balance: 0 } }),
+                safeQuery(() => prisma.treasury.findMany({
+                    where: { companyId, ...branchFilter },
+                    select: { name: true, balance: true },
+                    orderBy: { balance: 'desc' }
+                }), []),
+            ]),
             // Period KPIs
             Promise.all([
                 safeQuery(() => prisma.invoice.aggregate({
@@ -206,7 +213,8 @@ export const GET = withProtection(async (request, session) => {
             customers: counts[0],
             suppliers: counts[1],
             items: counts[2],
-            treasuriesBalance: treasuryBalanceData._sum?.balance || 0,
+            treasuriesBalance: treasuryBalanceData[0]._sum?.balance || 0,
+            treasuryList: treasuryBalanceData[1],
             salesTodayTotal: salesTotal,
             salesTotal: salesTotal,
             purchasesTotal: purchasesTotal,
