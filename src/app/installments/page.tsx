@@ -336,7 +336,7 @@ export default function InstallmentsPage() {
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
                                                     <td style={TABLE_STYLE.td(true)}>
-                                                        <div style={{ fontWeight: 900, color: '#5286ed', fontFamily: INTER, fontSize: '13px' }}>#{p.planNumber}</div>
+                                                        <div style={{ fontWeight: 900, color: '#5286ed', fontFamily: INTER, fontSize: '13px' }}>PLAN-{String(p.planNumber || idx + 1).padStart(4, '0')}</div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         {p.productName ? (
