@@ -87,6 +87,7 @@ export default function InstallmentDetailPage() {
                     notes:         collectForm.notes,
                     planCode:      `PLAN-${String(plan?.planNumber || 1).padStart(4, '0')}`,
                 });
+                setCollectTarget(null);
                 setCollectForm({ amount: '', treasuryId: '', notes: '' });
                 fetchData();
             } else {
@@ -403,9 +404,9 @@ export default function InstallmentDetailPage() {
                 {/* Modals Section */}
                 {/* Collect Installment Modal (Redesigned with AppModal) */}
                 <AppModal
-                    show={!!collectTarget}
-                    onClose={() => setCollectTarget(null)}
-                    title={collectTarget ? `${t('تحصيل القسط')} #${collectTarget.installmentNo}` : t('تحصيل قسط')}
+                    show={!!collectTarget || !!lastCollected}
+                    onClose={() => { setCollectTarget(null); setLastCollected(null); }}
+                    title={lastCollected ? t('تم التحصيل بنجاح') : collectTarget ? `${t('تحصيل القسط')} #${collectTarget.installmentNo}` : t('تحصيل قسط')}
                     maxWidth="440px"
                 >
                     {collectTarget && (
