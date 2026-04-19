@@ -227,7 +227,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);backgr
 .info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'}}
 .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
 .info-title{background:#f5f5f5;padding:${isA5 ? '2px 6px' : '3px 8px'};font-weight:900;font-size:${isA5 ? '9px' : '10px'};border-bottom:1px solid #333}
-.info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}}
+.info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
 .info-row{font-size:${isA5 ? '8.5px' : '9.5px'};margin-bottom:${isA5 ? '0px' : '1px'};display:flex;gap:4px}
 .ik{color:#666;min-width:${isA5 ? '55px' : '70px'};flex-shrink:0}
 .iv{color:#111;font-weight:800}
@@ -319,7 +319,7 @@ tbody tr:nth-child(even){background: #fff;}
     <div class="info-box">
         <div class="info-title">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}</div>
         <div class="info-body">
-            <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${party?.name || (isSale ? '— عميل نقدي' : '— مورد نقدي')}</span></div>
+            <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${party?.name || (isSale ? 'عميل نقدي' : 'مورد نقدي')}</span></div>
             ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
             ${(() => {
                 const parts = [party?.addressRegion, party?.addressCity, party?.addressDistrict, party?.addressStreet].filter(Boolean) as string[];
@@ -536,19 +536,20 @@ tbody tr:nth-child(even){background: #fff;}
     `;
     })()}
 
-    <div class="footer" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc;">
-        <div class="footer-inner">
-            <div class="sig-box">
-                <div class="sig-label">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div class="sig-line">________________</div>
+    <div class="footer" style="margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div style="text-align: center; width: 180px;">
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #333; padding-top: 4px; font-size: 11px; color: #666;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
-            <div class="sig-box">
-                <div class="sig-label">${blInline('توقيع المحاسب', 'Accountant Signature')}</div>
-                <div class="sig-line">________________</div>
+            
+            <div style="text-align: center; color: #999; font-size: 12px; margin-bottom: 5px; font-weight: 600;">
+                شكراً لتعاملكم معنا
             </div>
-            <div class="sig-box">
-                <div class="sig-label">${blInline('ختم الشركة', 'Company Stamp')}</div>
-                <div class="sig-line" style="height: 45px; border: 1px dashed #999; width: 100px; margin: 0 auto; border-radius: 50%;"></div>
+            
+            <div style="text-align: center; width: 180px;">
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="border-top: 1.5px solid #333; padding-top: 4px; font-size: 11px; color: #666;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
     </div>
@@ -629,10 +630,10 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
 .amount-section{border:2px solid #111;border-radius:10px;padding:16px 24px;text-align:center;background:#f9fafb}
 .amount-label{font-size:13px;color:#555;margin-bottom:6px}
 .amount-value{font-size:28px;font-weight:900;color:#111}
-.sigs{display:flex;justify-content:space-between;margin-top:8px;padding-top:16px;border-top:1px dashed #ccc}
-.sig-box{text-align:center;min-width:160px}
-.sig-label{font-size:12px;font-weight:800;color:#333;margin-bottom:36px}
-.sig-line{border-top:1px solid #555;padding-top:5px;font-size:11px;color:#555}
+.sigs{display:flex;justify-content:space-between;margin-top:auto;padding-top:20px;border-top:1px solid #eee;align-items:flex-end}
+.sig-box{text-align:center;width:180px}
+.sig-label{font-size:13px;font-weight:900;color:#000;margin-bottom:25px}
+.sig-line{border-top:1.5px solid #333;padding-top:4px;font-size:11px;color:#666}
 @media screen{.page{min-height:100vh}}
 @media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
 </style>
@@ -681,7 +682,6 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
       <div class="d-row"><span class="d-label">${blInline(isReceipt ? 'استلمنا من' : 'صرفنا لـ', isReceipt ? 'Received From' : 'Paid To')}:</span><span class="d-value">${partyName}</span></div>
       <div class="d-row"><span class="d-label">${blInline('التاريخ','Date')}:</span><span class="d-value">${date}</span></div>
       <div class="d-row"><span class="d-label">${blInline('طريقة الدفع','Payment')}:</span><span class="d-value">${paymentType}</span></div>
-      ${treasuryName ? `<div class="d-row"><span class="d-label">${blInline('الخزينة','Treasury')}:</span><span class="d-value">${treasuryName}</span></div>` : ''}
       ${voucher.description ? `<div class="d-row" style="grid-column:span 2"><span class="d-label">${blInline('البيان','Description')}:</span><span class="d-value">${voucher.description}</span></div>` : ''}
     </div>
   </div>
@@ -927,25 +927,22 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <div>${options.terms || quotation.notes}</div>
     </div>` : ''}
 
-    <div class="footer">
-        <div class="footer-inner">
-            <div class="sig-box">
-                <div class="sig-label">${blInline('توقيع العميل', 'Customer Signature')}</div>
-                <div class="sig-line">________________</div>
+    <div class="footer" style="margin-top: auto; padding-top: 20px; border-top: 1px solid #eee;">
+        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end;">
+            <div style="text-align: center; width: 180px;">
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #333; padding-top: 4px; font-size: 11px; color: #666;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
-            <div class="sig-box">
-                <div class="sig-label">${blInline('مدير المبيعات', 'Sales Manager')}</div>
-                <div class="sig-line">________________</div>
+            
+            <div style="text-align: center; color: #999; font-size: 12px; margin-bottom: 5px; font-weight: 600;">
+                شكراً لتعاملكم معنا
             </div>
-            <div class="sig-box">
-                <div class="sig-label">${blInline('ختم الشركة', 'Company Stamp')}</div>
-                <div class="sig-line" style="height: 45px; border: 1px dashed #999; width: 100px; margin: 0 auto; border-radius: 50%;"></div>
+            
+            <div style="text-align: center; width: 180px;">
+                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="border-top: 1.5px solid #333; padding-top: 4px; font-size: 11px; color: #666;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
-    </div>
-
-    <div class="footer">
-        هذا المستند يعتبر عرض سعر أولي وغير ملزم للطرفين إلا بعد تحويله لفاتورة رسمية أو عقد معتمد.
     </div>
 </div>
 ${options.noAutoPrint ? '' : '<script>window.onload=()=>{window.print();setTimeout(()=>window.close(),500);};</script>'}
