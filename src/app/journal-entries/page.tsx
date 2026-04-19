@@ -346,7 +346,7 @@ export default function JournalEntriesPage() {
                                                 </tr>
 
                                                 {isExpanded && (
-                                                    <tr style={{ background: C.primaryBg }}>
+                                                    <tr style={{ background: 'transparent' }}>
                                                         <td colSpan={7} style={{ padding: '0 20px 20px' }}>
                                                             <div style={{ animation: 'fadeIn 0.2s ease', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden', marginTop: '10px', boxShadow: '0 8px 30px rgba(0,0,0,0.05)' }}>
                                                                 <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>

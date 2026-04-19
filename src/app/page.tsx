@@ -33,8 +33,9 @@ const getInvoicePrefix = (type: string) => {
   switch (type) {
     case 'sale': return 'SAL-';
     case 'purchase': return 'PUR-';
-    case 'receipt': return 'REC-';
-    case 'payment': return 'PAY-';
+    case 'receipt': return 'RCP-';
+    case 'payment': return 'PMT-';
+    case 'installment': return 'PLN-';
     case 'sale_return': return 'SRET-';
     case 'purchase_return': return 'PRET-';
     default: return 'INV-';
@@ -48,6 +49,7 @@ const statusLabel: Record<string, { label: string; color: string; bg: string }> 
   purchase_return: { label: 'مرتجع مشتريات', color: C.danger, bg: C.dangerBg },
   receipt: { label: 'سند قبض', color: C.success, bg: C.successBg },
   payment: { label: 'سند صرف', color: C.danger, bg: C.dangerBg },
+  installment: { label: 'تقسيط', color: C.primary, bg: C.primaryBg },
 };
 
 function KpiCard({
