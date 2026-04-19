@@ -184,7 +184,7 @@ export default function InstallmentDetailPage() {
                         </div>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <h1 style={{ fontSize: '16px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('خطة تقسيط')} <span style={{ color: '#5286ed' }}>#{plan.planNumber}</span></h1>
+                                <h1 style={{ fontSize: '16px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('خطة تقسيط')} <span style={{ color: '#5286ed' }}>PLAN-{String(plan.planNumber || 1).padStart(4, '0')}</span></h1>
                                 {isCancelled && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: 'rgba(239,68,68,0.1)', color: C.danger, border: `1px solid ${C.danger}20`, fontWeight: 800 }}>{t('ملغاة')}</span>}
                             </div>
                             <p style={{ fontSize: '13px', color: C.textMuted, margin: '2px 0 0', fontWeight: 600 }}>{t('تتبع دورة التحصيل وعمليات السداد للخطة')}</p>
