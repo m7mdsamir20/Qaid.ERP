@@ -345,7 +345,7 @@ tbody tr:nth-child(even){background: #fff;}
 
 </div>
 
-<table style="margin-top: 15px;">
+<table style="margin-top: 6px;">
     <thead>
         <tr>
             <th style="width:5%">${bl('م', '#')}</th>
@@ -455,7 +455,7 @@ tbody tr:nth-child(even){background: #fff;}
     </table>
     ` : `
     <!-- Summary Section (For EG and others) -->
-    <div style="width: 100%; text-align: left; margin-top: 15px; clear: both; display: block;">
+    <div style="width: 100%; text-align: left; margin-top: 8px; clear: both; display: block;">
         <div style="width: 320px; display: inline-block; vertical-align: top;">
             ${(() => {
                 const showDiscount = discount > 0;
@@ -504,18 +504,18 @@ tbody tr:nth-child(even){background: #fff;}
     `}
 
     <!-- Final Footer (Signatures) - Applies to both Saudi and regular -->
-    <div class="footer" style="margin-top: auto; padding-top: 40px; border-top: 1px solid #eee; width: 100%;">
+    <div class="footer" style="margin-top: auto; padding-top: 30px; border-top: none; width: 100%;">
         <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 11px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 9px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+                <div style="font-weight: 900; font-size: 10.5px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 8.5px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
-            <div style="text-align: center; color: #999; font-size: 10px; margin-bottom: 5px; font-weight: 600;">
+            <div style="text-align: center; color: #aaa; font-size: 9.5px; margin-bottom: 5px; font-weight: 600;">
                 شكراً لتعاملكم معنا
             </div>
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 11px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 9px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
+                <div style="font-weight: 900; font-size: 10.5px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 8.5px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
     </div>
