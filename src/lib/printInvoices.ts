@@ -169,8 +169,8 @@ export function generateA4HTML(
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
 
     const tableStyle = 'bordered'; // Hardcoded default
-    const tableBorder = '1.5px solid #333';
-    const cellBorder = '1px solid #666';
+    const tableBorder = '1px solid #999';
+    const cellBorder = '1px solid #999';
     const rowBorder = 'none';
 
     const isA5 = false; // Default A4
@@ -267,7 +267,7 @@ tbody tr:nth-child(even){background: #fff;}
             : (country === 'EG' 
                 ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
-                     <div style="font-size:13px; color:#333; margin-top:4px; font-weight:700;">${co.addrLines.map(a => a.value).join(' - ')}</div>
+                     <div style="font-size:11px; color:#333; margin-top:4px; font-weight:700;">${co.addrLines.map(a => a.value).join(' - ')}</div>
                      ${co.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${co.phone}</div>` : ''}
                      ${co.tax ? `<div style="font-size:11px; color:#555;">رقم ضريبي: ${co.tax}</div>` : ''}
                      ${co.cr ? `<div style="font-size:11px; color:#555;">سجل تجاري: ${co.cr}</div>` : ''}
@@ -475,9 +475,9 @@ tbody tr:nth-child(even){background: #fff;}
             : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
 
         return `
-    <div style="display: flex; justify-content: flex-start; margin-top: 8px;">
+    <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
         <div style="width: 310px;">
-            <table style="width:100%; border-collapse:collapse; border: 1px solid #111; font-size: 13px;">
+            <table style="width:100%; border-collapse:collapse; border: 1px solid #999; font-size: 13px;">
                 <tbody>
                     <!-- Subtotal Entry -->
                     <tr style="height: 30px;">
@@ -501,35 +501,35 @@ tbody tr:nth-child(even){background: #fff;}
 
                     <!-- Total Invoice -->
                     <tr style="background:#f2f2f2; height: 30px;">
-                        <td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td>
-                        <td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td>
+                        <td style="text-align:left; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Paid Entry -->
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">المبلغ المدفوع</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المدفوع</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Remaining Entry -->
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">المبلغ المتبقي</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; color: ${remaining > 0 ? '#d32f2f' : '#2e7d32'};">${remaining.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المتبقي</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: ${remaining > 0 ? '#d32f2f' : '#2e7d32'};">${remaining.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Optional Balance Section -->
                     ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td>
                         <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px;">${formatBal(prevBal)}</td>
                     </tr>
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
                     </tr>
                     <tr style="background:#f2f2f2; height: 30px;">
-                        <td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td>
-                        <td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${formatBal(finalBal)}</td>
+                        <td style="text-align:right; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td>
+                        <td style="text-align:left; font-weight:900; border: 1px solid #999; padding: 2px 10px; color: #000;">${formatBal(finalBal)}</td>
                     </tr>
                     ` : ''}
                 </tbody>
