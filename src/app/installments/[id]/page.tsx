@@ -14,7 +14,7 @@ import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
-import { printThermalVoucher } from '@/lib/printInvoices';
+
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -298,26 +298,39 @@ export default function InstallmentDetailPage() {
                                                         </div>
                                                     </td>
                                                     <td style={{ padding: '16px' }}>
-                                                        {inst.status !== 'paid' && inst.status !== 'cancelled' && !isCancelled && (
-                                                            <button onClick={() => { 
-                                                                setCollectTarget(inst); 
-                                                                const amt = (inst.remaining || inst.amount).toFixed(2);
-                                                                const firstCash = treasuries.find(t => t.type === 'cash');
-                                                                const defTr = firstCash || treasuries[0];
-                                                                setCollectForm({ 
-                                                                    amount: amt, 
-                                                                    treasuryId: defTr?.id || '', 
-                                                                    selectedType: defTr?.type || 'cash',
-                                                                    notes: '' 
-                                                                } as any); 
-                                                            }}
-                                                                style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: 'none', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, cursor: 'pointer', transition: '0.2s' }}
-                                                                onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
-                                                                onMouseLeave={e => e.currentTarget.style.background = C.primary}
+                                                        <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+                                                            {inst.status !== 'paid' && inst.status !== 'cancelled' && !isCancelled && (
+                                                                <button onClick={() => { 
+                                                                    setCollectTarget(inst); 
+                                                                    const amt = (inst.remaining || inst.amount).toFixed(2);
+                                                                    const firstCash = treasuries.find(t => t.type === 'cash');
+                                                                    const defTr = firstCash || treasuries[0];
+                                                                    setCollectForm({ 
+                                                                        amount: amt, 
+                                                                        treasuryId: defTr?.id || '', 
+                                                                        selectedType: defTr?.type || 'cash',
+                                                                        notes: '' 
+                                                                    } as any); 
+                                                                }}
+                                                                    style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: 'none', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, cursor: 'pointer', transition: '0.2s' }}
+                                                                    onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
+                                                                    onMouseLeave={e => e.currentTarget.style.background = C.primary}
+                                                                >
+                                                                    {t('تحصيل القسط')}
+                                                                </button>
+                                                            )}
+                                                            {inst.status === 'paid' && (
+                                                            <button
+                                                                onClick={() => window.open(`/print/installment/${plan.id}`, '_blank')}
+                                                                title={t('طباعة جدول الأقساط')}
+                                                                style={{ width: '32px', height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s', flexShrink: 0 }}
+                                                                onMouseEnter={e => { e.currentTarget.style.color = C.primary; e.currentTarget.style.borderColor = C.primary; }}
+                                                                onMouseLeave={e => { e.currentTarget.style.color = C.textSecondary; e.currentTarget.style.borderColor = C.border; }}
                                                             >
-                                                                {t('تحصيل القسط')}
+                                                                <Printer size={14} />
                                                             </button>
-                                                        )}
+                                                            )}
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             );
@@ -544,17 +557,16 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <button
                                     onClick={() => {
-                                        fetch('/api/settings').then(r => r.json()).then(data => {
-                                            printThermalVoucher({
-                                                voucherNumber: collectTarget?.installmentNo || lastCollected.installmentNo,
-                                                date: new Date().toISOString(),
-                                                amount: lastCollected.amount,
-                                                paymentType: lastCollected.paymentType,
-                                                customer: { name: lastCollected.customerName },
-                                                treasury: { name: lastCollected.treasuryName },
-                                                description: `${t('تحصيل قسط رقم')} #${lastCollected.installmentNo} — ${lastCollected.planCode}${lastCollected.notes ? ' — ' + lastCollected.notes : ''}`,
-                                            }, 'receipt', data.company || {});
+                                        const params = new URLSearchParams({
+                                            customerName: lastCollected.customerName,
+                                            amount:       String(lastCollected.amount),
+                                            paymentType:  lastCollected.paymentType,
+                                            treasuryName: lastCollected.treasuryName,
+                                            instNo:       String(lastCollected.installmentNo),
+                                            planCode:     lastCollected.planCode,
+                                            notes:        lastCollected.notes || '',
                                         });
+                                        window.open(`/print/installment-receipt?${params.toString()}`, '_blank');
                                     }}
                                     style={{ ...BTN_SUCCESS(false, false), flex: 1.5, height: '44px', fontSize: '13px' }}
                                 >
