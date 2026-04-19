@@ -475,7 +475,7 @@ tbody tr:nth-child(even){background: #fff;}
             : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
 
         return `
-    <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
+    <div style="display: flex; justify-content: flex-start; margin-top: 8px;">
         <div style="width: 310px;">
             <table style="width:100%; border-collapse:collapse; border: 1px solid #111; font-size: 13px;">
                 <tbody>
