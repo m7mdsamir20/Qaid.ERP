@@ -573,33 +573,34 @@ export function generateThermalVoucherHTML(voucher: any, type: VoucherType, comp
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;direction:rtl}
-.page{padding:12mm 15mm;display:flex;flex-direction:column;gap:16px}
-.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:2.5px solid #111}
-.co-block{flex:1}
-.co-name{font-size:22px;font-weight:900;color:#111}
-.co-name-en{font-size:10px;color:#444;line-height:1.4}
+body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;direction:rtl}
+.page{width:100%; max-width: 850px; min-height: 282mm; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column; background: #fff;}
+.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
+.co-block{flex:1.2;text-align:right}
+.co-name{font-size:21px;font-weight:900;color:#111;margin-bottom:1px}
+.co-name-en{font-size:9.5px;color:#444;line-height:1.4}
 .co-line{font-size:10px;color:#444;line-height:1.4}
 .title-block{flex:1;text-align:center}
 .v-title{font-size:17px;font-weight:900;background:#f5f5f5;border:1px solid #ccc;border-radius:6px;padding:2px 14px;display:inline-block}
 .v-title-en{font-size:11px;color:#555;font-family:sans-serif;margin-top:1px}
-.v-num{font-size:11px;color:#333;font-family:monospace;font-weight:700;margin-top:5px}
-.logo-block{flex:1;text-align:left}
+.v-num{font-size:13px;color:#333;font-family:monospace;font-weight:700;margin-top:6px}
+.logo-block{flex:1.2;text-align:left}
 .logo-block img{max-height:80px;max-width:150px;object-fit:contain}
-.details-box{border:1.5px solid #333;border-radius:10px;overflow:hidden}
-.details-title{background:#f0f0f0;padding:7px 16px;font-weight:900;font-size:12px;border-bottom:1px solid #ccc}
-.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
-.d-row{display:flex;gap:8px;padding:9px 16px;border-bottom:1px solid #eee;font-size:13px}
-.d-row:last-child{border-bottom:none}
+.info-wrap{display:flex;gap:8px;margin-top:6px;margin-bottom:10px}
+.info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
+.info-title{background:#f5f5f5;padding:3px 8px;font-weight:900;font-size:10px;border-bottom:1px solid #333}
+.info-body{padding:4px 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
+.info-row{font-size:13px;margin-bottom:1px;display:flex;gap:4px}
 .d-label{color:#666;min-width:110px;flex-shrink:0}
 .d-value{font-weight:800;color:#111}
-.amount-section{border:2px solid #111;border-radius:10px;padding:16px 24px;text-align:center;background:#f9fafb}
+.amount-section{border:2px solid #111;border-radius:10px;padding:16px 24px;text-align:center;background:#f9fafb; margin-top: 15px;}
 .amount-label{font-size:13px;color:#555;margin-bottom:6px}
 .amount-value{font-size:28px;font-weight:900;color:#111}
-.sigs{display:flex;justify-content:space-between;margin-top:auto;padding-top:30px;border-top:1px solid #eee;align-items:flex-end}
+.footer{margin-top: auto; padding-top: 30px; border-top: none; width: 100%;}
+.footer-inner{display:flex;justify-content:space-between;align-items:flex-end; width: 100%;}
 .sig-box{text-align:center;width:220px}
-.sig-label{font-size:13px;font-weight:900;color:#000;margin-bottom:25px}
-.sig-line{border-top:1.5px solid #111;padding-top:6px;font-size:10px;color:#444;font-weight:600}
+.sig-label{font-size:10.5px;font-weight:900;color:#000;margin-bottom:25px}
+.sig-line{border-top:1.5px solid #111;padding-top:5px;font-size:8.5px;color:#444;font-weight:600}
 @media screen{.page{min-height:100vh}}
 @media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
 </style>
@@ -635,20 +636,22 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
     <div class="title-block">
       <div class="v-title">${title}</div>
       ${isBilingual ? `<div class="v-title-en">${titleEn}</div>` : ''}
-      <div class="v-num">${prefix}-${vNum}</div>
+      <div class="v-num">VCH-${vNum}</div>
+      <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
     </div>
     <div class="logo-block">
       ${company.logo ? `<img src="${company.logo}" alt=""/>` : ''}
     </div>
   </div>
 
-  <div class="details-box">
-    <div class="details-title">${blInline('بيانات السند','Voucher Details')}</div>
-    <div class="details-grid">
-      <div class="d-row"><span class="d-label">${blInline(isReceipt ? 'استلمنا من' : 'صرفنا لـ', isReceipt ? 'Received From' : 'Paid To')}:</span><span class="d-value">${partyName}</span></div>
-      <div class="d-row"><span class="d-label">${blInline('التاريخ','Date')}:</span><span class="d-value">${date}</span></div>
-      <div class="d-row"><span class="d-label">${blInline('طريقة الدفع','Payment')}:</span><span class="d-value">${paymentType}</span></div>
-      ${voucher.description ? `<div class="d-row" style="grid-column:span 2"><span class="d-label">${blInline('البيان','Description')}:</span><span class="d-value">${voucher.description}</span></div>` : ''}
+  <div class="info-wrap">
+    <div class="info-box">
+      <div class="info-title">${blInline('بيانات السند','Voucher Info')}</div>
+      <div class="info-body">
+        <div class="info-row" style="grid-column: span 2;"><span class="d-label">${blInline(isReceipt ? 'استلمنا من' : 'صرفنا لـ', isReceipt ? 'Received From' : 'Paid To')}:</span><span class="d-value">${partyName}</span></div>
+        <div class="info-row"><span class="d-label">${blInline('طريقة الدفع','Payment Method')}:</span><span class="d-value">${paymentType}</span></div>
+        ${voucher.description ? `<div class="info-row"><span class="d-label">${blInline('البيان','Description')}:</span><span class="d-value">${voucher.description}</span></div>` : ''}
+      </div>
     </div>
   </div>
 
@@ -657,17 +660,19 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
     <div class="amount-value">${amount} ${sym}</div>
   </div>
 
-  <div class="sigs">
-    <div class="sig-box">
-      <div class="sig-label">${blInline('توقيع المستلم','Receiver Signature')}</div>
-      <div class="sig-line">${blInline('الاسم والتوقيع','Name & Signature')}</div>
-    </div>
-    <div style="text-align:center;font-size:11px;color:#999;align-self:flex-end">
-      ${blInline('شكراً لتعاملكم معنا','Thank you for your business')}
-    </div>
-    <div class="sig-box">
-      <div class="sig-label">${blInline('توقيع المسؤول','Authorized Signature')}</div>
-      <div class="sig-line">${blInline('الختم والتوقيع','Stamp & Signature')}</div>
+  <div class="footer">
+    <div class="footer-inner">
+      <div class="sig-box">
+        <div class="sig-label">${blInline('توقيع المستلم','Recipient Signature')}</div>
+        <div class="sig-line">${blInline('الاسم والتوقيع','Name & Signature')}</div>
+      </div>
+      <div style="text-align: center; color: #aaa; font-size: 9.5px; margin-bottom: 5px; font-weight: 600;">
+        شكراً لتعاملكم معنا
+      </div>
+      <div class="sig-box">
+        <div class="sig-label">${blInline('توقيع المسؤول','Authorized Signature')}</div>
+        <div class="sig-line">${blInline('الختم والتوقيع','Stamp & Signature')}</div>
+      </div>
     </div>
   </div>
 </div>
@@ -770,11 +775,12 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;di
 .inv-num{font-size:11px;color:#333;margin-top:2px;font-family:monospace;font-weight:700}
 .logo-block{flex:1;text-align:left}
 .logo-block img{max-height:80px;max-width:150px;object-fit:contain}
-.info-section{border:1px solid #999;border-radius:4px;overflow:hidden;margin-top:6px;display:grid;grid-template-columns:1fr 1fr}
-.info-col{padding:4px 10px}
-.info-col:first-child{border-left:1px solid #999}
-.info-row{font-size:9.5px;margin-bottom:1px}
-.ik{color:#666;min-width:70px;display:inline-block}
+.info-wrap{display:flex;gap:8px;margin-top:6px;margin-bottom:5px}
+.info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
+.info-title{background:#f5f5f5;padding:3px 8px;font-weight:900;font-size:10px;border-bottom:1px solid #333}
+.info-body{padding:4px 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
+.info-row{font-size:9.5px;margin-bottom:1px;display:flex;gap:4px}
+.ik{color:#666;min-width:70px;flex-shrink:0}
 .iv{color:#111;font-weight:800}
 table{width:100%;border-collapse:collapse;border:1px solid #999;margin-top:5px}
 thead{background:#f0f0f0}
@@ -821,21 +827,27 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <div class="header-center">
             <div class="inv-title">${title}</div>
             ${isBilingual ? `<div class="inv-title-en">${titleEn}</div>` : ''}
-            <div class="inv-num">QUO-${quoNum}</div>
+            <div class="inv-num" style="margin-top:6px; font-size:13px;">QUO-${quoNum}</div>
+            <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
         </div>
         <div class="logo-block">
             ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
         </div>
     </div>
 
-    <div class="info-section">
-        <div class="info-col">
-            <div class="info-row"><span class="ik">${blInline('العميل', 'Customer')}:</span><span class="iv">${quotation.customer?.name || 'عميل نقدي'}</span></div>
-            <div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${quotation.customer?.phone || '—'}</span></div>
-        </div>
-        <div class="info-col">
-            <div class="info-row"><span class="ik">${blInline('تاريخ العرض', 'Quo. Date')}:</span><span class="iv">${date}</span></div>
-            <div class="info-row"><span class="ik">${blInline('رقم العرض', 'Quo. No.')}:</span><span class="iv">QUO-${quoNum}</span></div>
+    <div class="info-wrap">
+        <div class="info-box">
+            <div class="info-title">${blInline('بيانات العميل', 'Customer Info')}</div>
+            <div class="info-body">
+                <div class="info-row"><span class="ik">${blInline('العميل', 'Customer')}:</span><span class="iv">${quotation.customer?.name || 'عميل نقدي'}</span></div>
+                ${quotation.customer?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${quotation.customer.phone}</span></div>` : ''}
+                ${quotation.customer?.taxNumber ? `<div class="info-row"><span class="ik">${blInline('الرقم الضريبي', 'VAT No.')}:</span><span class="iv">${quotation.customer.taxNumber}</span></div>` : ''}
+                ${(() => {
+                    const parts = [quotation.customer?.addressRegion, quotation.customer?.addressCity, quotation.customer?.addressDistrict, quotation.customer?.addressStreet].filter(Boolean) as string[];
+                    if (!parts.length) return '';
+                    return `<div class="info-row"><span class="ik">${blInline('العنوان', 'Address')}:</span><span class="iv">${parts.join('، ')}</span></div>`;
+                })()}
+            </div>
         </div>
     </div>
 
@@ -843,24 +855,41 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <thead>
             <tr>
                 <th style="width:5%">${bl('م', '#')}</th>
-                <th style="width:50%;text-align:right">${company.businessType?.toUpperCase() === 'SERVICES' ? bl('الخدمة', 'Service') : bl('الصنف', 'Item')}</th>
-                <th style="width:10%">${bl('الكمية', 'Qty')}</th>
-                <th style="width:15%">${bl('السعر', 'Price')}</th>
-                <th style="width:20%">${bl('الإجمالي', 'Total')}</th>
+                <th style="width:35%;text-align:right">${company.businessType?.toUpperCase() === 'SERVICES' ? bl('الخدمة', 'Service') : bl('الصنف', 'Item')}</th>
+                <th style="width:8%">${bl('الوحدة', 'Unit')}</th>
+                <th style="width:8%">${bl('الكمية', 'Qty')}</th>
+                <th style="width:12%">${bl('السعر', 'Price')}</th>
+                ${Number(quotation.taxRate || 0) > 0 ? `
+                    <th style="width:8%">${bl('نسبة الضريبة', 'Tax %')}</th>
+                    <th style="width:10%">${bl('قيمة الضريبة', 'Tax Amt')}</th>
+                ` : ''}
+                <th style="width:15%">${bl('الإجمالي', 'Total')}</th>
             </tr>
         </thead>
         <tbody>
-            ${lines.map((l: any, i: number) => `
+            ${lines.map((l: any, i: number) => {
+                const lineTaxRate = Number(l.taxRate || 0) || Number(quotation.taxRate || 0);
+                const lineBase = Number(l.quantity || 0) * Number(l.price || 0);
+                const lineTaxAmt = (lineBase * lineTaxRate) / 100;
+                const lineTotal = Number(l.total || lineBase + lineTaxAmt);
+                
+                return `
             <tr>
                 <td>${i + 1}</td>
                 <td style="text-align:right">
                     <div style="font-weight:800">${l.item?.name || l.itemName || ''}</div>
                     ${l.description ? `<div style="font-size:10px;color:#444;margin-top:2px">${l.description}</div>` : ''}
                 </td>
+                <td>${l.item?.unit?.name || l.unit?.name || l.unit || '—'}</td>
                 <td><strong>${Number(l.quantity).toLocaleString('en-US')}</strong></td>
                 <td>${Number(l.price).toLocaleString('en-US')} ${sym}</td>
-                <td><strong>${Number(l.total).toLocaleString('en-US')} ${sym}</strong></td>
-            </tr>`).join('')}
+                ${Number(quotation.taxRate || 0) > 0 ? `
+                    <td>${lineTaxRate}%</td>
+                    <td>${lineTaxAmt.toLocaleString('en-US')} ${sym}</td>
+                ` : ''}
+                <td><strong>${lineTotal.toLocaleString('en-US')} ${sym}</strong></td>
+            </tr>`;
+            }).join('')}
         </tbody>
     </table>
 
@@ -893,20 +922,18 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <div>${options.terms || quotation.notes}</div>
     </div>` : ''}
 
-    <div class="footer" style="margin-top: auto; padding-top: 35px; border-top: 1px solid #eee;">
-        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end;">
+    <div class="footer" style="margin-top: auto; padding-top: 30px; border-top: none; width: 100%;">
+        <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+                <div style="font-weight: 900; font-size: 10.5px; margin-bottom: 25px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 8.5px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
-            
-            <div style="text-align: center; color: #999; font-size: 11px; margin-bottom: 5px; font-weight: 600; flex: 1;">
+            <div style="text-align: center; color: #aaa; font-size: 9.5px; margin-bottom: 5px; font-weight: 600;">
                 شكراً لتعاملكم معنا
             </div>
-            
             <div style="text-align: center; width: 220px;">
-                <div style="font-weight: 900; font-size: 13px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
+                <div style="font-weight: 900; font-size: 10.5px; margin-bottom: 25px; color: #000;">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 5px; font-size: 8.5px; color: #444; font-weight: 600;">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
             </div>
         </div>
     </div>
