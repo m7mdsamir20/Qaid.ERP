@@ -475,8 +475,8 @@ tbody tr:nth-child(even){background: #fff;}
             : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
 
         return `
-    <div style="display: flex; margin-top: 8px;">
-        <div style="width: 310px; margin-right: auto;">
+    <div style="width: 100%; text-align: left; margin-top: 8px; clear: both;">
+        <div style="width: 310px; display: inline-block; text-align: right;">
             <table style="width:100%; border-collapse:collapse; border: 1px solid #999; font-size: 13px;">
                 <tbody>
                     <!-- Subtotal Entry -->
