@@ -450,95 +450,92 @@ tbody tr:nth-child(even){background: #fff;}
         </tbody>
     </table>
     ` : (() => {
+        const isSale = type === 'sale' || type === 'sale-return';
         const showDiscount = discount > 0;
         const showTax = invoiceTaxRate > 0 || invoiceTaxAmount > 0;
         
-        // Calculate dynamic rowspan for balance columns
-        const topRowsCount = 1 + (showDiscount ? 1 : 0) + (showTax ? 1 : 0);
-        const bottomRowsCount = 3 + (showTax ? 1 : 0);
+        // Dynamic balance calculation
+        const prevBal = isSale 
+            ? (invoice.customerPrevBalance ?? (Number(partyBalance) - (total - paid))) 
+            : (invoice.supplierPrevBalance ?? (Number(partyBalance) - (paid - total)));
+            
+        const finalBal = isSale 
+            ? (invoice.customerNewBalance ?? Number(partyBalance))
+            : (invoice.supplierNewBalance ?? Number(partyBalance));
+
+        const effect = total - paid;
         
+        const formatBal = (val: number) => {
+            const abs = Math.abs(val).toLocaleString('en-US');
+            const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
+            return `${abs} ${sym}${suffix}`;
+        };
+
+        const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+            : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+
         return `
-    <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
-        <tbody>
-            <tr>
-                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">اجمالي الفاتورة</td>
-                <td style="width:20%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
-                
-                ${(partyBalance !== null) ? (() => {
-                    const currentTransaction = isSale ? (total - paid) : (paid - total);
-                    const oldBalance = Number(partyBalance) - currentTransaction;
-                    const formatBal = (val: number) => {
-                        const abs = Math.abs(val).toLocaleString('en-US');
-                        const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-                        return `${abs} ${sym}${suffix}`;
-                    };
-                    return `
-                    <td rowspan="${topRowsCount}" style="width:40%; text-align:center; vertical-align:middle; background:#f9fafb; border: 1px solid #ccc; padding: 10px;">
-                        <div style="font-size:12px; font-weight:700; color:#555; margin-bottom:4px;">الرصيد السابق لـ ${partyLabel}</div>
-                        <div style="font-size:18px; font-weight:900; color:#111;">${formatBal(oldBalance)}</div>
-                    </td>
-                    `;
-                })() : `<td rowspan="${topRowsCount}" style="width:40%; border: 1px solid #ccc;"></td>`}
-            </tr>
-            
-            ${showDiscount ? `
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الخصم</td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString('en-US')} ${sym}</td>
-            </tr>` : ''}
-            
-            ${showTax ? `
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي الخاضع للضريبة</td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString('en-US')} ${sym}</td>
-            </tr>` : ''}
-            
-            ${(() => {
-                const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
-                    : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
-                
-                const formatBal = (val: number) => {
-                    const abs = Math.abs(val).toLocaleString();
-                    const suffix = isSale ? (val > 0 ? ' (عليه)' : val < 0 ? ' (له)' : '') : (val < 0 ? ' (له)' : val > 0 ? ' (لنا)' : '');
-                    return `${abs} ${sym}${suffix}`;
-                };
-                
-                return `
-            ${showTax ? `
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
-                ${(partyBalance !== null) ? `
-                <td rowspan="${bottomRowsCount}" style="width:40%; text-align:center; vertical-align:middle; background:#e8edf5; border: 1.5px solid #111; padding: 10px;">
-                    <div style="font-size:12px; font-weight:900; color:#111; margin-bottom:4px;">إجمالي رصيد ${partyLabel} نهائياً</div>
-                    <div style="font-size:20px; font-weight:900; color:#111;">${formatBal(Number(partyBalance))}</div>
-                </td>
-                ` : `<td rowspan="${bottomRowsCount}" style="width:40%; border: 1px solid #ccc;"></td>`}
-            </tr>` : ''}
-            
-            <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
-                <td style="text-align:right; font-weight:900; color:#111; padding: 8px;">صافي الفاتورة</td>
-                <td style="text-align:center; font-weight:900; font-size:14px; color:#111; padding: 8px;">${total.toLocaleString('en-US')} ${sym}</td>
-                ${!showTax ? (partyBalance !== null ? `
-                <td rowspan="${bottomRowsCount}" style="width:40%; text-align:center; vertical-align:middle; background:#e8edf5; border: 1.5px solid #111; padding: 10px;">
-                    <div style="font-size:12px; font-weight:900; color:#111; margin-bottom:4px;">إجمالي رصيد ${partyLabel} نهائياً</div>
-                    <div style="font-size:20px; font-weight:900; color:#111;">${formatBal(Number(partyBalance))}</div>
-                </td>
-                ` : `<td rowspan="${bottomRowsCount}" style="width:40%; border: 1px solid #ccc;"></td>`) : ''}
-            </tr>
-            `;
-            })()}
-            
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع</td>
-                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${paid.toLocaleString('en-US')} ${sym}</td>
-            </tr>
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">متبقي من هذه الفاتورة</td>
-                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${remaining.toLocaleString('en-US')} ${sym}</td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;">
+        <!-- Invoice Details Table -->
+        <table style="width:100%; border-collapse:collapse; border: 1.5px solid #333;">
+            <tbody>
+                <tr>
+                    <td style="width:60%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">اجمالي الفاتورة (قبل الخصم والضريبة)</td>
+                    <td style="width:40%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                ${showDiscount ? `
+                <tr>
+                    <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الخصم</td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td>
+                </tr>` : ''}
+                ${showTax ? `
+                <tr>
+                    <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
+                </tr>` : ''}
+                <tr style="background:#f8f9fa;">
+                    <td style="text-align:right; font-weight:900; padding: 10px; border: 1.5px solid #333;">صافي الفاتورة</td>
+                    <td style="text-align:center; font-weight:900; font-size:16px; padding: 10px; border: 1.5px solid #333;">${total.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Payment Details Table -->
+        <table style="width:100%; border-collapse:collapse; border: 1.5px solid #333;">
+            <tbody>
+                <tr>
+                    <td style="width:60%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع</td>
+                    <td style="width:40%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">متبقي من هذه الفاتورة</td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; color: ${remaining > 0 ? '#d32f2f' : '#333'};">${remaining.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Balance Analysis Table -->
+        ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
+        <div style="margin-top: 5px;">
+            <div style="text-align: center; font-weight: 900; margin-bottom: 5px; font-size: 14px; border-bottom: 1px solid #333; padding-bottom: 3px;">تحليل رصيد ${partyLabel}</div>
+            <table style="width:100%; border-collapse:collapse; border: 1.5px solid #333;">
+                <tbody>
+                    <tr>
+                        <td style="width:60%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الرصيد السابق</td>
+                        <td style="width:40%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${formatBal(prevBal)}</td>
+                    </tr>
+                    <tr>
+                        <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">تأثير هذه الفاتورة</td>
+                        <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
+                    </tr>
+                    <tr style="background:#eef2f7;">
+                        <td style="text-align:right; font-weight:900; padding: 8px; border: 1.5px solid #333;">إجمالي الرصيد الحالي عدا مديونية هذه الفاتورة</td>
+                        <td style="text-align:center; font-weight:900; font-size:16px; padding: 8px; border: 1.5px solid #333;">${formatBal(finalBal)}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>` : ''}
+    </div>
     `;
     })()}
 </div>

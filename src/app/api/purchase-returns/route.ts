@@ -41,6 +41,22 @@ export const POST = withProtection(async (request, session, body) => {
             });
             const invoiceNumber = (lastInvoice?.invoiceNumber || 0) + 1;
 
+            // Snapshot Balances
+            let customerPrevBalance = 0;
+            let customerNewBalance = 0;
+            let supplierPrevBalance = 0;
+            let supplierNewBalance = 0;
+
+            if (supplierId) {
+                const supplierSnapshot = await tx.supplier.findUnique({ where: { id: supplierId, companyId }, select: { balance: true } });
+                supplierPrevBalance = supplierSnapshot?.balance || 0;
+                supplierNewBalance = supplierPrevBalance - remaining;
+            } else if (customerId) {
+                const customerSnapshot = await tx.customer.findUnique({ where: { id: customerId, companyId }, select: { balance: true } });
+                customerPrevBalance = customerSnapshot?.balance || 0;
+                customerNewBalance = customerPrevBalance + remaining;
+            }
+
             const lastEntry = financialYear ? await tx.journalEntry.findFirst({
                 where: { companyId, financialYearId: financialYear.id },
                 orderBy: { entryNumber: 'desc' },
@@ -69,6 +85,10 @@ export const POST = withProtection(async (request, session, body) => {
                 notes: notes || null,
                 warehouseId: warehouseId || null,
                 companyId,
+                customerPrevBalance,
+                customerNewBalance,
+                supplierPrevBalance,
+                supplierNewBalance,
                 lines: {
                     create: lines.map((l: any) => ({
                         itemId: l.itemId,

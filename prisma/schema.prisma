@@ -582,6 +582,10 @@ model Invoice {
   originalInvoiceId String?
   attachments       String?
   paymentMethod     String?
+  customerPrevBalance Float? @default(0)
+  customerNewBalance  Float? @default(0)
+  supplierPrevBalance Float? @default(0)
+  supplierNewBalance  Float? @default(0)
   originalInvoice   Invoice?        @relation("ReturnInvoice", fields: [originalInvoiceId], references: [id])
   returnInvoices    Invoice[]       @relation("ReturnInvoice")
   company           Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
