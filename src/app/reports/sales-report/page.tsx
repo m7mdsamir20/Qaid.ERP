@@ -2,13 +2,15 @@
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
-
 import { useCurrency } from '@/hooks/useCurrency';
 import { generateReportHTML } from '@/lib/printInvoices';
-import { CURRENCY_SYMBOLS, formatMoney } from '@/lib/currency';
-import { useEffect, useState, useRef } from 'react';
+import { formatMoney } from '@/lib/currency';
+import { useEffect, useState } from 'react';
 import { BarChart3, Search, Calendar, Wallet, ArrowUpRight, ArrowDownRight, Activity, Loader2 } from 'lucide-react';
-import { useCurrency } from '@/hooks/useCurrency';
+import { useSession } from 'next-auth/react';
+import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
+import { C, CAIRO, INTER, IS, PAGE_BASE } from '@/constants/theme';
 
 interface Invoice {
     id: string;
@@ -153,7 +155,7 @@ export default function SalesReportPage() {
                             <div style={{ minWidth: '180px' }}>
                                 <CustomSelect
                                     value={branchId}
-                                    onChange={v => setBranchId(v)}
+                                    onChange={(v: string) => setBranchId(v)}
                                     placeholder={t("كل الفروع")}
                                     hideSearch
                                     style={{ background: C.card, border: `1px solid ${C.border}` }}
@@ -190,7 +192,6 @@ export default function SalesReportPage() {
                 ) : (
                     <>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                         <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
                             <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
                                 <div style={{ padding: '8px', background: 'rgba(59,130,246,0.08)', color: '#3b82f6', borderRadius: '10px' }}><BarChart3 size={20} /></div>

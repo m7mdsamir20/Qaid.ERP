@@ -512,7 +512,7 @@ export default function DashboardPage() {
                     </defs>
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} opacity={0.5} />
                     <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: INTER }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: INTER }} axisLine={false} tickLine={false} tickFormatter={v => fmt(v)} width={40} />
+                    <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: INTER }} axisLine={false} tickLine={false} tickFormatter={v => Number(v).toLocaleString()} width={40} />
                     <Tooltip content={<ChartTooltip cSymbol={cSymbol} t={t} />} />
                     {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
                     {isServices
