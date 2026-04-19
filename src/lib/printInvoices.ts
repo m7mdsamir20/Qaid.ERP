@@ -214,7 +214,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);backgr
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
 .co-block{flex:1;text-align:right}
 .co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:1px}
-.co-name-en{font-size:${isA5 ? '11px' : '13px'};font-weight:700;color:#555;margin-bottom:1px;font-family:sans-serif}
+.co-name-en{font-size:${isA5 ? '8.5px' : '9.5px'};color:#444;line-height:1.4;margin-bottom:1px}
 .co-line{font-size:${isA5 ? '8.5px' : '9.5px'};color:#444;line-height:1.4}
 .header-center{flex:1;text-align:center}
 .inv-title{font-size:var(--title-font);font-weight:900;color:#111;background:#f5f5f5;padding:2px 14px;border-radius:6px;display:inline-block;border:1px solid #ccc}
@@ -224,12 +224,12 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);backgr
 .logo-block img{max-height:var(--logo-h);max-width:130px;object-fit:contain}
 
 /* ── TABLES ── */
-.info-wrap{display:flex;gap:${isA5 ? '6px' : '10px'};margin-top:${isA5 ? '3px' : '8px'}}
-.info-box{flex:1;border:1px solid #333;border-radius:6px;overflow:hidden;background:#fff}
-.info-title{background:#f0f0f0;padding:${isA5 ? '2px 8px' : '5px 10px'};font-weight:900;font-size:${isA5 ? '9.5px' : '10.5px'};border-bottom:1px solid #333}
-.info-body{padding:${isA5 ? '3px 8px' : '6px 10px'}}
-.info-row{font-size:${isA5 ? '9px' : '10.5px'};margin-bottom:${isA5 ? '1px' : '3px'};display:flex;gap:4px}
-.ik{color:#666;min-width:${isA5 ? '60px' : '80px'};flex-shrink:0}
+.info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'}}
+.info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
+.info-title{background:#f5f5f5;padding:${isA5 ? '2px 6px' : '3px 8px'};font-weight:900;font-size:${isA5 ? '9px' : '10px'};border-bottom:1px solid #333}
+.info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}}
+.info-row{font-size:${isA5 ? '8.5px' : '9.5px'};margin-bottom:${isA5 ? '0px' : '1px'};display:flex;gap:4px}
+.ik{color:#666;min-width:${isA5 ? '55px' : '70px'};flex-shrink:0}
 .iv{color:#111;font-weight:800}
 
 table{width:100%;border-collapse:collapse;border:${tableBorder}}
@@ -475,61 +475,61 @@ tbody tr:nth-child(even){background: #fff;}
             : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
 
         return `
-    <div style="display: flex; justify-content: flex-start; margin-top: 8px;">
+    <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
         <div style="width: 310px;">
-            <table style="width:100%; border-collapse:collapse; border: 1.5px solid #333; font-size: 13px;">
+            <table style="width:100%; border-collapse:collapse; border: 1px solid #111; font-size: 13px;">
                 <tbody>
                     <!-- Subtotal Entry -->
                     <tr style="height: 30px;">
-                        <td style="width:60%; text-align:right; font-weight:500; border: 1px solid #ccc; padding: 2px 10px; color: #444;">الإجمالي قبل الخصم والضريبة</td>
-                        <td style="width:40%; text-align:left; font-weight:700; border: 1px solid #ccc; padding: 2px 10px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                        <td style="width:60%; text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">الإجمالي قبل الخصم والضريبة</td>
+                        <td style="width:40%; text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Optional Discount -->
                     ${showDiscount ? `
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 2px 10px; color: #444;">الخصم</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 2px 10px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">الخصم</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td>
                     </tr>` : ''}
 
                     <!-- Optional Tax -->
                     ${showTax ? `
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 2px 10px; color: #444;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 2px 10px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">إجمالي الضريبة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
                     </tr>` : ''}
 
                     <!-- Total Invoice -->
                     <tr style="background:#f2f2f2; height: 30px;">
-                        <td style="text-align:right; font-weight:900; border: 1px solid #333; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td>
-                        <td style="text-align:left; font-weight:900; border: 1px solid #333; padding: 2px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td>
+                        <td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Paid Entry -->
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 2px 10px; color: #444;">المبلغ المدفوع</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 2px 10px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">المبلغ المدفوع</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Remaining Entry -->
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 2px 10px; color: #444;">المبلغ المتبقي</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 2px 10px; color: ${remaining > 0 ? '#d32f2f' : '#2e7d32'};">${remaining.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">المبلغ المتبقي</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; color: ${remaining > 0 ? '#d32f2f' : '#2e7d32'};">${remaining.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Optional Balance Section -->
                     ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 2px 10px;">${formatBal(prevBal)}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px;">${formatBal(prevBal)}</td>
                     </tr>
                     <tr style="height: 30px;">
-                        <td style="text-align:right; font-weight:500; border: 1px solid #ccc; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #ccc; padding: 2px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:right; font-weight:500; border: 1px solid #111; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #111; padding: 2px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td>
                     </tr>
                     <tr style="background:#f2f2f2; height: 30px;">
-                        <td style="text-align:right; font-weight:900; border: 1px solid #333; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td>
-                        <td style="text-align:left; font-weight:900; border: 1px solid #333; padding: 2px 10px; color: #000;">${formatBal(finalBal)}</td>
+                        <td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td>
+                        <td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${formatBal(finalBal)}</td>
                     </tr>
                     ` : ''}
                 </tbody>
