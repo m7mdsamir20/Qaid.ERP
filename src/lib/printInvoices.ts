@@ -406,7 +406,6 @@ tbody tr:nth-child(even){background: #fff;}
     </div>`;
     })()}
     
-    <!-- Totals Table -->
     ${isSaudi ? `
     <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
         <tbody>
@@ -433,7 +432,7 @@ tbody tr:nth-child(even){background: #fff;}
                 <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">
                     مجموع ضريبة القيمة المضافة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}
                 </td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">\${displayTax.toLocaleString('en-US')} \${sym}</td>
+                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
                 <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total VAT</td>
             </tr>`;
             })()}
@@ -454,7 +453,8 @@ tbody tr:nth-child(even){background: #fff;}
             </tr>
         </tbody>
     </table>
-    <!-- Summary Section -->
+    ` : `
+    <!-- Summary Section (For EG and others) -->
     <div style="width: 100%; text-align: left; margin-top: 15px; clear: both; display: block;">
         <div style="width: 320px; display: inline-block; vertical-align: top;">
             ${(() => {
@@ -501,13 +501,14 @@ tbody tr:nth-child(even){background: #fff;}
             })()}
         </div>
     </div>
+    `}
 
-    <!-- Final Footer (Signatures) -->
+    <!-- Final Footer (Signatures) - Applies to both Saudi and regular -->
     <div class="footer" style="margin-top: auto; padding-top: 40px; border-top: 1px solid #eee; width: 100%;">
         <div class="footer-inner" style="display: flex; justify-content: space-between; align-items: flex-end; width: 100%;">
             <div style="text-align: center; width: 220px;">
                 <div style="font-weight: 900; font-size: 13px; margin-bottom: 30px; color: #000;">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
-                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 11px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+                <div style="border-top: 1.5px solid #111; padding-top: 6px; font-size: 10px; color: #444; font-weight: 600;">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
             </div>
             <div style="text-align: center; color: #999; font-size: 11px; margin-bottom: 5px; font-weight: 600;">
                 شكراً لتعاملكم معنا
