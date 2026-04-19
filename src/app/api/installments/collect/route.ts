@@ -79,7 +79,28 @@ export const POST = withProtection(async (request, session, body) => {
                 data:  { balance: { decrement: paid } },
             });
 
-            // ⑤ قيد محاسبي
+            // ⑤ إنشاء سند قبض (Voucher) ليظهر في كشف حساب العميل والتقارير العامة
+            const lastVoucher = await tx.voucher.findFirst({
+                where: { companyId, type: 'receipt' },
+                orderBy: { voucherNumber: 'desc' },
+            });
+            const voucherNumber = (lastVoucher?.voucherNumber || 0) + 1;
+
+            await tx.voucher.create({
+                data: {
+                    voucherNumber,
+                    type:            'receipt',
+                    date:            new Date(),
+                    amount:          paid,
+                    description:     `تحصيل قسط ${installment.installmentNo} — خطة ${installment.plan.planNumber}`,
+                    customerId:      installment.plan.customerId,
+                    treasuryId,
+                    financialYearId: currentYear.id,
+                    companyId,
+                }
+            });
+
+            // ⑥ قيد محاسبي
             const receivablesAcc = await tx.account.findFirst({
                 where: {
                     companyId, type: 'asset', accountCategory: 'detail',
@@ -107,63 +128,61 @@ export const POST = withProtection(async (request, session, body) => {
                 throw new Error("لا يوجد حساب ذمم عملاء في دليل الحسابات.");
             }
 
-            if (treasury?.accountId && receivablesAcc) {
-                const lastEntry = await tx.journalEntry.findFirst({
-                    where:   { companyId },
-                    orderBy: { entryNumber: 'desc' },
-                    select:  { entryNumber: true },
-                });
+            const lastEntry = await tx.journalEntry.findFirst({
+                where:   { companyId },
+                orderBy: { entryNumber: 'desc' },
+                select:  { entryNumber: true },
+            });
 
-                const interestRatio    = installment.amount > 0 ? installment.interest / installment.amount : 0;
-                const interestPortion  = paid * interestRatio;
-                const principalPortion = paid - interestPortion;
+            const interestRatio    = installment.amount > 0 ? installment.interest / installment.amount : 0;
+            const interestPortion  = paid * interestRatio;
+            const principalPortion = paid - interestPortion;
 
-                const journalLines: any[] = [
-                    // مدين: الخزينة
-                    {
-                        accountId:   treasury.accountId,
-                        debit:       paid,
-                        credit:      0,
-                        description: `تحصيل قسط ${installment.installmentNo} — خطة ${installment.plan.planNumber}`,
-                    },
-                    // دائن: ذمم العملاء (الأصل)
-                    {
-                        accountId:   receivablesAcc.id,
+            const journalLines: any[] = [
+                // مدين: الخزينة
+                {
+                    accountId:   treasury.accountId,
+                    debit:       paid,
+                    credit:      0,
+                    description: `تحصيل قسط ${installment.installmentNo} — خطة ${installment.plan.planNumber}`,
+                },
+                // دائن: ذمم العملاء (الأصل)
+                {
+                    accountId:   receivablesAcc.id,
+                    debit:       0,
+                    credit:      principalPortion,
+                    description: `أصل قسط ${installment.installmentNo}`,
+                },
+            ];
+
+            // دائن: إيرادات الفوائد
+            if (interestPortion > 0) {
+                if (interestRevenueAcc) {
+                    journalLines.push({
+                        accountId:   interestRevenueAcc.id,
                         debit:       0,
-                        credit:      principalPortion,
-                        description: `أصل قسط ${installment.installmentNo}`,
-                    },
-                ];
-
-                // دائن: إيرادات الفوائد
-                if (interestPortion > 0) {
-                    if (interestRevenueAcc) {
-                        journalLines.push({
-                            accountId:   interestRevenueAcc.id,
-                            debit:       0,
-                            credit:      interestPortion,
-                            description: `فوائد قسط ${installment.installmentNo}`,
-                        });
-                    } else {
-                        // لو مفيش حساب فوائد — أضفها لذمم العملاء
-                        journalLines[1].credit += interestPortion;
-                    }
+                        credit:      interestPortion,
+                        description: `فوائد قسط ${installment.installmentNo}`,
+                    });
+                } else {
+                    // لو مفيش حساب فوائد — أضفها لذمم العملاء
+                    journalLines[1].credit += interestPortion;
                 }
-
-                await tx.journalEntry.create({
-                    data: {
-                        entryNumber:     (lastEntry?.entryNumber || 0) + 1,
-                        date:            new Date(),
-                        description:     `تحصيل قسط ${installment.installmentNo} من ${installment.plan.customer.name}`,
-                        referenceType:   'installment_collect',
-                        referenceId:     installmentId,
-                        financialYearId: currentYear.id,
-                        companyId,
-                        isPosted:        true,
-                        lines: { create: journalLines },
-                    },
-                });
             }
+
+            await tx.journalEntry.create({
+                data: {
+                    entryNumber:     (lastEntry?.entryNumber || 0) + 1,
+                    date:            new Date(),
+                    description:     `تحصيل قسط ${installment.installmentNo} من ${installment.plan.customer.name}`,
+                    referenceType:   'installment_collect',
+                    referenceId:     installmentId,
+                    financialYearId: currentYear.id,
+                    companyId,
+                    isPosted:        true,
+                    lines: { create: journalLines },
+                },
+            });
 
             return updated;
         });

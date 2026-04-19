@@ -34,7 +34,7 @@ export const GET = withProtection(async (request, session) => {
             return NextResponse.json({ error: "العميل غير موجود" }, { status: 404 });
         }
 
-        const [allInvoices, allVouchers] = await Promise.all([
+        const [allInvoices, allVouchers, allPlans] = await Promise.all([
             prisma.invoice.findMany({
                 where: { customerId, companyId, type: { in: ['sale', 'sale_return'] } },
                 orderBy: { date: 'asc' },
@@ -43,10 +43,13 @@ export const GET = withProtection(async (request, session) => {
                 where: { customerId, companyId, type: { in: ['receipt', 'payment'] } },
                 orderBy: { date: 'asc' },
             }),
+            prisma.installmentPlan.findMany({
+                where: { customerId, companyId },
+                orderBy: { startDate: 'asc' },
+            })
         ]);
 
         // Calculate System Opening Balance (Current Balance - Net Transactions)
-        // نستخدم inv.total الكامل لأن المدفوع (paidAmount) يظهر كسند قبض منفصل
         let totalNetTransacted = 0;
         allInvoices.forEach(inv => {
             if (inv.type === 'sale') totalNetTransacted += inv.total;
@@ -55,6 +58,10 @@ export const GET = withProtection(async (request, session) => {
         allVouchers.forEach(v => {
             if (v.type === 'receipt') totalNetTransacted -= v.amount;
             if (v.type === 'payment') totalNetTransacted += v.amount;
+        });
+        allPlans.forEach(plan => {
+            totalNetTransacted += plan.grandTotal;
+            if (plan.downPayment > 0) totalNetTransacted -= plan.downPayment; // يتم خصم المقدم لأنه يُسجل كسند قبض أو حركة منفصلة
         });
         const initialSystemOpeningBalance = customer.balance - totalNetTransacted;
 
@@ -100,6 +107,20 @@ export const GET = withProtection(async (request, session) => {
                 description: (v.type === 'receipt' ? 'سند قبض' : 'سند صرف') + (v.description ? ` - ${v.description}` : ''),
                 debit: v.type === 'payment' ? v.amount : 0,
                 credit: v.type === 'receipt' ? v.amount : 0,
+            })),
+            ...allPlans.filter(p => {
+                const d = new Date(p.startDate);
+                if (dateFrom && d < new Date(dateFrom)) return false;
+                if (dateTo && d > new Date(new Date(dateTo).setHours(23, 59, 59, 999))) return false;
+                return true;
+            }).map(p => ({
+                id: p.id,
+                date: p.startDate,
+                type: 'خطة تقسيط',
+                ref: `PLN-${String(p.planNumber).padStart(5, '0')}`,
+                description: `فتح خطة تقسيط: ${p.productName || '—'}`,
+                debit: p.grandTotal - p.downPayment,
+                credit: 0,
             })),
         ].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
