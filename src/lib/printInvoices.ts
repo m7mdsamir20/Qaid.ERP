@@ -16,8 +16,6 @@ export interface CompanyInfo {
     addressStreet?: string;
     website?: string;
     logo?: string;
-    currency?: string;
-    countryCode?: string;
     branchName?: string;
     businessType?: string;
 }
