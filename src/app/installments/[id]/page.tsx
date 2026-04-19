@@ -44,7 +44,7 @@ export default function InstallmentDetailPage() {
     const [cancelForm,  setCancelForm]  = useState({ refundTreasuryId: '' });
     const [cancelling,  setCancelling]  = useState(false);
     const [showSettle,  setShowSettle]  = useState(false);
-    const [settleForm,  setSettleForm]  = useState({ amount: '', treasuryId: '', notes: '' });
+    const [settleForm,  setSettleForm]  = useState({ amount: '', treasuryId: '', notes: '', earlyFeeRate: '' });
     const [settling,    setSettling]    = useState(false);
 
     const fetchData = useCallback(async () => {
@@ -196,7 +196,7 @@ export default function InstallmentDetailPage() {
                                 <button onClick={() => {
                                     const remPrinc = (plan.installments || []).filter((i:any)=>i.status !== 'paid').reduce((s:number,i:any)=>s+i.principal, 0);
                                     const firstCash = treasuries.find(t => t.type === 'cash') || treasuries[0];
-                                    setSettleForm({ amount: remPrinc.toFixed(2), treasuryId: firstCash?.id || '', notes: t('سداد مبلغ الأصل المتبقي (تكييش)') });
+                                    setSettleForm({ amount: remPrinc.toFixed(2), treasuryId: firstCash?.id || '', notes: t('سداد مبلغ الأصل المتبقي (تكييش)'), earlyFeeRate: '' });
                                     setShowSettle(true);
                                 }} 
                                 style={{ ...BTN_PRIMARY(false, false), height: '42px', width: 'auto', padding: '0 20px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none' }}>
@@ -521,58 +521,101 @@ export default function InstallmentDetailPage() {
                     icon={DollarSign}
                     maxWidth="500px"
                 >
-                    {plan && (
+                    {plan && (() => {
+                        const remPrincipal = (plan.installments || []).filter((i:any) => i.status !== 'paid').reduce((s:number, i:any) => s + i.principal, 0);
+                        const remInterest  = (plan.installments || []).filter((i:any) => i.status !== 'paid').reduce((s:number, i:any) => s + i.interest, 0);
+                        const feeRate      = parseFloat(settleForm.earlyFeeRate || '0') || 0;
+                        const feeAmount    = (remPrincipal * feeRate) / 100;
+                        const totalDue     = remPrincipal + feeAmount;
+                        return (
                         <form onSubmit={handleSettle}>
-                            <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                                <p style={{ fontSize: '14px', color: C.textSecondary, marginBottom: '10px' }}>
-                                    {t('سيتم إغلاق الخطة بالكامل وتحصيل مبلغ الأصل المتبقي فقط.')}
-                                </p>
-                                
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}` }}>
-                                    <div>
-                                        <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px' }}>{t('الأصل المتبقي')}</div>
-                                        <div style={{ fontSize: '16px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>
-                                            {fmtN((plan.installments || []).filter((i:any)=>i.status !== 'paid').reduce((s:number,i:any)=>s+i.principal, 0))} <span style={{ fontSize: '10px' }}>{cSymbol}</span>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px' }}>{t('الفوائد المتبقية')}</div>
-                                        <div style={{ fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>
-                                            {fmtN((plan.installments || []).filter((i:any)=>i.status !== 'paid').reduce((s:number,i:any)=>s+i.interest, 0))} <span style={{ fontSize: '10px' }}>{cSymbol}</span>
-                                        </div>
-                                    </div>
+                            {/* Summary Cards */}
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}`, marginBottom: '20px', background: C.subtle }}>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الأصل المتبقي')}</div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmtN(remPrincipal)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                </div>
+                                <div style={{ textAlign: 'center' }}>
+                                    <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الفوائد المتبقية (يُعفى منها)')}</div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textMuted, fontFamily: INTER, textDecoration: 'line-through' }}>{fmtN(remInterest)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
                                 </div>
                             </div>
 
+                            {/* Early Settlement Fee */}
+                            <div style={{ marginBottom: '15px', padding: '14px', borderRadius: '14px', border: `1px dashed ${C.border}`, background: feeRate > 0 ? 'rgba(245,158,11,0.04)' : 'transparent' }}>
+                                <label style={{ ...LS, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                                    <span>{t('رسوم السداد المعجل')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 400 }}>({t('اختياري')})</span></span>
+                                    {feeRate > 0 && (
+                                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#f59e0b', fontFamily: INTER }}>
+                                            + {fmtN(feeAmount)} {cSymbol}
+                                        </span>
+                                    )}
+                                </label>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ position: 'relative', flex: 1 }}>
+                                        <input type="number" step="0.1" min="0" max="100" value={settleForm.earlyFeeRate}
+                                            placeholder="0"
+                                            onChange={e => {
+                                                const rate = e.target.value;
+                                                const newFee = (remPrincipal * (parseFloat(rate) || 0)) / 100;
+                                                setSettleForm(f => ({ ...f, earlyFeeRate: rate, amount: (remPrincipal + newFee).toFixed(2) }));
+                                            }}
+                                            style={{ ...IS, paddingInlineEnd: '40px', fontFamily: INTER, fontWeight: 700 }}
+                                            onFocus={focusIn} onBlur={focusOut}
+                                        />
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 800, color: C.textMuted, fontSize: '14px' }}>%</span>
+                                    </div>
+                                    {feeRate > 0 && (
+                                        <button type="button"
+                                            onClick={() => setSettleForm(f => ({ ...f, earlyFeeRate: '', amount: remPrincipal.toFixed(2) }))}
+                                            style={{ height: '44px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', fontSize: '11px', fontWeight: 700 }}>
+                                            {t('إلغاء')}
+                                        </button>
+                                    )}
+                                </div>
+                                {feeRate > 0 && (
+                                    <div style={{ marginTop: '8px', fontSize: '11px', color: '#f59e0b', fontWeight: 600 }}>
+                                        ⚠️ {fmtN(remPrincipal)} + {fmtN(feeAmount)} {t('رسوم')} = {t('الإجمالي')} {fmtN(totalDue)} {cSymbol}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Amount input */}
                             <div style={{ marginBottom: '15px' }}>
-                                <label style={LS}>{t('مبلغ السداد الحالي (الأصل)')}</label>
+                                <label style={LS}>{t('إجمالي مبلغ السداد')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" step="any" required value={settleForm.amount} 
+                                    <input type="number" step="any" required value={settleForm.amount}
                                         onChange={e => setSettleForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: INTER, textAlign: 'center' }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: INTER, textAlign: 'center', color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
+                                        onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
-                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '5px', textAlign: 'center' }}>💡 {t('سيتم التنازل عن الفوائد المتبقية للعميل عند التكييش.')}</p>
+                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '5px', textAlign: 'center' }}>
+                                    {feeRate > 0 ? `💡 ${t('الإجمالي يشمل أصل المبلغ + رسوم السداد المعجل')}` : `💡 ${t('سيتم التنازل عن الفوائد المتبقية للعميل')}`}
+                                </p>
                             </div>
 
+                            {/* Treasury */}
                             <div style={{ marginBottom: '15px' }}>
                                 <label style={LS}>{t('خزينة التحصيل')}</label>
-                                <CustomSelect 
+                                <CustomSelect
                                     value={settleForm.treasuryId}
                                     onChange={v => setSettleForm(f => ({ ...f, treasuryId: v }))}
                                     options={treasuries.map(t_tr => ({ value: t_tr.id, label: t_tr.name, sub: t_tr.type === 'bank' ? t('حساب بنكي') : t('خزينة نقدية') }))}
-                                    placeholder={t("اختر الخزينة...")}
+                                    placeholder={t('اختر الخزينة...')}
                                 />
                             </div>
 
-                            <div style={{ marginBottom: '25px' }}>
+                            {/* Notes */}
+                            <div style={{ marginBottom: '20px' }}>
                                 <label style={LS}>{t('ملاحظات')}</label>
-                                <textarea 
+                                <textarea
                                     value={settleForm.notes}
                                     onChange={e => setSettleForm(f => ({ ...f, notes: e.target.value }))}
-                                    style={{ ...IS, height: '60px', padding: '10px' }}
-                                    placeholder={t("ملاحظات اختيارية...")}
+                                    style={{ ...IS, height: '55px', padding: '10px' }}
+                                    placeholder={t('ملاحظات اختيارية...')}
+                                    onFocus={focusIn} onBlur={focusOut}
                                 />
                             </div>
 
@@ -583,7 +626,8 @@ export default function InstallmentDetailPage() {
                                 <button type="button" onClick={() => setShowSettle(false)} style={{ flex: 1, borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700 }}>{t('إلغاء')}</button>
                             </div>
                         </form>
-                    )}
+                        );
+                    })()}
                 </AppModal>
 
                 {/* Cancel Plan Modal */}
