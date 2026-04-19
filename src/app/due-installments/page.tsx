@@ -164,7 +164,7 @@ export default function DuePage() {
                                                         <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{inst.customer?.phone}</div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
-                                                        <span style={{ color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</span>
+                                                        <span style={{ color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         {inst.installmentNo}
@@ -314,7 +314,7 @@ export default function DuePage() {
                                         <label style={{ ...LS, fontSize: '11px', color: C.textMuted, marginBottom: '6px' }}>
                                             {(collectForm as any).selectedType === 'bank' || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type === 'bank' ? t('اختر البنك المقرر الإيداع فيه') : t('اختر الخزينة النقدية المستلمة')}
                                         </label>
-                                        <div style={{ position: 'relative', '--surface-50': '#1e293b', '--surface-100': C.inputBg, '--border-subtle': 'rgba(255,255,255,0.1)' } as any}>
+                                        <div style={{ position: 'relative', '--surface-50': C.card, '--surface-100': C.inputBg, '--border-subtle': C.border } as any}>
                                             <CustomSelect
                                                 value={collectForm.treasuryId}
                                                 onChange={v => setCollectForm(f => ({ ...f, treasuryId: v }))}

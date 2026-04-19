@@ -191,7 +191,7 @@ export default function OverdueReportPage() {
                                                     <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>#{inst.plan?.planNumber}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
                                                 <td style={{ padding: '16px 20px', color: '#f87171', fontSize: '13.5px', fontWeight: 700, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>

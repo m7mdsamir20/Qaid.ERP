@@ -14,6 +14,7 @@ import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
+import { printInstallmentPlan } from '@/lib/printInvoices';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -124,7 +125,6 @@ export default function InstallmentDetailPage() {
 
     const handlePrint = () => {
         if (!plan) return;
-        const { printInstallmentPlan } = require('@/lib/printInvoices');
         fetch('/api/settings')
             .then(res => res.json())
             .then(data => {
@@ -597,7 +597,7 @@ export default function InstallmentDetailPage() {
                 >
                     <div style={{ textAlign: 'center', marginBottom: '24px' }}>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>
-                            {t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>#{plan.planNumber}</span> — {t('للعميل:')} {plan.customer?.name}
+                            {t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>PLAN-{String(plan.planNumber || 1).padStart(4, '0')}</span> — {t('للعميل:')} {plan.customer?.name}
                         </p>
                     </div>
 
