@@ -43,8 +43,11 @@ export const GET = withProtection(async (request, session) => {
             kpis,
             lowStockItems,
             topDebtors,
-            recentInvoices,
+            recentInvoicesRaw,
+            recentVouchersRaw,
+            recentPlansRaw,
             chartRawData,
+            chartVoucherRawData,
         ] = await Promise.all([
             // Counts
             Promise.all([
@@ -67,8 +70,6 @@ export const GET = withProtection(async (request, session) => {
                     where: { companyId, type: 'purchase', ...dateFilter, ...branchFilter },
                     _sum: { total: true }
                 }), { _sum: { total: 0 } }),
-                // للنشاط الخدمي: المصروفات من القيود الفعلية (other_expense)
-                // للنشاط التجاري: سندات الصرف للموردين (payment)
                 isServices
                     ? safeQuery(() => prisma.journalEntryLine.aggregate({
                         where: {
@@ -99,6 +100,7 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { balance: 'desc' },
                 take: 5,
             }), []),
+            // Recent Invoices
             safeQuery(() => prisma.invoice.findMany({
                 where: { companyId, ...branchFilter },
                 select: {
@@ -109,7 +111,28 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'desc' },
                 take: 5,
             }), []),
-            // Chart Data
+            // Recent Vouchers
+            safeQuery(() => prisma.voucher.findMany({
+                where: { companyId, ...branchFilter },
+                select: {
+                    id: true, voucherNumber: true, type: true, date: true, amount: true,
+                    customer: { select: { name: true } },
+                    supplier: { select: { name: true } },
+                },
+                orderBy: { createdAt: 'desc' },
+                take: 5,
+            }), []),
+            // Recent Installment Plans
+            safeQuery(() => prisma.installmentPlan.findMany({
+                where: { companyId, ...branchFilter },
+                select: {
+                    id: true, planNumber: true, startDate: true, grandTotal: true,
+                    customer: { select: { name: true } },
+                },
+                orderBy: { createdAt: 'desc' },
+                take: 5,
+            }), []),
+            // Chart Data (Invoices)
             safeQuery(() => prisma.invoice.findMany({
                 where: {
                     companyId,
@@ -119,16 +142,46 @@ export const GET = withProtection(async (request, session) => {
                 },
                 select: { type: true, date: true, total: true }
             }), []),
+            // Chart Data (Vouchers)
+            safeQuery(() => prisma.voucher.findMany({
+                where: {
+                    companyId,
+                    date: { gte: chartStart },
+                    ...branchFilter,
+                },
+                select: { type: true, date: true, amount: true }
+            }), []),
         ]);
+
+        // Merge and Sort Recent Transactions
+        const recentInvoices = [
+            ...recentInvoicesRaw,
+            ...recentVouchersRaw.map((v: any) => ({
+                id: v.id, invoiceNumber: v.voucherNumber, type: v.type, date: v.date, total: v.amount,
+                customer: v.customer, supplier: v.supplier
+            })),
+            ...recentPlansRaw.map((p: any) => ({
+                id: p.id, invoiceNumber: p.planNumber, type: 'installment' as any, date: p.startDate, total: p.grandTotal,
+                customer: p.customer, supplier: null
+            }))
+        ].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10);
 
         // 3. معالجة بيانات الرسم البياني بكفاءة O(n)
         const dailySummary: Record<string, { sales: number, purchases: number, expenses: number }> = {};
+        
         chartRawData.forEach((inv: any) => {
             const dateKey = new Date(inv.date).toLocaleDateString('en-US', { weekday: 'short' });
             if (!dailySummary[dateKey]) dailySummary[dateKey] = { sales: 0, purchases: 0, expenses: 0 };
             if (inv.type === 'sale') dailySummary[dateKey].sales += inv.total;
             else if (inv.type === 'purchase') dailySummary[dateKey].purchases += inv.total;
             else if (inv.type === 'payment') dailySummary[dateKey].expenses += inv.total;
+        });
+
+        chartVoucherRawData.forEach((v: any) => {
+            const dateKey = new Date(v.date).toLocaleDateString('en-US', { weekday: 'short' });
+            if (!dailySummary[dateKey]) dailySummary[dateKey] = { sales: 0, purchases: 0, expenses: 0 };
+            if (v.type === 'receipt') dailySummary[dateKey].sales += v.amount;
+            else if (v.type === 'payment') dailySummary[dateKey].expenses += v.amount;
         });
 
         const last7DaysLabels = [];
