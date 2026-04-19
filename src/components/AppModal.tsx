@@ -66,7 +66,7 @@ const AppModal: React.FC<AppModalProps> = ({
             style={{
                 position: 'fixed', top: 0, insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, zIndex: 99999,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                background: THEME.colors.bg === '#070d1a' ? 'rgba(7, 13, 26, 0.75)' : 'rgba(0,0,0,0.5)',
+                background: 'var(--c-overlay, rgba(0,0,0,0.5))',
                 backdropFilter: 'blur(10px)',
                 WebkitBackdropFilter: 'blur(10px)',
                 opacity: show ? 1 : 0,
@@ -80,7 +80,7 @@ const AppModal: React.FC<AppModalProps> = ({
                 style={{
                     width: '94%', maxWidth: isDelete ? '420px' : maxWidth, background: C.card,
                     borderRadius: '16px', border: `1px solid ${isDanger ? 'rgba(239,68,68,0.3)' : C.border}`,
-                    boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
+                    boxShadow: '0 25px 50px rgba(0,0,0,0.3)',
                     transform: show ? 'scale(1)' : 'scale(0.95)',
                     transition: 'transform 0.2s ease',
                     overflow: 'hidden',

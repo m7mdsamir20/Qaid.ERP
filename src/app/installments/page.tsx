@@ -256,7 +256,7 @@ export default function InstallmentsPage() {
                     ['--text-muted' as any]: C.textMuted,
                     ['--border-subtle' as any]: C.border,
                     ['--primary-500' as any]: C.primary,
-                    ['--primary-light' as any]: 'rgba(37,106,244,0.15)',
+                    ['--primary-light' as any]: 'var(--c-primary-bg, rgba(37,106,244,0.15))',
                 }}>
                 
                 {/* Header Section */}
