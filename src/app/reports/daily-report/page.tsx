@@ -35,8 +35,8 @@ export default function DailyReportPage() {
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
             if (Array.isArray(d)) setBranches(d);
-        }).catch(() => {});
-        fetch('/api/settings').then(r => r.json()).then(d => setCompany(d.company || {})).catch(() => {});
+        }).catch(() => { });
+        fetch('/api/settings').then(r => r.json()).then(d => setCompany(d.company || {})).catch(() => { });
     }, []);
 
     const fetchReport = async () => {
@@ -52,88 +52,26 @@ export default function DailyReportPage() {
     useEffect(() => { fetchReport(); }, [date, branchId]);
 
     const handlePrint = () => {
-        if (!data) return;
-        
-        let contentHtml = `
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size:13px; margin-bottom:10px; border-bottom:1.5px solid #000; padding-bottom:5px;">${t('التحليل التجاري التفصيلي')}</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="text-align:right">${t('البيان')}</th>
-                            <th>${t('القيمة')}</th>
-                            <th>${t('ملاحظات')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td style="text-align:right">${t('إجمالي المبيعات')}</td><td>${fmt(data.totalSales)}</td><td>${data.salesCount} ${t('فاتورة')}</td></tr>
-                        <tr><td style="text-align:right">${t('مرتجع المبيعات')} (-)</td><td>${fmt(data.saleReturnsTotal)}</td><td>—</td></tr>
-                        <tr style="background:#f9f9f9; font-weight:900">
-                            <td style="text-align:right">${t('صافي المبيعات')}</td>
-                            <td>${fmt(data.totalSales - data.saleReturnsTotal)}</td>
-                            <td>—</td>
-                        </tr>
-                        <tr><td style="text-align:right">${t('إجمالي المشتريات')}</td><td>${fmt(data.totalPurchases)}</td><td>—</td></tr>
-                        <tr><td style="text-align:right">${t('مرتجع المشتريات')} (-)</td><td>${fmt(data.purchaseReturnsTotal)}</td><td>—</td></tr>
-                    </tbody>
-                </table>
-            </div>
+        const tables = Array.from(document.querySelectorAll('.print-table-container'));
+        if (!tables.length) return;
 
-            <div style="margin-bottom: 30px;">
-                <h3 style="font-size:13px; margin-bottom:10px; border-bottom:1.5px solid #000; padding-bottom:5px;">${t('أرصدة الصناديق والبنوك')}</h3>
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="text-align:right">${t('اسم الحساب')}</th>
-                            <th>${t('النوع')}</th>
-                            <th>${t('الرصيد الحالي')}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${data.treasuries.map((t: any) => `
-                        <tr>
-                            <td style="text-align:right">${t.name}</td>
-                            <td>${t.type === 'bank' ? 'بنك' : 'خزنة'}</td>
-                            <td>${fmt(t.balance)}</td>
-                        </tr>`).join('')}
-                    </tbody>
-                    <tfoot>
-                        <tr style="background:#f2f2f2; font-weight:900">
-                            <td style="text-align:right">${t('إجمالي السيولة المتاحة')}</td>
-                            <td>—</td>
-                            <td>${fmt(data.totalCashBalance + data.totalBankBalance)}</td>
-                        </tr>
-                    </tfoot>
-                </table>
-            </div>
-        `;
+        const tableHTML = tables.map(div => {
+            const h3 = div.querySelector('h3')?.outerHTML || '';
+            const content = div.querySelector('table')?.outerHTML || div.querySelector('div[style*="grid"]')?.outerHTML || '';
+            return `<div style="margin-bottom:20px">${h3}${content}</div>`;
+        }).join('');
 
+        const companyInfo = company;
         const html = generateReportHTML(
-            t("التقرير اليومي"),
-            contentHtml,
-            company,
-            { 
-                dateFrom: date,
-                dateTo: date,
-                generatedBy: session?.user?.name || '',
-                metadata: [
-                    { label: t('الفرع'), value: branchId === 'all' ? t('كافة الفروع') : (branches.find(b => b.id === branchId)?.name || '—') },
-                    { label: t('طبع في'), value: new Date().toLocaleTimeString('ar-EG') }
-                ],
-                summary: [
-                    { label: t('إجمالي مبيعات اليوم'), value: data.totalSales },
-                    { label: t('إجمالي المقبوضات'), value: data.receipts },
-                    { label: t('إجمالي المدفوعات'), value: data.payments },
-                    { label: t('صافي حركة السيولة'), value: data.receipts - data.payments, isTotal: true },
-                ]
-            }
+            t("التقرير اليومي للمبيعات والتحصيلات"),
+            tableHTML,
+            companyInfo,
+            { subtitle: `${t('بتاريخ')}: ${date}`, noAutoPrint: false }
         );
 
-        const win = window.open('', '_blank');
-        if (win) {
-            win.document.write(html);
-            win.document.close();
-        }
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', t("التقرير اليومي"));
+        window.open('/print/report', '_blank');
     };
     const exportToPDF = handlePrint;
 
@@ -144,7 +82,7 @@ export default function DailyReportPage() {
                     title={t("التقرير اليومي للمبيعات والتحصيلات")}
                     subtitle={t("ملخص شامل لكافة العمليات المالية والتجارية التي تمت خلال اليوم.")}
                     backTab="financial"
-                    onPrint={handlePrint}
+
                     printDate={new Date(date).toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
                 />
 

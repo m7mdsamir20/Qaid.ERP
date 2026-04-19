@@ -7,7 +7,6 @@ import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
 import { ShoppingCart, Search, Calendar, Loader2, ArrowUpRight, ArrowDownRight, Activity, DollarSign } from 'lucide-react';
-import { generateReportHTML } from '@/lib/printInvoices';
 import CustomSelect from '@/components/CustomSelect';
 
 const getCurrencyName = (code: string) => {
@@ -53,7 +52,7 @@ export default function PurchasesReportPage() {
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
             if (Array.isArray(d)) setBranches(d);
-        }).catch(() => {});
+        }).catch(() => { });
     }, []);
 
     const fetchReport = async () => {
@@ -68,61 +67,7 @@ export default function PurchasesReportPage() {
         } catch { } finally { setLoading(false); }
     };
 
-    const handlePrint = () => {
-        if (!data) return;
-        const company = session?.user as any;
-        const html = generateReportHTML(
-            t("تقرير المشتريات"),
-            `
-            <table>
-                <thead>
-                    <tr>
-                        <th>${t('رقم الفاتورة')}</th>
-                        <th>${t('التاريخ')}</th>
-                        <th style="text-align:right">${t('اسم المورد')}</th>
-                        <th style="text-align:center">${t('إجمالي القيمة')}</th>
-                        <th style="text-align:center">${t('الخصم')}</th>
-                        <th style="text-align:center">${t('المسدد')}</th>
-                        <th style="text-align:center">${t('المتبقي')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${data.invoices.map(inv => `
-                    <tr>
-                        <td>PUR-${String(inv.invoiceNumber).padStart(5, '0')}</td>
-                        <td>${new Date(inv.date).toLocaleDateString('en-GB')}</td>
-                        <td style="text-align:right">${inv.supplier?.name || t('مورد نقدي')}</td>
-                        <td style="text-align:center">${fmt(inv.total)}</td>
-                        <td style="text-align:center">${inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
-                        <td style="text-align:center; color:#10b981">${fmt(inv.paidAmount)}</td>
-                        <td style="text-align:center; color:${inv.remaining > 0 ? '#ef4444' : '#10b981'}; font-weight:700">${fmt(inv.remaining)}</td>
-                    </tr>`).join('')}
-                </tbody>
-            </table>
-            `,
-            company,
-            {
-                dateFrom: from || '—',
-                dateTo: to || new Date().toLocaleDateString('en-CA'),
-                generatedBy: session?.user?.name || '',
-                metadata: [
-                    { label: t('الفرع'), value: branches.find(b => b.id === branchId)?.name || t('جميع الفروع') }
-                ],
-                summary: [
-                    { label: t('إجمالي المشتريات'), value: data.totalPurchases },
-                    { label: t('إجمالي الخصومات'), value: data.totalDiscount },
-                    { label: t('إجمالي المبالغ المسددة'), value: data.totalPaid },
-                    { label: t('صافي الأرصدة المستحقة'), value: data.totalRemaining, isTotal: true },
-                ]
-            }
-        );
-        const win = window.open('', '_blank');
-        if (win) {
-            win.document.write(html);
-            win.document.close();
-        }
-    };
-    const exportToPDF = () => handlePrint();
+    const exportToPDF = () => window.print();
 
     useEffect(() => { fetchReport(); }, []);
 
@@ -133,8 +78,7 @@ export default function PurchasesReportPage() {
                     title={t("تقرير المشتريات")}
                     subtitle={t("تحليل تفصيلي لجميع عمليات الشراء الواردة، الخصومات، والمبالغ المدفوعة والمتبقية.")}
                     backTab="sales-purchases"
-                    
-                    onPrint={handlePrint}
+
                     printTitle={t("تقرير المشتريات")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
@@ -144,7 +88,7 @@ export default function PurchasesReportPage() {
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
                         <div style={{ width: '170px' }}>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-                                style={{ 
+                                style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
@@ -155,7 +99,7 @@ export default function PurchasesReportPage() {
                         <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
                         <div style={{ width: '170px' }}>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
-                                style={{ 
+                                style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
@@ -234,8 +178,8 @@ export default function PurchasesReportPage() {
                             <input
                                 placeholder={t("ابحث برقم الفاتورة أو اسم المورد...")}
                                 value={q} onChange={e => setQ(e.target.value)}
-                                style={{ 
-                                    ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px', 
+                                style={{
+                                    ...IS, paddingInlineStart: '45px', height: '42px', fontSize: '13.5px',
                                     background: C.card, borderRadius: '12px', border: `1px solid ${C.border}`,
                                     fontWeight: 500
                                 }}
@@ -247,12 +191,12 @@ export default function PurchasesReportPage() {
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                         {[t('رقم الفاتورة'), t('التاريخ'), t('اسم المورد'), t('إجمالي القيمة'), t('الخصم'), t('المسدد'), t('المتبقي')].map((h, i) => (
-                                            <th key={i} style={{ 
-                                                padding: '16px 20px', 
-                                                fontSize: '12px', 
-                                                fontWeight: 800, 
-                                                color: C.textSecondary, 
-                                                textAlign: i >= 3 ? 'center' : 'right', 
+                                            <th key={i} style={{
+                                                padding: '16px 20px',
+                                                fontSize: '12px',
+                                                fontWeight: 800,
+                                                color: C.textSecondary,
+                                                textAlign: i >= 3 ? 'center' : 'right',
                                                 fontFamily: CAIRO,
                                                 borderBottom: `1px solid ${C.border}`
                                             }}>{h}</th>
@@ -262,9 +206,9 @@ export default function PurchasesReportPage() {
                                 <tbody>
                                     {data.invoices.filter(inv => {
                                         const code = `PUR-${String(inv.invoiceNumber).padStart(5, '0')}`;
-                                        return code.includes(q.toUpperCase()) || 
-                                               String(inv.invoiceNumber).includes(q) || 
-                                               (inv.supplier?.name || 'مورد نقدي').toLowerCase().includes(q.toLowerCase());
+                                        return code.includes(q.toUpperCase()) ||
+                                            String(inv.invoiceNumber).includes(q) ||
+                                            (inv.supplier?.name || 'مورد نقدي').toLowerCase().includes(q.toLowerCase());
                                     }).map((inv, idx) => (
                                         <tr key={inv.id}
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
@@ -281,7 +225,7 @@ export default function PurchasesReportPage() {
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                <span style={{ 
+                                                <span style={{
                                                     fontSize: '11px', fontWeight: 1000, direction: 'ltr', fontFamily: INTER,
                                                     color: inv.remaining > 0 ? '#fb7185' : '#10b981',
                                                     background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',

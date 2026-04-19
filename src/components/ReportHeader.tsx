@@ -5,58 +5,57 @@ import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 
 interface ReportHeaderProps {
-    title: string;
-    subtitle: string;
-    backTab?: string;
-    onExportExcel?: () => void;
-    onExportPdf?: () => void;
-    onPrint?: () => void;
-    data?: any;
-    printTitle?: string;
-    printDate?: string;
-    printCode?: string;
-    accountName?: string;
+  title: string;
+  subtitle: string;
+  backTab?: string;
+  onExportExcel?: () => void;
+  onExportPdf?: () => void;
+  data?: any;
+  printTitle?: string;
+  printDate?: string;
+  printCode?: string;
+  accountName?: string;
 }
 
-export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, onPrint, printTitle, printDate, printCode, accountName: manualAccountName }: ReportHeaderProps) {
-    const router = useRouter();
-    const { data: session } = useSession();
-    const [co, setCo] = React.useState<any>((session?.user as any) || {});
+export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, printTitle, printDate, printCode, accountName: manualAccountName }: ReportHeaderProps) {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const [co, setCo] = React.useState<any>((session?.user as any) || {});
 
-    React.useEffect(() => {
-        fetch('/api/company')
-            .then(res => res.json())
-            .then(d => { if (d && !d.error) setCo(d); })
-            .catch(() => { });
-    }, []);
+  React.useEffect(() => {
+    fetch('/api/company')
+      .then(res => res.json())
+      .then(d => { if (d && !d.error) setCo(d); })
+      .catch(() => { });
+  }, []);
 
-    const handleBack = () => {
-        if (backTab) router.push(`/reports?tab=${backTab}`);
-        else router.push('/reports');
-    };
+  const handleBack = () => {
+    if (backTab) router.push(`/reports?tab=${backTab}`);
+    else router.push('/reports');
+  };
 
-    const openCleanPrintWindow = () => {
-        // ── بيانات الشركة ──
-        const companyName = co.companyName || co.name || '';
-        const companyNameEn = co.nameEn || '';
-        const logo = co.logo || co.companyLogo || '';
-        const reportTitle = printTitle || title;
-        const today = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
+  const openCleanPrintWindow = () => {
+    // ── بيانات الشركة ──
+    const companyName = co.companyName || co.name || '';
+    const companyNameEn = co.nameEn || '';
+    const logo = co.logo || co.companyLogo || '';
+    const reportTitle = printTitle || title;
+    const today = new Date().toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
 
-        // printDate أحياناً بيكون اسم عميل/مورد وأحياناً فترة زمنية
-        const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
-        
-        // accountName الأولوية للبروب اليدوي، ثم الاستنباط من البرنت ديت
-        const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
-        const dateRange = isDateRange ? printDate : today;
+    // printDate أحياناً بيكون اسم عميل/مورد وأحياناً فترة زمنية
+    const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
 
-        // ── استخراج المحتوى ──
-        const includeEls = Array.from(document.querySelectorAll('[data-print-include]'));
-        const includeHTML = includeEls.map(el => el.outerHTML).join('');
-        const tables = Array.from(document.querySelectorAll('table'));
-        const tablesHTML = tables.map(tbl => tbl.outerHTML).join('');
+    // accountName الأولوية للبروب اليدوي، ثم الاستنباط من البرنت ديت
+    const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
+    const dateRange = isDateRange ? printDate : today;
 
-        const html = `<!DOCTYPE html>
+    // ── استخراج المحتوى ──
+    const includeEls = Array.from(document.querySelectorAll('[data-print-include]'));
+    const includeHTML = includeEls.map(el => el.outerHTML).join('');
+    const tables = Array.from(document.querySelectorAll('table'));
+    const tablesHTML = tables.map(tbl => tbl.outerHTML).join('');
+
+    const html = `<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
@@ -241,66 +240,66 @@ ${tablesHTML}
 </body>
 </html>`;
 
-        sessionStorage.setItem('print_report_html', html);
-        sessionStorage.setItem('print_report_title', reportTitle);
-        window.open('/print/report', '_blank');
-    };
+    sessionStorage.setItem('print_report_html', html);
+    sessionStorage.setItem('print_report_title', reportTitle);
+    window.open('/print/report', '_blank');
+  };
 
-    return (
-        <div style={{ marginBottom: THEME.header.mb }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '300px' }}>
-                    <button
-                        onClick={handleBack}
-                        style={{
-                            width: '38px', height: '38px', borderRadius: '12px', background: C.inputBg,
-                            border: `1px solid ${C.border}`, color: C.textSecondary,
-                            display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s'
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = C.inputBg; e.currentTarget.style.color = C.textSecondary; }}
-                        title="رجوع"
-                    >
-                        <ArrowRight size={22} />
-                    </button>
-                    <div>
-                        <h1 className="page-title" style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{title}</h1>
-                        <p className="page-subtitle" style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>{subtitle}</p>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
-                    {onExportExcel && (
-                        <button
-                            onClick={onExportExcel}
-                            style={{
-                                display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
-                                borderRadius: '10px', background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e',
-                                border: '1px solid rgba(34, 197, 94, 0.2)', fontSize: '12px', fontWeight: 700,
-                                cursor: 'pointer', transition: 'all 0.2s'
-                            }}
-                            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)'; e.currentTarget.style.transform = 'none'; }}
-                        >
-                            <FileSpreadsheet size={15} /> تحميل Excel
-                        </button>
-                    )}
-
-                    <button
-                        onClick={onPrint || openCleanPrintWindow}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
-                            borderRadius: '10px', background: C.primary, color: '#fff',
-                            border: 'none', fontSize: '12px', fontWeight: 700,
-                            cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
-                            boxShadow: `0 4px 12px ${C.primary}30`
-                        }}
-                        onMouseEnter={e => { e.currentTarget.style.background = C.primaryHover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-                        onMouseLeave={e => { e.currentTarget.style.background = C.primary; e.currentTarget.style.transform = 'none'; }}
-                    >
-                        <Printer size={15} /> طباعة
-                    </button>
-                </div>
-            </div>
+  return (
+    <div style={{ marginBottom: THEME.header.mb }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '300px' }}>
+          <button
+            onClick={handleBack}
+            style={{
+              width: '38px', height: '38px', borderRadius: '12px', background: C.inputBg,
+              border: `1px solid ${C.border}`, color: C.textSecondary,
+              display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', transition: '0.2s'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
+            onMouseLeave={e => { e.currentTarget.style.background = C.inputBg; e.currentTarget.style.color = C.textSecondary; }}
+            title="رجوع"
+          >
+            <ArrowRight size={22} />
+          </button>
+          <div>
+            <h1 className="page-title" style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{title}</h1>
+            <p className="page-subtitle" style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>{subtitle}</p>
+          </div>
         </div>
-    );
+        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+          {onExportExcel && (
+            <button
+              onClick={onExportExcel}
+              style={{
+                display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
+                borderRadius: '10px', background: 'rgba(34, 197, 94, 0.1)', color: '#22c55e',
+                border: '1px solid rgba(34, 197, 94, 0.2)', fontSize: '12px', fontWeight: 700,
+                cursor: 'pointer', transition: 'all 0.2s'
+              }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(34, 197, 94, 0.1)'; e.currentTarget.style.transform = 'none'; }}
+            >
+              <FileSpreadsheet size={15} /> تحميل Excel
+            </button>
+          )}
+
+          <button
+            onClick={openCleanPrintWindow}
+            style={{
+              display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
+              borderRadius: '10px', background: C.primary, color: '#fff',
+              border: 'none', fontSize: '12px', fontWeight: 700,
+              cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+              boxShadow: `0 4px 12px ${C.primary}30`
+            }}
+            onMouseEnter={e => { e.currentTarget.style.background = C.primaryHover; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = C.primary; e.currentTarget.style.transform = 'none'; }}
+          >
+            <Printer size={15} /> طباعة
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }
