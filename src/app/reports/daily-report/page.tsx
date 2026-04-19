@@ -11,6 +11,7 @@ import {
     ArrowUpRight, Activity, Landmark, Wallet, Loader2, BarChart3
 } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, INTER, SEARCH_STYLE } from '@/constants/theme';
+import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -29,11 +30,13 @@ export default function DailyReportPage() {
     const [loading, setLoading] = useState(true);
     const [branchId, setBranchId] = useState('all');
     const [branches, setBranches] = useState<any[]>([]);
+    const [company, setCompany] = useState<CompanyInfo>({});
 
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
             if (Array.isArray(d)) setBranches(d);
         }).catch(() => {});
+        fetch('/api/settings').then(r => r.json()).then(d => setCompany(d.company || {})).catch(() => {});
     }, []);
 
     const fetchReport = async () => {
@@ -48,8 +51,29 @@ export default function DailyReportPage() {
 
     useEffect(() => { fetchReport(); }, [date, branchId]);
 
-    const handlePrint = () => window.print();
-    const exportToPDF = () => window.print();
+    const handlePrint = () => {
+        const tables = Array.from(document.querySelectorAll('.print-table-container'));
+        if (!tables.length) return;
+
+        const tableHTML = tables.map(div => {
+            const h3 = div.querySelector('h3')?.outerHTML || '';
+            const content = div.querySelector('table')?.outerHTML || div.querySelector('div[style*="grid"]')?.outerHTML || '';
+            return `<div style="margin-bottom:20px">${h3}${content}</div>`;
+        }).join('');
+
+        const companyInfo = company;
+        const html = generateReportHTML(
+            t("التقرير اليومي للمبيعات والتحصيلات"),
+            tableHTML,
+            companyInfo,
+            { subtitle: `${t('بتاريخ')}: ${date}`, noAutoPrint: false }
+        );
+
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', t("التقرير اليومي"));
+        window.open('/print/report', '_blank');
+    };
+    const exportToPDF = handlePrint;
 
     return (
         <DashboardLayout>
