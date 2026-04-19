@@ -3,15 +3,9 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
-
-import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, INTER, IS } from '@/constants/theme';
-import { useSession } from 'next-auth/react';
-import ReportHeader from '@/components/ReportHeader';
-import CustomSelect from '@/components/CustomSelect';
+import { useCurrency } from '@/hooks/useCurrency';
+import { generateReportHTML } from '@/lib/printInvoices';
+import { CURRENCY_SYMBOLS, formatMoney } from '@/lib/currency';
 import { useEffect, useState, useRef } from 'react';
 import { BarChart3, Search, Calendar, Wallet, ArrowUpRight, ArrowDownRight, Activity, Loader2 } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -35,16 +29,13 @@ interface ReportData {
     totalRemaining: number;
 }
 
-const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
 export default function SalesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const businessType = session?.user?.businessType?.toUpperCase();
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
-    const { symbol: cSymbol } = useCurrency();
-    const currency = session?.user?.currency || 'EGP';
+    const { fMoney, currency } = useCurrency();
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [from, setFrom] = useState('');
@@ -71,8 +62,54 @@ export default function SalesReportPage() {
         } catch { } finally { setLoading(false); }
     };
 
-    const handlePrint = () => window.print();
-    const exportToPDF = () => window.print();
+    const handlePrint = () => {
+        if (!data) return;
+        const fmtM = (v: number) => formatMoney(v, currency, lang);
+        const company = (session?.user as any) || {};
+
+        const content = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>${t('رقم الفاتورة')}</th>
+                        <th>${t('التاريخ')}</th>
+                        <th>${t('العميل')}</th>
+                        <th>${t('إجمالي الفاتورة')}</th>
+                        <th>${t('المسدد')}</th>
+                        <th>${t('المتبقي')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.invoices.map(inv => `
+                        <tr>
+                            <td>INV-${String(inv.invoiceNumber).padStart(5, '0')}</td>
+                            <td>${new Date(inv.date).toLocaleDateString('en-GB')}</td>
+                            <td>${inv.customer?.name || '—'}</td>
+                            <td>${fmtM(inv.total)}</td>
+                            <td>${fmtM(inv.paidAmount)}</td>
+                            <td style="color:${inv.remaining > 0 ? '#ef4444' : '#10b981'}; font-weight:900">${fmtM(inv.remaining)}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+        const html = generateReportHTML(isServices ? t("تقرير مبيعات الخدمات") : t("تقرير المبيعات"), content, company, {
+            lang,
+            dateFrom: from || '',
+            dateTo: to || t('الآن'),
+            generatedBy: session?.user?.name || '',
+            summary: [
+                { label: t('إجمالي المبيعات'), value: data.totalSales },
+                { label: t('إجمالي الخصومات'), value: data.totalDiscount },
+                { label: t('إجمالي المحصل'), value: data.totalPaid },
+                { label: t('إجمالي المستحق'), value: data.totalRemaining, isTotal: true },
+            ]
+        });
+
+        const win = window.open('', '_blank');
+        if (win) { win.document.write(html); win.document.close(); }
+    };
 
     useEffect(() => { fetchReport(); }, []);
 
@@ -83,7 +120,7 @@ export default function SalesReportPage() {
                     title={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير المبيعات")}
                     subtitle={isServices ? t("تحليل تفصيلي لجميع فواتير الخدمات الصادرة.") : t("تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية.")}
                     backTab="sales-purchases"
-
+                    onPrint={handlePrint}
                     printTitle={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير مبيعات الأصناف")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
@@ -154,29 +191,43 @@ export default function SalesReportPage() {
                     <>
 
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
-                            {[
-                                { label: isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات'), value: fmt(data.totalSales), color: '#3b82f6', icon: <BarChart3 size={18} /> },
-                                { label: t('إجمالي الخصومات'), value: fmt(data.totalDiscount), color: '#fb923c', icon: <ArrowDownRight size={18} /> },
-                                { label: t('المبالغ المحصلة'), value: fmt(data.totalPaid), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                                { label: t('الأرصدة المتبقية'), value: fmt(data.totalRemaining), color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', icon: <Activity size={18} /> },
-                            ].map((s, i) => (
-                                <div key={i} style={{
-                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    transition: 'all 0.2s'
-                                }}>
-                                    <div style={{ textAlign: 'start' }}>
-                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
-                                            <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                        </div>
-                                    </div>
-                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                        {s.icon}
+                        <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
+                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div style={{ padding: '8px', background: 'rgba(59,130,246,0.08)', color: '#3b82f6', borderRadius: '10px' }}><BarChart3 size={20} /></div>
+                                <div>
+                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}</p>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalSales)}</span>
                                     </div>
                                 </div>
-                            ))}
+                            </div>
+                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div style={{ padding: '8px', background: 'rgba(239,68,68,0.08)', color: '#ef4444', borderRadius: '10px' }}><ArrowDownRight size={20} /></div>
+                                <div>
+                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الخصومات الممنوحة')}</p>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalDiscount)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div style={{ padding: '8px', background: 'rgba(52,211,153,0.08)', color: '#10b981', borderRadius: '10px' }}><Wallet size={20} /></div>
+                                <div>
+                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي التحصيل')}</p>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalPaid)}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div style={{ padding: '8px', background: 'rgba(239,68,68,0.08)', color: '#ef4444', borderRadius: '10px' }}><Activity size={20} /></div>
+                                <div>
+                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('المطالبات المتبقية')}</p>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: '#ef4444', fontFamily: INTER }}>{fMoney(data.totalRemaining)}</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
@@ -227,27 +278,20 @@ export default function SalesReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{inv.customer?.name || t('عميل نقدي')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                <span style={{
-                                                    fontSize: '11px', fontWeight: 1000, direction: 'ltr', fontFamily: INTER,
-                                                    color: inv.remaining > 0 ? '#fb7185' : '#10b981',
-                                                    background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
-                                                    padding: '4px 12px', borderRadius: '10px', border: `1px solid ${inv.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
-                                                }}>{fmt(inv.remaining)}</span>
-                                            </td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fMoney(inv.total)}</td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fMoney(inv.discount) : '—'}</td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fMoney(inv.paidAmount)}</td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 1000, color: inv.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: INTER }}>{fMoney(inv.remaining)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات الفترة المختارة')}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalSales)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fmt(data.totalDiscount)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalPaid)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fmt(data.totalRemaining)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalSales)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fMoney(data.totalDiscount)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fMoney(data.totalPaid)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fMoney(data.totalRemaining)}</td>
                                     </tr>
                                 </tfoot>
                             </table>

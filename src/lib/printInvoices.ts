@@ -1,10 +1,12 @@
-import { getCurrencySymbol } from './currency';
-
+import { getCurrencySymbol, formatMoney } from './currency';
 
 export interface CompanyInfo {
     name?: string;
     nameEn?: string;
     phone?: string;
+    currency?: string;
+    countryCode?: string;
+// ... (rest of interface continues)
     email?: string;
     taxNumber?: string;
     commercialRegister?: string;
@@ -1151,11 +1153,14 @@ export function generateReportHTML(
         dateFrom?: string;
         dateTo?: string;
         generatedBy?: string;
+        lang?: 'ar' | 'en';
         metadata?: Array<{ label: string; value: string | number }>;
         summary?: Array<{ label: string; value: string | number; isTotal?: boolean }>;
     } = {}
 ): string {
-    const sym = getCurrencySymbol(company.currency || 'EGP');
+    const lang = options.lang || 'ar';
+    const currencyCode = company.currency || 'EGP';
+    const sym = getCurrencySymbol(currencyCode, lang);
     const isA5 = options.isA5 || false;
     const isBilingual = (company.countryCode || 'EG').toUpperCase() !== 'EG';
 
@@ -1269,7 +1274,7 @@ export function generateReportHTML(
             ${options.summary.map(s => `
             <div class="summary-row ${s.isTotal ? 'summary-total' : ''}">
                 <div class="summary-label">${s.label}</div>
-                <div class="summary-value">${typeof s.value === 'number' ? s.value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ' + sym : s.value}</div>
+                <div class="summary-value">${typeof s.value === 'number' ? formatMoney(s.value, currencyCode, lang) : s.value}</div>
             </div>`).join('')}
         </div>
     </div>` : ''}

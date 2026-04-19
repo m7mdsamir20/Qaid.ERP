@@ -30,15 +30,15 @@ interface JournalEntry {
     isPosted: boolean; financialYear: { name: string };
     lines: JournalLine[]; createdAt: string;
 }
-const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2 });
+// Standardized fmt logic via useCurrency().fMoney
 
 // refTypeLabels is initialized inside the component to support i18n
 
 /* ══════════════════════════════════════════ */
 export default function JournalEntriesPage() {
     const { data: session } = useSession();
-    const { symbol: currencySymbol } = useCurrency();
-    const { t } = useTranslation();
+    const { symbol: currencySymbol, fMoney, currency } = useCurrency();
+    const { lang, t } = useTranslation();
 
     const refTypeLabels: Record<string, string> = {
         invoice: t('فاتورة'), payment: t('سند دفع'), receipt: t('سند قبض'), manual: t('يدوي'),
@@ -132,7 +132,7 @@ export default function JournalEntriesPage() {
         e.preventDefault();
         setFormError(null);
         if (!isBalanced) {
-            setFormError(`${t('القيد غير متزن')} — ${t('الفرق')}: ${fmt(Math.abs(totalDebit - totalCredit))}`);
+            setFormError(`${t('القيد غير متزن')} — ${t('الفرق')}: ${fMoney(Math.abs(totalDebit - totalCredit))}`);
             return;
         }
         if (form.lines.some(l => !l.accountId)) {
@@ -189,21 +189,22 @@ export default function JournalEntriesPage() {
                         <td style="font-family:monospace">${l.account.code}</td>
                         <td style="text-align:right">${l.account.name}</td>
                         <td style="text-align:right">${l.description || '—'}</td>
-                        <td style="text-align:center; font-weight:900; color:${l.debit > 0 ? '#10b981' : '#000'}">${l.debit > 0 ? fmt(l.debit) : '—'}</td>
-                        <td style="text-align:center; font-weight:900; color:${l.credit > 0 ? '#ef4444' : '#000'}">${l.credit > 0 ? fmt(l.credit) : '—'}</td>
-                    </tr>`).join('')}
-                </tbody>
-                <tfoot>
-                    <tr style="background:#f8fafc; font-weight:1000">
-                        <td colspan="3" style="text-align:right; padding:15px">${t('إجمالي القيد المتزن')}</td>
-                        <td style="text-align:center; padding:15px; color:#10b981">${fmt(entry.lines.reduce((s, l) => s + l.debit, 0))}</td>
-                        <td style="text-align:center; padding:15px; color:#ef4444">${fmt(entry.lines.reduce((s, l) => s + l.credit, 0))}</td>
-                    </tr>
-                </tfoot>
+                                <td style="text-align:center; font-weight:900; color:${l.debit > 0 ? '#10b981' : '#000'}">${l.debit > 0 ? fMoney(l.debit) : '—'}</td>
+                                <td style="text-align:center; font-weight:900; color:${l.credit > 0 ? '#ef4444' : '#000'}">${l.credit > 0 ? fMoney(l.credit) : '—'}</td>
+                            </tr>`).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr style="background:#f8fafc; font-weight:1000">
+                                <td colspan="3" style="text-align:right; padding:15px">${t('إجمالي القيد المتزن')}</td>
+                                <td style="text-align:center; padding:15px; color:#10b981">${fMoney(entry.lines.reduce((s, l) => s + l.debit, 0))}</td>
+                                <td style="text-align:center; padding:15px; color:#ef4444">${fMoney(entry.lines.reduce((s, l) => s + l.credit, 0))}</td>
+                            </tr>
+                        </tfoot>
             </table>
             `,
             company,
             {
+                lang,
                 dateFrom: new Date(entry.date).toLocaleDateString('en-CA'),
                 generatedBy: session?.user?.name || '',
                 metadata: [
@@ -363,7 +364,7 @@ export default function JournalEntriesPage() {
                                                         ) : '—'}
                                                     </td>
                                                     <td style={{ ...TABLE_STYLE.td(false), textAlign: 'end', fontSize: '16px', fontWeight: 900, color: C.purple, fontFamily: INTER }}>
-                                                        {fmt(dr)} <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{currencySymbol}</span>
+                                                        {fMoney(dr)}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <div onClick={e => e.stopPropagation()}>
@@ -443,10 +444,10 @@ export default function JournalEntriesPage() {
                                                                                 </td>
                                                                                 <td style={{ padding: '12px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{line.description || '—'}</td>
                                                                                 <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: line.debit > 0 ? C.success : 'transparent', fontFamily: INTER }}>
-                                                                                    {line.debit > 0 ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><ArrowUpRight size={14} />{fmt(line.debit)}</div> : '—'}
+                                                                                    {line.debit > 0 ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><ArrowUpRight size={14} />{fMoney(line.debit)}</div> : '—'}
                                                                                 </td>
                                                                                 <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: line.credit > 0 ? C.danger : 'transparent', fontFamily: INTER }}>
-                                                                                    {line.credit > 0 ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><ArrowDownRight size={14} />{fmt(line.credit)}</div> : '—'}
+                                                                                    {line.credit > 0 ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}><ArrowDownRight size={14} />{fMoney(line.credit)}</div> : '—'}
                                                                                 </td>
                                                                             </tr>
                                                                         ))}
@@ -454,8 +455,8 @@ export default function JournalEntriesPage() {
                                                                     <tfoot>
                                                                         <tr style={{ background: C.subtle, borderTop: `1px solid ${C.border}` }}>
                                                                             <td colSpan={3} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 900, color: C.textMuted, fontFamily: CAIRO }}>{t('الإجمالي المتزن')}</td>
-                                                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: INTER }}>{fmt(dr)}</td>
-                                                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fmt(dr)}</td>
+                                                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: INTER }}>{fMoney(dr)}</td>
+                                                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fMoney(dr)}</td>
                                                                         </tr>
                                                                     </tfoot>
                                                                 </table>
@@ -589,8 +590,8 @@ export default function JournalEntriesPage() {
                                                         <Plus size={16} /> {t('إضافة طرف للقيد')}
                                                     </button>
                                                 </td>
-                                                <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: INTER, borderInlineEnd: `1px solid ${C.border}` }}>{fmt(totalDebit)}</td>
-                                                <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fmt(totalCredit)}</td>
+                                                <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: INTER, borderInlineEnd: `1px solid ${C.border}` }}>{fMoney(totalDebit)}</td>
+                                                <td style={{ padding: '16px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fMoney(totalCredit)}</td>
                                                 <td></td>
                                             </tr>
                                         </tfoot>
@@ -607,7 +608,7 @@ export default function JournalEntriesPage() {
                                     }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: isBalanced ? C.success : C.danger, fontWeight: 800, fontSize: '14px', fontFamily: CAIRO }}>
                                             {isBalanced ? <CheckCircle2 size={18} /> : <AlertTriangle size={18} />}
-                                            {isBalanced ? t('القيد متزن وجاهز للحفظ') : `${t('القيد غير متزن')} — ${t('الفرق')}: ${fmt(Math.abs(totalDebit - totalCredit))}`}
+                                            {isBalanced ? t('القيد متزن وجاهز للحفظ') : `${t('القيد غير متزن')} — ${t('الفرق')}: ${fMoney(Math.abs(totalDebit - totalCredit))}`}
                                         </div>
                                     </div>
                                 </div>

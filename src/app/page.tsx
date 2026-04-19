@@ -27,7 +27,7 @@ import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 import { useTranslation } from '@/lib/i18n';
 
 const toEnDigits = (str: string) => str.replace(/[٠-٩]/g, d => '0123456789'['٠١٢٣٤٥٦٧٨٩'.indexOf(d)]);
-const fmt = (n: number) => n.toLocaleString('en-US');
+// Local fmt removed in favor of fMoney
 
 const getInvoicePrefix = (type: string) => {
   switch (type) {
@@ -174,7 +174,7 @@ function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
 
 export default function DashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
-  const { symbol: cSymbol } = useCurrency();
+  const { symbol: cSymbol, fMoney } = useCurrency();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
 
@@ -318,9 +318,8 @@ export default function DashboardPage() {
 
   const periodLabel: any = { today: t('اليوم'), week: t('هذا الأسبوع'), month: t('هذا الشهر') };
   const renderCurrency = (n: number, fontSize: string = '14px', numWeight: number = 800, color: string = 'inherit') => (
-    <div style={{ display: 'inline-flex', alignItems: 'baseline', gap: '4px', direction: 'ltr', color: color === 'inherit' ? 'inherit' : color }}>
-      <span style={{ fontSize: `calc(${fontSize} - 3px)`, fontWeight: 700, fontFamily: CAIRO, opacity: 1 }}>{cSymbol}</span>
-      <span style={{ fontSize, fontWeight: numWeight, fontFamily: INTER }}>{n.toLocaleString('en-US')}</span>
+    <div style={{ fontSize, fontWeight: numWeight, color: color === 'inherit' ? 'inherit' : color, fontFamily: INTER }}>
+      {fMoney(n)}
     </div>
   );
 
@@ -418,28 +417,28 @@ export default function DashboardPage() {
         }}>
           {isServices ? (
             <>
-              <KpiCard label="إيرادات اليوم" value={fmt(stats.salesTodayTotal)} sub="إجمالي مبيعات الخدمات اليوم" color={C.primary} icon={Receipt} delay={0} />
+              <KpiCard label="إيرادات اليوم" value={fMoney(stats.salesTodayTotal)} sub="إجمالي مبيعات الخدمات اليوم" color={C.primary} icon={Receipt} delay={0} />
               <KpiCard label="عدد الخدمات" value={stats.items} sub="إجمالي الخدمات المسجلة" color={C.blue} icon={Package} delay={60} />
               <KpiCard label="عدد العملاء" value={stats.customers} sub="قاعدة العملاء الحالية" color={C.success} icon={Users} delay={120} />
               <KpiCard label="مواعيد اليوم" value="0" sub="لا يوجد مواعيد مسجلة حالياً" color={C.warning} icon={Clock} delay={180} />
-              <KpiCard label="المصروفات" value={fmt(stats.expensesTotal || 0)} sub="إجمالي مدفوعات المصاريف" color={C.danger} icon={TrendingDown} delay={240} />
-              <KpiCard label="صافي الأرباح" value={fmt(stats.netProfit)} sub="الإيرادات - المصروفات" color={C.success} icon={BarChart2} delay={300} />
+              <KpiCard label="المصروفات" value={fMoney(stats.expensesTotal || 0)} sub="إجمالي مدفوعات المصاريف" color={C.danger} icon={TrendingDown} delay={240} />
+              <KpiCard label="صافي الأرباح" value={fMoney(stats.netProfit)} sub="الإيرادات - المصروفات" color={C.success} icon={BarChart2} delay={300} />
             </>
           ) : (
             <>
-              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fmt(stats.salesTotal)} sub={periodLabel[period]} trend={`↑ ${t('مباشر')}`} trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
-              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fmt(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fMoney(stats.salesTotal)} sub={periodLabel[period]} trend={`↑ ${t('مباشر')}`} trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
+              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fMoney(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
               {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
-                <KpiCard label="صافي الربح" value={fmt(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
+                <KpiCard label="صافي الربح" value={fMoney(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
                   trend={stats.netProfit >= 0 ? `↑ ${t('نمو')}` : `↓ ${t('تراجع')}`}
                   trendUp={stats.netProfit >= 0}
                   color={stats.netProfit >= 0 ? C.success : C.danger}
                   icon={BarChart2} delay={120} />
               )}
-              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fmt(stats.treasuriesBalance)} sub="إجمالي السيولة" color={C.primary} icon={Wallet} delay={180} />}
-              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fmt(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
+              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fMoney(stats.treasuriesBalance)} sub="إجمالي السيولة" color={C.primary} icon={Wallet} delay={180} />}
+              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fMoney(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
               {hasPage('/suppliers', 'purchases') && <KpiCard label="الموردين" value={stats.suppliers} sub="إجمالي الموردين" color={C.warning} icon={Truck} delay={300} />}
-              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fmt(stats.salesTodayTotal)} sub="إحصائيات فورية" color={C.primary} icon={Eye} delay={360} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fMoney(stats.salesTodayTotal)} sub="إحصائيات فورية" color={C.primary} icon={Eye} delay={360} />}
               {(hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory')) && (
                 <Link href="/reports/low-stock-items" style={{ textDecoration: 'none', display: 'block' }}>
                   <KpiCard label="نواقص المخزن" value={stats.lowStockItems.length} sub="أصناف تحت الحد – اضغط للعرض" color={C.danger} icon={AlertTriangle} delay={420} />

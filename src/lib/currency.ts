@@ -34,11 +34,27 @@ export function getCurrencySymbol(code: string = 'EGP', lang: 'ar' | 'en' = 'ar'
     return lang === 'en' ? data.en : data.ar;
 }
 
-export function formatCurrency(amount: number, code: string = 'EGP', lang: 'ar' | 'en' = 'ar'): string {
+export function formatMoney(amount: number, code: string = 'EGP', lang: 'ar' | 'en' = 'ar'): string {
     const symbol = getCurrencySymbol(code, lang);
-    const formatted = amount.toLocaleString('en-US', { 
-        minimumFractionDigits: 0, 
+    const absAmount = Math.abs(amount);
+    
+    // Thousand separators and fixed 2 decimal places for financial accuracy
+    const formattedNum = absAmount.toLocaleString('en-US', { 
+        minimumFractionDigits: 2, 
         maximumFractionDigits: 2 
     });
-    return `${formatted} ${symbol}`;
+    
+    let result = "";
+    if (lang === 'ar') {
+        // Arabic: Number then Currency (In RTL this appears as Currency on left)
+        result = `${formattedNum} ${symbol}`;
+    } else {
+        // English: Currency then Number
+        result = `${symbol} ${formattedNum}`;
+    }
+        
+    return amount < 0 ? `-${result}` : result;
 }
+
+// Backward compatibility
+export const formatCurrency = formatMoney;
