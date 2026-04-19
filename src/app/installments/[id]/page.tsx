@@ -14,7 +14,7 @@ import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
-import { printInstallmentPlan } from '@/lib/printInvoices';
+import { printThermalVoucher } from '@/lib/printInvoices';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -40,6 +40,7 @@ export default function InstallmentDetailPage() {
     const [collectTarget, setCollectTarget] = useState<any | null>(null);
     const [collectForm, setCollectForm]     = useState({ amount: '', treasuryId: '', notes: '' });
     const [collecting, setCollecting]       = useState(false);
+    const [lastCollected, setLastCollected]  = useState<any | null>(null); // { voucher, company } for receipt printing
     const [showCancel,  setShowCancel]  = useState(false);
     const [cancelForm,  setCancelForm]  = useState({ refundTreasuryId: '' });
     const [cancelling,  setCancelling]  = useState(false);
@@ -76,7 +77,16 @@ export default function InstallmentDetailPage() {
                 }),
             });
             if (res.ok) {
-                setCollectTarget(null);
+                const treasury = treasuries.find(tr => tr.id === collectForm.treasuryId);
+                setLastCollected({
+                    installmentNo: collectTarget.installmentNo,
+                    customerName:  collectTarget.customer?.name || plan?.customer?.name || '—',
+                    amount:        parseFloat(collectForm.amount),
+                    treasuryName:  treasury?.name || '',
+                    paymentType:   treasury?.type === 'bank' ? 'bank' : 'cash',
+                    notes:         collectForm.notes,
+                    planCode:      `PLAN-${String(plan?.planNumber || 1).padStart(4, '0')}`,
+                });
                 setCollectForm({ amount: '', treasuryId: '', notes: '' });
                 fetchData();
             } else {
@@ -125,11 +135,7 @@ export default function InstallmentDetailPage() {
 
     const handlePrint = () => {
         if (!plan) return;
-        fetch('/api/settings')
-            .then(res => res.json())
-            .then(data => {
-                printInstallmentPlan(plan, data.company || {});
-            });
+        window.open(`/print/installment/${plan.id}`, '_blank');
     };
 
     if (loading) return (
@@ -510,6 +516,57 @@ export default function InstallmentDetailPage() {
                                 </button>
                             </div>
                         </form>
+                    )}
+
+                    {/* Success Screen after collection */}
+                    {!collectTarget && lastCollected && (
+                        <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                            <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16,185,129,0.1)', border: '2px solid #10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                                <Check size={28} color="#10b981" />
+                            </div>
+                            <h3 style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, marginBottom: '6px' }}>{t('تم التحصيل بنجاح!')}</h3>
+                            <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '20px' }}>
+                                {t('تم تحصيل القسط')} #{lastCollected.installmentNo} — {lastCollected.planCode}
+                            </p>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '14px', marginBottom: '24px' }}>
+                                <div>
+                                    <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('المبلغ المحصّل')}</div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmtN(lastCollected.amount)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('العميل')}</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{lastCollected.customerName}</div>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'flex', gap: '10px' }}>
+                                <button
+                                    onClick={() => {
+                                        fetch('/api/settings').then(r => r.json()).then(data => {
+                                            printThermalVoucher({
+                                                voucherNumber: collectTarget?.installmentNo || lastCollected.installmentNo,
+                                                date: new Date().toISOString(),
+                                                amount: lastCollected.amount,
+                                                paymentType: lastCollected.paymentType,
+                                                customer: { name: lastCollected.customerName },
+                                                treasury: { name: lastCollected.treasuryName },
+                                                description: `${t('تحصيل قسط رقم')} #${lastCollected.installmentNo} — ${lastCollected.planCode}${lastCollected.notes ? ' — ' + lastCollected.notes : ''}`,
+                                            }, 'receipt', data.company || {});
+                                        });
+                                    }}
+                                    style={{ ...BTN_SUCCESS(false, false), flex: 1.5, height: '44px', fontSize: '13px' }}
+                                >
+                                    <Printer size={16} /> {t('طباعة سند قبض')}
+                                </button>
+                                <button
+                                    onClick={() => setLastCollected(null)}
+                                    style={{ flex: 1, height: '44px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontSize: '13px' }}
+                                >
+                                    {t('إغلاق')}
+                                </button>
+                            </div>
+                        </div>
                     )}
                 </AppModal>
 
