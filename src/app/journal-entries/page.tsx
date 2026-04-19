@@ -3,7 +3,8 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import React, { useEffect, useState } from 'react';
-import { FileText, Plus, X, ChevronRight, CheckCircle2, Clock, ArrowUpRight, ArrowDownRight, Loader2, Search, Trash2, AlertTriangle, Send } from 'lucide-react';
+import { FileText, Plus, X, ChevronRight, CheckCircle2, Clock, ArrowUpRight, ArrowDownRight, Loader2, Search, Trash2, AlertTriangle, Send, Printer } from 'lucide-react';
+import { generateReportHTML } from '@/lib/printInvoices';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { 
@@ -167,7 +168,64 @@ export default function JournalEntriesPage() {
         finally { setPosting(null); }
     };
 
-    /* ── Filtered & Paginated ── */
+    const handlePrintEntry = (entry: JournalEntry) => {
+        const company = session?.user as any;
+        const html = generateReportHTML(
+            t("سند قيد يومية"),
+            `
+            <table>
+                <thead>
+                    <tr>
+                        <th>${t('كود الحساب')}</th>
+                        <th style="text-align:right">${t('اسم الحساب')}</th>
+                        <th style="text-align:right">${t('البيان')}</th>
+                        <th style="text-align:center">${t('مدين')}</th>
+                        <th style="text-align:center">${t('دائن')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${entry.lines.map(l => `
+                    <tr>
+                        <td style="font-family:monospace">${l.account.code}</td>
+                        <td style="text-align:right">${l.account.name}</td>
+                        <td style="text-align:right">${l.description || '—'}</td>
+                        <td style="text-align:center; font-weight:900; color:${l.debit > 0 ? '#10b981' : '#000'}">${l.debit > 0 ? fmt(l.debit) : '—'}</td>
+                        <td style="text-align:center; font-weight:900; color:${l.credit > 0 ? '#ef4444' : '#000'}">${l.credit > 0 ? fmt(l.credit) : '—'}</td>
+                    </tr>`).join('')}
+                </tbody>
+                <tfoot>
+                    <tr style="background:#f8fafc; font-weight:1000">
+                        <td colspan="3" style="text-align:right; padding:15px">${t('إجمالي القيد المتزن')}</td>
+                        <td style="text-align:center; padding:15px; color:#10b981">${fmt(entry.lines.reduce((s, l) => s + l.debit, 0))}</td>
+                        <td style="text-align:center; padding:15px; color:#ef4444">${fmt(entry.lines.reduce((s, l) => s + l.credit, 0))}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            `,
+            company,
+            {
+                dateFrom: new Date(entry.date).toLocaleDateString('en-CA'),
+                generatedBy: session?.user?.name || '',
+                metadata: [
+                    { label: t('رقم القيد'), value: entry.entryNumber },
+                    { label: t('تاريخ القيد'), value: new Date(entry.date).toLocaleDateString('en-GB') },
+                    { label: t('الحالة'), value: entry.isPosted ? t('مرحّل') : t('مسودة') },
+                    { label: t('المرجع'), value: entry.reference || '—' },
+                    { label: t('البيان العام'), value: entry.description },
+                ],
+                summary: [
+                    { label: t('إجمالي الحركة المدينة'), value: entry.lines.reduce((s, l) => s + l.debit, 0) },
+                    { label: t('إجمالي الحركة الدائنة'), value: entry.lines.reduce((s, l) => s + l.credit, 0) },
+                    { label: t('صافي القيمة'), value: entry.lines.reduce((s, l) => s + l.debit, 0), isTotal: true },
+                ]
+            }
+        );
+        const win = window.open('', '_blank');
+        if (win) {
+            win.document.write(html);
+            win.document.close();
+        }
+    };
     const filteredAll = entries.filter(e => {
         const matchSearch = e.description.includes(search) || (e.entryNumber || '').includes(search) || (e.reference || '').includes(search);
         const matchStatus = filterStatus === 'all' ? true : filterStatus === 'posted' ? e.isPosted : !e.isPosted;
@@ -331,18 +389,28 @@ export default function JournalEntriesPage() {
                                                         </div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
-                                                        <button 
-                                                            onClick={(e) => { e.stopPropagation(); setExpandedId(isExpanded ? null : entry.id); }}
-                                                            style={TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textMuted)}
-                                                        >
-                                                            <ChevronRight size={16} style={{ 
-                                                                transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)', 
-                                                                transition: '0.2s',
-                                                                width: TABLE_STYLE.actionIconSize,
-                                                                height: TABLE_STYLE.actionIconSize
-                                                            }} />
-                                                        </button>
-                                                    </td>
+                                                        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                                            <button 
+                                                                onClick={(e) => { e.stopPropagation(); setExpandedId(isExpanded ? null : entry.id); }}
+                                                                style={TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textMuted)}
+                                                                title={t('التفاصيل')}
+                                                            >
+                                                                <ChevronRight size={16} style={{ 
+                                                                    transform: isExpanded ? 'rotate(90deg)' : 'rotate(0deg)', 
+                                                                    transition: '0.2s',
+                                                                    width: TABLE_STYLE.actionIconSize,
+                                                                    height: TABLE_STYLE.actionIconSize
+                                                                }} />
+                                                            </button>
+                                                            <button 
+                                                                onClick={(e) => { e.stopPropagation(); handlePrintEntry(entry); }}
+                                                                style={TABLE_STYLE.actionBtn(C.textSecondary)}
+                                                                title={t('طباعة')}
+                                                            >
+                                                                <Printer size={16} style={{ width: TABLE_STYLE.actionIconSize, height: TABLE_STYLE.actionIconSize }} />
+                                                            </button>
+                                                        </div>
+                                                     </td>
                                                 </tr>
 
                                                 {isExpanded && (

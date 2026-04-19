@@ -1138,13 +1138,22 @@ ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.pr
 }
 
 // ═══════════════════════════════════════════════
-//  GENERAL REPORTS (التقارير بجميع أنواعها)
+//  GENERAL REPORTS (التصاميم الموحدة للتقارير)
 // ═══════════════════════════════════════════════
 export function generateReportHTML(
     title: string, 
     content: string, 
     company: CompanyInfo = {}, 
-    options: { noAutoPrint?: boolean; isA5?: boolean; subtitle?: string } = {}
+    options: { 
+        noAutoPrint?: boolean; 
+        isA5?: boolean; 
+        subtitle?: string;
+        dateFrom?: string;
+        dateTo?: string;
+        generatedBy?: string;
+        metadata?: { label: string; value: any }[]; // For Customer Name, Balance etc.
+        summary?: { label: string; value: any; isTotal?: boolean }[];
+    } = {}
 ): string {
     const sym = getCurrencySymbol(company.currency || 'EGP');
     const isA5 = options.isA5 || false;
@@ -1156,6 +1165,7 @@ export function generateReportHTML(
         addr: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - '),
         phone: company.phone || '',
         logo: company.logo || '',
+        branch: company.branchName || 'المركز الرئيسي',
     };
 
     const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
@@ -1169,66 +1179,124 @@ export function generateReportHTML(
 <style>
     *{margin:0;padding:0;box-sizing:border-box}
     :root {
-        --base-font: ${isA5 ? '9px' : '11px'};
-        --header-name: ${isA5 ? '16px' : '21px'};
-        --title-font: ${isA5 ? '13px' : '17px'};
-        --logo-h: ${isA5 ? '45px' : '75px'};
+        --base-font: ${isA5 ? '10px' : '11px'};
+        --header-name: ${isA5 ? '18px' : '22px'};
+        --title-font: ${isA5 ? '15px' : '18px'};
     }
-    body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
-    .page{width:100%; max-width: 900px; min-height: 282mm; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column; background: #fff;}
+    body{font-family:'Cairo',sans-serif;color:#000;font-size:var(--base-font);background:#fff;direction:rtl}
+    .page{width:100%; max-width: 100%; min-height: 297mm; margin:0; padding:10mm 15mm; display:flex; flex-direction:column; background: #fff;}
     
-    .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:15px}
+    /* ── HEADER AREA ── */
+    .header{display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:15px; border-bottom:1.5px solid #000; margin-bottom:20px}
     .co-block{flex:1;text-align:right}
-    .co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:1px}
-    .co-line{font-size:${isA5 ? '8.5px' : '10px'};color:#444;line-height:1.4}
-    .header-center{flex:1.2;text-align:center}
-    .report-title{font-size:var(--title-font);font-weight:900;color:#111;background:#f5f5f5;padding:2px 20px;border-radius:6px;display:inline-block;border:1px solid #333}
-    .report-subtitle{font-size:10px;color:#555;font-weight:700;margin-top:4px}
-    .logo-block{flex:1;text-align:left}
-    .logo-block img{max-height:var(--logo-h);max-width:150px;object-fit:contain}
+    .co-name{font-size:var(--header-name); font-weight:900; color:#000; margin-bottom:5px}
+    .co-line{font-size:11px; color:#444; line-height:1.6}
+    .header-center{flex:1.5; text-align:center; padding: 0 10px;}
+    .report-title{font-size:var(--title-font); font-weight:900; color:#000; margin-bottom:8px; text-decoration: underline;}
+    .report-dates{font-size:11px; font-weight:700; color:#333; background:#f0f0f0; padding:4px 12px; border-radius:4px; display:inline-block;}
+    .logo-block{flex:1; text-align:left}
+    .logo-block img{max-height:85px; max-width:160px; object-fit:contain}
     
-    table{width:100%;border-collapse:collapse;border:1.5px solid #111;margin-top:10px}
-    thead th{background:#f0f0f0;padding:8px;font-size:10px;font-weight:900;border:1px solid #111; color:#000; text-align:center; white-space:nowrap}
-    tbody td{padding:7px;font-size:10.5px;border:1px solid #ccc;text-align:center;font-weight:700; color:#111}
-    tbody tr:nth-child(even){background:#fcfcfc}
+    /* ── METADATA AREA (VERTICAL STACKED) ── */
+    .metadata-wrap{margin-bottom:20px; display: flex; flex-direction: column; gap: 4px;}
+    .meta-row{display:flex; font-size:12px; border-bottom:1px solid #eee; padding:4px 0;}
+    .meta-label{font-weight:900; width:150px; color:#555;}
+    .meta-value{font-weight:700; color:#000;}
+
+    /* ── TABLE DESIGN (STANDARD) ── */
+    table{width:100%; border-collapse:collapse; margin-top:10px; table-layout: auto;}
+    thead{display: table-header-group;}
+    thead th{background:#f2f2f2; padding:10px 8px; font-size:11px; font-weight:900; border:1px solid #ccc; color:#000; text-align:center; white-space:nowrap}
+    tbody td{padding:8px; font-size:11px; border:1px solid #ccc; text-align:center; font-weight:600; color:#111; vertical-align:middle; line-height:1.4}
     
-    .footer{margin-top: auto; padding-top: 20px; width: 100%; font-size: 9px; color: #888; text-align: center; border-top: 1px solid #eee}
+    /* Grayscale/Print Friendly */
+    tbody tr:nth-child(even){background:transparent}
+    
+    /* ── SUMMARY SECTION ── */
+    .summary-wrap{margin-top:25px; border-top:2px solid #000; padding-top:15px; display:flex; flex-direction:column; align-items:flex-end;}
+    .summary-box{width:320px; background:#f9f9f9; border:1.5px solid #000; border-radius:4px; overflow:hidden}
+    .sum-row{display:flex; justify-content:space-between; padding:8px 15px; border-bottom:1px solid #ddd; font-size:12px;}
+    .sum-row.total{background:#f2f2f2; font-weight:900; font-size:14px; border-bottom:none}
+    
+    .footer-metadata{margin-top: auto; padding-top: 15px; border-top: 1px solid #eee; display:flex; justify-content:space-between; font-size:10px; color:#777}
 
     @media print {
-        @page { size: auto; margin: 5mm; }
-        body { background: #fff; -webkit-print-color-adjust: exact; }
-        .page { width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; }
+        @page { size: auto; margin: 0; }
+        body { background: #fff; }
+        .page { padding: 15mm !important; }
         thead { display: table-header-group; }
+        .no-print { display: none; }
     }
 </style>
 </head>
 <body>
 <div class="page">
+    <!-- Header Area -->
     <div class="header">
         <div class="co-block">
             <div class="co-name">${co.name}</div>
-            <div class="co-line">${co.addr}</div>
-            ${co.phone ? `<div class="co-line">الهاتف: ${co.phone}</div>` : ''}
+            <div class="co-line">${blInline('الفرع', 'Branch')}: <strong>${co.branch}</strong></div>
+            ${co.phone ? `<div class="co-line">${blInline('الهاتف', 'Phone')}: ${co.phone}</div>` : ''}
         </div>
         <div class="header-center">
             <div class="report-title">${title}</div>
-            ${options.subtitle ? `<div class="report-subtitle">${options.subtitle}</div>` : ''}
-            <div style="font-size:9.5px; color:#555; margin-top:2px;">بتاريخ: ${new Date().toLocaleDateString('en-GB')}</div>
+            <div class="report-dates">
+                ${options.dateFrom && options.dateTo 
+                    ? `${blInline('من', 'From')}: ${options.dateFrom} &nbsp; ${blInline('إلى', 'To')}: ${options.dateTo}`
+                    : options.subtitle || ''}
+            </div>
         </div>
         <div class="logo-block">
             ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
         </div>
     </div>
 
-    <div class="report-content">
+    <!-- Metadata Section -->
+    <div class="metadata-wrap">
+        ${(options.metadata || []).map(m => `
+            <div class="meta-row">
+                <span class="meta-label">${m.label}:</span>
+                <span class="meta-value">${m.value}</span>
+            </div>
+        `).join('')}
+    </div>
+
+    <!-- Main Data Table -->
+    <div class="report-content" style="flex:1">
         ${content}
     </div>
 
-    <div class="footer">
-        طُبع بواسطة نظام الـ ERP | ${new Date().toLocaleString()}
+    <!-- Summary Section -->
+    ${options.summary && options.summary.length > 0 ? `
+    <div class="summary-wrap">
+        <div class="summary-box">
+            ${options.summary.map(s => `
+                <div class="sum-row ${s.isTotal ? 'total' : ''}">
+                    <span>${s.label}:</span>
+                    <span>${typeof s.value === 'number' ? s.value.toLocaleString() + ' ' + sym : s.value}</span>
+                </div>
+            `).join('')}
+        </div>
+    </div>
+    ` : ''}
+
+    <!-- Footer Metadata -->
+    <div class="footer-metadata">
+        <span>${blInline('تم الاستخراج بواسطة', 'Generated By')}: <strong>${options.generatedBy || '—'}</strong></span>
+        <span>${blInline('تاريخ الطباعة', 'Print Date')}: ${new Date().toLocaleString('ar-EG')}</span>
     </div>
 </div>
-${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),500);</script>'}
+
+${options.noAutoPrint ? '' : `
+<script>
+    window.onload = () => {
+        setTimeout(() => {
+            window.print();
+            // window.close(); // Optional: close tab after print
+        }, 500);
+    };
+</script>
+`}
 </body>
 </html>`;
 }

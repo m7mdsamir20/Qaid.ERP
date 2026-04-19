@@ -136,27 +136,27 @@
 }
 
 [data-theme='light'] {
-  /* Aligned with Qaid-Website Light Mode */
-  --c-bg: #f0f4ff;
-  --c-card: #ffffff;
-  --c-hover: #f1f5fe;
-  --c-border: #d0daf0;
+  /* Premium Neutral Grays (Slate/Cool Gray) */
+  --c-bg: #f8fafc;        /* Slate 50 - Very clean background */
+  --c-card: #ffffff;      /* Pure white cards */
+  --c-hover: #f1f5f9;     /* Slate 100 - Subtle hover */
+  --c-border: #e2e8f0;    /* Slate 200 - Professional border */
   --c-input-bg: #ffffff;
+  --c-subtle: #f8fafc;
 
-  --c-text-primary: #1e293b;
-  --c-text-secondary: #475569;
-  --c-text-muted: #94a3b8;
+  --c-text-primary: #0f172a;   /* Slate 900 - Darkest text for clarity */
+  --c-text-secondary: #475569; /* Slate 600 */
+  --c-text-muted: #94a3b8;     /* Slate 400 */
 
   /* Auth Card Variables */
   --c-auth-card-bg: #ffffff;
   --c-autofill-bg: #ffffff;
   --c-auth-card-border: 1px solid var(--c-border);
-  --c-auth-card-shadow: 0 10px 40px rgba(37, 106, 244, 0.1);
+  --c-auth-card-shadow: 0 10px 40px rgba(15, 23, 42, 0.08); /* Neutral shadow */
   --c-auth-card-blur: none;
 
-  --c-overlay: rgba(240, 244, 255, 0.88);
-  --c-shadow: rgba(37, 106, 244, 0.05);
-  --c-shadow: rgba(37, 106, 244, 0.08);
+  --c-overlay: rgba(248, 250, 252, 0.9);
+  --c-shadow: rgba(0, 0, 0, 0.05);
 }
 
 /* ==================== Global Styles ==================== */
