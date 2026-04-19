@@ -267,7 +267,7 @@ tbody tr:nth-child(even){background: #fff;}
             : (country === 'EG' 
                 ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
-                     <div style="font-size:11px; color:#333; margin-top:4px; font-weight:700;">${co.addrLines.map(a => a.value).join(' - ')}</div>
+                     <div style="font-size:10px; color:#444; margin-top:3px;">${co.addrLines.map(a => a.value).join(' - ')}</div>
                      ${co.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${co.phone}</div>` : ''}
                      ${co.tax ? `<div style="font-size:11px; color:#555;">رقم ضريبي: ${co.tax}</div>` : ''}
                      ${co.cr ? `<div style="font-size:11px; color:#555;">سجل تجاري: ${co.cr}</div>` : ''}
@@ -475,8 +475,8 @@ tbody tr:nth-child(even){background: #fff;}
             : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
 
         return `
-    <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
-        <div style="width: 310px;">
+    <div style="display: flex; margin-top: 8px;">
+        <div style="width: 310px; margin-right: auto;">
             <table style="width:100%; border-collapse:collapse; border: 1px solid #999; font-size: 13px;">
                 <tbody>
                     <!-- Subtotal Entry -->
@@ -508,13 +508,13 @@ tbody tr:nth-child(even){background: #fff;}
                     <!-- Paid Entry -->
                     <tr style="height: 30px;">
                         <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المدفوع</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #2e7d32;">${paid.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #000;">${paid.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Remaining Entry -->
                     <tr style="height: 30px;">
                         <td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المتبقي</td>
-                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: ${remaining > 0 ? '#d32f2f' : '#2e7d32'};">${remaining.toLocaleString('en-US')} ${sym}</td>
+                        <td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #000;">${remaining.toLocaleString('en-US')} ${sym}</td>
                     </tr>
 
                     <!-- Optional Balance Section -->
