@@ -124,38 +124,12 @@ export default function InstallmentDetailPage() {
 
     const handlePrint = () => {
         if (!plan) return;
-        const w = window.open('', '_blank');
-        if (!w) return;
-        w.document.write(`
-            <html dir={isRtl ? 'rtl' : 'ltr'}><head><title>جدول أقساط - ${plan.customer?.name}</title>
-            <style>
-                body{font-family:Arial,sans-serif;padding:20px;direction:rtl;}
-                h2{color:#1e3a5f;} table{width:100%;border-collapse:collapse;}
-                th,td{border:1px solid #ddd;padding:8px;text-align:center;}
-                th{background:#f0f4f8;font-weight:700;}
-                .paid{color:green;} .overdue{color:red;} .pending{color:#666;} .cancelled{color:#999;text-decoration:line-through;}
-            </style></head><body>
-            <h2>جدول أقساط — ${plan.customer?.name}</h2>
-            <p>رقم الخطة: #${plan.planNumber} | إجمالي: ${fmtN(plan.grandTotal)} ${cSymbol} | القسط: ${fmtN(plan.installmentAmount)} ${cSymbol}/شهر</p>
-            <table>
-                <thead><tr><th>#</th><th>تاريخ الاستحقاق</th><th>المبلغ</th><th>المدفوع</th><th>المتبقي</th><th>الحالة</th></tr></thead>
-                <tbody>
-                    ${(plan.installments || []).map((i: any) => `
-                        <tr>
-                            <td>${i.installmentNo}</td>
-                            <td>${fmt(i.dueDate)}</td>
-                            <td>${fmtN(i.amount)} ${cSymbol}</td>
-                            <td>${fmtN(i.paidAmount || 0)} ${cSymbol}</td>
-                            <td>${fmtN(i.remaining || 0)} ${cSymbol}</td>
-                            <td class="${i.status}">${statusColor[i.status]?.label || i.status}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            </body></html>
-        `);
-        w.document.close();
-        w.print();
+        const { printInstallmentPlan } = require('@/lib/printInvoices');
+        fetch('/api/settings')
+            .then(res => res.json())
+            .then(data => {
+                printInstallmentPlan(plan, data.company || {});
+            });
     };
 
     if (loading) return (
@@ -226,7 +200,7 @@ export default function InstallmentDetailPage() {
                                     setShowSettle(true);
                                 }} 
                                 style={{ ...BTN_PRIMARY(false, false), height: '42px', width: 'auto', padding: '0 20px', fontSize: '13px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none' }}>
-                                    <DollarSign size={16} /> {t('تكييش الخطة')}
+                                    <DollarSign size={16} /> {t('سداد معجل')}
                                 </button>
                                 <button onClick={() => setShowCancel(true)} style={{ ...BTN_DANGER(false, false), height: '42px', width: 'auto', padding: '0 20px', fontSize: '13px' }}>
                                     <X size={16} /> {t('إلغاء الخطة')}
@@ -491,7 +465,7 @@ export default function InstallmentDetailPage() {
                                 {/* Step 2: Specific Dropdown */}
                                 {((collectForm as any).selectedType || treasuries.find(tr => tr.id === collectForm.treasuryId)?.type) && (
                                     <div style={{ animation: 'fadeIn 0.2s' }}>
-                                        <div style={{ position: 'relative', '--surface-50': '#1e293b', '--surface-100': C.inputBg, '--border-subtle': 'rgba(255,255,255,0.1)' } as any}>
+                                        <div style={{ position: 'relative', '--surface-50': C.card, '--surface-100': C.inputBg, '--border-subtle': C.border } as any}>
                                             <CustomSelect
                                                 value={collectForm.treasuryId}
                                                 onChange={v => setCollectForm(f => ({ ...f, treasuryId: v }))}
@@ -543,7 +517,7 @@ export default function InstallmentDetailPage() {
                 <AppModal
                     show={showSettle}
                     onClose={() => !settling && setShowSettle(false)}
-                    title={t("تكييش خطة التقسيط (سداد معجل)")}
+                    title={t("سداد معجل للخطة")}
                     icon={DollarSign}
                     maxWidth="500px"
                 >
@@ -604,7 +578,7 @@ export default function InstallmentDetailPage() {
 
                             <div style={{ display: 'flex', gap: '10px' }}>
                                 <button type="submit" disabled={settling} style={{ ...BTN_PRIMARY(false, settling), flex: 1.5, height: '48px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none' }}>
-                                    {settling ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : t('تأكيد التكييش وإغلاق الخطة')}
+                                    {settling ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : t('تأكيد السداد وإغلاق الخطة')}
                                 </button>
                                 <button type="button" onClick={() => setShowSettle(false)} style={{ flex: 1, borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700 }}>{t('إلغاء')}</button>
                             </div>
@@ -613,79 +587,75 @@ export default function InstallmentDetailPage() {
                 </AppModal>
 
                 {/* Cancel Plan Modal */}
-                {showCancel && (
-                    <div onClick={() => !cancelling && setShowCancel(false)} style={{ position: 'fixed', inset: 0, zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', padding: '20px' }}>
-                        <div onClick={e => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'} style={{ width: 460, background: '#0e172a', border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
-                            <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                                <div style={{ width: 64, height: 64, borderRadius: '20px', background: `${C.danger}15`, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                                    <AlertTriangle size={32} />
-                                </div>
-                                <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 900, color: C.textPrimary }}>{t('إلغاء وإسقاط خطة التقسيط')}</h3>
-                                <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>{t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>#{plan.planNumber}</span> — {t('للعميل:')} {plan.customer?.name}</p>
-                            </div>
+                <AppModal
+                    show={showCancel}
+                    onClose={() => !cancelling && setShowCancel(false)}
+                    title={t('إلغاء وإسقاط خطة التقسيط')}
+                    icon={AlertTriangle}
+                    variant="danger"
+                    maxWidth="500px"
+                >
+                    <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>
+                            {t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>#{plan.planNumber}</span> — {t('للعميل:')} {plan.customer?.name}
+                        </p>
+                    </div>
 
-                            <div style={{ background: 'rgba(251,113,133,0.05)', border: `1px solid ${C.danger}20`, borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                                    {[
-                                        { label: t('إجمالي الخطة'), value: fmtN(plan.grandTotal), color: C.textPrimary },
-                                        { label: t('المحصّل فعلياً'), value: fmtN(totalPaid), color: '#10b981' },
-                                        { label: t('المبلغ المتبقي'), value: fmtN(plan.grandTotal - totalPaid), color: C.danger },
-                                        { label: t('أقساط قادمة للغلق'), value: (plan.monthsCount - paidCount), color: C.textPrimary, unit: t('قسط') },
-                                    ].map((item, i) => (
-                                        <div key={i} style={{ padding: '10px', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', textAlign: 'center', border: `1px solid ${C.border}` }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
-                                            <div style={{ fontSize: '14px', fontWeight: 800, color: item.color, fontFamily: INTER }}>{item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{item.unit || cSymbol}</span></div>
-                                        </div>
-                                    ))}
+                    <div style={{ background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', marginBottom: '24px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                            {[
+                                { label: t('إجمالي الخطة'), value: fmtN(plan.grandTotal), color: C.textPrimary },
+                                { label: t('المحصّل فعلياً'), value: fmtN(totalPaid), color: '#10b981' },
+                                { label: t('المبلغ المتبقي'), value: fmtN(plan.grandTotal - totalPaid), color: C.danger },
+                                { label: t('أقساط قادمة للغلق'), value: (plan.monthsCount - paidCount), color: C.textPrimary, unit: t('قسط') },
+                            ].map((item, i) => (
+                                <div key={i} style={{ padding: '10px', background: C.card, borderRadius: '12px', textAlign: 'center', border: `1px solid ${C.border}` }}>
+                                    <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
+                                    <div style={{ fontSize: '14px', fontWeight: 800, color: item.color, fontFamily: INTER }}>{item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{item.unit || cSymbol}</span></div>
                                 </div>
-                            </div>
-
-                            <form onSubmit={handleCancel}>
-                                {totalPaid > 0 ? (
-                                    <div style={{ marginBottom: '20px' }}>
-                                        <label style={LS}>{t('جهة رد المبالغ المحصّلة')} ({fmtN(totalPaid)} {cSymbol})</label>
-                                        <CustomSelect 
-                                            value={cancelForm.refundTreasuryId} 
-                                            onChange={v => setCancelForm(f => ({ ...f, refundTreasuryId: v }))}
-                                            options={[
-                                                { value: '', label: t('-- تحويل المبلغ لرصيد دائن للعميل (بدون رد نقدي) --') },
-                                                ...treasuries.map(t_tr => ({ value: t_tr.id, label: t_tr.name, sub: `${t('رصيد متاح للفاتورة:')} ${fmtN(t_tr.balance)} ${cSymbol}` }))
-                                            ]}
-                                            placeholder={t("اختر الخزينة للرد النقدي...")}
-                                            icon={Wallet}
-                                        />
-                                        <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '8px', lineHeight: 1.5 }}>⚠️ {t('إذا لم تختر خزينة، سيتم تحويل الإجمالي المدفوع إلى رصيد دائن في حساب العميل.')}</div>
-                                    </div>
-                                ) : (
-                                    <div style={{ marginBottom: '20px', padding: '12px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '12px', fontSize: '12px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <CheckCircle2 size={16} /> {t('لا توجد مبالغ مدفوعة — سيتم إغلاق الخطة مباشرة.')}
-                                    </div>
-                                )}
-
-                                <div style={{ display: 'flex', gap: '12px' }}>
-                                    <button type="submit" disabled={cancelling} style={{ ...BTN_DANGER(false, cancelling), flex: 1.5 }}>
-                                        {cancelling ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><X size={18} /> {t('تأكيد الإلغاء النهائي')}</>}
-                                    </button>
-                                    <button type="button" onClick={() => setShowCancel(false)} disabled={cancelling} style={{ 
-                                        flex: 1, height: '52px', borderRadius: '14px', 
-                                        border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', 
-                                        color: C.textSecondary, fontWeight: 700, cursor: 'pointer',
-                                        transition: 'all 0.2s'
-                                    }}
-                                    onMouseEnter={e => {
-                                        e.currentTarget.style.background = 'rgba(255,255,255,0.08)';
-                                        e.currentTarget.style.color = C.textPrimary;
-                                    }}
-                                    onMouseLeave={e => {
-                                        e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-                                        e.currentTarget.style.color = C.textSecondary;
-                                    }}
-                                    >{t('تراجع')}</button>
-                                </div>
-                            </form>
+                            ))}
                         </div>
                     </div>
-                )}
+
+                    <form onSubmit={handleCancel}>
+                        {totalPaid > 0 ? (
+                            <div style={{ marginBottom: '20px' }}>
+                                <label style={LS}>{t('جهة رد المبالغ المحصّلة')} ({fmtN(totalPaid)} {cSymbol})</label>
+                                <CustomSelect 
+                                    value={cancelForm.refundTreasuryId} 
+                                    onChange={v => setCancelForm(f => ({ ...f, refundTreasuryId: v }))}
+                                    options={[
+                                        { value: '', label: t('-- تحويل المبلغ لرصيد دائن للعميل --') },
+                                        ...treasuries.map(t_tr => ({ value: t_tr.id, label: t_tr.name, sub: `${t('رصيد متاح:')} ${fmtN(t_tr.balance)} ${cSymbol}` }))
+                                    ]}
+                                    placeholder={t("اختر الخزينة للرد النقدي...")}
+                                    icon={Wallet}
+                                />
+                                <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '8px', lineHeight: 1.5 }}>⚠️ {t('إذا لم تختر خزينة، سيتم تحويل الإجمالي المدفوع إلى رصيد دائن في حساب العميل.')}</div>
+                            </div>
+                        ) : (
+                            <div style={{ marginBottom: '20px', padding: '12px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '12px', fontSize: '12px', color: '#10b981', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <CheckCircle2 size={16} /> {t('لا توجد مبالغ مدفوعة — سيتم إغلاق الخطة مباشرة.')}
+                            </div>
+                        )}
+
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button type="submit" disabled={cancelling} style={{ ...BTN_DANGER(false, cancelling), flex: 1.5 }}>
+                                {cancelling ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><X size={18} /> {t('تأكيد الإلغاء النهائي')}</>}
+                            </button>
+                            <button type="button" onClick={() => setShowCancel(false)} disabled={cancelling} 
+                                style={{ 
+                                    flex: 1, height: '52px', borderRadius: '14px', 
+                                    border: `1px solid ${C.border}`, background: C.subtle, 
+                                    color: C.textSecondary, fontWeight: 700, cursor: 'pointer',
+                                    transition: 'all 0.2s', fontFamily: CAIRO
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = C.subtle; e.currentTarget.style.color = C.textSecondary; }}
+                            >{t('تراجع')}</button>
+                        </div>
+                    </form>
+                </AppModal>
             </div>
         </div>
             <style jsx global>{`

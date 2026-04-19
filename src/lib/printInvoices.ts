@@ -958,3 +958,161 @@ export function printQuotation(
         printWin.document.close();
     }
 }
+
+// ═══════════════════════════════════════════════
+//  A4 INSTALLMENT PLAN (جدول أقساط)
+// ═══════════════════════════════════════════════
+export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}, options: { noAutoPrint?: boolean } = {}): string {
+    const sym = getCurrencySymbol(company.currency || 'EGP');
+    const country = (company.countryCode || 'EG').toUpperCase();
+    const isBilingual = country !== 'EG';
+    
+    const co = {
+        name: company.name || 'اسم الشركة',
+        nameEn: company.nameEn || '',
+        addr: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - '),
+        phone: company.phone || '',
+        logo: company.logo || '',
+        tax: company.taxNumber || '',
+    };
+
+    const date = new Date(plan.startDate || new Date()).toLocaleDateString('en-GB');
+    const planNum = String(plan.planNumber || 1).padStart(4, '0');
+    
+    const bl = (ar: string, en: string) => isBilingual ? `${ar}<br><span style="font-size:100%;color:#555;font-family:sans-serif">${en}</span>` : ar;
+    const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
+
+    const statusMap: Record<string, string> = {
+        paid: 'مدفوع',
+        partial: 'جزئي',
+        pending: 'قادم',
+        overdue: 'متأخر',
+        cancelled: 'ملغى'
+    };
+
+    return `<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<title>جدول أقساط - ${planNum}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;direction:rtl}
+    .page{width:100%; max-width: 850px; min-height: 282mm; margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column; background: #fff;}
+    .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
+    .co-block{flex:1.2;text-align:right}
+    .co-name{font-size:21px;font-weight:900;color:#111;margin-bottom:1px}
+    .co-line{font-size:10px;color:#444;line-height:1.4}
+    .header-center{flex:1;text-align:center}
+    .inv-title{font-size:17px;font-weight:900;color:#111;background:#f5f5f5;padding:2px 14px;border-radius:6px;display:inline-block;border:1px solid #ccc}
+    .inv-num{font-size:13px;color:#333;font-family:monospace;font-weight:700;margin-top:6px}
+    .logo-block{flex:1.2;text-align:left}
+    .logo-block img{max-height:80px;max-width:150px;object-fit:contain}
+    .info-wrap{display:flex;gap:8px;margin-top:6px;margin-bottom:5px}
+    .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
+    .info-title{background:#f5f5f5;padding:3px 8px;font-weight:900;font-size:10px;border-bottom:1px solid #333}
+    .info-body{padding:4px 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
+    .info-row{font-size:9.5px;margin-bottom:1px;display:flex;gap:4px}
+    .ik{color:#666;min-width:80px}
+    .iv{color:#111;font-weight:800}
+    table{width:100%;border-collapse:collapse;border:1px solid #999;margin-top:6px}
+    thead th{background:#f0f0f0;padding:6px;font-size:10px;font-weight:900;border:1px solid #999}
+    tbody td{padding:5px;font-size:10px;border:1px solid #999;text-align:center;font-weight:700}
+    .status-paid{color:#10b981} .status-overdue{color:#ef4444}
+    .footer{margin-top: auto; padding-top: 30px; border-top: none; width: 100%;}
+    .footer-inner{display:flex;justify-content:space-between;align-items:flex-end; width: 100%;}
+    .sig-box{text-align:center;width:220px}
+    .sig-label{font-size:10.5px;font-weight:900;color:#000;margin-bottom:25px}
+    .sig-line{border-top:1.5px solid #111;padding-top:5px;font-size:8.5px;color:#444;font-weight:600}
+    @media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
+</style>
+</head>
+<body>
+<div class="page">
+    <div class="header">
+        <div class="co-block">
+            <div class="co-name">${co.name}</div>
+            <div class="co-line">${co.addr}</div>
+            ${co.phone ? `<div class="co-line">الهاتف: ${co.phone}</div>` : ''}
+            ${co.tax ? `<div class="co-line">رقم ضريبي: ${co.tax}</div>` : ''}
+        </div>
+        <div class="header-center">
+            <div class="inv-title">${blInline('جدول استحقاق الأقساط', 'Installment Schedule')}</div>
+            <div class="inv-num">PLAN-${planNum}</div>
+            <div style="font-size:11px; color:#555; margin-top:2px;">${date}</div>
+        </div>
+        <div class="logo-block">
+            ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
+        </div>
+    </div>
+
+    <div class="info-wrap">
+        <div class="info-box">
+            <div class="info-title">${blInline('بيانات العميل والعقد', 'Contract Details')}</div>
+            <div class="info-body">
+                <div class="info-row"><span class="ik">${blInline('العميل', 'Customer')}:</span><span class="iv">${plan.customer?.name}</span></div>
+                <div class="info-row"><span class="ik">${blInline('المنتج', 'Product')}:</span><span class="iv">${plan.productName}</span></div>
+                <div class="info-row"><span class="ik">${blInline('إجمالي المبلغ', 'Grand Total')}:</span><span class="iv">${(plan.grandTotal || 0).toLocaleString()} ${sym}</span></div>
+                <div class="info-row"><span class="ik">${blInline('مبلغ القسط', 'Monthly')}:</span><span class="iv">${(plan.installmentAmount || 0).toLocaleString()} ${sym}</span></div>
+            </div>
+        </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th style="width:15%">${bl('كود القسط', 'Inst. Code')}</th>
+                <th style="width:15%">${bl('تاريخ الاستحقاق', 'Due Date')}</th>
+                <th style="width:15%">${bl('مبلغ القسط', 'Amount')}</th>
+                <th style="width:15%">${bl('المدفوع', 'Paid')}</th>
+                <th style="width:15%">${bl('المتبقي', 'Remaining')}</th>
+                <th style="width:25%">${bl('الحالة', 'Status')}</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${(plan.installments || []).map((i: any) => {
+                const isOverdue = i.status !== 'paid' && i.status !== 'cancelled' && new Date(i.dueDate) < new Date();
+                const statusTxt = isOverdue ? 'متأخر' : (statusMap[i.status] || i.status);
+                const statusClass = isOverdue ? 'status-overdue' : (i.status === 'paid' ? 'status-paid' : '');
+                const instCode = `INST-${planNum}-${String(i.installmentNo).padStart(2, '0')}`;
+                
+                return `
+            <tr>
+                <td style="font-family:monospace; color:#5286ed;">${instCode}</td>
+                <td style="font-family:sans-serif">${new Date(i.dueDate).toLocaleDateString('en-GB')}</td>
+                <td>${Number(i.amount).toLocaleString()} ${sym}</td>
+                <td>${Number(i.paidAmount || 0).toLocaleString()} ${sym}</td>
+                <td>${Number(i.remaining || 0).toLocaleString()} ${sym}</td>
+                <td class="${statusClass}">${statusTxt}</td>
+            </tr>`;
+            }).join('')}
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <div class="footer-inner">
+            <div class="sig-box">
+                <div class="sig-label">${blInline('توقيع العميل', 'Customer Signature')}</div>
+                <div class="sig-line">${blInline('الاسم والتوقيع', 'Name & Signature')}</div>
+            </div>
+            <div style="text-align: center; color: #aaa; font-size: 9.5px; margin-bottom: 5px; font-weight: 600;">
+                شكراً لتعاملكم معنا
+            </div>
+            <div class="sig-box">
+                <div class="sig-label">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
+                <div class="sig-line">${blInline('الختم والتوقيع', 'Stamp & Signature')}</div>
+            </div>
+        </div>
+    </div>
+</div>
+${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),400);</script>'}
+</body>
+</html>`;
+}
+
+export function printInstallmentPlan(plan: any, company: CompanyInfo = {}) {
+    const html = generateInstallmentPlanHTML(plan, company);
+    const win = window.open('', '_blank');
+    if (win) { win.document.write(html); win.document.close(); }
+}
