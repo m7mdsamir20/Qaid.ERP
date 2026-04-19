@@ -15,6 +15,7 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import CustomSelect from '@/components/CustomSelect';
 import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
+import ReportHeader from '@/components/ReportHeader';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -62,38 +63,141 @@ export default function InstallmentReportsPage() {
     };
 
     const handlePrint = () => {
-        const tables = Array.from(document.querySelectorAll('.report-content table'));
-        if (!tables.length) return;
+        if (!data) return;
         
-        const tablesHTML = tables.map(t => {
-            // كود تنظيف بسيط للجداول قبل الطباعة لضمان المظهر الرسمي
-            const clone = t.cloneNode(true) as HTMLTableElement;
-            return clone.outerHTML;
-        }).join('<div style="height:20px"></div>');
-
-        const companyInfo: CompanyInfo = company;
         const titleMap = {
             collection: t('تقرير تحصيلات الأقساط'),
             overdue:    t('تقرير الأقساط المتأخرة'),
             customer:   t('كشف حساب أقساط عميل')
         };
 
-        const subtitle = activeTab === 'collection' 
-            ? `${t('من تاريخ')} ${collectionForm.from} ${t('إلى')} ${collectionForm.to}`
-            : activeTab === 'customer' 
-                ? `${t('العميل')}: ${customers.find(c => c.id === customerReport)?.name || ''}`
-                : t('جميع المتعثرين');
+        let contentHtml = '';
+        let metadata: any[] = [];
+        let summary: any[] = [];
+
+        if (activeTab === 'collection') {
+            contentHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>${t('تاريخ العملية')}</th>
+                            <th style="text-align:right">${t('العميل')}</th>
+                            <th style="text-align:right">${t('البيان')}</th>
+                            <th>${t('رقم الخطة')}</th>
+                            <th>${t('المبلغ المحصّل')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.installments?.map((inst: any) => `
+                        <tr>
+                            <td>${inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
+                            <td style="text-align:right">${inst.plan?.customer?.name}</td>
+                            <td style="text-align:right">${t('قسط رقم')} ${inst.installmentNo}</td>
+                            <td>#${inst.plan?.planNumber}</td>
+                            <td>${fmtN(inst.paidAmount || 0)}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            `;
+            metadata = [
+                { label: t('الفترة من'), value: collectionForm.from },
+                { label: t('الفترة إلى'), value: collectionForm.to },
+            ];
+            summary = [
+                { label: t('عدد العمليات'), value: data.installments?.length || 0 },
+                { label: t('إجمالي المبالغ المحصلة'), value: data.total, isTotal: true },
+            ];
+        } else if (activeTab === 'overdue') {
+            contentHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="text-align:right">${t('العميل')}</th>
+                            <th>${t('رقم الخطة')}</th>
+                            <th>${t('القسط')}</th>
+                            <th>${t('موعد الاستحقاق')}</th>
+                            <th>${t('أيام التأخير')}</th>
+                            <th>${t('المبلغ المتبقي')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.installments?.map((inst: any) => `
+                        <tr>
+                            <td style="text-align:right">${inst.plan?.customer?.name}</td>
+                            <td>#${inst.plan?.planNumber}</td>
+                            <td>${inst.installmentNo}</td>
+                            <td style="color:#ef4444">${fmt(inst.dueDate)}</td>
+                            <td>${inst.daysOverdue} ${t('يوم')}</td>
+                            <td>${fmtN(inst.remaining || 0)}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            `;
+            metadata = [
+                { label: t('العميل المستهدف'), value: customers.find(c => c.id === overdueCustomer)?.name || t('جميع العملاء المديونين') },
+            ];
+            summary = [
+                { label: t('عدد الأقساط المتعثرة'), value: data.installments?.length || 0 },
+                { label: t('إجمالي مبالغ التعثر القائمة'), value: data.total, isTotal: true },
+            ];
+        } else if (activeTab === 'customer') {
+            contentHtml = data.plans?.map((plan: any) => `
+                <div style="margin-bottom:30px">
+                    <h3 style="font-size:12px; margin-bottom:10px; border-bottom:1.5px solid #000; padding-bottom:5px">
+                        ${t('خطة تقسيط')} #${plan.planNumber} - ${plan.productName || '—'}
+                    </h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>${t('رقم القسط')}</th>
+                                <th>${t('تاريخ الاستحقاق')}</th>
+                                <th>${t('مبلغ القسط')}</th>
+                                <th>${t('المحصل')}</th>
+                                <th>${t('المتبقي')}</th>
+                                <th>${t('الحالة')}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${plan.installments?.map((inst: any) => `
+                            <tr>
+                                <td>${inst.installmentNo}</td>
+                                <td>${fmt(inst.dueDate)}</td>
+                                <td>${fmtN(inst.amount)}</td>
+                                <td>${fmtN(inst.paidAmount || 0)}</td>
+                                <td>${fmtN(inst.remaining || 0)}</td>
+                                <td>${inst.status === 'paid' ? t('تم التحصيل') : t('معلق')}</td>
+                            </tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `).join('');
+
+            metadata = [
+                { label: t('اسم العميل'), value: customers.find(c => c.id === customerReport)?.name || '—' },
+                { label: t('كود العميل'), value: customerReport.slice(-6).toUpperCase() },
+            ];
+            summary = [
+                { label: t('إجمالي قيمة التعاقدات'), value: data.summary?.totalAmount },
+                { label: t('إجمالي ما تم سداده'), value: data.summary?.totalPaid },
+                { label: t('صافي الرصيد المستحق'), value: data.summary?.totalRemaining, isTotal: true },
+            ];
+        }
 
         const html = generateReportHTML(
             titleMap[activeTab], 
-            tablesHTML, 
-            companyInfo, 
-            { subtitle, noAutoPrint: false }
+            contentHtml, 
+            company, 
+            { 
+               dateFrom: activeTab === 'collection' ? collectionForm.from : undefined,
+               dateTo: activeTab === 'collection' ? collectionForm.to : undefined,
+               generatedBy: session?.user?.name || '',
+               metadata,
+               summary
+            }
         );
 
-        sessionStorage.setItem('print_report_html', html);
-        sessionStorage.setItem('print_report_title', titleMap[activeTab]);
-        window.open('/print/report', '_blank');
+        const win = window.open('', '_blank');
+        if (win) { win.document.write(html); win.document.close(); }
     };
 
     const tabs = [
@@ -118,13 +222,13 @@ export default function InstallmentReportsPage() {
                 ` }} />
                 
                 {/* Header Section */}
-                <div className="no-print">
-                    <PageHeader 
-                        title={t("تقارير الأقساط")} 
-                        subtitle={t("تحليل التحصيلات، متابعة المديونيات المتأخرة، وإصدار كشوف الحسابات التفصيلية")} 
-                        icon={BarChart3} 
-                    />
-                </div>
+                {/* Header Section */}
+                <ReportHeader
+                    title={t("تقارير الأقساط")}
+                    subtitle={t("تحليل التحصيلات، متابعة المديونيات المتأخرة، وإصدار كشوف الحسابات التفصيلية")}
+                    backTab="all"
+                    onPrint={data ? handlePrint : undefined}
+                />
 
                 {/* Tabs Selector */}
                 <div className="no-print" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '24px' }}>
@@ -206,11 +310,6 @@ export default function InstallmentReportsPage() {
                                 style={{ ...BTN_PRIMARY(false, loading), height: '42px', width: 'auto', padding: '0 24px', opacity: (activeTab === 'customer' && !customerReport) ? 0.5 : 1 }}>
                                 {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} /> {t('عرض النتائج')}</>}
                             </button>
-                            {data && (
-                                <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
-                                    <Printer size={18} /> {t('طباعة')}
-                                </button>
-                            )}
                         </div>
                     </div>
                 </div>

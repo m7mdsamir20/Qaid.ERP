@@ -9,6 +9,7 @@ import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
 import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown, History, Printer, FileText, ArrowRightLeft, FileDown, Activity, UserCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
+import { generateReportHTML } from '@/lib/printInvoices';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -82,7 +83,85 @@ export default function CustomerStatementPage() {
         }
     }, []); 
 
-    const handlePrint = () => window.print();
+    const handlePrint = () => {
+        if (!data) return;
+        const company = session?.user as any;
+        
+        let tableHtml = `
+            <table>
+                <thead>
+                    <tr>
+                        <th>${t('التاريخ')}</th>
+                        <th>${t('الحركة')}</th>
+                        <th>${t('المرجع')}</th>
+                        <th style="text-align:right">${t('البيان')}</th>
+                        <th>${t('مدين (+)')}</th>
+                        <th>${t('دائن (-)')}</th>
+                        <th>${t('الرصيد')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        // Initial Balance Row
+        if (data.initialBalance !== 0) {
+            tableHtml += `
+                <tr>
+                    <td>${dateFrom || '—'}</td>
+                    <td>${t('رصيد سابق')}</td>
+                    <td>—</td>
+                    <td style="text-align:right">${t('رصيد ما قبل فترة التقرير')}</td>
+                    <td>${data.initialBalance > 0 ? data.initialBalance.toLocaleString() : '—'}</td>
+                    <td>${data.initialBalance < 0 ? Math.abs(data.initialBalance).toLocaleString() : '—'}</td>
+                    <td>${Math.abs(data.initialBalance).toLocaleString()}</td>
+                </tr>
+            `;
+        }
+
+        // Statement Rows
+        data.statement.forEach((row: StatementRow) => {
+            tableHtml += `
+            <tr>
+                <td>${new Date(row.date).toLocaleDateString('en-GB')}</td>
+                <td>${t(row.type)}</td>
+                <td>${row.ref || '—'}</td>
+                <td style="text-align:right">${row.description}</td>
+                <td>${row.debit > 0 ? row.debit.toLocaleString() : '—'}</td>
+                <td>${row.credit > 0 ? row.credit.toLocaleString() : '—'}</td>
+                <td>${Math.abs(row.balance).toLocaleString()}</td>
+            </tr>`;
+        });
+
+        tableHtml += `</tbody></table>`;
+
+        const html = generateReportHTML(
+            t("كشف حساب عميل"),
+            tableHtml,
+            company,
+            {
+                dateFrom: dateFrom || '—',
+                dateTo: dateTo || new Date().toLocaleDateString('en-CA'),
+                generatedBy: session?.user?.name || '',
+                metadata: [
+                    { label: t('اسم العميل'), value: data.customer.name },
+                    { label: t('كود العميل'), value: data.customer.id.slice(-6).toUpperCase() },
+                    { label: t('الرصيد الافتتاحي'), value: data.initialBalance.toLocaleString() + ' ' + getCurrencyName(currency) },
+                    { label: t('الرصيد الختامي'), value: data.finalBalance.toLocaleString() + ' ' + getCurrencyName(currency) },
+                ],
+                summary: [
+                    { label: t('إجمالي المسحوبات (مدين)'), value: data.statement.reduce((s, l) => s + l.debit, 0) },
+                    { label: t('إجمالي السدادات (دائن)'), value: data.statement.reduce((s, l) => s + l.credit, 0) },
+                    { label: t('الرصيد النهائي المستحق'), value: data.finalBalance, isTotal: true },
+                ]
+            }
+        );
+
+        const win = window.open('', '_blank');
+        if (win) {
+            win.document.write(html);
+            win.document.close();
+        }
+    };
 
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
@@ -123,6 +202,7 @@ export default function CustomerStatementPage() {
                     backTab="partners"
                     
                     onExportExcel={exportToExcel}
+                    onPrint={handlePrint}
                     printTitle={t("كشف حساب عميل تفصيلي")}
                     printDate={data ? data.customer.name : undefined}
                 />

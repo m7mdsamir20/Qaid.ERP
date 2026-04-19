@@ -10,6 +10,7 @@ interface ReportHeaderProps {
     backTab?: string;
     onExportExcel?: () => void;
     onExportPdf?: () => void;
+    onPrint?: () => void;
     data?: any;
     printTitle?: string;
     printDate?: string;
@@ -285,7 +286,7 @@ ${tablesHTML}
                     )}
 
                     <button
-                        onClick={openCleanPrintWindow}
+                        onClick={onPrint || openCleanPrintWindow}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
                             borderRadius: '10px', background: C.primary, color: '#fff',

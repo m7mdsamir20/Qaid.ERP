@@ -11,6 +11,7 @@ import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
+import { generateReportHTML } from '@/lib/printInvoices';
 import { Package, Search, Activity, Box, DollarSign, Loader2 } from 'lucide-react';
 import { TABLE_STYLE, SEARCH_STYLE, focusIn, focusOut } from '@/constants/theme';
 
@@ -48,6 +49,73 @@ export default function InventoryReportPage() {
             .finally(() => setLoading(false));
     }, []);
 
+    const handlePrint = () => {
+        if (!data) return;
+        const company = session?.user as any;
+        const reportTitle = isServices ? t("قائمة أسعار الخدمات") : t("تقرير أرصدة المخزون");
+        
+        let tableHtml = '<table><thead><tr>';
+        if (isServices) {
+            tableHtml += `
+                <th>${t('كود الخدمة')}</th>
+                <th style="text-align:right">${t('اسم الخدمة')}</th>
+                <th style="text-align:center">${t('سعر الخدمة')}</th>
+            `;
+        } else {
+            tableHtml += `
+                <th>${t('كود الصنف')}</th>
+                <th style="text-align:right">${t('اسم الصنف')}</th>
+                <th style="text-align:center">${t('المخزن')}</th>
+                <th style="text-align:center">${t('الكمية')}</th>
+                <th style="text-align:center">${t('التكلفة')}</th>
+                <th style="text-align:center">${t('القيمة')}</th>
+            `;
+        }
+        tableHtml += '</tr></thead><tbody>';
+
+        filtered.forEach(st => {
+            if (isServices) {
+                tableHtml += `
+                    <tr>
+                        <td>${st.item?.code || '-'}</td>
+                        <td style="text-align:right">${st.item?.name || '-'}</td>
+                        <td style="text-align:center">${st.item?.sellPrice?.toLocaleString() || '0.00'}</td>
+                    </tr>
+                `;
+            } else {
+                tableHtml += `
+                    <tr>
+                        <td>${st.item?.code || '-'}</td>
+                        <td style="text-align:right">${st.item?.name || '-'}</td>
+                        <td style="text-align:center">${st.warehouse?.name || '-'}</td>
+                        <td style="text-align:center; font-weight:900">${st.quantity.toLocaleString()}</td>
+                        <td style="text-align:center">${st.item?.costPrice?.toLocaleString() || '0.00'}</td>
+                        <td style="text-align:center; font-weight:900">${(st.quantity * (st.item?.costPrice || 0)).toLocaleString()}</td>
+                    </tr>
+                `;
+            }
+        });
+        tableHtml += '</tbody></table>';
+
+        const html = generateReportHTML(
+            reportTitle,
+            tableHtml,
+            company,
+            {
+                generatedBy: session?.user?.name || '',
+                summary: isServices ? [
+                    { label: t('إجمالي عدد الخدمات المتوفرة'), value: data.totalItems }
+                ] : [
+                    { label: t('إجمالي عدد الأصناف بالجرد'), value: data.totalItems },
+                    { label: t('إجمالي الكميات المتوفرة'), value: data.totalQuantity },
+                    { label: t('إجمالي قيمة المخزون الحالية (تكلفة)'), value: data.totalValue, isTotal: true },
+                ]
+            }
+        );
+        const win = window.open('', '_blank');
+        if (win) { win.document.write(html); win.document.close(); }
+    };
+
     const filtered = data?.stocks.filter(s =>
         (s.item?.name?.toLowerCase() || '').includes(search.toLowerCase()) || 
         (s.item?.code?.toLowerCase() || '').includes(search.toLowerCase()) || 
@@ -62,6 +130,7 @@ export default function InventoryReportPage() {
                     subtitle={isServices ? t("عرض قائمة بجميع الخدمات المسجلة وأسعار البيع المقترحة.") : t("عرض أرصدة جميع الأصناف في كل مخزن مع القيمة الإجمالية والتكلفة.")}
                     backTab="inventory"
                     
+                    onPrint={handlePrint}
                     printTitle={isServices ? t("قائمة أسعار الخدمات") : t("جرد المخازن (Inventory Statement)")}
                 />
 

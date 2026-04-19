@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
 import { ShoppingCart, Search, Calendar, Loader2, ArrowUpRight, ArrowDownRight, Activity, DollarSign } from 'lucide-react';
+import { generateReportHTML } from '@/lib/printInvoices';
 import CustomSelect from '@/components/CustomSelect';
 
 const getCurrencyName = (code: string) => {
@@ -67,7 +68,61 @@ export default function PurchasesReportPage() {
         } catch { } finally { setLoading(false); }
     };
 
-    const exportToPDF = () => window.print();
+    const handlePrint = () => {
+        if (!data) return;
+        const company = session?.user as any;
+        const html = generateReportHTML(
+            t("تقرير المشتريات"),
+            `
+            <table>
+                <thead>
+                    <tr>
+                        <th>${t('رقم الفاتورة')}</th>
+                        <th>${t('التاريخ')}</th>
+                        <th style="text-align:right">${t('اسم المورد')}</th>
+                        <th style="text-align:center">${t('إجمالي القيمة')}</th>
+                        <th style="text-align:center">${t('الخصم')}</th>
+                        <th style="text-align:center">${t('المسدد')}</th>
+                        <th style="text-align:center">${t('المتبقي')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.invoices.map(inv => `
+                    <tr>
+                        <td>PUR-${String(inv.invoiceNumber).padStart(5, '0')}</td>
+                        <td>${new Date(inv.date).toLocaleDateString('en-GB')}</td>
+                        <td style="text-align:right">${inv.supplier?.name || t('مورد نقدي')}</td>
+                        <td style="text-align:center">${fmt(inv.total)}</td>
+                        <td style="text-align:center">${inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
+                        <td style="text-align:center; color:#10b981">${fmt(inv.paidAmount)}</td>
+                        <td style="text-align:center; color:${inv.remaining > 0 ? '#ef4444' : '#10b981'}; font-weight:700">${fmt(inv.remaining)}</td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+            `,
+            company,
+            {
+                dateFrom: from || '—',
+                dateTo: to || new Date().toLocaleDateString('en-CA'),
+                generatedBy: session?.user?.name || '',
+                metadata: [
+                    { label: t('الفرع'), value: branches.find(b => b.id === branchId)?.name || t('جميع الفروع') }
+                ],
+                summary: [
+                    { label: t('إجمالي المشتريات'), value: data.totalPurchases },
+                    { label: t('إجمالي الخصومات'), value: data.totalDiscount },
+                    { label: t('إجمالي المبالغ المسددة'), value: data.totalPaid },
+                    { label: t('صافي الأرصدة المستحقة'), value: data.totalRemaining, isTotal: true },
+                ]
+            }
+        );
+        const win = window.open('', '_blank');
+        if (win) {
+            win.document.write(html);
+            win.document.close();
+        }
+    };
+    const exportToPDF = () => handlePrint();
 
     useEffect(() => { fetchReport(); }, []);
 
@@ -79,6 +134,7 @@ export default function PurchasesReportPage() {
                     subtitle={t("تحليل تفصيلي لجميع عمليات الشراء الواردة، الخصومات، والمبالغ المدفوعة والمتبقية.")}
                     backTab="sales-purchases"
                     
+                    onPrint={handlePrint}
                     printTitle={t("تقرير المشتريات")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />

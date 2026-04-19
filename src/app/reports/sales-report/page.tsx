@@ -14,6 +14,7 @@ import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState, useRef } from 'react';
 import { BarChart3, Search, Calendar, Wallet, ArrowUpRight, ArrowDownRight, Activity, Loader2 } from 'lucide-react';
+import { generateReportHTML } from '@/lib/printInvoices';
 import { useCurrency } from '@/hooks/useCurrency';
 
 interface Invoice {
@@ -71,8 +72,62 @@ export default function SalesReportPage() {
         } catch { } finally { setLoading(false); }
     };
 
-    const handlePrint = () => window.print();
-    const exportToPDF = () => window.print();
+    const handlePrint = () => {
+        if (!data) return;
+        const company = session?.user as any;
+        const reportTitle = isServices ? t("تقرير مبيعات الخدمات") : t("تقرير المبيعات");
+        const html = generateReportHTML(
+            reportTitle,
+            `
+            <table>
+                <thead>
+                    <tr>
+                        <th>${t('رقم الفاتورة')}</th>
+                        <th>${t('التاريخ')}</th>
+                        <th style="text-align:right">${t('اسم العميل')}</th>
+                        <th>${t('صافي القيمة')}</th>
+                        <th>${t('الخصم')}</th>
+                        <th>${t('المحصل')}</th>
+                        <th>${t('المتبقي')}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.invoices.map(inv => `
+                    <tr>
+                        <td>SAL-${String(inv.invoiceNumber).padStart(5, '0')}</td>
+                        <td>${new Date(inv.date).toLocaleDateString('en-GB')}</td>
+                        <td style="text-align:right">${inv.customer?.name || t('عميل نقدي')}</td>
+                        <td>${fmt(inv.total)}</td>
+                        <td>${inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
+                        <td style="color:#10b981">${fmt(inv.paidAmount)}</td>
+                        <td style="color:${inv.remaining > 0 ? '#ef4444' : '#10b981'}; font-weight:700">${fmt(inv.remaining)}</td>
+                    </tr>`).join('')}
+                </tbody>
+            </table>
+            `,
+            company,
+            {
+                dateFrom: from || '—',
+                dateTo: to || new Date().toLocaleDateString('en-CA'),
+                generatedBy: session?.user?.name || '',
+                metadata: [
+                    { label: t('الفرع'), value: branches.find(b => b.id === branchId)?.name || t('جميع الفروع') }
+                ],
+                summary: [
+                    { label: t('إجمالي المبيعات'), value: data.totalSales },
+                    { label: t('إجمالي الخصومات'), value: data.totalDiscount },
+                    { label: t('إجمالي المبالغ المحصلة'), value: data.totalPaid },
+                    { label: t('صافي الأرصدة المتبقية'), value: data.totalRemaining, isTotal: true },
+                ]
+            }
+        );
+        const win = window.open('', '_blank');
+        if (win) {
+            win.document.write(html);
+            win.document.close();
+        }
+    };
+    const exportToPDF = () => handlePrint();
 
     useEffect(() => { fetchReport(); }, []);
 
@@ -84,6 +139,7 @@ export default function SalesReportPage() {
                     subtitle={isServices ? t("تحليل تفصيلي لجميع فواتير الخدمات الصادرة.") : t("تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية.")}
                     backTab="sales-purchases"
 
+                    onPrint={handlePrint}
                     printTitle={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير مبيعات الأصناف")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
