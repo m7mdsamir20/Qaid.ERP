@@ -229,7 +229,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);backgr
 .logo-block img{max-height:var(--logo-h);max-width:130px;object-fit:contain}
 
 /* ── TABLES ── */
-.info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'};margin-bottom:15px}
+.info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'};margin-bottom:5px}
 .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
 .info-title{background:#f5f5f5;padding:${isA5 ? '2px 6px' : '3px 8px'};font-weight:900;font-size:${isA5 ? '9px' : '10px'};border-bottom:1px solid #333}
 .info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
@@ -345,7 +345,7 @@ tbody tr:nth-child(even){background: #fff;}
 
 </div>
 
-<table style="margin-top: 6px;">
+<table style="margin-top: 0px;">
     <thead>
         <tr>
             <th style="width:5%">${bl('م', '#')}</th>
