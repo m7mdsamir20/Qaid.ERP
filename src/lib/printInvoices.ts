@@ -1025,7 +1025,19 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
     .sig-box{text-align:center;width:220px}
     .sig-label{font-size:10.5px;font-weight:900;color:#000;margin-bottom:25px}
     .sig-line{border-top:1.5px solid #111;padding-top:5px;font-size:8.5px;color:#444;font-weight:600}
-    @media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
+    @media screen { .page { min-height: 100vh; } }
+    @media print {
+        @page { size: auto; margin: 6mm 8mm; }
+        html, body { width: 100%; height: auto; }
+        .page { 
+            min-height: 0 !important; 
+            width: 100% !important; 
+            max-width: none !important; 
+            padding: 0 !important; 
+            margin: 0 !important;
+        }
+    }
+
 </style>
 </head>
 <body>
