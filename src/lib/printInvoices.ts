@@ -533,11 +533,25 @@ tbody tr:nth-child(even){background: #fff;}
                     </tr>
                     ` : ''}
                 </tbody>
-            </table>
-        </div>
-    </div>
     `;
     })()}
+
+    <div class="footer" style="margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc;">
+        <div class="footer-inner">
+            <div class="sig-box">
+                <div class="sig-label">${blInline('توقيع المستلم', 'Recipient Signature')}</div>
+                <div class="sig-line">________________</div>
+            </div>
+            <div class="sig-box">
+                <div class="sig-label">${blInline('توقيع المحاسب', 'Accountant Signature')}</div>
+                <div class="sig-line">________________</div>
+            </div>
+            <div class="sig-box">
+                <div class="sig-label">${blInline('ختم الشركة', 'Company Stamp')}</div>
+                <div class="sig-line" style="height: 45px; border: 1px dashed #999; width: 100px; margin: 0 auto; border-radius: 50%;"></div>
+            </div>
+        </div>
+    </div>
 </div>
 ${options.noAutoPrint ? '' : (isSaudi ? `
 <script>
@@ -596,15 +610,15 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
 .page{padding:12mm 15mm;display:flex;flex-direction:column;gap:16px}
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:2.5px solid #111}
 .co-block{flex:1}
-.co-name{font-size:20px;font-weight:900;color:#111}
-.co-name-en{font-size:15px;font-weight:700;color:#555;font-family:sans-serif}
-.co-line{font-size:11px;color:#444;line-height:1.6}
+.co-name{font-size:22px;font-weight:900;color:#111}
+.co-name-en{font-size:10px;color:#444;line-height:1.4}
+.co-line{font-size:10px;color:#444;line-height:1.4}
 .title-block{flex:1;text-align:center}
-.v-title{font-size:24px;font-weight:900;background:#f5f5f5;border:2px solid #ccc;border-radius:10px;padding:6px 24px;display:inline-block}
-.v-title-en{font-size:14px;color:#555;font-family:sans-serif;margin-top:3px}
-.v-num{font-size:13px;color:#333;font-family:monospace;font-weight:700;margin-top:5px}
+.v-title{font-size:17px;font-weight:900;background:#f5f5f5;border:1px solid #ccc;border-radius:6px;padding:2px 14px;display:inline-block}
+.v-title-en{font-size:11px;color:#555;font-family:sans-serif;margin-top:1px}
+.v-num{font-size:11px;color:#333;font-family:monospace;font-weight:700;margin-top:5px}
 .logo-block{flex:1;text-align:left}
-.logo-block img{max-height:75px;max-width:150px;object-fit:contain}
+.logo-block img{max-height:80px;max-width:150px;object-fit:contain}
 .details-box{border:1.5px solid #333;border-radius:10px;overflow:hidden}
 .details-title{background:#f0f0f0;padding:7px 16px;font-weight:900;font-size:12px;border-bottom:1px solid #ccc}
 .details-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
@@ -631,7 +645,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:13px;background:#fff;di
         ${country === 'EG' 
           ? `<div style="text-align:right;">
                <div style="font-size:22px; font-weight:900; color:#000;">${company.name || ''}</div>
-               <div style="font-size:13px; color:#333; margin-top:4px; font-weight:700;">
+               <div style="font-size:10px; color:#444; margin-top:3px;">
                   ${[company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - ')}
                </div>
                ${company.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${company.phone}</div>` : ''}
@@ -781,31 +795,35 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;di
 .page{width:100%;margin:0 auto;padding:4mm 8mm;display:flex;flex-direction:column;gap:5px}
 .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:6px;border-bottom:2px solid #111;margin-bottom:0px}
 .co-block{flex:1;text-align:right}
-.co-name{font-size:16px;font-weight:900;color:#111;margin-bottom:2px}
-.co-name-en{font-size:13px;font-weight:700;color:#555;margin-bottom:2px;font-family:sans-serif}
-.co-line{font-size:10px;color:#444;line-height:1.6}
+.co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:1px}
+.co-name-en{font-size:10px;color:#444;line-height:1.4;margin-bottom:1px}
+.co-line{font-size:10px;color:#444;line-height:1.4}
 .header-center{flex:1;text-align:center}
-.inv-title{font-size:16px;font-weight:900;color:#111;background:#f5f5f5;padding:3px 15px;border-radius:8px;display:inline-block;border:1.5px solid #ccc}
-.inv-title-en{font-size:12px;font-weight:700;color:#555;margin-top:2px;font-family:sans-serif}
-.inv-num{font-size:11px;color:#333;margin-top:3px;font-family:monospace;font-weight:700}
+.inv-title{font-size:17px;font-weight:900;color:#111;background:#f5f5f5;padding:2px 14px;border-radius:6px;display:inline-block;border:1px solid #ccc}
+.inv-title-en{font-size:11px;font-weight:700;color:#555;margin-top:1px;font-family:sans-serif}
+.inv-num{font-size:11px;color:#333;margin-top:2px;font-family:monospace;font-weight:700}
 .logo-block{flex:1;text-align:left}
 .logo-block img{max-height:80px;max-width:150px;object-fit:contain}
-.info-section{border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;margin-top:8px;display:grid;grid-template-columns:1fr 1fr}
-.info-col{padding:6px 10px}
-.info-col:first-child{border-left:1px solid #e0e0e0}
-.info-row{font-size:10.5px;margin-bottom:3px}
-.ik{color:#777;min-width:80px;display:inline-block}
+.info-section{border:1px solid #999;border-radius:4px;overflow:hidden;margin-top:6px;display:grid;grid-template-columns:1fr 1fr}
+.info-col{padding:4px 10px}
+.info-col:first-child{border-left:1px solid #999}
+.info-row{font-size:9.5px;margin-bottom:1px}
+.ik{color:#666;min-width:70px;display:inline-block}
 .iv{color:#111;font-weight:800}
-table{width:100%;border-collapse:collapse;border:1.5px solid #333;margin-top:5px}
+table{width:100%;border-collapse:collapse;border:1px solid #999;margin-top:5px}
 thead{background:#f0f0f0}
-thead th{padding:4px 3px;font-size:10px;font-weight:900;color:#111;text-align:center;border:1.5px solid #333;white-space:nowrap}
-tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1px solid #666;vertical-align:middle;white-space:nowrap}
-.summary-wrap{display:flex;justify-content:flex-end;margin-top:8px}
-.totals{min-width:260px;border:1.5px solid #333;border-radius:8px;overflow:hidden}
-.t-row{display:flex;justify-content:space-between;padding:4px 10px;border-bottom:1px solid #ddd;font-size:11px}
-.t-main{background:#f0f0f0;color:#111;font-weight:900;border-bottom:1px solid #333}
+thead th{padding:4px 3px;font-size:10px;font-weight:900;color:#111;text-align:center;border:1px solid #999;white-space:nowrap}
+tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1px solid #999;vertical-align:middle;white-space:nowrap}
+.summary-wrap{width: 100%; text-align: left; margin-top: 8px; clear: both;}
+.totals{width: 310px; display: inline-block; text-align: right; border: 1px solid #999; border-radius: 0; overflow: hidden}
+.t-row{display:flex;justify-content:space-between;padding:2px 10px;border-bottom:1px solid #999;font-size:13px; height: 30px; align-items: center;}
+.t-main{background:#f2f2f2;color:#111;font-weight:900;border-bottom:1px solid #999}
 .notes{margin-top:10px;padding:8px 10px;border:1px dashed #ccc;border-radius:8px;font-size:10.5px}
-.footer{margin-top:8px;padding-top:8px;text-align:center;font-size:10px;color:#666}
+.footer{margin-top: 15px; padding-top: 10px; border-top: 1px dashed #ccc;}
+.footer-inner{display:flex;justify-content:space-between;align-items:flex-end}
+.sig-box{text-align:center;min-width:130px}
+.sig-label{font-size:9.5px;font-weight:800;color:#333;margin-bottom:22px}
+.sig-line{font-size:9.5px;font-weight:800; color: #555}
 @media screen{.page{min-height:100vh}}
 @media print{@page{size:auto;margin:6mm 8mm}html,body{width:100%}.page{min-height:0 !important;width:100%;padding:0}}
 </style>
@@ -818,9 +836,7 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
               ${country === 'EG' 
                 ? `<div style="text-align:right;">
                      <div style="font-size:22px; font-weight:900; color:#000;">${co.name}</div>
-                     <div style="font-size:13px; color:#333; margin-top:4px; font-weight:700;">
-                        ${co.addrLines.map(a => a.value).join(' - ')}
-                     </div>
+                     <div style="font-size:10px; color:#444; margin-top:3px;">${co.addrLines.map(a => a.value).join(' - ')}</div>
                      ${co.phone ? `<div style="font-size:11px; color:#555; margin-top:2px;">الهاتف: ${co.phone}</div>` : ''}
                      ${co.tax ? `<div style="font-size:11px; color:#555;">رقم ضريبي: ${co.tax}</div>` : ''}
                      ${co.cr ? `<div style="font-size:11px; color:#555;">سجل تجاري: ${co.cr}</div>` : ''}
@@ -911,14 +927,20 @@ tbody td{padding:3px 4px;font-size:10px;color:#1a1a1a;text-align:center;border:1
         <div>${options.terms || quotation.notes}</div>
     </div>` : ''}
 
-    <div style="margin-top: 40px; display: flex; justify-content: space-between; padding: 0 40px">
-        <div style="text-align: center">
-            <div style="font-size:11px; font-weight: 800; margin-bottom: 40px">${blInline('ختم الشركة', 'Company Stamp')}</div>
-            <div style="width: 100px; height: 1px; border-bottom: 2px solid #eee"></div>
-        </div>
-        <div style="text-align: center">
-            <div style="font-size:11px; font-weight: 800; margin-bottom: 40px">${blInline('توقيع المسؤول', 'Authorized Signature')}</div>
-            <div style="width: 100px; height: 1px; border-bottom: 2px solid #eee"></div>
+    <div class="footer">
+        <div class="footer-inner">
+            <div class="sig-box">
+                <div class="sig-label">${blInline('توقيع العميل', 'Customer Signature')}</div>
+                <div class="sig-line">________________</div>
+            </div>
+            <div class="sig-box">
+                <div class="sig-label">${blInline('مدير المبيعات', 'Sales Manager')}</div>
+                <div class="sig-line">________________</div>
+            </div>
+            <div class="sig-box">
+                <div class="sig-label">${blInline('ختم الشركة', 'Company Stamp')}</div>
+                <div class="sig-line" style="height: 45px; border: 1px dashed #999; width: 100px; margin: 0 auto; border-radius: 50%;"></div>
+            </div>
         </div>
     </div>
 
