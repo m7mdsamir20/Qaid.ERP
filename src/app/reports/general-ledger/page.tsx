@@ -30,6 +30,12 @@ const getCurrencyName = (code: string) => {
     return map[code] || code;
 };
 
+/** التنسيق المحاسبي لرقم القيد ليصبح كود مميز */
+const formatEntryCode = (num: string | number) => {
+    const cleanNum = String(num).replace(/\D/g, '');
+    return `JV-${cleanNum.padStart(5, '0')}`;
+};
+
 export default function GeneralLedgerPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -271,23 +277,21 @@ export default function GeneralLedgerPage() {
 
                                             {/* رقم القيد */}
                                             <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', textAlign: 'center' }}>
-                                                <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <span style={{ 
                                                         fontFamily: INTER, 
-                                                        fontSize: '11px', 
+                                                        fontSize: '10px', 
                                                         fontWeight: 900, 
+                                                        letterSpacing: '0.5px',
                                                         color: '#fff',
-                                                        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                                                        width: '24px',
-                                                        height: '24px',
-                                                        display: 'flex',
-                                                        alignItems: 'center',
-                                                        justifyContent: 'center',
-                                                        borderRadius: '50%',
-                                                        boxShadow: '0 4px 10px rgba(37, 99, 235, 0.4)',
-                                                        border: '2px solid rgba(255,255,255,0.1)'
+                                                        background: 'linear-gradient(135deg, #475569 0%, #1e293b 100%)',
+                                                        padding: '4px 12px',
+                                                        borderRadius: '20px',
+                                                        boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
+                                                        border: '1px solid rgba(255,255,255,0.1)',
+                                                        textTransform: 'uppercase'
                                                     }}>
-                                                        {line.entryNumber}
+                                                        {formatEntryCode(line.entryNumber)}
                                                     </span>
                                                 </div>
                                             </td>
@@ -377,3 +381,4 @@ export default function GeneralLedgerPage() {
         </DashboardLayout>
     );
 }
+

@@ -149,8 +149,14 @@ export default function OtherIncomePage() {
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px' }}>{new Date(e.date).toLocaleDateString('en-GB')}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER }}>
-                                            JN#{e.entryNumber.toString().padStart(4, '0')}
+                                        <td style={{ ...TABLE_STYLE.td(false), padding: '8px 12px' }}>
+                                            <span style={{ 
+                                                fontFamily: INTER, fontSize: '10px', fontWeight: 900, color: '#fff',
+                                                background: 'linear-gradient(135deg, #475569 0%, #1e293b 100%)',
+                                                padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)'
+                                            }}>
+                                                JV-{e.entryNumber.toString().padStart(5, '0')}
+                                            </span>
                                         </td>
                                         <td style={TABLE_STYLE.td(false)}>
                                             <div style={{ fontWeight: 800, color: C.textPrimary }}>{creditLine?.account?.name}</div>
@@ -242,6 +248,7 @@ export default function OtherIncomePage() {
                                         fontSize: '17px', width: '100%', padding: '0 45px', 
                                         outline: 'none', fontFamily: INTER 
                                     }} 
+                                    onFocus={e => e.target.select()}
                                 />
                                 <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{currencySign}</span>
                             </div>
@@ -276,3 +283,4 @@ export default function OtherIncomePage() {
         </DashboardLayout>
     );
 }
+
