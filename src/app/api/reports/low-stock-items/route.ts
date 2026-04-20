@@ -23,17 +23,23 @@ export const GET = withProtection(async (request, session) => {
         const lowStockItems = items.filter(item => {
             const totalStock = item.stocks.reduce((sum, s) => sum + s.quantity, 0);
             return totalStock <= (item.minLimit || 0);
-        }).map(item => ({
-            id: item.id,
-            code: item.code,
-            name: item.name,
-            totalStock: item.stocks.reduce((sum, s) => sum + s.quantity, 0),
-            minLimit: item.minLimit,
-            unit: item.unit?.name || '—',
-            category: item.category?.name || '—',
-            averageCost: item.averageCost || 0,
-            value: item.stocks.reduce((sum, s) => sum + s.quantity, 0) * (item.averageCost || item.costPrice || 0)
-        }));
+        }).map(item => {
+            const totalStock = item.stocks.reduce((sum, s) => sum + s.quantity, 0);
+            const normalizedStock = totalStock === 0 ? 0 : totalStock;
+            const val = normalizedStock * (item.averageCost || item.costPrice || 0);
+            
+            return {
+                id: item.id,
+                code: item.code,
+                name: item.name,
+                totalStock: normalizedStock,
+                minLimit: item.minLimit,
+                unit: item.unit?.name || '—',
+                category: item.category?.name || '—',
+                averageCost: item.averageCost || 0,
+                value: val === 0 ? 0 : val
+            };
+        });
 
         return NextResponse.json(lowStockItems);
     } catch (error) {
