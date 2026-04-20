@@ -8,10 +8,13 @@ const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
 
 const getDatabaseUrl = () => {
     const url = process.env.DATABASE_URL || '';
-    if (url && !url.includes('pgbouncer=true') && url.includes('pooler.supabase.com')) {
-        return url.includes('?') ? `${url}&pgbouncer=true&connection_limit=10` : `${url}?pgbouncer=true&connection_limit=10`;
-    }
-    return url;
+    if (!url) return url;
+    const params: string[] = [];
+    if (!url.includes('pgbouncer=true') && url.includes('pooler.supabase.com')) params.push('pgbouncer=true');
+    if (!url.includes('connection_limit=')) params.push('connection_limit=1');
+    if (!url.includes('pool_timeout=')) params.push('pool_timeout=10');
+    if (params.length === 0) return url;
+    return url.includes('?') ? `${url}&${params.join('&')}` : `${url}?${params.join('&')}`;
 };
 
 export const prisma = globalForPrisma.prisma ?? (isBuild ? null : new PrismaClient({

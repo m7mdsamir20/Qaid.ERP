@@ -79,6 +79,7 @@ export default function OverdueReportPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <style>{`
                     .print-only { display: none; }
+                    input[type='date']::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
                     @media print {
                         .print-only { display: block !important; }
                         .no-print { display: none !important; }
@@ -128,7 +129,7 @@ export default function OverdueReportPage() {
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                         boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                     }}>
-                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
+                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} style={{ color: C.primary }} />} 
                         استخراج التقرير
                     </button>
                 </div>
@@ -239,4 +240,6 @@ export default function OverdueReportPage() {
         </DashboardLayout>
     );
 }
+
+
 

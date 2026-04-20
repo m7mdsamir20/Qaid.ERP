@@ -163,6 +163,7 @@ export default function InstallmentReportsPage() {
                         .report-card { border: 1px solid #eee !important; box-shadow: none !important; margin-bottom: 20px !important; }
                     }
                     @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                    input[type='date']::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
                 ` }} />
 
                 {/* Header Section */}
@@ -209,15 +210,15 @@ export default function InstallmentReportsPage() {
                                 <div style={{ minWidth: '200px' }}>
                                     <label style={LS}>{t('من تاريخ')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
-                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                        
+                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                                 <div style={{ minWidth: '200px' }}>
                                     <label style={LS}>{t('إلى تاريخ')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
-                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '44px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                        
+                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                             </>
@@ -252,7 +253,7 @@ export default function InstallmentReportsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={fetchReport} disabled={loading || (activeTab === 'customer' && !customerReport)}
                                 style={{ ...BTN_PRIMARY(false, loading), height: '42px', width: 'auto', padding: '0 24px', opacity: (activeTab === 'customer' && !customerReport) ? 0.5 : 1 }}>
-                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} /> {t('عرض النتائج')}</>}
+                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} style={{ color: C.primary, opacity: 1 }} /> {t('عرض النتائج')}</>}
                             </button>
                             {data && (
                                 <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
@@ -470,4 +471,8 @@ export default function InstallmentReportsPage() {
         </DashboardLayout>
     );
 }
+
+
+
+
 
