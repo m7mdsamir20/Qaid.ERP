@@ -235,8 +235,8 @@ export const POST = withProtection(async (request, session, body) => {
                             itemId: line.itemId,
                             warehouseId,
                             quantity: -line.quantity,
-                            reference: `SAL-${invoiceNumber}`,
-                            notes: `فاتورة مبيعات رقم ${invoiceNumber}`,
+                            reference: `SAL-${String(invoiceNumber).padStart(5, '0')}`,
+                            notes: `فاتورة مبيعات رقم SAL-${String(invoiceNumber).padStart(5, '0')}`,
                             companyId,
                             invoiceId: invoice.id,
                         },
@@ -329,7 +329,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: treasuryAccountId,
                             debit: paid,
                             credit: 0,
-                            description: `مبلغ مقبوض — فاتورة ${invoiceNumber}`,
+                            description: `مبلغ مقبوض — فاتورة SAL-${String(invoiceNumber).padStart(5, '0')}`,
                         });
                     }
 
@@ -339,7 +339,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: receivablesAccount.id,
                             debit: remaining,
                             credit: 0,
-                            description: `ذمم عميل — فاتورة ${invoiceNumber}`,
+                            description: `ذمم عميل — فاتورة SAL-${String(invoiceNumber).padStart(5, '0')}`,
                         });
                     }
 
@@ -348,7 +348,7 @@ export const POST = withProtection(async (request, session, body) => {
                         accountId: salesAccount.id,
                         debit: 0,
                         credit: netRevenue,
-                        description: `فاتورة مبيعات رقم ${invoiceNumber}`,
+                        description: `فاتورة مبيعات رقم SAL-${String(invoiceNumber).padStart(5, '0')}`,
                     });
 
                     // دائن: الضريبة
@@ -357,7 +357,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: taxAccount.id,
                             debit: 0,
                             credit: taxAmount,
-                            description: `ضريبة القيمة المضافة — فاتورة ${invoiceNumber}`,
+                            description: `ضريبة القيمة المضافة — فاتورة SAL-${String(invoiceNumber).padStart(5, '0')}`,
                         });
                     }
 
@@ -402,13 +402,13 @@ export const POST = withProtection(async (request, session, body) => {
                                     accountId: cogsAccount.id,
                                     debit: totalCost,
                                     credit: 0,
-                                    description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
+                                    description: `تكلفة بضاعة مباعة — فاتورة SAL-${String(invoiceNumber).padStart(5, '0')}`,
                                 });
                                 journalLines.push({
                                     accountId: inventoryAccount.id,
                                     debit: 0,
                                     credit: totalCost,
-                                    description: `تكلفة بضاعة مباعة — فاتورة ${invoiceNumber}`,
+                                    description: `تكلفة بضاعة مباعة — فاتورة SAL-${String(invoiceNumber).padStart(5, '0')}`,
                                 });
                             }
                         }
@@ -419,8 +419,8 @@ export const POST = withProtection(async (request, session, body) => {
                             data: {
                                 entryNumber,
                                 date: new Date(),
-                                description: `قيد فاتورة مبيعات رقم ${invoiceNumber}`,
-                                reference: `SAL-${invoiceNumber}`,
+                                description: `قيد فاتورة مبيعات رقم SAL-${String(invoiceNumber).padStart(5, '0')}`,
+                                reference: `SAL-${String(invoiceNumber).padStart(5, '0')}`,
                                 referenceType: 'invoice',
                                 referenceId: invoice.id,
                                 financialYearId: financialYear.id,

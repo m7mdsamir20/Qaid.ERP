@@ -221,8 +221,8 @@ export const POST = withProtection(async (request, session, body) => {
                             itemId: line.itemId,
                             warehouseId,
                             quantity: line.quantity,
-                            reference: `PUR-${invoiceNumber}`,
-                            notes: `فاتورة مشتريات رقم ${invoiceNumber}`,
+                            reference: `PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                            notes: `فاتورة مشتريات رقم PUR-${String(invoiceNumber).padStart(5, '0')}`,
                             companyId,
                             invoiceId: invoice.id
                         } as any
@@ -303,7 +303,7 @@ export const POST = withProtection(async (request, session, body) => {
                         accountId: inventoryAccount.id,
                         debit: netCost,
                         credit: 0,
-                        description: `فاتورة مشتريات رقم ${invoiceNumber}`,
+                        description: `فاتورة مشتريات رقم PUR-${String(invoiceNumber).padStart(5, '0')}`,
                     });
 
                     if ((taxAmount || 0) > 0 && taxAccount) {
@@ -311,7 +311,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: taxAccount.id,
                             debit: taxAmount,
                             credit: 0,
-                            description: `ضريبة مدخلات — فاتورة ${invoiceNumber}`,
+                            description: `ضريبة مدخلات — فاتورة PUR-${String(invoiceNumber).padStart(5, '0')}`,
                         });
                     }
 
@@ -320,7 +320,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: treasuryAccountId,
                             debit: 0,
                             credit: paid,
-                            description: `دفعة فورية — فاتورة مشتريات ${invoiceNumber}`,
+                            description: `دفعة فورية — فاتورة مشتريات PUR-${String(invoiceNumber).padStart(5, '0')}`,
                         });
                     }
 
@@ -329,7 +329,7 @@ export const POST = withProtection(async (request, session, body) => {
                             accountId: supplierAccount.id,
                             debit: 0,
                             credit: remainingAmt,
-                            description: `مستحقات مورد — فاتورة مشتريات ${invoiceNumber}`,
+                            description: `مستحقات مورد — فاتورة مشتريات PUR-${String(invoiceNumber).padStart(5, '0')}`,
                         });
                     }
 
@@ -338,8 +338,8 @@ export const POST = withProtection(async (request, session, body) => {
                             data: {
                                 entryNumber,
                                 date: new Date(),
-                                description: `قيد فاتورة مشتريات رقم ${invoiceNumber}`,
-                                reference: `PUR-${invoiceNumber}`,
+                                description: `قيد فاتورة مشتريات رقم PUR-${String(invoiceNumber).padStart(5, '0')}`,
+                                reference: `PUR-${String(invoiceNumber).padStart(5, '0')}`,
                                 referenceType: 'invoice',
                                 referenceId: invoice.id,
                                 financialYearId: financialYear.id,
