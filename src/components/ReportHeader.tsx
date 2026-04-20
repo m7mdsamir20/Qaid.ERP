@@ -61,7 +61,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const firstColAlign = isRtl ? 'right' : 'left';
     const labelPrintDate = isRtl ? 'تاريخ الطباعة:' : 'Print Date:';
     const labelPeriod = isRtl ? 'الفترة:' : 'Period:';
-    const labelAccount = isRtl ? 'الحساب:' : 'Account:';
+    const labelAccount = isRtl ? 'تاريخ التقرير:' : 'Report Date:';
     const labelCode = isRtl ? 'الكود:' : 'Code:';
 
     const html = `<!DOCTYPE html>
@@ -149,7 +149,7 @@ tfoot td:first-child{text-align:${firstColAlign}}
     ${accountName ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelAccount}</span><span class="rpt-info-val">${accountName}</span></div>` : ''}
     ${dateRange ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelPeriod}</span><span class="rpt-info-val">${dateRange}</span></div>` : ''}
     <div class="rpt-info-row" style="margin-inline-start: auto;">
-      <span class="rpt-info-lbl">${isRtl ? 'بتاريخ:' : 'Date:'}</span>
+      <span class="rpt-info-lbl">${isRtl ? 'تاريخ وتوقيت الطباعة:' : 'Print Timestamp:'}</span>
       <span class="rpt-info-val">${printDateStr} — ${printTimeStr}</span>
     </div>
   </div>
