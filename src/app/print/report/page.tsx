@@ -33,9 +33,8 @@ export default function PrintReportPage() {
     }, []);
 
     const handleIframeLoad = useCallback(() => {
-        if (autoPrinted.current) return;
-        autoPrinted.current = true;
-        setTimeout(() => iframeRef.current?.contentWindow?.print(), 500);
+        // تم إيقاف الطباعة التلقائية لمنع تجميد النظام في التبويب الآخر
+        // المستخدم يمكنه الضغط على زر "طباعة" يدوياً
     }, []);
 
     const handlePrint = () => iframeRef.current?.contentWindow?.print();
