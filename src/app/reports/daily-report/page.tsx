@@ -91,28 +91,28 @@ export default function DailyReportPage() {
         const nowTime = now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
 
         const kpis = [
-            { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#1d4ed8' },
-            { label: t('إجمالي المقبوضات'),    value: fmt(data.receipts),   color: '#15803d' },
-            { label: t('إجمالي المدفوعات'),    value: fmt(data.payments),   color: '#be123c' },
-            { label: t('صافي التدفق اليومي'),  value: fmt(data.receipts - data.payments), color: (data.receipts - data.payments) >= 0 ? '#15803d' : '#be123c' },
+            { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales) },
+            { label: t('إجمالي المقبوضات'),    value: fmt(data.receipts) },
+            { label: t('إجمالي المدفوعات'),    value: fmt(data.payments) },
+            { label: t('صافي التدفق اليومي'),  value: fmt(data.receipts - data.payments) },
         ];
 
         const kpiHTML = kpis.map(k => `
-            <div style="flex:1;border:1px solid #ccc;border-radius:6px;padding:10px 12px;text-align:center;background:#fafafa;">
+            <div style="flex:1;border:1px solid #bbb;border-radius:4px;padding:10px 12px;text-align:center;background:#f8f8f8;">
                 <div style="font-size:10px;color:#555;font-weight:700;margin-bottom:6px;">${k.label}</div>
-                <div style="font-size:14px;font-weight:900;color:${k.color};">${k.value} <span style="font-size:11px;font-weight:700;color:#444;">${sym}</span></div>
+                <div style="font-size:13px;font-weight:900;color:#000;">${k.value} <span style="font-size:11px;font-weight:600;color:#000;">${sym}</span></div>
             </div>`).join('');
 
-        const anaRow = (label: string, value: number, color: string, isTotal = false) => `
-            <tr style="${isTotal ? 'border-top:2px solid #999;' : ''}">
-                <td style="padding:8px 6px;font-size:${isTotal ? '12' : '11'}px;font-weight:${isTotal ? 800 : 600};color:#333;text-align:${fAlign};border-bottom:1px solid #e5e5e5;">${label}</td>
-                <td style="padding:8px 6px;font-size:${isTotal ? '13' : '12'}px;font-weight:${isTotal ? 900 : 700};color:${color};text-align:${bAlign};border-bottom:1px solid #e5e5e5;">${fmt(value)} <span style="font-size:10px;color:#666;">${sym}</span></td>
+        const anaRow = (label: string, value: number, isTotal = false) => `
+            <tr style="${isTotal ? 'background:#f5f5f5;' : ''}">
+                <td style="padding:7px 8px;font-size:${isTotal ? '12' : '11'}px;font-weight:${isTotal ? 800 : 600};color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${label}</td>
+                <td style="padding:7px 8px;font-size:${isTotal ? '12' : '11'}px;font-weight:${isTotal ? 900 : 700};color:#000;text-align:${bAlign};border-bottom:1px solid #ddd;">${fmt(value)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
             </tr>`;
 
         const treasuryRows = (data.treasuries || []).map(tr => `
             <tr>
-                <td style="padding:8px 6px;font-size:11px;font-weight:600;color:#333;text-align:${fAlign};border-bottom:1px solid #e5e5e5;">${tr.name} <span style="font-size:9px;color:#888;">(${tr.type === 'bank' ? (isRtl ? 'بنك' : 'Bank') : (isRtl ? 'خزينة' : 'Cash')})</span></td>
-                <td style="padding:8px 6px;font-size:12px;font-weight:800;color:#1d4ed8;text-align:${bAlign};border-bottom:1px solid #e5e5e5;">${fmt(tr.balance)} <span style="font-size:10px;color:#666;">${sym}</span></td>
+                <td style="padding:7px 8px;font-size:11px;font-weight:600;color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${tr.name} <span style="font-size:9.5px;color:#555;">(${tr.type === 'bank' ? (isRtl ? 'بنك' : 'Bank') : (isRtl ? 'خزينة' : 'Cash')})</span></td>
+                <td style="padding:7px 8px;font-size:11px;font-weight:800;color:#000;text-align:${bAlign};border-bottom:1px solid #ddd;">${fmt(tr.balance)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
             </tr>`).join('');
 
         const html = `<!DOCTYPE html>
@@ -125,13 +125,12 @@ export default function DailyReportPage() {
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;font-size:11px;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{padding:8mm 12mm}
-.rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:flex-start;padding-bottom:10px;border-bottom:2px solid #222;margin-bottom:12px;gap:20px}
+.rpt-header{display:flex;justify-content:${isRtl ? 'flex-start' : 'flex-end'};align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:12px;gap:20px}
 .rpt-logo img{max-height:60px;max-width:130px;object-fit:contain}
 .rpt-logo-text{font-size:20px;font-weight:900;color:#000}
-.rpt-company-info{font-size:9.5px;color:#555;margin-top:4px;line-height:1.6}
 .rpt-title-block{flex:1;text-align:center;padding-top:4px}
 .rpt-title{font-size:15px;font-weight:900;color:#000;margin-bottom:6px}
-.rpt-meta{font-size:10px;color:#444;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.rpt-meta{font-size:10px;color:#000;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
 .rpt-meta span{display:flex;align-items:center;gap:4px}
 .rpt-meta b{color:#000;font-weight:800}
 .kpi-row{display:flex;gap:8px;margin-bottom:14px}
@@ -142,7 +141,7 @@ body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;
 table{width:100%;border-collapse:collapse}
 .summary-row td:first-child{font-weight:900;font-size:12px}
 .summary-row td:last-child{font-size:14px;font-weight:900}
-.footer{margin-top:14px;padding-top:8px;border-top:1px solid #ccc;font-size:9.5px;color:#777;display:flex;justify-content:space-between}
+.footer{margin-top:14px;padding-top:8px;border-top:1px solid #ccc;font-size:9.5px;color:#000;display:flex;justify-content:space-between}
 @media print{
   @page{size:A4;margin:6mm 10mm}
   .page{padding:0}
@@ -156,11 +155,6 @@ table{width:100%;border-collapse:collapse}
 <div class="rpt-header">
   <div class="rpt-logo">
     ${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}
-    <div class="rpt-company-info">
-      ${[(company as any)?.addressRegion, (company as any)?.addressCity].filter(Boolean).join(' — ')}
-      ${(company as any)?.phone ? `<br/>${isRtl ? 'ت:' : 'Tel:'} ${(company as any).phone}` : ''}
-      ${(company as any)?.taxNumber ? `<br/>${isRtl ? 'ضريبي:' : 'VAT:'} ${(company as any).taxNumber}` : ''}
-    </div>
   </div>
   <div class="rpt-title-block">
     <div class="rpt-title">${t('التقرير اليومي للمبيعات والتحصيلات')}</div>
@@ -181,25 +175,25 @@ table{width:100%;border-collapse:collapse}
   <div class="two-col">
     <div class="col-divider" style="padding:4px 8px">
       <table>
-        <thead><tr><td colspan="2" style="padding:8px 6px;font-size:11px;font-weight:900;color:#1d4ed8;border-bottom:1px solid #ddd;">${t('المبيعات')}</td></tr></thead>
+        <thead><tr><td colspan="2" style="padding:8px 6px;font-size:11px;font-weight:900;color:#000;border-bottom:1px solid #ddd;">${t('المبيعات')}</td></tr></thead>
         <tbody>
-          ${anaRow(t('إجمالي قيمة المبيعات'), data.totalSales, '#000')}
-          ${anaRow(t('المرتجعات الواردة') + ' (-)', data.saleReturnsTotal, '#be123c')}
-          ${anaRow(t('صافي المبيعات'), data.totalSales - data.saleReturnsTotal, '#1d4ed8', true)}
-          ${anaRow(t('إجمالي المقبوضات'), data.receipts, '#15803d')}
-          ${anaRow(t('عدد الفواتير'), data.salesCount, '#000')}
+          ${anaRow(t('إجمالي قيمة المبيعات'), data.totalSales)}
+          ${anaRow(t('المرتجعات الواردة') + ' (-)', data.saleReturnsTotal)}
+          ${anaRow(t('صافي المبيعات'), data.totalSales - data.saleReturnsTotal, true)}
+          ${anaRow(t('إجمالي المقبوضات'), data.receipts)}
+          ${anaRow(t('عدد الفواتير'), data.salesCount)}
         </tbody>
       </table>
     </div>
     <div style="padding:4px 8px">
       <table>
-        <thead><tr><td colspan="2" style="padding:8px 6px;font-size:11px;font-weight:900;color:#b45309;border-bottom:1px solid #ddd;">${t('المشتريات')}</td></tr></thead>
+        <thead><tr><td colspan="2" style="padding:8px 6px;font-size:11px;font-weight:900;color:#000;border-bottom:1px solid #ddd;">${t('المشتريات')}</td></tr></thead>
         <tbody>
-          ${anaRow(t('إجمالي قيمة المشتريات'), data.totalPurchases, '#000')}
-          ${anaRow(t('المرتجعات الصادرة') + ' (-)', data.purchaseReturnsTotal, '#15803d')}
-          ${anaRow(t('صافي المشتريات'), data.totalPurchases - data.purchaseReturnsTotal, '#b45309', true)}
-          ${anaRow(t('إجمالي المدفوعات'), data.payments, '#be123c')}
-          ${anaRow(t('صافي التدفق اليومي'), data.receipts - data.payments, (data.receipts - data.payments) >= 0 ? '#15803d' : '#be123c')}
+          ${anaRow(t('إجمالي قيمة المشتريات'), data.totalPurchases)}
+          ${anaRow(t('المرتجعات الصادرة') + ' (-)', data.purchaseReturnsTotal)}
+          ${anaRow(t('صافي المشتريات'), data.totalPurchases - data.purchaseReturnsTotal, true)}
+          ${anaRow(t('إجمالي المدفوعات'), data.payments)}
+          ${anaRow(t('صافي التدفق اليومي'), data.receipts - data.payments, true)}
         </tbody>
       </table>
     </div>
@@ -214,7 +208,7 @@ table{width:100%;border-collapse:collapse}
       ${treasuryRows}
       <tr style="background:#f5f5f5;border-top:2px solid #999;">
         <td style="padding:10px 6px;font-size:12px;font-weight:900;text-align:${fAlign};">${isRtl ? 'إجمالي السيولة' : 'Total Liquidity'}</td>
-        <td style="padding:10px 6px;font-size:14px;font-weight:900;color:#1d4ed8;text-align:${bAlign};">${fmt(data.totalCashBalance + data.totalBankBalance)} <span style="font-size:11px;color:#444;">${sym}</span></td>
+        <td style="padding:10px 6px;font-size:14px;font-weight:900;color:#000;text-align:${bAlign};">${fmt(data.totalCashBalance + data.totalBankBalance)} <span style="font-size:11px;color:#000;">${sym}</span></td>
       </tr>
     </tbody>
   </table>
