@@ -30,53 +30,46 @@ export default function PrintReportPage() {
         setHtml(stored || '');
         setTitle(storedTitle || ui.defaultTitle);
         setLoading(false);
-    }, []);
 
-    const handleIframeLoad = useCallback(() => {
-        // تم إيقاف الطباعة التلقائية لمنع تجميد النظام في التبويب الآخر
-        // المستخدم يمكنه الضغط على زر "طباعة" يدوياً
-    }, []);
+        // تفعيل الطباعة التلقائية فور التحميل
+        if (stored && !autoPrinted.current) {
+            autoPrinted.current = true;
+            setTimeout(() => {
+                window.print();
+            }, 800);
+        }
+    }, [ui.defaultTitle]);
 
-    const handlePrint = () => iframeRef.current?.contentWindow?.print();
+    const handlePrint = () => window.print();
 
     const handleDownloadPdf = async () => {
-        const iframeDoc = iframeRef.current?.contentDocument;
-        if (!iframeDoc) return;
+        const content = document.getElementById('print-content');
+        if (!content) return;
         setDownloading(true);
         try {
             const [{ default: html2canvas }, { default: jsPDF }] = await Promise.all([
                 import('html2canvas'),
                 import('jspdf'),
             ]);
-            const body = iframeDoc.body;
-            const iframeEl = iframeRef.current!;
-            const renderW = iframeEl.clientWidth || body.scrollWidth;
-            const canvas = await html2canvas(body, {
+            const canvas = await html2canvas(content, {
                 scale: 2,
                 useCORS: true,
                 allowTaint: true,
                 backgroundColor: '#ffffff',
-                windowWidth: renderW,
-                width: renderW,
-                height: body.scrollHeight,
-                x: 0, y: 0, scrollX: 0, scrollY: 0,
             });
             const pw = 210, ph = 297;
             const pdf = new jsPDF('p', 'mm', [pw, ph]);
             const imgData = canvas.toDataURL('image/png');
             const imgH = (canvas.height * pw) / canvas.width;
-            if (imgH <= ph) {
-                pdf.addImage(imgData, 'PNG', 0, 0, pw, imgH);
-            } else {
-                let pos = 0, remaining = imgH;
+            
+            let pos = 0, remaining = imgH;
+            pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH);
+            remaining -= ph;
+            while (remaining > 0) {
+                pos -= ph;
+                pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH);
                 remaining -= ph;
-                while (remaining > 0) {
-                    pos -= ph;
-                    pdf.addPage();
-                    pdf.addImage(imgData, 'PNG', 0, pos, pw, imgH);
-                    remaining -= ph;
-                }
             }
             pdf.save(`${title.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '-')}.pdf`);
         } catch (e) {
@@ -114,8 +107,8 @@ export default function PrintReportPage() {
     );
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1e1e2e' }}>
-            <div style={toolbarStyle}>
+        <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#fff' }}>
+            <div className="no-print" style={toolbarStyle}>
                 <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', flex: 1 }}>
                     {title}
                 </span>
@@ -136,12 +129,18 @@ export default function PrintReportPage() {
                     </button>
                 </div>
             </div>
-            <iframe
-                ref={iframeRef}
-                srcDoc={html}
-                onLoad={handleIframeLoad}
-                style={{ flex: 1, border: 'none', background: '#fff' }}
-                title="report-print"
+            
+            <style jsx global>{`
+                @media print {
+                    .no-print { display: none !important; }
+                    body { background: #fff !important; }
+                }
+            `}</style>
+
+            <div 
+                id="print-content"
+                dangerouslySetInnerHTML={{ __html: html }} 
+                style={{ flex: 1, background: '#fff' }}
             />
         </div>
     );
