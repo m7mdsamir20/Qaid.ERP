@@ -44,16 +44,14 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const logo = co.logo || co.companyLogo || '';
     const reportTitle = printTitle || title;
     const now = new Date();
-    // التاريخ: أرقام إنجليزية فقط بتنسيق DD/MM/YYYY
+    const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
     const printDateStr = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
-    // الوقت: أرقام إنجليزية مع احتفاظ الصباح/المساء بالعربي
-    const printTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true, numberingSystem: 'latn' });
+    const printTimeStr = toWesternDigits(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
 
     const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
     const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
     const dateRange = isDateRange ? printDate : '';
 
-    // Identify top-level printable elements to avoid duplication (e.g. if a table is inside a div[data-print-include])
     const allPrintable = Array.from(document.querySelectorAll('[data-print-include], .print-table-container'));
     const topLevelPrintable = allPrintable.filter(el => {
       let p = el.parentElement;
@@ -64,77 +62,67 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
       return true;
     });
     const includeHTML = topLevelPrintable.map(el => el.outerHTML).join('');
-    const tablesHTML = ''; // We now include everything in includeHTML
 
     const dir = isRtl ? 'rtl' : 'ltr';
     const firstColAlign = isRtl ? 'right' : 'left';
-    const labelPrintDate = isRtl ? 'تاريخ الطباعة:' : 'Print Date:';
     const labelPeriod = isRtl ? 'الفترة:' : 'Period:';
     const labelAccount = isRtl ? 'تاريخ التقرير:' : 'Report Date:';
-    const labelCode = isRtl ? 'الكود:' : 'Code:';
     const labelBranch = isRtl ? 'الفرع:' : 'Branch:';
+
+    const metaItems = [
+      accountName ? `<span>${labelAccount} <b>${accountName}</b></span>` : '',
+      dateRange   ? `<span>${labelPeriod} <b>${dateRange}</b></span>` : '',
+      branchName  ? `<span>${labelBranch} <b>${branchName}</b></span>` : '',
+      `<span>${isRtl ? 'طُبع:' : 'Printed:'} <b>${printDateStr} — ${printTimeStr}</b></span>`,
+    ].filter(Boolean).join('');
 
     const html = `<!DOCTYPE html>
 <html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
 <head>
 <meta charset="UTF-8"/>
 <title>${reportTitle}</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo', 'Inter', sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:9.5px;line-height:1.2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.page{padding:5mm 8mm}
-
-/* Force all elements to be black in print */
-* { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+*{margin:0;padding:0;box-sizing:border-box;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;font-size:9.5px;line-height:1.4}
+.page{padding:8mm 12mm}
 
 /* ── Header ── */
-.rpt-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:10px;border-bottom:1px solid #ddd;margin-bottom:10px}
-.rpt-logo img{max-height:60px;max-width:140px;object-fit:contain}
-.rpt-logo-text{font-size:18px;font-weight:900;color:#000}
+.rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:12px;direction:ltr}
+.rpt-logo img{max-height:60px;max-width:120px;object-fit:contain}
+.rpt-logo-text{font-size:16px;font-weight:900}
+.rpt-title-block{text-align:center;direction:${dir}}
+.rpt-title{font-size:16px;font-weight:900;margin-bottom:6px}
+.rpt-meta{font-size:10px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.rpt-meta span{display:flex;align-items:center;gap:4px}
+.rpt-meta b{font-weight:800}
 
-/* ── Report info block ── */
-.rpt-info{border:1px solid #eee;border-radius:4px;padding:8px 12px;margin-bottom:10px;background:#fcfcfc}
-.rpt-info-title{font-size:15px;font-weight:800;color:#000;text-align:center;margin-bottom:5px}
-.rpt-info-rows{display:flex;flex-wrap:nowrap;justify-content:space-between;align-items:center;gap:15px}
-.rpt-info-row{display:flex;align-items:center;gap:5px;font-size:9.5px;white-space:nowrap}
-.rpt-info-lbl{font-weight:700;color:#666!important}
-.rpt-info-val{color:#000!important;font-weight:600;font-family:'Inter', sans-serif}
+/* ── Stats grid ── */
+[data-print-include]{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:10px!important;border:none!important;margin-bottom:14px}
+[data-print-include]>div{padding:10px 12px!important;text-align:center;border:1px solid #ccc!important;border-radius:6px!important;background:#f9f9f9!important}
+[data-print-include] svg,.no-print{display:none!important}
+.print-table-container{display:block!important;margin-bottom:14px}
 
-/* ── Stats ── */
-[data-print-include], .print-table-container{background:#fff!important;color:#000!important;border:1px solid #eee!important;border-radius:12px!important;margin-bottom:20px;page-break-inside:avoid;overflow:hidden}
-[data-print-include]{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:15px!important;border:none!important}
-[data-print-include]>div{padding:15px!important;text-align:center;border:1px solid #eee!important;border-radius:10px!important;background:#fff!important}
-.print-table-container{display:block!important;padding:20px!important}
-.print-table-container h3{font-size:13px!important;border-bottom:1px solid #eee!important;padding-bottom:10px!important;margin-bottom:15px!important;font-weight:900!important}
-[data-print-include] svg, .no-print{display:none!important}
-
-/* ── Table ── */
-.table-wrap{margin-top:5px}
-table{width:100%;border-collapse:collapse;border:1px solid #ccc;font-size:9px;background:#fff!important;table-layout:auto}
-thead tr{background:#f8f9fa!important}
-th{padding:5px 4px;font-size:8.5px;font-weight:800;color:#000!important;text-align:center;border:1px solid #ccc;background:#f8f9fa!important;white-space:nowrap;line-height:1}
+/* ── Tables ── */
+table{width:100%;border-collapse:collapse;font-size:9px;table-layout:auto}
+thead tr{background:#f0f0f0!important}
+th{padding:6px 5px;font-size:8.5px;font-weight:800;text-align:center;border:1px solid #ccc;white-space:nowrap}
 th:first-child{text-align:${firstColAlign}}
-tbody tr{border-bottom: 1px solid #eee; background:#fff!important}
-td{padding:3px 4px;font-size:8px;color:#000!important;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.1;white-space:normal;background:#fff!important}
-td:first-child, td:nth-child(2), td[data-type="debit"], td[data-type="credit"], td[data-type="balance"]{white-space:nowrap!important}
+tbody tr{border-bottom:1px solid #eee}
+td{padding:4px 5px;font-size:8px;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.2}
 td:first-child{text-align:${firstColAlign}}
-td span,td a,td div{font-size:inherit!important; color:#000!important; display:inline-block; white-space:nowrap}
-td small{font-size:6.5px!important; opacity:0.8; margin-inline-start:1px}
+td span,td a,td div{font-size:inherit!important;display:inline-block;white-space:nowrap}
 td button{display:none!important}
-td strong,td b{font-weight:500}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter', sans-serif; font-weight:400!important; min-width:55px; font-size:7.8px!important}
-tr.opening-balance td{background:#f8f9fa!important;font-weight:600!important;border-top:1px solid #ccc!important;border-bottom:1px solid #ccc!important}
-tfoot tr{background:#f8f9fa!important}
-tfoot td{font-weight:600;font-size:8.5px;color:#000!important;background:#f8f9fa!important;border:1px solid #ccc;padding:4px 4px;white-space:nowrap}
+td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter',sans-serif;min-width:55px;font-size:7.8px!important;white-space:nowrap!important}
+tr.opening-balance td{background:#f5f5f5!important;font-weight:700!important;border-top:1px solid #ccc!important;border-bottom:1px solid #ccc!important}
+tfoot tr{background:#f5f5f5!important}
+tfoot td{font-weight:700;font-size:8.5px;border:1px solid #ccc;padding:5px;white-space:nowrap}
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
-  @page{size:A4;margin:5mm 6mm}
-  body{font-size:8.5px}
+  @page{size:A4;margin:6mm 10mm}
   .page{padding:0}
-  th{padding:4px 2px!important}
-  td{padding:3px 2px!important}
+  body{font-size:8.5px}
 }
 </style>
 </head>
@@ -142,35 +130,17 @@ tfoot td:first-child{text-align:${firstColAlign}}
 <div class="page">
 
 <div class="rpt-header">
-  <div style="flex:1.2; text-align:start">
-    <!-- Right side (start) - Empty or Metadata -->
+  <div class="rpt-logo">
+    ${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}
   </div>
-  <div style="flex:1 auto; text-align:center">
-      <div class="rpt-info-title" style="margin:0; padding:0; font-size:19px;">${reportTitle}</div>
+  <div class="rpt-title-block">
+    <div class="rpt-title">${reportTitle}</div>
+    <div class="rpt-meta">${metaItems}</div>
   </div>
-  <div style="flex:1.2; text-align:end">
-    <!-- Left side (end) - Logo -->
-    <div class="rpt-logo">
-      ${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}
-    </div>
-  </div>
-</div>
-
-<div class="rpt-info">
-  <div class="rpt-info-rows">
-    ${branchName ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelBranch}</span><span class="rpt-info-val">${branchName}</span></div>` : ''}
-    ${accountName ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelAccount}</span><span class="rpt-info-val">${accountName}</span></div>` : ''}
-    ${dateRange ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelPeriod}</span><span class="rpt-info-val">${dateRange}</span></div>` : ''}
-    <div class="rpt-info-row" style="margin-inline-start: auto;">
-      <span class="rpt-info-lbl">${isRtl ? 'تاريخ وتوقيت الطباعة:' : 'Print Timestamp:'}</span>
-      <span class="rpt-info-val">${printDateStr} — ${printTimeStr}</span>
-    </div>
-  </div>
+  <div></div>
 </div>
 
 ${includeHTML}
-
-<div class="table-wrap">${tablesHTML}</div>
 
 </div>
 </body>
