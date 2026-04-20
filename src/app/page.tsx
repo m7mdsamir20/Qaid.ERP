@@ -55,7 +55,7 @@ const statusLabel: Record<string, { label: string; color: string; bg: string }> 
 function KpiCard({
   label, value, sub, trend, trendUp, color, icon: Icon, delay = 0
 }: {
-  label: string; value: React.ReactNode; sub?: string;
+  label: string; value: string; sub?: string;
   trend?: string; trendUp?: boolean; color: string;
   icon: any; delay?: number;
 }) {
@@ -146,19 +146,8 @@ function SectionCard({ title, icon: Icon, children, action }: {
   );
 }
 
-function ChartTooltip({ active, payload, label, cSymbol, t, lang }: any) {
-  const fmtFull = (n: number) => {
-    // Manually build for chart tooltip since it can't render JSX easily inside recharts tooltip strings
-    // But we can return a fragment if the component supports it.
-    // However, ChartTooltip is a React component, so we can return JSX!
-    const formattedNum = n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    return (
-      <span style={{ direction: lang === 'ar' ? 'rtl' : 'ltr', display: 'inline-flex', gap: '4px' }}>
-        <span className="amount">{formattedNum}</span>
-        <span className="currency">{cSymbol}</span>
-      </span>
-    );
-  };
+function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
+  const fmtFull = (n: number) => n.toLocaleString('en-US') + ' ' + cSymbol;
   if (!active || !payload?.length) return null;
   return (
     <div style={{
@@ -185,7 +174,7 @@ function ChartTooltip({ active, payload, label, cSymbol, t, lang }: any) {
 
 export default function DashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
-  const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
+  const { symbol: cSymbol, fMoney } = useCurrency();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
 
@@ -329,8 +318,8 @@ export default function DashboardPage() {
 
   const periodLabel: any = { today: t('اليوم'), week: t('هذا الأسبوع'), month: t('هذا الشهر') };
   const renderCurrency = (n: number, fontSize: string = '14px', numWeight: number = 800, color: string = 'inherit') => (
-    <div style={{ fontSize, fontWeight: numWeight, color: color === 'inherit' ? 'inherit' : color }}>
-      {fMoneyJSX(n)}
+    <div style={{ fontSize, fontWeight: numWeight, color: color === 'inherit' ? 'inherit' : color, fontFamily: INTER }}>
+      {fMoney(n)}
     </div>
   );
 
@@ -428,28 +417,28 @@ export default function DashboardPage() {
         }}>
           {isServices ? (
             <>
-              <KpiCard label="إيرادات اليوم" value={fMoneyJSX(stats.salesTodayTotal)} sub={t("إجمالي مبيعات الخدمات اليوم")} color={C.primary} icon={Receipt} delay={0} />
+              <KpiCard label="إيرادات اليوم" value={fMoney(stats.salesTodayTotal)} sub={t("إجمالي مبيعات الخدمات اليوم")} color={C.primary} icon={Receipt} delay={0} />
               <KpiCard label="عدد الخدمات" value={stats.items} sub={t("إجمالي الخدمات المسجلة")} color={C.blue} icon={Package} delay={60} />
               <KpiCard label="عدد العملاء" value={stats.customers} sub={t("قاعدة العملاء الحالية")} color={C.success} icon={Users} delay={120} />
               <KpiCard label="مواعيد اليوم" value="0" sub={t("لا يوجد مواعيد مسجلة حالياً")} color={C.warning} icon={Clock} delay={180} />
-              <KpiCard label="المصروفات" value={fMoneyJSX(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={240} />
-              <KpiCard label="صافي الأرباح" value={fMoneyJSX(stats.netProfit)} sub={t("الإيرادات - المصروفات")} color={C.success} icon={BarChart2} delay={300} />
+              <KpiCard label="المصروفات" value={fMoney(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={240} />
+              <KpiCard label="صافي الأرباح" value={fMoney(stats.netProfit)} sub={t("الإيرادات - المصروفات")} color={C.success} icon={BarChart2} delay={300} />
             </>
           ) : (
             <>
-              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fMoneyJSX(stats.salesTotal)} sub={periodLabel[period]} trend={`↑ ${t('مباشر')}`} trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
-              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fMoneyJSX(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fMoney(stats.salesTotal)} sub={periodLabel[period]} trend={`↑ ${t('مباشر')}`} trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
+              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fMoney(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
               {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
-                <KpiCard label="صافي الربح" value={fMoneyJSX(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
+                <KpiCard label="صافي الربح" value={fMoney(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
                   trend={stats.netProfit >= 0 ? `↑ ${t('نمو')}` : `↓ ${t('تراجع')}`}
                   trendUp={stats.netProfit >= 0}
                   color={stats.netProfit >= 0 ? C.success : C.danger}
                   icon={BarChart2} delay={120} />
               )}
-              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fMoneyJSX(stats.treasuriesBalance)} sub={t("إجمالي السيولة")} color={C.primary} icon={Wallet} delay={180} />}
-              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fMoneyJSX(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
+              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fMoney(stats.treasuriesBalance)} sub={t("إجمالي السيولة")} color={C.primary} icon={Wallet} delay={180} />}
+              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fMoney(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
               {hasPage('/suppliers', 'purchases') && <KpiCard label="الموردين" value={stats.suppliers} sub={t("إجمالي الموردين")} color={C.warning} icon={Truck} delay={300} />}
-              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fMoneyJSX(stats.salesTodayTotal)} sub={t("إحصائيات فورية")} color={C.primary} icon={Eye} delay={360} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fMoney(stats.salesTodayTotal)} sub={t("إحصائيات فورية")} color={C.primary} icon={Eye} delay={360} />}
               {(hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory')) && (
                 <Link href="/reports/low-stock-items" style={{ textDecoration: 'none', display: 'block' }}>
                   <KpiCard label="نواقص المخزن" value={stats.lowStockItems.length} sub={t("أصناف تحت الحد – اضغط للعرض")} color={C.danger} icon={AlertTriangle} delay={420} />
@@ -524,7 +513,7 @@ export default function DashboardPage() {
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} opacity={0.5} />
                     <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: INTER }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: INTER }} axisLine={false} tickLine={false} tickFormatter={v => Number(v).toLocaleString()} width={40} />
-                    <Tooltip content={<ChartTooltip cSymbol={cSymbol} t={t} lang={lang} />} />
+                    <Tooltip content={<ChartTooltip cSymbol={cSymbol} t={t} />} />
                     {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
                     {isServices
                       ? <Area type="monotone" dataKey="expenses" name={t("مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />

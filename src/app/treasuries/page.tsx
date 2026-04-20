@@ -14,7 +14,6 @@ import {
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { getListCache, setListCache } from '@/lib/listCache';
-import { useCurrency } from '@/hooks/useCurrency';
 
 /* ── Types ── */
 interface Treasury {
@@ -45,7 +44,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                 const maps: any = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'USD': t('دولار'), 'AED': t('د.إ') };
                 setCurrencySymbol(maps[cur] || cur);
             }
-        }).catch(() => {});
+        }).catch(() => { });
     }, []);
 
     const formatWithCommas = (val: string) => {
@@ -135,7 +134,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     0.00
                                 </div>
                             )}
-                             <input type="text" inputMode="decimal" value={formatWithCommas(form.balance)}
+                            <input type="text" inputMode="decimal" value={formatWithCommas(form.balance)}
                                 onChange={e => {
                                     const val = e.target.value.replace(/[^0-9.]/g, '');
                                     // منع تكرار النقطة العشرية
@@ -150,9 +149,9 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
 
 
                 {/* Buttons - Swapped Order Solid Footer */}
-                <div style={{ 
-                    display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '10px', 
-                    padding: '24px 22px', borderTop: `1px solid ${C.border}`, 
+                <div style={{
+                    display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '10px',
+                    padding: '24px 22px', borderTop: `1px solid ${C.border}`,
                     margin: '0 -22px -22px',
                     background: C.card, zIndex: 10
                 }}>
@@ -160,14 +159,14 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                         {saving ? <Loader2 size={18} className="animate-spin" /> : (isEdit ? <CheckCircle2 size={18} /> : <Plus size={18} />)}
                         <span style={{ fontFamily: CAIRO }}>{isEdit ? t('حفظ التعديلات') : t('إضافة الخزينة / البنك')}</span>
                     </button>
-                    <button type="button" onClick={onClose} 
-                        style={{ 
-                            height: '44px', borderRadius: THEME.button.radius, 
-                            border: `1px solid ${C.border}`, background: 'transparent', 
-                            color: C.textSecondary, fontSize: '13px', fontWeight: 700, 
-                            cursor: 'pointer', transition: 'all 0.2s', display: 'flex', 
+                    <button type="button" onClick={onClose}
+                        style={{
+                            height: '44px', borderRadius: THEME.button.radius,
+                            border: `1px solid ${C.border}`, background: 'transparent',
+                            color: C.textSecondary, fontSize: '13px', fontWeight: 700,
+                            cursor: 'pointer', transition: 'all 0.2s', display: 'flex',
                             alignItems: 'center', justifyContent: 'center', gap: '8px',
-                            fontFamily: CAIRO 
+                            fontFamily: CAIRO
                         }}
                         onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
                         onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}>
@@ -183,7 +182,6 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
 /* ── Main Page ── */
 export default function TreasuriesPage() {
     const { lang, t } = useTranslation();
-    const { fMoneyJSX } = useCurrency();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -208,7 +206,7 @@ export default function TreasuriesPage() {
                 fetch('/api/settings')
             ]);
             const [data, sData] = await Promise.all([tRes.json(), sRes.json()]);
-            
+
             const trList = Array.isArray(data) ? data : [];
             setTreasuries(trList);
             setListCache('treasuries', trList);
@@ -246,7 +244,7 @@ export default function TreasuriesPage() {
                 alert(d.error || t('فشل الحذف'));
                 setDeleteItem(null);
             }
-        } catch { 
+        } catch {
             alert(t('حدث خطأ في الاتصال'));
             setDeleteItem(null);
         }
@@ -264,8 +262,8 @@ export default function TreasuriesPage() {
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
-                <PageHeader 
-                    title={t("الخزن والبنوك")} 
+                <PageHeader
+                    title={t("الخزن والبنوك")}
                     subtitle={t("إدارة السيولة النقدية، أرصدة البنوك، ومتابعة الأرصدة المتوفرة لحظياً")}
                     icon={Landmark}
                     primaryButton={canCreate ? {
@@ -280,14 +278,15 @@ export default function TreasuriesPage() {
                         { label: t('إجمالي الخزن'), val: totalCash, color: C.success, icon: Banknote, unit: currencySymbol },
                         { label: t('إجمالي البنوك'), val: totalBank, color: C.blue, icon: Building2, unit: currencySymbol },
                     ].map((s, idx) => (
-                        <div key={idx} style={{ 
-                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px', 
-                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' 
+                        <div key={idx} style={{
+                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
+                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                         }}>
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                    {fMoneyJSX(s.val)}
+                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>
                             <div style={{
@@ -347,7 +346,7 @@ export default function TreasuriesPage() {
                 )}
 
                 {showModal && <TreasuryModal initial={editItem} onClose={() => { setShowModal(false); setEditItem(null); }} onSaved={() => { setShowModal(false); setEditItem(null); fetchData(); }} />}
-                
+
                 <AppModal
                     show={!!deleteItem}
                     onClose={() => setDeleteItem(null)}
@@ -367,38 +366,37 @@ export default function TreasuriesPage() {
 /* ── Treasury Card ── */
 function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDelete }: { item: Treasury; currencySymbol: string; canEdit?: boolean; canDelete?: boolean; onEdit: () => void; onDelete: () => void; }) {
     const { t } = useTranslation();
-    const { fMoneyJSX } = useCurrency();
     const isCash = item.type === 'cash';
     const accentColor = isCash ? C.success : C.primary;
     const Icon = isCash ? Banknote : Building2;
 
     return (
-        <div style={{ 
-            background: C.card, 
-            border: `1px solid ${C.border}`, 
-            borderRadius: '16px', 
-            padding: '16px', 
-            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)', 
-            position: 'relative', 
+        <div style={{
+            background: C.card,
+            border: `1px solid ${C.border}`,
+            borderRadius: '16px',
+            padding: '16px',
+            transition: 'all 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+            position: 'relative',
             overflow: 'hidden',
             display: 'flex',
             flexDirection: 'column',
             gap: '12px'
         }}
-            onMouseEnter={e => { 
-                e.currentTarget.style.borderColor = accentColor; 
+            onMouseEnter={e => {
+                e.currentTarget.style.borderColor = accentColor;
                 e.currentTarget.style.boxShadow = `0 10px 20px -10px ${accentColor}20`;
             }}
-            onMouseLeave={e => { 
-                e.currentTarget.style.borderColor = C.border; 
+            onMouseLeave={e => {
+                e.currentTarget.style.borderColor = C.border;
                 e.currentTarget.style.boxShadow = 'none';
             }}>
 
-             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ 
-                        width: 40, height: 40, borderRadius: '10px', background: `${accentColor}10`, 
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: accentColor 
+                    <div style={{
+                        width: 40, height: 40, borderRadius: '10px', background: `${accentColor}10`,
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: accentColor
                     }}>
                         <Icon size={20} />
                     </div>
@@ -419,20 +417,21 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                         </button>
                     )}
                 </div>
-             </div>
+            </div>
 
-             {/* Balance Row (Applied Modal Style) */}
-             <div style={{ position: 'relative', background: C.inputBg, borderRadius: '12px', padding: '14px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+            {/* Balance Row (Applied Modal Style) */}
+            <div style={{ position: 'relative', background: C.inputBg, borderRadius: '12px', padding: '14px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                 {/* Digital Watermark */}
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 900, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: INTER, letterSpacing: '2px', opacity: 0.1 }}>
                     0.00
                 </div>
                 <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
-                        {fMoneyJSX(item.balance)}
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: INTER, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
+                        {item.balance.toLocaleString('en-US')}
+                        <span style={{ fontSize: '11px', color: accentColor, fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
                 </div>
-             </div>
+            </div>
 
         </div>
     );

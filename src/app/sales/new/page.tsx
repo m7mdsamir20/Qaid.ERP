@@ -11,7 +11,6 @@ import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/t
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
-import { getListCache, setListCache } from '@/lib/listCache';
 import { getCurrencySymbol } from '@/lib/currency';
 
 interface Customer { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
@@ -35,7 +34,6 @@ const fmtNum = (v: any) => {
 
 function NewSalePageInner() {
     const { lang, t } = useTranslation();
-    const { fMoney, fMoneyJSX } = useCurrency();
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
@@ -893,8 +891,8 @@ function NewSalePageInner() {
 
                                 {/* إجمالي الأصناف */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
-                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
-                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الأصناف')}</span>
+                                    <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
+                                    <span style={{ color: '#64748b' }}>{t('إجمالي الأصناف')}</span>
                                 </div>
 
                                 {/* الخصم */}

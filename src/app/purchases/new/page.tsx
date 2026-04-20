@@ -31,7 +31,6 @@ const fmt = (v: any) => {
 
 export default function NewPurchasePage() {
     const { lang, t } = useTranslation();
-    const { fMoney, fMoneyJSX } = useCurrency();
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
@@ -41,30 +40,30 @@ export default function NewPurchasePage() {
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
     const { symbol: cSymbol } = useCurrency();
-    const [suppliers,  setSuppliers]  = useState<Supplier[]>([]);
-    const [customers,  setCustomers]  = useState<any[]>([]);
+    const [suppliers, setSuppliers] = useState<Supplier[]>([]);
+    const [customers, setCustomers] = useState<any[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
-    const [items,      setItems]      = useState<Item[]>([]);
-    const [nextNum,    setNextNum]    = useState(1);
-    const [company,    setCompany]    = useState<CompanyInfo>({});
-    const [loading,    setLoading]    = useState(true);
+    const [items, setItems] = useState<Item[]>([]);
+    const [nextNum, setNextNum] = useState(1);
+    const [company, setCompany] = useState<CompanyInfo>({});
+    const [loading, setLoading] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [showAddSup, setShowAddSup] = useState(false);
     const [newPartnerType, setNewPartnerType] = useState<'supplier' | 'customer'>('supplier');
 
     const itemSelectRef = useRef<any>(null);
-    const qtyRef     = useRef<HTMLInputElement>(null);
-    const [entryItemId,  setEntryItemId]  = useState('');
-    const [entryQty,     setEntryQty]     = useState<number | ''>(1);
-    const [entryPrice,   setEntryPrice]   = useState<number | ''>('');
-    const [entryStock,   setEntryStock]   = useState<number | null>(null);
-    
-    const [lines,        setLines]        = useState<InvoiceLine[]>([]);
-    const [attachments,  setAttachments]  = useState<{ name: string; type: string; data: string }[]>([]);
-    const [taxSettings,  setTaxSettings]  = useState<any>(null);
-    const [fieldErrors,  setFieldErrors]  = useState<Record<string, string>>({});
+    const qtyRef = useRef<HTMLInputElement>(null);
+    const [entryItemId, setEntryItemId] = useState('');
+    const [entryQty, setEntryQty] = useState<number | ''>(1);
+    const [entryPrice, setEntryPrice] = useState<number | ''>('');
+    const [entryStock, setEntryStock] = useState<number | null>(null);
+
+    const [lines, setLines] = useState<InvoiceLine[]>([]);
+    const [attachments, setAttachments] = useState<{ name: string; type: string; data: string }[]>([]);
+    const [taxSettings, setTaxSettings] = useState<any>(null);
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const clearError = (field: string) => {
         if (fieldErrors[field]) setFieldErrors(prev => {
@@ -83,9 +82,9 @@ export default function NewPurchasePage() {
         taxAmount: 0,
     });
 
-    const subtotal   = lines.reduce((s, l) => s + l.total, 0);
-    const afterDisc  = Math.max(0, subtotal - (form.discountAmt || 0));
-    
+    const subtotal = lines.reduce((s, l) => s + l.total, 0);
+    const afterDisc = Math.max(0, subtotal - (form.discountAmt || 0));
+
     // Automatically update taxAmount when afterDisc or taxRate changes
     useEffect(() => {
         if (taxSettings?.enabled) {
@@ -101,16 +100,16 @@ export default function NewPurchasePage() {
         }
     }, [afterDisc, form.taxRate, taxSettings?.enabled, taxSettings?.isInclusive]);
 
-    const netTotal   = afterDisc + (taxSettings?.isInclusive ? 0 : form.taxAmount);
-    const diff       = netTotal - (form.paidAmount || 0);
-    const remaining  = Math.max(0, diff);
-    const overpaid   = Math.max(0, (form.paidAmount || 0) - netTotal);
+    const netTotal = afterDisc + (taxSettings?.isInclusive ? 0 : form.taxAmount);
+    const diff = netTotal - (form.paidAmount || 0);
+    const remaining = Math.max(0, diff);
+    const overpaid = Math.max(0, (form.paidAmount || 0) - netTotal);
 
-    const partners       = [
-        ...(Array.isArray(suppliers) ? suppliers : []).map(s => ({ ...s, partnerType: 'supplier' })), 
+    const partners = [
+        ...(Array.isArray(suppliers) ? suppliers : []).map(s => ({ ...s, partnerType: 'supplier' })),
         ...(Array.isArray(customers) ? customers : []).map(c => ({ ...c, partnerType: 'customer' }))
     ];
-    const selectedPartner= Array.isArray(partners) ? partners.find(p => p.id === form.supplierId) : null;
+    const selectedPartner = Array.isArray(partners) ? partners.find(p => p.id === form.supplierId) : null;
 
     const loadData = useCallback(async () => {
         try {
@@ -121,7 +120,7 @@ export default function NewPurchasePage() {
             ]);
             const nextNumData = await invR.json();
             setNextNum(nextNumData.nextNum || 1);
-            
+
             const sups = await supR.json();
             const cus = await custR.json();
             const whs = await whR.json();
@@ -141,9 +140,9 @@ export default function NewPurchasePage() {
                 }
             }
 
-            setSuppliers(Array.isArray(sups) ? sups : []); 
+            setSuppliers(Array.isArray(sups) ? sups : []);
             setCustomers(Array.isArray(cus) ? cus : []);
-            setWarehouses(Array.isArray(whs) ? whs : []); 
+            setWarehouses(Array.isArray(whs) ? whs : []);
             setTreasuries(Array.isArray(trs) ? trs : []);
             setItems(Array.isArray(its) ? its : (its.items || []));
 
@@ -176,8 +175,8 @@ export default function NewPurchasePage() {
     useEffect(() => {
         if (entryItemId) {
             const item = items.find(i => i.id === entryItemId);
-            if (item) { 
-                setEntryPrice(item.costPrice); 
+            if (item) {
+                setEntryPrice(item.costPrice);
                 setTimeout(() => qtyRef.current?.focus(), 50);
             }
         }
@@ -209,18 +208,18 @@ export default function NewPurchasePage() {
             const idx = prev.findIndex(l => l.itemId === item.id);
             if (idx >= 0) {
                 const updated = [...prev];
-                const newQty  = updated[idx].quantity + qty;
+                const newQty = updated[idx].quantity + qty;
                 updated[idx] = { ...updated[idx], quantity: newQty, total: newQty * updated[idx].price };
                 return updated;
             }
             return [...prev, {
-                itemId:   item.id,
+                itemId: item.id,
                 itemCode: item.code,
                 itemName: item.name,
-                unit:     getUnitName(item.unit),
+                unit: getUnitName(item.unit),
                 quantity: qty,
                 price,
-                total:    qty * price,
+                total: qty * price,
                 stock,
             }];
         });
@@ -233,7 +232,7 @@ export default function NewPurchasePage() {
     }, [entryItemId, entryQty, entryPrice, items, form.warehouseId, form.supplierId]);
 
     const removeLine = (i: number) => setLines(prev => prev.filter((_, idx) => idx !== i));
-    const editLine   = (i: number) => {
+    const editLine = (i: number) => {
         const l = lines[i];
         setEntryItemId(l.itemId); setEntryQty(l.quantity); setEntryPrice(l.price);
         removeLine(i); setTimeout(() => qtyRef.current?.focus(), 50);
@@ -287,7 +286,7 @@ export default function NewPurchasePage() {
 
         if (!form.supplierId) errors.supplierId = t('يرجى اختيار المورد');
         if (!form.warehouseId) errors.warehouseId = t('يرجى اختيار المخزن');
-        
+
         if (Object.keys(errors).length > 0) {
             setFieldErrors(errors);
             return;
@@ -319,13 +318,13 @@ export default function NewPurchasePage() {
                 body: JSON.stringify({
                     date: form.date,
                     warehouseId: form.warehouseId,
-                    supplierId:  selectedPartner?.partnerType === 'supplier' ? form.supplierId : undefined,
-                    customerId:  selectedPartner?.partnerType === 'customer' ? form.supplierId : undefined,
-                    discount: Number(form.discountAmt || 0), 
+                    supplierId: selectedPartner?.partnerType === 'supplier' ? form.supplierId : undefined,
+                    customerId: selectedPartner?.partnerType === 'customer' ? form.supplierId : undefined,
+                    discount: Number(form.discountAmt || 0),
                     paidAmount: Number(form.paidAmount || 0),
                     paymentType: form.paymentType,
-                    treasuryId:  form.paymentType === 'cash' ? form.treasuryId : undefined,
-                    bankId:      form.paymentType === 'bank' ? form.bankId     : undefined,
+                    treasuryId: form.paymentType === 'cash' ? form.treasuryId : undefined,
+                    bankId: form.paymentType === 'bank' ? form.bankId : undefined,
                     notes: form.notes, attachments,
                     taxRate: Number(form.taxRate || 0),
                     taxAmount: Number(form.taxAmount || 0),
@@ -426,7 +425,7 @@ export default function NewPurchasePage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                        
+
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
@@ -450,16 +449,16 @@ export default function NewPurchasePage() {
                                         <button onClick={() => setShowAddSup(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ {t('مورد جديد')}</button>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <CustomSelect 
-                                            value={form.supplierId} 
-                                            onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }} 
-                                            icon={Search} 
-                                            placeholder={t("ابحث واختر...")} 
-                                            options={partners.map(p => ({ 
-                                                value: p.id, 
+                                        <CustomSelect
+                                            value={form.supplierId}
+                                            onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
+                                            icon={Search}
+                                            placeholder={t("ابحث واختر...")}
+                                            options={partners.map(p => ({
+                                                value: p.id,
                                                 label: p.name,
                                                 sub: p.partnerType === 'customer' ? t('عميل') : t('مورد')
-                                            }))} 
+                                            }))}
                                         />
                                         <InlineError field="supplierId" />
                                     </div>
@@ -598,8 +597,8 @@ export default function NewPurchasePage() {
                             <div style={{ ...STitleStyle, color: '#3b82f6' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
-                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
-                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الأصناف')}</span>
+                                    <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
+                                    <span style={{ color: '#64748b' }}>{t('إجمالي الأصناف')}</span>
                                 </div>
                                 <div style={{ background: C.subtle, border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '8px 12px' }}>
                                     <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
@@ -664,7 +663,7 @@ export default function NewPurchasePage() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('طريقة الدفع')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
                                         {(['cash', 'bank', 'credit'] as const).map(tType => (
-                                            <button key={tType} onClick={() => setForm((f: any) => ({ ...f, paymentType: tType, paidAmount: tType === 'credit' ? 0 : f.paidAmount }))} style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO, borderColor: form.paymentType === tType ? C.primary : C.border, background:  form.paymentType === tType ? C.primaryBg : 'transparent', color: form.paymentType === tType ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>{tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}</button>
+                                            <button key={tType} onClick={() => setForm((f: any) => ({ ...f, paymentType: tType, paidAmount: tType === 'credit' ? 0 : f.paidAmount }))} style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO, borderColor: form.paymentType === tType ? C.primary : C.border, background: form.paymentType === tType ? C.primaryBg : 'transparent', color: form.paymentType === tType ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>{tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}</button>
                                         ))}
                                     </div>
                                 </div>
@@ -726,7 +725,7 @@ export default function NewPurchasePage() {
                     e.preventDefault();
                     const name = (e.currentTarget.elements.namedItem('pName') as HTMLInputElement).value;
                     const phone = (e.currentTarget.elements.namedItem('pPhone') as HTMLInputElement).value;
-                    
+
                     if (!name) return;
                     setSubmitting(true);
                     try {
@@ -740,7 +739,7 @@ export default function NewPurchasePage() {
                             const newP = await res.json();
                             if (newPartnerType === 'supplier') setSuppliers(prev => [...(Array.isArray(prev) ? prev : []), newP]);
                             else setCustomers(prev => [...(Array.isArray(prev) ? prev : []), newP]);
-                            
+
                             setForm((f: any) => ({ ...f, supplierId: newP.id }));
                             setShowAddSup(false);
                         } else alert(t('فشل في الإضافة'));
@@ -768,12 +767,12 @@ export default function NewPurchasePage() {
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px' }}>
-                        <button type="submit" disabled={submitting} style={{ 
+                        <button type="submit" disabled={submitting} style={{
                             flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
                         }}>
                             {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                         </button>
-                        <button type="button" onClick={() => setShowAddSup(false)} style={{ 
+                        <button type="button" onClick={() => setShowAddSup(false)} style={{
                             flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`,
                             background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
                         }}>{t('إلغاء')}</button>
