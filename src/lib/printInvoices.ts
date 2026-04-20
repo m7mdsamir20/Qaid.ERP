@@ -405,9 +405,9 @@ tbody tr:nth-child(even){background: #fff;}
         <strong>${blInline('ملاحظات', 'Notes')}: </strong>${cleanNotes}
     </div>`;
         })()}
-    
+    ${isSaudi ? `
     <div style="width: 100%; text-align: left; margin-top: 10px; clear: both; display: block;">
-        <table style="width: 320px; display: inline-table; border-collapse: collapse; border: 1.5px solid #333; background: #fff;">
+        <table style="width: 340px; display: inline-table; border-collapse: collapse; border: 1.5px solid #333; background: #fff;">
             <tbody>
                 <tr>
                     <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
