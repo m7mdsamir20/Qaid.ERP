@@ -87,8 +87,9 @@ export default function DailyReportPage() {
         const logo = (company as any)?.logo || (company as any)?.companyLogo || '';
         const companyName = (company as any)?.companyName || (company as any)?.name || '';
         const now = new Date();
-        const nowStr = now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
-        const nowTime = now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+        const toWesternDigits = (s: string) => s.replace(/[٠-٩]/g, d => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+        const nowStr = toWesternDigits(now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' }));
+        const nowTime = toWesternDigits(now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' }));
 
         const kpis = [
             { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales) },
@@ -125,10 +126,10 @@ export default function DailyReportPage() {
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;font-size:11px;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{padding:8mm 12mm}
-.rpt-header{display:flex;justify-content:${isRtl ? 'flex-start' : 'flex-end'};align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:12px;gap:20px}
-.rpt-logo img{max-height:60px;max-width:130px;object-fit:contain}
-.rpt-logo-text{font-size:20px;font-weight:900;color:#000}
-.rpt-title-block{flex:1;text-align:center;padding-top:4px}
+.rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:12px;direction:ltr}
+.rpt-logo img{max-height:60px;max-width:120px;object-fit:contain}
+.rpt-logo-text{font-size:16px;font-weight:900;color:#000}
+.rpt-title-block{text-align:center;direction:${dir}}
 .rpt-title{font-size:15px;font-weight:900;color:#000;margin-bottom:6px}
 .rpt-meta{font-size:10px;color:#000;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
 .rpt-meta span{display:flex;align-items:center;gap:4px}
@@ -164,6 +165,7 @@ table{width:100%;border-collapse:collapse}
       <span>${isRtl ? 'طُبع:' : 'Printed:'} <b>${nowStr} — ${nowTime}</b></span>
     </div>
   </div>
+  <div></div>
 </div>
 
 <!-- KPI Cards -->
@@ -214,10 +216,6 @@ table{width:100%;border-collapse:collapse}
   </table>
 </div>
 
-<div class="footer">
-  <span>${isRtl ? 'نظام قيد ERP' : 'QAID ERP System'}</span>
-  <span>${isRtl ? 'تاريخ الطباعة:' : 'Printed on:'} ${nowStr} ${nowTime}</span>
-</div>
 
 </div>
 </body>
