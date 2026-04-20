@@ -78,12 +78,28 @@ export const GET = withProtection(async (request, session) => {
         let currentBalance = openingBalance;
         const resultLines = lines.map(line => {
             currentBalance += (line.debit - line.credit);
+            
+            let displayDesc = line.description || line.journalEntry.description || '';
+            const ref = line.journalEntry.reference || '';
+            
+            // تحسين الوصف ليظهر الكود الاحترافي بدلاً من الرقم البسيط (للبيانات القديمة والجديدة)
+            if (displayDesc.includes('فاتورة') && ref) {
+                // إذا كان المرجع SAL-1 أو PUR-1، نحوله لـ SAL-00001
+                const parts = ref.split('-');
+                if (parts.length === 2 && !isNaN(Number(parts[1]))) {
+                    const paddedRef = `${parts[0]}-${parts[1].padStart(5, '0')}`;
+                    displayDesc = displayDesc.replace(/فاتورة\s+\d+/, `فاتورة ${paddedRef}`);
+                    // لو الوصف مفيهوش رقم بس فيه كلمة فاتورة
+                    if (!displayDesc.includes(paddedRef)) displayDesc += ` (${paddedRef})`;
+                }
+            }
+            
             return {
                 id: line.id,
                 date: line.journalEntry.date,
                 entryNumber: String(line.journalEntry.entryNumber),
-                description: line.description || line.journalEntry.description || '',
-                reference: line.journalEntry.reference,
+                description: displayDesc,
+                reference: ref,
                 debit: line.debit,
                 credit: line.credit,
                 balance: currentBalance,
