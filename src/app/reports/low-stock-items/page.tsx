@@ -4,10 +4,14 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { Package, AlertTriangle, Search, Activity, Loader2, Box, Calendar } from 'lucide-react';
-import { C, CAIRO, PAGE_BASE, IS, INTER, TABLE_STYLE } from '@/constants/theme';
+import { Package, AlertTriangle, Search, Activity, ShoppingCart, Loader2, Box } from 'lucide-react';
+import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
-import { useCurrency } from '@/hooks/useCurrency';
+
+const getCurrencyName = (code: string) => {
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    return map[code] || code;
+};
 
 interface LowStockItem {
     id: string;
@@ -25,7 +29,7 @@ export default function LowStockReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const { fMoneyJSX } = useCurrency();
+    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<LowStockItem[]>([]);
     const [loading, setLoading] = useState(true);
@@ -39,9 +43,9 @@ export default function LowStockReportPage() {
             .finally(() => setLoading(false));
     }, []);
 
-    const filtered = data.filter(i => 
-        (i.name || '').toLowerCase().includes(q.toLowerCase()) || 
-        (i.code || '').toLowerCase().includes(q.toLowerCase()) || 
+    const filtered = data.filter(i =>
+        (i.name || '').toLowerCase().includes(q.toLowerCase()) ||
+        (i.code || '').toLowerCase().includes(q.toLowerCase()) ||
         (i.category || '').toLowerCase().includes(q.toLowerCase())
     );
     const totalValue = filtered.reduce((s, i) => s + i.value, 0);
@@ -53,9 +57,11 @@ export default function LowStockReportPage() {
                     title={t("أصناف تحت الحد الأدنى")}
                     subtitle={t("قائمة المنتجات التي أوشكت على النفاذ أو وصلت لمستوى إعادة الطلب.")}
                     backTab="inventory"
+
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '24px' }}>
                             <div style={{ position: 'relative', flex: 1 }}>
@@ -63,11 +69,11 @@ export default function LowStockReportPage() {
                                 <input
                                     placeholder={t("ابحث بالاسم، الكود، أو التصنيف...")}
                                     value={q} onChange={e => setQ(e.target.value)}
-                                    style={{ 
-                                        ...IS, width: '100%', height: '42px', padding: isRtl ? '0 45px 0 15px' : '0 15px 0 45px', 
-                                        borderRadius: '12px', border: `1px solid ${C.border}`, 
-                                        background: C.card, color: C.textPrimary, fontSize: '13.5px', 
-                                        outline: 'none', fontFamily: CAIRO, fontWeight: 500 
+                                    style={{
+                                        ...IS, width: '100%', height: '42px', padding: '0 45px 0 15px',
+                                        borderRadius: '12px', border: `1px solid ${C.border}`,
+                                        background: C.card, color: C.textPrimary, fontSize: '13.5px',
+                                        outline: 'none', fontFamily: CAIRO, fontWeight: 500
                                     }}
                                 />
                             </div>
@@ -77,7 +83,7 @@ export default function LowStockReportPage() {
                         </div>
 
                         {loading ? (
-                            <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px' }}>
+                            <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                                 <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                                 <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري فحص النواقص...')}</span>
                             </div>
@@ -88,75 +94,58 @@ export default function LowStockReportPage() {
                                 <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً.')}</p>
                             </div>
                         ) : (
-                            <>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', padding: '0 4px' }}>
-                                    <div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                                            <div style={{ width: '4px', height: '16px', background: '#f59e0b', borderRadius: '2px' }} />
-                                            <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t("تقرير الأصناف التي وصلت للحد الأدنى")}</h3>
-                                        </div>
-                                        <div style={{ display: 'flex', gap: '24px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
-                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                <Calendar size={13} />
-                                                <span>{t('تاريخ الفحص:')} <span style={{ color: C.textSecondary, fontFamily: INTER, fontWeight: 700 }}>{new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB')}</span></span>
-                                             </div>
-                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                <AlertTriangle size={13} style={{ color: '#f59e0b' }} />
-                                                <span>{t('الحالة:')} <span style={{ color: '#f59e0b', fontWeight: 700 }}>{t('يتطلب توريد')}</span></span>
-                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div style={TABLE_STYLE.container}>
-                                    <table style={TABLE_STYLE.table}>
-                                        <thead style={TABLE_STYLE.thead}>
-                                            <tr>
-                                                {[t('الصنف'), t('التصنيف'), t('الرصيد الحالي'), t('الحد الأدنى'), t('قيمة النقص')].map((h, i) => (
-                                                    <th key={i} style={{ 
-                                                        ...TABLE_STYLE.th(i === 0),
-                                                        textAlign: i === 4 ? (isRtl ? 'left' : 'right') : (i >= 2 ? 'center' : (isRtl ? 'right' : 'left')) as any, 
-                                                    }}>{h}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filtered.map((item, idx) => (
-                                                <tr key={item.id} style={TABLE_STYLE.row(idx === filtered.length - 1)}>
-                                                    <td style={TABLE_STYLE.td(true)}>
-                                                        <div style={{ fontSize: '13.5px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
-                                                        <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: INTER, fontWeight: 700 }}>{item.code}</div>
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: CAIRO }}>{item.category}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                        <span style={{ 
-                                                            background: item.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)', 
-                                                            color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b', 
-                                                            padding: '4px 12px', borderRadius: '10px', fontWeight: 800, fontSize: '12px', fontFamily: INTER
-                                                        }}>
-                                                            {item.totalStock.toLocaleString('en-US')}
-                                                        </span>
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 800, fontFamily: INTER }}>
-                                                        {item.minLimit.toLocaleString('en-US')}
-                                                    </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'left' : 'right' }}>
-                                                        {fMoneyJSX(item.value, '', { color: '#10b981', fontWeight: 800 })}
-                                                    </td>
-                                                </tr>
+                            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                                            {[t('الصنف'), t('التصنيف'), t('الرصيد الحالي'), t('الحد الأدنى'), t('قيمة النقص')].map((h, i) => (
+                                                <th key={i} style={{
+                                                    padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
+                                                    textAlign: i === 4 ? 'left' : (i >= 2 ? 'center' : 'right'),
+                                                    fontWeight: 800, fontFamily: CAIRO
+                                                }}>{h}</th>
                                             ))}
-                                        </tbody>
-                                        <tfoot>
-                                            <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `1px solid ${C.border}` }}>
-                                                <td colSpan={4} style={{ padding: '16px 24px', textAlign: 'start', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
-                                                <td style={{ padding: '16px 20px', textAlign: isRtl ? 'left' : 'right' }}>
-                                                    {fMoneyJSX(totalValue, '', { color: '#10b981', fontWeight: 900, fontSize: '15.5px' })}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filtered.map((item, idx) => (
+                                            <tr key={item.id}
+                                                style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
+                                                <td style={{ padding: '14px 20px' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: INTER, fontWeight: 700 }}>{item.code}</div>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{item.category}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                    <span style={{
+                                                        background: item.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+                                                        color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b',
+                                                        padding: '4px 12px', borderRadius: '10px', fontWeight: 1000, fontSize: '12px', fontFamily: INTER
+                                                    }}>
+                                                        {item.totalStock.toLocaleString('en-US')}
+                                                    </span>
+                                                </td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
+                                                    {item.minLimit.toLocaleString('en-US')}
+                                                </td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: '#10b981', fontSize: '13.5px', fontFamily: INTER }}>
+                                                    {item.value.toLocaleString('en-US')} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                             </tr>
-                                        </tfoot>
-                                    </table>
-                                </div>
-                            </>
+                                        ))}
+                                    </tbody>
+                                    <tfoot>
+                                        <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
+                                            <td colSpan={4} style={{ padding: '18px 24px', textAlign: 'start', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
+                                            <td style={{ padding: '18px 20px', textAlign: 'end', fontWeight: 1000, color: '#10b981', fontSize: '16px', fontFamily: INTER }}>
+                                                {totalValue.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: '#10b981', fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
                         )}
                     </div>
 
@@ -190,10 +179,19 @@ export default function LowStockReportPage() {
                     </div>
                 </div>
             </div>
-            <style jsx global>{`
-                @keyframes spin { to { transform: rotate(360deg) } }
+            <style>{`
+                @keyframes spin { to { transform: rotate(360deg); } }
                 .animate-spin { animation: spin 1s linear infinite; }
+                .print-only { display: none; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    div { background: #fff !important; border-color: #e2e8f0 !important; }
+                    div, span, h2, h3, p { color: #000 !important; }
+                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
+                }
             `}</style>
         </DashboardLayout>
     );
 }
+
