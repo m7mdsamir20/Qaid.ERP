@@ -11,63 +11,73 @@ export const GET = withProtection(async (request, session) => {
 
         const financialYearId = request.nextUrl.searchParams.get('financialYearId');
 
-        let yearFilter: { financialYearId?: string } = {};
+        // ① تحديد السنة المالية للحصول على نطاق التواريخ والأرصدة الافتتاحية
+        let currentYear = null;
         if (financialYearId) {
-            yearFilter = { financialYearId };
+            currentYear = await prisma.financialYear.findUnique({ where: { id: financialYearId } });
         } else {
-            const openYear = await prisma.financialYear.findFirst({
+            currentYear = await prisma.financialYear.findFirst({
                 where: { companyId, isOpen: true },
+                orderBy: { startDate: 'desc' }
             });
-            if (openYear) {
-                yearFilter = { financialYearId: openYear.id };
-            }
         }
 
-        const lines = await prisma.journalEntryLine.findMany({
-            where: {
-                journalEntry: {
-                    companyId,
-                    isPosted: true,
-                    ...yearFilter
+        if (!currentYear) {
+            return NextResponse.json({ error: "لا توجد سنة مالية مفتوحة" }, { status: 400 });
+        }
+
+        // ② جلب كافة الحسابات
+        const accounts = await prisma.account.findMany({
+            where: { companyId, accountCategory: 'detail' },
+            include: {
+                openingBalances: {
+                    where: { financialYearId: currentYear.id }
+                },
+                journalEntryLines: {
+                    where: {
+                        journalEntry: {
+                            isPosted: true,
+                            date: {
+                                gte: currentYear.startDate,
+                                lte: currentYear.endDate
+                            }
+                        }
+                    }
                 }
-            },
-            include: { account: true }
+            }
         });
 
-        // Aggregate Trial Balance
-        const tbMap = new Map<string, { code: string, name: string, debitMatch: number, creditMatch: number }>();
+        // ③ تجميع البيانات لميزان المراجعة
+        const report = accounts.map(acc => {
+            // الرصيد الافتتاحي من جدول الافتتاحيات
+            const opDebit = acc.openingBalances.reduce((s, b) => s + b.debit, 0);
+            const opCredit = acc.openingBalances.reduce((s, b) => s + b.credit, 0);
 
-        for (const line of lines) {
-            const accId = line.accountId;
-            if (!tbMap.has(accId)) {
-                tbMap.set(accId, {
-                    code: line.account.code,
-                    name: line.account.name,
-                    debitMatch: 0,
-                    creditMatch: 0
-                });
-            }
-            const current = tbMap.get(accId)!;
-            current.debitMatch += line.debit;
-            current.creditMatch += line.credit;
-        }
+            // الحركات خلال الفترة (بناءً على التواريخ لضمان الدقة وتجنب نقص البيانات)
+            const transDebit = acc.journalEntryLines.reduce((s, l) => s + l.debit, 0);
+            const transCredit = acc.journalEntryLines.reduce((s, l) => s + l.credit, 0);
 
-        const report = Array.from(tbMap.values()).map(acc => {
-            const balanceDetails = acc.debitMatch - acc.creditMatch;
+            // الإجماليات (الافتتاحي + الحركة)
+            const totalDebit = opDebit + transDebit;
+            const totalCredit = opCredit + transCredit;
+
+            const netBalance = totalDebit - totalCredit;
+
             return {
                 code: acc.code,
                 name: acc.name,
-                totalDebit: acc.debitMatch,
-                totalCredit: acc.creditMatch,
-                balanceDebit: balanceDetails > 0 ? balanceDetails : 0,
-                balanceCredit: balanceDetails < 0 ? Math.abs(balanceDetails) : 0,
+                totalDebit,
+                totalCredit,
+                balanceDebit: netBalance > 0 ? netBalance : 0,
+                balanceCredit: netBalance < 0 ? Math.abs(netBalance) : 0,
             };
-        }).sort((a, b) => a.code.localeCompare(b.code));
+        })
+        .filter(acc => acc.totalDebit !== 0 || acc.totalCredit !== 0) // إخفاء الحسابات الصفرية
+        .sort((a, b) => a.code.localeCompare(b.code));
 
         return NextResponse.json(report);
     } catch (e) {
         console.error("Trial Balance API Error:", e);
-        return NextResponse.json({ error: 'Failed to generate Trial Balance' }, { status: 500 });
+        return NextResponse.json({ error: 'Fails to generate Trial Balance' }, { status: 500 });
     }
 });
-

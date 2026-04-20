@@ -39,23 +39,23 @@ export default function CashFlowReportPage() {
     const [data, setData] = useState<MoneyLog[]>([]);
     const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, netFlow: 0, flowByDate: [] });
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     const [q, setQ] = useState('');
 
     useEffect(() => {
         fetch('/api/reports/cash-flow')
-            .then(res => res.json())
+            .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => {
-                if (!d.error) {
-                    setData(d.vouchers || []);
-                    setStats({
-                        totalIncome: d.totalIncome || 0,
-                        totalExpense: d.totalExpense || 0,
-                        netFlow: d.netFlow || 0,
-                        flowByDate: d.flowByDate || []
-                    });
-                }
+                if (d.error) throw new Error(d.error);
+                setData(d.vouchers || []);
+                setStats({
+                    totalIncome: d.totalIncome || 0,
+                    totalExpense: d.totalExpense || 0,
+                    netFlow: d.netFlow || 0,
+                    flowByDate: d.flowByDate || []
+                });
             })
-            .catch(() => { })
+            .catch(() => setError(t('فشل تحميل بيانات التدفق النقدي')))
             .finally(() => setLoading(false));
     }, []);
 
@@ -76,6 +76,13 @@ export default function CashFlowReportPage() {
                     backTab="financial"
                     
                 />
+
+                {error && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
+                        <span style={{ fontSize: '16px' }}>⚠️</span>{error}
+                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                    </div>
+                )}
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', flexDirection: 'column', gap: '16px' }}>

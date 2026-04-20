@@ -43,6 +43,7 @@ export default function ItemMovementReportPage() {
     const [movements, setMovements] = useState<Movement[]>([]);
     const [itemDetails, setItemDetails] = useState<Item | null>(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
     const [branchId, setBranchId] = useState('all');
     const [branches, setBranches] = useState<BranchOption[]>([]);
 
@@ -65,14 +66,14 @@ export default function ItemMovementReportPage() {
         params.set('itemId', id);
         if (targetBranchId && targetBranchId !== 'all') params.set('branchId', targetBranchId);
         fetch(`/api/reports/item-movement?${params}`)
-            .then(res => res.json())
+            .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => {
-                if (!d.error) {
-                    setMovements(d.movements);
-                    setItemDetails(d.item);
-                }
+                if (d.error) throw new Error(d.error);
+                setMovements(d.movements);
+                setItemDetails(d.item);
+                setError('');
             })
-            .catch(() => { })
+            .catch(() => setError(t('فشل تحميل بيانات حركة الصنف')))
             .finally(() => setLoading(false));
     };
 
@@ -166,6 +167,13 @@ export default function ItemMovementReportPage() {
                         />
                     )}
                 </div>
+
+                {error && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
+                        <span style={{ fontSize: '16px' }}>⚠️</span>{error}
+                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                    </div>
+                )}
 
                 {loading ? (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>

@@ -96,8 +96,8 @@ export default function GeneralLedgerPage() {
     const tColor = account ? (typeColors[account.type] || '#64748b') : '#64748b';
 
     const filtered = lines.filter(l =>
-        l.description.includes(search) ||
-        l.entryNumber.includes(search) ||
+        (l.description || '').includes(search) ||
+        (l.entryNumber || '').includes(search) ||
         (l.reference || '').includes(search)
     );
 
@@ -373,3 +373,4 @@ export default function GeneralLedgerPage() {
         </DashboardLayout>
     );
 }
+

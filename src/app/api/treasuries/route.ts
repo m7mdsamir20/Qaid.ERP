@@ -12,12 +12,64 @@ export const GET = withProtection(async (request, session) => {
         const where: any = { companyId };
         if (branchId && branchId !== 'all') where.branchId = branchId;
 
+        // ✅ جلب السنة المالية المفتوحة لتحديد نطاق الرصيد
+        const currentYear = await prisma.financialYear.findFirst({
+            where: { companyId, isOpen: true },
+            orderBy: { startDate: 'desc' },
+        });
+
         const treasuries = await prisma.treasury.findMany({
             where,
+            include: {
+                // نربط بحسابات الأستاذ للحصول على الرصيد الفعلي
+                account: {
+                    include: {
+                        journalEntryLines: {
+                            where: {
+                                journalEntry: {
+                                    isPosted: true,
+                                    date: currentYear ? {
+                                        gte: currentYear.startDate,
+                                        lte: currentYear.endDate
+                                    } : undefined
+                                }
+                            },
+                            select: { debit: true, credit: true }
+                        },
+                        openingBalances: {
+                            where: { financialYearId: currentYear?.id },
+                            select: { debit: true, credit: true }
+                        }
+                    }
+                }
+            },
             orderBy: { createdAt: 'asc' },
         });
-        return NextResponse.json(treasuries);
-    } catch {
+
+        // ✅ حساب الرصيد الديناميكي لكل خزينة بدلاً من الاعتماد على الحقل الاستاتيكي
+        const enhancedTreasuries = treasuries.map(t => {
+            let dynamicBalance = t.balance; // القيمة الافتراضية لو مفيش حساب مربوط
+
+            if (t.account) {
+                const linesDebit = t.account.journalEntryLines.reduce((s, l) => s + l.debit, 0);
+                const linesCredit = t.account.journalEntryLines.reduce((s, l) => s + l.credit, 0);
+                const openingDebit = t.account.openingBalances.reduce((s, b) => s + b.debit, 0);
+                const openingCredit = t.account.openingBalances.reduce((s, b) => s + b.credit, 0);
+                
+                // الرصيد = (الافتتاحي مدين + حركات مدين) - (الافتتاحي دائن + حركات دائن)
+                dynamicBalance = (openingDebit + linesDebit) - (openingCredit + linesCredit);
+            }
+
+            return {
+                ...t,
+                balance: dynamicBalance,
+                account: undefined // لا نرسل بيانات الحساب كاملة لتوفير الحجم
+            };
+        });
+
+        return NextResponse.json(enhancedTreasuries);
+    } catch (error) {
+        console.error("GET Treasuries Error:", error);
         return NextResponse.json([], { status: 500 });
     }
 });
@@ -60,7 +112,7 @@ export const POST = withProtection(async (request, session, body) => {
                 }
             });
 
-            // ③ لو في رصيد افتتاحي — سجّله في OpeningBalance
+            // ③ لو في رصيد افتتاحي — سجّله في OpeningBalance للحساب المربوط
             const amount = parseFloat(openingBalance) || 0;
             if (amount > 0 && linkedAccount) {
                 const currentYear = await tx.financialYear.findFirst({

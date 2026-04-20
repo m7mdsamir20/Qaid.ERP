@@ -204,7 +204,7 @@ export default function JournalEntriesPage() {
     };
 
     const filteredAll = entries.filter(e => {
-        const matchSearch = e.description.includes(search) || (e.entryNumber || '').includes(search) || (e.reference || '').includes(search);
+        const matchSearch = (e.description || '').includes(search) || (e.entryNumber || '').includes(search) || (e.reference || '').includes(search);
         const matchStatus = filterStatus === 'all' ? true : filterStatus === 'posted' ? e.isPosted : !e.isPosted;
         return matchSearch && matchStatus;
     });
