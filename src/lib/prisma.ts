@@ -10,7 +10,10 @@ const getDatabaseUrl = () => {
     const url = process.env.DATABASE_URL || '';
     if (!url) return url;
     const params: string[] = [];
-    if (!url.includes('pgbouncer=true') && url.includes('pooler.supabase.com')) params.push('pgbouncer=true');
+    // إضافة pgbouncer=true فقط إذا كان المنفذ هو 6543 (Transaction Mode)
+    if (!url.includes('pgbouncer=true') && url.includes('pooler.supabase.com') && url.includes(':6543')) {
+        params.push('pgbouncer=true');
+    }
     if (!url.includes('connection_limit=')) params.push('connection_limit=1');
     if (!url.includes('pool_timeout=')) params.push('pool_timeout=10');
     if (params.length === 0) return url;
