@@ -218,9 +218,9 @@ export const TABLE_STYLE = {
         background: C.subtle,
         borderBottom: `1px solid ${C.border}`
     },
-    th: (isFirst: boolean) => ({
+    th: (isFirst: boolean, isNumeric?: boolean) => ({
         padding: '16px 20px',
-        textAlign: (isFirst ? 'start' : 'center') as 'start' | 'center',
+        textAlign: (isFirst ? 'start' : isNumeric ? 'end' : 'center') as 'start' | 'end' | 'center',
         fontSize: '12px',
         fontWeight: 700,
         color: C.textMuted,
@@ -234,9 +234,9 @@ export const TABLE_STYLE = {
         transition: 'all 0.2s',
         cursor: 'default' as 'default'
     }),
-    td: (isFirst: boolean) => ({
+    td: (isFirst: boolean, isNumeric?: boolean) => ({
         padding: '16px 20px',
-        textAlign: (isFirst ? 'start' : 'center') as 'start' | 'center',
+        textAlign: (isFirst ? 'start' : isNumeric ? 'end' : 'center') as 'start' | 'end' | 'center',
         verticalAlign: 'middle' as 'middle'
     }),
     /** Action Button Standard (30x30, Icon 14) */

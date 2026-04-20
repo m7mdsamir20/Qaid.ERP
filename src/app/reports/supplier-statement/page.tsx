@@ -231,7 +231,7 @@ export default function SupplierStatementPage() {
                                             {[t('التاريخ'), t('طبيعة الحركة'), t('المـرجع'), t('البيان والتفاصيل'), t('مسدد (مدين)'), t('مستحق (دائن)'), t('الرصيد')].map((h, i) => (
                                                 <th key={i} style={{
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
-                                                    textAlign: 'center',
+                                                    textAlign: i === 3 ? 'start' : i >= 4 ? 'end' : 'center',
                                                     fontWeight: 800, fontFamily: CAIRO
                                                 }}>{h}</th>
                                             ))}
@@ -247,10 +247,10 @@ export default function SupplierStatementPage() {
                                                     <span style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, fontSize: '11px', fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد افتتاحي')}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, textAlign: 'center' }}>{t('رصيد ما قبل فترة التقرير')}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: data.initialBalance < 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance < 0 ? Math.abs(data.initialBalance).toLocaleString('en-US') : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: data.initialBalance > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance > 0 ? data.initialBalance.toLocaleString('en-US') : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: data.initialBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: INTER }}>{Math.abs(data.initialBalance).toLocaleString('en-US')}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, textAlign: 'start' }}>{t('رصيد ما قبل فترة التقرير')}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: data.initialBalance < 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance < 0 ? Math.abs(data.initialBalance).toLocaleString('en-US') : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: data.initialBalance > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance > 0 ? data.initialBalance.toLocaleString('en-US') : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 1000, color: data.initialBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: INTER }}>{Math.abs(data.initialBalance).toLocaleString('en-US')}</td>
                                             </tr>
                                         )}
                                         {data.statement.map((row: StatementRow, i: number) => (
@@ -273,23 +273,23 @@ export default function SupplierStatementPage() {
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     <span style={{ fontSize: '12px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{row.ref || '—'}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, textAlign: 'center' }}>{row.description}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.debit > 0 ? row.debit.toLocaleString('en-US') : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.credit > 0 ? row.credit.toLocaleString('en-US') : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: row.balance >= 0 ? '#ef4444' : '#10b981', fontSize: '14.5px', fontFamily: INTER }}>{Math.abs(row.balance).toLocaleString('en-US')}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, textAlign: 'start' }}>{row.description}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.debit > 0 ? row.debit.toLocaleString('en-US') : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.credit > 0 ? row.credit.toLocaleString('en-US') : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 1000, color: row.balance >= 0 ? '#ef4444' : '#10b981', fontSize: '14.5px', fontFamily: INTER }}>{Math.abs(row.balance).toLocaleString('en-US')}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: '#10b981', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
+                                            <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'start', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
+                                            <td style={{ padding: '20px 20px', textAlign: 'end', color: '#10b981', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
                                                 {(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0)).toLocaleString('en-US')}
                                             </td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
+                                            <td style={{ padding: '20px 20px', textAlign: 'end', color: '#ef4444', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
                                                 {(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0)).toLocaleString('en-US')}
                                             </td>
-                                            <td style={{ padding: '20px 24px', textAlign: 'center', color: data.finalBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '17px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>
+                                            <td style={{ padding: '20px 24px', textAlign: 'end', color: data.finalBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '17px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>
                                                 {Math.abs(data.finalBalance).toLocaleString('en-US')}
                                             </td>
                                         </tr>

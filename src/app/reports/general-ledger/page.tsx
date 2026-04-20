@@ -246,7 +246,7 @@ export default function GeneralLedgerPage() {
                                 <thead>
                                     <tr className="print-table-header" style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
                                         { [t('التاريخ'), t('رقم القيد'), t('البيان الوصفي'), t('مركز التكلفة'), t('مدين (+)'), t('دائن (-)'), t('الرصيد')].map((h, i) => (
-                                            <th key={i} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i >= 4 ? 'center' : 'right', fontFamily: CAIRO }}>{h}</th>
+                                            <th key={i} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i === 0 ? 'center' : i >= 4 ? 'end' : 'start', fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -256,7 +256,7 @@ export default function GeneralLedgerPage() {
                                             {fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي')}
                                         </td>
                                         <td colSpan={2} />
-                                        <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 900, color: '#60a5fa', direction: 'ltr', background: 'rgba(59,130,246,0.05)', fontFamily: CAIRO }}>{fmt(openingBalance)}</td>
+                                        <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 900, color: '#60a5fa', background: 'rgba(59,130,246,0.05)', fontFamily: CAIRO }}>{fmt(openingBalance)}</td>
                                     </tr>
                                     {filtered.length === 0 ? (
                                         <tr>
@@ -283,18 +283,18 @@ export default function GeneralLedgerPage() {
                                                     ? <span style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', padding: '2px 8px', fontSize: '11px', color: '#a78bfa', fontFamily: CAIRO }}>{line.costCenter.name}</span>
                                                     : <span style={{ color: '#334155' }}>—</span>}
                                             </td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 700, color: line.debit > 0 ? '#34d399' : '#2d3748', fontFamily: CAIRO }}>{line.debit > 0 ? fmt(line.debit) : '—'}</td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 700, color: line.credit > 0 ? '#f87171' : '#2d3748', fontFamily: CAIRO }}>{line.credit > 0 ? fmt(line.credit) : '—'}</td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 900, color: line.balance >= 0 ? tColor : '#f87171', direction: 'ltr', fontFamily: CAIRO }}>{fmt(line.balance)}</td>
+                                            <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 700, color: line.debit > 0 ? '#34d399' : '#2d3748', fontFamily: CAIRO }}>{line.debit > 0 ? fmt(line.debit) : '—'}</td>
+                                            <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 700, color: line.credit > 0 ? '#f87171' : '#2d3748', fontFamily: CAIRO }}>{line.credit > 0 ? fmt(line.credit) : '—'}</td>
+                                            <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 900, color: line.balance >= 0 ? tColor : '#f87171', fontFamily: CAIRO }}>{fmt(line.balance)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.04)', borderTop: '2px solid rgba(255,255,255,0.08)' }}>
-                                        <td colSpan={4} style={{ padding: '16px', fontSize: '12px', fontWeight: 800, color: '#94a3b8', fontFamily: CAIRO }}>{t('إجماليات الحركات والأرصدة')}</td>
-                                        <td style={{ padding: '16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: '#34d399', direction: 'ltr', fontFamily: CAIRO }}>{fmt(totalDebit)}</td>
-                                        <td style={{ padding: '16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: '#f87171', direction: 'ltr', fontFamily: CAIRO }}>{fmt(totalCredit)}</td>
-                                        <td style={{ padding: '16px', textAlign: 'center', fontSize: '12px', fontWeight: 900, color: tColor, direction: 'ltr', background: 'rgba(255,255,255,0.02)', fontFamily: CAIRO }}>{fmt(closingBalance)}</td>
+                                        <td colSpan={4} style={{ padding: '16px', fontSize: '12px', fontWeight: 800, color: '#94a3b8', fontFamily: CAIRO, textAlign: 'start' }}>{t('إجماليات الحركات والأرصدة')}</td>
+                                        <td style={{ padding: '16px', textAlign: 'end', fontSize: '15px', fontWeight: 900, color: '#34d399', fontFamily: CAIRO }}>{fmt(totalDebit)}</td>
+                                        <td style={{ padding: '16px', textAlign: 'end', fontSize: '15px', fontWeight: 900, color: '#f87171', fontFamily: CAIRO }}>{fmt(totalCredit)}</td>
+                                        <td style={{ padding: '16px', textAlign: 'end', fontSize: '12px', fontWeight: 900, color: tColor, background: 'rgba(255,255,255,0.02)', fontFamily: CAIRO }}>{fmt(closingBalance)}</td>
                                     </tr>
                                 </tfoot>
                             </table>
