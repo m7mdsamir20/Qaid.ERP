@@ -61,32 +61,35 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const labelAccount = isRtl ? 'الحساب:' : 'Account:';
     const labelCode = isRtl ? 'الكود:' : 'Code:';
     
-    // Currency Detection
-    const currencySym = co.currencySymbol || co.currency || 'ر.س';
+    // Currency Detection & Processing
+    const symbols = ['ج.م', 'ر.س', 'د.إ', '$', 'د.ك', 'ر.ق', 'د.ب', 'ر.ع', 'د.أ', 'EGP', 'SAR', 'AED', 'USD'];
+    const currencySym = co.currencySymbol || co.currency || (isRtl ? 'ر.س' : 'SAR');
 
     const includeEls = Array.from(document.querySelectorAll('[data-print-include]'));
-    const includeHTML = includeEls.map(el => el.outerHTML).join('');
-    
-    // Process Tables to add currency and alignment
-    const tables = Array.from(document.querySelectorAll('table'));
-    const processedTablesHTML = tables.map(originalTbl => {
+    const includeHTML = includeEls.map(el => {
+        // Just take the text content and structure it as cards
+        const cards = Array.from(el.children).map(child => {
+            const label = child.querySelector('.stat-label')?.textContent || child.querySelector('span:first-child')?.textContent || '';
+            const value = child.querySelector('.stat-value')?.textContent || child.querySelector('span:last-child')?.textContent || '';
+            return `<div class="stat-card"><span class="lbl">${label}</span><span class="val">${value}</span></div>`;
+        }).join('');
+        return `<div class="rpt-stats">${cards}</div>`;
+    }).join('');
+
+    const processedTablesHTML = Array.from(document.querySelectorAll('table')).map(originalTbl => {
         const tbl = originalTbl.cloneNode(true) as HTMLTableElement;
-        
-        // Fix column contents
-        const rows = Array.from(tbl.querySelectorAll('tr'));
-        rows.forEach(row => {
+        Array.from(tbl.querySelectorAll('tr')).forEach(row => {
             const cells = Array.from(row.querySelectorAll('td, th'));
             cells.forEach((cell, idx) => {
-                const text = cell.textContent || '';
-                // If it's a number-like cell in Debit/Credit/Balance columns (idx 4, 5, 6 usually)
-                // or if the header says Debit/Credit/Balance
+                const text = (cell.textContent || '').trim();
                 const isHeader = cell.tagName === 'TH';
-                if (!isHeader && text.trim() && !text.includes(currencySym) && /^-?\d+/.test(text.trim().replace(/,/g, ''))) {
-                   // Check if it's one of the monetary columns
-                   // In general ledger: Date(0), Entry(1), Desc(2), Center(3), Debit(4), Credit(5), Balance(6)
-                   if (idx >= 4) {
-                      cell.innerHTML = `<strong>${text}</strong> <small style="font-size: 8px; opacity: 0.8">${currencySym}</small>`;
-                   }
+                
+                // Only add currency if it's a number and doesn't already have symbols or letters
+                const hasLetters = /[a-zA-Z\u0600-\u06FF]/.test(text);
+                const isNumeric = /^-?\d+/.test(text.replace(/,/g, ''));
+
+                if (!isHeader && isNumeric && !hasLetters && idx >= 4) {
+                    cell.innerHTML = `<span style="font-weight:700">${text}</span> <small style="font-size:8px; opacity:0.8">${currencySym}</small>`;
                 }
             });
         });
@@ -102,68 +105,88 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:10px;line-height:1.3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-.page{padding:8mm 10mm}
+/* ── Page ── */
+.page{padding:5mm 8mm}
 
-/* Force all elements to be black in print */
-* { color: #000 !important; text-decoration: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+/* ── Header: Premium Invoice Style ── */
+.rpt-header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-end; 
+    padding-bottom: 12px; 
+    border-bottom: 2px solid #000; 
+    margin-bottom: 15px; 
+}
+.rpt-logo img { max-height: 80px; max-width: 180px; object-fit: contain; }
+.rpt-logo-text { font-size: 24px; font-weight: 900; }
 
-/* ── Header: Logo only above the line ── */
-.rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:center;padding-bottom:8px;border-bottom:1px solid #111;margin-bottom:8px}
-.rpt-logo img{max-height:70px;max-width:150px;object-fit:contain}
-.rpt-logo-text{font-size:20px;font-weight:900;color:#000}
+.rpt-box { 
+    background: #fbfbfb; 
+    border: 1px solid #ddd; 
+    border-radius: 8px; 
+    padding: 12px 15px; 
+    margin-bottom: 20px; 
+}
+.rpt-title { 
+    font-size: 18px; 
+    font-weight: 950; 
+    display: block; 
+    margin-bottom: 10px; 
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+.rpt-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 10px 20px; 
+}
+.rpt-item { display: flex; flex-direction: column; gap: 2px; }
+.rpt-lbl { font-size: 8.5px; font-weight: 800; color: #555; text-transform: uppercase; }
+.rpt-val { font-size: 11px; font-weight: 900; color: #000; }
 
-/* ── Unified Info Box below the line ── */
-.rpt-box{border:1px solid #999;border-radius:4px;padding:6px 10px;margin-bottom:10px;background:#fcfcfc;text-align:center}
-.rpt-title{font-size:16px;font-weight:900;color:#000;margin-bottom:4px;display:block}
-.rpt-details{display:flex;flex-wrap:wrap;gap:5px 20px;justify-content:center;margin-top:2px}
-.rpt-detail{display:flex;align-items:center;gap:4px;font-size:10px}
-.rpt-lbl{font-weight:800;color:#666}
-.rpt-val{font-weight:800;color:#000}
-
-/* ── Stats (data-print-include) ── */
-[data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:15px}
-[data-print-include]>*{flex:1;min-width:100px;padding:8px 12px!important;border:1px solid #999!important;border-radius:6px!important;background:transparent!important;text-align:center}
-[data-print-include] *{color:#000!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important}
-[data-print-include] svg{display:none!important}
+/* ── Stats Summary ── */
+.rpt-stats { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 20px; 
+    flex-wrap: wrap;
+}
+.stat-card { 
+    flex: 1; 
+    border: 1px solid #ccc; 
+    background: #fff; 
+    padding: 8px; 
+    border-radius: 6px; 
+    text-align: center;
+}
+.stat-card .lbl { font-size: 9px; font-weight: 800; color: #666; margin-bottom: 3px; display: block; }
+.stat-card .val { font-size: 13px; font-weight: 900; color: #000; }
 
 /* ── Table ── */
-.table-wrap{margin-top:8px}
-table{width:100%;border-collapse:collapse;border:1px solid #999;font-size:11px}
-thead tr{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-th{padding:7px 5px;font-size:9.5px;font-weight:900;color:#111!important;text-align:center;border:1px solid #999;background:#f0f0f0!important;white-space:nowrap;line-height:1.2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+th { 
+    background: #eee !important; 
+    border: 1px solid #000; 
+    padding: 8px 5px; 
+    font-size: 10px; 
+    font-weight: 900; 
+    text-align: center;
+}
+td { 
+    border: 1px solid #bbb; 
+    padding: 5px 7px; 
+    font-size: 10.5px; 
+    text-align: center;
+    vertical-align: middle;
+}
+tr.opening-balance td { background: #f5f5f5 !important; font-weight: 900; text-decoration: underline; }
+tfoot tr { background: #eee !important; }
+tfoot td { border: 1px solid #000; font-weight: 950; font-size: 12px; }
 
-/* Alignment Hacks */
-th:first-child, td:first-child { text-align: ${firstColAlign} !important; }
-th:last-child, td:last-child { text-align: ${lastColAlign} !important; }
-
-tbody tr{border-bottom: 1px solid #999;}
-tbody tr:nth-child(even){background:transparent!important}
-tbody tr:nth-child(odd){background:transparent!important}
-td{padding:5px 7px;font-size:10px;color:#000!important;text-align:center;border:1px solid #999;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word}
-td * { color: #000 !important; }
-
-td span,td a,td div{font-size:inherit!important; color:#000!important; text-decoration: none !important;}
-td button{display:none!important}
-td strong,td b{font-weight:900}
-td span[style],td div[style]{-webkit-print-color-adjust:exact;print-color-adjust:exact; color:#000!important}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:900!important}
-tr.opening-balance td{background:#f8f8f8!important;font-weight:900!important;font-style:italic;border-top:1px solid #999!important;border-bottom:1px solid #999!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot tr{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot td{font-weight:900;font-size:11.5px;color:#111!important;background:#f0f0f0!important;border:1px solid #999;padding:7px 7px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot td:first-child{text-align:${firstColAlign}}
-tfoot td:last-child{text-align:${lastColAlign}}
-
-@media print{
-  @page{size:A4;margin:8mm 10mm}
-  body{font-size:10.5px}
-  .page{padding:0}
-  th{font-size:9px!important;padding:5px 4px!important}
-  td{font-size:9.5px!important;padding:4px 5px!important}
-  thead{display:table-header-group}
-  tfoot{display:table-footer-group}
-  tbody tr{page-break-inside:avoid}
-  table{page-break-inside:auto}
-  [data-print-include]{page-break-inside:avoid}
+@media print {
+    @page { size: A4; margin: 5mm; }
+    .page { padding: 0; }
+    .no-print { display: none !important; }
 }
 </style>
 </head>
@@ -178,11 +201,20 @@ tfoot td:last-child{text-align:${lastColAlign}}
 
 <div class="rpt-box">
   <span class="rpt-title">${reportTitle}</span>
-  <div class="rpt-details">
-     ${accountName ? `<div class="rpt-detail"><span class="rpt-lbl">${labelAccount}</span><span class="rpt-val">${accountName}</span></div>` : ''}
-     <div class="rpt-detail"><span class="rpt-lbl">${labelPrintDate}</span><span class="rpt-val" style="direction: ltr; display: inline-block;">${printDateStr} — ${printTimeStr}</span></div>
-     ${dateRange ? `<div class="rpt-detail"><span class="rpt-lbl">${labelPeriod}</span><span class="rpt-val">${dateRange}</span></div>` : ''}
-     ${printCode ? `<div class="rpt-detail"><span class="rpt-lbl">${labelCode}</span><span class="rpt-val">${printCode}</span></div>` : ''}
+  <div class="rpt-grid">
+     <div class="rpt-item">
+        <span class="rpt-lbl">${labelAccount}</span>
+        <span class="rpt-val">${accountName || '—'}</span>
+     </div>
+     <div class="rpt-item">
+        <span class="rpt-lbl">${labelPrintDate}</span>
+        <span class="rpt-val" style="direction: ltr;">${printDateStr} — ${printTimeStr}</span>
+     </div>
+     <div class="rpt-item">
+        <span class="rpt-lbl">${labelPeriod}</span>
+        <span class="rpt-val">${dateRange || '—'}</span>
+     </div>
+     ${printCode ? `<div class="rpt-item"><span class="rpt-lbl">${labelCode}</span><span class="rpt-val">${printCode}</span></div>` : ''}
   </div>
 </div>
 
