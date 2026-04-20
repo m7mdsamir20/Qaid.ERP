@@ -1170,131 +1170,139 @@ export function generateReportHTML(
     } = {}
 ): string {
     const lang = options.lang || 'ar';
+    const isRtl = lang === 'ar';
+    const dir = isRtl ? 'rtl' : 'ltr';
+    const firstColAlign = isRtl ? 'right' : 'left';
     const currencyCode = company.currency || 'EGP';
-    const sym = getCurrencySymbol(currencyCode, lang);
     const isA5 = options.isA5 || false;
-    const isBilingual = (company.countryCode || 'EG').toUpperCase() !== 'EG';
 
     const co = {
-        name: company.name || 'اسم الشركة',
-        nameEn: company.nameEn || '',
-        addr: [company.addressRegion, company.addressCity, company.addressDistrict, company.addressStreet].filter(Boolean).join(' - '),
-        phone: company.phone || '',
+        name: company.name || '',
         logo: company.logo || '',
     };
 
-    const blInline = (ar: string, en: string) => isBilingual ? `${ar} / <span style="font-size:100%;font-family:sans-serif">${en}</span>` : ar;
+    const now = new Date();
+    const printDateStr = now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+    const printTimeStr = now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+
+    const baseFont  = isA5 ? '9px'  : '11px';
+    const titleFont = isA5 ? '13px' : '14px';
+    const logoH     = isA5 ? '50px' : '65px';
+
+    const lbl = {
+        printDate : isRtl ? 'تاريخ الطباعة:' : 'Print Date:',
+        period    : isRtl ? 'الفترة:'        : 'Period:',
+        from      : isRtl ? 'من: '           : 'From: ',
+        to        : isRtl ? ' — إلى: '       : ' — To: ',
+        by        : isRtl ? 'بواسطة:'        : 'By:',
+        note      : isRtl ? 'ملاحظة:'        : 'Note:',
+        footer    : isRtl ? 'طُبع بواسطة نظام ERP' : 'Printed via ERP System',
+    };
 
     return `<!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="${lang}" dir="${dir}">
 <head>
 <meta charset="UTF-8"/>
 <title>${title}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
-    *{margin:0;padding:0;box-sizing:border-box}
-    :root {
-        --base-font: ${isA5 ? '9px' : '11px'};
-        --header-name: ${isA5 ? '16px' : '22px'};
-        --title-font: ${isA5 ? '13px' : '18px'};
-        --logo-h: ${isA5 ? '45px' : '85px'};
-    }
-    body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);background:#fff;direction:rtl}
-    .page{width:100%; max-width: 900px; min-height: 282mm; margin:0 auto;padding:6mm 10mm;display:flex;flex-direction:column; background: #fff;}
-    
-    /* Header Section */
-    .header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:3px solid #111;margin-bottom:15px}
-    .co-block{flex:1;text-align:right}
-    .co-name{font-size:var(--header-name);font-weight:900;color:#111;margin-bottom:2px}
-    .co-line{font-size:${isA5 ? '8.5px' : '10.5px'};color:#444;line-height:1.4}
-    .header-center{flex:1.2;text-align:center}
-    .report-title{font-size:var(--title-font);font-weight:900;color:#111;background:#f8f9fa;padding:4px 25px;border-radius:10px;display:inline-block;border:1.5px solid #111;box-shadow: 0 4px 0 #111}
-    .report-dates{font-size:9.5px;color:#333;font-weight:700;margin-top:10px}
-    .logo-block{flex:1;text-align:left}
-    .logo-block img{max-height:var(--logo-h);max-width:160px;object-fit:contain}
-    
-    /* Metadata Section */
-    .meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; border: 1.5px solid #111; border-radius: 8px; overflow: hidden; }
-    .meta-item { display: flex; align-items: center; border-bottom: 1px solid #eee; }
-    .meta-item:last-child, .meta-item:nth-last-child(2) { border-bottom: none; }
-    .meta-label { width: 140px; background: #f8f9fa; padding: 6px 12px; font-weight: 900; font-size: 10px; color: #444; border-left: 1.5px solid #111; }
-    .meta-value { padding: 6px 12px; font-weight: 700; font-size: 11px; flex: 1; }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;font-size:${baseFont};line-height:1.4}
+.page{width:100%;max-width:900px;margin:0 auto;padding:8mm 10mm;background:#fff;display:flex;flex-direction:column}
 
-    /* Content Area */
-    .report-content { flex: 1; }
-    table{width:100%;border-collapse:collapse;border:2px solid #111;margin-top:10px}
-    thead th{background:#f0f1f3;padding:10px;font-size:10px;font-weight:900;border:1.5px solid #111; color:#000; text-align:center; white-space:nowrap}
-    tbody td{padding:8px 10px;font-size:10.5px;border:1px solid #111;text-align:center;font-weight:700; color:#111}
-    tbody tr:nth-child(even){background:#fcfcfc}
-    
-    /* Summary Section */
-    .summary-section { margin-top: 20px; width: 100%; display: flex; flex-direction: column; align-items: flex-start; }
-    .summary-table { width: 320px; margin-right: auto; margin-left: 0; border: 2px solid #111; border-radius: 8px; overflow: hidden; background: #fff; }
-    .summary-row { display: flex; justify-content: space-between; border-bottom: 1px solid #eee; }
-    .summary-row:last-child { border-bottom: none; }
-    .summary-label { padding: 8px 15px; font-weight: 900; background: #f8f9fa; flex: 1; text-align: right; }
-    .summary-value { padding: 8px 15px; font-weight: 900; text-align: left; min-width: 120px; font-family: monospace; font-size: 12px; border-right: 1.5px solid #111; }
-    .summary-total { background: #111 !important; color: #fff !important; }
-    .summary-total .summary-value { border-right-color: #444; }
+/* ── Header: logo only ── */
+.rpt-header{display:flex;justify-content:center;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:10px}
+.rpt-logo img{max-height:${logoH};max-width:140px;object-fit:contain}
+.rpt-logo-text{font-size:18px;font-weight:900;color:#000;text-align:center}
 
-    .footer{margin-top: 30px; padding-top: 15px; width: 100%; font-size: 9px; color: #666; text-align: center; border-top: 1px dotted #ccc; display: flex; justify-content: space-between; align-items: center;}
-    .footer span { font-weight: 700; }
+/* ── Report info block ── */
+.rpt-info{border:1px solid #ccc;border-radius:4px;padding:8px 12px;margin-bottom:10px;background:#f9f9f9}
+.rpt-info-title{font-size:${titleFont};font-weight:900;color:#000;text-align:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #ddd}
+.rpt-info-rows{display:flex;flex-wrap:wrap;gap:4px 24px}
+.rpt-info-row{display:flex;align-items:center;gap:4px;font-size:10.5px}
+.rpt-info-lbl{font-weight:700;color:#444}
+.rpt-info-val{color:#000;font-weight:600}
 
-    @media print {
-        @page { size: auto; margin: 4mm 6mm; }
-        body { background: #fff; -webkit-print-color-adjust: exact; }
-        .page { width: 100% !important; max-width: none !important; padding: 0 !important; margin: 0 !important; min-height: 0 !important; }
-        thead { display: table-header-group; }
-    }
+/* ── Metadata grid ── */
+.meta-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;margin-bottom:10px;border:1px solid #ccc;border-radius:4px;overflow:hidden;background:#ccc}
+.meta-item{display:flex;align-items:center;background:#fff}
+.meta-label{padding:5px 10px;font-weight:700;font-size:10px;color:#444;background:#f5f5f5;border-${isRtl ? 'left' : 'right'}:1px solid #ccc;white-space:nowrap;min-width:120px}
+.meta-value{padding:5px 10px;font-weight:600;font-size:10.5px;flex:1;color:#000}
+
+/* ── Table ── */
+.report-content{flex:1}
+table{width:100%;border-collapse:collapse;border:1px solid #999;margin-top:8px;font-size:10.5px}
+thead th{background:#e8e8e8!important;padding:7px 9px;font-size:10px;font-weight:900;color:#000;text-align:center;border:1px solid #bbb;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+thead th:first-child{text-align:${firstColAlign}}
+tbody td{padding:5px 9px;font-size:10.5px;color:#000;text-align:center;border:1px solid #ddd;vertical-align:middle;line-height:1.3}
+tbody td:first-child{text-align:${firstColAlign};font-weight:600}
+tbody tr:nth-child(even){background:#f5f5f5!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot td{background:#e8e8e8!important;font-weight:900;font-size:11px;color:#000!important;border:1px solid #bbb;padding:6px 9px;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot td:first-child{text-align:${firstColAlign}}
+
+/* ── Summary ── */
+.summary-section{margin-top:12px;padding-top:8px;border-top:1px solid #999;page-break-inside:avoid}
+.summary-row{display:flex;justify-content:space-between;align-items:center;padding:3px 0;font-size:11px;color:#000}
+.summary-row.total{font-weight:900;font-size:12px;border-top:2px solid #000;margin-top:4px;padding-top:4px}
+.summary-lbl{font-weight:600;color:#333}
+.summary-val{font-weight:700;color:#000}
+
+/* ── Footer ── */
+.footer{margin-top:14px;padding-top:8px;border-top:1px dotted #ccc;font-size:9px;color:#555;display:flex;justify-content:space-between}
+
+@media print{
+  @page{size:A4;margin:6mm 8mm}
+  body{font-size:10px}
+  .page{padding:0;max-width:none;min-height:0}
+  thead{display:table-header-group}
+  tfoot{display:table-footer-group}
+  tbody tr{page-break-inside:avoid}
+  table{page-break-inside:auto}
+  .summary-section{page-break-inside:avoid}
+  .meta-grid{page-break-inside:avoid}
+  .rpt-info{page-break-inside:avoid}
+}
 </style>
 </head>
 <body>
 <div class="page">
-    <div class="header">
-        <div class="co-block">
-            <div class="co-name">${co.name}</div>
-            <div class="co-line">${co.addr}</div>
-            ${co.phone ? `<div class="co-line">الهاتف: ${co.phone}</div>` : ''}
-        </div>
-        <div class="header-center">
-            <div class="report-title">${title}</div>
-            <div class="report-dates">${options.dateFrom ? `من: ${options.dateFrom}` : ''} ${options.dateTo ? ` إلى: ${options.dateTo}` : ''}</div>
-            ${options.subtitle ? `<div class="report-subtitle">${options.subtitle}</div>` : ''}
-        </div>
-        <div class="logo-block">
-            ${co.logo ? `<img src="${co.logo}" alt=""/>` : ''}
-        </div>
+
+  <div class="rpt-header">
+    <div class="rpt-logo">${co.logo ? `<img src="${co.logo}" alt=""/>` : `<div class="rpt-logo-text">${co.name}</div>`}</div>
+  </div>
+
+  <div class="rpt-info">
+    <div class="rpt-info-title">${title}</div>
+    <div class="rpt-info-rows">
+      <div class="rpt-info-row"><span class="rpt-info-lbl">${lbl.printDate}</span><span class="rpt-info-val">${printDateStr} — ${printTimeStr}</span></div>
+      ${(options.dateFrom || options.dateTo) ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${lbl.period}</span><span class="rpt-info-val">${options.dateFrom ? lbl.from + options.dateFrom : ''}${options.dateTo ? lbl.to + options.dateTo : ''}</span></div>` : ''}
+      ${options.generatedBy ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${lbl.by}</span><span class="rpt-info-val">${options.generatedBy}</span></div>` : ''}
+      ${options.subtitle ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${lbl.note}</span><span class="rpt-info-val">${options.subtitle}</span></div>` : ''}
     </div>
+  </div>
 
-    ${(options.metadata && options.metadata.length > 0) ? `
-    <div class="meta-grid">
-        ${options.metadata.map(m => `
-        <div class="meta-item">
-            <div class="meta-label">${m.label}</div>
-            <div class="meta-value">${m.value}</div>
-        </div>`).join('')}
-    </div>` : ''}
+  ${(options.metadata && options.metadata.length > 0) ? `
+  <div class="meta-grid">
+    ${options.metadata.map(m => `<div class="meta-item"><div class="meta-label">${m.label}</div><div class="meta-value">${m.value}</div></div>`).join('')}
+  </div>` : ''}
 
-    <div class="report-content">
-        ${content}
-    </div>
+  <div class="report-content">${content}</div>
 
-    ${(options.summary && options.summary.length > 0) ? `
-    <div class="summary-section">
-        <div class="summary-table">
-            ${options.summary.map(s => `
-            <div class="summary-row ${s.isTotal ? 'summary-total' : ''}">
-                <div class="summary-label">${s.label}</div>
-                <div class="summary-value">${typeof s.value === 'number' ? formatMoney(s.value, currencyCode, lang) : s.value}</div>
-            </div>`).join('')}
-        </div>
-    </div>` : ''}
+  ${(options.summary && options.summary.length > 0) ? `
+  <div class="summary-section">
+    ${options.summary.map(s => `
+    <div class="summary-row${s.isTotal ? ' total' : ''}">
+      <span class="summary-lbl">${s.label}</span>
+      <span class="summary-val">${typeof s.value === 'number' ? formatMoney(s.value, currencyCode, lang) : s.value}</span>
+    </div>`).join('')}
+  </div>` : ''}
 
-    <div class="footer">
-        <div>طُبع بواسطة نظام الـ ERP | <span>${options.generatedBy || 'النظام'}</span></div>
-        <div>تاريخ الطباعة: <span>${new Date().toLocaleString('ar-EG')}</span></div>
-        <div>صفحة 1 من 1</div>
-    </div>
+  <div class="footer">
+    <span>${lbl.footer}</span>
+    <span>${options.generatedBy || ''}</span>
+    <span>${printDateStr} ${printTimeStr}</span>
+  </div>
+
 </div>
 ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.print(),550);</script>'}
 </body>
