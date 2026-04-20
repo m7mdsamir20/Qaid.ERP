@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useCallback, use } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { ArrowRight, Printer, ScrollText, Calendar, Loader2, TrendingUp, TrendingDown, History, FileText, User, ChevronLeft } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Printer, ScrollText, Calendar, Loader2, TrendingUp, TrendingDown, History, FileText, User, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
