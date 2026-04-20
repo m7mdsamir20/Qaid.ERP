@@ -128,7 +128,12 @@ export default function RegisterPage() {
                 value={(form as any)[name]}
                 onChange={e => setForm({ ...form, [name]: e.target.value })}
                 placeholder={placeholder}
-                style={{ ...IS, height: '44px', textAlign: 'start' }}
+                style={{ 
+                    ...IS, 
+                    height: '50px', 
+                    textAlign: (name === 'username' || name === 'email') ? 'left' : 'start',
+                    direction: (name === 'username' || name === 'email') ? 'ltr' : 'inherit'
+                }}
                 onFocus={focusIn}
                 onBlur={focusOut}
                 spellCheck={false}
@@ -258,7 +263,7 @@ export default function RegisterPage() {
                             <div style={{ display: 'flex', gap: '8px' }}>
                                 <div ref={dropdownRef} style={{ position: 'relative', flexShrink: 0 }}>
                                     <button type="button" onClick={() => setShowCountries(!showCountries)}
-                                        style={{ height: '44px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
+                                    style={{ height: '50px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                                         <img src={`https://flagcdn.com/w20/${selectedCountry.code.toLowerCase()}.png`} alt={t(selectedCountry.name)} style={{ width: 22, height: 16, objectFit: 'cover', borderRadius: 3, boxShadow: '0 2px 4px rgba(0,0,0,0.2)' }} />
@@ -299,7 +304,7 @@ export default function RegisterPage() {
                                     value={form.phone}
                                     onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                                     placeholder={getCountryPlaceholders(selectedCountry.code).phone}
-                                    style={{ ...IS, height: '44px', flex: 1, direction: 'ltr', textAlign: 'start' }}
+                                    style={{ ...IS, height: '50px', flex: 1, direction: 'ltr', textAlign: 'left' }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
                                     spellCheck={false}
@@ -316,7 +321,7 @@ export default function RegisterPage() {
                                 <label style={LS}>{t('نوع النشاط')}</label>
                                 <div ref={businessTypeRef} style={{ position: 'relative' }}>
                                     <button type="button" onClick={() => setShowBusinessTypes(!showBusinessTypes)}
-                                        style={{ width: '100%', height: '44px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
+                                        style={{ width: '100%', height: '50px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontFamily: CAIRO, transition: 'all 0.2s', fontWeight: 500 }}
                                         onMouseEnter={e => e.currentTarget.style.borderColor = C.textMuted}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                                         <span style={{ flex: 1, textAlign: 'start', color: form.businessType ? C.textPrimary : C.textMuted }}>{form.businessType ? BUSINESS_TYPES(t).find(b => b.value === form.businessType)?.label || '' : t('اختر نوع النشاط')}</span>
@@ -357,10 +362,10 @@ export default function RegisterPage() {
                                         onChange={e => setForm({ ...form, password: e.target.value })}
                                         placeholder={t("8 أحرف على الأقل")}
                                         style={{
-                                            ...IS, height: '44px',
+                                            ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: 'ltr', textAlign: 'start'
+                                            direction: 'ltr', textAlign: 'left'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
@@ -383,10 +388,10 @@ export default function RegisterPage() {
                                         onChange={e => setForm({ ...form, confirmPassword: e.target.value })}
                                         placeholder={t("إعادة الكلمة")}
                                         style={{
-                                            ...IS, height: '44px',
+                                            ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: 'ltr', textAlign: 'start'
+                                            direction: 'ltr', textAlign: 'left'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}

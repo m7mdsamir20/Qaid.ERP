@@ -190,7 +190,12 @@ export default function LoginPage() {
                                 value={form.identity}
                                 onChange={e => setForm({ ...form, identity: e.target.value })}
                                 placeholder={t("username أو email@example.com")}
-                                style={{ ...IS, height: '48px', textAlign: 'start' }}
+                                style={{ 
+                                    ...IS, 
+                                    height: '50px', 
+                                    textAlign: 'left', 
+                                    direction: 'ltr' 
+                                }}
                                 onFocus={focusIn}
                                 onBlur={focusOut}
                                 spellCheck={false}
@@ -209,10 +214,12 @@ export default function LoginPage() {
                                     onChange={e => setForm({ ...form, password: e.target.value })}
                                     placeholder="••••••••"
                                     style={{
-                                        ...IS, height: '48px',
+                                        ...IS, 
+                                        height: '50px',
                                         paddingLeft: isRtl ? '44px' : '16px',
                                         paddingRight: isRtl ? '16px' : '44px',
-                                        direction: 'ltr', textAlign: 'start'
+                                        direction: 'ltr', 
+                                        textAlign: 'left'
                                     }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
