@@ -6,7 +6,7 @@ const globalForPrisma = globalThis as unknown as {
 
 const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
 
-// نستخدم الرابط الخام كما هو من إعدادات Vercel
+// استخدام الرابط كما هو من البيئة لضمان عدم وجود أخطاء في الـ Authentication
 export const prisma = globalForPrisma.prisma ?? (isBuild ? null : new PrismaClient({
     log: ['error'],
 })) as unknown as PrismaClient;
@@ -15,11 +15,10 @@ if (!isBuild && prisma) {
     globalForPrisma.prisma = prisma;
 }
 
-// تنظيف الاتصالات بشكل عدواني عند خروج أي طلب
 if (typeof process !== 'undefined' && !isBuild) {
     const cleanup = async () => {
         if (globalForPrisma.prisma) await globalForPrisma.prisma.$disconnect();
     };
-    process.on('SIGINT', cleanup);
-    process.on('SIGTERM', cleanup);
+    process.on('SIGINT', () => cleanup().then(() => process.exit(0)));
+    process.on('SIGTERM', () => cleanup().then(() => process.exit(0)));
 }
