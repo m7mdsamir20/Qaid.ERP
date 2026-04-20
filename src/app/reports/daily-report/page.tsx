@@ -75,6 +75,9 @@ export default function DailyReportPage() {
 
     useEffect(() => { fetchReport(); }, [date, branchId]);
 
+    const branchName = Array.isArray(branches) ? (branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')) : '';
+    const printDate = new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
@@ -82,8 +85,8 @@ export default function DailyReportPage() {
                     title={t("التقرير اليومي للمبيعات والتحصيلات")}
                     subtitle={t("ملخص شامل لكافة العمليات المالية والتجارية التي تمت خلال اليوم.")}
                     backTab="financial"
-                    branchName={Array.isArray(branches) ? (branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')) : ''}
-                    printDate={new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' })}
+                    branchName={branchName}
+                    printDate={printDate}
                 />
 
                 <div className="no-print" style={{ ...SEARCH_STYLE.container, marginBottom: '24px' }}>
@@ -131,12 +134,13 @@ export default function DailyReportPage() {
                     </div>
                 ) : data && (
                     <>
+                        {/* Summary Cards */}
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#3b82f6', icon: <ShoppingCart size={18} />, sub: `${data.salesCount} ${t('فاتورة')}` },
-                                { label: t('إجمالي المقبوضات'), value: fmt(data.receipts), color: '#10b981', icon: <ArrowDownRight size={18} />, sub: t('محصل نقدي + بنكي') },
-                                { label: t('إجمالي المدفوعات'), value: fmt(data.payments), color: '#fb7185', icon: <ArrowUpRight size={18} />, sub: t('مدفوعات ومصاريف') },
-                                { label: t('صافي التدفق اليومي'), value: fmt(data.receipts - data.payments), color: (data.receipts - data.payments) >= 0 ? '#10b981' : '#fb7185', icon: <Activity size={18} />, sub: t('السيولة الصافية') },
+                                { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#3b82f6', icon: <ShoppingCart size={18} /> },
+                                { label: t('إجمالي المقبوضات'), value: fmt(data.receipts), color: '#10b981', icon: <ArrowDownRight size={18} /> },
+                                { label: t('إجمالي المدفوعات'), value: fmt(data.payments), color: '#fb7185', icon: <ArrowUpRight size={18} /> },
+                                { label: t('صافي التدفق اليومي'), value: fmt(data.receipts - data.payments), color: (data.receipts - data.payments) >= 0 ? '#10b981' : '#fb7185', icon: <Activity size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
@@ -145,9 +149,9 @@ export default function DailyReportPage() {
                                 }}
                                 >
                                     <div style={{ textAlign: 'center' }}>
-                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 6px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 6px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'center' }}>
-                                            <span className="stat-value" style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
@@ -157,50 +161,56 @@ export default function DailyReportPage() {
 
                         <div className="report-grid">
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                                <div data-print-include className="print-table-container" style={{ background: C.card, border: `1.5px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
+                                {/* Commercial Analysis Table */}
+                                <div data-print-include className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('التحليل التجاري التفصيلي')}
                                     </h3>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                                        <div style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                                <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي قيمة المبيعات')}</span>
-                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalSales)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                                <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('المرتجعات الواردة')} (-)</span>
-                                                <span style={{ color: '#fb7185', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.saleReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: `1px solid ${C.border}`, paddingTop: '12px' }}>
-                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '12.5px', fontFamily: CAIRO }}>{t('صافي المبيعات')}</span>
-                                                <span style={{ color: '#3b82f6', fontWeight: 900, fontSize: '15px', fontFamily: INTER }}>{fmt(data.totalSales - data.saleReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
-                                            </div>
-                                        </div>
-                                        <div style={{ background: 'rgba(245, 158, 11, 0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.1)' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                                <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي قيمة المشتريات')}</span>
-                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalPurchases)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
-                                                <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('المرتجعات الصادرة')} (-)</span>
-                                                <span style={{ color: '#10b981', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.purchaseReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: `1px solid ${C.border}`, paddingTop: '12px' }}>
-                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '12.5px', fontFamily: CAIRO }}>{t('صافي المشتريات')}</span>
-                                                <span style={{ color: '#f59e0b', fontWeight: 900, fontSize: '15px', fontFamily: INTER }}>{fmt(data.totalPurchases - data.purchaseReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
-                                            </div>
-                                        </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <tbody>
+                                                <tr>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المبيعات')}</td>
+                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 800, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.totalSales)} <small style={{ fontSize: '10px', opacity: 0.7 }}>{getCurrencyName(currency)}</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الواردة')} (-)</td>
+                                                    <td style={{ padding: '12px 0', color: '#fb7185', fontWeight: 800, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.saleReturnsTotal)} <small style={{ fontSize: '10px', opacity: 0.7 }}>{getCurrencyName(currency)}</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO, textAlign: 'right' }}>{t('صافي المبيعات')}</td>
+                                                    <td style={{ padding: '15px 0', color: '#3b82f6', fontWeight: 950, fontSize: '16px', fontFamily: INTER, textAlign: 'left' }}>{fmt(data.totalSales - data.saleReturnsTotal)} <small style={{ fontSize: '10px', opacity: 0.7 }}>{getCurrencyName(currency)}</small></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                            <tbody>
+                                                <tr>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المشتريات')}</td>
+                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 800, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.totalPurchases)} <small style={{ fontSize: '10px', opacity: 0.7 }}>{getCurrencyName(currency)}</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الصادرة')} (-)</td>
+                                                    <td style={{ padding: '12px 0', color: '#10b981', fontWeight: 800, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.purchaseReturnsTotal)} <small style={{ fontSize: '10px', opacity: 0.7 }}>{getCurrencyName(currency)}</small></td>
+                                                </tr>
+                                                <tr>
+                                                    <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO, textAlign: 'right' }}>{t('صافي المشتريات')}</td>
+                                                    <td style={{ padding: '15px 0', color: '#f59e0b', fontWeight: 950, fontSize: '16px', fontFamily: INTER, textAlign: 'left' }}>{fmt(data.totalPurchases - data.purchaseReturnsTotal)} <small style={{ fontSize: '10px', opacity: 0.7 }}>{getCurrencyName(currency)}</small></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
 
-                                <div data-print-include className="print-table-container" style={{ background: C.card, border: `1.5px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
+                                {/* Liquidity Table */}
+                                <div data-print-include className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('أرصدة السيولة الحالية (الخزائن والبنوك)')}
                                     </h3>
-                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                         {(data?.treasuries || []).map((tArr: any, i: number) => (
-                                            <div key={i} style={{ padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}` }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                                            <div key={i} style={{ padding: '16px', borderRadius: '10px', border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                     <div style={{ width: 28, height: 28, borderRadius: '8px', background: tArr.type === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                         {tArr.type === 'bank' ? <Landmark size={15} color="#3b82f6" /> : <Wallet size={15} color="#10b981" />}
                                                     </div>
@@ -248,14 +258,14 @@ export default function DailyReportPage() {
 
             <style>{`
                 .print-only { display: none; }
-                    .report-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
-                    @media print {
-                        .print-only { display: block !important; }
-                        .no-print { display: none !important; }
-                        .print-table-container { background: white !important; border: 1px solid #ccc !important; border-radius: 0 !important; }
-                        h3 { font-size: 11px !important; margin-bottom: 10px !important; }
-                        .report-grid { grid-template-columns: 1fr !important; }
-                    }
+                .report-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+                @media print {
+                    .print-only { display: block !important; }
+                    .no-print { display: none !important; }
+                    .print-table-container { background: white !important; border: 1px solid #eee !important; border-radius: 12px !important; }
+                    h3 { font-size: 11px !important; margin-bottom: 10px !important; }
+                    .report-grid { grid-template-columns: 1fr !important; }
+                }
                 input[type="date"]::-webkit-calendar-picker-indicator {
                     cursor: pointer;
                     filter: invert(34%) sepia(87%) saturate(2751%) hue-rotate(210deg) brightness(97%) contrast(94%);

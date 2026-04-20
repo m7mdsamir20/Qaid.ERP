@@ -94,12 +94,11 @@ body{font-family:'Cairo', 'Inter', sans-serif;direction:${dir};background:#fff;c
 .rpt-info-val{color:#000!important;font-weight:600;font-family:'Inter', sans-serif}
 
 /* ── Stats ── */
-[data-print-include], .print-table-container{background:#fff!important;color:#000!important;border:1.5px solid #eee!important;border-radius:8px!important;margin-bottom:15px;page-break-inside:avoid}
-[data-print-include]{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:10px!important}
-[data-print-include]>div{padding:10px!important;text-align:center;border:1px solid #f0f0f0!important;border-radius:6px!important}
-.print-table-container{display:block!important;padding:15px!important}
-.print-table-container div{display:flex!important;justify-content:space-between;align-items:center;margin-bottom:5px}
-.print-table-container h3{font-size:12px!important;border-bottom:1px solid #eee!important;padding-bottom:5px!important;margin-bottom:12px!important}
+[data-print-include], .print-table-container{background:#fff!important;color:#000!important;border:1px solid #eee!important;border-radius:12px!important;margin-bottom:20px;page-break-inside:avoid;overflow:hidden}
+[data-print-include]{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:15px!important;border:none!important}
+[data-print-include]>div{padding:15px!important;text-align:center;border:1px solid #eee!important;border-radius:10px!important;background:#fff!important}
+.print-table-container{display:block!important;padding:20px!important}
+.print-table-container h3{font-size:13px!important;border-bottom:1px solid #eee!important;padding-bottom:10px!important;margin-bottom:15px!important;font-weight:900!important}
 [data-print-include] svg, .no-print{display:none!important}
 
 /* ── Table ── */
