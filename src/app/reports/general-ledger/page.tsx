@@ -277,23 +277,15 @@ export default function GeneralLedgerPage() {
 
                                             {/* رقم القيد */}
                                             <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', textAlign: 'center' }}>
-                                                <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                    <span style={{ 
-                                                        fontFamily: INTER, 
-                                                        fontSize: '10px', 
-                                                        fontWeight: 900, 
-                                                        letterSpacing: '0.5px',
-                                                        color: '#fff',
-                                                        background: 'linear-gradient(135deg, #475569 0%, #1e293b 100%)',
-                                                        padding: '4px 12px',
-                                                        borderRadius: '20px',
-                                                        boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
-                                                        border: '1px solid rgba(255,255,255,0.1)',
-                                                        textTransform: 'uppercase'
-                                                    }}>
-                                                        {formatEntryCode(line.entryNumber)}
-                                                    </span>
-                                                </div>
+                                                <span style={{ 
+                                                    fontFamily: INTER, 
+                                                    fontSize: '11px', 
+                                                    fontWeight: 900, 
+                                                    color: C.textPrimary,
+                                                    letterSpacing: '0.3px'
+                                                }}>
+                                                    {formatEntryCode(line.entryNumber)}
+                                                </span>
                                             </td>
 
                                             {/* البيان الوصفي */}
@@ -381,4 +373,3 @@ export default function GeneralLedgerPage() {
         </DashboardLayout>
     );
 }
-
