@@ -201,7 +201,7 @@ export default function PurchasesReportPage() {
                                                 fontSize: '12px',
                                                 fontWeight: 800,
                                                 color: C.textSecondary,
-                                                textAlign: i >= 3 ? 'center' : 'right',
+                                                textAlign: i === 1 ? 'center' : i >= 3 ? 'end' : 'start',
                                                 fontFamily: CAIRO,
                                                 borderBottom: `1px solid ${C.border}`
                                             }}>{h}</th>
@@ -226,12 +226,12 @@ export default function PurchasesReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{inv.supplier?.name || t('مورد نقدي')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end' }}>
                                                 <span style={{
-                                                    fontSize: '11px', fontWeight: 1000, direction: 'ltr', fontFamily: INTER,
+                                                    fontSize: '11px', fontWeight: 1000, fontFamily: INTER,
                                                     color: inv.remaining > 0 ? '#fb7185' : '#10b981',
                                                     background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
                                                     padding: '4px 12px', borderRadius: '10px', border: `1px solid ${inv.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
@@ -242,11 +242,11 @@ export default function PurchasesReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات المشتريات للفترة')}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalPurchases)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fmt(data.totalDiscount)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalPaid)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'center', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fmt(data.totalRemaining)}</td>
+                                        <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start' }}>{t('إجماليات المشتريات للفترة')}</td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalPurchases)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fmt(data.totalDiscount)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalPaid)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fmt(data.totalRemaining)}</td>
                                     </tr>
                                 </tfoot>
                             </table>
