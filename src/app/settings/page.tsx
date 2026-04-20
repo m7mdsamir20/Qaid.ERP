@@ -579,10 +579,20 @@ function SettingsContent() {
             const res = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, data }) });
             if (res.ok) {
                 showToast(t('تم الحفظ بنجاح ✓'));
-                await fetchData(); // wait first so savedGeneral is updated before anything resets it
+                await fetchData(); 
                 setIsEditMode(false);
-                // Force session update to pick up new currency/name
-                if (update) update();
+                // Force session update with latest currency metadata
+                if (update) {
+                    const finalCurrency = action === 'update_general' 
+                        ? (data.currency === 'OTHER' ? data.customCurrency : data.currency)
+                        : undefined;
+                    update({
+                        user: {
+                            currency: finalCurrency,
+                            countryCode: action === 'update_general' ? data.countryCode : undefined
+                        }
+                    });
+                }
             }
             else { const e = await res.json(); showToast(e.error || t('فشل الحفظ'), 'error'); }
         } finally { setIsSaving(false); }

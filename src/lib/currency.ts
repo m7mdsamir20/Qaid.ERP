@@ -4,9 +4,18 @@ export const CURRENCY_DATA: Record<string, { ar: string, en: string }> = {
     'EGP': { ar: 'ج.م', en: 'EGP' },
     'SAR': { ar: 'ر.س', en: 'SAR' },
     'AED': { ar: 'د.إ', en: 'AED' },
+    'KWD': { ar: 'د.ك', en: 'KWD' },
+    'QAR': { ar: 'ر.ق', en: 'QAR' },
+    'BHD': { ar: 'د.ب', en: 'BHD' },
+    'OMR': { ar: 'ر.ع', en: 'OMR' },
+    'JOD': { ar: 'د.أ', en: 'JOD' },
+    'LYD': { ar: 'د.ل', en: 'LYD' },
+    'IQD': { ar: 'د.ع', en: 'IQD' },
     'USD': { ar: '$', en: 'USD' },
     'EUR': { ar: '€', en: 'EUR' },
     'GBP': { ar: '£', en: 'GBP' },
+    'TRY': { ar: '₺', en: 'TRY' },
+    'SDG': { ar: 'ج.س', en: 'SDG' },
 };
 
 export function getCurrencySymbol(code: string = 'EGP', lang: 'ar' | 'en' = 'ar'): string {
