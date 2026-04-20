@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { ScrollText, Search, Loader2, ArrowUpRight, ArrowDownRight, ChevronDown, Calendar, Wallet, Activity, Printer, FileDown } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, IS, INTER, KPI_STYLE, KPI_ICON } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, IS, INTER, KPI_STYLE, KPI_ICON, TABLE_STYLE } from '@/constants/theme';
 
 /* ── Types ── */
 interface Account { id: string; code: string; name: string; type: string; accountCategory?: string; nature: string; }
@@ -130,7 +130,7 @@ export default function GeneralLedgerPage() {
                     backTab="financial"
                     accountName={account?.name}
                     printTitle={account ? `${t('كشف حساب')}: ${account.name}` : t('كشف الحساب العام')}
-                    printCode={fromDate || toDate ? `${fromDate || '...'} ${t('إلى')} ${toDate || '...'}` : undefined}
+                    printDate={fromDate || toDate ? `${fromDate ? t('من: ') + fromDate : ''} ${toDate ? t(' إلى: ') + toDate : ''}`.trim() : undefined}
                 />
 
                 <div className="no-print" style={SEARCH_STYLE.container}>
@@ -237,64 +237,95 @@ export default function GeneralLedgerPage() {
                                 <input placeholder={t("البحث السريع في الوصف أو رقم القيد...")} value={search}
                                     onChange={e => setSearch(e.target.value)}
                                     style={SEARCH_STYLE.input} />
-                                <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.textMuted)} />
+                                <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                             </div>
                         </div>
 
-                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <div className="print-table-container" style={TABLE_STYLE.container}>
+                            <table style={TABLE_STYLE.table}>
                                 <thead>
-                                    <tr className="print-table-header" style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
-                                        { [t('التاريخ'), t('رقم القيد'), t('البيان الوصفي'), t('مركز التكلفة'), t('مدين (+)'), t('دائن (-)'), t('الرصيد')].map((h, i) => (
-                                            <th key={i} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i === 0 ? 'center' : i >= 4 ? 'end' : 'start', fontFamily: CAIRO }}>{h}</th>
+                                    <tr style={TABLE_STYLE.thead}>
+                                        {[t('التاريخ'), t('رقم القيد'), t('البيان الوصفي'), t('مركز التكلفة'), t('مدين (+)'), t('دائن (-)'), t('الرصيد')].map((h, i) => (
+                                            <th key={i} style={TABLE_STYLE.th(i === 1 || i === 2, i >= 4)}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style={{ background: 'rgba(59,130,246,0.03)', borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                                        <td colSpan={4} style={{ padding: '12px 16px', fontSize: '12px', fontWeight: 700, color: '#3b82f6', fontFamily: CAIRO }}>
+                                    {/* صف الرصيد الافتتاحي */}
+                                    <tr style={{ background: 'rgba(59,130,246,0.04)', borderBottom: `1px solid ${C.border}` }}>
+                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: '#60a5fa', fontFamily: CAIRO, textAlign: 'start' }}>
                                             {fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي')}
                                         </td>
-                                        <td colSpan={2} />
-                                        <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 900, color: '#60a5fa', background: 'rgba(59,130,246,0.05)', fontFamily: CAIRO }}>{fmt(openingBalance)}</td>
+                                        <td colSpan={2} style={{ borderBottom: `1px solid ${C.border}` }} />
+                                        <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>{fmt(openingBalance)}</td>
                                     </tr>
+
                                     {filtered.length === 0 ? (
                                         <tr>
-                                            <td colSpan={7} style={{ padding: '60px 20px', textAlign: 'center', color: '#475569' }}>
+                                            <td colSpan={7} style={{ padding: '60px 20px', textAlign: 'center', color: C.textMuted }}>
                                                 <div className="no-print" style={{ opacity: 0.3, marginBottom: '8px' }}><Search size={32} /></div>
                                                 <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات مالية مسجلة لهذه الفترة')}</p>
                                             </td>
                                         </tr>
                                     ) : filtered.map((line, idx) => (
                                         <tr key={line.id}
-                                            style={{ borderBottom: idx < filtered.length - 1 ? '1px solid rgba(255,255,255,0.03)' : 'none', transition: 'background 0.1s' }}
-                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                                            style={TABLE_STYLE.row(idx === filtered.length - 1)}
+                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.04)'}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '12px 16px', fontSize: '12px', color: '#64748b', fontFamily: 'monospace' }}>{new Date(line.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '12px 16px' }}>
+
+                                            {/* التاريخ */}
+                                            <td style={{ ...TABLE_STYLE.td(false, false), fontSize: '13px', color: '#60a5fa', fontFamily: INTER }}>
+                                                {new Date(line.date).toLocaleDateString('en-GB')}
+                                            </td>
+
+                                            {/* رقم القيد */}
+                                            <td style={TABLE_STYLE.td(true, false)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                    <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '6px', padding: '2px 8px', fontFamily: 'monospace', fontSize: '12px', fontWeight: 700, color: '#60a5fa' }}>{line.entryNumber}</span>
-                                                    {line.reference && <span style={{ fontSize: '11px', color: '#475569', fontFamily: CAIRO }}>· {line.reference}</span>}
-                                                </div>
+                                                    <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '6px', padding: '3px 10px', fontFamily: INTER, fontSize: '12px', fontWeight: 800, color: '#60a5fa' }}>
+                                                        {line.entryNumber}
+                                                    </span>
+                                                                </div>
                                             </td>
-                                            <td style={{ padding: '12px 16px', fontSize: '12px', color: '#cbd5e1', fontWeight: 600, fontFamily: CAIRO }}>{line.description}</td>
-                                            <td style={{ padding: '12px 16px' }}>
+
+                                            {/* البيان الوصفي */}
+                                            <td style={{ ...TABLE_STYLE.td(true, false), fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'normal', minWidth: '160px' }}>
+                                                {line.description}
+                                            </td>
+
+                                            {/* مركز التكلفة */}
+                                            <td style={TABLE_STYLE.td(false, false)}>
                                                 {line.costCenter?.name
-                                                    ? <span style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', padding: '2px 8px', fontSize: '11px', color: '#a78bfa', fontFamily: CAIRO }}>{line.costCenter.name}</span>
-                                                    : <span style={{ color: '#334155' }}>—</span>}
+                                                    ? <span style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', padding: '3px 10px', fontSize: '11px', color: '#a78bfa', fontFamily: CAIRO }}>
+                                                        {line.costCenter.name}
+                                                      </span>
+                                                    : <span style={{ color: C.textMuted, fontSize: '13px' }}>—</span>}
                                             </td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 700, color: line.debit > 0 ? '#34d399' : '#2d3748', fontFamily: CAIRO }}>{line.debit > 0 ? fmt(line.debit) : '—'}</td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 700, color: line.credit > 0 ? '#f87171' : '#2d3748', fontFamily: CAIRO }}>{line.credit > 0 ? fmt(line.credit) : '—'}</td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'end', fontSize: '12px', fontWeight: 900, color: line.balance >= 0 ? tColor : '#f87171', fontFamily: CAIRO }}>{fmt(line.balance)}</td>
+
+                                            {/* مدين */}
+                                            <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '14px', fontWeight: 700, color: line.debit > 0 ? '#34d399' : C.textMuted, fontFamily: INTER }}>
+                                                {line.debit > 0 ? fmt(line.debit) : '—'}
+                                            </td>
+
+                                            {/* دائن */}
+                                            <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '14px', fontWeight: 700, color: line.credit > 0 ? '#f87171' : C.textMuted, fontFamily: INTER }}>
+                                                {line.credit > 0 ? fmt(line.credit) : '—'}
+                                            </td>
+
+                                            {/* الرصيد */}
+                                            <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '14px', fontWeight: 900, color: line.balance >= 0 ? tColor : '#f87171', fontFamily: INTER }}>
+                                                {fmt(line.balance)}
+                                            </td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot>
-                                    <tr style={{ background: 'rgba(255,255,255,0.04)', borderTop: '2px solid rgba(255,255,255,0.08)' }}>
-                                        <td colSpan={4} style={{ padding: '16px', fontSize: '12px', fontWeight: 800, color: '#94a3b8', fontFamily: CAIRO, textAlign: 'start' }}>{t('إجماليات الحركات والأرصدة')}</td>
-                                        <td style={{ padding: '16px', textAlign: 'end', fontSize: '15px', fontWeight: 900, color: '#34d399', fontFamily: CAIRO }}>{fmt(totalDebit)}</td>
-                                        <td style={{ padding: '16px', textAlign: 'end', fontSize: '15px', fontWeight: 900, color: '#f87171', fontFamily: CAIRO }}>{fmt(totalCredit)}</td>
-                                        <td style={{ padding: '16px', textAlign: 'end', fontSize: '12px', fontWeight: 900, color: tColor, background: 'rgba(255,255,255,0.02)', fontFamily: CAIRO }}>{fmt(closingBalance)}</td>
+                                    <tr style={{ background: C.subtle, borderTop: `2px solid ${C.border}` }}>
+                                        <td colSpan={4} style={{ padding: '16px 20px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start' }}>
+                                            {t('إجماليات الحركات والأرصدة')}
+                                        </td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '15px', fontWeight: 900, color: '#34d399', fontFamily: INTER }}>{fmt(totalDebit)}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '15px', fontWeight: 900, color: '#f87171', fontFamily: INTER }}>{fmt(totalCredit)}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '15px', fontWeight: 900, color: tColor, fontFamily: INTER }}>{fmt(closingBalance)}</td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -314,8 +345,7 @@ export default function GeneralLedgerPage() {
                 
                 /* تلوين أيقونة التاريخ الأصلية باللون الأبيض */
                 input[type="date"]::-webkit-calendar-picker-indicator {
-                    filter: invert(1);
-                    opacity: 0.5;
+                    filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%);
                     cursor: pointer;
                 }
             `}</style>
