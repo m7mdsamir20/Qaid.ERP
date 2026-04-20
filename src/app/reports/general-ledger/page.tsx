@@ -136,6 +136,7 @@ export default function GeneralLedgerPage() {
                 <div className="no-print" style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <ScrollText size={16} style={SEARCH_STYLE.icon(C.primary)} />
+                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', fontWeight: 800, letterSpacing: '1px', color: isRtl ? '#60a5fa' : '#34d399', background: isRtl ? 'rgba(96,165,250,0.1)' : 'rgba(52,211,153,0.1)', border: `1px solid ${isRtl ? 'rgba(96,165,250,0.25)' : 'rgba(52,211,153,0.25)'}`, borderRadius: '6px', padding: '2px 8px', pointerEvents: 'none' }}>{isRtl ? 'AR' : 'EN'}</span>
                         <input
                             placeholder={loadingAccounts ? t('جاري التحميل...') : t('ابحث عن الحساب بالاسم أو الكود...')}
                             value={accountSearch}

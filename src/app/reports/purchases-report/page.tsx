@@ -179,7 +179,7 @@ export default function PurchasesReportPage() {
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                            <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, zIndex: 10 }} />
+                            <Search size={18} style={{ ...SEARCH_STYLE.icon(C.primary), position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, opacity: 1 }} />
                             <input
                                 placeholder={t("ابحث برقم الفاتورة أو اسم المورد...")}
                                 value={q} onChange={e => setQ(e.target.value)}
@@ -266,7 +266,7 @@ export default function PurchasesReportPage() {
                     div, span, h2, h3, p, small { color: #000 !important; }
                     th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
                 }
-                input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; cursor: pointer; }
+                input[type="date"]::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
             `}</style>
         </DashboardLayout>
     );

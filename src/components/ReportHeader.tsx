@@ -70,13 +70,13 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;font-size:11px;line-height:1.4}
+body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;font-size:11px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{padding:8mm 10mm}
 
 /* ── Header: logo only ── */
-.rpt-header{display:flex;justify-content:center;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:10px}
+.rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:10px}
 .rpt-logo img{max-height:65px;max-width:140px;object-fit:contain}
-.rpt-logo-text{font-size:18px;font-weight:900;color:#000;text-align:center}
+.rpt-logo-text{font-size:18px;font-weight:900;color:#000;text-align:${isRtl ? 'right' : 'left'}}
 
 /* ── Report info block ── */
 .rpt-info{border:1px solid #ccc;border-radius:4px;padding:8px 12px;margin-bottom:10px;background:#f9f9f9}
@@ -102,10 +102,12 @@ tbody tr:nth-child(even){background:#f5f5f5!important;-webkit-print-color-adjust
 tbody tr:nth-child(odd){background:#fff}
 td{padding:5px 9px;font-size:10.5px;color:#000;text-align:center;border:1px solid #ddd;vertical-align:middle;line-height:1.3;white-space:nowrap}
 td:first-child{text-align:${firstColAlign};font-weight:600}
-td span,td a,td div{color:inherit!important;background:transparent!important;border:none!important;padding:0!important;border-radius:0!important;font-size:inherit!important}
-td strong,td b{font-weight:900}
+td span,td a{font-size:inherit!important}
+td div{font-size:inherit!important}
 td button{display:none!important}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:800!important;color:#000!important}
+td strong,td b{font-weight:900}
+td span[style],td div[style]{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:800!important}
 tr.opening-balance td{background:#f0f0f0!important;font-weight:900!important;font-style:italic;border-top:1px solid #999!important;border-bottom:1px solid #999!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot tr{background:#e8e8e8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot td{font-weight:900;font-size:11px;color:#000!important;background:#e8e8e8!important;border:1px solid #bbb;padding:6px 9px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}

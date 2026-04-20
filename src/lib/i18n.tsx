@@ -6,7 +6,7 @@ export type Language = 'ar' | 'en';
 
 // Bump this string whenever translation keys are added or changed.
 // The app will clear any stale cached language data automatically.
-export const I18N_VERSION = '2.0.0';
+export const I18N_VERSION = '2.1.0';
 
 interface LanguageContextType {
     lang: Language;
@@ -2123,7 +2123,23 @@ export const dictionaries = {
         "من: ": "From: ",
         " إلى: ": " To: ",
         "رقم الفاتورة": "Inv Number",
-        
+
+        // --- General Ledger page ---
+        "كشف الحساب العام": "General Ledger",
+        "تحليل الحركات المالية والرصيد التفصيلي لأي حساب خلال فترة زمنية محددة.": "Detailed financial movement analysis and balance for any account over a selected period.",
+        "ابحث عن الحساب بالاسم أو الكود...": "Search by account name or code...",
+        "ابدأ بطلب كشف الحساب": "Start by Requesting Account Statement",
+        "اختر الحساب المطلوب والفترة الزمنية من الأعلى لعرض تفاصيل الحركات والرصيد الافتتاحي والختامي.": "Select the account and period from above to view transaction details, opening and closing balances.",
+        "جاري استعادة الحركات المالية...": "Loading financial transactions...",
+        "إجمالي مدين (+)": "Total Debit (+)",
+        "إجمالي دائن (-)": "Total Credit (-)",
+        "الرصيد الختامي": "Closing Balance",
+        "البحث السريع في الوصف أو رقم القيد...": "Quick search by description or entry no...",
+        "البيان الوصفي": "Description",
+        "رصيد مرحّل من الفترة السابقة (حتى": "Balance carried forward from previous period (until",
+        "لا توجد حركات مالية مسجلة لهذه الفترة": "No financial transactions recorded for this period",
+        "إجماليات الحركات والأرصدة": "Transaction & Balance Totals",
+
     }
 };
 
