@@ -374,13 +374,13 @@ export default function NewQuotationPage() {
 
                                 {/* Discount Section */}
                                 <div style={{
-                                    background: 'rgba(255,255,255,0.02)',
+                                    background: C.subtle,
                                     borderRadius: '10px',
                                     padding: '8px 12px',
-                                    border: `1px solid rgba(255,255,255,0.06)`
+                                    border: `1px solid ${C.border}`
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: '#64748b' }}>{t('الخصم')}</label>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textSecondary }}>{t('الخصم')}</label>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
@@ -417,10 +417,10 @@ export default function NewQuotationPage() {
                                         display: 'flex',
                                         flexDirection: 'column',
                                         gap: '8px',
-                                        background: 'rgba(255,255,255,0.02)'
+                                        background: C.subtle
                                     }}>
                                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: '#64748b' }}>
+                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textSecondary }}>
                                                 {taxSettings.label || 'VAT'}
                                             </label>
                                         </div>

@@ -39,7 +39,7 @@ export default function NewPurchasePage() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [customers, setCustomers] = useState<any[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
@@ -597,11 +597,11 @@ export default function NewPurchasePage() {
                             <div style={{ ...STitleStyle, color: '#3b82f6' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
-                                    <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
-                                    <span style={{ color: '#64748b' }}>{t('إجمالي الأصناف')}</span>
+                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الأصناف')}</span>
                                 </div>
-                                <div style={{ background: C.subtle, border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '8px 12px' }}>
-                                    <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
+                                <div style={{ background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 12px' }}>
+                                    <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.discountAmt || '')} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { const amt = v === '' ? 0 : parseFloat(v) || 0; setForm((f: any) => ({ ...f, discountAmt: amt, discountPct: subtotal > 0 ? Number(((amt / subtotal) * 100).toFixed(2)) : 0 })); } }} style={{ ...IS, height: '36px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '32px' }} onFocus={focusIn} onBlur={focusOut} />
