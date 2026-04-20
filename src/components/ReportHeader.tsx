@@ -20,7 +20,7 @@ interface ReportHeaderProps {
   branchName?: string;
 }
 
-export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onPrint, printTitle, printDate, printCode, accountName: manualAccountName, branchName }: ReportHeaderProps) {
+export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onPrint, printTitle, printDate, accountName: manualAccountName, branchName }: ReportHeaderProps) {
   const router = useRouter();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
@@ -61,7 +61,11 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
       }
       return true;
     });
-    const includeHTML = topLevelPrintable.map(el => el.outerHTML).join('');
+    const stripStyles = (html: string) => html
+      .replace(/ style="[^"]*"/g, '')
+      .replace(/<svg[\s\S]*?<\/svg>/g, '')
+      .replace(/<button[\s\S]*?<\/button>/g, '');
+    const includeHTML = topLevelPrintable.map(el => stripStyles(el.outerHTML)).join('');
 
     const dir = isRtl ? 'rtl' : 'ltr';
     const firstColAlign = isRtl ? 'right' : 'left';
@@ -83,8 +87,8 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <title>${reportTitle}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;color:#000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;font-size:9.5px;line-height:1.4}
+*{margin:0;padding:0;box-sizing:border-box;color:#000!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo',sans-serif;direction:${dir};font-size:9.5px;line-height:1.4}
 .page{padding:8mm 12mm}
 
 /* ── Header ── */
