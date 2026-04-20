@@ -205,10 +205,10 @@ export default function GeneralLedgerPage() {
 
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[
-                                { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#3b82f6', icon: <Wallet size={18} /> },
-                                { label: t('إجمالي مدين (+)'), value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                                { label: t('إجمالي دائن (-)'), value: fmt(totalCredit), color: '#fb7185', icon: <ArrowDownRight size={18} /> },
-                                { label: t('الرصيد الختامي'), value: fmt(closingBalance), color: tColor, icon: <Activity size={18} /> },
+                                { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#3b82f6', icon: <Wallet size={16} /> },
+                                { label: t('إجمالي مدين (+)'), value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={16} /> },
+                                { label: t('إجمالي دائن (-)'), value: fmt(totalCredit), color: '#fb7185', icon: <ArrowDownRight size={16} /> },
+                                { label: t('الرصيد الختامي'), value: fmt(closingBalance), color: tColor, icon: <Activity size={16} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -226,7 +226,7 @@ export default function GeneralLedgerPage() {
                                         </div>
                                     </div>
                                     <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                        {React.cloneElement(s.icon as React.ReactElement, { size: 15 })}
+                                        {s.icon}
                                     </div>
                                 </div>
                             ))}
