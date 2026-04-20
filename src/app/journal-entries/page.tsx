@@ -251,13 +251,13 @@ export default function JournalEntriesPage() {
                         <table style={TABLE_STYLE.table}>
                             <thead>
                                 <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('رقم القيد')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('البيان / الوصف العام')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('المرجع')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(true), textAlign: 'start' }}>{t('رقم القيد')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('التاريخ')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('البيان / الوصف العام')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('المرجع')}</th>
                                     <th style={{ ...TABLE_STYLE.th(false), textAlign: 'end' }}>{t('المبلغ')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('التفاصيل')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('الحالة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('التفاصيل')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -266,29 +266,26 @@ export default function JournalEntriesPage() {
                                     const dr = entry.lines.reduce((s, l) => s + l.debit, 0);
                                     return (
                                         <React.Fragment key={entry.id}>
-                                            <tr style={TABLE_STYLE.row(idx === paginated.length - 1 && !isExpanded)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), padding: '8px 12px' }}>
-                                                    <span style={{ 
-                                                        fontFamily: INTER, fontSize: '10px', fontWeight: 900, color: '#fff',
-                                                        background: 'linear-gradient(135deg, #475569 0%, #1e293b 100%)',
-                                                        padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)'
-                                                    }}>
-                                                        {formatEntryCode(entry.entryNumber)}
-                                                    </span>
+                                            <tr style={TABLE_STYLE.row(idx === paginated.length - 1 && !isExpanded)}
+                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                            >
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, textAlign: 'start' }}>
+                                                    {formatEntryCode(entry.entryNumber)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '11px', color: C.textSecondary, fontFamily: INTER }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '11px', color: C.textSecondary, fontFamily: INTER, textAlign: 'start' }}>
                                                     {new Date(entry.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{entry.description}</div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
                                                     {entry.reference ? <span style={{ fontSize: '10px', color: C.textMuted, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{entry.reference}</span> : '—'}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'end', fontSize: '16px', fontWeight: 900, color: C.purple, fontFamily: INTER }}>
                                                     {fMoney(dr)}
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
                                                     <button onClick={() => togglePost(entry)} disabled={posting === entry.id}
                                                         style={{ 
                                                             display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', 
