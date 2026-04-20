@@ -337,31 +337,31 @@ export default function GeneralLedgerPage() {
                                     <div data-print-include style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }}>
                                             <span className="stat-label" style={{ color: C.textSecondary }}>{t('الرصيد الافتتاحي')}</span>
-                                            <div className="stat-value" style={{ display: 'flex', gap: '4px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 700, color: '#3b82f6' }}>
+                                            <div className="stat-value" style={{ display: 'flex', gap: '3px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 800, color: '#3b82f6', fontSize: '12px' }}>
                                                 <span>{fmt(openingBalance)}</span>
-                                                <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.8 }}>{getCurrencyName(currency)}</span>
+                                                <span style={{ fontSize: '9px', fontFamily: CAIRO, opacity: 0.6 }}>{getCurrencyName(currency)}</span>
                                             </div>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }}>
                                             <span className="stat-label" style={{ color: C.textSecondary }}>{t('إجمالي المدين (+)')}</span>
-                                            <div className="stat-value" style={{ display: 'flex', gap: '4px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 700, color: '#10b981' }}>
+                                            <div className="stat-value" style={{ display: 'flex', gap: '3px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 800, color: '#10b981', fontSize: '12px' }}>
                                                 <span>{fmt(totalDebit)}</span>
-                                                <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.8 }}>{getCurrencyName(currency)}</span>
+                                                <span style={{ fontSize: '9px', fontFamily: CAIRO, opacity: 0.6 }}>{getCurrencyName(currency)}</span>
                                             </div>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }}>
                                             <span className="stat-label" style={{ color: C.textSecondary }}>{t('إجمالي الدائن (-)')}</span>
-                                            <div className="stat-value" style={{ display: 'flex', gap: '4px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 700, color: '#fb7185' }}>
+                                            <div className="stat-value" style={{ display: 'flex', gap: '3px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 800, color: '#fb7185', fontSize: '12px' }}>
                                                 <span>{fmt(totalCredit)}</span>
-                                                <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.8 }}>{getCurrencyName(currency)}</span>
+                                                <span style={{ fontSize: '9px', fontFamily: CAIRO, opacity: 0.6 }}>{getCurrencyName(currency)}</span>
                                             </div>
                                         </div>
                                         <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(59,130,246,0.06)', border: `1px solid rgba(59,130,246,0.15)` }}>
-                                            <span className="stat-label" style={{ fontWeight: 800, fontSize: '12px' }}>{t('الرصيد الختامي')}</span>
-                                            <div className="stat-value" style={{ display: 'flex', gap: '5px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 900, color: tColor, fontSize: '15.5px' }}>
+                                            <span className="stat-label" style={{ fontWeight: 800, fontSize: '11.5px' }}>{t('الرصيد الختامي')}</span>
+                                            <div className="stat-value" style={{ display: 'flex', gap: '4px', alignItems: 'baseline', fontFamily: INTER, fontWeight: 900, color: tColor, fontSize: '14px' }}>
                                                 <span>{fmt(closingBalance)}</span>
-                                                <span style={{ fontSize: '11px', fontFamily: CAIRO, opacity: 0.9 }}>{getCurrencyName(currency)}</span>
+                                                <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{getCurrencyName(currency)}</span>
                                             </div>
                                         </div>
                                     </div>
