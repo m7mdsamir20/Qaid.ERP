@@ -156,7 +156,7 @@ export default function DailyReportPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', alignItems: 'start' }}>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                                <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
+                                <div data-print-include className="print-table-container" style={{ background: C.card, border: `1.5px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('التحليل التجاري التفصيلي')}
                                     </h3>
@@ -192,7 +192,7 @@ export default function DailyReportPage() {
                                     </div>
                                 </div>
 
-                                <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
+                                <div data-print-include className="print-table-container" style={{ background: C.card, border: `1.5px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('أرصدة السيولة الحالية (الخزائن والبنوك)')}
                                     </h3>

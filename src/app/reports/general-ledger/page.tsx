@@ -244,7 +244,7 @@ export default function GeneralLedgerPage() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr style={{ background: '#fff', borderBottom: `1.5px solid ${C.border}` }}>
+                                    <tr style={{ background: C.card, borderBottom: `1.5px solid ${C.border}` }}>
                                         <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
                                             {fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي')}
                                         </td>
@@ -266,7 +266,7 @@ export default function GeneralLedgerPage() {
                                         </tr>
                                     ) : filtered.map((line, idx) => (
                                         <tr key={line.id}
-                                            style={{ ...TABLE_STYLE.row(idx === filtered.length - 1), background: '#fff' }}>
+                                            style={{ ...TABLE_STYLE.row(idx === filtered.length - 1), background: C.card }}>
 
                                             {/* التاريخ */}
                                             <td style={{ ...TABLE_STYLE.td(true, false), padding: '10px 14px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 600, fontFamily: INTER, textAlign: 'start' }}>
@@ -331,23 +331,23 @@ export default function GeneralLedgerPage() {
                                     ))}
                                 </tbody>
                                 <tfoot>
-                                    <tr style={{ background: C.subtle, borderTop: `2px solid ${C.border}` }}>
+                                    <tr style={{ background: C.card, borderTop: `2px solid ${C.border}` }}>
                                         <td colSpan={4} style={{ padding: '12px 18px', fontSize: '12.5px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>
                                             {t('إجماليات الحركات والأرصدة')}
                                         </td>
-                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: INTER }}>
+                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                 <span>{fmt(totalDebit)}</span>
                                                 <small style={{ fontSize: '9.5px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: INTER }}>
+                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                 <span>{fmt(totalCredit)}</span>
                                                 <small style={{ fontSize: '9.5px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: INTER }}>
+                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                 <span>{fmt(closingBalance)}</span>
                                                 <small style={{ fontSize: '9.5px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>
