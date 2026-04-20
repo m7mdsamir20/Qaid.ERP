@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import {
-    BookOpen, Plus, X, ArrowRight, Lock, Loader2, FolderOpen
+    BookOpen, Plus, X, ArrowRight, ArrowLeft, Lock, Loader2, FolderOpen
 } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 
@@ -168,7 +168,7 @@ export default function NewAccountPage() {
                     onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#e2e8f0'; }}
                     onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}
                 >
-                    <ArrowRight size={16} style={{ transform: isRtl ? 'rotate(180deg)' : 'none' }} /> {t('العودة')}
+                    {isRtl ? <ArrowRight size={16} /> : <ArrowLeft size={16} />} {t('العودة')}
                 </button>
             </div>
 

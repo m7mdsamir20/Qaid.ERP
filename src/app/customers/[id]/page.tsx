@@ -67,7 +67,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                     <div style={{ width: 64, height: 64, borderRadius: '20px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}><ScrollText size={32} /></div>
                     <p style={{ color: 'var(--text-primary)', fontWeight: 800, fontSize: '18px' }}>{error || t('لا تتوفر بيانات لهذا العميل حالياً')}</p>
                     <Link href="/customers" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: 'var(--surface-100)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 700, transition: 'all 0.2s' }}>
-                        <ArrowRight size={18} /> {t('العودة لقائمة العملاء')}
+                        {isRtl ? <ArrowRight size={18} /> : <ArrowLeft size={18} />} {t('العودة لقائمة العملاء')}
                     </Link>
                 </div>
             </DashboardLayout>
@@ -85,7 +85,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 <div className="no-print" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
                         <Link href="/customers" style={{ width: 44, height: 44, borderRadius: '14px', background: 'var(--surface-50)', border: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-secondary)', transition: 'all 0.2s' }} onMouseEnter={e => e.currentTarget.style.color = 'var(--primary)'} onMouseLeave={e => e.currentTarget.style.color = 'var(--text-secondary)'}>
-                            <ArrowRight size={24} />
+                            {isRtl ? <ArrowRight size={24} /> : <ArrowLeft size={24} />}
                         </Link>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>

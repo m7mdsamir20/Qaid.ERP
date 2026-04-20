@@ -5,7 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
 import {
-    Shield, ArrowRight, Building2, User, CreditCard,
+    Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard,
     Check, ChevronDown, ChevronUp, Loader2, CheckSquare, Square, CheckCircle,
     Phone, Mail, Lock, UserCircle, Briefcase, Calendar, Globe, MapPin, X, Activity, Search
 } from 'lucide-react';
@@ -254,7 +254,7 @@ export default function NewCompanyPage() {
             <div style={{ background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid rgba(255,255,255,0.06)', padding: '0 32px', height: '56px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <button onClick={() => router.push('/super-admin')} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', fontSize: '13px', fontWeight: 600 }}>
-                        <ArrowRight size={16} /> العودة للوحة التحكم
+                        {isRtl ? <ArrowRight size={16} /> : <ArrowLeft size={16} />} العودة للوحة التحكم
                     </button>
                     <span style={{ color: '#334155' }}>|</span>
                     <span style={{ fontSize: '15px', fontWeight: 800, color: '#e2e8f0' }}>إنشاء حساب جديد</span>
@@ -373,7 +373,7 @@ export default function NewCompanyPage() {
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '32px' }}>
                             <button onClick={() => { if (!form.name.trim()) { alert('اسم الشركة مطلوب'); return; } setStep(2); }}
                                 style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>
-                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '8px' }} />
+                                التالي {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '8px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '8px' }} />}
                             </button>
                         </div>
                     </div>
@@ -443,7 +443,7 @@ export default function NewCompanyPage() {
                             </button>
                             <button onClick={() => { if (!form.adminName || !form.adminUsername || !form.adminPassword) { alert('كل الحقول المطلوبة يجب ملؤها'); return; } if (form.adminPassword !== form.adminPasswordConfirm) { alert('كلمات المرور غير متطابقة'); return; } setStep(3); }}
                                 style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '48px', borderRadius: '12px' }}>
-                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '8px' }} />
+                                التالي {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '8px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '8px' }} />}
                             </button>
                         </div>
                     </div>
@@ -517,7 +517,7 @@ export default function NewCompanyPage() {
                             </button>
                             <button onClick={() => setStep(4)}
                                 style={{ height: '44px', padding: '0 32px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                التالي — تحديد الصلاحيات <ArrowRight size={16} style={{ transform: 'rotate(180deg)' }} />
+                                التالي — تحديد الصلاحيات {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
                             </button>
                         </div>
                     </div>

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
     Calendar, User, Banknote, 
-    ArrowRight, Loader2, Trash2,
+    ArrowRight, ArrowLeft, Loader2, Trash2,
     CheckCircle2, Clock, FileText,
     Receipt, AlertTriangle
 } from 'lucide-react';
@@ -102,7 +102,7 @@ export default function AdvanceDetailPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                     <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
                         <button onClick={() => router.push('/advances')} style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#94a3b8', cursor: 'pointer' }}>
-                            <ArrowRight size={18} />
+                            {isRtl ? <ArrowRight size={18} /> : <ArrowLeft size={18} />}
                         </button>
                         <div>
                             <h1 className="page-title">{t('تفاصيل سلفة الموظف')}</h1>
