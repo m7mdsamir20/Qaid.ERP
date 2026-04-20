@@ -131,8 +131,8 @@ export default function RegisterPage() {
                 style={{ 
                     ...IS, 
                     height: '50px', 
-                    textAlign: (name === 'username' || name === 'email') ? 'left' : 'start',
-                    direction: (name === 'username' || name === 'email') ? 'ltr' : 'inherit'
+                    textAlign: 'start',
+                    direction: isRtl ? 'rtl' : 'ltr'
                 }}
                 onFocus={focusIn}
                 onBlur={focusOut}
@@ -304,7 +304,7 @@ export default function RegisterPage() {
                                     value={form.phone}
                                     onChange={e => setForm({ ...form, phone: e.target.value.replace(/\D/g, '') })}
                                     placeholder={getCountryPlaceholders(selectedCountry.code).phone}
-                                    style={{ ...IS, height: '50px', flex: 1, direction: 'ltr', textAlign: 'left' }}
+                                    style={{ ...IS, height: '50px', flex: 1, direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start' }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
                                     spellCheck={false}
@@ -365,7 +365,7 @@ export default function RegisterPage() {
                                             ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: 'ltr', textAlign: 'left'
+                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}
@@ -391,7 +391,7 @@ export default function RegisterPage() {
                                             ...IS, height: '50px',
                                             paddingLeft: isRtl ? '44px' : '16px',
                                             paddingRight: isRtl ? '16px' : '44px',
-                                            direction: 'ltr', textAlign: 'left'
+                                            direction: isRtl ? 'rtl' : 'ltr', textAlign: 'start'
                                         }}
                                         onFocus={focusIn}
                                         onBlur={focusOut}

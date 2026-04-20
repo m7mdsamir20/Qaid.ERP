@@ -193,8 +193,8 @@ export default function LoginPage() {
                                 style={{ 
                                     ...IS, 
                                     height: '50px', 
-                                    textAlign: 'left', 
-                                    direction: 'ltr' 
+                                    textAlign: 'start', 
+                                    direction: isRtl ? 'rtl' : 'ltr' 
                                 }}
                                 onFocus={focusIn}
                                 onBlur={focusOut}
@@ -218,8 +218,8 @@ export default function LoginPage() {
                                         height: '50px',
                                         paddingLeft: isRtl ? '44px' : '16px',
                                         paddingRight: isRtl ? '16px' : '44px',
-                                        direction: 'ltr', 
-                                        textAlign: 'left'
+                                        direction: isRtl ? 'rtl' : 'ltr', 
+                                        textAlign: 'start'
                                     }}
                                     onFocus={focusIn}
                                     onBlur={focusOut}
