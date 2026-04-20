@@ -31,7 +31,7 @@ export default function NewQuotationPage() {
     const { data: session } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [items, setItems] = useState<Item[]>([]);
     const [company, setCompany] = useState<CompanyInfo>({});
@@ -368,8 +368,8 @@ export default function NewQuotationPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
-                                    <span style={{ color: '#64748b' }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
-                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: '#e2e8f0' }}>{fmt(subtotal)} <small style={{ fontFamily: CAIRO, fontSize: '10px' }}>{cSymbol}</small> </span>
+                                    <span style={{ color: C.textSecondary }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
+                                    <span style={{ fontWeight: 800, color: C.textPrimary }}>{fMoneyJSX(subtotal)}</span>
                                 </div>
 
                                 {/* Discount Section */}
