@@ -5,7 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { 
-    Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart, 
+    Receipt, Package, Printer, Loader2, ArrowRight, ArrowLeft, User, ShoppingCart, 
     Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet
 } from 'lucide-react';
 import { THEME, C, CAIRO, INTER, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
