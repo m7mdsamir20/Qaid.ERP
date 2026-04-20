@@ -76,19 +76,18 @@ body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!
 /* Force all elements to be black in print */
 * { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-/* ── Header: unified block ── */
-.rpt-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:15px;border-bottom:2px solid #111;margin-bottom:15px}
-.rpt-logo img{max-height:80px;max-width:160px;object-fit:contain}
-.rpt-logo-text{font-size:22px;font-weight:900;color:#000}
+/* ── Header: Logo only above the line ── */
+.rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:center;padding-bottom:12px;border-bottom:1px solid #111;margin-bottom:12px}
+.rpt-logo img{max-height:85px;max-width:180px;object-fit:contain}
+.rpt-logo-text{font-size:24px;font-weight:900;color:#000}
 
-.rpt-meta{flex:1;text-align:center}
-.rpt-title{font-size:24px;font-weight:900;color:#000;margin-bottom:10px}
-.rpt-details{display:flex;flex-wrap:wrap;gap:10px 25px;justify-content:center;padding:12px;border:1px solid #999;border-radius:6px;background:#fcfcfc}
+/* ── Unified Info Box below the line ── */
+.rpt-box{border:1px solid #999;border-radius:6px;padding:15px;margin-bottom:15px;background:#fcfcfc;text-align:center}
+.rpt-title{font-size:22px;font-weight:900;color:#000;margin-bottom:8px;display:block}
+.rpt-details{display:flex;flex-wrap:wrap;gap:10px 30px;justify-content:center;margin-top:10px}
 .rpt-detail{display:flex;align-items:center;gap:6px;font-size:11.5px}
 .rpt-lbl{font-weight:800;color:#666}
 .rpt-val{font-weight:800;color:#000}
-
-.rpt-print-info{font-size:10px;color:#888;text-align:${isRtl ? 'right' : 'left'};min-width:150px}
 
 /* ── Stats (data-print-include) ── */
 [data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:15px}
@@ -135,22 +134,18 @@ tfoot td:first-child{text-align:${firstColAlign}}
 <div class="page">
 
 <div class="rpt-header">
-  <div class="rpt-print-info">
-      <div>${printDateStr}</div>
-      <div>${printTimeStr}</div>
-  </div>
-
-  <div class="rpt-meta">
-      <div class="rpt-title">${reportTitle}</div>
-      <div class="rpt-details">
-         ${accountName ? `<div class="rpt-detail"><span class="rpt-lbl">${labelAccount}</span><span class="rpt-val">${accountName}</span></div>` : ''}
-         ${dateRange ? `<div class="rpt-detail"><span class="rpt-lbl">${labelPeriod}</span><span class="rpt-val">${dateRange}</span></div>` : ''}
-         ${printCode ? `<div class="rpt-detail"><span class="rpt-lbl">${labelCode}</span><span class="rpt-val">${printCode}</span></div>` : ''}
-      </div>
-  </div>
-
   <div class="rpt-logo">
     ${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}
+  </div>
+</div>
+
+<div class="rpt-box">
+  <span class="rpt-title">${reportTitle}</span>
+  <div class="rpt-details">
+     <div class="rpt-detail"><span class="rpt-lbl">${isRtl ? 'تاريخ الطباعة:' : 'Print Date:'}</span><span class="rpt-val">${printDateStr} — ${printTimeStr}</span></div>
+     ${accountName ? `<div class="rpt-detail"><span class="rpt-lbl">${labelAccount}</span><span class="rpt-val">${accountName}</span></div>` : ''}
+     ${dateRange ? `<div class="rpt-detail"><span class="rpt-lbl">${labelPeriod}</span><span class="rpt-val">${dateRange}</span></div>` : ''}
+     ${printCode ? `<div class="rpt-detail"><span class="rpt-lbl">${labelCode}</span><span class="rpt-val">${printCode}</span></div>` : ''}
   </div>
 </div>
 
