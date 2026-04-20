@@ -2,12 +2,13 @@
 import { useState, useRef, useEffect, Suspense } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Loader2, CheckCircle2, RefreshCw, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
+import { Loader2, CheckCircle2, RefreshCw, Mail, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
 import { C, CAIRO, INTER, THEME, IS, LS, focusIn, focusOut } from '@/constants/theme';
 
 function VerifyContent() {
-    const { t } = useTranslation();
+    const { lang, t } = useTranslation();
+    const isRtl = lang === 'ar';
     const router = useRouter();
     const searchParams = useSearchParams();
     const email = searchParams.get('email') || '';
