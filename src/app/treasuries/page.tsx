@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { getListCache, setListCache } from '@/lib/listCache';
+import { useCurrency } from '@/hooks/useCurrency';
 
 /* ── Types ── */
 interface Treasury {
@@ -181,6 +182,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
 
 /* ── Main Page ── */
 export default function TreasuriesPage() {
+    const { fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
@@ -285,8 +287,7 @@ export default function TreasuriesPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
+                                    {fMoneyJSX(s.val)}
                                 </div>
                             </div>
                             <div style={{

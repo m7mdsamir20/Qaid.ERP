@@ -55,7 +55,7 @@ const statusLabel: Record<string, { label: string; color: string; bg: string }> 
 function KpiCard({
   label, value, sub, trend, trendUp, color, icon: Icon, delay = 0
 }: {
-  label: string; value: string; sub?: string;
+  label: string; value: React.ReactNode; sub?: string;
   trend?: string; trendUp?: boolean; color: string;
   icon: any; delay?: number;
 }) {
@@ -174,7 +174,7 @@ function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
 
 export default function DashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
-  const { symbol: cSymbol, fMoney } = useCurrency();
+  const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
 
@@ -317,11 +317,8 @@ export default function DashboardPage() {
   );
 
   const periodLabel: any = { today: t('اليوم'), week: t('هذا الأسبوع'), month: t('هذا الشهر') };
-  const renderCurrency = (n: number, fontSize: string = '14px', numWeight: number = 800, color: string = 'inherit') => (
-    <div style={{ fontSize, fontWeight: numWeight, color: color === 'inherit' ? 'inherit' : color, fontFamily: INTER }}>
-      {fMoney(n)}
-    </div>
-  );
+  const renderCurrency = (n: number) => fMoneyJSX(n);
+
 
   if (!canViewDashboard) return (
     <DashboardLayout>
@@ -417,28 +414,28 @@ export default function DashboardPage() {
         }}>
           {isServices ? (
             <>
-              <KpiCard label="إيرادات اليوم" value={fMoney(stats.salesTodayTotal)} sub={t("إجمالي مبيعات الخدمات اليوم")} color={C.primary} icon={Receipt} delay={0} />
+              <KpiCard label="إيرادات اليوم" value={fMoneyJSX(stats.salesTodayTotal)} sub={t("إجمالي مبيعات الخدمات اليوم")} color={C.primary} icon={Receipt} delay={0} />
               <KpiCard label="عدد الخدمات" value={stats.items} sub={t("إجمالي الخدمات المسجلة")} color={C.blue} icon={Package} delay={60} />
               <KpiCard label="عدد العملاء" value={stats.customers} sub={t("قاعدة العملاء الحالية")} color={C.success} icon={Users} delay={120} />
               <KpiCard label="مواعيد اليوم" value="0" sub={t("لا يوجد مواعيد مسجلة حالياً")} color={C.warning} icon={Clock} delay={180} />
-              <KpiCard label="المصروفات" value={fMoney(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={240} />
-              <KpiCard label="صافي الأرباح" value={fMoney(stats.netProfit)} sub={t("الإيرادات - المصروفات")} color={C.success} icon={BarChart2} delay={300} />
+              <KpiCard label="المصروفات" value={fMoneyJSX(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={240} />
+              <KpiCard label="صافي الأرباح" value={fMoneyJSX(stats.netProfit)} sub={t("الإيرادات - المصروفات")} color={C.success} icon={BarChart2} delay={300} />
             </>
           ) : (
             <>
-              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fMoney(stats.salesTotal)} sub={periodLabel[period]} trend={`↑ ${t('مباشر')}`} trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
-              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fMoney(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="إجمالي المبيعات" value={fMoneyJSX(stats.salesTotal)} sub={periodLabel[period]} trend={`↑ ${t('مباشر')}`} trendUp={true} color={C.primary} icon={TrendingUp} delay={0} />}
+              {hasPage('/purchases', 'purchases') && <KpiCard label="إجمالي المشتريات" value={fMoneyJSX(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={60} />}
               {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
-                <KpiCard label="صافي الربح" value={fMoney(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
+                <KpiCard label="صافي الربح" value={fMoneyJSX(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
                   trend={stats.netProfit >= 0 ? `↑ ${t('نمو')}` : `↓ ${t('تراجع')}`}
                   trendUp={stats.netProfit >= 0}
                   color={stats.netProfit >= 0 ? C.success : C.danger}
                   icon={BarChart2} delay={120} />
               )}
-              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fMoney(stats.treasuriesBalance)} sub={t("إجمالي السيولة")} color={C.primary} icon={Wallet} delay={180} />}
-              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fMoney(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
+              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fMoneyJSX(stats.treasuriesBalance)} sub={t("إجمالي السيولة")} color={C.primary} icon={Wallet} delay={180} />}
+              {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fMoneyJSX(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
               {hasPage('/suppliers', 'purchases') && <KpiCard label="الموردين" value={stats.suppliers} sub={t("إجمالي الموردين")} color={C.warning} icon={Truck} delay={300} />}
-              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fMoney(stats.salesTodayTotal)} sub={t("إحصائيات فورية")} color={C.primary} icon={Eye} delay={360} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fMoneyJSX(stats.salesTodayTotal) as any} sub={t("إحصائيات فورية")} color={C.primary} icon={Eye} delay={360} />}
               {(hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory')) && (
                 <Link href="/reports/low-stock-items" style={{ textDecoration: 'none', display: 'block' }}>
                   <KpiCard label="نواقص المخزن" value={stats.lowStockItems.length} sub={t("أصناف تحت الحد – اضغط للعرض")} color={C.danger} icon={AlertTriangle} delay={420} />
@@ -545,7 +542,7 @@ export default function DashboardPage() {
                         <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: C.success, boxShadow: `0 0 8px ${C.success}` }} />
                         <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t.name}</span>
                       </div>
-                      {renderCurrency(t.balance, '15px', 900)}
+                      {renderCurrency(t.balance)}
                     </div>
                   ))
                 )}
@@ -555,7 +552,7 @@ export default function DashboardPage() {
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center'
                   }}>
                     <span style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700 }}>{t('إجمالي السيولة المتاحة')}</span>
-                    {renderCurrency(stats.treasuryList.reduce((s: any, t: any) => s + t.balance, 0), '18px', 900)}
+                    {renderCurrency(stats.treasuryList.reduce((s: any, t: any) => s + t.balance, 0))}
                   </div>
                 )}
               </div>
@@ -605,7 +602,7 @@ export default function DashboardPage() {
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
                               <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: 'center' }}>{renderCurrency(inv.total, '14px', 800)}</td>
+                            <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: 'center' }}>{renderCurrency(inv.total)}</td>
                             <td style={{ padding: '14px 16px', textAlign: 'center' }}>
                               <span style={{ fontSize: '11px', fontWeight: 800, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO }}>{t(s.label)}</span>
                             </td>
@@ -634,7 +631,7 @@ export default function DashboardPage() {
                     borderRadius: '12px', border: `1px solid ${C.danger}15`
                   }}>
                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{d.name}</span>
-                    {renderCurrency(d.balance, '14px', 900, C.danger)}
+                    {renderCurrency(d.balance)}
                   </div>
                 ))}
 
@@ -644,7 +641,7 @@ export default function DashboardPage() {
                 }}>
                   <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700 }}>{t('إجمالي المطلوب تحصيله')}</span>
                   <div style={{ color: C.danger }}>
-                    {renderCurrency(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0), '16px', 900)}
+                    {renderCurrency(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))}
                   </div>
                 </div>
               </div>
