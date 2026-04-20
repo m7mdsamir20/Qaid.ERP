@@ -65,6 +65,8 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Cairo',sans-serif;direction:rtl;background:#fff;color:#111;font-size:12px}
+.currency { font-family: 'Cairo', sans-serif !important; }
+.amount { font-family: inherit; }
 .page{padding:10mm 12mm}
 
 /* ══════════════════════════════

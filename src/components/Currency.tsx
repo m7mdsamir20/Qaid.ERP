@@ -31,17 +31,21 @@ export function Currency({ amount, code, lang, className = '', showSymbol = true
     const symbolText = getSymbol(code, lang);
 
     const amountEl = (
-        <span style={{ fontFamily: INTER, letterSpacing: '0.5px' }}>
+        <span style={{ 
+            fontWeight: 700, 
+            fontFamily: 'inherit', // Keeping existing font for numbers
+            letterSpacing: '0.2px' 
+        }}>
             {fmt(amount)}
         </span>
     );
 
     const symbolEl = showSymbol ? (
         <span style={{ 
-            fontFamily: CAIRO, 
-            fontSize: 'max(0.7em, 10px)', 
+            fontFamily: "'Cairo', sans-serif", // Pure Cairo for symbols only
+            fontSize: 'max(0.75em, 11px)', 
             fontWeight: 600,
-            opacity: 0.85,
+            opacity: 0.9,
             marginInlineStart: isRtl ? '4px' : '0',
             marginInlineEnd: isRtl ? '0' : '4px'
         }}>
