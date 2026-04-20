@@ -105,16 +105,16 @@ th{padding:8px 8px;font-size:10px;font-weight:800;color:#000!important;text-alig
 th:first-child{text-align:${firstColAlign}}
 tbody tr{border-bottom: 1px solid #eee; background:#fff!important}
 tbody tr:nth-child(any){background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-td{padding:6px 8px;font-size:10px;color:#000!important;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word;background:#fff!important;font-family:'Inter', sans-serif}
-td:first-child{text-align:${firstColAlign};font-weight:500}
+td{padding:5px 8px;font-size:9.5px;color:#000!important;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word;background:#fff!important;font-family:'Inter', sans-serif}
+td:first-child{text-align:${firstColAlign};font-weight:400}
 td span,td a,td div{font-size:inherit!important; color:#000!important}
 td button{display:none!important}
-td strong,td b{font-weight:600}
+td strong,td b{font-weight:500}
 td span[style],td div[style]{-webkit-print-color-adjust:exact;print-color-adjust:exact; color:#000!important}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:600!important}
-tr.opening-balance td{background:#f8f9fa!important;font-weight:700!important;border-top:1px solid #ddd!important;border-bottom:1px solid #ddd!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:400!important; font-size: 10px !important}
+tr.opening-balance td{background:#f8f9fa!important;font-weight:500!important;border-top:1px solid #ddd!important;border-bottom:1px solid #ddd!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot tr{background:#f8f9fa!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot td{font-weight:700;font-size:11px;color:#000!important;background:#f8f9fa!important;border:1px solid #ddd;padding:8px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot td{font-weight:500;font-size:10.5px;color:#000!important;background:#f8f9fa!important;border:1px solid #ddd;padding:7px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
