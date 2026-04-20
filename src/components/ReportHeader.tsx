@@ -43,8 +43,10 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const logo = co.logo || co.companyLogo || '';
     const reportTitle = printTitle || title;
     const now = new Date();
-    const printDateStr = now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
-    const printTimeStr = now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+    // التاريخ: أرقام إنجليزية فقط بتنسيق DD/MM/YYYY
+    const printDateStr = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    // الوقت: أرقام إنجليزية مع احتفاظ الصباح/المساء بالعربي
+    const printTimeStr = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true, numberingSystem: 'latn' });
 
     const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
     const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
@@ -70,57 +72,57 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:11px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:10.5px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{padding:8mm 10mm}
 
 /* Force all elements to be black in print */
 * { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
 /* ── Header: logo only ── */
-.rpt-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:15px;border-bottom:2px solid #000;margin-bottom:15px}
-.rpt-logo img{max-height:80px;max-width:180px;object-fit:contain}
-.rpt-logo-text{font-size:24px;font-weight:900;color:#000}
+.rpt-header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:1px solid #ccc;margin-bottom:15px}
+.rpt-logo img{max-height:70px;max-width:160px;object-fit:contain}
+.rpt-logo-text{font-size:22px;font-weight:900;color:#000}
 
 /* ── Report info block ── */
-.rpt-info{border:1.5px solid #000;border-radius:4px;padding:12px 15px;margin-bottom:20px;background:#fff}
-.rpt-info-title{font-size:18px;font-weight:900;color:#000;text-align:center;margin-bottom:10px}
+.rpt-info{border:1px solid #eee;border-radius:4px;padding:10px 15px;margin-bottom:15px;background:#f9f9f9}
+.rpt-info-title{font-size:17px;font-weight:800;color:#000;text-align:center;margin-bottom:8px}
 .rpt-info-rows{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
-.rpt-info-row{display:flex;align-items:center;gap:8px;font-size:12px}
-.rpt-info-lbl{font-weight:900;color:#000!important}
-.rpt-info-val{color:#000!important;font-weight:800}
+.rpt-info-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.rpt-info-lbl{font-weight:700;color:#555!important}
+.rpt-info-val{color:#000!important;font-weight:700}
 
 /* ── Stats (data-print-include) ── */
-[data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:20px}
-[data-print-include]>*{flex:1;min-width:100px;padding:10px 12px!important;border:1.5px solid #000!important;border-radius:4px!important;background:#fff!important;text-align:center}
+[data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:15px}
+[data-print-include]>*{flex:1;min-width:100px;padding:8px 12px!important;border:1px solid #eee!important;border-radius:4px!important;background:#fff!important;text-align:center}
 [data-print-include] *{color:#000!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important}
 [data-print-include] svg{display:none!important}
 
 /* ── Table ── */
 .table-wrap{margin-top:10px}
-table{width:100%;border-collapse:collapse;border:1.5px solid #000;font-size:11.5px;background:#fff!important}
-thead tr{background:#f2f2f2!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-th{padding:12px 8px;font-size:11px;font-weight:900;color:#000!important;text-align:center;border:1.5px solid #000;background:#f2f2f2!important;white-space:nowrap;line-height:1.2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+table{width:100%;border-collapse:collapse;border:1px solid #ddd;font-size:10.5px;background:#fff!important}
+thead tr{background:#f8f9fa!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+th{padding:8px 8px;font-size:10px;font-weight:800;color:#000!important;text-align:center;border:1px solid #ddd;background:#f8f9fa!important;white-space:nowrap;line-height:1.2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 th:first-child{text-align:${firstColAlign}}
-tbody tr{border-bottom: 1.5px solid #000; background:#fff!important}
+tbody tr{border-bottom: 1px solid #eee; background:#fff!important}
 tbody tr:nth-child(any){background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-td{padding:10px 8px;font-size:11px;color:#000!important;text-align:center;border:1.5px solid #000;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word;background:#fff!important}
-td:first-child{text-align:${firstColAlign};font-weight:800}
+td{padding:6px 8px;font-size:10px;color:#000!important;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word;background:#fff!important}
+td:first-child{text-align:${firstColAlign};font-weight:700}
 td span,td a,td div{font-size:inherit!important; color:#000!important}
 td button{display:none!important}
-td strong,td b{font-weight:900}
+td strong,td b{font-weight:800}
 td span[style],td div[style]{-webkit-print-color-adjust:exact;print-color-adjust:exact; color:#000!important}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:900!important}
-tr.opening-balance td{background:#f2f2f2!important;font-weight:900!important;border-top:1.5px solid #000!important;border-bottom:1.5px solid #000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot tr{background:#f2f2f2!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot td{font-weight:900;font-size:12px;color:#000!important;background:#f2f2f2!important;border:1.5px solid #000;padding:12px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:800!important}
+tr.opening-balance td{background:#f8f9fa!important;font-weight:800!important;border-top:1px solid #ddd!important;border-bottom:1px solid #ddd!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot tr{background:#f8f9fa!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot td{font-weight:800;font-size:11px;color:#000!important;background:#f8f9fa!important;border:1px solid #ddd;padding:8px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
   @page{size:A4;margin:8mm 10mm}
-  body{font-size:11px}
+  body{font-size:10px}
   .page{padding:0}
-  th{padding:10px 6px!important}
-  td{padding:8px 6px!important}
+  th{padding:7px 5px!important}
+  td{padding:5px 5px!important}
   thead{display:table-header-group}
   tfoot{display:table-footer-group}
   tbody tr{page-break-inside:avoid}
@@ -134,16 +136,16 @@ tfoot td:first-child{text-align:${firstColAlign}}
 
 <div class="rpt-header">
   <div style="flex:1.2; text-align:start">
-    <!-- Place logo on the left (start) regardless of RTL for modern report looks -->
+    <!-- Right side (start) - Empty or Metadata -->
+  </div>
+  <div style="flex:1 auto; text-align:center">
+      <div class="rpt-info-title" style="margin:0; padding:0; font-size:19px;">${reportTitle}</div>
+  </div>
+  <div style="flex:1.2; text-align:end">
+    <!-- Left side (end) - Logo -->
     <div class="rpt-logo">
       ${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}
     </div>
-  </div>
-  <div style="flex:1 auto; text-align:center">
-      <div class="rpt-info-title" style="margin:0; padding:0; font-size:22px;">${reportTitle}</div>
-  </div>
-  <div style="flex:1.2; text-align:end">
-    <!-- Empty space or right metadata -->
   </div>
 </div>
 

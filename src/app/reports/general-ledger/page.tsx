@@ -203,9 +203,9 @@ export default function GeneralLedgerPage() {
                                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                                 >
-                                    <div style={{ textAlign: 'start' }}>
-                                        <p className="stat-label" style={{ fontSize: '10.5px', fontWeight: 600, color: C.textMuted, margin: '0 0 2px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
+                                    <div style={{ textAlign: 'center', flex: 1 }}>
+                                        <p className="stat-label" style={{ fontSize: '10.5px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                             <span className="stat-value" style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
                                             <span style={{ fontSize: '9px', color: C.textMuted, opacity: 0.7, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
