@@ -187,7 +187,7 @@ export default function DetailedBalanceSheetPage() {
                             alignItems: 'center'
                         }}>
                              <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</span>
-                             <span dir="ltr" style={{ fontSize: '18px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <small style={{fontSize: '11px'}}>{getCurrencyName(currency)}</small></span>
+                             <span style={{ fontSize: '18px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <span style={{ fontFamily: CAIRO, fontSize: '11px', marginInlineStart: '2px' }}>{sym}</span></span>
                         </div>
                     </div>
                 </div>

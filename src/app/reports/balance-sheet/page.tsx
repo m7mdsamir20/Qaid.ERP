@@ -294,11 +294,11 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                         }}>
                             <div>
                                 <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</p>
-                                <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <small style={{fontSize: '14px'}}>{getCurrencyName(currency)}</small></h2>
+                                <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <small style={{ fontSize: '14px', fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></h2>
                             </div>
                             <div className="no-print" style={{ textAlign: 'end' }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontFamily: CAIRO }}>{t('فرق التوازن')}</div>
-                                <div style={{ fontWeight: 800, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: INTER }}>{fmt(Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities))}</div>
+                                <div style={{ fontWeight: 800, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: INTER }}>{fmt(Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities))} <span style={{ fontFamily: CAIRO, fontSize: '11px', marginInlineStart: '2px' }}>{getCurrencyName(currency)}</span></div>
                             </div>
                         </div>
 
