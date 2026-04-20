@@ -215,7 +215,7 @@ export const TABLE_STYLE = {
         color: C.textPrimary
     },
     thead: {
-        background: C.subtle,
+        background: 'rgba(255,255,255,0.06)',
         borderBottom: `1px solid ${C.border}`
     },
     th: (isFirst: boolean) => ({
