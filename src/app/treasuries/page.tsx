@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { getListCache, setListCache } from '@/lib/listCache';
+import { useCurrency } from '@/hooks/useCurrency';
 
 /* ── Types ── */
 interface Treasury {
@@ -182,6 +183,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
 /* ── Main Page ── */
 export default function TreasuriesPage() {
     const { lang, t } = useTranslation();
+    const { fMoneyJSX } = useCurrency();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
@@ -285,8 +287,7 @@ export default function TreasuriesPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
+                                    {fMoneyJSX(s.val)}
                                 </div>
                             </div>
                             <div style={{
@@ -366,6 +367,7 @@ export default function TreasuriesPage() {
 /* ── Treasury Card ── */
 function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDelete }: { item: Treasury; currencySymbol: string; canEdit?: boolean; canDelete?: boolean; onEdit: () => void; onDelete: () => void; }) {
     const { t } = useTranslation();
+    const { fMoneyJSX } = useCurrency();
     const isCash = item.type === 'cash';
     const accentColor = isCash ? C.success : C.primary;
     const Icon = isCash ? Banknote : Building2;
@@ -426,9 +428,8 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                     0.00
                 </div>
                 <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: INTER, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
-                        {item.balance.toLocaleString('en-US')}
-                        <span style={{ fontSize: '11px', color: accentColor, fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
+                        {fMoneyJSX(item.balance)}
                     </div>
                 </div>
              </div>

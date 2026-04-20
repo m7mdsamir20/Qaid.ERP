@@ -1,4 +1,4 @@
-import { getCurrencySymbol, formatMoney } from './currency';
+import { getCurrencySymbol, formatMoney, formatMoneyHTML } from './currency';
 
 export interface CompanyInfo {
     name?: string;
@@ -188,7 +188,10 @@ export function generateA4HTML(
 <meta charset="UTF-8"/>
 <title>${title} - ${prefix}-${invoiceNum} (v2)</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <style>
+.currency { font-family: 'Cairo', sans-serif !important; }
+.amount { font-family: 'Outfit', 'Cairo', sans-serif !important; }
 *{margin:0;padding:0;box-sizing:border-box}
 :root {
     --base-font: ${isA5 ? '9px' : '11px'};
@@ -383,14 +386,14 @@ tbody tr:nth-child(even){background: #fff;}
                 </td>
                 ${!isServicesLine ? `<td>${unit}</td>` : ''}
                 <td><strong>${qty.toLocaleString('en-US')}</strong></td>
-                <td>${price.toLocaleString('en-US')} ${sym}</td>
+                <td>${formatMoneyHTML(price, company.currency, 'en')}</td>
                 ${invoiceTaxRate > 0 ? `
                     <td>${lineTaxRate}%</td>
                 ` : ''}
                 ${invoiceTaxRate > 0 ? `
-                    <td>${lineTaxAmount.toLocaleString('en-US')} ${sym}</td>
+                    <td>${formatMoneyHTML(lineTaxAmount, company.currency, 'en')}</td>
                 ` : ''}
-                <td><strong>${lineTotal.toLocaleString('en-US')} ${sym}</strong></td>
+                <td><strong>${formatMoneyHTML(lineTotal, company.currency, 'en')}</strong></td>
             </tr>`;
         }).join('')}
     </tbody>
@@ -414,21 +417,21 @@ tbody tr:nth-child(even){background: #fff;}
                         <div style="font-weight:700;">الإجمالي غير شامل الضريبة</div>
                         <div style="color:#555; font-size:90%; font-family: sans-serif;">Total (Excluding VAT)</div>
                     </td>
-                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; width: 120px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; width: 120px;">${formatMoneyHTML(subtotal, company.currency, 'en')}</td>
                 </tr>
                 <tr>
                     <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
                         <div style="font-weight:700;">مجموع الخصومات</div>
                         <div style="color:#555; font-size:90%; font-family: sans-serif;">Total Discounts</div>
                     </td>
-                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString('en-US')} ${sym}</td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${formatMoneyHTML(discount, company.currency, 'en')}</td>
                 </tr>
                 <tr>
                     <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
                         <div style="font-weight:700;">الإجمالي الخاضع للضريبة</div>
                         <div style="color:#555; font-size:90%; font-family: sans-serif;">Total Taxable Amount</div>
                     </td>
-                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString('en-US')} ${sym}</td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${formatMoneyHTML(subtotal - discount, company.currency, 'en')}</td>
                 </tr>
                 ${(() => {
                     const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
@@ -439,29 +442,29 @@ tbody tr:nth-child(even){background: #fff;}
                         <div style="font-weight:700;">مجموع ضريبة القيمة المضافة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</div>
                         <div style="color:#555; font-size:90%; font-family: sans-serif;">Total VAT</div>
                     </td>
-                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${formatMoneyHTML(displayTax, company.currency, 'en')}</td>
                 </tr>`;
                 })()}
-                <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
+                <tr style="background:#f0f0f0; border-top: 1.5 solid #111;">
                     <td style="text-align:right; border: 1px solid #ccc; padding: 8px;">
                         <div style="font-weight:900; color:#111;">إجمالي المبلغ المستحق</div>
                         <div style="font-weight:900; color:#444; font-size:90%; font-family: sans-serif;">Total Amount Due</div>
                     </td>
-                    <td style="text-align:center; font-weight:950; font-size:14px; color:#111; border: 1px solid #ccc; padding: 8px;">${total.toLocaleString('en-US')} ${sym}</td>
+                    <td style="text-align:center; font-weight:950; font-size:14px; color:#111; border: 1px solid #ccc; padding: 8px;">${formatMoneyHTML(total, company.currency, 'en')}</td>
                 </tr>
                 <tr>
                     <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
                         <div style="font-weight:700;">المبلغ المدفوع</div>
                         <div style="color:#555; font-size:90%; font-family: sans-serif;">Amount Paid</div>
                     </td>
-                    <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${paid.toLocaleString('en-US')} ${sym}</td>
+                    <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${formatMoneyHTML(paid, company.currency, 'en')}</td>
                 </tr>
                 <tr>
                     <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
                         <div style="font-weight:700;">المتبقي المستحق</div>
                         <div style="color:#555; font-size:90%; font-family: sans-serif;">Remaining Amount</div>
                     </td>
-                    <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${remaining.toLocaleString('en-US')} ${sym}</td>
+                    <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${formatMoneyHTML(remaining, company.currency, 'en')}</td>
                 </tr>
             </tbody>
         </table>
@@ -495,19 +498,19 @@ tbody tr:nth-child(even){background: #fff;}
             return `
                 <table style="width:100%; border-collapse:collapse; border: 1px solid #111; font-size: 13px;">
                     <tbody>
-                        <tr style="height: 30px;">
+                <tr style="height: 30px;">
                             <td style="width:60%; text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الإجمالي قبل الخصم والضريبة</td>
-                            <td style="width:40%; text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                            <td style="width:40%; text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatMoneyHTML(subtotal, company.currency, 'ar')}</td>
                         </tr>
-                        ${showDiscount ? `<tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الخصم</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #d32f2f;">${discount.toLocaleString('en-US')} ${sym}</td></tr>` : ''}
-                        ${showTax ? `<tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">إجمالي الضريبة</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${displayTax.toLocaleString('en-US')} ${sym}</td></tr>` : ''}
-                        <tr style="background:#f2f2f2; height: 30px;"><td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td><td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${total.toLocaleString('en-US')} ${sym}</td></tr>
-                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المدفوع</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${paid.toLocaleString('en-US')} ${sym}</td></tr>
-                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المتبقي</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${remaining.toLocaleString('en-US')} ${sym}</td></tr>
+                        ${showDiscount ? `<tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الخصم</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; color: #d32f2f;">${formatMoneyHTML(discount, company.currency, 'ar')}</td></tr>` : ''}
+                        ${showTax ? `<tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">إجمالي الضريبة</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatMoneyHTML(displayTax, company.currency, 'ar')}</td></tr>` : ''}
+                        <tr style="background:#f2f2f2; height: 30px;"><td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي الفاتورة</td><td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${formatMoneyHTML(total, company.currency, 'ar')}</td></tr>
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المدفوع</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatMoneyHTML(paid, company.currency, 'ar')}</td></tr>
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">المبلغ المتبقي</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatMoneyHTML(remaining, company.currency, 'ar')}</td></tr>
                         ${(partyBalance !== null || invoice.customerPrevBalance !== null || invoice.supplierPrevBalance !== null) ? `
-                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatBal(prevBal)}</td></tr>
-                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px; direction: ltr;">${effect > 0 ? '+' : ''}${effect.toLocaleString('en-US')} ${sym}</td></tr>
-                        <tr style="background:#f2f2f2; height: 30px;"><td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td><td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${formatBal(finalBal)}</td></tr>
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">الرصيد السابق لـ ${partyLabel}</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatMoneyHTML(prevBal, company.currency, 'ar')}</td></tr>
+                        <tr style="height: 30px;"><td style="text-align:right; font-weight:500; border: 1px solid #999; padding: 2px 10px; color: #444;">صافي تأثير الفاتورة</td><td style="text-align:left; font-weight:700; border: 1px solid #999; padding: 2px 10px;">${formatMoneyHTML(effect, company.currency, 'ar')}</td></tr>
+                        <tr style="background:#f2f2f2; height: 30px;"><td style="text-align:right; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">إجمالي رصيد ${partyLabel} الحالي</td><td style="text-align:left; font-weight:900; border: 1px solid #111; padding: 2px 10px; color: #000;">${formatMoneyHTML(finalBal, company.currency, 'ar')}</td></tr>
                         ` : ''}
                     </tbody>
                 </table>`;
