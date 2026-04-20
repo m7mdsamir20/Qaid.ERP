@@ -111,12 +111,12 @@ export default function DetailedBalanceSheetPage() {
                                     <tr key={a.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }}>
                                         <td style={{ padding: '12px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '11px', fontFamily: INTER, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span></td>
                                         <td style={{ padding: '12px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{a.name}</td>
-                                        <td dir="ltr" style={{ padding: '12px 16px', textAlign: 'start', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}>{fmt(a.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '12px 16px', textAlign: 'start', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}><span dir="ltr">{fmt(a.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></span></td>
                                     </tr>
                                 ))}
                                 <tr style={{ background: 'rgba(16, 185, 129, 0.08)', borderTop: `2px solid #10b98133` }}>
                                     <td colSpan={2} style={{ padding: '16px 24px', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي الأصول')}</td>
-                                    <td dir="ltr" style={{ padding: '16px 24px', textAlign: 'start', fontWeight: 950, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>{fmt(data.totalAssets)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                    <td style={{ padding: '16px 24px', textAlign: 'start', fontWeight: 950, color: '#10b981', fontSize: '14px', fontFamily: INTER }}><span dir="ltr">{fmt(data.totalAssets)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></span></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -136,13 +136,13 @@ export default function DetailedBalanceSheetPage() {
                                         <tr key={l.code} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted }}>{l.code}</span></td>
                                             <td style={{ padding: '10px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{l.name}</td>
-                                            <td dir="ltr" style={{ padding: '10px 16px', textAlign: 'start', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}>{fmt(l.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '10px 16px', textAlign: 'start', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}><span dir="ltr">{fmt(l.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></span></td>
                                         </tr>
                                     ))}
                                     {data.liabilities.length === 0 && <tr><td colSpan={3} style={{ padding: '16px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات جارية')}</td></tr>}
                                     <tr style={{ background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533` }}>
                                         <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي الخصوم')}</td>
-                                        <td dir="ltr" style={{ padding: '12px 20px', textAlign: 'start', fontWeight: 900, color: '#fb7185', fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalLiabilities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '12px 20px', textAlign: 'start', fontWeight: 900, color: '#fb7185', fontSize: '13px', fontFamily: INTER }}><span dir="ltr">{fmt(data.totalLiabilities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -160,17 +160,17 @@ export default function DetailedBalanceSheetPage() {
                                         <tr key={e.code} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted }}>{e.code}</span></td>
                                             <td style={{ padding: '10px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{e.name}</td>
-                                            <td dir="ltr" style={{ padding: '10px 16px', textAlign: 'start', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}>{fmt(e.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '10px 16px', textAlign: 'start', fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: INTER }}><span dir="ltr">{fmt(e.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></span></td>
                                         </tr>
                                     ))}
                                     <tr style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(59, 130, 246, 0.02)' }}>
                                         <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}>—</td>
                                         <td style={{ padding: '10px 16px', fontSize: '12px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('صافي الربح / الخسارة')}</td>
-                                        <td dir="ltr" style={{ padding: '10px 16px', textAlign: 'start', fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: INTER }}>{fmt(data.netIncome)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '10px 16px', textAlign: 'start', fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: INTER }}><span dir="ltr">{fmt(data.netIncome)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></span></td>
                                     </tr>
                                     <tr style={{ background: 'rgba(59, 130, 246, 0.08)', borderTop: `1px solid #3b82f633` }}>
                                         <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي حقوق الملكية')}</td>
-                                        <td dir="ltr" style={{ padding: '12px 20px', textAlign: 'start', fontWeight: 950, color: '#3b82f6', fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalEquities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '12px 20px', textAlign: 'start', fontWeight: 950, color: '#3b82f6', fontSize: '13px', fontFamily: INTER }}><span dir="ltr">{fmt(data.totalEquities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></span></td>
                                     </tr>
                                 </tbody>
                             </table>

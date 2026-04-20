@@ -41,6 +41,11 @@ export default function BalanceSheetPage() {
 
     const [data, setData] = useState<BalanceSheetData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [company, setCompany] = useState<any>({});
+
+    useEffect(() => {
+        fetch('/api/company').then(r => r.json()).then(d => { if (d && !d.error) setCompany(d); }).catch(() => {});
+    }, []);
 
     const fetchData = async () => {
         setLoading(true);
@@ -69,9 +74,8 @@ export default function BalanceSheetPage() {
         const toWD = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
         const printDate = now.toLocaleDateString('en-GB');
         const printTime = toWD(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
-        const co = (session?.user as any) || {};
-        const logo = co.logo || co.companyLogo || '';
-        const companyName = co.companyName || co.name || '';
+        const logo = company.logo || company.companyLogo || '';
+        const companyName = company.companyName || company.name || '';
 
         const rowsHTML = (items: AccountLine[], emptyMsg: string) => items.length === 0
             ? `<tr><td colspan="3" style="padding:10px;text-align:center;color:#888;">${emptyMsg}</td></tr>`

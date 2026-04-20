@@ -139,21 +139,21 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:
 
 /* ── Stats cards (rebuilt via JS, CSS here is fallback only) ── */
 [data-print-include] svg,.no-print{display:none!important}
-.print-table-container{display:block!important;margin-bottom:16px;border:none!important}
+.print-table-container{display:block!important;margin-bottom:16px;border:1px solid #bbb!important;border-radius:4px!important;overflow:hidden!important}
 
 /* ── Tables ── */
-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto;outline:1px solid #bbb}
+table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto}
 thead tr{background:#e0e0e0!important}
 thead tr *{background:#e0e0e0!important}
 th{padding:9px 8px;font-size:11px;font-weight:800;text-align:center;border:1px solid #bbb;white-space:nowrap}
-th:first-child{text-align:${firstColAlign};border-inline-start:1px solid #bbb!important}
-th:last-child{border-inline-end:1px solid #bbb!important}
+th:first-child{text-align:${firstColAlign}}
+th:last-child{}
 tbody tr{border-bottom:1px solid #ddd}
 tbody tr:nth-child(even){background:#fafafa!important}
 tbody tr:nth-child(even) *{background:transparent!important}
 td{padding:7px 8px;font-size:11px;text-align:center;border:1px solid #ddd;vertical-align:middle;line-height:1.5;white-space:nowrap}
-td:first-child{text-align:${firstColAlign};border-inline-start:1px solid #bbb!important}
-td:last-child{border-inline-end:1px solid #bbb!important}
+td:first-child{text-align:${firstColAlign}}
+td:last-child{}
 td span,td a,td div{font-size:inherit!important;display:inline!important;white-space:nowrap;background:transparent!important;border:none!important;padding:0!important;border-radius:0!important}
 td button{display:none!important}
 td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter',sans-serif;min-width:65px;white-space:nowrap!important}
