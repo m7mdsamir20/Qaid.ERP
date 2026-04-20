@@ -2,17 +2,12 @@
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
-
-const getCurrencyName = (code: string) => {
-    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
-    return map[code] || code;
-};
-import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, IS, INTER, TABLE_STYLE, SEARCH_STYLE, focusIn, focusOut } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
+import { useCurrency } from '@/hooks/useCurrency';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
-import { Package, Search, Activity, Box, DollarSign, Loader2 } from 'lucide-react';
-import { TABLE_STYLE, SEARCH_STYLE, focusIn, focusOut } from '@/constants/theme';
+import { Package, Search, Activity, Box, DollarSign, Loader2, Calendar } from 'lucide-react';
 
 interface StockItem {
     id: string;
@@ -32,9 +27,9 @@ export default function InventoryReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
+    const { fMoneyJSX } = useCurrency();
     const businessType = session?.user?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
-    const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(true);
@@ -61,7 +56,6 @@ export default function InventoryReportPage() {
                     title={isServices ? t("قائمة أسعار الخدمات") : t("تقرير أرصدة المخزون")}
                     subtitle={isServices ? t("عرض قائمة بجميع الخدمات المسجلة وأسعار البيع المقترحة.") : t("عرض أرصدة جميع الأصناف في كل مخزن مع القيمة الإجمالية والتكلفة.")}
                     backTab="inventory"
-
                     printTitle={isServices ? t("قائمة أسعار الخدمات") : t("جرد المخازن (Inventory Statement)")}
                 />
 
@@ -71,7 +65,7 @@ export default function InventoryReportPage() {
                             { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#3b82f6', icon: <Package size={20} /> },
                             ...(!isServices ? [
                                 { label: t('إجمالي الكميات'), value: data.totalQuantity.toLocaleString('en-US'), color: '#10b981', icon: <Box size={20} /> },
-                                { label: t('قيمة المخزون (تكلفة)'), value: data.totalValue.toLocaleString('en-US'), color: '#f59e0b', icon: <DollarSign size={20} /> },
+                                { label: t('قيمة المخزون (تكلفة)'), value: data.totalValue, color: '#f59e0b', icon: <DollarSign size={20} />, isMoney: true },
                             ] : [])
                         ].map((s, i) => (
                             <div key={i} style={{
@@ -81,8 +75,11 @@ export default function InventoryReportPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                        <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
-                                        {i === 2 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
+                                        {s.isMoney ? (
+                                            fMoneyJSX(s.value as number, '', { fontSize: '16px', fontWeight: 900 })
+                                        ) : (
+                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                        )}
                                     </div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -106,7 +103,7 @@ export default function InventoryReportPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
                         <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? t("جاري تحميل قائمة الخدمات...") : t("جاري تحميل بيانات المخزون...")}</span>
                     </div>
@@ -117,11 +114,33 @@ export default function InventoryReportPage() {
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على نتائج تطابق معايير البحث الحالية.')}</p>
                     </div>
                 ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <div style={{ overflowX: 'auto' }}>
+                    <>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '16px', padding: '0 4px' }}>
+                            <div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                                    <div style={{ width: '4px', height: '16px', background: C.primary, borderRadius: '2px' }} />
+                                    <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("قائمة الخدمات والأسعار") : t("كشف جرد المخازن التفصيلي")}</h3>
+                                </div>
+                                <div style={{ display: 'flex', gap: '24px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Calendar size={13} />
+                                        <span>{t('تاريخ الجرد:')} <span style={{ color: C.textSecondary, fontFamily: INTER, fontWeight: 700 }}>{new Date().toLocaleDateString(lang === 'ar' ? 'ar-EG' : 'en-GB')}</span></span>
+                                     </div>
+                                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                        <Activity size={13} />
+                                        <span>{t('حالة البيانات:')} <span style={{ color: '#10b981', fontWeight: 700 }}>{t('محدث الآن')}</span></span>
+                                     </div>
+                                </div>
+                            </div>
+                            <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
+                                {t('عدد السجلات:')} <span style={{ color: C.primary, fontWeight: 800, fontFamily: INTER }}>{filtered.length}</span>
+                            </div>
+                        </div>
+
+                        <div style={TABLE_STYLE.container}>
                             <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
+                                <thead style={TABLE_STYLE.thead}>
+                                    <tr>
                                         {isServices ? (
                                             [t('كود الخدمة'), t('اسم الخدمة'), t('الوصف/الفئة'), t('سعر الخدمة')].map((h, i) => (
                                                 <th key={i} style={TABLE_STYLE.th(i === 0 || i === 1)}>{h}</th>
@@ -140,12 +159,12 @@ export default function InventoryReportPage() {
                                                 <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>{st.item?.code || '-'}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
-                                                <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
+                                                <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13.5px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{st.item?.unit || '-'}</span></td>
+                                            <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '11.5px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>{st.item?.unit || '-'}</span></td>
                                             {!isServices && (
                                                 <>
-                                                    <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{st.warehouse?.name || t('مخزن غير معرف')}</span></td>
+                                                    <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{st.warehouse?.name || t('مخزن غير معرف')}</span></td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <span style={{
                                                             fontSize: '13px', fontWeight: 900, color: st.quantity <= 0 ? '#ef4444' : st.quantity <= 10 ? '#f59e0b' : '#10b981',
@@ -155,16 +174,13 @@ export default function InventoryReportPage() {
                                                             {st.quantity.toLocaleString('en-US')}
                                                         </span>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 700 }}>{st.item?.costPrice?.toLocaleString('en-US') || '0.00'}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(st.item?.costPrice || 0)}</td>
                                                 </>
                                             )}
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 700, textAlign: isServices ? 'center' : 'inherit' }}>{st.item?.sellPrice?.toLocaleString('en-US') || '0.00'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: isServices ? 'center' : 'inherit' }}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
                                             {!isServices && (
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                                                        <span style={{ fontSize: '13.5px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{(st.quantity * (st.item?.costPrice || 0)).toLocaleString('en-US')}</span>
-                                                        <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                                    </div>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'end' }}>
+                                                    {fMoneyJSX(st.quantity * (st.item?.costPrice || 0), '', { fontWeight: 900, color: C.primary })}
                                                 </td>
                                             )}
                                         </tr>
@@ -172,22 +188,13 @@ export default function InventoryReportPage() {
                                 </tbody>
                             </table>
                         </div>
-                    </div>
+                    </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
+            <style jsx global>{`
+                @keyframes spin { to { transform: rotate(360deg) } }
                 .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
             `}</style>
         </DashboardLayout>
     );
 }
-

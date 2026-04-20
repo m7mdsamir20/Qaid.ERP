@@ -577,10 +577,10 @@ export default function DashboardPage() {
               )}>
               <div style={{ padding: '0 10px 10px' }} className="scroll-table">
                 <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start' }}>
-                  <thead>
-                    <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+                  <thead style={{ background: 'rgba(255,255,255,0.06)', borderBottom: `1px solid ${C.border}` }}>
+                    <tr>
                       {[t('التاريخ والطرف'), t('القيمة'), t('النوع'), t('رقم')].map((h, i) => (
-                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 0 ? (isRtl ? 'right' : 'left') : 'center', fontFamily: CAIRO }}>{h}</th>
+                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, textAlign: i === 0 ? (isRtl ? 'right' : 'left') : 'center', fontFamily: CAIRO }}>{h}</th>
                       ))}
                     </tr>
                   </thead>
