@@ -88,45 +88,53 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;color:#000!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-body{font-family:'Cairo',sans-serif;direction:${dir};font-size:9.5px;line-height:1.4}
+body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:1.5}
 .page{padding:8mm 12mm}
 
 /* ── Header ── */
-.rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:12px;direction:ltr}
+.rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:14px;direction:ltr}
 .rpt-logo img{max-height:60px;max-width:120px;object-fit:contain}
 .rpt-logo-text{font-size:16px;font-weight:900}
 .rpt-title-block{text-align:center;direction:${dir}}
-.rpt-title{font-size:16px;font-weight:900;margin-bottom:6px}
-.rpt-meta{font-size:10px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.rpt-title{font-size:17px;font-weight:900;margin-bottom:6px}
+.rpt-meta{font-size:10.5px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
 .rpt-meta span{display:flex;align-items:center;gap:4px}
 .rpt-meta b{font-weight:800}
 
-/* ── Stats grid ── */
-[data-print-include]{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:10px!important;border:none!important;margin-bottom:14px}
-[data-print-include]>div{padding:10px 12px!important;text-align:center;border:1px solid #ccc!important;border-radius:6px!important;background:#f9f9f9!important}
+/* ── Stats cards ── */
+[data-print-include]{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:10px!important;border:none!important;background:none!important;margin-bottom:16px}
+[data-print-include]>*{padding:12px 14px!important;text-align:center!important;border:1px solid #ccc!important;border-radius:6px!important;background:#f7f7f7!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important}
+[data-print-include] *{background:transparent!important;border:none!important}
+[data-print-include]>* p,
+[data-print-include]>* span{font-size:10px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+[data-print-include]>*>*:last-child,
+[data-print-include]>*>*:last-child span{font-size:13px!important;font-weight:900!important}
 [data-print-include] svg,.no-print{display:none!important}
-.print-table-container{display:block!important;margin-bottom:14px}
+.print-table-container{display:block!important;margin-bottom:16px;border:none!important}
 
 /* ── Tables ── */
-table{width:100%;border-collapse:collapse;font-size:9px;table-layout:auto}
-thead tr{background:#f0f0f0!important}
-th{padding:6px 5px;font-size:8.5px;font-weight:800;text-align:center;border:1px solid #ccc;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:10px;table-layout:auto}
+thead tr{background:#e4e4e4!important}
+thead tr *{background:#e4e4e4!important}
+th{padding:8px 6px;font-size:10px;font-weight:800;text-align:center;border:1px solid #bbb;white-space:nowrap}
 th:first-child{text-align:${firstColAlign}}
-tbody tr{border-bottom:1px solid #eee}
-td{padding:4px 5px;font-size:8px;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.2}
+tbody tr{border-bottom:1px solid #ddd}
+tbody tr:nth-child(even){background:#fafafa!important}
+tbody tr:nth-child(even) *{background:transparent!important}
+td{padding:6px 7px;font-size:10px;text-align:center;border:1px solid #e0e0e0;vertical-align:middle;line-height:1.4;white-space:nowrap}
 td:first-child{text-align:${firstColAlign}}
-td span,td a,td div{font-size:inherit!important;display:inline-block;white-space:nowrap}
+td span,td a,td div{font-size:inherit!important;display:inline!important;white-space:nowrap;background:transparent!important;border:none!important;padding:0!important;border-radius:0!important}
 td button{display:none!important}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter',sans-serif;min-width:55px;font-size:7.8px!important;white-space:nowrap!important}
-tr.opening-balance td{background:#f5f5f5!important;font-weight:700!important;border-top:1px solid #ccc!important;border-bottom:1px solid #ccc!important}
-tfoot tr{background:#f5f5f5!important}
-tfoot td{font-weight:700;font-size:8.5px;border:1px solid #ccc;padding:5px;white-space:nowrap}
+td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter',sans-serif;min-width:60px;white-space:nowrap!important}
+tr.opening-balance td{background:#f0f0f0!important;font-weight:700!important;border-top:1px solid #bbb!important;border-bottom:1px solid #bbb!important}
+tfoot tr{background:#e8e8e8!important}
+tfoot tr *{background:#e8e8e8!important}
+tfoot td{font-weight:800;font-size:10.5px;border:1px solid #bbb;padding:7px 6px;white-space:nowrap}
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
   @page{size:A4;margin:6mm 10mm}
   .page{padding:0}
-  body{font-size:8.5px}
 }
 </style>
 </head>
