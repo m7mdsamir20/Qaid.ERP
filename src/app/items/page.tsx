@@ -37,7 +37,7 @@ interface Item {
 }
 
 export default function ItemsPage() {
-    const { symbol: currencySymbol } = useCurrency();
+    const { symbol: currencySymbol, fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const [items, setItems] = useState<Item[]>([]);
@@ -297,8 +297,12 @@ export default function ItemsPage() {
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>
-                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.unit}</span>
+                                            {s.id === 'value' ? fMoneyJSX(s.val) : (
+                                                <>
+                                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>
+                                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.unit}</span>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                     <div style={{
@@ -405,14 +409,14 @@ export default function ItemsPage() {
                                                     <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, textAlign: 'center' }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textPrimary, textAlign: 'center' }}>{fmt(item.costPrice)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(item.costPrice)}</td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.textPrimary, textAlign: 'center' }}>{fmt(item.sellPrice)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(item.sellPrice)}</td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.teal, textAlign: 'center' }}>{fmt(avgCost)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(avgCost)}</td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 900, color: C.primary, textAlign: 'center' }}>{fmt(totalCost)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(totalCost)}</td>
                                                 )}
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
