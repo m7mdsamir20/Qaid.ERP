@@ -51,6 +51,7 @@ export default function TopSellingReportPage() {
         (i.category || '').toLowerCase().includes(q.toLowerCase())
     );
     const totalSales = filtered.reduce((s, i) => s + i.totalSales, 0);
+    const sym = getCurrencyName(currency);
 
     return (
         <DashboardLayout>
@@ -130,15 +131,15 @@ export default function TopSellingReportPage() {
                                                     <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.primary, fontSize: '13.5px', fontFamily: INTER }}>
-                                                    {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                                    {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'end' }}>
-                                                    <span style={{ 
-                                                        color: '#10b981', background: 'rgba(16,185,129,0.08)', 
+                                                    <span style={{
+                                                        color: '#10b981', background: 'rgba(16,185,129,0.08)',
                                                         padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
-                                                        fontWeight: 1000, fontSize: '12px', fontFamily: INTER 
+                                                        fontWeight: 1000, fontSize: '12px', fontFamily: INTER
                                                     }}>
-                                                        {item.totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                                        {item.totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span>
                                                     </span>
                                                 </td>
                                             </tr>

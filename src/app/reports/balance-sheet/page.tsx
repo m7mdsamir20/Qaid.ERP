@@ -57,9 +57,96 @@ export default function BalanceSheetPage() {
 
     useEffect(() => { fetchData(); }, []);
 
-    const exportToPDF = () => window.print();
-
+    const sym = getCurrencyName(currency);
     const isBalanced = data ? Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities) < 0.01 : false;
+
+    const handlePrint = () => {
+        if (!data) return;
+        const dir = isRtl ? 'rtl' : 'ltr';
+        const fAlign = isRtl ? 'right' : 'left';
+        const bAlign = isRtl ? 'left' : 'right';
+        const now = new Date();
+        const toWD = (s: string) => s.replace(/[٠-٩]/g, (d: string) => String('٠١٢٣٤٥٦٧٨٩'.indexOf(d)));
+        const printDate = now.toLocaleDateString('en-GB');
+        const printTime = toWD(now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true }));
+        const co = (session?.user as any) || {};
+        const logo = co.logo || co.companyLogo || '';
+        const companyName = co.companyName || co.name || '';
+
+        const rowsHTML = (items: AccountLine[], emptyMsg: string) => items.length === 0
+            ? `<tr><td colspan="3" style="padding:10px;text-align:center;color:#888;">${emptyMsg}</td></tr>`
+            : items.map(a => `<tr>
+                <td style="padding:8px 10px;font-size:11px;border:1px solid #ddd;text-align:${fAlign}">${a.name}</td>
+                <td style="padding:8px 10px;font-size:10px;border:1px solid #ddd;text-align:center;color:#888">${a.code}</td>
+                <td style="padding:8px 10px;font-size:11px;font-weight:700;border:1px solid #ddd;text-align:${bAlign}">${fmt(a.balance)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
+            </tr>`).join('');
+
+        const totalRow = (label: string, value: number) => `
+            <tr style="background:#e8e8e8">
+                <td colspan="2" style="padding:9px 10px;font-size:12px;font-weight:900;border:1px solid #bbb;text-align:${fAlign}">${label}</td>
+                <td style="padding:9px 10px;font-size:13px;font-weight:900;border:1px solid #bbb;text-align:${bAlign}">${fmt(value)} <span style="font-family:Cairo,sans-serif;font-size:10px">${sym}</span></td>
+            </tr>`;
+
+        const sectionTable = (title: string, items: AccountLine[], totalLabel: string, total: number, emptyMsg: string) => `
+            <div style="margin-bottom:16px">
+                <div style="background:#e8e8e8;padding:8px 12px;font-size:13px;font-weight:900;border:1px solid #bbb;border-bottom:none">${title}</div>
+                <table style="width:100%;border-collapse:collapse">
+                    <thead><tr style="background:#f0f0f0">
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? 'الحساب' : 'Account'}</th>
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:center">${isRtl ? 'الكود' : 'Code'}</th>
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${bAlign}">${isRtl ? 'الرصيد' : 'Balance'}</th>
+                    </tr></thead>
+                    <tbody>${rowsHTML(items, emptyMsg)}${totalRow(totalLabel, total)}</tbody>
+                </table>
+            </div>`;
+
+        const html = `<!DOCTYPE html>
+<html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
+<head><meta charset="UTF-8"/>
+<title>${t('المركز المالي')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;color:#000!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:1.5}
+.page{padding:8mm 12mm}
+.rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:14px;direction:ltr}
+.rpt-logo img{max-height:60px;max-width:120px;object-fit:contain}
+.rpt-logo-text{font-size:16px;font-weight:900}
+.rpt-title-block{text-align:center;direction:${dir}}
+.rpt-title{font-size:17px;font-weight:900;margin-bottom:6px}
+.rpt-meta{font-size:10.5px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.rpt-meta b{font-weight:800}
+thead tr{background:#f0f0f0!important}
+thead tr *{background:#f0f0f0!important}
+tfoot tr,tr[style*="e8e8e8"]{background:#e8e8e8!important}
+tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
+@media print{@page{size:A4;margin:6mm 10mm}.page{padding:0}}
+</style></head>
+<body><div class="page">
+<div class="rpt-header">
+  <div class="rpt-logo">${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}</div>
+  <div class="rpt-title-block">
+    <div class="rpt-title">${t('المركز المالي (Balance Sheet)')}</div>
+    <div class="rpt-meta"><span>${isRtl ? 'طُبع:' : 'Printed:'} <b>${printDate} — ${printTime}</b></span></div>
+  </div>
+  <div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+  <div>${sectionTable(t('الأصول (Assets)'), data.assets, t('إجمالي الأصول'), data.totalAssets, t('لا توجد أصول'))}</div>
+  <div>
+    ${sectionTable(t('الخصوم (Liabilities)'), data.liabilities, t('إجمالي الخصوم'), data.totalLiabilities, t('لا توجد خصوم'))}
+    ${sectionTable(t('حقوق الملكية (Equity)'), [...data.equities, { code: '—', name: t('صافي دخل الفترة'), type: '', balance: data.netIncome }], t('إجمالي حقوق الملكية'), data.totalEquities, t('لا توجد حقوق ملكية'))}
+  </div>
+</div>
+<div style="margin-top:12px;padding:12px 16px;background:#f0f0f0!important;border:2px solid #bbb;display:flex;justify-content:space-between;align-items:center">
+  <span style="font-size:13px;font-weight:900">${t('إجمالي الخصوم + حقوق الملكية')}</span>
+  <span style="font-size:15px;font-weight:900">${fmt(data.totalLiabilitiesAndEquities)} <span style="font-family:Cairo,sans-serif;font-size:11px">${sym}</span></span>
+</div>
+</div></body></html>`;
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', t('المركز المالي'));
+        window.open('/print/report', '_blank');
+    };
 
     return (
         <DashboardLayout>
@@ -68,7 +155,7 @@ export default function BalanceSheetPage() {
                     title={t("المركز المالي (Balance Sheet)")}
                     subtitle={t("يعرض الموقف المالي للشركة من حيث الأصول، الخصوم، وحقوق الملكية في تاريخ محدد.")}
                     backTab="financial"
-                    
+                    onPrint={handlePrint}
                 />
 
                 {loading ? (
@@ -124,7 +211,7 @@ export default function BalanceSheetPage() {
                                                     <span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span>
                                                     <span style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{a.name}</span>
                                                 </div>
-                                                <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(a.balance)}</span>
+                                                <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(a.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                             </div>
                                         ))}
                                     </div>
@@ -148,7 +235,7 @@ export default function BalanceSheetPage() {
                                             {data.liabilities.map(l => (
                                                 <div key={l.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
                                                     <span style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{l.name}</span>
-                                                    <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(l.balance)}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(l.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                                 </div>
                                             ))}
                                             {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
@@ -156,7 +243,7 @@ export default function BalanceSheetPage() {
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي الخصوم')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#fb7185', fontFamily: INTER }}>{fmt(data.totalLiabilities)}</span>
+                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#fb7185', fontFamily: INTER }}>{fmt(data.totalLiabilities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
 
@@ -179,13 +266,13 @@ export default function BalanceSheetPage() {
                                                     <TrendingUp size={14} color="#3b82f6" />
                                                     <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '11px', fontFamily: CAIRO }}>{t('صافي دخل الفترة')}</span>
                                                 </div>
-                                                <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '12px', fontFamily: INTER }}>{fmt(data.netIncome)}</span>
+                                                <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '12px', fontFamily: INTER }}>{fmt(data.netIncome)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(16, 185, 129, 0.05)', borderTop: `1px solid #10b98133`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي حقوق الملكية')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalEquities)}</span>
+                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalEquities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
                             </div>

@@ -55,6 +55,7 @@ export default function EmployeesDeductionsPage() {
     const [loading, setLoading] = useState(false);
     const [q, setQ] = useState('');
 
+    const sym = getCurrencyName(currency);
     const fetchReport = async () => {
         setLoading(true);
         try {
@@ -127,7 +128,7 @@ export default function EmployeesDeductionsPage() {
                                             <span style={{ fontSize: '10px', fontWeight: 900, color: typeColors[r.type], fontFamily: CAIRO }}>{typeLabels[r.type]}</span>
                                         </td>
                                         <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{r.reason}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: '#ef4444', fontFamily: INTER }}>-{fmt(r.amount)}</td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: '#ef4444', fontFamily: INTER }}>-{fmt(r.amount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                     </tr>
                                 ))}
                             </tbody>

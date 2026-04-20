@@ -73,6 +73,7 @@ export default function PurchasesReportPage() {
     };
 
     const exportToPDF = () => window.print();
+    const sym = getCurrencyName(currency);
 
     useEffect(() => { fetchReport(); }, []);
 
@@ -226,16 +227,16 @@ export default function PurchasesReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{inv.supplier?.name || t('مورد نقدي')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fmt(inv.discount) : '—'}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? <>{fmt(inv.discount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '13px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                             <td style={{ padding: '14px 20px', textAlign: 'end' }}>
                                                 <span style={{
                                                     fontSize: '11px', fontWeight: 1000, fontFamily: INTER,
                                                     color: inv.remaining > 0 ? '#fb7185' : '#10b981',
                                                     background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
                                                     padding: '4px 12px', borderRadius: '10px', border: `1px solid ${inv.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
-                                                }}>{fmt(inv.remaining)}</span>
+                                                }}>{fmt(inv.remaining)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                             </td>
                                         </tr>
                                     ))}
@@ -243,10 +244,10 @@ export default function PurchasesReportPage() {
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start' }}>{t('إجماليات المشتريات للفترة')}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalPurchases)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fmt(data.totalDiscount)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalPaid)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fmt(data.totalRemaining)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalPurchases)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fmt(data.totalDiscount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalPaid)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fmt(data.totalRemaining)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                     </tr>
                                 </tfoot>
                             </table>

@@ -66,6 +66,7 @@ export default function CashFlowReportPage() {
     );
 
     const exportToPDF = () => window.print();
+    const sym = getCurrencyName(currency);
 
     return (
         <DashboardLayout>
@@ -93,7 +94,7 @@ export default function CashFlowReportPage() {
                     <>
 
                         {/* KPI Cards */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('إجمالي المقبوضات'), value: fmt(stats.totalIncome), color: '#10b981', icon: <TrendingUp size={18} /> },
                                 { label: t('إجمالي المدفوعات'), value: fmt(stats.totalExpense), color: '#fb7185', icon: <TrendingDown size={18} /> },
@@ -149,7 +150,7 @@ export default function CashFlowReportPage() {
                         </div>
 
                         {/* Table */}
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
@@ -188,7 +189,7 @@ export default function CashFlowReportPage() {
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600 }}>{v.party}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{v.description || '—'}</td>
                                             <td dir="ltr" style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>
-                                                {fmt(v.amount)}</td>
+                                                {fmt(v.amount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
