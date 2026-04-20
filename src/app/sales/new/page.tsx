@@ -44,7 +44,7 @@ function NewSalePageInner() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
-    const { symbol: cSymbol, fMoney } = useCurrency();
+    const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
     const [customers, setCustomers] = useState<Customer[]>([]);
     const [suppliers, setSuppliers] = useState<any[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
@@ -891,14 +891,14 @@ function NewSalePageInner() {
 
                                 {/* إجمالي الأصناف */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
-                                    <span style={{ color: '#e2e8f0', fontWeight: 700 }}>{subtotal.toLocaleString()} {cSymbol}</span>
-                                    <span style={{ color: '#64748b' }}>{t('إجمالي الأصناف')}</span>
+                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الأصناف')}</span>
                                 </div>
 
                                 {/* الخصم */}
                                 <div style={{
-                                    background: 'rgba(255,255,255,0.02)',
-                                    border: '1px solid rgba(255,255,255,0.06)',
+                                    background: C.subtle,
+                                    border: `1px solid ${C.border}`,
                                     borderRadius: '10px',
                                     padding: '8px 12px',
                                 }}>
@@ -943,9 +943,9 @@ function NewSalePageInner() {
 
                                 {/* الضريبة */}
                                 {taxSettings?.enabled && (
-                                    <div style={{ padding: '8px 12px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
+                                    <div style={{ padding: '8px 12px', background: C.subtle, borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
+                                            <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
                                             <div style={{ position: 'relative' }}>
