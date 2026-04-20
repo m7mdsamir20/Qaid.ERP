@@ -215,7 +215,7 @@ export default function CollectionReportPage() {
                                     </thead>
                                     <tbody>
                                         {(data.installments || []).map((inst, idx: number) => (
-                                            <tr key={inst.id} style={{ borderBottom: idx === (data.installments?.length - 1) ? 'none' : `1px solid ${C.border}`, transition: 'background 0.2s' }}
+                                            <tr key={inst.id} style={{ borderBottom: idx === ((data.installments?.length || 0) - 1) ? 'none' : `1px solid ${C.border}`, transition: 'background 0.2s' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                 <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
