@@ -103,11 +103,14 @@ export const GET = withProtection(async (request, session) => {
                 return items.filter(i => {
                     const total = i.stocks.reduce((acc, s) => acc + s.quantity, 0);
                     return total <= (i.minLimit || 0);
-                }).map(i => ({
-                    id: i.id,
-                    item: { name: i.name, code: i.code },
-                    quantity: i.stocks.reduce((acc, s) => acc + s.quantity, 0)
-                })).slice(0, 6);
+                }).map(i => {
+                    const total = i.stocks.reduce((acc, s) => acc + s.quantity, 0);
+                    return {
+                        id: i.id,
+                        item: { name: i.name, code: i.code },
+                        quantity: (Math.abs(total) < 0.001) ? 0 : total
+                    };
+                }).slice(0, 6);
             }, []),
             safeQuery(() => prisma.customer.findMany({
                 where: { companyId, balance: { gt: 0 } },

@@ -25,7 +25,7 @@ export const GET = withProtection(async (request, session) => {
             return totalStock <= (item.minLimit || 0);
         }).map(item => {
             const totalStock = item.stocks.reduce((sum, s) => sum + s.quantity, 0);
-            const normalizedStock = totalStock === 0 ? 0 : totalStock;
+            const normalizedStock = (Math.abs(totalStock) < 0.001) ? 0 : totalStock;
             const val = normalizedStock * (item.averageCost || item.costPrice || 0);
             
             return {

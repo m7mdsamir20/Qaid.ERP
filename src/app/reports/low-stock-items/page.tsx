@@ -120,11 +120,11 @@ export default function LowStockReportPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{item.category}</td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     <span style={{ 
-                                                        background: item.totalStock === 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)', 
-                                                        color: item.totalStock === 0 ? '#ef4444' : '#f59e0b', 
+                                                        background: item.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)', 
+                                                        color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b', 
                                                         padding: '4px 12px', borderRadius: '10px', fontWeight: 1000, fontSize: '12px', fontFamily: INTER
                                                     }}>
-                                                        {item.totalStock.toLocaleString('en-US')} {item.unit}
+                                                        {item.totalStock.toLocaleString('en-US')}
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
