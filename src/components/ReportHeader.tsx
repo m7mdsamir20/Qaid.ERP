@@ -69,10 +69,10 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <head>
 <meta charset="UTF-8"/>
 <title>${reportTitle}</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;500;600;700;800;900&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:10.5px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo', 'Inter', sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:10.5px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{padding:8mm 10mm}
 
 /* Force all elements to be black in print */
@@ -89,7 +89,7 @@ body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!
 .rpt-info-rows{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
 .rpt-info-row{display:flex;align-items:center;gap:8px;font-size:11px}
 .rpt-info-lbl{font-weight:700;color:#555!important}
-.rpt-info-val{color:#000!important;font-weight:700}
+.rpt-info-val{color:#000!important;font-weight:600;font-family:'Inter', sans-serif}
 
 /* ── Stats (data-print-include) ── */
 [data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:15px}
@@ -105,16 +105,16 @@ th{padding:8px 8px;font-size:10px;font-weight:800;color:#000!important;text-alig
 th:first-child{text-align:${firstColAlign}}
 tbody tr{border-bottom: 1px solid #eee; background:#fff!important}
 tbody tr:nth-child(any){background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-td{padding:6px 8px;font-size:10px;color:#000!important;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word;background:#fff!important}
-td:first-child{text-align:${firstColAlign};font-weight:700}
+td{padding:6px 8px;font-size:10px;color:#000!important;text-align:center;border:1px solid #eee;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word;background:#fff!important;font-family:'Inter', sans-serif}
+td:first-child{text-align:${firstColAlign};font-weight:500}
 td span,td a,td div{font-size:inherit!important; color:#000!important}
 td button{display:none!important}
-td strong,td b{font-weight:800}
+td strong,td b{font-weight:600}
 td span[style],td div[style]{-webkit-print-color-adjust:exact;print-color-adjust:exact; color:#000!important}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:800!important}
-tr.opening-balance td{background:#f8f9fa!important;font-weight:800!important;border-top:1px solid #ddd!important;border-bottom:1px solid #ddd!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:600!important}
+tr.opening-balance td{background:#f8f9fa!important;font-weight:700!important;border-top:1px solid #ddd!important;border-bottom:1px solid #ddd!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot tr{background:#f8f9fa!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot td{font-weight:800;font-size:11px;color:#000!important;background:#f8f9fa!important;border:1px solid #ddd;padding:8px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot td{font-weight:700;font-size:11px;color:#000!important;background:#f8f9fa!important;border:1px solid #ddd;padding:8px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
