@@ -7,9 +7,10 @@ interface CurrencyProps {
     lang: 'ar' | 'en';
     className?: string;
     showSymbol?: boolean;
+    style?: React.CSSProperties;
 }
 
-export function Currency({ amount, code, lang, className = '', showSymbol = true }: CurrencyProps) {
+export function Currency({ amount, code, lang, className = '', showSymbol = true, style = {} }: CurrencyProps) {
     const isRtl = lang === 'ar';
     const symbolText = getCurrencySymbol(code, lang);
     const absAmount = Math.abs(amount);
@@ -31,11 +32,13 @@ export function Currency({ amount, code, lang, className = '', showSymbol = true
     const symbolEl = showSymbol ? (
         <span style={{ 
             fontFamily: "'Cairo', sans-serif", 
-            fontSize: 'max(0.75em, 11px)', 
+            fontSize: '0.85em', 
             fontWeight: 600,
-            opacity: 0.9,
+            opacity: 0.8,
             marginInlineStart: isRtl ? '4px' : '0',
-            marginInlineEnd: isRtl ? '0' : '4px'
+            marginInlineEnd: isRtl ? '0' : '4px',
+            verticalAlign: 'baseline',
+            display: 'inline-block'
         }}>
             {symbolText}
         </span>
@@ -49,7 +52,8 @@ export function Currency({ amount, code, lang, className = '', showSymbol = true
                 alignItems: 'baseline', 
                 gap: '2px', 
                 whiteSpace: 'nowrap',
-                direction: isRtl ? 'rtl' : 'ltr'
+                direction: isRtl ? 'rtl' : 'ltr',
+                ...style 
             }}
         >
             {isRtl ? (
