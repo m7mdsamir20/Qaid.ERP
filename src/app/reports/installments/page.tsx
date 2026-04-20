@@ -16,7 +16,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import CustomSelect from '@/components/CustomSelect';
 import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
 
-const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function InstallmentReportsPage() {
@@ -268,7 +268,7 @@ export default function InstallmentReportsPage() {
                                                 <tbody>
                                                     {data.installments?.map((inst: any, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < data.installments.length - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                                            <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
+                                                            <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط رقم')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
@@ -319,7 +319,7 @@ export default function InstallmentReportsPage() {
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
                                                             <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط')} {inst.installmentNo}</td>
-                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 800, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
+                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 800, fontFamily: INTER }}>{fmt(inst.dueDate, lang)}</td>
                                                             <td style={{ padding: '16px' }}>
                                                                 <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 800, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
                                                                     {inst.daysOverdue} {t('يوم تأخير')}
@@ -388,7 +388,7 @@ export default function InstallmentReportsPage() {
                                                             {plan.installments?.map((inst: any, idx: number) => (
                                                                 <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: '0.2s' }}>
                                                                     <td style={{ padding: '12px 24px', color: C.primary, fontWeight: 800, fontFamily: INTER }}>{inst.installmentNo}</td>
-                                                                    <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
+                                                                    <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: INTER }}>{fmt(inst.dueDate, lang)}</td>
                                                                     <td style={{ padding: '12px 24px', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.amount)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                                     <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                                     <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>

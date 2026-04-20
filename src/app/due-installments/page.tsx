@@ -11,7 +11,7 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
 
-const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function DuePage() {
@@ -170,7 +170,7 @@ export default function DuePage() {
                                                         {inst.installmentNo}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
-                                                        {fmt(inst.dueDate)}
+                                                        {fmt(inst.dueDate, lang)}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         {fmtN(inst.amount)} <span style={{ fontSize: '10px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
@@ -207,7 +207,7 @@ export default function DuePage() {
                                                             }}
                                                                 style={{
                                                                     height: '32px', padding: '0 16px', borderRadius: '10px', border: 'none',
-                                                                    background: isOverdue ? C.danger : C.primary, color: '#white',
+                                                                    background: isOverdue ? C.danger : C.primary, color: 'white',
                                                                     fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: '0.2s',
                                                                     boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                                                                 }}

@@ -60,7 +60,7 @@ export default function CustomerStatementPage() {
             const res = await fetch(url);
             if (!res.ok) { const e = await res.json(); setError(e.error || t('فشل جلب كشف الحساب')); }
             else { const d = await res.json(); setData(d); setError(''); }
-        } catch { setError(t('خطا في الاتصال بالخادم')); } finally { setLoading(false); }
+        } catch { setError(t('خطأ في الاتصال بالخادم')); } finally { setLoading(false); }
     }, [selectedId, dateFrom, dateTo]);
 
     // 1. Initial Load: Fetch All Customers
@@ -339,13 +339,13 @@ export default function CustomerStatementPage() {
                                         <tr>
                                             <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: '#10b981', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
-                                                {(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0)).toLocaleString('en-US')}
+                                                {fMoney(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0))}
                                             </td>
                                             <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '15px', fontWeight: 1000, fontFamily: INTER }}>
-                                                {(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0)).toLocaleString('en-US')}
+                                                {fMoney(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0))}
                                             </td>
                                             <td style={{ padding: '20px 24px', textAlign: 'center', color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '17px', fontWeight: 1000, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>
-                                                {Math.abs(data.finalBalance).toLocaleString('en-US')}
+                                                {fMoney(data.finalBalance)}
                                             </td>
                                         </tr>
                                     </tfoot>
