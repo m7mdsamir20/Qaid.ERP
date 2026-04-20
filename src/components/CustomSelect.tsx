@@ -128,7 +128,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
                     height: '42px',
                     cursor: disabled ? 'not-allowed' : 'pointer',
-                    padding: Icon ? '0 36px' : '0 16px',
+                    padding: Icon ? '0 16px 0 40px' : '0 16px 0 36px',
                     opacity: disabled ? 0.6 : 1,
                     boxSizing: 'border-box',
                     boxShadow: isOpen ? `0 0 0 4px var(--c-primary-bg, rgba(37,106,244,0.15)), 0 4px 12px var(--c-shadow, rgba(0,0,0,0.2))` : 'none',
@@ -140,7 +140,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     <Icon
                         size={16}
                         color={C.primary}
-                        style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', transition: '0.2s' }}
+                        style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', transition: '0.2s' }}
                     />
                 )}
                 {/* Selected Label */}
@@ -157,7 +157,8 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                     height: '100%',
-                    paddingInlineEnd: Icon ? '10px' : '0'
+                    paddingInlineStart: Icon ? '30px' : '0',
+                    paddingInlineEnd: '20px'
                 }}>
                     {selectedOption ? selectedOption.label : placeholder}
                 </div>
@@ -167,7 +168,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     color={C.textMuted}
                     style={{
                         position: 'absolute',
-                        insetInlineStart: '12px',
+                        insetInlineEnd: '12px',
                         top: '50%',
                         transform: `translateY(-50%) rotate(${isOpen ? '180deg' : '0deg'})`,
                         transition: 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
