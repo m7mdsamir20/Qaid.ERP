@@ -232,7 +232,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:var(--base-font);backgr
 .info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'};margin-bottom:5px}
 .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
 .info-title{background:#f5f5f5;padding:${isA5 ? '2px 6px' : '3px 8px'};font-weight:900;font-size:${isA5 ? '9px' : '10px'};border-bottom:1px solid #333}
-.info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
+.info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr; gap: 2px 15px;}
 .info-row{font-size:${isA5 ? '8.5px' : '9.5px'};margin-bottom:${isA5 ? '0px' : '1px'};display:flex;gap:4px}
 .ik{color:#666;min-width:${isA5 ? '55px' : '70px'};flex-shrink:0}
 .iv{color:#111;font-weight:800}
@@ -306,7 +306,7 @@ tbody tr:nth-child(even){background: #fff;}
     <!-- بيانات البائع -->
     ${isSaudi ? `
     <div class="info-box">
-        <div class="info-title">${blInline('بيانات البائع', 'Seller Info')}</div>
+        <div class="info-title">${blInline('من', 'From')}</div>
         <div class="info-body">
             <div class="info-row"><span class="ik">${blInline('الشركة', 'Company')}:</span><span class="iv">${co.name}${co.nameEn ? ` / ${co.nameEn}` : ''}</span></div>
             ${isBilingual
@@ -322,7 +322,7 @@ tbody tr:nth-child(even){background: #fff;}
 
     <!-- بيانات الطرف -->
     <div class="info-box">
-        <div class="info-title">${blInline('بيانات ' + partyLabel, partyLabelEn + ' Info')}</div>
+        <div class="info-title">${blInline('إلى', 'To')}</div>
         <div class="info-body">
             <div class="info-row"><span class="ik">${blInline(partyLabel, partyLabelEn)}:</span><span class="iv">${partyName}</span></div>
             ${party?.phone ? `<div class="info-row"><span class="ik">${blInline('الهاتف', 'Phone')}:</span><span class="iv">${party.phone}</span></div>` : ''}
@@ -783,7 +783,7 @@ body{font-family:'Cairo',sans-serif;color:#111;font-size:11px;background:#fff;di
 .info-wrap{display:flex;gap:8px;margin-top:6px;margin-bottom:5px}
 .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
 .info-title{background:#f5f5f5;padding:3px 8px;font-weight:900;font-size:10px;border-bottom:1px solid #333}
-.info-body{padding:4px 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
+.info-body{padding:4px 8px; display: grid; grid-template-columns: 1fr; gap: 2px 15px;}
 .info-row{font-size:9.5px;margin-bottom:1px;display:flex;gap:4px}
 .ik{color:#666;min-width:70px;flex-shrink:0}
 .iv{color:#111;font-weight:800}
@@ -1033,7 +1033,7 @@ export function generateInstallmentPlanHTML(plan: any, company: CompanyInfo = {}
     .info-wrap{display:flex;gap:${isA5 ? '5px' : '8px'};margin-top:${isA5 ? '2px' : '6px'};margin-bottom:5px}
     .info-box{flex:1;border:1px solid #333;border-radius:4px;overflow:hidden;background:#fff}
     .info-title{background:#f5f5f5;padding:${isA5 ? '2px 6px' : '3px 8px'};font-weight:900;font-size:${isA5 ? '9px' : '10px'};border-bottom:1px solid #333}
-    .info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr 1fr; gap: 2px 15px;}
+    .info-body{padding:${isA5 ? '2px 6px' : '4px 8px'}; display: grid; grid-template-columns: 1fr; gap: 2px 15px;}
     .info-row{font-size:${isA5 ? '8.5px' : '9.5px'};margin-bottom:${isA5 ? '0px' : '1px'};display:flex;gap:4px}
     .ik{color:#666;min-width:${isA5 ? '60px' : '80px'}; flex-shrink: 0;}
     .iv{color:#111;font-weight:800}
