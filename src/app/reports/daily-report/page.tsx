@@ -82,7 +82,7 @@ export default function DailyReportPage() {
                     title={t("التقرير اليومي للمبيعات والتحصيلات")}
                     subtitle={t("ملخص شامل لكافة العمليات المالية والتجارية التي تمت خلال اليوم.")}
                     backTab="financial"
-                    branchName={branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')}
+                    branchName={Array.isArray(branches) ? (branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')) : ''}
                     printDate={new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                 />
 
@@ -155,7 +155,7 @@ export default function DailyReportPage() {
                             ))}
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '24px', alignItems: 'start' }}>
+                        <div className="report-grid">
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 <div data-print-include className="print-table-container" style={{ background: C.card, border: `1.5px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
@@ -198,7 +198,7 @@ export default function DailyReportPage() {
                                         {t('أرصدة السيولة الحالية (الخزائن والبنوك)')}
                                     </h3>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
-                                        {data.treasuries.map((tArr, i: number) => (
+                                        {(data?.treasuries || []).map((tArr: any, i: number) => (
                                             <div key={i} style={{ padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}` }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                                                     <div style={{ width: 28, height: 28, borderRadius: '8px', background: tArr.type === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -248,13 +248,14 @@ export default function DailyReportPage() {
 
             <style>{`
                 .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    .print-table-container { background: white !important; border: 1px solid #ccc !important; border-radius: 0 !important; }
-                    h3 { font-size: 11px !important; margin-bottom: 10px !important; }
-                    div[style*="gridTemplateColumns: 1fr 320px"] { grid-template-columns: 1fr !important; }
-                }
+                    .report-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
+                    @media print {
+                        .print-only { display: block !important; }
+                        .no-print { display: none !important; }
+                        .print-table-container { background: white !important; border: 1px solid #ccc !important; border-radius: 0 !important; }
+                        h3 { font-size: 11px !important; margin-bottom: 10px !important; }
+                        .report-grid { grid-template-columns: 1fr !important; }
+                    }
                 input[type="date"]::-webkit-calendar-picker-indicator {
                     cursor: pointer;
                     filter: invert(34%) sepia(87%) saturate(2751%) hue-rotate(210deg) brightness(97%) contrast(94%);
