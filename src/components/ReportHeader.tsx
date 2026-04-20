@@ -65,7 +65,43 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
       .replace(/ style="[^"]*"/g, '')
       .replace(/<svg[\s\S]*?<\/svg>/g, '')
       .replace(/<button[\s\S]*?<\/button>/g, '');
-    const includeHTML = topLevelPrintable.map(el => stripStyles(el.outerHTML)).join('');
+
+    // Rebuild [data-print-include] stat cards in daily-report KPI style
+    const rebuildCards = (el: Element): string => {
+      const cards = Array.from(el.children);
+      const cardHTMLs = cards.map(card => {
+        const getLeafTexts = (node: Element): string[] => {
+          const results: string[] = [];
+          node.childNodes.forEach(child => {
+            if (child.nodeType === 3) {
+              const t = child.textContent?.trim() || '';
+              if (t) results.push(t);
+            } else if (child.nodeType === 1) {
+              results.push(...getLeafTexts(child as Element));
+            }
+          });
+          return results;
+        };
+        const texts = getLeafTexts(card).filter(t => t !== '—');
+        if (texts.length === 0) return '';
+        const isNumeric = (s: string) => /^[\d,.\s٠-٩]+$/.test(s.replace(/[ر.سج.م\$د.إد.كر.قد.بر.عد.أ]/g, '').trim());
+        const valueIdx = texts.findLastIndex(isNumeric);
+        const valueTexts = valueIdx >= 0 ? texts.slice(valueIdx) : [];
+        const labelTexts = texts.filter((_, i) => i < valueIdx);
+        const label = (labelTexts.length ? labelTexts : texts.filter((_, i) => i !== valueIdx)).join(' ');
+        const value = valueTexts.join(' ');
+        return `<div style="flex:1;border:1px solid #bbb;border-radius:4px;padding:10px 12px;text-align:center;background:#f8f8f8;">
+          <div style="font-size:10px;color:#555;font-weight:700;margin-bottom:6px;line-height:1.4">${label}</div>
+          <div style="font-size:14px;font-weight:900;color:#000">${value}</div>
+        </div>`;
+      }).filter(Boolean);
+      return `<div style="display:flex;gap:8px;margin-bottom:14px">${cardHTMLs.join('')}</div>`;
+    };
+
+    const includeHTML = topLevelPrintable.map(el => {
+      if (el.hasAttribute('data-print-include')) return rebuildCards(el);
+      return stripStyles(el.outerHTML);
+    }).join('');
 
     const dir = isRtl ? 'rtl' : 'ltr';
     const firstColAlign = isRtl ? 'right' : 'left';
@@ -101,35 +137,28 @@ body{font-family:'Cairo',sans-serif;direction:${dir};font-size:11px;line-height:
 .rpt-meta span{display:flex;align-items:center;gap:4px}
 .rpt-meta b{font-weight:800}
 
-/* ── Stats cards ── */
-[data-print-include]{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:10px!important;border:none!important;background:none!important;margin-bottom:16px}
-[data-print-include]>*{padding:12px 14px!important;text-align:center!important;border:1px solid #ccc!important;border-radius:6px!important;background:#f7f7f7!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important}
-[data-print-include] *{background:transparent!important;border:none!important}
-[data-print-include]>* p,
-[data-print-include]>* span{font-size:10px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
-[data-print-include]>*>*:last-child,
-[data-print-include]>*>*:last-child span{font-size:13px!important;font-weight:900!important}
+/* ── Stats cards (rebuilt via JS, CSS here is fallback only) ── */
 [data-print-include] svg,.no-print{display:none!important}
 .print-table-container{display:block!important;margin-bottom:16px;border:none!important}
 
 /* ── Tables ── */
-table{width:100%;border-collapse:collapse;font-size:10px;table-layout:auto}
-thead tr{background:#e4e4e4!important}
-thead tr *{background:#e4e4e4!important}
-th{padding:8px 6px;font-size:10px;font-weight:800;text-align:center;border:1px solid #bbb;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:11px;table-layout:auto;border:1px solid #bbb}
+thead tr{background:#e0e0e0!important}
+thead tr *{background:#e0e0e0!important}
+th{padding:9px 8px;font-size:11px;font-weight:800;text-align:center;border:1px solid #bbb;white-space:nowrap}
 th:first-child{text-align:${firstColAlign}}
 tbody tr{border-bottom:1px solid #ddd}
 tbody tr:nth-child(even){background:#fafafa!important}
 tbody tr:nth-child(even) *{background:transparent!important}
-td{padding:6px 7px;font-size:10px;text-align:center;border:1px solid #e0e0e0;vertical-align:middle;line-height:1.4;white-space:nowrap}
+td{padding:7px 8px;font-size:11px;text-align:center;border:1px solid #ddd;vertical-align:middle;line-height:1.5;white-space:nowrap}
 td:first-child{text-align:${firstColAlign}}
 td span,td a,td div{font-size:inherit!important;display:inline!important;white-space:nowrap;background:transparent!important;border:none!important;padding:0!important;border-radius:0!important}
 td button{display:none!important}
-td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter',sans-serif;min-width:60px;white-space:nowrap!important}
+td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-family:'Inter',sans-serif;min-width:65px;white-space:nowrap!important}
 tr.opening-balance td{background:#f0f0f0!important;font-weight:700!important;border-top:1px solid #bbb!important;border-bottom:1px solid #bbb!important}
-tfoot tr{background:#e8e8e8!important}
-tfoot tr *{background:#e8e8e8!important}
-tfoot td{font-weight:800;font-size:10.5px;border:1px solid #bbb;padding:7px 6px;white-space:nowrap}
+tfoot tr{background:#e0e0e0!important}
+tfoot tr *{background:#e0e0e0!important}
+tfoot td{font-weight:800;font-size:11.5px;border:1px solid #bbb;padding:8px 7px;white-space:nowrap}
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
