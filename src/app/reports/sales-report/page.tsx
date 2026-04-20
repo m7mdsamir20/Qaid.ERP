@@ -3,8 +3,6 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { useCurrency } from '@/hooks/useCurrency';
-import { generateReportHTML } from '@/lib/printInvoices';
-import { formatMoney } from '@/lib/currency';
 import { useEffect, useState } from 'react';
 import { BarChart3, Search, Calendar, Wallet, ArrowUpRight, ArrowDownRight, Activity, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -69,55 +67,6 @@ export default function SalesReportPage() {
         } catch { } finally { setLoading(false); }
     };
 
-    const handlePrint = () => {
-        if (!data) return;
-        const fmtM = (v: number) => formatMoney(v, currency, lang);
-        const company = session?.user ?? {};
-
-        const content = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>${t('رقم الفاتورة')}</th>
-                        <th>${t('التاريخ')}</th>
-                        <th>${t('العميل')}</th>
-                        <th>${t('إجمالي الفاتورة')}</th>
-                        <th>${t('المسدد')}</th>
-                        <th>${t('المتبقي')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${data.invoices.map(inv => `
-                        <tr>
-                            <td>INV-${String(inv.invoiceNumber).padStart(5, '0')}</td>
-                            <td>${new Date(inv.date).toLocaleDateString('en-GB')}</td>
-                            <td>${inv.customer?.name || '—'}</td>
-                            <td>${fmtM(inv.total)}</td>
-                            <td>${fmtM(inv.paidAmount)}</td>
-                            <td style="color:${inv.remaining > 0 ? '#ef4444' : '#10b981'}; font-weight:900">${fmtM(inv.remaining)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        `;
-
-        const html = generateReportHTML(isServices ? t("تقرير مبيعات الخدمات") : t("تقرير المبيعات"), content, company, {
-            lang,
-            dateFrom: from || '',
-            dateTo: to || t('الآن'),
-            generatedBy: session?.user?.name || '',
-            summary: [
-                { label: t('إجمالي المبيعات'), value: data.totalSales },
-                { label: t('إجمالي الخصومات'), value: data.totalDiscount },
-                { label: t('إجمالي المحصل'), value: data.totalPaid },
-                { label: t('إجمالي المستحق'), value: data.totalRemaining, isTotal: true },
-            ]
-        });
-
-        const win = window.open('', '_blank');
-        if (win) { win.document.write(html); win.document.close(); }
-    };
-
     useEffect(() => { fetchReport(); }, []);
 
     return (
@@ -127,7 +76,6 @@ export default function SalesReportPage() {
                     title={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير المبيعات")}
                     subtitle={isServices ? t("تحليل تفصيلي لجميع فواتير الخدمات الصادرة.") : t("تحليل تفصيلي لجميع عمليات البيع الصادرة، الخصومات، والمبالغ المحصلة والمتبقية.")}
                     backTab="sales-purchases"
-                    onPrint={handlePrint}
                     printTitle={isServices ? t("تقرير مبيعات الخدمات") : t("تقرير مبيعات الأصناف")}
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
@@ -249,7 +197,7 @@ export default function SalesReportPage() {
                             />
                         </div>
 
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>

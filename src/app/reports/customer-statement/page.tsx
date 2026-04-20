@@ -11,8 +11,6 @@ import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown,
 import * as XLSX from 'xlsx';
 
 import { useCurrency } from '@/hooks/useCurrency';
-import { formatMoney } from '@/lib/currency';
-import { generateReportHTML } from '@/lib/printInvoices';
 
 interface Customer { id: string; name: string; balance: number; createdAt: string; }
 
@@ -81,73 +79,6 @@ export default function CustomerStatementPage() {
         }
     }, []);
 
-    const handlePrint = () => {
-        if (!data) return;
-        const fmt = (v: number) => formatMoney(v, currency, lang);
-        const company = session?.user ?? {};
-
-        const content = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>${t('التاريخ')}</th>
-                        <th>${t('طبيعة الحركة')}</th>
-                        <th>${t('المرجع')}</th>
-                        <th>${t('البيان')}</th>
-                        <th>${t('مدين (عليه)')}</th>
-                        <th>${t('دائن (له)')}</th>
-                        <th>${t('الرصيد')}</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${data.initialBalance !== 0 ? `
-                        <tr style="background:#fcfcfc; font-style:italic">
-                            <td>${new Date(data.customer.createdAt).toLocaleDateString('en-GB')}</td>
-                            <td>${t('رصيد افتتاحي')}</td>
-                            <td>—</td>
-                            <td>${t('رصيد ما قبل فترة التقرير')}</td>
-                            <td>${data.initialBalance > 0 ? fmt(data.initialBalance) : '—'}</td>
-                            <td>${data.initialBalance < 0 ? fmt(Math.abs(data.initialBalance)) : '—'}</td>
-                            <td>${fmt(data.initialBalance)}</td>
-                        </tr>
-                    ` : ''}
-                    ${data.statement.map(row => `
-                        <tr>
-                            <td>${new Date(row.date).toLocaleDateString('en-GB')}</td>
-                            <td>${row.type}</td>
-                            <td>${row.ref || '—'}</td>
-                            <td>${row.description}</td>
-                            <td style="color:#166534">${row.debit > 0 ? fmt(row.debit) : '—'}</td>
-                            <td style="color:#991b1b">${row.credit > 0 ? fmt(row.credit) : '—'}</td>
-                            <td style="font-weight:900">${fmt(row.balance)}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        `;
-
-        const html = generateReportHTML(t("كشف حساب عميل تفصيلي"), content, company, {
-            lang,
-            dateFrom: dateFrom || '',
-            dateTo: dateTo || t('الآن'),
-            generatedBy: session?.user?.name || '',
-            metadata: [
-                { label: t('العميل'), value: data.customer.name },
-                { label: t('كود العميل'), value: data.customer.id.split('-')[0].toUpperCase() },
-                { label: t('الرصيد الافتتاحي'), value: fmt(data.initialBalance) },
-                { label: t('الرصيد النهائي'), value: fmt(data.finalBalance) },
-            ],
-            summary: [
-                { label: t('إجمالي مسحوبات مدين'), value: fMoney(data.statement.reduce((s, r) => s + r.debit, 0)) },
-                { label: t('إجمالي مدفوعات دائن'), value: fMoney(data.statement.reduce((s, r) => s + r.credit, 0)) },
-                { label: t('الرصيد الحالي المستحق'), value: fMoney(data.finalBalance), isTotal: true },
-            ]
-        });
-
-        const win = window.open('', '_blank');
-        if (win) { win.document.write(html); win.document.close(); }
-    };
-
     const exportToExcel = () => {
         if (!data || !data.statement.length) return;
         const excelData = data.statement.map((row: StatementRow) => ({
@@ -187,7 +118,6 @@ export default function CustomerStatementPage() {
                     title={t("كشف حساب عميل تفصيلي")}
                     subtitle={t("استخراج بيان بكافة مبيعات، مدفوعات، ومرتجعات عميل محدد خلال فترة زمنية مختارة.")}
                     backTab="partners"
-                    onPrint={handlePrint}
                     onExportExcel={exportToExcel}
                     printTitle={t("كشف حساب عميل تفصيلي")}
                     printDate={data ? data.customer.name : undefined}
@@ -286,7 +216,7 @@ export default function CustomerStatementPage() {
                             </div>
                         </div>
 
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
