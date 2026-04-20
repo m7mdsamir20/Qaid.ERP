@@ -84,7 +84,7 @@ export default function CustomerStatementPage() {
     const handlePrint = () => {
         if (!data) return;
         const fmt = (v: number) => formatMoney(v, currency, lang);
-        const company = (session?.user as any) || {};
+        const company = session?.user ?? {};
 
         const content = `
             <table>

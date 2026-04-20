@@ -11,13 +11,29 @@ import { useCurrency } from '@/hooks/useCurrency';
 const PC = '#4f46e5';
 const DC = '#ef4444';
 
+interface ExpenseRow {
+    id: string;
+    entryNumber: number | string;
+    date: string;
+    description: string;
+    expenseAccountName: string;
+    sourceType: string;
+    sourceName: string;
+    amount: number;
+}
+
+interface ExpensesReportData {
+    totalAmount: number;
+    rows: ExpenseRow[];
+}
+
 export default function ExpensesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { symbol: cSymbol } = useCurrency();
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<ExpensesReportData | null>(null);
     const [loading, setLoading] = useState(false);
 
     const fetchReport = async () => {
@@ -125,7 +141,7 @@ export default function ExpensesReportPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {data.rows.map((row: any) => (
+                                        {data.rows.map((row) => (
                                             <tr key={row.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
                                                 <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8', fontFamily: CAIRO }}>#{row.entryNumber}</td>
                                                 <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8', fontFamily: CAIRO, direction: 'ltr' }}>

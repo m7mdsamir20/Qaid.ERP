@@ -31,11 +31,16 @@ interface ReportData {
     totalRemaining: number;
 }
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
 export default function SalesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
-    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const businessType = session?.user?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const { fMoney, currency } = useCurrency();
     const [data, setData] = useState<ReportData | null>(null);
@@ -44,7 +49,7 @@ export default function SalesReportPage() {
     const [to, setTo] = useState('');
     const [q, setQ] = useState('');
     const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<any[]>([]);
+    const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
@@ -67,7 +72,7 @@ export default function SalesReportPage() {
     const handlePrint = () => {
         if (!data) return;
         const fmtM = (v: number) => formatMoney(v, currency, lang);
-        const company = (session?.user as any) || {};
+        const company = session?.user ?? {};
 
         const content = `
             <table>
@@ -161,7 +166,7 @@ export default function SalesReportPage() {
                                     style={{ background: C.card, border: `1px solid ${C.border}` }}
                                     options={[
                                         { value: 'all', label: t('كل الفروع') },
-                                        ...branches.map((b: any) => ({ value: b.id, label: b.name }))
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
                                     ]}
                                 />
                             </div>
@@ -317,4 +322,3 @@ export default function SalesReportPage() {
         </DashboardLayout>
     );
 }
-

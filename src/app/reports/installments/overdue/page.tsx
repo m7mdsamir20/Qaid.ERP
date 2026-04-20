@@ -25,6 +25,28 @@ const LS: React.CSSProperties = {
     display: 'block', fontSize: '11px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px'
 };
 
+interface CustomerOption {
+    id: string;
+    name: string;
+}
+
+interface OverdueInstallment {
+    id: string;
+    installmentNo: number;
+    dueDate: string;
+    daysOverdue: number;
+    remaining?: number;
+    plan?: {
+        planNumber: number;
+        customer?: { name: string } | null;
+    } | null;
+}
+
+interface OverdueReportData {
+    total?: number;
+    installments?: OverdueInstallment[];
+}
+
 export default function OverdueReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -32,8 +54,8 @@ export default function OverdueReportPage() {
     const currency = session?.user?.currency || 'EGP';
 
     const router = useRouter();
-    const [customers, setCustomers] = useState<any[]>([]);
-    const [data,      setData]      = useState<any>(null);
+    const [customers, setCustomers] = useState<CustomerOption[]>([]);
+    const [data,      setData]      = useState<OverdueReportData | null>(null);
     const [loading,   setLoading]   = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState('');
 
@@ -183,7 +205,7 @@ export default function OverdueReportPage() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(data.installments || []).map((inst: any, idx: number) => (
+                                        {(data.installments || []).map((inst, idx: number) => (
                                             <tr key={inst.id} style={{ borderBottom: idx === (data.installments?.length - 1) ? 'none' : `1px solid ${C.border}`, transition: 'background 0.2s' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>

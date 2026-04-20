@@ -22,13 +22,20 @@ const getCurrencyName = (code: string) => {
 const SC = '#10b981';
 const DC = '#ef4444';
 
+interface TreasuryItem {
+    id: string;
+    name: string;
+    type: string;
+    balance: number;
+}
+
 export default function TreasuryReconciliationPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
 
-    const [treasuries, setTreasuries] = useState<any[]>([]);
+    const [treasuries, setTreasuries] = useState<TreasuryItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [physicalBalances, setPhysicalBalances] = useState<Record<string, string>>({});
     const [q, setQ] = useState('');
@@ -107,7 +114,7 @@ export default function TreasuryReconciliationPage() {
                         { label: t('إجمالي العجز المكتشف'), value: totals.totalShortage, color: DC, icon: <TrendingDown size={20} />, sign: t('نقص في الأرصدة (-)') },
                         { label: t('إجمالي الزيادة المكتشفة'), value: totals.totalSurplus, color: SC, icon: <TrendingUp size={20} />, sign: t('زيادة في الأرصدة (+)') },
                         { label: t('نسبة الجرد المكتملة'), value: treasuries.length > 0 ? (totals.reconciledCount / treasuries.length * 100) : 0, isPercent: true, color: '#a855f7', icon: <ShieldCheck size={20} />, sign: `${totals.reconciledCount} ${t('من أصل')} ${treasuries.length}` },
-                    ].map((s: any, i: number) => (
+                    ].map((s, i: number) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                             padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',

@@ -26,6 +26,42 @@ const LS: React.CSSProperties = {
     display: 'block', fontSize: '11px', fontWeight: 700, color: '#94a3b8', marginBottom: '6px'
 };
 
+interface CustomerOption {
+    id: string;
+    name: string;
+    balance?: number;
+}
+
+interface StatementInstallment {
+    id: string;
+    installmentNo: number;
+    dueDate: string;
+    amount: number;
+    paidAmount?: number;
+    remaining?: number;
+    status?: string;
+}
+
+interface StatementPlan {
+    id: string;
+    planNumber: number;
+    productName?: string | null;
+    grandTotal: number;
+    installments?: StatementInstallment[];
+}
+
+interface StatementSummary {
+    totalPlans: number;
+    totalAmount: number;
+    totalPaid: number;
+    totalRemaining: number;
+}
+
+interface CustomerStatementData {
+    summary?: StatementSummary;
+    plans?: StatementPlan[];
+}
+
 export default function CustomerStatementReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -50,8 +86,8 @@ function CustomerStatementReportContent() {
 
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [customers, setCustomers] = useState<any[]>([]);
-    const [data,      setData]      = useState<any>(null);
+    const [customers, setCustomers] = useState<CustomerOption[]>([]);
+    const [data,      setData]      = useState<CustomerStatementData | null>(null);
     const [loading,   setLoading]   = useState(false);
     const [selectedCustomer, setSelectedCustomer] = useState(searchParams.get('customerId') || '');
 
@@ -190,7 +226,7 @@ function CustomerStatementReportContent() {
                             ))}
                         </div>
 
-                        {(data.plans || []).map((plan: any) => (
+                        {(data.plans || []).map((plan) => (
                             <div key={plan.id} style={{ background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '24px', marginBottom: '24px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                                 <div style={{ padding: '16px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -211,7 +247,7 @@ function CustomerStatementReportContent() {
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {(plan.installments || []).map((inst: any) => (
+                                        {(plan.installments || []).map((inst) => (
                                             <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: 'background 0.2s' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>

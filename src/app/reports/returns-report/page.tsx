@@ -26,6 +26,11 @@ interface ReturnInvoice {
     itemCount: number;
 }
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
 export default function ReturnsReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -37,7 +42,7 @@ export default function ReturnsReportPage() {
     const [loading, setLoading] = useState(true);
     const [q, setQ] = useState('');
     const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<any[]>([]);
+    const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
@@ -120,7 +125,7 @@ export default function ReturnsReportPage() {
                                 placeholder={t("كل الفروع")}
                                 options={[
                                     { value: 'all', label: t('كل الفروع') },
-                                    ...branches.map((b: any) => ({ value: b.id, label: b.name }))
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
                                 ]}
                             />
                         )}

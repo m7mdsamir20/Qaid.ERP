@@ -19,6 +19,53 @@ import { generateReportHTML, CompanyInfo } from '@/lib/printInvoices';
 const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+interface CustomerOption {
+    id: string;
+    name: string;
+    balance: number;
+}
+
+interface InstallmentRow {
+    id: string;
+    installmentNo: number;
+    dueDate: string;
+    amount: number;
+    paidAmount?: number;
+    remaining?: number;
+    status?: string;
+    paidAt?: string | null;
+    daysOverdue?: number;
+    plan?: {
+        planNumber: number;
+        customer?: { name: string } | null;
+    } | null;
+}
+
+interface InstallmentPlan {
+    id: string;
+    planNumber: number;
+    productName?: string | null;
+    monthsCount: number;
+    grandTotal: number;
+    installments?: InstallmentRow[];
+}
+
+interface InstallmentSummary {
+    totalPlans: number;
+    totalAmount: number;
+    totalPaid: number;
+    totalRemaining: number;
+}
+
+interface InstallmentReportData {
+    total?: number;
+    installments?: InstallmentRow[];
+    summary?: InstallmentSummary;
+    plans?: InstallmentPlan[];
+}
+
+type InstallmentTab = 'collection' | 'overdue' | 'customer';
+
 export default function InstallmentReportsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -26,9 +73,9 @@ export default function InstallmentReportsPage() {
     const currency = session?.user?.currency || 'EGP';
 
     const { symbol: cSymbol } = useCurrency();
-    const [activeTab, setActiveTab] = useState<'collection' | 'overdue' | 'customer'>('collection');
-    const [customers, setCustomers] = useState<any[]>([]);
-    const [data, setData] = useState<any>(null);
+    const [activeTab, setActiveTab] = useState<InstallmentTab>('collection');
+    const [customers, setCustomers] = useState<CustomerOption[]>([]);
+    const [data, setData] = useState<InstallmentReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [company, setCompany] = useState<CompanyInfo>({});
 
@@ -72,7 +119,7 @@ export default function InstallmentReportsPage() {
         }).join('<div style="height:20px"></div>');
 
         const companyInfo: CompanyInfo = company;
-        const titleMap = {
+        const titleMap: Record<InstallmentTab, string> = {
             collection: t('تقرير تحصيلات الأقساط'),
             overdue: t('تقرير الأقساط المتأخرة'),
             customer: t('كشف حساب أقساط عميل')
@@ -96,7 +143,7 @@ export default function InstallmentReportsPage() {
         window.open('/print/report', '_blank');
     };
 
-    const tabs = [
+    const tabs: Array<{ id: InstallmentTab; label: string; icon: typeof CheckCircle2; sub: string }> = [
         { id: 'collection', label: t('تقرير التحصيلات'), icon: CheckCircle2, sub: t('مراجعة المبالغ الواردة') },
         { id: 'overdue', label: t('تقرير المتأخرات'), icon: AlertTriangle, sub: t('تتبع حالات التعثر') },
         { id: 'customer', label: t('كشف حساب عميل'), icon: FileText, sub: t('سجل الأقساط التاريخي') },
@@ -132,7 +179,7 @@ export default function InstallmentReportsPage() {
                     {tabs.map(tab => {
                         const active = activeTab === tab.id;
                         return (
-                            <button key={tab.id} onClick={() => { setActiveTab(tab.id as 'collection' | 'overdue' | 'customer'); setData(null); }}
+                            <button key={tab.id} onClick={() => { setActiveTab(tab.id); setData(null); }}
                                 style={{
                                     padding: '16px', borderRadius: '16px', border: `1px solid ${active ? C.primaryBorder : C.border}`,
                                     background: active ? 'linear-gradient(135deg, rgba(37,106,244,0.1), rgba(37,106,244,0.05))' : C.card,
@@ -266,7 +313,7 @@ export default function InstallmentReportsPage() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.installments?.map((inst: any, idx: number) => (
+                                                    {data.installments?.map((inst, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < data.installments.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
@@ -314,7 +361,7 @@ export default function InstallmentReportsPage() {
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {data.installments?.map((inst: any, idx: number) => (
+                                                    {data.installments?.map((inst, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < data.installments.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
@@ -361,7 +408,7 @@ export default function InstallmentReportsPage() {
 
                                     {/* Plans Timeline */}
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
-                                        {data.plans?.map((plan: any) => (
+                                        {data.plans?.map((plan) => (
                                             <div key={plan.id} style={{ ...SC, padding: 0, overflow: 'hidden' }}>
                                                 <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -385,7 +432,7 @@ export default function InstallmentReportsPage() {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            {plan.installments?.map((inst: any, idx: number) => (
+                                                            {plan.installments?.map((inst, idx: number) => (
                                                                 <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: '0.2s' }}>
                                                                     <td style={{ padding: '12px 24px', color: C.primary, fontWeight: 800, fontFamily: INTER }}>{inst.installmentNo}</td>
                                                                     <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: INTER }}>{fmt(inst.dueDate, lang)}</td>
