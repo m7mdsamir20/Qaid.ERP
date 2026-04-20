@@ -406,53 +406,66 @@ tbody tr:nth-child(even){background: #fff;}
     </div>`;
         })()}
     
-    ${isSaudi ? `
-    <table style="width:100%; border-collapse:collapse; margin-top:10px; border: 1.5px solid #333;">
-        <tbody>
-            <tr>
-                <td style="width:40%; text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي غير شامل الضريبة</td>
-                <td style="width:20%; text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
-                <td style="width:40%; text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total (Excluding VAT)</td>
-            </tr>
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">مجموع الخصومات</td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString('en-US')} ${sym}</td>
-                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total Discounts</td>
-            </tr>
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">الإجمالي الخاضع للضريبة</td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString('en-US')} ${sym}</td>
-                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total Taxable Amount</td>
-            </tr>
-            ${(() => {
-                const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
-                    : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
-                return `
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">
-                    مجموع ضريبة القيمة المضافة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}
-                </td>
-                <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
-                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Total VAT</td>
-            </tr>`;
-            })()}
-            <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
-                <td style="text-align:right; font-weight:900; color:#111; padding: 8px;">إجمالي المبلغ المستحق</td>
-                <td style="text-align:center; font-weight:900; font-size:14px; color:#111; padding: 8px;">${total.toLocaleString('en-US')} ${sym}</td>
-                <td style="text-align:left; font-weight:900; color:#111; padding: 8px;">Total Amount Due</td>
-            </tr>
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المبلغ المدفوع</td>
-                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${paid.toLocaleString('en-US')} ${sym}</td>
-                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Amount Paid</td>
-            </tr>
-            <tr>
-                <td style="text-align:right; font-weight:700; border: 1px solid #ccc; padding: 6px;">المتبقي المستحق</td>
-                <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${remaining.toLocaleString('en-US')} ${sym}</td>
-                <td style="text-align:left; color:#555; border: 1px solid #ccc; padding: 6px;">Remaining Amount</td>
-            </tr>
-        </tbody>
-    </table>
+    <div style="width: 100%; text-align: left; margin-top: 10px; clear: both; display: block;">
+        <table style="width: 320px; display: inline-table; border-collapse: collapse; border: 1.5px solid #333; background: #fff;">
+            <tbody>
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">الإجمالي غير شامل الضريبة</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total (Excluding VAT)</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px; width: 120px;">${subtotal.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">مجموع الخصومات</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total Discounts</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${discount.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">الإجمالي الخاضع للضريبة</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total Taxable Amount</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${(subtotal - discount).toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                ${(() => {
+                    const displayTax = invoiceTaxAmount > 0 ? invoiceTaxAmount
+                        : parseFloat(lines.reduce((acc: number, l: any) => acc + (Number(l.quantity || 0) * Number(l.price || 0) * invoiceTaxRate / 100), 0).toFixed(2));
+                    return `
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">مجموع ضريبة القيمة المضافة ${invoiceTaxRate > 0 ? `(${invoiceTaxRate}%)` : ''}</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Total VAT</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; border: 1px solid #ccc; padding: 6px;">${displayTax.toLocaleString('en-US')} ${sym}</td>
+                </tr>`;
+                })()}
+                <tr style="background:#f0f0f0; border-top: 1.5px solid #111;">
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 8px;">
+                        <div style="font-weight:900; color:#111;">إجمالي المبلغ المستحق</div>
+                        <div style="font-weight:900; color:#444; font-size:90%; font-family: sans-serif;">Total Amount Due</div>
+                    </td>
+                    <td style="text-align:center; font-weight:950; font-size:14px; color:#111; border: 1px solid #ccc; padding: 8px;">${total.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">المبلغ المدفوع</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Amount Paid</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${paid.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+                <tr>
+                    <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
+                        <div style="font-weight:700;">المتبقي المستحق</div>
+                        <div style="color:#555; font-size:90%; font-family: sans-serif;">Remaining Amount</div>
+                    </td>
+                    <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${remaining.toLocaleString('en-US')} ${sym}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
     ` : `
     <!-- Summary Section (For EG and others) -->
     <div style="width: 100%; text-align: left; margin-top: 8px; clear: both; display: block;">
