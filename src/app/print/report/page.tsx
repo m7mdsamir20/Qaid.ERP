@@ -1,22 +1,34 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Printer, Download, X, Loader2 } from 'lucide-react';
+import { getStoredLang } from '@/lib/i18n';
 
 export default function PrintReportPage() {
     const [html, setHtml] = useState('');
-    const [title, setTitle] = useState('تقرير');
+    const [title, setTitle] = useState('');
     const [loading, setLoading] = useState(true);
     const [downloading, setDownloading] = useState(false);
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const autoPrinted = useRef(false);
+    const lang = getStoredLang();
+    const isRtl = lang === 'ar';
+
+    const ui = {
+        loading:     isRtl ? 'جاري تحميل التقرير...' : 'Loading report...',
+        empty:       isRtl ? 'لا يوجد تقرير للعرض'   : 'No report to display',
+        print:       isRtl ? 'طباعة'                  : 'Print',
+        download:    isRtl ? 'تنزيل PDF'              : 'Download PDF',
+        downloading: isRtl ? 'جاري التحميل...'        : 'Downloading...',
+        close:       isRtl ? 'إغلاق'                  : 'Close',
+        pdfError:    isRtl ? 'فشل تحميل PDF'          : 'PDF download failed',
+        defaultTitle:isRtl ? 'تقرير'                  : 'Report',
+    };
 
     useEffect(() => {
         const stored = sessionStorage.getItem('print_report_html');
         const storedTitle = sessionStorage.getItem('print_report_title');
-        if (stored) {
-            setHtml(stored);
-            if (storedTitle) setTitle(storedTitle);
-        }
+        setHtml(stored || '');
+        setTitle(storedTitle || ui.defaultTitle);
         setLoading(false);
     }, []);
 
@@ -38,7 +50,6 @@ export default function PrintReportPage() {
                 import('jspdf'),
             ]);
             const body = iframeDoc.body;
-            // نستخدم العرض الفعلي للـ iframe عشان يتطابق مع الرندر
             const iframeEl = iframeRef.current!;
             const renderW = iframeEl.clientWidth || body.scrollWidth;
             const canvas = await html2canvas(body, {
@@ -49,10 +60,7 @@ export default function PrintReportPage() {
                 windowWidth: renderW,
                 width: renderW,
                 height: body.scrollHeight,
-                x: 0,
-                y: 0,
-                scrollX: 0,
-                scrollY: 0,
+                x: 0, y: 0, scrollX: 0, scrollY: 0,
             });
             const pw = 210, ph = 297;
             const pdf = new jsPDF('p', 'mm', [pw, ph]);
@@ -71,50 +79,64 @@ export default function PrintReportPage() {
                     remaining -= ph;
                 }
             }
-            const safeName = title.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '-');
-            pdf.save(`${safeName}.pdf`);
+            pdf.save(`${title.replace(/[^a-zA-Z0-9\u0600-\u06FF]/g, '-')}.pdf`);
         } catch (e) {
             console.error(e);
-            alert('فشل تحميل PDF');
+            alert(ui.pdfError);
         } finally {
             setDownloading(false);
         }
     };
 
+    const toolbarStyle: React.CSSProperties = {
+        display: 'flex', alignItems: 'center', gap: '10px',
+        padding: '10px 20px', background: '#1e1e2e',
+        borderBottom: '1px solid rgba(255,255,255,0.08)',
+        flexShrink: 0, direction: isRtl ? 'rtl' : 'ltr',
+    };
+    const btnBase: React.CSSProperties = {
+        display: 'flex', alignItems: 'center', gap: '6px',
+        padding: '7px 16px', borderRadius: '8px', cursor: 'pointer',
+        fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700,
+        border: 'none',
+    };
+
     if (loading) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', gap: '12px', color: '#fff', fontFamily: 'Cairo, sans-serif' }}>
-            <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} />
-            <span>جاري تحميل التقرير...</span>
-            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', gap: '12px', color: '#fff', fontFamily: 'Cairo, sans-serif' }}>
+            <Loader2 size={24} className="animate-spin" />
+            <span>{ui.loading}</span>
         </div>
     );
 
     if (!html) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>
-            لا يوجد تقرير للعرض
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>
+            {ui.empty}
         </div>
     );
 
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1a1a2e' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 20px', background: '#16213e', borderBottom: '1px solid rgba(255,255,255,0.08)', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', flexShrink: 0 }}>
-                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', marginLeft: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1e1e2e' }}>
+            <div style={toolbarStyle}>
+                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', flex: 1 }}>
                     {title}
                 </span>
-                <div style={{ marginRight: 'auto', display: 'flex', gap: '8px', alignItems: 'center' }}>
-                    <button onClick={handlePrint} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: '#4f46e5', color: '#fff', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
-                        <Printer size={15} /> طباعة
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <button onClick={handlePrint} style={{ ...btnBase, background: '#4f46e5', color: '#fff' }}>
+                        <Printer size={15} /> {ui.print}
                     </button>
-                    <button onClick={handleDownloadPdf} disabled={downloading} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 16px', borderRadius: '8px', border: '1px solid rgba(16,185,129,0.3)', cursor: downloading ? 'wait' : 'pointer', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700, opacity: downloading ? 0.7 : 1 }}>
-                        {downloading ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <Download size={15} />}
-                        {downloading ? 'جاري التحميل...' : 'تنزيل PDF'}
+                    <button
+                        onClick={handleDownloadPdf}
+                        disabled={downloading}
+                        style={{ ...btnBase, background: 'rgba(16,185,129,0.15)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', opacity: downloading ? 0.7 : 1, cursor: downloading ? 'wait' : 'pointer' }}
+                    >
+                        {downloading ? <Loader2 size={15} className="animate-spin" /> : <Download size={15} />}
+                        {downloading ? ui.downloading : ui.download}
                     </button>
-                    <button onClick={() => window.close()} style={{ display: 'flex', alignItems: 'center', gap: '6px', padding: '7px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.08)', color: '#aaa', fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700 }}>
-                        <X size={15} /> إغلاق
+                    <button onClick={() => window.close()} style={{ ...btnBase, background: 'rgba(255,255,255,0.08)', color: '#aaa' }}>
+                        <X size={15} /> {ui.close}
                     </button>
                 </div>
             </div>
-            <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             <iframe
                 ref={iframeRef}
                 srcDoc={html}
