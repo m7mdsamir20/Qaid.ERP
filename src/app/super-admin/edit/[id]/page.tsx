@@ -5,7 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter, useParams } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
 import {
-    Shield, ArrowRight, Building2, User, CreditCard,
+    Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard,
     Check, ChevronDown, ChevronUp, Loader2, CheckSquare,
     Square, Key, Eye, EyeOff, X, Phone, Mail, UserCircle, Activity, Globe
 } from 'lucide-react';
@@ -354,7 +354,7 @@ export default function EditCompanyPage() {
                         style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'transparent', border: 'none', color: C.textSecondary, cursor: 'pointer', fontSize: '13.5px', fontWeight: 700, transition: 'all 0.2s' }}
                         onMouseEnter={e => e.currentTarget.style.color = C.textPrimary}
                         onMouseLeave={e => e.currentTarget.style.color = C.textSecondary}>
-                        <ArrowRight size={18} /> العودة للوحة التحكم
+                        {isRtl ? <ArrowRight size={18} /> : <ArrowLeft size={18} />} العودة للوحة التحكم
                     </button>
                     <span style={{ color: C.border, height: '20px', width: '1px', background: C.border }} />
                     <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary }}>تعديل حساب: {form.name}</span>
@@ -454,7 +454,7 @@ export default function EditCompanyPage() {
                         <div style={{ display: 'flex', justifyContent: 'flex-start', marginTop: '36px' }}>
                             <button onClick={() => { if (!form.name.trim()) { alert('اسم الشركة مطلوب'); return; } setStep(2); }}
                                 style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 36px', height: '50px', borderRadius: '14px' }}>
-                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '10px' }} />
+                                التالي {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
                             </button>
                         </div>
                     </div>
@@ -527,7 +527,7 @@ export default function EditCompanyPage() {
                                 السابق
                             </button>
                             <button onClick={() => setStep(3)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
-                                التالي <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '10px' }} />
+                                التالي {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
                             </button>
                         </div>
                     </div>
@@ -590,7 +590,7 @@ export default function EditCompanyPage() {
                                 السابق
                             </button>
                             <button onClick={() => setStep(4)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
-                                التالي — الصلاحيات <ArrowRight size={18} style={{ transform: 'rotate(180deg)', marginInlineEnd: '10px' }} />
+                                التالي — الصلاحيات {isRtl ? <ArrowLeft size={18} style={{ marginInlineEnd: '10px' }} /> : <ArrowRight size={18} style={{ marginInlineStart: '10px' }} />}
                             </button>
                         </div>
                     </div>

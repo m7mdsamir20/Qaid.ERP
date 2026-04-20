@@ -231,7 +231,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <ArrowRight size={16} /> {t('العودة للقائمة')}
+                            {isRtl ? <ArrowRight size={16} /> : <ArrowLeft size={16} />} {t('العودة للقائمة')}
                         </button>
                     </div>
                 </div>

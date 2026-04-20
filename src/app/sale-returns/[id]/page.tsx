@@ -6,7 +6,7 @@ import { useRouter, useParams } from 'next/navigation';
 import {
     ChevronRight, Printer, Package,
     Calendar, User, CreditCard, FileText, Loader2,
-    RotateCcw, AlertCircle, ShoppingBag, ArrowLeftRight, Phone, ArrowRight
+    RotateCcw, AlertCircle, ShoppingBag, ArrowLeftRight, Phone, ArrowRight, ArrowLeft
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
@@ -124,7 +124,7 @@ export default function SaleReturnDetailsPage() {
                             }}
                             title="العودة"
                         >
-                            <ArrowRight size={20} />
+                            {isRtl ? <ArrowRight size={20} /> : <ArrowLeft size={20} />}
                         </button>
                         <div>
                             <h1 className="page-title">{isServices ? t("تفاصيل إلغاء الخدمة / المرتجع") : t("تفاصيل مرتجع المبيعات")}</h1>

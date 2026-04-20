@@ -1,5 +1,6 @@
-import { ArrowRight, Printer, FileSpreadsheet, FileDown } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Printer, FileSpreadsheet, FileDown } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useTranslation } from '@/lib/i18n';
 import React from 'react';
 import { THEME, C, CAIRO, INTER } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
@@ -20,6 +21,8 @@ interface ReportHeaderProps {
 
 export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onExportPdf, onPrint, printTitle, printDate, printCode, accountName: manualAccountName }: ReportHeaderProps) {
   const router = useRouter();
+  const { lang, t } = useTranslation();
+  const isRtl = lang === 'ar';
   const { data: session } = useSession();
   const [co, setCo] = React.useState<any>((session?.user as any) || {});
 
@@ -261,9 +264,9 @@ ${tablesHTML}
             }}
             onMouseEnter={e => { e.currentTarget.style.background = C.hover; e.currentTarget.style.color = C.textPrimary; }}
             onMouseLeave={e => { e.currentTarget.style.background = C.inputBg; e.currentTarget.style.color = C.textSecondary; }}
-            title="رجوع"
+            title={t("رجوع")}
           >
-            <ArrowRight size={22} />
+            {isRtl ? <ArrowRight size={22} /> : <ArrowLeft size={22} />}
           </button>
           <div>
             <h1 className="page-title" style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{title}</h1>

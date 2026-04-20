@@ -182,7 +182,7 @@ function VerifyContent() {
                     </div>
                     
                     <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: C.textMuted, textDecoration: 'none', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }} onMouseEnter={e => e.currentTarget.style.color = C.textSecondary} onMouseLeave={e => e.currentTarget.style.color = C.textMuted}>
-                        <ArrowRight size={14} /> {t('العودة لإنشاء الحساب')}
+                        {isRtl ? <ArrowRight size={14} /> : <ArrowLeft size={14} />} {t('العودة لإنشاء الحساب')}
                     </Link>
                 </div>
             )}

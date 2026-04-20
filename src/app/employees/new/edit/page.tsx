@@ -10,7 +10,7 @@ import {
     UsersIcon, Briefcase, Building2,
     CreditCard, Paperclip, X, Upload,
     Eye, Trash2, Loader2, ChevronDown,
-    ArrowRight, Save
+    ArrowRight, ArrowLeft, Save
 } from 'lucide-react';
 
 /* ══════════════════════════════════════════
@@ -256,7 +256,7 @@ export default function EditEmployeePage() {
                             style={{ display: 'flex', alignItems: 'center', gap: '6px', height: '36px', padding: '0 12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.08)', background: 'rgba(255,255,255,0.04)', color: '#94a3b8', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s' }}
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)'; e.currentTarget.style.color = '#e2e8f0'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#94a3b8'; }}>
-                            <ArrowRight size={14} /> العودة
+                            {isRtl ? <ArrowRight size={14} /> : <ArrowLeft size={14} />} {t('العودة')}
                         </button>
                         <div>
                             <h1 className="page-title">تعديل بيانات الموظف</h1>
