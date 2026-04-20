@@ -42,16 +42,16 @@ export const POST = withProtection(async (request, session) => {
             for (const item of items) {
                 const totalQty = item.stocks.reduce((s, st) => s + st.quantity, 0);
                 if (totalQty <= (item.minLimit || 0)) {
-                    const exists = await prisma.notification.findFirst({
-                        where: {
-                            companyId, 
-                            type: 'low_stock',
-                            msg: { contains: item.name },
-                            read: false,
-                        }
+                    const lastNotif = await prisma.notification.findFirst({
+                        where: { companyId, type: 'low_stock', msg: { contains: item.name } },
+                        orderBy: { createdAt: 'desc' }
                     });
                     
-                    if (!exists) {
+                    const shouldCreate = !lastNotif || 
+                        (!lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 30)) || 
+                        (lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 60 * 12));
+                    
+                    if (shouldCreate) {
                         newNotifications.push({
                             companyId, 
                             type: 'low_stock',
@@ -80,16 +80,15 @@ export const POST = withProtection(async (request, session) => {
 
             for (const inst of overdueInstallments) {
                 const customerName = inst.plan?.customer?.name || '';
-                const exists = await prisma.notification.findFirst({
-                    where: {
-                        companyId, 
-                        type: 'overdue_payment',
-                        msg: { contains: customerName },
-                        read: false,
-                    }
+                const lastNotif = await prisma.notification.findFirst({
+                    where: { companyId, type: 'overdue_payment', msg: { contains: customerName } },
+                    orderBy: { createdAt: 'desc' }
                 });
                 
-                if (!exists && customerName) {
+                const shouldCreate = !lastNotif || 
+                        (lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 60 * 12));
+
+                if (shouldCreate && customerName) {
                     const days = Math.ceil((now.getTime() - new Date(inst.dueDate).getTime()) / (1000 * 60 * 60 * 24));
                     newNotifications.push({
                         companyId, 
