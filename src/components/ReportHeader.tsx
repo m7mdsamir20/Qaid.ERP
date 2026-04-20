@@ -44,7 +44,10 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const reportTitle = printTitle || title;
     const now = new Date();
     const printDateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const printTimeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
+    let printTimeStr = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: true });
+    
+    // Convert AM/PM to ص/م for cultural alignment
+    printTimeStr = printTimeStr.toLowerCase().replace('am', isRtl ? 'ص' : 'AM').replace('pm', isRtl ? 'م' : 'PM');
 
     const isDateRange = printDate && (printDate.includes('من') || printDate.includes('إلى') || printDate.includes('/') || printDate.includes('-'));
     const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
@@ -98,22 +101,22 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:11px;line-height:1.4;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!important;font-size:10px;line-height:1.3;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .page{padding:8mm 10mm}
 
 /* Force all elements to be black in print */
 * { color: #000 !important; text-decoration: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
 /* ── Header: Logo only above the line ── */
-.rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:center;padding-bottom:10px;border-bottom:1px solid #111;margin-bottom:10px}
-.rpt-logo img{max-height:75px;max-width:160px;object-fit:contain}
-.rpt-logo-text{font-size:22px;font-weight:900;color:#000}
+.rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:center;padding-bottom:8px;border-bottom:1px solid #111;margin-bottom:8px}
+.rpt-logo img{max-height:70px;max-width:150px;object-fit:contain}
+.rpt-logo-text{font-size:20px;font-weight:900;color:#000}
 
 /* ── Unified Info Box below the line ── */
-.rpt-box{border:1px solid #999;border-radius:5px;padding:10px;margin-bottom:12px;background:#fcfcfc;text-align:center}
-.rpt-title{font-size:18px;font-weight:900;color:#000;margin-bottom:6px;display:block}
-.rpt-details{display:flex;flex-wrap:wrap;gap:8px 25px;justify-content:center;margin-top:5px}
-.rpt-detail{display:flex;align-items:center;gap:5px;font-size:11px}
+.rpt-box{border:1px solid #999;border-radius:4px;padding:6px 10px;margin-bottom:10px;background:#fcfcfc;text-align:center}
+.rpt-title{font-size:16px;font-weight:900;color:#000;margin-bottom:4px;display:block}
+.rpt-details{display:flex;flex-wrap:wrap;gap:5px 20px;justify-content:center;margin-top:2px}
+.rpt-detail{display:flex;align-items:center;gap:4px;font-size:10px}
 .rpt-lbl{font-weight:800;color:#666}
 .rpt-val{font-weight:800;color:#000}
 
