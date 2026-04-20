@@ -34,13 +34,14 @@ export default function TopSellingReportPage() {
 
     const [data, setData] = useState<TopSellingItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     const [q, setQ] = useState('');
 
     useEffect(() => {
         fetch('/api/reports/top-selling-items')
-            .then(res => res.json())
-            .then(d => { if (!d.error) setData(d); })
-            .catch(() => { })
+            .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+            .then(d => { if (d.error) throw new Error(d.error); setData(d); })
+            .catch(() => setError(t('فشل تحميل بيانات الأصناف الأكثر مبيعاً')))
             .finally(() => setLoading(false));
     }, []);
 
@@ -82,6 +83,13 @@ export default function TopSellingReportPage() {
                                 {t('تم العثور على:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER }}>{filtered.length}</span> {isServices ? t("خدمة") : t("صنف")}
                             </div>
                         </div>
+
+                        {error && (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
+                                <span style={{ fontSize: '16px' }}>⚠️</span>{error}
+                                <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                            </div>
+                        )}
 
                         {loading ? (
                             <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>

@@ -19,12 +19,15 @@ export const GET = withProtection(async (request, session) => {
                     },
                     where: (month && year) ? {
                         journalEntry: {
+                            isPosted: true,
                             date: {
                                 gte: new Date(Number(year), Number(month) - 1, 1),
                                 lt: new Date(Number(year), Number(month), 1),
                             }
                         }
-                    } : undefined
+                    } : {
+                        journalEntry: { isPosted: true }
+                    }
                 }
             },
             orderBy: { code: 'asc' },
@@ -38,7 +41,9 @@ export const GET = withProtection(async (request, session) => {
             isActive: (cc as any).isActive ?? true,
             companyId: cc.companyId,
             createdAt: cc.createdAt,
-            totalExpenses: cc.journalLines.reduce((acc, line) => acc + Number(line.debit || 0), 0),
+            // ✅ تصحيح الحسبة المحاسبية: المصروف الحقيقي = المدين - الدائن
+            // لضمان خصم أي مرتجعات أو حركات تصحيحية تمت على مركز التكلفة
+            totalExpenses: cc.journalLines.reduce((acc, line) => acc + (Number(line.debit || 0) - Number(line.credit || 0)), 0),
             transactionCount: cc.journalLines.length,
         }));
 
@@ -64,7 +69,6 @@ export const POST = withProtection(async (request, session, body) => {
             companyId,
         };
 
-        // Resiliently add fields that might not exist in older DB schema
         if (description !== undefined) data.description = description || null;
         if (isActive !== undefined) data.isActive = isActive ?? true;
 

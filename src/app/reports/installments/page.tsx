@@ -78,6 +78,7 @@ export default function InstallmentReportsPage() {
     const [data, setData] = useState<InstallmentReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [company, setCompany] = useState<CompanyInfo>({});
+    const [error, setError] = useState('');
 
     const [collectionForm, setCollectionForm] = useState({
         from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split('T')[0],
@@ -94,6 +95,7 @@ export default function InstallmentReportsPage() {
     const fetchReport = async () => {
         setLoading(true);
         setData(null);
+        setError('');
         try {
             let url = `/api/installments/reports?type=${activeTab}`;
             if (activeTab === 'collection') {
@@ -104,8 +106,13 @@ export default function InstallmentReportsPage() {
                 url += `&customerId=${customerReport}`;
             }
             const res = await fetch(url);
-            if (res.ok) setData(await res.json());
-        } catch { } finally { setLoading(false); }
+            if (!res.ok) {
+                const e = await res.json().catch(() => ({}));
+                setError(e.error || t('فشل تحميل بيانات التقرير'));
+            } else {
+                setData(await res.json());
+            }
+        } catch { setError(t('خطأ في الاتصال بالخادم')); } finally { setLoading(false); }
     };
 
     const handlePrint = () => {
@@ -263,6 +270,14 @@ export default function InstallmentReportsPage() {
                         </div>
                     </div>
                 </div>
+
+                {error && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
+                        <span style={{ fontSize: '16px' }}>⚠️</span>
+                        {error}
+                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                    </div>
+                )}
 
                 {/* Results Container */}
                 <div style={{ minHeight: '400px', animation: 'slideUp 0.3s ease-out' }}>

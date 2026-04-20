@@ -18,8 +18,14 @@ export const GET = withProtection(async (request, session) => {
                 journalEntryLines: {
                     where: {
                         journalEntry: {
-                            financialYearId: currentYear?.id,
+                            companyId,
                             isPosted: true,
+                            // ✅ نعتمد على تاريخ الحركة ليكون ضمن السنة المالية المفتوحة
+                            // بدلاً من الاعتماد فقط على الربط بـ ID السنة المالية
+                            date: currentYear ? {
+                                gte: currentYear.startDate,
+                                lte: currentYear.endDate
+                            } : undefined
                         }
                     },
                     select: { debit: true, credit: true }
@@ -64,7 +70,7 @@ export const GET = withProtection(async (request, session) => {
 
         return NextResponse.json(finalAccounts);
     } catch (error) {
-        console.error(error);
+        console.error("Accounts API Error:", error);
         return NextResponse.json([], { status: 500 });
     }
 }, { cache: 20 });
