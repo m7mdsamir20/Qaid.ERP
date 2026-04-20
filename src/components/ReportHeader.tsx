@@ -77,52 +77,52 @@ body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!
 * { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
 /* ── Header: unified block ── */
-.rpt-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:15px;border-bottom:1px solid #ddd;margin-bottom:15px}
+.rpt-header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:15px;border-bottom:2px solid #111;margin-bottom:15px}
 .rpt-logo img{max-height:80px;max-width:160px;object-fit:contain}
 .rpt-logo-text{font-size:22px;font-weight:900;color:#000}
 
 .rpt-meta{flex:1;text-align:center}
 .rpt-title{font-size:24px;font-weight:900;color:#000;margin-bottom:10px}
-.rpt-details{display:flex;flex-wrap:wrap;gap:10px 25px;justify-content:center;padding:12px;border:1px solid #eee;border-radius:8px;background:#fafafa}
+.rpt-details{display:flex;flex-wrap:wrap;gap:10px 25px;justify-content:center;padding:12px;border:1px solid #999;border-radius:6px;background:#fcfcfc}
 .rpt-detail{display:flex;align-items:center;gap:6px;font-size:11.5px}
-.rpt-lbl{font-weight:800;color:#555}
-.rpt-val{font-weight:700;color:#000}
+.rpt-lbl{font-weight:800;color:#666}
+.rpt-val{font-weight:800;color:#000}
 
 .rpt-print-info{font-size:10px;color:#888;text-align:${isRtl ? 'right' : 'left'};min-width:150px}
 
 /* ── Stats (data-print-include) ── */
 [data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:15px}
-[data-print-include]>*{flex:1;min-width:100px;padding:8px 12px!important;border:1px solid #ddd!important;border-radius:6px!important;background:transparent!important;text-align:center}
+[data-print-include]>*{flex:1;min-width:100px;padding:8px 12px!important;border:1px solid #999!important;border-radius:6px!important;background:transparent!important;text-align:center}
 [data-print-include] *{color:#000!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important}
 [data-print-include] svg{display:none!important}
 
 /* ── Table ── */
 .table-wrap{margin-top:10px}
-table{width:100%;border-collapse:collapse;border:1px solid #ddd;font-size:11px}
-thead tr{background:#f8f8f8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-th{padding:10px 8px;font-size:10.5px;font-weight:900;color:#000!important;text-align:center;border:1px solid #ddd;background:#f8f8f8!important;white-space:nowrap;line-height:1.2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+table{width:100%;border-collapse:collapse;border:1px solid #999;font-size:11px}
+thead tr{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+th{padding:8px 6px;font-size:10px;font-weight:900;color:#111!important;text-align:center;border:1px solid #999;background:#f0f0f0!important;white-space:nowrap;line-height:1.2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 th:first-child{text-align:${firstColAlign}}
-tbody tr{border-bottom: 1px solid #ddd;}
+tbody tr{border-bottom: 1px solid #999;}
 tbody tr:nth-child(even){background:transparent!important}
 tbody tr:nth-child(odd){background:transparent!important}
-td{padding:8px 8px;font-size:11px;color:#000!important;text-align:center;border:1px solid #ddd;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word}
-td:first-child{text-align:${firstColAlign};font-weight:700}
+td{padding:6px 8px;font-size:10.5px;color:#111!important;text-align:center;border:1px solid #999;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word}
+td:first-child{text-align:${firstColAlign};font-weight:800}
 td span,td a,td div{font-size:inherit!important; color:#000!important}
 td button{display:none!important}
 td strong,td b{font-weight:900}
 td span[style],td div[style]{-webkit-print-color-adjust:exact;print-color-adjust:exact; color:#000!important}
 td[data-type="debit"],td[data-type="credit"],td[data-type="balance"]{font-weight:900!important}
-tr.opening-balance td{background:#fcfcfc!important;font-weight:900!important;font-style:italic;border-top:1px solid #ddd!important;border-bottom:1px solid #ddd!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot tr{background:#f8f8f8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-tfoot td{font-weight:900;font-size:12px;color:#000!important;background:#f8f8f8!important;border:1px solid #ddd;padding:10px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tr.opening-balance td{background:#f8f8f8!important;font-weight:900!important;font-style:italic;border-top:1px solid #999!important;border-bottom:1px solid #999!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot tr{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+tfoot td{font-weight:900;font-size:12px;color:#111!important;background:#f0f0f0!important;border:1px solid #999;padding:8px 8px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot td:first-child{text-align:${firstColAlign}}
 
 @media print{
   @page{size:A4;margin:8mm 10mm}
   body{font-size:11px}
   .page{padding:0}
-  th{font-size:10px!important;padding:8px 6px!important}
-  td{font-size:10.5px!important;padding:6px 6px!important}
+  th{font-size:9.5px!important;padding:6px 4px!important}
+  td{font-size:10px!important;padding:5px 6px!important}
   thead{display:table-header-group}
   tfoot{display:table-footer-group}
   tbody tr{page-break-inside:avoid}
