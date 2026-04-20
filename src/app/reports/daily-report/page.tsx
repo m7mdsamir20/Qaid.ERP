@@ -83,7 +83,7 @@ export default function DailyReportPage() {
                     subtitle={t("ملخص شامل لكافة العمليات المالية والتجارية التي تمت خلال اليوم.")}
                     backTab="financial"
                     branchName={branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')}
-                    printDate={new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
+                    printDate={new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                 />
 
                 <div className="no-print" style={{ ...SEARCH_STYLE.container, marginBottom: '24px' }}>
