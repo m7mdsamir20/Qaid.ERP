@@ -16,7 +16,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
 
 
-const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt  = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const statusColor: Record<string, { bg: string; color: string; label: string }> = {
@@ -254,12 +254,12 @@ export default function InstallmentDetailPage() {
 
                         {/* Table Listing */}
                         <div style={SC}>
-                            <div style={STitle}><Info size={16} /> جدول استحقاق الأقساط</div>
+                            <div style={STitle}><Info size={16} /> {t('جدول استحقاق الأقساط')}</div>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', color: C.textPrimary }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            {['رقم القسط', 'تاريخ الاستحقاق', 'المبلغ المستحق', 'المدفوع', 'المتبقي', 'الحالة', 'إجراء'].map((h, i) => (
+                                            {[t('رقم القسط'), t('تاريخ الاستحقاق'), t('المبلغ المستحق'), t('المدفوع'), t('المتبقي'), t('الحالة'), t('إجراء')].map((h, i) => (
                                                 <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted }}>{h}</th>
                                             ))}
                                         </tr>
@@ -277,7 +277,7 @@ export default function InstallmentDetailPage() {
                                                         {inst.installmentNo}
                                                     </td>
                                                     <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: INTER }}>
-                                                        {fmt(inst.dueDate)}
+                                                        {fmt(inst.dueDate, lang)}
                                                     </td>
                                                     <td style={{ padding: '16px', fontWeight: 700, fontFamily: INTER }}>
                                                         {fmtN(inst.amount)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
@@ -365,7 +365,7 @@ export default function InstallmentDetailPage() {
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                         <span style={{ color: C.textMuted }}>{t('تاريخ البداية :')}</span>
-                                        <span style={{ color: C.textPrimary, fontWeight: 700, fontFamily: INTER }}>{fmt(plan.startDate)}</span>
+                                        <span style={{ color: C.textPrimary, fontWeight: 700, fontFamily: INTER }}>{fmt(plan.startDate, lang)}</span>
                                     </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('المنتج :')}</span>

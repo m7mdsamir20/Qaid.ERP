@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation';
 
 import AppModal from '@/components/AppModal';
 
-const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
+const fmt = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 export default function OverduePage() {
@@ -67,7 +67,7 @@ export default function OverduePage() {
                 fetchData();
             } else {
                 const d = await res.json();
-                alert(d.error || 'فشل التحصيل');
+                alert(d.error || t('فشل التحصيل'));
             }
         } finally { setCollecting(false); }
     };
@@ -162,7 +162,7 @@ export default function OverduePage() {
                                                     {inst.installmentNo}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    {fmt(inst.dueDate)}
+                                                    {fmt(inst.dueDate, lang)}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ 

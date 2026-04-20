@@ -266,7 +266,7 @@ export default function FixedAssetsPage() {
                                             {a.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>{a.notes}</div>}
                                         </td>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{new Date(a.purchaseDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
                                         <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: INTER }}>{fmt(a.purchaseCost)}</td>
                                         <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)}</td>
                                         <td style={{ padding: '14px 16px', fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: INTER }}>{fmt(a.netBookValue)}</td>

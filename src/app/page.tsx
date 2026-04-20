@@ -417,12 +417,12 @@ export default function DashboardPage() {
         }}>
           {isServices ? (
             <>
-              <KpiCard label="إيرادات اليوم" value={fMoney(stats.salesTodayTotal)} sub="إجمالي مبيعات الخدمات اليوم" color={C.primary} icon={Receipt} delay={0} />
-              <KpiCard label="عدد الخدمات" value={stats.items} sub="إجمالي الخدمات المسجلة" color={C.blue} icon={Package} delay={60} />
-              <KpiCard label="عدد العملاء" value={stats.customers} sub="قاعدة العملاء الحالية" color={C.success} icon={Users} delay={120} />
-              <KpiCard label="مواعيد اليوم" value="0" sub="لا يوجد مواعيد مسجلة حالياً" color={C.warning} icon={Clock} delay={180} />
-              <KpiCard label="المصروفات" value={fMoney(stats.expensesTotal || 0)} sub="إجمالي مدفوعات المصاريف" color={C.danger} icon={TrendingDown} delay={240} />
-              <KpiCard label="صافي الأرباح" value={fMoney(stats.netProfit)} sub="الإيرادات - المصروفات" color={C.success} icon={BarChart2} delay={300} />
+              <KpiCard label="إيرادات اليوم" value={fMoney(stats.salesTodayTotal)} sub={t("إجمالي مبيعات الخدمات اليوم")} color={C.primary} icon={Receipt} delay={0} />
+              <KpiCard label="عدد الخدمات" value={stats.items} sub={t("إجمالي الخدمات المسجلة")} color={C.blue} icon={Package} delay={60} />
+              <KpiCard label="عدد العملاء" value={stats.customers} sub={t("قاعدة العملاء الحالية")} color={C.success} icon={Users} delay={120} />
+              <KpiCard label="مواعيد اليوم" value="0" sub={t("لا يوجد مواعيد مسجلة حالياً")} color={C.warning} icon={Clock} delay={180} />
+              <KpiCard label="المصروفات" value={fMoney(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={240} />
+              <KpiCard label="صافي الأرباح" value={fMoney(stats.netProfit)} sub={t("الإيرادات - المصروفات")} color={C.success} icon={BarChart2} delay={300} />
             </>
           ) : (
             <>
@@ -435,13 +435,13 @@ export default function DashboardPage() {
                   color={stats.netProfit >= 0 ? C.success : C.danger}
                   icon={BarChart2} delay={120} />
               )}
-              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fMoney(stats.treasuriesBalance)} sub="إجمالي السيولة" color={C.primary} icon={Wallet} delay={180} />}
+              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الخزينة" value={fMoney(stats.treasuriesBalance)} sub={t("إجمالي السيولة")} color={C.primary} icon={Wallet} delay={180} />}
               {hasPage('/customers', 'sales') && <KpiCard label="ذمم العملاء" value={fMoney(stats.topDebtors.reduce((s: any, d: any) => s + d.balance, 0))} sub={`${stats.topDebtors.length} ${t('عملاء')}`} trendUp={false} color={C.danger} icon={Users} delay={240} />}
-              {hasPage('/suppliers', 'purchases') && <KpiCard label="الموردين" value={stats.suppliers} sub="إجمالي الموردين" color={C.warning} icon={Truck} delay={300} />}
-              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fMoney(stats.salesTodayTotal)} sub="إحصائيات فورية" color={C.primary} icon={Eye} delay={360} />}
+              {hasPage('/suppliers', 'purchases') && <KpiCard label="الموردين" value={stats.suppliers} sub={t("إجمالي الموردين")} color={C.warning} icon={Truck} delay={300} />}
+              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات اليوم" value={fMoney(stats.salesTodayTotal)} sub={t("إحصائيات فورية")} color={C.primary} icon={Eye} delay={360} />}
               {(hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory')) && (
                 <Link href="/reports/low-stock-items" style={{ textDecoration: 'none', display: 'block' }}>
-                  <KpiCard label="نواقص المخزن" value={stats.lowStockItems.length} sub="أصناف تحت الحد – اضغط للعرض" color={C.danger} icon={AlertTriangle} delay={420} />
+                  <KpiCard label="نواقص المخزن" value={stats.lowStockItems.length} sub={t("أصناف تحت الحد – اضغط للعرض")} color={C.danger} icon={AlertTriangle} delay={420} />
                 </Link>
               )}
             </>
@@ -488,7 +488,7 @@ export default function DashboardPage() {
         }}>
 
           {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
-            <SectionCard title={isServices ? "إيرادات الخدمات مقابل المصروفات" : "المبيعات مقابل المشتريات"} icon={BarChart2}
+            <SectionCard title={isServices ? t("إيرادات الخدمات مقابل المصروفات") : t("المبيعات مقابل المشتريات")} icon={BarChart2}
               action={<div style={{ fontSize: '11px', color: C.textSecondary, display: 'flex', gap: '15px' }}>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isServices ? 'إيرادات' : 'مبيعات')}</span>
                 <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isServices ? C.danger : C.warning }} />{t(isServices ? 'مصروفات' : 'مشتريات')}</span>
@@ -526,7 +526,7 @@ export default function DashboardPage() {
           )}
 
           {hasPage('/treasuries', 'treasury') && (
-            <SectionCard title="توزيع السيولة النقدية" icon={Landmark}
+            <SectionCard title={t("توزيع السيولة النقدية")} icon={Landmark}
               action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 800, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} {t('حساب')}</span>}>
               <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {!stats.treasuryList || stats.treasuryList.length === 0 ? (

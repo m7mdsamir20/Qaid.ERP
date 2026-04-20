@@ -59,7 +59,7 @@ function VerifyContent() {
                 body: JSON.stringify({ email, otp: code }),
             });
             const data = await res.json();
-            if (!res.ok) { setError(data.error); setLoading(false); return; }
+            if (!res.ok) { setError(t(data.error) || t('حدث خطأ أثناء التحقق')); setLoading(false); return; }
             setSuccess(true);
             setTimeout(() => router.push('/login'), 2000);
         } catch (err) {
@@ -83,7 +83,7 @@ function VerifyContent() {
                 inputs.current[0]?.focus();
             } else {
                 const d = await res.json();
-                setError(d.error || 'فشل إعادة إرسال الكود');
+                setError(t(d.error) || t('فشل إعادة إرسال الكود'));
             }
         } catch (err) {
             setError(t('فشل إعادة إرسال الكود'));
