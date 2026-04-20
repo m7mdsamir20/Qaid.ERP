@@ -94,13 +94,21 @@ export const GET = withProtection(async (request, session) => {
                         _sum: { total: true }
                     }), { _sum: { total: 0 } }),
             ]),
-            // Alerts & Data
-            safeQuery(() => prisma.stock.findMany({
-                where: { quantity: { lte: 10 }, item: { companyId } },
-                include: { item: { select: { name: true, code: true } }, warehouse: { select: { name: true } } },
-                orderBy: { quantity: 'asc' },
-                take: 6
-            }), []),
+            // Alerts & Data (Fixed to match reorderLevel and aggregate per item)
+            safeQuery(async () => {
+                const items = await prisma.item.findMany({
+                    where: { companyId },
+                    include: { stocks: true }
+                });
+                return items.filter(i => {
+                    const total = i.stocks.reduce((acc, s) => acc + s.quantity, 0);
+                    return total <= (i.minLimit || 0);
+                }).map(i => ({
+                    id: i.id,
+                    item: { name: i.name, code: i.code },
+                    quantity: i.stocks.reduce((acc, s) => acc + s.quantity, 0)
+                })).slice(0, 6);
+            }, []),
             safeQuery(() => prisma.customer.findMany({
                 where: { companyId, balance: { gt: 0 } },
                 select: { id: true, name: true, balance: true },

@@ -35,7 +35,7 @@ export const POST = withProtection(async (request, session) => {
             const items = await prisma.item.findMany({
                 where: { companyId, minLimit: { gt: 0 } },
                 include: {
-                    stocks: { where: { quantity: { gt: 0 } } },
+                    stocks: true,
                 },
             });
 
