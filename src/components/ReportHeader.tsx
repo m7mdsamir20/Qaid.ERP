@@ -50,17 +50,45 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const accountName = manualAccountName || (printDate && !isDateRange ? printDate : '');
     const dateRange = isDateRange ? printDate : '';
 
-    const includeEls = Array.from(document.querySelectorAll('[data-print-include]'));
-    const includeHTML = includeEls.map(el => el.outerHTML).join('');
-    const tables = Array.from(document.querySelectorAll('table'));
-    const tablesHTML = tables.map(tbl => tbl.outerHTML).join('');
-
     const dir = isRtl ? 'rtl' : 'ltr';
     const firstColAlign = isRtl ? 'right' : 'left';
+    const lastColAlign = isRtl ? 'right' : 'left';
     const labelPrintDate = isRtl ? 'التاريخ:' : 'Date:';
     const labelPeriod = isRtl ? 'الفترة:' : 'Period:';
     const labelAccount = isRtl ? 'الحساب:' : 'Account:';
     const labelCode = isRtl ? 'الكود:' : 'Code:';
+    
+    // Currency Detection
+    const currencySym = co.currencySymbol || co.currency || 'ر.س';
+
+    const includeEls = Array.from(document.querySelectorAll('[data-print-include]'));
+    const includeHTML = includeEls.map(el => el.outerHTML).join('');
+    
+    // Process Tables to add currency and alignment
+    const tables = Array.from(document.querySelectorAll('table'));
+    const processedTablesHTML = tables.map(originalTbl => {
+        const tbl = originalTbl.cloneNode(true) as HTMLTableElement;
+        
+        // Fix column contents
+        const rows = Array.from(tbl.querySelectorAll('tr'));
+        rows.forEach(row => {
+            const cells = Array.from(row.querySelectorAll('td, th'));
+            cells.forEach((cell, idx) => {
+                const text = cell.textContent || '';
+                // If it's a number-like cell in Debit/Credit/Balance columns (idx 4, 5, 6 usually)
+                // or if the header says Debit/Credit/Balance
+                const isHeader = cell.tagName === 'TH';
+                if (!isHeader && text.trim() && !text.includes(currencySym) && /^-?\d+/.test(text.trim().replace(/,/g, ''))) {
+                   // Check if it's one of the monetary columns
+                   // In general ledger: Date(0), Entry(1), Desc(2), Center(3), Debit(4), Credit(5), Balance(6)
+                   if (idx >= 4) {
+                      cell.innerHTML = `<strong>${text}</strong> <small style="font-size: 8px; opacity: 0.8">${currencySym}</small>`;
+                   }
+                }
+            });
+        });
+        return tbl.outerHTML;
+    }).join('');
 
     const html = `<!DOCTYPE html>
 <html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
@@ -74,7 +102,7 @@ body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!
 .page{padding:8mm 10mm}
 
 /* Force all elements to be black in print */
-* { color: #000 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+* { color: #000 !important; text-decoration: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
 /* ── Header: Logo only above the line ── */
 .rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:center;padding-bottom:10px;border-bottom:1px solid #111;margin-bottom:10px}
@@ -89,27 +117,29 @@ body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!
 .rpt-lbl{font-weight:800;color:#666}
 .rpt-val{font-weight:800;color:#000}
 
-/* ...rest... */
-
 /* ── Stats (data-print-include) ── */
 [data-print-include]{display:flex!important;flex-wrap:wrap;gap:10px;margin-bottom:15px}
 [data-print-include]>*{flex:1;min-width:100px;padding:8px 12px!important;border:1px solid #999!important;border-radius:6px!important;background:transparent!important;text-align:center}
 [data-print-include] *{color:#000!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important}
 [data-print-include] svg{display:none!important}
 
-/* ...rest... */
 /* ── Table ── */
 .table-wrap{margin-top:8px}
 table{width:100%;border-collapse:collapse;border:1px solid #999;font-size:11px}
 thead tr{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 th{padding:7px 5px;font-size:9.5px;font-weight:900;color:#111!important;text-align:center;border:1px solid #999;background:#f0f0f0!important;white-space:nowrap;line-height:1.2;-webkit-print-color-adjust:exact;print-color-adjust:exact}
-th:first-child{text-align:${firstColAlign}}
+
+/* Alignment Hacks */
+th:first-child, td:first-child { text-align: ${firstColAlign} !important; }
+th:last-child, td:last-child { text-align: ${lastColAlign} !important; }
+
 tbody tr{border-bottom: 1px solid #999;}
 tbody tr:nth-child(even){background:transparent!important}
 tbody tr:nth-child(odd){background:transparent!important}
-td{padding:5px 7px;font-size:10px;color:#111!important;text-align:center;border:1px solid #999;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word}
-td:first-child{text-align:${firstColAlign};font-weight:800}
-td span,td a,td div{font-size:inherit!important; color:#000!important}
+td{padding:5px 7px;font-size:10px;color:#000!important;text-align:center;border:1px solid #999;vertical-align:middle;line-height:1.4;white-space:normal;overflow-wrap:break-word;word-break:break-word}
+td * { color: #000 !important; }
+
+td span,td a,td div{font-size:inherit!important; color:#000!important; text-decoration: none !important;}
 td button{display:none!important}
 td strong,td b{font-weight:900}
 td span[style],td div[style]{-webkit-print-color-adjust:exact;print-color-adjust:exact; color:#000!important}
@@ -118,6 +148,7 @@ tr.opening-balance td{background:#f8f8f8!important;font-weight:900!important;fon
 tfoot tr{background:#f0f0f0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot td{font-weight:900;font-size:11.5px;color:#111!important;background:#f0f0f0!important;border:1px solid #999;padding:7px 7px;white-space:nowrap;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 tfoot td:first-child{text-align:${firstColAlign}}
+tfoot td:last-child{text-align:${lastColAlign}}
 
 @media print{
   @page{size:A4;margin:8mm 10mm}
@@ -154,7 +185,7 @@ tfoot td:first-child{text-align:${firstColAlign}}
 
 ${includeHTML}
 
-<div class="table-wrap">${tablesHTML}</div>
+<div class="table-wrap">${processedTablesHTML}</div>
 
 </div>
 </body>
