@@ -67,11 +67,13 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
 
     const includeEls = Array.from(document.querySelectorAll('[data-print-include]'));
     const includeHTML = includeEls.map(el => {
-        // Just take the text content and structure it as cards
         const cards = Array.from(el.children).map(child => {
             const label = child.querySelector('.stat-label')?.textContent || child.querySelector('span:first-child')?.textContent || '';
-            const value = child.querySelector('.stat-value')?.textContent || child.querySelector('span:last-child')?.textContent || '';
-            return `<div class="stat-card"><span class="lbl">${label}</span><span class="val">${value}</span></div>`;
+            const valueRaw = (child.querySelector('.stat-value')?.textContent || child.querySelector('span:last-child')?.textContent || '').trim();
+            // Check if value already has currency
+            const hasCurrency = /[a-zA-Z\u0600-\u06FF]/.test(valueRaw);
+            const valueFinal = hasCurrency ? valueRaw : `${valueRaw} ${currencySym}`;
+            return `<div class="stat-card"><span class="lbl">${label}</span><span class="val">${valueFinal}</span></div>`;
         }).join('');
         return `<div class="rpt-stats">${cards}</div>`;
     }).join('');
@@ -113,54 +115,53 @@ body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000!
     display: flex; 
     justify-content: space-between; 
     align-items: flex-end; 
-    padding-bottom: 12px; 
+    padding-bottom: 8px; 
     border-bottom: 2px solid #000; 
-    margin-bottom: 15px; 
+    margin-bottom: 12px; 
 }
-.rpt-logo img { max-height: 80px; max-width: 180px; object-fit: contain; }
-.rpt-logo-text { font-size: 24px; font-weight: 900; }
+.rpt-logo img { max-height: 55px; max-width: 160px; object-fit: contain; }
+.rpt-logo-text { font-size: 20px; font-weight: 900; }
 
 .rpt-box { 
     background: #fbfbfb; 
     border: 1px solid #ddd; 
-    border-radius: 8px; 
-    padding: 12px 15px; 
-    margin-bottom: 20px; 
+    border-radius: 6px; 
+    padding: 8px 12px; 
+    margin-bottom: 12px; 
 }
 .rpt-title { 
-    font-size: 18px; 
+    font-size: 15px; 
     font-weight: 950; 
     display: block; 
-    margin-bottom: 10px; 
+    margin-bottom: 6px; 
     border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+    padding-bottom: 4px;
 }
 .rpt-grid { 
     display: grid; 
     grid-template-columns: repeat(3, 1fr); 
-    gap: 10px 20px; 
+    gap: 8px 15px; 
 }
-.rpt-item { display: flex; flex-direction: column; gap: 2px; }
-.rpt-lbl { font-size: 8.5px; font-weight: 800; color: #555; text-transform: uppercase; }
-.rpt-val { font-size: 11px; font-weight: 900; color: #000; }
+.rpt-item { display: flex; flex-direction: column; gap: 1px; }
+.rpt-lbl { font-size: 7.5px; font-weight: 800; color: #555; text-transform: uppercase; }
+.rpt-val { font-size: 10px; font-weight: 900; color: #000; }
 
 /* ── Stats Summary ── */
 .rpt-stats { 
-    display: flex; 
-    gap: 10px; 
-    margin-bottom: 20px; 
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px; 
+    margin-bottom: 12px; 
 }
 .stat-card { 
-    flex: 1; 
     border: 1px solid #ccc; 
     background: #fff; 
-    padding: 8px; 
-    border-radius: 6px; 
+    padding: 6px; 
+    border-radius: 4px; 
     text-align: center;
 }
-.stat-card .lbl { font-size: 9px; font-weight: 800; color: #666; margin-bottom: 3px; display: block; }
-.stat-card .val { font-size: 13px; font-weight: 900; color: #000; }
+.stat-card .lbl { font-size: 8.5px; font-weight: 800; color: #666; margin-bottom: 2px; display: block; }
+.stat-card .val { font-size: 11px; font-weight: 900; color: #000; }
 
 /* ── Table ── */
 table { width: 100%; border-collapse: collapse; margin-top: 5px; }
