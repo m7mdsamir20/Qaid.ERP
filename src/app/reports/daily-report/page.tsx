@@ -77,6 +77,162 @@ export default function DailyReportPage() {
 
     const branchName = Array.isArray(branches) ? (branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')) : '';
     const printDate = new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const sym = getCurrencyName(currency);
+    const dir = isRtl ? 'rtl' : 'ltr';
+    const fAlign = isRtl ? 'right' : 'left';
+    const bAlign = isRtl ? 'left' : 'right';
+
+    const handlePrint = () => {
+        if (!data) return;
+        const logo = (company as any)?.logo || (company as any)?.companyLogo || '';
+        const companyName = (company as any)?.companyName || (company as any)?.name || '';
+        const now = new Date();
+        const nowStr = now.toLocaleDateString(isRtl ? 'ar-EG' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+        const nowTime = now.toLocaleTimeString(isRtl ? 'ar-EG' : 'en-GB', { hour: '2-digit', minute: '2-digit' });
+
+        const kpis = [
+            { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#1d4ed8' },
+            { label: t('إجمالي المقبوضات'),    value: fmt(data.receipts),   color: '#15803d' },
+            { label: t('إجمالي المدفوعات'),    value: fmt(data.payments),   color: '#be123c' },
+            { label: t('صافي التدفق اليومي'),  value: fmt(data.receipts - data.payments), color: (data.receipts - data.payments) >= 0 ? '#15803d' : '#be123c' },
+        ];
+
+        const kpiHTML = kpis.map(k => `
+            <div style="flex:1;border:1px solid #ccc;border-radius:6px;padding:10px 12px;text-align:center;background:#fafafa;">
+                <div style="font-size:10px;color:#555;font-weight:700;margin-bottom:6px;">${k.label}</div>
+                <div style="font-size:14px;font-weight:900;color:${k.color};">${k.value} <span style="font-size:11px;font-weight:700;color:#444;">${sym}</span></div>
+            </div>`).join('');
+
+        const anaRow = (label: string, value: number, color: string, isTotal = false) => `
+            <tr style="${isTotal ? 'border-top:2px solid #999;' : ''}">
+                <td style="padding:8px 6px;font-size:${isTotal ? '12' : '11'}px;font-weight:${isTotal ? 800 : 600};color:#333;text-align:${fAlign};border-bottom:1px solid #e5e5e5;">${label}</td>
+                <td style="padding:8px 6px;font-size:${isTotal ? '13' : '12'}px;font-weight:${isTotal ? 900 : 700};color:${color};text-align:${bAlign};border-bottom:1px solid #e5e5e5;">${fmt(value)} <span style="font-size:10px;color:#666;">${sym}</span></td>
+            </tr>`;
+
+        const treasuryRows = (data.treasuries || []).map(tr => `
+            <tr>
+                <td style="padding:8px 6px;font-size:11px;font-weight:600;color:#333;text-align:${fAlign};border-bottom:1px solid #e5e5e5;">${tr.name} <span style="font-size:9px;color:#888;">(${tr.type === 'bank' ? (isRtl ? 'بنك' : 'Bank') : (isRtl ? 'خزينة' : 'Cash')})</span></td>
+                <td style="padding:8px 6px;font-size:12px;font-weight:800;color:#1d4ed8;text-align:${bAlign};border-bottom:1px solid #e5e5e5;">${fmt(tr.balance)} <span style="font-size:10px;color:#666;">${sym}</span></td>
+            </tr>`).join('');
+
+        const html = `<!DOCTYPE html>
+<html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
+<head>
+<meta charset="UTF-8"/>
+<title>${t('التقرير اليومي للمبيعات والتحصيلات')}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Cairo',sans-serif;direction:${dir};background:#fff;color:#000;font-size:11px;line-height:1.5;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{padding:8mm 12mm}
+.rpt-header{display:flex;justify-content:${isRtl ? 'flex-end' : 'flex-start'};align-items:flex-start;padding-bottom:10px;border-bottom:2px solid #222;margin-bottom:12px;gap:20px}
+.rpt-logo img{max-height:60px;max-width:130px;object-fit:contain}
+.rpt-logo-text{font-size:20px;font-weight:900;color:#000}
+.rpt-company-info{font-size:9.5px;color:#555;margin-top:4px;line-height:1.6}
+.rpt-title-block{flex:1;text-align:center;padding-top:4px}
+.rpt-title{font-size:15px;font-weight:900;color:#000;margin-bottom:6px}
+.rpt-meta{font-size:10px;color:#444;display:flex;justify-content:center;gap:20px;flex-wrap:wrap}
+.rpt-meta span{display:flex;align-items:center;gap:4px}
+.rpt-meta b{color:#000;font-weight:800}
+.kpi-row{display:flex;gap:8px;margin-bottom:14px}
+.section-title{font-size:12px;font-weight:900;color:#000;padding:7px 10px;background:#f0f0f0;border:1px solid #ccc;border-radius:4px 4px 0 0;margin-bottom:0}
+.section-wrap{border:1px solid #ccc;border-radius:0 0 6px 6px;overflow:hidden;margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.two-col .col-divider{border-inline-end:1px solid #ddd}
+table{width:100%;border-collapse:collapse}
+.summary-row td:first-child{font-weight:900;font-size:12px}
+.summary-row td:last-child{font-size:14px;font-weight:900}
+.footer{margin-top:14px;padding-top:8px;border-top:1px solid #ccc;font-size:9.5px;color:#777;display:flex;justify-content:space-between}
+@media print{
+  @page{size:A4;margin:6mm 10mm}
+  .page{padding:0}
+  body{font-size:10.5px}
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="rpt-header">
+  <div class="rpt-logo">
+    ${logo ? `<img src="${logo}" alt=""/>` : `<div class="rpt-logo-text">${companyName}</div>`}
+    <div class="rpt-company-info">
+      ${[(company as any)?.addressRegion, (company as any)?.addressCity].filter(Boolean).join(' — ')}
+      ${(company as any)?.phone ? `<br/>${isRtl ? 'ت:' : 'Tel:'} ${(company as any).phone}` : ''}
+      ${(company as any)?.taxNumber ? `<br/>${isRtl ? 'ضريبي:' : 'VAT:'} ${(company as any).taxNumber}` : ''}
+    </div>
+  </div>
+  <div class="rpt-title-block">
+    <div class="rpt-title">${t('التقرير اليومي للمبيعات والتحصيلات')}</div>
+    <div class="rpt-meta">
+      <span>${isRtl ? 'تاريخ التقرير:' : 'Report Date:'} <b>${printDate}</b></span>
+      ${branchName ? `<span>${isRtl ? 'الفرع:' : 'Branch:'} <b>${branchName}</b></span>` : ''}
+      <span>${isRtl ? 'طُبع:' : 'Printed:'} <b>${nowStr} — ${nowTime}</b></span>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="kpi-row">${kpiHTML}</div>
+
+<!-- Commercial Analysis -->
+<div class="section-title">${t('التحليل التجاري التفصيلي')}</div>
+<div class="section-wrap">
+  <div class="two-col">
+    <div class="col-divider" style="padding:4px 8px">
+      <table>
+        <thead><tr><td colspan="2" style="padding:8px 6px;font-size:11px;font-weight:900;color:#1d4ed8;border-bottom:1px solid #ddd;">${t('المبيعات')}</td></tr></thead>
+        <tbody>
+          ${anaRow(t('إجمالي قيمة المبيعات'), data.totalSales, '#000')}
+          ${anaRow(t('المرتجعات الواردة') + ' (-)', data.saleReturnsTotal, '#be123c')}
+          ${anaRow(t('صافي المبيعات'), data.totalSales - data.saleReturnsTotal, '#1d4ed8', true)}
+          ${anaRow(t('إجمالي المقبوضات'), data.receipts, '#15803d')}
+          ${anaRow(t('عدد الفواتير'), data.salesCount, '#000')}
+        </tbody>
+      </table>
+    </div>
+    <div style="padding:4px 8px">
+      <table>
+        <thead><tr><td colspan="2" style="padding:8px 6px;font-size:11px;font-weight:900;color:#b45309;border-bottom:1px solid #ddd;">${t('المشتريات')}</td></tr></thead>
+        <tbody>
+          ${anaRow(t('إجمالي قيمة المشتريات'), data.totalPurchases, '#000')}
+          ${anaRow(t('المرتجعات الصادرة') + ' (-)', data.purchaseReturnsTotal, '#15803d')}
+          ${anaRow(t('صافي المشتريات'), data.totalPurchases - data.purchaseReturnsTotal, '#b45309', true)}
+          ${anaRow(t('إجمالي المدفوعات'), data.payments, '#be123c')}
+          ${anaRow(t('صافي التدفق اليومي'), data.receipts - data.payments, (data.receipts - data.payments) >= 0 ? '#15803d' : '#be123c')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Treasuries & Banks -->
+<div class="section-title">${t('أرصدة السيولة الحالية (الخزائن والبنوك)')}</div>
+<div class="section-wrap">
+  <table>
+    <tbody>
+      ${treasuryRows}
+      <tr style="background:#f5f5f5;border-top:2px solid #999;">
+        <td style="padding:10px 6px;font-size:12px;font-weight:900;text-align:${fAlign};">${isRtl ? 'إجمالي السيولة' : 'Total Liquidity'}</td>
+        <td style="padding:10px 6px;font-size:14px;font-weight:900;color:#1d4ed8;text-align:${bAlign};">${fmt(data.totalCashBalance + data.totalBankBalance)} <span style="font-size:11px;color:#444;">${sym}</span></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer">
+  <span>${isRtl ? 'نظام قيد ERP' : 'QAID ERP System'}</span>
+  <span>${isRtl ? 'تاريخ الطباعة:' : 'Printed on:'} ${nowStr} ${nowTime}</span>
+</div>
+
+</div>
+</body>
+</html>`;
+
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', t('التقرير اليومي للمبيعات والتحصيلات'));
+        window.open('/print/report', '_blank');
+    };
 
     return (
         <DashboardLayout>
@@ -87,6 +243,7 @@ export default function DailyReportPage() {
                     backTab="financial"
                     branchName={branchName}
                     printDate={printDate}
+                    onPrint={handlePrint}
                 />
 
                 <div className="no-print" style={{ ...SEARCH_STYLE.container, marginBottom: '24px' }}>
