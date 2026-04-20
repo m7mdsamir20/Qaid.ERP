@@ -53,6 +53,7 @@ export default function TrialBalancePage() {
     const grandBalanceCredit = report.reduce((s, l) => s + l.balanceCredit, 0);
 
     const isBalanced = Math.abs(grandBalanceDebit - grandBalanceCredit) < 0.001;
+    const sym = getCurrencyName(currency);
 
     const exportToPDF = () => window.print();
 
@@ -137,20 +138,20 @@ export default function TrialBalancePage() {
                                                 <span style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}` }}>{line.code}</span>
                                             </td>
                                             <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{line.name}</td>
-                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', color: line.totalDebit > 0 ? C.textPrimary : C.textMuted, fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.totalDebit > 0 ? fmt(line.totalDebit) : '0.00'}</td>
-                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', color: line.totalCredit > 0 ? C.textPrimary : C.textMuted, fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.totalCredit > 0 ? fmt(line.totalCredit) : '0.00'}</td>
-                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: line.balanceDebit > 0 ? C.success : C.textMuted, background: 'rgba(16, 185, 129, 0.01)', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.balanceDebit > 0 ? fmt(line.balanceDebit) : '0.00'}</td>
-                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: line.balanceCredit > 0 ? C.danger : C.textMuted, background: 'rgba(239, 68, 68, 0.01)', fontFamily: INTER }}>{line.balanceCredit > 0 ? fmt(line.balanceCredit) : '0.00'}</td>
+                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', color: line.totalDebit > 0 ? C.textPrimary : C.textMuted, fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.totalDebit > 0 ? fmt(line.totalDebit) : '0.00'} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', color: line.totalCredit > 0 ? C.textPrimary : C.textMuted, fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.totalCredit > 0 ? fmt(line.totalCredit) : '0.00'} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: line.balanceDebit > 0 ? C.success : C.textMuted, background: 'rgba(16, 185, 129, 0.01)', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.balanceDebit > 0 ? fmt(line.balanceDebit) : '0.00'} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: line.balanceCredit > 0 ? C.danger : C.textMuted, background: 'rgba(239, 68, 68, 0.01)', fontFamily: INTER }}>{line.balanceCredit > 0 ? fmt(line.balanceCredit) : '0.00'} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(59, 130, 246, 0.05)', borderTop: `2px solid ${C.primary}44` }}>
                                     <tr>
                                         <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950, textAlign: 'start', fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('الإجماليات الكلية للميزان')}</td>
-                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandTotalDebit)}</td>
-                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandTotalCredit)}</td>
-                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 950, color: C.success, fontSize: '14px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandBalanceDebit)}</td>
-                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 950, color: C.danger, fontSize: '14px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: INTER }}>{fmt(grandBalanceCredit)}</td>
+                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandTotalDebit)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandTotalCredit)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 950, color: C.success, fontSize: '14px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{fmt(grandBalanceDebit)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 950, color: C.danger, fontSize: '14px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: INTER }}>{fmt(grandBalanceCredit)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                     </tr>
                                 </tfoot>
                             </table>

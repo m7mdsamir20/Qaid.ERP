@@ -85,6 +85,7 @@ export default function ClientsSuppliersBalancesPage() {
         }
     });
 
+    const sym = getCurrencyName(currency);
     const exportToExcel = () => {
         if (!filteredData.length) return;
         const excelData = filteredData.map(p => {
@@ -255,10 +256,10 @@ export default function ClientsSuppliersBalancesPage() {
                                                 {filter === 'all' ? (
                                                     <>
                                                         <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14.5px', fontFamily: INTER }}>
-                                                            {maden > 0 ? maden.toLocaleString('en-US') : '—'}
+                                                            {maden > 0 ? <>{maden.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                         </td>
                                                         <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14.5px', fontFamily: INTER }}>
-                                                            {daen > 0 ? daen.toLocaleString('en-US') : '—'}
+                                                            {daen > 0 ? <>{daen.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                         </td>
                                                     </>
                                                 ) : (

@@ -55,6 +55,7 @@ export default function TreasuryReconciliationPage() {
     };
 
     const filtered = treasuries.filter(t => t.name.toLowerCase().includes(q.toLowerCase()));
+    const sym = getCurrencyName(currency);
 
     const totals = treasuries.reduce((acc, t) => {
         const sys = t.balance;
@@ -204,7 +205,7 @@ export default function TreasuryReconciliationPage() {
                                                     )}
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 900, fontSize: '14.5px', fontFamily: INTER, color: C.textPrimary }}>
-                                                    {systemVal.toLocaleString('en-US')}
+                                                    {systemVal.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     <div className="no-print" style={{ display: 'flex', justifyContent: 'center' }}>
@@ -222,11 +223,11 @@ export default function TreasuryReconciliationPage() {
                                                         />
                                                     </div>
                                                     <div className="print-only" style={{ display: 'none', fontWeight: 900, fontFamily: INTER }}>
-                                                        {hasActual ? actualVal.toLocaleString('en-US') : '—'}
+                                                        {hasActual ? <>{actualVal.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                     </div>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 1000, color: !hasActual ? C.textMuted : (diff > 0 ? SC : diff < 0 ? DC : C.primary), fontSize: '15px', fontFamily: INTER }}>
-                                                    {hasActual ? (diff > 0 ? `+${diff.toLocaleString('en-US')}` : diff.toLocaleString('en-US')) : '—'}
+                                                    {hasActual ? <>{diff > 0 ? `+${diff.toLocaleString('en-US')}` : diff.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                     {hasActual ? (

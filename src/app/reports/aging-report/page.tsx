@@ -82,6 +82,7 @@ export default function AgingReportPage() {
     }, [branchId]);
 
     const filtered = data.filter(inv => inv.customer.toLowerCase().includes(q.toLowerCase()) || String(inv.invoiceNumber).includes(q));
+    const sym = getCurrencyName(currency);
 
     const exportToExcel = () => {
         if (!data.length) return;
@@ -240,7 +241,7 @@ export default function AgingReportPage() {
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
-                                        <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')}</td>
+                                        <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         <td style={{ padding: '20px 24px', textAlign: 'center' }}>
                                             <button onClick={exportToExcel} style={{ 
                                                 height: '34px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.border}`, 

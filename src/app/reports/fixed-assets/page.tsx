@@ -87,6 +87,7 @@ export default function FixedAssetsReportPage() {
     const depPct = totalCost > 0 ? (totalAccum / totalCost * 100).toFixed(1) : '0.0';
 
     const exportToPDF = () => window.print();
+    const sym = getCurrencyName(currency);
 
     return (
         <DashboardLayout>
@@ -255,12 +256,12 @@ export default function FixedAssetsReportPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{a.name}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '11.5px', color: C.textMuted, fontFamily: INTER }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 750, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.purchaseCost)}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 750, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.purchaseCost)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'start' }}>
-                                                    <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 800, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)}</div>
+                                                    <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 800, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></div>
                                                     <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13.5px', color: '#10b981', fontWeight: 950, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.netBookValue)}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13.5px', color: '#10b981', fontWeight: 950, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.netBookValue)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: '#f59e0b', fontWeight: 800, fontFamily: INTER }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
@@ -274,9 +275,9 @@ export default function FixedAssetsReportPage() {
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={4} style={{ padding: '18px 24px', fontSize: '12.5px', fontWeight: 850, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: C.textPrimary, textAlign: 'start', fontFamily: INTER }}>{fmt(totalCost)}</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: '#fb7185', textAlign: 'start', fontFamily: INTER }}>{fmt(totalAccum)}</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '15px', fontWeight: 1000, color: '#10b981', textAlign: 'start', fontFamily: INTER }}>{fmt(totalNet)}</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: C.textPrimary, textAlign: 'start', fontFamily: INTER }}>{fmt(totalCost)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 950, color: '#fb7185', textAlign: 'start', fontFamily: INTER }}>{fmt(totalAccum)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px 20px', fontSize: '15px', fontWeight: 1000, color: '#10b981', textAlign: 'start', fontFamily: INTER }}>{fmt(totalNet)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         <td colSpan={2} />
                                     </tr>
                                 </tfoot>

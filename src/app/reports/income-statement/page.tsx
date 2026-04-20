@@ -56,6 +56,7 @@ export default function IncomeStatementPage() {
 
     const handlePrint = () => window.print();
     const exportToPDF = () => window.print();
+    const sym = getCurrencyName(currency);
 
     return (
         <DashboardLayout>
@@ -122,7 +123,7 @@ export default function IncomeStatementPage() {
                                         <tr key={rev.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: INTER, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{rev.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 700, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{rev.name}</td>
-                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 800, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>{fmt(rev.balance)}</td>
+                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 800, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>{fmt(rev.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                     {data.revenues.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>{t('لا توجد حركات إيرادات مسجلة')}</td></tr>}
@@ -140,7 +141,7 @@ export default function IncomeStatementPage() {
                                         <tr key={exp.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: INTER, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{exp.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 700, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{exp.name}</td>
-                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 800, color: '#fb7185', fontSize: '14px', fontFamily: INTER }}>{fmt(exp.balance)}</td>
+                                            <td dir="ltr" style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 800, color: '#fb7185', fontSize: '14px', fontFamily: INTER }}>{fmt(exp.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                     {data.expenses.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>{t('لا توجد حركات مصروفات مسجلة')}</td></tr>}
