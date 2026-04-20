@@ -17,9 +17,10 @@ interface ReportHeaderProps {
   printDate?: string;
   printCode?: string;
   accountName?: string;
+  branchName?: string;
 }
 
-export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onPrint, printTitle, printDate, printCode, accountName: manualAccountName }: ReportHeaderProps) {
+export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onPrint, printTitle, printDate, printCode, accountName: manualAccountName, branchName }: ReportHeaderProps) {
   const router = useRouter();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
@@ -63,6 +64,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const labelPeriod = isRtl ? 'الفترة:' : 'Period:';
     const labelAccount = isRtl ? 'تاريخ التقرير:' : 'Report Date:';
     const labelCode = isRtl ? 'الكود:' : 'Code:';
+    const labelBranch = isRtl ? 'الفرع:' : 'Branch:';
 
     const html = `<!DOCTYPE html>
 <html lang="${isRtl ? 'ar' : 'en'}" dir="${dir}">
@@ -92,10 +94,10 @@ body{font-family:'Cairo', 'Inter', sans-serif;direction:${dir};background:#fff;c
 .rpt-info-val{color:#000!important;font-weight:600;font-family:'Inter', sans-serif}
 
 /* ── Stats ── */
-[data-print-include]{display:flex!important;flex-wrap:nowrap;gap:8px;margin-bottom:10px}
-[data-print-include]>*{flex:1;padding:6px 10px!important;border:1px solid #eee!important;border-radius:4px!important;background:#fff!important;text-align:center}
+[data-print-include], .print-table-container{display:flex!important;flex-wrap:nowrap;gap:8px;margin-bottom:10px;background:#fff!important;color:#000!important;border:1px solid #ccc!important;border-radius:4px!important}
+[data-print-include]>*{flex:1;padding:6px 10px!important;background:#fff!important;text-align:center}
 [data-print-include] *{color:#000!important;background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important;margin:0!important}
-[data-print-include] svg{display:none!important}
+[data-print-include] svg, .no-print{display:none!important}
 
 /* ── Table ── */
 .table-wrap{margin-top:5px}
@@ -146,6 +148,7 @@ tfoot td:first-child{text-align:${firstColAlign}}
 
 <div class="rpt-info">
   <div class="rpt-info-rows">
+    ${branchName ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelBranch}</span><span class="rpt-info-val">${branchName}</span></div>` : ''}
     ${accountName ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelAccount}</span><span class="rpt-info-val">${accountName}</span></div>` : ''}
     ${dateRange ? `<div class="rpt-info-row"><span class="rpt-info-lbl">${labelPeriod}</span><span class="rpt-info-val">${dateRange}</span></div>` : ''}
     <div class="rpt-info-row" style="margin-inline-start: auto;">

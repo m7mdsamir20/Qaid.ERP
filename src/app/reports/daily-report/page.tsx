@@ -82,6 +82,7 @@ export default function DailyReportPage() {
                     title={t("التقرير اليومي للمبيعات والتحصيلات")}
                     subtitle={t("ملخص شامل لكافة العمليات المالية والتجارية التي تمت خلال اليوم.")}
                     backTab="financial"
+                    branchName={branches.find(b => b.id === branchId)?.name || (branchId === 'all' ? t('كل الفروع') : '')}
                     printDate={new Date(date).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
                 />
 
@@ -164,29 +165,29 @@ export default function DailyReportPage() {
                                         <div style={{ background: 'rgba(59, 130, 246, 0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                                 <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي قيمة المبيعات')}</span>
-                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalSales)}</span>
+                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalSales)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
                                             </div>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                                 <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('المرتجعات الواردة')} (-)</span>
-                                                <span style={{ color: '#fb7185', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.saleReturnsTotal)}</span>
+                                                <span style={{ color: '#fb7185', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.saleReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
                                             </div>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: `1px solid ${C.border}`, paddingTop: '12px' }}>
                                                 <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '12.5px', fontFamily: CAIRO }}>{t('صافي المبيعات')}</span>
-                                                <span style={{ color: '#3b82f6', fontWeight: 900, fontSize: '15px', fontFamily: INTER }}>{fmt(data.totalSales - data.saleReturnsTotal)}</span>
+                                                <span style={{ color: '#3b82f6', fontWeight: 900, fontSize: '15px', fontFamily: INTER }}>{fmt(data.totalSales - data.saleReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
                                             </div>
                                         </div>
                                         <div style={{ background: 'rgba(245, 158, 11, 0.05)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(245, 158, 11, 0.1)' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                                 <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي قيمة المشتريات')}</span>
-                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalPurchases)}</span>
+                                                <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.totalPurchases)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
                                             </div>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
                                                 <span style={{ color: C.textMuted, fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('المرتجعات الصادرة')} (-)</span>
-                                                <span style={{ color: '#10b981', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.purchaseReturnsTotal)}</span>
+                                                <span style={{ color: '#10b981', fontWeight: 800, fontSize: '13px', fontFamily: INTER }}>{fmt(data.purchaseReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
                                             </div>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: `1px solid ${C.border}`, paddingTop: '12px' }}>
                                                 <span style={{ color: C.textPrimary, fontWeight: 800, fontSize: '12.5px', fontFamily: CAIRO }}>{t('صافي المشتريات')}</span>
-                                                <span style={{ color: '#f59e0b', fontWeight: 900, fontSize: '15px', fontFamily: INTER }}>{fmt(data.totalPurchases - data.purchaseReturnsTotal)}</span>
+                                                <span style={{ color: '#f59e0b', fontWeight: 900, fontSize: '15px', fontFamily: INTER }}>{fmt(data.totalPurchases - data.purchaseReturnsTotal)} <small style={{ fontSize: '9px', opacity: 0.7, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></span>
                                             </div>
                                         </div>
                                     </div>
