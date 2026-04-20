@@ -94,52 +94,28 @@ export default function LoginPage() {
                 </button>
             </div>
 
-            {/* Premium Moving Background */}
-            <div style={{ position: 'fixed', inset: 0, background: C.bg, zIndex: 0, overflow: 'hidden' }}>
-                {/* Layer 1: Animated Mesh Gradient */}
-                <div style={{ position: 'absolute', inset: '-50%', background: `radial-gradient(circle at 70% 30%, ${C.primary}10 0%, transparent 40%), radial-gradient(circle at 30% 70%, ${C.purple}08 0%, transparent 40%)`, animation: 'meshRotate 30s linear infinite', opacity: 0.6 }} />
-
-                {/* Layer 2: Moving Glow Orbs */}
-                {mounted && Array.from({ length: 6 }).map((_, i) => (
-                    <div key={i} style={{
-                        position: 'absolute',
-                        width: `${200 + i * 100}px`, height: `${200 + i * 100}px`,
-                        borderRadius: '50%',
-                        background: theme === 'dark'
-                            ? `radial-gradient(circle, ${i % 2 === 0 ? C.primary : C.purple}05 0%, transparent 70%)`
-                            : `radial-gradient(circle, ${i % 2 === 0 ? C.primary : '#fff'}30 0%, transparent 70%)`,
-                        top: `${Math.random() * 80}%`,
-                        insetInlineStart: `${Math.random() * 80}%`,
-                        animation: `floatAround ${20 + i * 5}s ease-in-out infinite`,
-                        animationDelay: `-${i * 2}s`,
-                        filter: theme === 'dark' ? 'blur(40px)' : 'blur(60px)',
-                        opacity: theme === 'light' ? 0.6 : 1
-                    }} />
-                ))}
-
-                {/* Layer 3: Dynamic Stellar Field */}
-                {mounted && Array.from({ length: 60 }).map((_, i) => {
-                    const size = Math.random() * 2 + 1;
-                    const duration = 3 + Math.random() * 7;
-                    const starColor = theme === 'dark' ? '#fff' : C.primary;
-                    return (
-                        <div key={i} style={{
-                            position: 'absolute',
-                            width: `${size}px`, height: `${size}px`,
-                            background: starColor,
-                            borderRadius: '50%',
-                            opacity: theme === 'dark' ? Math.random() * 0.4 + 0.1 : 0.4,
-                            top: `${Math.random() * 100}%`,
-                            insetInlineStart: `${Math.random() * 100}%`,
-                            animation: `twinkleAndMove ${duration}s ease-in-out infinite`,
-                            animationDelay: `${-Math.random() * 10}s`,
-                            boxShadow: theme === 'dark' && size > 2 ? `0 0 ${size * 4}px #fff` : (theme === 'light' ? `0 0 ${size * 3}px ${C.primary}50` : 'none'),
-                        }} />
-                    );
-                })}
+            {/* Modern Minimal Background */}
+            <div style={{ 
+                position: 'fixed', 
+                inset: 0, 
+                background: theme === 'dark' ? 'radial-gradient(circle at center, #0f172a 0%, #020617 100%)' : 'radial-gradient(circle at center, #f8fafc 0%, #f1f5f9 100%)',
+                zIndex: 0 
+            }}>
+                {/* Optional Subtle Animated Glow */}
+                <div style={{ 
+                    position: 'absolute', 
+                    top: '50%', 
+                    left: '50%', 
+                    transform: 'translate(-50%, -50%)',
+                    width: '800px',
+                    height: '800px',
+                    background: `radial-gradient(circle, ${C.primary}05 0%, transparent 70%)`,
+                    pointerEvents: 'none',
+                    opacity: theme === 'dark' ? 1 : 0.5
+                }} />
             </div>
 
-            <div style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 1 }}>
+            <div style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 1, animation: 'cardAppear 0.6s cubic-bezier(0.16, 1, 0.3, 1)' }}>
                 {/* الهوية البصرية */}
                 <div style={{ textAlign: 'center', marginBottom: '32px' }}>
                     {showLogos ? (
@@ -150,27 +126,27 @@ export default function LoginPage() {
                             style={{
                                 display: 'block',
                                 width: '100%',
-                                maxWidth: '220px',
+                                maxWidth: '200px',
                                 height: 'auto',
                                 objectFit: 'contain',
                                 margin: '0 auto 12px',
-                                filter: 'drop-shadow(0 15px 35px rgba(0,0,0,0.3))',
+                                filter: theme === 'dark' ? 'drop-shadow(0 0 20px rgba(37,106,244,0.3))' : 'none',
                             }}
                         />
                     ) : (
                         <div style={{ display: 'block', margin: '0 auto 12px', width: '220px', height: '80px' }} />
                     )}
-                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{t('مرحباً بعودتك لنظامك السحابي')}</p>
+                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '14px', fontWeight: 500, opacity: 0.8 }}>{t('مرحباً بعودتك لنظامك السحابي')}</p>
                 </div>
 
                 {/* كارت التسجيل */}
                 <div style={{
-                    background: 'var(--c-auth-card-bg)',
-                    border: 'var(--c-auth-card-border)',
-                    boxShadow: 'var(--c-auth-card-shadow)',
-                    backdropFilter: 'var(--c-auth-card-blur)',
-                    WebkitBackdropFilter: 'var(--c-auth-card-blur)',
-                    borderRadius: '24px', padding: '32px',
+                    background: theme === 'dark' ? 'rgba(15, 23, 42, 0.6)' : 'rgba(255, 255, 255, 0.8)',
+                    border: `1px solid ${C.border}`,
+                    boxShadow: theme === 'dark' ? '0 25px 50px -12px rgba(0,0,0,0.5)' : '0 10px 25px -5px rgba(0,0,0,0.05)',
+                    backdropFilter: 'blur(12px)',
+                    WebkitBackdropFilter: 'blur(12px)',
+                    borderRadius: '24px', padding: '40px',
                 }}>
                     <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>{t('تسجيل الدخول')}</h2>
 
@@ -232,9 +208,26 @@ export default function LoginPage() {
                         </div>
 
                         <button type="submit" disabled={loading}
-                            style={{ height: '50px', borderRadius: '12px', border: 'none', background: loading ? C.primaryBg : C.primary, color: '#fff', fontSize: '16px', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO, marginTop: '8px', boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}40`, transition: 'all 0.2s' }}
-                            onMouseEnter={e => { if (!loading) e.currentTarget.style.background = C.primaryHover; }}
-                            onMouseLeave={e => { if (!loading) e.currentTarget.style.background = C.primary; }}>
+                             style={{ 
+                                height: '52px', 
+                                borderRadius: '12px', 
+                                border: 'none', 
+                                background: loading ? C.primaryBg : C.primary, 
+                                color: '#fff', 
+                                fontSize: '16px', 
+                                fontWeight: 800, 
+                                cursor: loading ? 'not-allowed' : 'pointer', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                gap: '8px', 
+                                fontFamily: CAIRO, 
+                                marginTop: '8px', 
+                                boxShadow: loading ? 'none' : `0 4px 14px ${C.primary}40`, 
+                                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
+                            }}
+                            onMouseEnter={e => { if (!loading) { e.currentTarget.style.background = C.primaryHover; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = `0 6px 20px ${C.primary}60`; }}}
+                            onMouseLeave={e => { if (!loading) { e.currentTarget.style.background = C.primary; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = `0 4px 14px ${C.primary}40`; }}}>
                             {loading ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الدخول...')}</> : t('تسجيل الدخول')}
                         </button>
                     </form>
@@ -247,27 +240,26 @@ export default function LoginPage() {
             </div>
 
             <style>{`
-                @keyframes meshRotate {
+                @keyframes cardAppear {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes spin {
                     from { transform: rotate(0deg); }
                     to { transform: rotate(360deg); }
                 }
-                @keyframes floatAround {
-                    0%, 100% { transform: translate(0, 0) scale(1); }
-                    33% { transform: translate(30px, -50px) scale(1.1); }
-                    66% { transform: translate(-20px, 20px) scale(0.9); }
+                input::placeholder { color: ${C.textMuted}; opacity: 0.7; }
+                input:focus { 
+                    border-color: ${C.primary} !important;
+                    box-shadow: 0 0 0 4px ${C.primary}15 !important;
                 }
-                @keyframes twinkleAndMove {
-                    0%, 100% { opacity: 0.1; transform: translateY(0); }
-                    50% { opacity: 0.4; transform: translateY(-20px); }
+                input:-webkit-autofill {
+                    -webkit-box-shadow: 0 0 0px 1000px ${theme === 'dark' ? '#0f172a' : '#fff'} inset !important;
+                    -webkit-text-fill-color: ${theme === 'dark' ? '#f8fafc' : '#0f172a'} !important;
                 }
-                input::placeholder { color: ${C.textMuted}; opacity: 0.9; }
-                input:-webkit-autofill,
-                input:-webkit-autofill:hover,
-                input:-webkit-autofill:focus {
-                    -webkit-box-shadow: 0 0 0px 1000px var(--c-autofill-bg) inset !important;
-                    -webkit-text-fill-color: var(--c-text-primary) !important;
-                    caret-color: var(--c-text-primary) !important;
-                    transition: background-color 5000s ease-in-out 0s;
+                a:hover { 
+                    opacity: 0.8;
+                    text-decoration: underline !important;
                 }
             `}</style>
         </div>
