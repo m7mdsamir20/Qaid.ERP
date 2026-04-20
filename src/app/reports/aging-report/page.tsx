@@ -26,6 +26,23 @@ interface AgingInvoice {
     category: string;
 }
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
+interface AgingBucket {
+    total: number;
+    count: number;
+}
+
+interface AgingBuckets {
+    '0-30': AgingBucket;
+    '31-60': AgingBucket;
+    '61-90': AgingBucket;
+    '91+': AgingBucket;
+}
+
 export default function AgingReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -33,11 +50,11 @@ export default function AgingReportPage() {
     const currency = session?.user?.currency || 'EGP';
 
     const [data, setData] = useState<AgingInvoice[]>([]);
-    const [buckets, setBuckets] = useState<any>(null);
+    const [buckets, setBuckets] = useState<AgingBuckets | null>(null);
     const [loading, setLoading] = useState(true);
     const [q, setQ] = useState('');
     const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<any[]>([]);
+    const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
@@ -46,19 +63,22 @@ export default function AgingReportPage() {
     }, []);
 
     useEffect(() => {
-        setLoading(true);
-        const params = new URLSearchParams();
-        if (branchId && branchId !== 'all') params.set('branchId', branchId);
-        fetch(`/api/reports/aging-report?${params}`)
-            .then(res => res.json())
-            .then(d => {
+        const run = async () => {
+            const params = new URLSearchParams();
+            if (branchId && branchId !== 'all') params.set('branchId', branchId);
+            try {
+                const res = await fetch(`/api/reports/aging-report?${params}`);
+                const d = await res.json();
                 if (!d.error) {
                     setData(d.invoices);
                     setBuckets(d.buckets);
                 }
-            })
-            .catch(() => { })
-            .finally(() => setLoading(false));
+            } catch {
+            } finally {
+                setLoading(false);
+            }
+        };
+        void run();
     }, [branchId]);
 
     const filtered = data.filter(inv => inv.customer.toLowerCase().includes(q.toLowerCase()) || String(inv.invoiceNumber).includes(q));
@@ -99,7 +119,7 @@ export default function AgingReportPage() {
                             { label: t('مديونية (31 - 60 يوم)'), value: buckets['31-60'].total, count: buckets['31-60'].count, color: '#eab308', icon: <History size={20} />, sign: t('تنبيه أول') },
                             { label: t('مديونية (61 - 90 يوم)'), value: buckets['61-90'].total, count: buckets['61-90'].count, color: '#f59e0b', icon: <TrendingDown size={20} />, sign: t('حذر شديد') },
                             { label: t('متأخرات (91+ يوم)'), value: buckets['91+'].total, count: buckets['91+'].count, color: '#ef4444', icon: <AlertTriangle size={20} />, sign: t('خطر التحصيل') },
-                        ].map((s: any, i: number) => (
+                        ].map((s, i: number) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                 padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
@@ -138,11 +158,11 @@ export default function AgingReportPage() {
                     {branches.length > 1 && (
                         <CustomSelect
                             value={branchId}
-                            onChange={v => setBranchId(v)}
+                            onChange={(v) => { setLoading(true); setBranchId(v); }}
                             placeholder={t("كل الفروع")}
                             options={[
                                 { value: 'all', label: t('كل الفروع') },
-                                ...branches.map((b: any) => ({ value: b.id, label: b.name }))
+                                ...branches.map((b) => ({ value: b.id, label: b.name }))
                             ]}
                         />
                     )}

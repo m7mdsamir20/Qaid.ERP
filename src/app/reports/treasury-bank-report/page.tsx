@@ -21,6 +21,32 @@ const PC = '#4f46e5';
 const SC = '#10b981';
 const DC = '#ef4444';
 
+interface TreasuryOption {
+    id: string;
+    name: string;
+    type: string;
+}
+
+interface Movement {
+    id: string;
+    date: string;
+    type: 'receipt' | 'payment' | string;
+    description: string;
+    party: string;
+    amount: number;
+}
+
+interface MovementWithBalance extends Movement {
+    runningBalance: number;
+}
+
+interface TreasuryReportData {
+    openingBalance: number;
+    currentBalance: number;
+    treasuryName: string;
+    movements: Movement[];
+}
+
 export default function TreasuryBankReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -31,8 +57,8 @@ export default function TreasuryBankReportPage() {
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [selectedTreasuryId, setSelectedTreasuryId] = useState('');
-    const [treasuries, setTreasuries] = useState<any[]>([]);
-    const [data, setData] = useState<any>(null);
+    const [treasuries, setTreasuries] = useState<TreasuryOption[]>([]);
+    const [data, setData] = useState<TreasuryReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [fetchingTreasuries, setFetchingTreasuries] = useState(true);
 
@@ -66,10 +92,10 @@ export default function TreasuryBankReportPage() {
     const handlePrint = () => window.print();
 
     // Calculate Running Balance
-    const getRunningMovements = () => {
+    const getRunningMovements = (): MovementWithBalance[] => {
         if (!data) return [];
         let balance = data.openingBalance;
-        return data.movements.map((m: any) => {
+        return data.movements.map((m) => {
             if (m.type === 'receipt') balance += m.amount;
             else balance -= m.amount;
             return { ...m, runningBalance: balance };
@@ -77,8 +103,8 @@ export default function TreasuryBankReportPage() {
     };
 
     const movements = getRunningMovements();
-    const totalReceipts = data?.movements.filter((m: any) => m.type === 'receipt').reduce((sum: number, m: any) => sum + m.amount, 0) || 0;
-    const totalPayments = data?.movements.filter((m: any) => m.type === 'payment').reduce((sum: number, m: any) => sum + m.amount, 0) || 0;
+    const totalReceipts = data?.movements.filter((m) => m.type === 'receipt').reduce((sum, m) => sum + m.amount, 0) || 0;
+    const totalPayments = data?.movements.filter((m) => m.type === 'payment').reduce((sum, m) => sum + m.amount, 0) || 0;
 
     return (
         <DashboardLayout>
@@ -179,7 +205,7 @@ export default function TreasuryBankReportPage() {
                                         <td colSpan={2} style={{ padding: '12px 24px', textAlign: 'center', fontWeight: 900, color: '#94a3b8' , fontFamily: CAIRO}}></td>
                                         <td style={{ padding: '12px 24px', textAlign: 'center', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{data.openingBalance.toLocaleString('en-US')}</td>
                                     </tr>
-                                    {movements.map((m: any) => (
+                                    {movements.map((m) => (
                                         <tr key={m.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}>
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8' , fontFamily: CAIRO}}>{new Date(m.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 16px' }}>

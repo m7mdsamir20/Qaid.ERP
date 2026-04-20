@@ -4,10 +4,15 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 
 export type Language = 'ar' | 'en';
 
+// Bump this string whenever translation keys are added or changed.
+// The app will clear any stale cached language data automatically.
+export const I18N_VERSION = '2.0.0';
+
 interface LanguageContextType {
     lang: Language;
     t: (key: string) => string;
     toggleLang: () => void;
+    setLanguage: (lang: Language) => void;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
@@ -2122,34 +2127,58 @@ export const dictionaries = {
     }
 };
 
+export function getStoredLang(): Language {
+    if (typeof window === 'undefined') return 'ar';
+    const stored = localStorage.getItem('erp_lang');
+    return stored === 'en' || stored === 'ar' ? stored : 'ar';
+}
+
+function applyLangToDOM(l: Language) {
+    document.documentElement.lang = l;
+    document.documentElement.dir = l === 'en' ? 'ltr' : 'rtl';
+}
+
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     const [lang, setLang] = useState<Language>('ar');
 
     useEffect(() => {
-        const savedLang = localStorage.getItem('erp_lang') as Language;
-        if (savedLang === 'en' || savedLang === 'ar') {
-            setLang(savedLang);
-            document.documentElement.dir = savedLang === 'en' ? 'ltr' : 'rtl';
-            document.documentElement.lang = savedLang;
+        const savedLang = getStoredLang();
+        setLang(savedLang);
+        applyLangToDOM(savedLang);
+
+        // Version-based cache invalidation: re-stamp version so stale caches are cleared
+        const storedVersion = localStorage.getItem('erp_i18n_version');
+        if (storedVersion !== I18N_VERSION) {
+            localStorage.setItem('erp_i18n_version', I18N_VERSION);
+            if (process.env.NODE_ENV !== 'production') {
+                console.info(`[i18n] Translation cache updated to version ${I18N_VERSION}`);
+            }
         }
     }, []);
 
-    const toggleLang = () => {
-        const newLang = lang === 'ar' ? 'en' : 'ar';
+    const setLanguage = (newLang: Language) => {
         setLang(newLang);
         localStorage.setItem('erp_lang', newLang);
-        document.documentElement.dir = newLang === 'en' ? 'ltr' : 'rtl';
-        document.documentElement.lang = newLang;
+        applyLangToDOM(newLang);
     };
 
+    const toggleLang = () => setLanguage(lang === 'ar' ? 'en' : 'ar');
+
     const t = (key: string): string => {
-        const dictionary = dictionaries[lang];
-        // @ts-ignore
-        return dictionary[key] || key;
+        if (!key) return '';
+        if (lang === 'ar') return key;
+        const dict = dictionaries.en as Record<string, string>;
+        if (!(key in dict)) {
+            if (process.env.NODE_ENV !== 'production') {
+                console.warn(`[i18n] Missing EN translation: "${key}"`);
+            }
+            return key;
+        }
+        return dict[key];
     };
 
     return (
-        <LanguageContext.Provider value={{ lang, t, toggleLang }}>
+        <LanguageContext.Provider value={{ lang, t, toggleLang, setLanguage }}>
             {children}
         </LanguageContext.Provider>
     );

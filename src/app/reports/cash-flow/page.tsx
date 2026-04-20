@@ -42,7 +42,6 @@ export default function CashFlowReportPage() {
     const [q, setQ] = useState('');
 
     useEffect(() => {
-        setLoading(true);
         fetch('/api/reports/cash-flow')
             .then(res => res.json())
             .then(d => {

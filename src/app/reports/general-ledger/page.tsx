@@ -36,8 +36,8 @@ const IS_LOCAL: React.CSSProperties = {
     background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '12px',
     fontWeight: 500, outline: 'none', transition: 'border-color 0.15s', boxSizing: 'border-box',
 };
-const focusIn = (e: React.FocusEvent<any>) => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.5)'; };
-const focusOut = (e: React.FocusEvent<any>) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; };
+const focusIn = (e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.5)'; };
+const focusOut = (e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; };
 
 export default function GeneralLedgerPage() {
     const { lang, t } = useTranslation();
@@ -78,7 +78,6 @@ export default function GeneralLedgerPage() {
 
     const handleFetchLedger = () => {
         if (!selectedAccount) return;
-        setLoading(true);
         const params = new URLSearchParams({ accountId: selectedAccount });
         if (fromDate) params.set('from', fromDate);
         if (toDate) params.set('to', toDate);
@@ -155,6 +154,7 @@ export default function GeneralLedgerPage() {
                                 {filteredAccounts.map(a => (
                                     <div key={a.id}
                                         onMouseDown={() => {
+                                            setLoading(true);
                                             setSelectedAccount(a.id);
                                             setAccountSearch(`${a.code} — ${a.name}`);
                                             setShowAccountList(false);
@@ -174,13 +174,13 @@ export default function GeneralLedgerPage() {
                     <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
                         <div style={{ width: '160px' }}>
-                            <input type="date" value={fromDate} onChange={e => setFromDate(e.target.value)}
+                            <input type="date" value={fromDate} onChange={e => { setLoading(true); setFromDate(e.target.value); }}
                                 style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }}
                             />
                         </div>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
                         <div style={{ width: '160px' }}>
-                            <input type="date" value={toDate} onChange={e => setToDate(e.target.value)}
+                            <input type="date" value={toDate} onChange={e => { setLoading(true); setToDate(e.target.value); }}
                                 style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }}
                             />
                         </div>

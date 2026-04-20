@@ -33,6 +33,10 @@ interface ModuleTab {
     requiredPages?: string[];
 }
 
+type ViewPermission = {
+    view?: boolean;
+};
+
 function ReportsHubPageInner() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -127,7 +131,7 @@ function ReportsHubPageInner() {
         if (session?.user?.role === 'admin') return true;
 
         // 3. التحقق من صلاحية الجرانيولار للموظفين
-        const perms = (userPermissions as Record<string, any>);
+        const perms = userPermissions as Record<string, ViewPermission>;
         return !!perms[pageId]?.view;
     };
 
@@ -206,7 +210,7 @@ function ReportsHubPageInner() {
         if (isSuperAdmin) return true;
 
         // 1. تحقق من صلاحية التبويب في موديول التقارير الإحصائية (للموظفين فقط)
-        const perms = (reportsPerms as Record<string, any>);
+        const perms = reportsPerms as Record<string, ViewPermission>;
         if (!isAdmin && perms[`reports-${tab.key}`]?.view !== true) return false;
 
         // 2. تحقق هل يملك صلاحية على الموارد الأصلية

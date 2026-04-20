@@ -35,6 +35,11 @@ interface ReportData {
     totalRemaining: number;
 }
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
 export default function PurchasesReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -47,7 +52,7 @@ export default function PurchasesReportPage() {
     const [to, setTo] = useState('');
     const [q, setQ] = useState('');
     const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<any[]>([]);
+    const [branches, setBranches] = useState<BranchOption[]>([]);
 
     useEffect(() => {
         fetch('/api/branches').then(r => r.json()).then(d => {
@@ -117,7 +122,7 @@ export default function PurchasesReportPage() {
                                     style={{ background: C.card, border: `1px solid ${C.border}` }}
                                     options={[
                                         { value: 'all', label: t('كل الفروع') },
-                                        ...branches.map((b: any) => ({ value: b.id, label: b.name }))
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
                                     ]}
                                 />
                             </div>
@@ -266,4 +271,3 @@ export default function PurchasesReportPage() {
         </DashboardLayout>
     );
 }
-

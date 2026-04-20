@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
@@ -20,16 +20,40 @@ const getCurrencyName = (code: string) => {
 
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+interface BranchOption {
+    id: string;
+    name: string;
+}
+
+interface TreasuryBalance {
+    type: string;
+    name: string;
+    balance: number;
+}
+
+interface DailyReportData {
+    totalSales: number;
+    salesCount: number;
+    receipts: number;
+    payments: number;
+    saleReturnsTotal: number;
+    totalPurchases: number;
+    purchaseReturnsTotal: number;
+    totalCashBalance: number;
+    totalBankBalance: number;
+    treasuries: TreasuryBalance[];
+}
+
 export default function DailyReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
     const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<DailyReportData | null>(null);
     const [loading, setLoading] = useState(true);
     const [branchId, setBranchId] = useState('all');
-    const [branches, setBranches] = useState<any[]>([]);
+    const [branches, setBranches] = useState<BranchOption[]>([]);
     const [company, setCompany] = useState<CompanyInfo>({});
 
     useEffect(() => {
@@ -108,7 +132,7 @@ export default function DailyReportPage() {
                                     placeholder={t("كل الفروع")}
                                     options={[
                                         { value: 'all', label: t('كل الفروع') },
-                                        ...branches.map((b: any) => ({ value: b.id, label: b.name }))
+                                        ...branches.map((b) => ({ value: b.id, label: b.name }))
                                     ]}
                                 />
                             </div>
@@ -230,7 +254,7 @@ export default function DailyReportPage() {
                                         {t('أرصدة السيولة الحالية (الخزائن والبنوك)')}
                                     </h3>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '16px' }}>
-                                        {data.treasuries.map((t: any, i: number) => (
+                                        {data.treasuries.map((t, i: number) => (
                                             <div key={i} style={{ padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}` }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                                                     <div style={{ width: 28, height: 28, borderRadius: '8px', background: t.type === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

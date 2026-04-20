@@ -15,13 +15,30 @@ const getCurrencyName = (code: string) => {
 
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+interface BalanceSheetRow {
+    code: string;
+    name: string;
+    balance: number;
+}
+
+interface BalanceSheetData {
+    assets: BalanceSheetRow[];
+    liabilities: BalanceSheetRow[];
+    equities: BalanceSheetRow[];
+    totalAssets: number;
+    totalLiabilities: number;
+    totalEquities: number;
+    totalLiabilitiesAndEquities: number;
+    netIncome: number;
+}
+
 export default function DetailedBalanceSheetPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
 
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<BalanceSheetData | null>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchData = async () => {
@@ -89,7 +106,7 @@ export default function DetailedBalanceSheetPage() {
                         </div>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <tbody>
-                                {data.assets.map((a: any) => (
+                                {data.assets.map((a) => (
                                     <tr key={a.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }}>
                                         <td style={{ padding: '12px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '11px', fontFamily: INTER, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span></td>
                                         <td style={{ padding: '12px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{a.name}</td>
@@ -114,7 +131,7 @@ export default function DetailedBalanceSheetPage() {
                             </div>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <tbody>
-                                    {data.liabilities.map((l: any) => (
+                                    {data.liabilities.map((l) => (
                                         <tr key={l.code} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted }}>{l.code}</span></td>
                                             <td style={{ padding: '10px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{l.name}</td>
@@ -138,7 +155,7 @@ export default function DetailedBalanceSheetPage() {
                             </div>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <tbody>
-                                    {data.equities.map((e: any) => (
+                                    {data.equities.map((e) => (
                                         <tr key={e.code} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted }}>{e.code}</span></td>
                                             <td style={{ padding: '10px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{e.name}</td>
