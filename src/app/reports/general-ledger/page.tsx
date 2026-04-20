@@ -203,7 +203,7 @@ export default function GeneralLedgerPage() {
                 ) : (
                     <>
 
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[
                                 { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#3b82f6', icon: <Wallet size={18} /> },
                                 { label: t('إجمالي مدين (+)'), value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={18} /> },
@@ -284,7 +284,7 @@ export default function GeneralLedgerPage() {
                                                     <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '6px', padding: '3px 10px', fontFamily: INTER, fontSize: '12px', fontWeight: 800, color: '#60a5fa' }}>
                                                         {line.entryNumber}
                                                     </span>
-                                                                </div>
+                                                </div>
                                             </td>
 
                                             {/* البيان الوصفي */}
@@ -297,7 +297,7 @@ export default function GeneralLedgerPage() {
                                                 {line.costCenter?.name
                                                     ? <span style={{ background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)', borderRadius: '6px', padding: '3px 10px', fontSize: '11px', color: '#a78bfa', fontFamily: CAIRO }}>
                                                         {line.costCenter.name}
-                                                      </span>
+                                                    </span>
                                                     : <span style={{ color: C.textMuted, fontSize: '13px' }}>—</span>}
                                             </td>
 

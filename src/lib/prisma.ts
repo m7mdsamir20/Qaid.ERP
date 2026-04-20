@@ -9,20 +9,10 @@ const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
 const getDatabaseUrl = () => {
     const url = process.env.DATABASE_URL || '';
     if (!url) return url;
-
     const params: string[] = [];
-
-    // إضافة pgbouncer=true تلقائياً لو الرابط بتاع Supabase Pooler
-    if (!url.includes('pgbouncer=true') && url.includes('pooler.supabase.com')) {
-        params.push('pgbouncer=true');
-    }
-
-    // تحديد عدد الاتصالات لكل serverless function = 1 فقط
+    if (!url.includes('pgbouncer=true') && url.includes('pooler.supabase.com')) params.push('pgbouncer=true');
     if (!url.includes('connection_limit=')) params.push('connection_limit=1');
-
-    // مهلة الانتظار للاتصال
     if (!url.includes('pool_timeout=')) params.push('pool_timeout=10');
-
     if (params.length === 0) return url;
     return url.includes('?') ? `${url}&${params.join('&')}` : `${url}?${params.join('&')}`;
 };
