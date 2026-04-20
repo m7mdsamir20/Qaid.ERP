@@ -112,6 +112,16 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
 
+    // 4. مزامنة الأقسام المفتوحة مع المسار الحالي عند تغيير الصفحة
+    useEffect(() => {
+        if (!pathname || !mounted) return;
+        navSections.forEach((section: any) => {
+            if (section?.links?.some((link: any) => link.href === pathname)) {
+                setOpenSections(prev => ({ ...prev, [section.title]: true }));
+            }
+        });
+    }, [pathname, mounted]);
+
     const sidebarItems = useMemo(() => {
         return navSections.map((sectionOrigin: any) => {
             let section = { ...sectionOrigin };
@@ -143,7 +153,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             if (section.isStandalone && section.href) {
                 const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
                 return (
-                    <div key={section.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
+                    <div key={sectionOrigin.title} style={{ marginBottom: '4px', padding: '0 14px' }}>
                         <Link href={section.href} onClick={onLinkClick} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', color: isActive ? C.primary : C.textSecondary, textDecoration: 'none', fontWeight: isActive ? 700 : 500, fontSize: '14px', borderRadius: '12px', backgroundColor: isActive ? C.primaryBg : 'transparent', transition: 'all 0.2s', border: `1px solid ${isActive ? C.primaryBorder : 'transparent'}` }}>
                             <SectionIcon size={18} />
                             <span style={{ fontFamily: CAIRO }}>{t(section.title)}</span>
@@ -152,12 +162,12 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                 );
             }
 
-            const isOpen = openSections[section.title];
+            const isOpen = openSections[sectionOrigin.title];
             const isActiveGroup = visibleLinks.some((l: any) => pathname === l.href);
 
             return (
-                <div key={section.title} style={{ marginBottom: '6px', padding: '0 14px' }}>
-                    <button onClick={() => setOpenSections(prev => ({ ...prev, [section.title]: !prev[section.title] }))} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
+                <div key={sectionOrigin.title} style={{ marginBottom: '6px', padding: '0 14px' }}>
+                    <button onClick={() => setOpenSections(prev => ({ ...prev, [sectionOrigin.title]: !prev[sectionOrigin.title] }))} style={{ width: '100%', background: 'transparent', border: 'none', display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', color: isActiveGroup ? C.primary : C.textSecondary, cursor: 'pointer', borderRadius: '12px', fontSize: '14px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: isActiveGroup ? 700 : 600, fontFamily: CAIRO }}>
                             <SectionIcon size={18} /> {t(section.title)}
                         </div>
