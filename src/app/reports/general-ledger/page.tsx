@@ -136,7 +136,6 @@ export default function GeneralLedgerPage() {
                 <div className="no-print" style={SEARCH_STYLE.container}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <ScrollText size={16} style={SEARCH_STYLE.icon(C.primary)} />
-                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', fontWeight: 800, letterSpacing: '1px', color: isRtl ? '#60a5fa' : '#34d399', background: isRtl ? 'rgba(96,165,250,0.1)' : 'rgba(52,211,153,0.1)', border: `1px solid ${isRtl ? 'rgba(96,165,250,0.25)' : 'rgba(52,211,153,0.25)'}`, borderRadius: '6px', padding: '2px 8px', pointerEvents: 'none' }}>{isRtl ? 'AR' : 'EN'}</span>
                         <input
                             placeholder={loadingAccounts ? t('جاري التحميل...') : t('ابحث عن الحساب بالاسم أو الكود...')}
                             value={accountSearch}
@@ -148,7 +147,7 @@ export default function GeneralLedgerPage() {
                             style={{ ...SEARCH_STYLE.input, paddingInlineStart: '40px' }}
                             onBlur={e => { setTimeout(() => setShowAccountList(false), 200); }}
                         />
-                        <ChevronDown size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted, opacity: 0.5, pointerEvents: 'none' }} />
+                        <ChevronDown size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.8, pointerEvents: 'none' }} />
 
                         {showAccountList && filteredAccounts.length > 0 && (
                             <div style={{ position: 'absolute', top: '100%', insetInlineEnd: 0, insetInlineStart: 0, zIndex: 50, background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', boxShadow: '0 20px 50px rgba(0,0,0,0.6)', maxHeight: '300px', overflowY: 'auto', marginTop: '6px' }}>
@@ -353,4 +352,5 @@ export default function GeneralLedgerPage() {
         </DashboardLayout>
     );
 }
+
 
