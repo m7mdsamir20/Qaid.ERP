@@ -33,7 +33,7 @@ export default function QuotationsPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [quotations, setQuotations] = useState<Quotation[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -192,8 +192,8 @@ export default function QuotationsPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: INTER, color: C.textSecondary, textAlign: 'start' }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 800, color: C.textPrimary, fontFamily: INTER, textAlign: 'start' }}>
-                                                    {fmt(quo.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                    {fMoneyJSX(quo.total)}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
                                                     <div style={{

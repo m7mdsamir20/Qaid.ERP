@@ -107,8 +107,9 @@ function KpiCard({
       </div>
 
       <div style={{
-        fontSize: '18px', fontWeight: 900, color: C.textPrimary,
-        letterSpacing: '-0.3px', lineHeight: 1.1, marginBottom: '2px', fontFamily: INTER
+        fontSize: '15px', fontWeight: 800, color: C.textPrimary,
+        letterSpacing: '-0.2px', lineHeight: 1.1, marginBottom: '4px', fontFamily: INTER,
+        display: 'flex', alignItems: 'baseline', gap: '4px'
       }}>
         {value}
       </div>

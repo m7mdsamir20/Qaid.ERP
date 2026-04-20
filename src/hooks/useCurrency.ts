@@ -13,7 +13,7 @@ export function useCurrency() {
         currency,
         symbol: getCurrencySymbol(currency, lang),
         fMoney: (amount: number) => formatMoney(amount, currency, lang),
-        fMoneyJSX: (amount: number, className?: string): any => 
-            React.createElement(Currency, { amount, code: currency, lang, className })
+        fMoneyJSX: (amount: number, className?: string, style?: React.CSSProperties): any => 
+            React.createElement(Currency, { amount, code: currency, lang, className, style })
     };
 }

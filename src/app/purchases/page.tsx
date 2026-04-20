@@ -29,7 +29,7 @@ interface Invoice {
 export default function PurchasesListPage() {
     const router = useRouter();
     const { data: session } = useSession();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const [invoices, setInvoices] = useState<Invoice[]>([]);
@@ -174,14 +174,14 @@ export default function PurchasesListPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER, textAlign: 'start' }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>{inv.supplier?.name || inv.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: INTER, textAlign: 'start' }}>
-                                                    {fmt(inv.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                    {fMoneyJSX(inv.total)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: INTER, textAlign: 'start' }}>
-                                                    {fmt(inv.paidAmount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                    {fMoneyJSX(inv.paidAmount, '', { color: C.success })}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: INTER, textAlign: 'start' }}>
-                                                    {fmt(inv.remaining)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                    {fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
                                                     <div style={{
