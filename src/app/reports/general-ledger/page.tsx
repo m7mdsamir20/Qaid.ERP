@@ -203,45 +203,62 @@ export default function GeneralLedgerPage() {
                 ) : (
                     <>
 
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
-                            {[
-                                { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#3b82f6', icon: <Wallet size={18} /> },
-                                { label: t('إجمالي مدين (+)'), value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={18} /> },
-                                { label: t('إجمالي دائن (-)'), value: fmt(totalCredit), color: '#fb7185', icon: <ArrowDownRight size={18} /> },
-                                { label: t('الرصيد الختامي'), value: fmt(closingBalance), color: tColor, icon: <Activity size={18} /> },
-                            ].map((s, i) => (
-                                <div key={i} style={{
-                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
-                                    padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                    transition: 'all 0.2s', position: 'relative'
-                                }}
-                                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                                    onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-                                >
-                                    <div style={{ textAlign: 'start' }}>
-                                        <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
-                                        </div>
-                                    </div>
-                                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                        {s.icon}
-                                    </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '20px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        {/* ── Metadata Bar ── */}
+                        <div style={{ ...SC, display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <User size={18} />
                                 </div>
-                            ))}
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('الحساب المالي')}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{account?.name || '—'}</p>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Calendar size={18} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('تاريخ التقرير')}</p>
+                                    <p style={{ fontSize: '12px', fontWeight: 700, color: C.textPrimary, margin: 0, fontFamily: INTER }}>{new Date().toLocaleDateString('en-GB')}</p>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <Activity size={18} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('طبيعة الحساب')}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 800, color: tColor, margin: 0 }}>{typeLabels[account?.type || ''] || '—'}</p>
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <ScrollText size={18} />
+                                </div>
+                                <div>
+                                    <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('كود الحساب')}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0, fontFamily: INTER }}>{account?.code || '—'}</p>
+                                </div>
+                            </div>
                         </div>
 
-                        <div className="no-print" style={SEARCH_STYLE.container}>
-                            <div style={SEARCH_STYLE.wrapper}>
+                        {/* Search & Table */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            <div className="no-print" style={SEARCH_STYLE.wrapper}>
                                 <input placeholder={t("البحث السريع في الوصف أو رقم القيد...")} value={search}
                                     onChange={e => setSearch(e.target.value)}
                                     style={SEARCH_STYLE.input} />
                                 <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                             </div>
-                        </div>
 
-                        <div className="print-table-container" style={TABLE_STYLE.container}>
+                            <div className="print-table-container" style={TABLE_STYLE.container}>
+                                <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={STitle}><ScrollText size={14} /> {t('حركات كشف الحساب')}</div>
+                                    <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{filtered.length} {t('حركة')}</div>
+                                </div>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
@@ -360,7 +377,41 @@ export default function GeneralLedgerPage() {
                                 </tfoot>
                             </table>
                         </div>
-                    </>
+                    </div>
+
+                    {/* ── Side Summary ── */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                        <div style={SC}>
+                            <div style={STitle}><Wallet size={14} /> {t('ملخص الأرصدة')}</div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('الرصيد الافتتاحي')}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: INTER, color: '#3b82f6' }}>{fmt(openingBalance)} {getCurrencyName(currency)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي المدين (+)')}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: INTER, color: '#10b981' }}>{fmt(totalDebit)} {getCurrencyName(currency)}</span>
+                                </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
+                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الدائن (-)')}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: INTER, color: '#fb7185' }}>{fmt(totalCredit)} {getCurrencyName(currency)}</span>
+                                </div>
+                                <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', borderRadius: '12px', background: 'rgba(59,130,246,0.08)', border: `1px solid rgba(59,130,246,0.2)` }}>
+                                    <span style={{ fontWeight: 800, fontSize: '12px' }}>{t('الرصيد الختامي')}</span>
+                                    <span style={{ fontWeight: 900, fontSize: '18px', color: tColor, fontFamily: INTER }}>{fmt(closingBalance)} {getCurrencyName(currency)}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style={SC}>
+                            <div style={STitle}><Info size={14} /> {t('معلومات سريعة')}</div>
+                            <div style={{ fontSize: '12px', color: C.textSecondary, lineHeight: 1.6, marginTop: '8px' }}>
+                                {t('هذا التقرير يعرض كافة الحركات المالية المسجلة على هذا الحساب بالتفصيل. يتم احتساب الرصيد الختامي بناءً على الرصيد الافتتاحي ومجموع الحركات.')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 )}
             </div>
             <style>{`
