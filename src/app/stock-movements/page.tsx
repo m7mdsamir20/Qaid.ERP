@@ -56,6 +56,10 @@ export default function StockMovementsPage() {
             case 'out': return { label: t('صادر مبيعات'), icon: <ArrowUpRight size={15} />, bg: 'rgba(248,113,113,0.1)', color: '#f87171', border: 'rgba(248,113,113,0.2)' };
             case 'transfer': return { label: t('تحويل مخزني'), icon: <ArrowRightLeft size={15} />, bg: 'rgba(96,165,250,0.1)', color: '#60a5fa', border: 'rgba(96,165,250,0.2)' };
             case 'adjustment': return { label: t('تسوية الجرد'), icon: <Activity size={15} />, bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: 'rgba(251,191,36,0.2)' };
+            case 'return_in': return { label: t('مرتجع وارد'), icon: <ArrowDownRight size={15} />, bg: 'rgba(52,211,153,0.1)', color: '#34d399', border: 'rgba(52,211,153,0.2)' };
+            case 'return_out': return { label: t('مرتجع صادر'), icon: <ArrowUpRight size={15} />, bg: 'rgba(248,113,113,0.1)', color: '#f87171', border: 'rgba(248,113,113,0.2)' };
+            case 'opening': return { label: t('رصيد افتتاحي'), icon: <Package size={15} />, bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: 'rgba(251,191,36,0.2)' };
+            case 'stocktaking': return { label: t('جرد مخزني'), icon: <Activity size={15} />, bg: 'rgba(167,139,250,0.1)', color: '#a78bfa', border: 'rgba(167,139,250,0.2)' };
             default: return { label: type, icon: <FileText size={15} />, bg: 'rgba(148,163,184,0.1)', color: '#94a3b8', border: 'rgba(148,163,184,0.2)' };
         }
     };
@@ -116,7 +120,7 @@ export default function StockMovementsPage() {
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم تسجيل أي عمليات مخزنية تطابق بحثك.')}</p>
                         </div>
                     ) : (
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
@@ -138,7 +142,7 @@ export default function StockMovementsPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                                 <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>
-                                                    {new Date(m.date).toLocaleString('en-GB', { dateStyle: 'medium', timeStyle: 'short' })}
+                                                    {new Date(m.date).toLocaleDateString('en-GB')} {new Date(m.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{

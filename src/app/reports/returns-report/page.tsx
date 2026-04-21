@@ -78,7 +78,7 @@ export default function ReturnsReportPage() {
                 />
 
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
                         { label: t('إجمالي مرتجع البيع'), value: fmt(stats.totalSaleReturns), color: '#ef4444', icon: <TrendingDown size={20} /> },
                         { label: t('إجمالي مرتجع الشراء'), value: fmt(stats.totalPurchaseReturns), color: '#3b82f6', icon: <TrendingUp size={20} /> },
@@ -150,7 +150,7 @@ export default function ReturnsReportPage() {
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.')}</p>
                         </div>
                     ) : (
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>

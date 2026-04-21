@@ -215,7 +215,7 @@ export default function ItemMovementReportPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                                 <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>
-                                                    {movementDate ? new Date(movementDate).toLocaleString(lang === 'ar' ? 'ar-EG' : 'en-GB') : '—'}
+                                                    {movementDate ? `${new Date(movementDate).toLocaleDateString('en-GB')} ${new Date(movementDate).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}` : '—'}
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{
