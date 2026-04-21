@@ -1,4 +1,5 @@
 import React from 'react';
+import ReportTableSystem from './ReportTableSystem';
 
 // FORCE DYNAMIC: This ensures that ALL report pages (30+) are rendered dynamically 
 // and NOT pre-rendered during the Vercel build. This fixes all "Failed to collect page data" 
@@ -6,6 +7,6 @@ import React from 'react';
 export const dynamic = 'force-dynamic';
 
 export default function ReportsLayout({ children }: { children: React.ReactNode }) {
-    return <>{children}</>;
+    return <ReportTableSystem>{children}</ReportTableSystem>;
 }
 

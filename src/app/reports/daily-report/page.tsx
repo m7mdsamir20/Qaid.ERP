@@ -238,10 +238,10 @@ table{width:100%;border-collapse:collapse}
                     onPrint={handlePrint}
                 />
 
-                <div className="no-print" style={{ ...SEARCH_STYLE.container, marginBottom: '24px' }}>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>{t('التاريخ')}</span>
-                        <div style={{ width: '180px' }}>
+                <div className="no-print mobile-stack" style={{ ...SEARCH_STYLE.container, marginBottom: '24px', alignItems: 'center' }}>
+                    <div className="mobile-stack mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
+                        <span className="mobile-hide" style={{ color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>{t('التاريخ')}</span>
+                        <div className="mobile-full" style={{ width: '180px' }}>
                             <input type="date" value={date} onChange={e => setDate(e.target.value)}
                                 style={{
                                     width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
@@ -252,7 +252,7 @@ table{width:100%;border-collapse:collapse}
                             />
                         </div>
                         {branches.length > 1 && (
-                            <div style={{ width: '180px' }}>
+                            <div className="mobile-full" style={{ width: '180px' }}>
                                 <CustomSelect
                                     value={branchId}
                                     onChange={v => setBranchId(v)}
@@ -265,11 +265,12 @@ table{width:100%;border-collapse:collapse}
                                 />
                             </div>
                         )}
-                        <button onClick={fetchReport} style={{
+                        <button onClick={fetchReport} className="mobile-full" style={{
                             height: '36px', padding: '0 20px', borderRadius: '8px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13px', fontWeight: 700, cursor: 'pointer',
-                            display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO
+                            display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
+                            justifyContent: 'center'
                         }}>
                             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {t('تحديث العرض')}
                         </button>
@@ -284,7 +285,7 @@ table{width:100%;border-collapse:collapse}
                 ) : data && (
                     <>
                         {/* Summary Cards */}
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#3b82f6', icon: <ShoppingCart size={18} /> },
                                 { label: t('إجمالي المقبوضات'), value: fmt(data.receipts), color: '#10b981', icon: <ArrowDownRight size={18} /> },
@@ -308,14 +309,14 @@ table{width:100%;border-collapse:collapse}
                             ))}
                         </div>
 
-                        <div className="report-grid">
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+                        <div className="report-grid responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
+                            <div className="mobile-stack" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 {/* Commercial Analysis Table */}
                                 <div data-print-include className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', padding: '24px' }}>
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('التحليل التجاري التفصيلي')}
                                     </h3>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                    <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                             <tbody>
                                                 <tr>
@@ -356,7 +357,7 @@ table{width:100%;border-collapse:collapse}
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('أرصدة السيولة الحالية (الخزائن والبنوك)')}
                                     </h3>
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                    <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                         {(data?.treasuries || []).map((tArr: any, i: number) => (
                                             <div key={i} style={{ padding: '16px', borderRadius: '10px', border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>

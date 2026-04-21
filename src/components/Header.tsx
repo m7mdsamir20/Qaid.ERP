@@ -8,7 +8,7 @@ import {
     User, Settings, KeyRound, LogOut,
     FileText, Package, Users, Receipt, Loader2,
     Globe, AlertTriangle, GitBranch, Menu,
-    Sun, Moon
+    Sun, Moon, X
 } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
 import { Avatar } from '@/components/UserAvatar';
@@ -78,7 +78,6 @@ function SearchBox() {
                 const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
                 const data = await res.json();
                 if (Array.isArray(data)) {
-                    setResults(data);
                     setOpen(true);
                 }
             } catch (error) {
@@ -111,7 +110,7 @@ function SearchBox() {
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     onFocus={() => results.length && setOpen(true)}
-                    placeholder={t(isServices ? "ابحث عن فاتورة، عميل أو خدمة..." : "ابحث عن فاتورة، عميل أو صنف...")}
+                    placeholder={t(isServices ? "ابحث هنا..." : "ابحث هنا...")}
                     style={{
                         flex: 1, background: 'none', border: 'none', outline: 'none',
                         color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO
@@ -122,6 +121,7 @@ function SearchBox() {
             {open && results.length > 0 && (
                 <div style={{
                     position: 'absolute', top: 'calc(100% + 8px)', insetInlineEnd: 0, width: '100%',
+                    minWidth: '280px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px',
                     boxShadow: '0 20px 40px rgba(0,0,0,0.3)', zIndex: 1000, overflow: 'hidden',
                     animation: 'fadeDown 0.2s ease'
@@ -152,6 +152,24 @@ function SearchBox() {
                     })}
                 </div>
             )}
+        </div>
+    );
+}
+
+function MobileSearch({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) {
+    const { t } = useTranslation();
+    if (!isOpen) return null;
+    return (
+        <div style={{ position: 'fixed', inset: 0, background: C.bg, zIndex: 1002, padding: '20px', animation: 'fadeIn 0.2s' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <button onClick={onClose} style={{ background: C.hover, border: 'none', color: C.textPrimary, width: '40px', height: '40px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <X size={20} />
+                </button>
+                <div style={{ flex: 1 }}>
+                    <SearchBox />
+                </div>
+            </div>
+            <style jsx global>{` .search-box-container { display: block !important; max-width: 100% !important; } `}</style>
         </div>
     );
 }
@@ -212,9 +230,10 @@ function Actions() {
     };
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {/* Language Switcher */}
             <button
+                className="mobile-hide"
                 onClick={() => toggleLang()}
                 style={{
                     height: '36px', padding: '0 12px', borderRadius: '10px',
@@ -320,7 +339,7 @@ function Actions() {
                     onMouseEnter={e => e.currentTarget.style.borderColor = C.primary}
                     onMouseLeave={e => e.currentTarget.style.borderColor = C.border}>
                     <Avatar id={(session?.user as any)?.avatar || 'm1'} size={28} />
-                    <div style={{ textAlign: 'start' }}>
+                    <div className="mobile-hide" style={{ textAlign: 'start' }}>
                         <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, lineHeight: 1 }}>
                             {sessionStatus === 'loading' ? '...' : (session?.user?.name || t('مستخدم'))}
                         </div>
@@ -487,8 +506,9 @@ function BranchSwitcher() {
 }
 
 export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) {
-    const { lang } = useTranslation();
+    const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
+    const [showMobSearch, setShowMobSearch] = useState(false);
 
     return (
         <header className="main-header" style={{
@@ -498,6 +518,8 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
             borderBottom: `1px solid ${C.border}`, display: 'flex',
             alignItems: 'center', padding: '0 24px', transition: 'all 0.3s'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
+
+            <MobileSearch isOpen={showMobSearch} onClose={() => setShowMobSearch(false)} />
 
             {/* Mobile Menu Toggle */}
             <button
@@ -511,6 +533,20 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
                 }}
             >
                 <Menu size={20} />
+            </button>
+
+            {/* Mobile Search Toggle */}
+            <button
+                className="mobile-search-toggle"
+                onClick={() => setShowMobSearch(true)}
+                style={{
+                    width: '38px', height: '38px', borderRadius: '10px',
+                    border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)',
+                    color: C.textPrimary, display: 'none', alignItems: 'center',
+                    justifyContent: 'center', cursor: 'pointer', marginInlineEnd: '8px'
+                }}
+            >
+                <Search size={20} />
             </button>
 
             {/* Branch Switcher - Fixed Position */}
@@ -535,6 +571,8 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
                 }
                 @media (max-width: 1023px) {
                     .search-box-container { display: none; }
+                    .mobile-search-toggle { display: flex !important; }
+                    .main-header { padding: 0 12px !important; }
                 }
             `}</style>
         </header>
