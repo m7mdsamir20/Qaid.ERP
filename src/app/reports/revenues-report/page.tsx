@@ -86,7 +86,7 @@ export default function RevenuesReportPage() {
                     <input type="date" value={to} onChange={e => setTo(e.target.value)}
                         style={{ ...IS, width: '170px', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: INTER, textAlign: 'start', direction: 'ltr' }} />
                     <button onClick={fetchReport}
-                        style={{ height: '42px', padding: '0 24px', borderRadius: '12px', background: SC, color: '#fff', border: 'none', fontSize: '13.5px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(16,185,129,0.25)' }}>
+                        style={{ height: '42px', padding: '0 24px', borderRadius: '12px', background: C.primary, color: '#fff', border: 'none', fontSize: '13.5px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(37,99,235,0.25)' }}>
                         {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                         {t('عرض التقرير')}
                     </button>

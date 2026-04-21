@@ -147,12 +147,15 @@ export default function CashStatementPage() {
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
-                <ReportHeader 
-                    title={t("كشف حركة الخزينة")} 
-                    subtitle={t("بيان تفصيلي بجميع المقبوضات والمدفوعات النقدية مع رصيد تراكمي لحظي.")} 
+                <ReportHeader
+                    title={t("كشف حركة الخزينة")}
+                    subtitle={t("بيان تفصيلي بجميع المقبوضات والمدفوعات النقدية مع رصيد تراكمي لحظي.")}
                     backTab="treasury-bank"
-                    
                     onExportExcel={exportToExcel}
+                    printTitle={t("كشف حركة الخزينة")}
+                    accountName={data?.treasuryName}
+                    printLabel={t('الخزينة:')}
+                    printDate={from || to ? `${from ? `من ${from}` : ''} ${to ? `إلى ${to}` : ''}`.trim() : undefined}
                 />
 
 
@@ -225,7 +228,7 @@ export default function CashStatementPage() {
                 ) : (
                     <>
                         {/* Summary Stats Cards */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('رصيد أول المدة'), value: data.openingBalance, color: '#3b82f6', icon: <History size={20} />, sign: t('منقول من السابق') },
                                 { label: t('إجمالي المقبوضات'), value: totalReceipts, color: SC, icon: <TrendingUp size={20} />, sign: t('وارد للخزينة (+)') },
@@ -252,7 +255,7 @@ export default function CashStatementPage() {
                             ))}
                         </div>
 
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
@@ -318,7 +321,7 @@ export default function CashStatementPage() {
                     div, span, h2, h3, p { color: #000 !important; }
                     th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
                 }
-                input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; cursor: pointer; }
+                input[type="date"]::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
             `}</style>
         </DashboardLayout>
     );
