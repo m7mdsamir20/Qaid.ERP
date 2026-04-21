@@ -179,37 +179,38 @@ export default function NewPurchaseReturnPage() {
     /* ── When invoice selected ── */
     useEffect(() => {
         if (!form.originalInvoiceId) { setLines([]); return; }
-        const inv = purchaseInvoices.find(i => i.id === form.originalInvoiceId);
-        if (!inv) return;
-
-        const invSubtotal = inv.subtotal || inv.lines.reduce((s, l) => s + l.total, 0);
-        const invDiscount = inv.discount || 0;
-
-        setLines(inv.lines.map(l => {
-            const alreadyReturned = l.alreadyReturned || 0;
-            const availableQty = l.quantity - alreadyReturned;
-            const lineDiscountRatio = invSubtotal > 0 ? l.total / invSubtotal : 0;
-            const discountOnLine = invDiscount * lineDiscountRatio;
-            const netPrice = l.quantity > 0 ? (l.total - discountOnLine) / l.quantity : l.price;
-
-            return {
-                itemId: l.itemId,
-                itemCode: l.item.code,
-                itemName: l.item.name,
-                unit: l.item.unit?.name || l.item.unit || '',
-                originalQty: l.quantity,
-                alreadyReturned,
-                availableQty,
-                returnQty: availableQty,
-                price: l.price,
-                originalLineTotal: l.total,
-                discountOnLine,
-                netPrice,
-                returnTotal: availableQty * l.price,
-                selected: availableQty > 0,
-            };
-        }));
-    }, [form.originalInvoiceId, purchaseInvoices]);
+        fetch(`/api/purchases?id=${form.originalInvoiceId}`)
+            .then(r => r.json())
+            .then(inv => {
+                if (!inv || !Array.isArray(inv.lines)) return;
+                const invSubtotal = inv.subtotal || inv.lines.reduce((s: number, l: any) => s + l.total, 0);
+                const invDiscount = inv.discount || 0;
+                setLines(inv.lines.map((l: any) => {
+                    const alreadyReturned = l.alreadyReturned || 0;
+                    const availableQty = l.quantity - alreadyReturned;
+                    const lineDiscountRatio = invSubtotal > 0 ? l.total / invSubtotal : 0;
+                    const discountOnLine = invDiscount * lineDiscountRatio;
+                    const netPrice = l.quantity > 0 ? (l.total - discountOnLine) / l.quantity : l.price;
+                    return {
+                        itemId: l.itemId || l.item?.id,
+                        itemCode: l.item.code,
+                        itemName: l.item.name,
+                        unit: l.item.unit?.name || l.item.unit || '',
+                        originalQty: l.quantity,
+                        alreadyReturned,
+                        availableQty,
+                        returnQty: availableQty,
+                        price: l.price,
+                        originalLineTotal: l.total,
+                        discountOnLine,
+                        netPrice,
+                        returnTotal: availableQty * l.price,
+                        selected: availableQty > 0,
+                    };
+                }));
+            })
+            .catch(() => setLines([]));
+    }, [form.originalInvoiceId]);
 
     const toggleLine = (idx: number) => {
         setLines(prev => prev.map((l, i) => i === idx ? { ...l, selected: !l.selected } : l));
