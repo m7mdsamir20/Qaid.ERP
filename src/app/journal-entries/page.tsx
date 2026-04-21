@@ -3,7 +3,7 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import React, { useEffect, useState } from 'react';
-import { FileText, Plus, X, ChevronRight, CheckCircle2, Clock, ArrowUpRight, ArrowDownRight, Loader2, Search, Trash2, AlertTriangle, Send, Printer } from 'lucide-react';
+import { FileText, Plus, X, ChevronRight, CheckCircle2, Clock, ArrowUpRight, ArrowDownRight, Loader2, Search, Trash2, AlertTriangle, Send, Printer, PlusCircle } from 'lucide-react';
 import { generateReportHTML } from '@/lib/printInvoices';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -216,7 +216,10 @@ export default function JournalEntriesPage() {
 
     return (
         <DashboardLayout>
-            <PageHeader title={t("قيود اليومية العامة")} subtitle={t("إثبات وتوثيق كافة العمليات المالية بالدفاتر")} icon={FileText}
+            <PageHeader 
+                title={view === 'create' ? t("إنشاء قيد يومية جديد") : t("قيود اليومية العامة")} 
+                subtitle={view === 'create' ? t("أدخل تفاصيل الحسابات وتأكد من توازن المدين والدائن") : t("إثبات وتوثيق كافة العمليات المالية بالدفاتر")} 
+                icon={view === 'create' ? PlusCircle : FileText}
                 onBack={view === 'create' ? () => setView('list') : undefined}
                 primaryButton={canCreate && view === 'list' ? { label: t('قيد يومية جديد'), onClick: () => setView('create'), icon: Plus } : undefined} />
 
@@ -394,6 +397,7 @@ export default function JournalEntriesPage() {
                                                             }}
                                                             options={accounts.map(a => ({ value: a.id, label: `${a.code} - ${a.name}` }))}
                                                             placeholder={t("اختر الحساب")}
+                                                            openUp={true}
                                                         />
                                                     </td>
                                                     <td style={{ minWidth: '180px', padding: '0 4px' }}>
@@ -406,6 +410,7 @@ export default function JournalEntriesPage() {
                                                             }}
                                                             options={costCenters.map(cc => ({ value: cc.id, label: cc.name }))}
                                                             placeholder={t("اختياري")}
+                                                            openUp={true}
                                                         />
                                                     </td>
                                                     <td style={{ width: '130px', padding: '0 4px' }}>
