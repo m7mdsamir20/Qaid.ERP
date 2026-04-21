@@ -12,7 +12,11 @@ export const GET = withProtection(async (request, session) => {
         const branchId = searchParams.get('branchId') || activeBranchId;
 
         const where: any = { companyId };
-        if (branchId && branchId !== 'all') where.branchId = branchId;
+        
+        // Only filter by branch if a specific branchId is provided and it's not 'all'
+        if (branchId && branchId !== 'all' && branchId !== 'undefined' && branchId !== 'null') {
+            where.branchId = branchId;
+        }
 
         const employees = await prisma.employee.findMany({
             where,

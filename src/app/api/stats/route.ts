@@ -175,7 +175,9 @@ export const GET = withProtection(async (request, session) => {
         const recentInvoices = [
             ...recentInvoicesRaw,
             ...recentVouchersRaw.map((v: any) => ({
-                id: v.id, invoiceNumber: v.voucherNumber, type: v.type, date: v.date, total: v.amount,
+                id: v.id, invoiceNumber: v.voucherNumber, 
+                type: (v.description?.includes('قسط') || v.description?.includes('Installment')) ? 'installment_receipt' : v.type, 
+                date: v.date, total: v.amount,
                 customer: v.customer, supplier: v.supplier
             })),
             ...recentPlansRaw.map((p: any) => ({

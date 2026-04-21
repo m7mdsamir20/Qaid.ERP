@@ -51,12 +51,18 @@ export default function EmployeesPage() {
 
     const fetchAll = async () => {
         try {
+            setLoading(true);
+            const urlParams = new URLSearchParams(window.location.search);
+            const branchId = urlParams.get('branchId') || 'all';
+            
             const [eRes, dRes] = await Promise.all([
-                fetch('/api/employees'),
+                fetch(`/api/employees?branchId=${branchId}`),
                 fetch('/api/departments')
             ]);
             if (eRes.ok) setEmployees(await eRes.json());
             if (dRes.ok) setDepartments(await dRes.json());
+        } catch (error) {
+            console.error("Failed to fetch employees:", error);
         } finally { setLoading(false); }
     };
 
@@ -68,7 +74,8 @@ export default function EmployeesPage() {
             emp.position?.toLowerCase().includes(searchTerm.toLowerCase());
         
         const matchesDept = selectedDept === 'all' || emp.department?.id === selectedDept;
-        const matchesStatus = selectedStatus === 'all' || emp.status === selectedStatus;
+        const matchesStatus = selectedStatus === 'all' || 
+            (emp.status && emp.status.toLowerCase() === selectedStatus.toLowerCase());
         
         return matchesSearch && matchesDept && matchesStatus;
     });
