@@ -67,10 +67,11 @@ model Company {
   treasuries           Treasury[]
   units                Unit[]
   users                User[]
-  vouchers             Voucher[]
-  quotations           Quotation[]
-  warehouses           Warehouse[]
-  warehouseTransfers   WarehouseTransfer[]
+  vouchers                  Voucher[]
+  quotations                Quotation[]
+  warehouses                Warehouse[]
+  warehouseTransfers        WarehouseTransfer[]
+  reconciliationSnapshots   ReconciliationSnapshot[]
 
 }
 
@@ -554,6 +555,19 @@ model Treasury {
   company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
   branch        Branch?   @relation(fields: [branchId], references: [id])
   vouchers      Voucher[]
+}
+
+model ReconciliationSnapshot {
+  id            String   @id @default(cuid())
+  companyId     String
+  notes         String?
+  items         Json
+  totalSystem   Float    @default(0)
+  totalPhysical Float    @default(0)
+  totalShortage Float    @default(0)
+  totalSurplus  Float    @default(0)
+  createdAt     DateTime @default(now())
+  company       Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
 }
 
 model Invoice {

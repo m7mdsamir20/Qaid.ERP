@@ -200,7 +200,7 @@ function Actions() {
                         id: n.id,
                         title: n.msg,
                         time: new Date(n.createdAt).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
-                        icon: n.type === 'low_stock' ? Package : n.type === 'overdue_payment' ? AlertTriangle : Bell,
+                        icon: n.type === 'low_stock' ? Package : n.type === 'overdue_payment' || n.type === 'aging_debt' ? AlertTriangle : Bell,
                         color: n.priority === 'high' ? C.danger : n.priority === 'medium' ? C.warning : C.primary,
                         read: n.read
                     })));
