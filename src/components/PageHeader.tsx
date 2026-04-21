@@ -96,7 +96,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                     <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
                         <h1 className="page-title" style={{ 
                             fontSize: titleSize || THEME.header.titleSize, 
-                            fontWeight: titleWeight || 800, 
+                            fontWeight: titleWeight || THEME.header.titleWeight || 600, 
                             margin: 0, 
                             color: C.textPrimary, 
                             textAlign: 'start',

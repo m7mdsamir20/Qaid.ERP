@@ -142,7 +142,7 @@ export default function ComprehensiveSettlementPage() {
                 fetch('/api/customers'), fetch('/api/suppliers'), fetch('/api/treasuries'), fetch('/api/debt-settlement'),
             ]);
             const [cData, sData, bData, setData] = await Promise.all([cRes.json(), sRes.json(), bRes.json(), setRes.json()]);
-            
+
             const cc = Array.isArray(cData) ? cData : [];
             const ss = Array.isArray(sData) ? sData : [];
             const tt = Array.isArray(bData) ? bData : []; // All treasuries (Cash + Bank)
@@ -165,10 +165,10 @@ export default function ComprehensiveSettlementPage() {
         if (!form.fromId || !form.toId || !amt) { alert(t('يرجى ملء كافة الحقول الإجبارية')); return; }
         setSubmitting(true);
         try {
-            const res = await fetch('/api/debt-settlement', { 
-                method: 'POST', 
-                headers: { 'Content-Type': 'application/json' }, 
-                body: JSON.stringify({ ...form, amount: amt }) 
+            const res = await fetch('/api/debt-settlement', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...form, amount: amt })
             });
             if (res.ok) {
                 setForm(f => ({ ...f, fromId: '', toId: '', amount: '' }));
@@ -197,10 +197,10 @@ export default function ComprehensiveSettlementPage() {
                 {/* ── Header ── */}
                 <div className="mobile-column" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: THEME.header.mb }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ 
-                            padding: THEME.header.iconPadding, 
-                            borderRadius: '10px', 
-                            background: C.primaryBg, 
+                        <div style={{
+                            padding: THEME.header.iconPadding,
+                            borderRadius: '10px',
+                            background: C.primaryBg,
                             color: C.primary,
                             display: 'flex',
                             alignItems: 'center',
@@ -275,12 +275,12 @@ export default function ComprehensiveSettlementPage() {
                                                 <div>
                                                     <label style={LS}>{t('تاريخ العملية')}</label>
                                                     <div style={{ position: 'relative' }}>
-                                                        <input 
-                                                            type="date" 
-                                                            value={form.date} 
-                                                            onChange={e => setForm(f => ({ ...f, date: e.target.value }))} 
-                                                            style={{ ...IS, paddingInlineEnd: '12px', direction: 'ltr', color: C.textSecondary }} 
-                                                            onFocus={focusIn} onBlur={focusOut} 
+                                                        <input
+                                                            type="date"
+                                                            value={form.date}
+                                                            onChange={e => setForm(f => ({ ...f, date: e.target.value }))}
+                                                            style={{ ...IS, paddingInlineEnd: '12px', direction: 'ltr', color: C.textSecondary }}
+                                                            onFocus={focusIn} onBlur={focusOut}
                                                             className="blue-date-icon"
                                                         />
                                                     </div>
@@ -288,9 +288,9 @@ export default function ComprehensiveSettlementPage() {
                                                 <div>
                                                     <label style={LS}>{t('المبلغ المراد تسويته')}</label>
                                                     <div style={{ position: 'relative' }}>
-                                                        <input 
-                                                            type="text" 
-                                                            value={form.amount} 
+                                                        <input
+                                                            type="text"
+                                                            value={form.amount}
                                                             onChange={e => {
                                                                 const val = e.target.value.replace(/[^0-9.]/g, '');
                                                                 const parts = val.split('.');
@@ -298,9 +298,9 @@ export default function ComprehensiveSettlementPage() {
                                                                 parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                                                 const formatted = parts.join('.');
                                                                 setForm(f => ({ ...f, amount: formatted }));
-                                                            }} 
-                                                            style={{ ...IS, paddingInlineStart: '44px', fontFamily: INTER, fontWeight: 400 }} 
-                                                            onFocus={focusIn} onBlur={focusOut} placeholder="0.00" 
+                                                            }}
+                                                            style={{ ...IS, paddingInlineStart: '44px', fontFamily: INTER, fontWeight: 400 }}
+                                                            onFocus={focusIn} onBlur={focusOut} placeholder="0.00"
                                                         />
                                                         <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{currencySign}</span>
                                                     </div>
@@ -486,7 +486,7 @@ export default function ComprehensiveSettlementPage() {
                                     </tfoot>
                                 </table>
                             </div>
-                            
+
                             {detailsModal.notes && (
                                 <div style={{ marginTop: '18px', padding: '12px', background: 'rgba(255,255,255,0.01)', border: `1px solid ${C.border}`, borderRadius: '8px', display: 'flex', gap: '10px' }}>
                                     <Info size={16} color={C.primary} style={{ flexShrink: 0, marginTop: '2px' }} />
