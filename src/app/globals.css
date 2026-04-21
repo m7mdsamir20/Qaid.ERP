@@ -1144,6 +1144,10 @@ select:-webkit-autofill:focus {
     max-width: 100% !important;
   }
 
+  .mobile-gap-sm {
+    gap: 8px !important;
+  }
+
   img,
   video,
   canvas,
@@ -1184,6 +1188,33 @@ select:-webkit-autofill:focus {
   .table {
     width: max-content !important;
     min-width: 100% !important;
+  }
+
+  /* Sales-like filter behavior across pages using SEARCH_STYLE.container */
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"] > * {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"] [style*="display: flex"][style*="gap: 8px"][style*="align-items: center"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"] [style*="width: 160px"],
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"] [style*="width: 180px"] {
+    width: 100% !important;
+  }
+
+  /* Two-column form + sticky summary layouts -> single flow on mobile */
+  main [style*="display: grid"][style*="grid-template-columns: 1fr minmax(280px, 320px)"] [style*="position: sticky"] {
+    position: static !important;
+    top: auto !important;
   }
 
   table th,
