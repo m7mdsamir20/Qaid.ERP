@@ -91,9 +91,9 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
         const labelTexts = texts.filter((_, i) => i < valueIdx);
         const label = (labelTexts.length ? labelTexts : texts.filter((_, i) => i !== valueIdx)).join(' ');
         const value = valueTexts.join(' ');
-        return `<div style="flex:1;border:1px solid #bbb;border-radius:4px;padding:10px 12px;text-align:center;background:#f8f8f8;">
-          <div style="font-size:10px;color:#555;font-weight:700;margin-bottom:6px;line-height:1.4">${label}</div>
-          <div style="font-size:14px;font-weight:900;color:#000">${value}</div>
+        return `<div style="flex:1;border:1px solid #bbb;border-radius:4px;padding:7px 10px;text-align:center;background:#f8f8f8;">
+          <div style="font-size:8.5px;color:#555;font-weight:700;margin-bottom:4px;line-height:1.3">${label}</div>
+          <div style="font-size:11px;font-weight:900;color:#000">${value}</div>
         </div>`;
       }).filter(Boolean);
       return `<div style="display:flex;gap:8px;margin-bottom:14px">${cardHTMLs.join('')}</div>`;

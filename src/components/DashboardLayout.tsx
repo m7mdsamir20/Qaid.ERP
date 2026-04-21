@@ -128,6 +128,12 @@ export default function DashboardLayout({
                 /* ── Desktop View (Laptop/PC) ── */
                 @media (min-width: 1024px) {
                     .sidebar-wrapper { width: 260px; position: fixed; top: 0; bottom: 0; z-index: 950; }
+                    .sidebar-wrapper > .sidebar {
+                        position: relative !important;
+                        inset: auto !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                    }
                     .ltr-mode .sidebar-wrapper { left: 0; border-right: 1px solid ${C.border}; }
                     .rtl-mode .sidebar-wrapper { right: 0; border-left: 1px solid ${C.border}; }
 
@@ -152,12 +158,24 @@ export default function DashboardLayout({
                         z-index: 1001; 
                         background: ${C.card};
                         margin: 0 !important;
+                        visibility: hidden;
+                        pointer-events: none;
                         box-shadow: ${isRtl ? '-15px 0 45px rgba(0,0,0,0.6)' : '15px 0 45px rgba(0,0,0,0.6)'};
                         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1) !important;
                     }
+                    .sidebar-wrapper > .sidebar {
+                        position: relative !important;
+                        inset: auto !important;
+                        width: 100% !important;
+                        height: 100% !important;
+                    }
                     .ltr-mode .sidebar-wrapper { left: 0; right: auto; transform: translateX(-102%); }
                     .rtl-mode .sidebar-wrapper { right: 0; left: auto; transform: translateX(102%); }
-                    .sidebar-wrapper.open { transform: translateX(0) !important; }
+                    .sidebar-wrapper.open {
+                        transform: translateX(0) !important;
+                        visibility: visible !important;
+                        pointer-events: auto !important;
+                    }
                     
                     .dashboard-content { margin: 0 !important; width: 100% !important; }
                     main { padding: 76px 16px 20px !important; }
