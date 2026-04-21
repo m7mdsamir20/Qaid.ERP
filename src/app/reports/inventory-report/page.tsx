@@ -69,7 +69,7 @@ export default function InventoryReportPage() {
                 />
 
                 {data && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                    <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                         {[
                             { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#3b82f6', icon: <Package size={20} /> },
                             ...(!isServices ? [
@@ -127,7 +127,7 @@ export default function InventoryReportPage() {
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على نتائج تطابق معايير البحث الحالية.')}</p>
                     </div>
                 ) : (
-                    <div style={TABLE_STYLE.container}>
+                    <div className="print-table-container" style={TABLE_STYLE.container}>
                         <div style={{ overflowX: 'auto' }}>
                             <table style={TABLE_STYLE.table}>
                                 <thead>
