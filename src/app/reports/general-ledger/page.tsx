@@ -121,7 +121,7 @@ export default function GeneralLedgerPage() {
                     printDate={fromDate || toDate ? `${fromDate ? t('من: ') + fromDate : ''} ${toDate ? t(' إلى: ') + toDate : ''}`.trim() : undefined}
                 />
 
-                <div className="no-print" style={SEARCH_STYLE.container}>
+                <div className="no-print mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <ScrollText size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
@@ -157,7 +157,7 @@ export default function GeneralLedgerPage() {
                         )}
                     </div>
 
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={fromDate} onChange={e => { setLoading(true); setFromDate(e.target.value); }}
@@ -217,7 +217,7 @@ export default function GeneralLedgerPage() {
                             ))}
                         </div>
 
-                        <div className="no-print" style={SEARCH_STYLE.container}>
+                        <div className="no-print mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                             <div style={SEARCH_STYLE.wrapper}>
                                 <input placeholder={t("البحث السريع في الوصف أو رقم القيد...")} value={search}
                                     onChange={e => setSearch(e.target.value)}
@@ -226,7 +226,7 @@ export default function GeneralLedgerPage() {
                             </div>
                         </div>
 
-                        <div className="print-table-container" style={TABLE_STYLE.container}>
+                        <div className="print-table-container scroll-table" style={TABLE_STYLE.container}>
                             <table style={TABLE_STYLE.table}>
                                 <thead style={{ background: C.subtle }}>
                                     <tr style={TABLE_STYLE.thead}>
@@ -371,4 +371,3 @@ export default function GeneralLedgerPage() {
         </DashboardLayout>
     );
 }
-

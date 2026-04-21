@@ -184,7 +184,7 @@ export default function PurchasePaymentsPage() {
                     } : undefined}
                 />
 
-                <div style={SEARCH_STYLE.container}>
+                <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
@@ -195,7 +195,7 @@ export default function PurchasePaymentsPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
                         <div style={{ width: '160px' }}>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
@@ -208,6 +208,7 @@ export default function PurchasePaymentsPage() {
                     
                     {(searchTerm || dateFrom || dateTo) && (
                         <button 
+                            className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
                             style={{ 
                                 display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
@@ -234,7 +235,7 @@ export default function PurchasePaymentsPage() {
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>لا توجد سندات صرف</p>
                         </div>
                     ) : (
-                        <div style={{ overflowX: 'auto' }}>
+                        <div className="scroll-table">
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>

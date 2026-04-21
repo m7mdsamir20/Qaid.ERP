@@ -96,7 +96,7 @@ export default function InventoryReportPage() {
                     </div>
                 )}
 
-                <div className="no-print" style={SEARCH_STYLE.container}>
+                <div className="no-print mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
@@ -197,3 +197,4 @@ export default function InventoryReportPage() {
         </DashboardLayout>
     );
 }
+

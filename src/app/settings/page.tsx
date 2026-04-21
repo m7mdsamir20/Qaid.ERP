@@ -757,11 +757,12 @@ function SettingsContent() {
                         boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)', position: 'sticky', top: '84px',
                         zIndex: 10
                     }}>
+                        <div className="settings-tabs">
                         {filteredTabs.map(tab => {
                             const Icon = tab.icon;
                             const active = activeTab === tab.id;
                             return (
-                                    <button key={tab.id} onClick={() => {
+                                    <button className="settings-tab-btn" key={tab.id} onClick={() => {
                                         setActiveTab(tab.id);
                                         handleCancel();
                                     }}
@@ -799,6 +800,7 @@ function SettingsContent() {
                                 </button>
                             );
                         })}
+                        </div>
                     </div>
 
                     {/* ── Content ── */}
@@ -939,6 +941,38 @@ function SettingsContent() {
 
                     </div>
                 </div>
+
+                <style jsx global>{`
+                    @media (max-width: 1023px) {
+                        .settings-sidebar {
+                            position: static !important;
+                            top: auto !important;
+                            width: 100% !important;
+                            padding: 6px !important;
+                            border-radius: 14px !important;
+                        }
+                        .settings-tabs {
+                            display: flex !important;
+                            gap: 8px !important;
+                            overflow-x: auto !important;
+                            overflow-y: hidden !important;
+                            padding: 2px;
+                            -webkit-overflow-scrolling: touch;
+                            scrollbar-width: none;
+                        }
+                        .settings-tabs::-webkit-scrollbar {
+                            display: none;
+                        }
+                        .settings-tab-btn {
+                            flex: 0 0 auto !important;
+                            width: auto !important;
+                            min-width: 170px;
+                            margin-bottom: 0 !important;
+                            padding: 10px 12px !important;
+                            border-radius: 10px !important;
+                        }
+                    }
+                `}</style>
 
                 <AppModal
                     show={!!confirmDelete}

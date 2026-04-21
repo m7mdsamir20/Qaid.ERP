@@ -109,7 +109,7 @@ export default function ExpensesPage() {
                 />
 
                 {/* ── Search ── */}
-                <div style={SEARCH_STYLE.container}>
+                <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
@@ -289,3 +289,4 @@ export default function ExpensesPage() {
         </DashboardLayout>
     );
 }
+

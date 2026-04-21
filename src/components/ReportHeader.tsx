@@ -196,8 +196,8 @@ ${includeHTML}
 
   return (
     <div style={{ marginBottom: THEME.header.mb }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: '300px' }}>
+      <div className="report-header-row mobile-column" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+        <div className="report-header-main mobile-full" style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1, minWidth: 0 }}>
           <button
             onClick={handleBack}
             style={{
@@ -216,7 +216,7 @@ ${includeHTML}
             <p className="page-subtitle" style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>{subtitle}</p>
           </div>
         </div>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div className="report-header-actions mobile-full" style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
           {onExportExcel && (
             <button
               onClick={onExportExcel}
@@ -234,6 +234,7 @@ ${includeHTML}
           )}
 
           <button
+            className="report-header-print-btn"
             onClick={onPrint || openCleanPrintWindow}
             style={{
               display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
@@ -249,6 +250,23 @@ ${includeHTML}
           </button>
         </div>
       </div>
+      <style jsx global>{`
+        @media (max-width: 768px) {
+          .report-header-row {
+            gap: 12px !important;
+          }
+          .report-header-main {
+            width: 100% !important;
+          }
+          .report-header-actions {
+            width: 100% !important;
+            justify-content: flex-start !important;
+          }
+          .report-header-actions button {
+            min-height: 40px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }

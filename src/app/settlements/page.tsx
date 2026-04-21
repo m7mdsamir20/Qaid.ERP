@@ -195,7 +195,7 @@ export default function ComprehensiveSettlementPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ fontFamily: CAIRO, paddingBottom: '60px', paddingTop: THEME.header.pt }}>
                 {/* ── Header ── */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: THEME.header.mb }}>
+                <div className="mobile-column" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: THEME.header.mb }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ 
                             padding: THEME.header.iconPadding, 
@@ -215,6 +215,7 @@ export default function ComprehensiveSettlementPage() {
                     </div>
 
                     <button
+                        className="mobile-full"
                         onClick={() => setShowForm(true)}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '6px',
@@ -231,7 +232,7 @@ export default function ComprehensiveSettlementPage() {
                 </div>
 
                 {/* ── Search ── */}
-                <div style={{ position: 'relative', marginBottom: '14px' }}>
+                <div className="mobile-full" style={{ position: 'relative', marginBottom: '14px' }}>
                     <Search size={16} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                     <input
                         placeholder={t("ابحث برقم القيد أو تفاصيل العملية...")}
