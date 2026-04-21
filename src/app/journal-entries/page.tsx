@@ -351,7 +351,7 @@ export default function JournalEntriesPage() {
                 </>
             ) : (
                 <div style={PAGE_BASE}>
-                    <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, background: C.card }}>
+                    <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, background: C.card, overflow: 'visible' }}>
 
                         <div style={{ padding: '24px' }}>
                             <form onSubmit={e => handleSubmit(e)}>
@@ -376,7 +376,7 @@ export default function JournalEntriesPage() {
                                 </div>
 
                                 {/* Lines Editor */}
-                                <div style={{ marginBottom: '24px', overflowX: 'auto' }}>
+                                <div style={{ marginBottom: '24px', overflowX: 'visible' }}>
                                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                                         <thead>
                                             <tr>
