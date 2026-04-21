@@ -217,7 +217,7 @@ export default function JournalEntriesPage() {
     return (
         <DashboardLayout>
             <PageHeader title={t("قيود اليومية العامة")} subtitle={t("إثبات وتوثيق كافة العمليات المالية بالدفاتر")} icon={FileText}
-                backUrl={view === 'create' ? '/journal-entries' : undefined}
+                onBack={view === 'create' ? () => setView('list') : undefined}
                 primaryButton={canCreate && view === 'list' ? { label: t('قيد يومية جديد'), onClick: () => setView('create'), icon: Plus } : undefined} />
 
             {view === 'list' ? (
@@ -466,19 +466,19 @@ export default function JournalEntriesPage() {
                                     <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.success, fontFamily: CAIRO }}>
+                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.success, fontFamily: CAIRO }}>
                                                 {fMoney(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}
                                             </div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.danger, fontFamily: CAIRO }}>
+                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.danger, fontFamily: CAIRO }}>
                                                 {fMoney(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}
                                             </div>
                                         </div>
                                         <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO }}>
+                                            <div style={{ fontSize: '18px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO }}>
                                                 {fMoney(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
                                             </div>
                                         </div>

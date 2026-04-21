@@ -10,6 +10,7 @@ interface PageHeaderProps {
     subtitle?: string;
     icon: LucideIcon;
     backUrl?: string;
+    onBack?: () => void;
     backButton?: {
         label: string;
         onClick: () => void;
@@ -31,6 +32,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
     subtitle, 
     icon: Icon, 
     backUrl,
+    onBack,
     backButton,
     primaryButton,
     actions,
@@ -52,8 +54,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             gap: '16px'
         }}>
             <div className="mobile-full" style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', flex: 1, minWidth: 0 }}>
-                {backUrl && (
-                    <button onClick={() => router.push(backUrl)} 
+                {(backUrl || onBack) && (
+                    <button onClick={() => onBack ? onBack() : router.push(backUrl!)} 
                         style={{ 
                             width: '38px', height: '38px', borderRadius: '12px', background: C.subtle, 
                             border: `1px solid ${C.border}`, color: C.textSecondary, flexShrink: 0,
