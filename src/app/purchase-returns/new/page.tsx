@@ -129,7 +129,8 @@ export default function NewPurchaseReturnPage() {
             const matchSupplier = i.supplier?.id === form.supplierId && form.supplierId;
             const matchCustomer = (i as any).customer?.id === form.customerId && form.customerId;
             if (!matchSupplier && !matchCustomer) return false;
-            return Array.isArray(i.lines) && i.lines.some(l => l.quantity > (l.alreadyReturned || 0));
+            if (!Array.isArray(i.lines)) return true;
+            return i.lines.some(l => l.quantity > (l.alreadyReturned || 0));
         })
         : [];
     const selectedLines = lines.filter(l => l.selected && l.returnQty > 0);
