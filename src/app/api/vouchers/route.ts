@@ -88,6 +88,22 @@ export const POST = withProtection(async (request, session, body) => {
                         where: { id: customerId, companyId },
                         data: { balance: { decrement: parseFloat(amount) } },
                     });
+                    // توزيع الدفعة على فواتير البيع من الأقدم للأحدث
+                    const unpaidSaleInvoices = await tx.invoice.findMany({
+                        where: { companyId, customerId, type: 'sale', remaining: { gt: 0.001 } },
+                        orderBy: { date: 'asc' },
+                        select: { id: true, remaining: true },
+                    });
+                    let leftToSettle = parseFloat(amount);
+                    for (const inv of unpaidSaleInvoices) {
+                        if (leftToSettle <= 0) break;
+                        const toApply = Math.min(leftToSettle, inv.remaining);
+                        await tx.invoice.update({
+                            where: { id: inv.id },
+                            data: { paidAmount: { increment: toApply }, remaining: { decrement: toApply } },
+                        });
+                        leftToSettle -= toApply;
+                    }
                 } else if (supplierId) {
                     // قبض من مورد (إيداع أو مرتجع مالي): ينقص مديونيتنا له (الموجب يقل)
                     await tx.supplier.update({
@@ -109,11 +125,27 @@ export const POST = withProtection(async (request, session, body) => {
                 });
 
                 if (supplierId) {
-                    // صرف لم مورد: نقص حقه عندنا (الموجب)
+                    // صرف لمورد: نقص حقه عندنا (الموجب)
                     await tx.supplier.update({
                         where: { id: supplierId, companyId },
                         data: { balance: { decrement: parseFloat(amount) } },
                     });
+                    // توزيع الدفعة على فواتير الشراء من الأقدم للأحدث
+                    const unpaidPurchaseInvoices = await tx.invoice.findMany({
+                        where: { companyId, supplierId, type: 'purchase', remaining: { gt: 0.001 } },
+                        orderBy: { date: 'asc' },
+                        select: { id: true, remaining: true },
+                    });
+                    let leftToSettle = parseFloat(amount);
+                    for (const inv of unpaidPurchaseInvoices) {
+                        if (leftToSettle <= 0) break;
+                        const toApply = Math.min(leftToSettle, inv.remaining);
+                        await tx.invoice.update({
+                            where: { id: inv.id },
+                            data: { paidAmount: { increment: toApply }, remaining: { decrement: toApply } },
+                        });
+                        leftToSettle -= toApply;
+                    }
                 } else if (customerId) {
                     // صرف لعميل (رد رصيد أو دفعة إضافية): يزيد مديونيته (الموجبة)
                     await tx.customer.update({
