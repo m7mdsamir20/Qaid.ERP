@@ -221,25 +221,21 @@ export default function DashboardLayout({
                     .mobile-column, .mobile-stack { gap: 10px !important; }
                     .mobile-full { width: 100% !important; max-width: 100% !important; }
 
-                    /* Safe global mobile table behavior */
+                    /* Standard global mobile table behavior */
                     .table-container,
                     .scroll-table,
                     .print-table-container,
-                    [class*="table-container"] {
+                    [class*="table-container"],
+                    .table-responsive {
                         overflow-x: auto !important;
                         -webkit-overflow-scrolling: touch !important;
                     }
 
-                    main :is(div, section, article):has(> table) {
-                        overflow-x: auto !important;
-                        -webkit-overflow-scrolling: touch !important;
-                    }
-
-                    main :is(div, section, article):has(> table) > table,
                     .table-container > table,
                     .scroll-table > table,
                     .print-table-container > table,
                     [class*="table-container"] > table,
+                    .table-responsive > table,
                     main table {
                         width: max-content !important;
                         min-width: 100% !important;

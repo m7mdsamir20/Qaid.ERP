@@ -78,6 +78,7 @@ function SearchBox() {
                 const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
                 const data = await res.json();
                 if (Array.isArray(data)) {
+                    setResults(data);
                     setOpen(true);
                 }
             } catch (error) {
@@ -127,7 +128,7 @@ function SearchBox() {
                     animation: 'fadeDown 0.2s ease'
                 }}>
                     {results.map(r => {
-                        const Icon = typeIcon[r.type];
+                        const Icon = typeIcon[r.type] || Receipt;
                         return (
                             <div key={r.id} onClick={() => { router.push(r.href); setOpen(false); }}
                                 style={{
@@ -565,10 +566,6 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
             </div>
 
             <style jsx global>{`
-                @keyframes fadeDown {
-                    from { opacity: 0; transform: translateY(-10px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
                 @media (max-width: 1023px) {
                     .search-box-container { display: none; }
                     .mobile-search-toggle { display: flex !important; }
