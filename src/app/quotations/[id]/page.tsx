@@ -82,7 +82,7 @@ export default function QuotationViewPage() {
                     }}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
 
                     {/* ── Left Column ── */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -135,7 +135,7 @@ export default function QuotationViewPage() {
                         {/* Items Table - Region */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Package size={12} /> {isServices ? t('بنود الخدمة') : t('بنود الأصناف')}</div>
-                            <div style={{ borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+                            <div className="scroll-table" style={{ borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                         <tr>

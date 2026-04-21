@@ -1232,8 +1232,12 @@ select:-webkit-autofill:focus {
     grid-template-columns: 1fr !important;
   }
 
+  [style*="grid-template-columns: repeat(5"],
+  [style*="grid-template-columns: repeat(4"],
   [style*="grid-template-columns: repeat(3"],
   [style*="grid-template-columns: repeat(2"],
+  [style*="grid-template-columns:repeat(5"],
+  [style*="grid-template-columns:repeat(4"],
   [style*="grid-template-columns:repeat(3"],
   [style*="grid-template-columns:repeat(2"] {
     grid-template-columns: 1fr !important;

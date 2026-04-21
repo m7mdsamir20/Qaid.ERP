@@ -233,12 +233,12 @@ export default function NewQuotationPage() {
                     backUrl="/quotations"
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
+                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
                                     <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
@@ -265,7 +265,7 @@ export default function NewQuotationPage() {
                         {/* Items Selection */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 60px', gap: '12px', alignItems: 'flex-end' }}>
+                            <div className="item-entry-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 60px', gap: '12px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ ...LS, fontSize: '11px' }}>{isServices ? t("اسم الخدمة") : t("اسم الصنف")}</label>
                                     <CustomSelect
@@ -316,7 +316,7 @@ export default function NewQuotationPage() {
                                 </button>
                             </div>
 
-                            <div style={{ marginTop: '10px', overflowX: 'auto', borderRadius: '12px', border: `1px solid ${C.border}` }}>
+                            <div className="scroll-table" style={{ marginTop: '10px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>

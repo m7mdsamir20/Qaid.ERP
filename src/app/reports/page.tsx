@@ -9,7 +9,7 @@ import type { LucideIcon } from 'lucide-react';
 import {
     PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity,
     ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers,
-    Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign
+    Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
@@ -138,8 +138,9 @@ function ReportsHubPageInner() {
 
     const hasFeatureAccess = (featureKey: string): boolean => {
         if (isSuperAdmin) return true;
+        if (!featureKey) return false;
         const section = navSections.find(s => s.featureKey === featureKey);
-        if (!section) return false;
+        if (!section || !section.links) return false;
         return section.links.some(l => hasPageAccess(l.id, featureKey));
     };
 
@@ -219,11 +220,11 @@ function ReportsHubPageInner() {
         return targetFeatures.some((fKey: string) => hasFeatureAccess(fKey));
     };
 
+    const searchParams = useSearchParams();
     const visibleTabs = TABS.filter(tab => hasModuleAccess(tab));
 
-    const searchParams = useSearchParams();
     const [activeTab, setActiveTab] = useState<string>(() => {
-        const t = searchParams.get('tab');
+        const t = searchParams ? searchParams.get('tab') : null;
         if (t && REPORTS_DATA[t]) return t;
         if (visibleTabs.length > 0) return visibleTabs[0].key;
         return 'financial';
@@ -233,9 +234,10 @@ function ReportsHubPageInner() {
         const reports = (REPORTS_DATA[groupKey] || []).filter(report => {
             if (isSuperAdmin) return true;
             if (!report.requiredPages || report.requiredPages.length === 0) return true;
-            // استخدام نفس منطق الوصول الجديد لفلترة الكروت
+            
             return report.requiredPages.some(pageId => {
-                const featureKey = navSections.find(s => s.links.some(l => l.id === pageId))?.featureKey;
+                const section = navSections.find(s => s.links && s.links.some(l => l.id === pageId));
+                const featureKey = section?.featureKey;
                 return hasPageAccess(pageId, featureKey);
             });
         });
@@ -364,7 +366,13 @@ function ReportsHubPageInner() {
 
 export default function ReportsHubPage() {
     return (
-        <Suspense>
+        <Suspense fallback={
+            <DashboardLayout>
+                <div style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary }} />
+                </div>
+            </DashboardLayout>
+        }>
             <ReportsHubPageInner />
         </Suspense>
     );
