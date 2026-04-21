@@ -370,7 +370,7 @@ export default function NewReturnPage() {
                     </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     {/* LEFT Column */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
@@ -382,7 +382,7 @@ export default function NewReturnPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '16px' }}>
                                 {/* Row 1 */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '110px 140px 1fr', gap: '20px' }}>
+                                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '110px 140px 1fr', gap: '20px' }}>
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('رقم المرتجع')}</label>
                                         <div style={{
@@ -464,7 +464,7 @@ export default function NewReturnPage() {
                                 </div>
 
                                 {/* Row 2 */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
+                                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px' }}>
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('فاتورة البيع الأصلية')} <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ position: 'relative' }}>
@@ -516,7 +516,7 @@ export default function NewReturnPage() {
                                 <div style={{ fontSize: '13px', fontWeight: 800, color: '#3b82f6', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                     <Info size={16} /> {t('ملخص الفاتورة الأساسية')}
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px' }}>
+                                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px' }}>
                                     {[
                                         { label: 'الإجمالي', value: selectedInvoice.total.toLocaleString(), color: C.textPrimary },
                                         { label: 'الخصم', value: (selectedInvoice.discount || 0).toLocaleString(), color: C.danger },
@@ -541,7 +541,7 @@ export default function NewReturnPage() {
                                     </div>
                                     <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} {t('صنف متاح')}</div>
                                 </div>
-                                <div style={{ overflowX: 'auto' }}>
+                                <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '11px' }}>
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>

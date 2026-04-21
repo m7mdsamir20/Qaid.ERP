@@ -138,7 +138,7 @@ export default function NewPurchasePaymentPage() {
                     backUrl="/purchase-payments"
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: GRID.main, gap: GRID.gap, alignItems: 'start' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: GRID.main, gap: GRID.gap, alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: GRID.verticalGap }}>
                         <div style={SC}>
                             <div style={STitle}>
@@ -147,7 +147,7 @@ export default function NewPurchasePaymentPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 {/* Row 1 */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '110px 140px 1fr', gap: '20px' }}>
+                                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '110px 140px 1fr', gap: '20px' }}>
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>رقم السند</label>
                                         <div style={{
@@ -221,7 +221,7 @@ export default function NewPurchasePaymentPage() {
                                 </div>
 
                                 {/* Row 2 */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', alignItems: 'start' }}>
+                                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px', alignItems: 'start' }}>
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>طريقة الدفع <span style={{ color: C.danger }}>*</span></label>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
