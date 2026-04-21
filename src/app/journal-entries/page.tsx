@@ -352,12 +352,6 @@ export default function JournalEntriesPage() {
             ) : (
                 <div style={PAGE_BASE}>
                     <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, background: C.card }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', borderBottom: `1px solid ${C.border}`, background: C.subtle }}>
-                            <div>
-                                <h2 style={{ margin: 0, fontFamily: CAIRO, fontSize: '18px', fontWeight: 900, color: C.textPrimary }}>{t('إنشاء قيد يومية جديد')}</h2>
-                                <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textMuted }}>{t('أدخل تفاصيل الحسابات وتأكد من توازن المدين والدائن')}</p>
-                            </div>
-                        </div>
 
                         <div style={{ padding: '24px' }}>
                             <form onSubmit={e => handleSubmit(e)}>
