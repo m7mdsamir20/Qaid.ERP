@@ -342,24 +342,154 @@ export default function JournalEntriesPage() {
                     </div>
                 </>
             ) : (
-                /* ── Create View ── */
                 <div style={PAGE_BASE}>
-                    <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.primaryBorder}` }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '20px', borderBottom: `1px solid ${C.border}` }}>
-                            <h2 style={{ margin: 0, fontFamily: CAIRO }}>{t('إنشاء قيد يومية جديد')}</h2>
-                            <div style={{ background: C.inputBg, border: `1px solid ${C.border}`, padding: '4px 12px', borderRadius: '8px' }}>
-                                <span style={{ fontSize: '11px', color: C.textMuted }}>{t('رقم القيد')}:</span>
-                                <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary, marginInlineStart: '8px' }}>{nextNumber}</span>
+                    <div style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, background: C.card }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px', borderBottom: `1px solid ${C.border}`, background: C.subtle }}>
+                            <div>
+                                <h2 style={{ margin: 0, fontFamily: CAIRO, fontSize: '18px', fontWeight: 900, color: C.textPrimary }}>{t('إنشاء قيد يومية جديد')}</h2>
+                                <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textMuted }}>{t('أدخل تفاصيل الحسابات وتأكد من توازن المدين والدائن')}</p>
+                            </div>
+                            <div style={{ background: C.card, border: `2px solid ${C.primary}30`, padding: '8px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800 }}>{t('رقم القيد')}:</span>
+                                <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary, fontSize: '16px' }}>{nextNumber}</span>
                             </div>
                         </div>
-                        <div style={{ padding: '20px' }}>
+
+                        <div style={{ padding: '24px' }}>
                             <form onSubmit={e => handleSubmit(e)}>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', marginBottom: '20px' }}>
-                                    <div><label style={LS}>{t('التاريخ')}</label><input type="date" required value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={IS} /></div>
-                                    <div><label style={LS}>{t('البيان العام')}</label><input required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} style={IS} /></div>
+                                {/* Basic Info */}
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', marginBottom: '24px' }}>
+                                    <div><label style={LS}>{t('التاريخ')}</label><input type="date" required value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr' }} /></div>
+                                    <div><label style={LS}>{t('البيان العام / الوصف')}</label><input required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder={t("شرح مختصر للقيد...")} style={IS} /></div>
                                 </div>
-                                <button type="submit" disabled={submitting} style={{ ...BTN_PRIMARY, width: '100%', height: '44px' }}>{t('حفظ القيد')}</button>
-                                <button type="button" onClick={() => setView('list')} style={{ background: 'none', border: 'none', color: C.textMuted, width: '100%', marginTop: '10px', cursor: 'pointer' }}>{t('إلغاء')}</button>
+
+                                {/* Lines Editor */}
+                                <div style={{ marginBottom: '24px', overflowX: 'auto' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
+                                        <thead>
+                                            <tr>
+                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0 }}>{t('الحساب المحاسبي')}</th>
+                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0 }}>{t('مركز التكلفة')}</th>
+                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0, textAlign: 'center' }}>{t('مدين')}</th>
+                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0, textAlign: 'center' }}>{t('دائن')}</th>
+                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0 }}>{t('البيان')}</th>
+                                                <th style={{ width: '40px' }}></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {form.lines.map((ln, idx) => (
+                                                <tr key={idx}>
+                                                    <td style={{ minWidth: '220px', padding: '0 4px' }}>
+                                                        <CustomSelect 
+                                                            value={ln.accountId} 
+                                                            onChange={v => {
+                                                                const newLines = [...form.lines];
+                                                                newLines[idx].accountId = v;
+                                                                setForm({ ...form, lines: newLines });
+                                                            }}
+                                                            options={accounts.map(a => ({ value: a.id, label: `${a.code} - ${a.name}` }))}
+                                                            placeholder={t("اختر الحساب")}
+                                                        />
+                                                    </td>
+                                                    <td style={{ minWidth: '160px', padding: '0 4px' }}>
+                                                        <CustomSelect 
+                                                            value={ln.costCenterId || ''} 
+                                                            onChange={v => {
+                                                                const newLines = [...form.lines];
+                                                                newLines[idx].costCenterId = v;
+                                                                setForm({ ...form, lines: newLines });
+                                                            }}
+                                                            options={costCenters.map(cc => ({ value: cc.id, label: cc.name }))}
+                                                            placeholder={t("اختياري")}
+                                                        />
+                                                    </td>
+                                                    <td style={{ width: '120px', padding: '0 4px' }}>
+                                                        <input type="number" step="0.01" value={ln.debit || ''} 
+                                                            onChange={e => {
+                                                                const val = parseFloat(e.target.value) || 0;
+                                                                const newLines = [...form.lines];
+                                                                newLines[idx].debit = val;
+                                                                if (val > 0) newLines[idx].credit = 0; // Prevent both having value
+                                                                setForm({ ...form, lines: newLines });
+                                                            }}
+                                                            style={{ ...IS, textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.success }} 
+                                                        />
+                                                    </td>
+                                                    <td style={{ width: '120px', padding: '0 4px' }}>
+                                                        <input type="number" step="0.01" value={ln.credit || ''} 
+                                                            onChange={e => {
+                                                                const val = parseFloat(e.target.value) || 0;
+                                                                const newLines = [...form.lines];
+                                                                newLines[idx].credit = val;
+                                                                if (val > 0) newLines[idx].debit = 0; // Prevent both having value
+                                                                setForm({ ...form, lines: newLines });
+                                                            }}
+                                                            style={{ ...IS, textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.danger }} 
+                                                        />
+                                                    </td>
+                                                    <td style={{ padding: '0 4px' }}>
+                                                        <input value={ln.description || ''} 
+                                                            onChange={e => {
+                                                                const newLines = [...form.lines];
+                                                                newLines[idx].description = e.target.value;
+                                                                setForm({ ...form, lines: newLines });
+                                                            }}
+                                                            placeholder={t("وصف الحركة...")} style={IS} 
+                                                        />
+                                                    </td>
+                                                    <td style={{ padding: '0 4px' }}>
+                                                        {form.lines.length > 2 && (
+                                                            <button type="button" onClick={() => {
+                                                                const newLines = form.lines.filter((_, i) => i !== idx);
+                                                                setForm({ ...form, lines: newLines });
+                                                            }} style={{ ...TABLE_STYLE.actionBtn(C.danger), border: 'none', background: 'rgba(239,68,68,0.1)' }}><X size={16} /></button>
+                                                        )}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <button type="button" onClick={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })}
+                                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: C.subtle, border: `1px dashed ${C.border}`, color: C.textPrimary, fontSize: '13px', fontWeight: 800, cursor: 'pointer', marginBottom: '24px' }}>
+                                    <Plus size={16} /> {t('إضافة حطوة جديدة')}
+                                </button>
+
+                                {/* Totals & Actions */}
+                                <div style={{ background: C.subtle, borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <div style={{ display: 'flex', gap: '40px' }}>
+                                        <div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px' }}>{t('إجمالي المدين')}</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.success, fontFamily: INTER }}>{fMoney(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}</div>
+                                        </div>
+                                        <div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px' }}>{t('إجمالي الدائن')}</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fMoney(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}</div>
+                                        </div>
+                                        <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px' }}>{t('الفارق (التوازن)')}</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: INTER }}>
+                                                {fMoney(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: 'flex', gap: '12px' }}>
+                                        <button type="button" onClick={() => setView('list')} style={{ height: '48px', padding: '0 24px', borderRadius: '12px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>{t('إلغاء')}</button>
+                                        <button type="submit" disabled={submitting} 
+                                            style={{ ...BTN_PRIMARY(submitting, false), width: '200px', height: '48px', boxShadow: '0 10px 20px -5px rgba(37,106,244,0.3)' }}>
+                                            {submitting ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
+                                            {t('حفظ القيد')}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {formError && (
+                                    <div style={{ marginTop: '16px', padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', color: C.danger, fontSize: '13px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                        <AlertTriangle size={16} /> {formError}
+                                    </div>
+                                )}
                             </form>
                         </div>
                     </div>

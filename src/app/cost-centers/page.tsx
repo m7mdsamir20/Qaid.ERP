@@ -269,7 +269,7 @@ export default function CostCentersPage() {
                         <div>
                             <label style={LS}>{t('رمز المركز')}</label>
                             <input readOnly value={form.code}
-                                style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.02)', color: '#64748b', cursor: 'not-allowed', borderColor: 'rgba(255,255,255,0.04)' }} />
+                                style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: 'monospace', fontWeight: 700, background: 'rgba(255,255,255,0.02)', color: C.textMuted, cursor: 'not-allowed', borderColor: C.border }} />
                         </div>
                         <div>
                             <label style={LS}>{t('اسم المركز')} <span style={{ color: '#f87171' }}>*</span></label>
