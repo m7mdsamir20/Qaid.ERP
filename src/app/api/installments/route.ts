@@ -281,7 +281,7 @@ export const POST = withProtection(async (request, session, body) => {
                                     date:        new Date(),
                                     quantity:    deduct,
                                     notes:       `بيع بالتقسيط - خطة #${planNumber}`,
-                                    reference:   plan.id,
+                                    reference:   `INST-${planNumber}`,
                                     companyId,
                                   },
                             });
@@ -456,7 +456,7 @@ export const DELETE = withProtection(async (request, session) => {
                         type: 'in', date: new Date(),
                         itemId: mv.itemId, warehouseId: mv.warehouseId,
                         quantity: mv.quantity,
-                        reference: id,
+                        reference: `INST-${plan.planNumber}`,
                         notes: `عكس بيع تقسيط - حذف خطة #${plan.planNumber}`,
                         companyId,
                     }
