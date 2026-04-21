@@ -478,7 +478,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Charts & Alerts ── */}
-        <div className="charts-alerts-row" style={{
+        <div className="charts-alerts-row responsive-grid" style={{
           display: 'grid',
           gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (hasPage('/warehouses', 'inventory') || hasPage('/items', 'inventory') || hasPage('/customers', 'sales')) ? '2fr 1fr' : '1fr',
           gap: '18px',
@@ -562,7 +562,7 @@ export default function DashboardPage() {
         </div>
 
         {/* ── Recent Data Row ── */}
-        <div className="recent-data-row" style={{
+        <div className="recent-data-row responsive-grid" style={{
           display: 'grid',
           gridTemplateColumns: (hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && hasPage('/customers', 'sales') ? '1.6fr 1fr' : '1fr',
           gap: '18px'
@@ -651,19 +651,13 @@ export default function DashboardPage() {
 
         </div>
 
-        <style>{`
+        <style jsx>{`
           @keyframes fadeUp {
             from { opacity: 0; transform: translateY(15px); }
             to   { opacity: 1; transform: translateY(0); }
           }
-          * { box-sizing: border-box; }
-          ::-webkit-scrollbar { width: 6px; }
-          ::-webkit-scrollbar-track { background: transparent; }
-          ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
-
           @media (max-width: 1023px) {
             .dashboard-page-header { flex-direction: column; align-items: flex-start !important; gap: 15px !important; }
-            .charts-alerts-row, .recent-data-row { grid-template-columns: 1fr !important; }
             .hide-mobile { display: none !important; }
           }
         `}</style>

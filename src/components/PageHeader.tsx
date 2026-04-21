@@ -48,9 +48,10 @@ const PageHeader: React.FC<PageHeaderProps> = ({
             display: 'flex', 
             justifyContent: 'space-between', 
             alignItems: 'center', 
-            marginBottom: THEME.header.mb 
+            marginBottom: THEME.header.mb,
+            gap: '16px'
         }}>
-            <div className="mobile-gap-sm" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="mobile-full" style={{ display: 'flex', alignItems: 'flex-start', gap: '12px', flex: 1, minWidth: 0 }}>
                 {backUrl && (
                     <button onClick={() => router.push(backUrl)} 
                         style={{ 
@@ -78,40 +79,43 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                     </button>
                 )}
                 <div style={{ 
-                    padding: THEME.header.iconPadding, 
-                    borderRadius: '8px', flexShrink: 0,
+                    padding: '8px',
+                    borderRadius: '10px', flexShrink: 0,
                     background: C.primaryBg, 
                     color: C.primary,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    marginTop: '2px'
                 }}>
-                    <Icon size={THEME.header.iconSize} />
+                    <Icon size={20} />
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                        <h1 style={{ 
+                    <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                        <h1 className="page-title" style={{ 
                             fontSize: titleSize || THEME.header.titleSize, 
-                            fontWeight: titleWeight || 600, 
+                            fontWeight: titleWeight || 800, 
                             margin: 0, 
                             color: C.textPrimary, 
                             textAlign: 'start',
                             fontFamily: CAIRO,
-                            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                            lineHeight: 1.2,
+                            whiteSpace: 'break-spaces'
                         }}>
                             {title}
                         </h1>
                         {children}
                     </div>
                     {subtitle && (
-                        <p style={{ 
+                        <p className="page-subtitle" style={{ 
                             fontSize: THEME.header.subSize, 
                             color: C.textMuted, 
-                            margin: '2px 0 0', 
+                            margin: '4px 0 0', 
                             fontWeight: 400, 
                             textAlign: 'start',
                             fontFamily: CAIRO,
-                            whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
+                            whiteSpace: 'break-spaces',
+                            lineHeight: 1.4
                         }}>
                             {subtitle}
                         </p>
@@ -119,7 +123,7 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                 </div>
             </div>
 
-            <div className="mobile-column" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div className="mobile-stack" style={{ display: 'flex', alignItems: 'center', gap: '12px', width: 'auto' }}>
                 {leftContent}
                 
                 {actions && actions.map((action, i) => (
@@ -134,14 +138,14 @@ const PageHeader: React.FC<PageHeaderProps> = ({
                             display: 'flex', 
                             alignItems: 'center', 
                             justifyContent: 'center',
-                            gap: '6px',
-                            height: THEME.button.height, 
+                            gap: '8px',
+                            height: '42px', 
                             padding: '0 24px', 
-                            borderRadius: THEME.button.radius,
+                            borderRadius: '12px',
                             background: C.primary, 
                             color: '#fff', 
                             border: 'none',
-                            fontSize: THEME.button.fontSize, 
+                            fontSize: '14px', 
                             fontWeight: 700, 
                             cursor: 'pointer',
                             transition: 'all 0.15s',

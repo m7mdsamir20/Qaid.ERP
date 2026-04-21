@@ -205,12 +205,12 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                     }}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: '20px' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '20px' }}>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
                         {/* ── Metadata Icons ── */}
-                        <div style={{ ...SC, display: 'grid', gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: '15px' }}>
+                        <div className="stats-grid" style={{ ...SC, display: 'grid', gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: '15px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                 <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <User size={18} />
@@ -260,55 +260,57 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 <div style={STitle}><Package size={14} /> {t('بنود الفاتورة')}</div>
                                 <div style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary }}>{invoice.lines.length} {t('عناصر')}</div>
                             </div>
-                            <table style={TABLE_STYLE.table}>
-                                <thead>
-                                    <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                        {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
-                                        <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {(invoice.taxRate || 0) > 0 ? (
-                                            <>
-                                                <th style={TABLE_STYLE.th(false)}>{t('نسبة الضريبة')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('قيمة الضريبة')}</th>
-                                            </>
-                                        ) : null}
-                                        <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {invoice.lines.map((l, idx) => (
-                                        <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
-                                                <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
-                                                {l.description
-                                                    ? <div style={{ fontSize: '12px', color: C.textMuted, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>
-                                                    : <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, opacity: 0.5 }}>{l.item.code}</div>
-                                                }
-                                            </td>
-                                            {!isServices && (
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
-                                            )}
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                            {(() => {
-                                                const invTaxRate = invoice.taxRate || 0;
-                                                const lineTaxRate = l.taxRate || invTaxRate;
-                                                const lineBase = l.quantity * l.price;
-                                                const lineTaxAmt = l.taxAmount || (lineTaxRate > 0 ? parseFloat((lineBase * lineTaxRate / 100).toFixed(2)) : 0);
-                                                if (invTaxRate > 0) return (
-                                                    <>
-                                                        <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{lineTaxRate}%</td>
-                                                        <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>{lineTaxAmt.toLocaleString()}</td>
-                                                    </>
-                                                );
-                                                return null;
-                                            })()}
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                            <div className="scroll-table">
+                                <table style={TABLE_STYLE.table}>
+                                    <thead>
+                                        <tr style={TABLE_STYLE.thead}>
+                                            <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
+                                            <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                            {(invoice.taxRate || 0) > 0 ? (
+                                                <>
+                                                    <th style={TABLE_STYLE.th(false)}>{t('نسبة الضريبة')}</th>
+                                                    <th style={TABLE_STYLE.th(false)}>{t('قيمة الضريبة')}</th>
+                                                </>
+                                            ) : null}
+                                            <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
                                         </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        {invoice.lines.map((l, idx) => (
+                                            <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
+                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
+                                                    <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
+                                                    {l.description
+                                                        ? <div style={{ fontSize: '12px', color: C.textMuted, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>
+                                                        : <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, opacity: 0.5 }}>{l.item.code}</div>
+                                                    }
+                                                </td>
+                                                {!isServices && (
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
+                                                )}
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                                {(() => {
+                                                    const invTaxRate = invoice.taxRate || 0;
+                                                    const lineTaxRate = l.taxRate || invTaxRate;
+                                                    const lineBase = l.quantity * l.price;
+                                                    const lineTaxAmt = l.taxAmount || (lineTaxRate > 0 ? parseFloat((lineBase * lineTaxRate / 100).toFixed(2)) : 0);
+                                                    if (invTaxRate > 0) return (
+                                                        <>
+                                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{lineTaxRate}%</td>
+                                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>{lineTaxAmt.toLocaleString()}</td>
+                                                        </>
+                                                    );
+                                                    return null;
+                                                })()}
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
 
                         {invoice.notes && (
@@ -324,7 +326,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <div style={{ ...STitle, color: C.danger }}><RotateCcw size={14} /> {t('مرتجعات هذه الفاتورة')}</div>
                                     <div style={{ fontSize: '12px', fontWeight: 700, color: C.danger }}>{invoice.returnInvoices.length} {t('مرتجع')}</div>
                                 </div>
-                                <table style={TABLE_STYLE.table}>
+                                <div className="scroll-table">
+                                    <table style={TABLE_STYLE.table}>
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
                                             <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
@@ -349,7 +352,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             </tr>
                                         ))}
                                     </tbody>
-                                </table>
+                                    </table>
+                                </div>
                             </div>
                         )}
                     </div>

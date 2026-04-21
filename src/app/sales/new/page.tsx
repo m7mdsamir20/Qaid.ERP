@@ -562,7 +562,7 @@ function NewSalePageInner() {
                     </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
 
                     {/* ══ Left: Main Content ══ */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -570,8 +570,8 @@ function NewSalePageInner() {
                         {/* Basic Data */}
                         <div style={SC}>
                             <div style={{ ...STitle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: isServices ? '100px 1.8fr 140px 140px' : '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
-                                <div>
+                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: isServices ? '100px 1.8fr 140px 140px' : '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
+                                <div className="mobile-hide">
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الفاتورة')}</label>
                                     </div>
@@ -767,8 +767,8 @@ function NewSalePageInner() {
                             )}
 
                             {/* Lines Table */}
-                            <div className="table-container">
-                                <table className="table">
+                            <div className="scroll-table" style={{ marginTop: '10px' }}>
+                                <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (

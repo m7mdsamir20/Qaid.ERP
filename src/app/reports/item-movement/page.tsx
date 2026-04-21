@@ -188,9 +188,29 @@ export default function ItemMovementReportPage() {
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء اختيار صنف من القائمة أعلاه لعرض السجل التفصيلي لحركاته.')}</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
+                    <>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            {[
+                                { label: t('الرصيد الكلي المتوفر'), value: itemDetails.totalStock.toLocaleString('en-US'), unit: t(itemDetails.unit), color: '#10b981', icon: <Package size={20} /> },
+                                { label: t('إجمالي الحركات'), value: movements.length.toLocaleString('en-US'), unit: t('حركة'), color: C.primary, icon: <Activity size={20} /> },
+                                { label: t('إجمالي الوارد'), value: movements.filter(m => Number(m.quantity) > 0).reduce((s, m) => s + Math.abs(Number(m.quantity)), 0).toLocaleString('en-US'), unit: t(itemDetails.unit), color: '#10b981', icon: <Activity size={20} /> },
+                                { label: t('إجمالي الصادر'), value: movements.filter(m => Number(m.quantity) < 0).reduce((s, m) => s + Math.abs(Number(m.quantity)), 0).toLocaleString('en-US'), unit: t(itemDetails.unit), color: '#ef4444', icon: <Activity size={20} /> },
+                            ].map((s, i) => (
+                                <div key={i} style={{ background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px', padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <div>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <span style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{s.unit}</span>
+                                        </div>
+                                    </div>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>{s.icon}</div>
+                                </div>
+                            ))}
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
-                            <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                            <div className="no-print" style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
                                 <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
                                 <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الحركات:')} <span style={{ color: C.primary, fontFamily: INTER }}>{movements.length}</span></div>
                             </div>
@@ -276,6 +296,7 @@ export default function ItemMovementReportPage() {
                             </div>
                         </div>
                     </div>
+                    </>
                 )}
             </div>
             <style>{`
