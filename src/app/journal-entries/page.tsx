@@ -217,6 +217,7 @@ export default function JournalEntriesPage() {
     return (
         <DashboardLayout>
             <PageHeader title={t("قيود اليومية العامة")} subtitle={t("إثبات وتوثيق كافة العمليات المالية بالدفاتر")} icon={FileText}
+                backButton={view === 'create' ? { label: t('رجوع'), onClick: () => setView('list') } : undefined}
                 primaryButton={canCreate && view === 'list' ? { label: t('قيد يومية جديد'), onClick: () => setView('create'), icon: Plus } : undefined} />
 
             {view === 'list' ? (
@@ -311,20 +312,24 @@ export default function JournalEntriesPage() {
                                                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                                                 <thead style={{ background: C.subtle }}>
                                                                     <tr>
-                                                                        <th style={{ padding: '12px', textAlign: 'start' }}>{t('الحساب')}</th>
-                                                                        <th style={{ padding: '12px', textAlign: 'center' }}>{t('مدين')}</th>
-                                                                        <th style={{ padding: '12px', textAlign: 'center' }}>{t('دائن')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('الحساب')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('مركز التكلفة')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'center', fontFamily: CAIRO, fontSize: '11px' }}>{t('مدين')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'center', fontFamily: CAIRO, fontSize: '11px' }}>{t('دائن')}</th>
+                                                                        <th style={{ padding: '12px', textAlign: 'start', fontFamily: CAIRO, fontSize: '11px' }}>{t('البيان')}</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>
                                                                     {entry.lines.map((line, lidx) => (
                                                                         <tr key={lidx} style={{ borderBottom: `1px solid ${C.border}` }}>
                                                                             <td style={{ padding: '10px 12px' }}>
-                                                                                <div style={{ fontWeight: 700 }}>{line.account.name}</div>
-                                                                                <div style={{ fontSize: '10px', color: C.primary }}>{line.account.code}</div>
+                                                                                <div style={{ fontWeight: 700, fontSize: '13px' }}>{line.account.name}</div>
+                                                                                <div style={{ fontSize: '10px', color: C.primary, fontFamily: INTER }}>{line.account.code}</div>
                                                                             </td>
-                                                                            <td style={{ textAlign: 'center', fontWeight: 900, color: C.success }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
-                                                                            <td style={{ textAlign: 'center', fontWeight: 900, color: C.danger }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
+                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary }}>{line.costCenter?.name || '—'}</td>
+                                                                            <td style={{ textAlign: 'center', fontWeight: 900, color: C.success, fontFamily: INTER }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
+                                                                            <td style={{ textAlign: 'center', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
+                                                                            <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textMuted }}>{line.description || '—'}</td>
                                                                         </tr>
                                                                     ))}
                                                                 </tbody>
@@ -368,18 +373,18 @@ export default function JournalEntriesPage() {
                                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                                         <thead>
                                             <tr>
-                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0 }}>{t('الحساب المحاسبي')}</th>
-                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0 }}>{t('مركز التكلفة')}</th>
-                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0, textAlign: 'center' }}>{t('مدين')}</th>
-                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0, textAlign: 'center' }}>{t('دائن')}</th>
-                                                <th style={{ ...LS, padding: '0 8px', marginBottom: 0 }}>{t('البيان')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px', textAlign: 'start', fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px', textAlign: 'start', fontFamily: CAIRO }}>{t('مركز التكلفة')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px', textAlign: 'center', fontFamily: CAIRO }}>{t('مدين')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px', textAlign: 'center', fontFamily: CAIRO }}>{t('دائن')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px', textAlign: 'start', fontFamily: CAIRO }}>{t('البيان')}</th>
                                                 <th style={{ width: '40px' }}></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {form.lines.map((ln, idx) => (
                                                 <tr key={idx}>
-                                                    <td style={{ minWidth: '220px', padding: '0 4px' }}>
+                                                    <td style={{ minWidth: '240px', padding: '0 4px' }}>
                                                         <CustomSelect 
                                                             value={ln.accountId} 
                                                             onChange={v => {
@@ -391,7 +396,7 @@ export default function JournalEntriesPage() {
                                                             placeholder={t("اختر الحساب")}
                                                         />
                                                     </td>
-                                                    <td style={{ minWidth: '160px', padding: '0 4px' }}>
+                                                    <td style={{ minWidth: '180px', padding: '0 4px' }}>
                                                         <CustomSelect 
                                                             value={ln.costCenterId || ''} 
                                                             onChange={v => {
@@ -403,28 +408,28 @@ export default function JournalEntriesPage() {
                                                             placeholder={t("اختياري")}
                                                         />
                                                     </td>
-                                                    <td style={{ width: '120px', padding: '0 4px' }}>
+                                                    <td style={{ width: '130px', padding: '0 4px' }}>
                                                         <input type="number" step="0.01" value={ln.debit || ''} 
                                                             onChange={e => {
                                                                 const val = parseFloat(e.target.value) || 0;
                                                                 const newLines = [...form.lines];
                                                                 newLines[idx].debit = val;
-                                                                if (val > 0) newLines[idx].credit = 0; // Prevent both having value
+                                                                if (val > 0) newLines[idx].credit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.success }} 
+                                                            style={{ ...IS, textAlign: 'center', fontFamily: CAIRO, fontWeight: 800, color: C.success }} 
                                                         />
                                                     </td>
-                                                    <td style={{ width: '120px', padding: '0 4px' }}>
+                                                    <td style={{ width: '130px', padding: '0 4px' }}>
                                                         <input type="number" step="0.01" value={ln.credit || ''} 
                                                             onChange={e => {
                                                                 const val = parseFloat(e.target.value) || 0;
                                                                 const newLines = [...form.lines];
                                                                 newLines[idx].credit = val;
-                                                                if (val > 0) newLines[idx].debit = 0; // Prevent both having value
+                                                                if (val > 0) newLines[idx].debit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.danger }} 
+                                                            style={{ ...IS, textAlign: 'center', fontFamily: CAIRO, fontWeight: 800, color: C.danger }} 
                                                         />
                                                     </td>
                                                     <td style={{ padding: '0 4px' }}>
@@ -434,7 +439,7 @@ export default function JournalEntriesPage() {
                                                                 newLines[idx].description = e.target.value;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            placeholder={t("وصف الحركة...")} style={IS} 
+                                                            placeholder={t("وصف الحركة...")} style={{ ...IS, fontFamily: CAIRO }} 
                                                         />
                                                     </td>
                                                     <td style={{ padding: '0 4px' }}>
@@ -452,25 +457,32 @@ export default function JournalEntriesPage() {
                                 </div>
 
                                 <button type="button" onClick={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })}
-                                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: C.subtle, border: `1px dashed ${C.border}`, color: C.textPrimary, fontSize: '13px', fontWeight: 800, cursor: 'pointer', marginBottom: '24px' }}>
+                                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: C.subtle, border: `1px dashed ${C.border}`, color: C.textPrimary, fontSize: '13px', fontWeight: 800, cursor: 'pointer', marginBottom: '24px', fontFamily: CAIRO }}>
                                     <Plus size={16} /> {t('إضافة حطوة جديدة')}
                                 </button>
 
                                 {/* Totals & Actions */}
-                                <div style={{ background: C.subtle, borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', gap: '40px' }}>
+                                <div style={{ background: C.subtle, borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+                                    <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
                                         <div>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px' }}>{t('إجمالي المدين')}</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.success, fontFamily: INTER }}>{fMoney(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}</div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.success, fontFamily: CAIRO }}>
+                                                {fMoney(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}
+                                                <span style={{ fontSize: '12px', marginInlineStart: '5px', opacity: 0.7 }}>{currencySymbol}</span>
+                                            </div>
                                         </div>
                                         <div>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px' }}>{t('إجمالي الدائن')}</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{fMoney(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}</div>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.danger, fontFamily: CAIRO }}>
+                                                {fMoney(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}
+                                                <span style={{ fontSize: '12px', marginInlineStart: '5px', opacity: 0.7 }}>{currencySymbol}</span>
+                                            </div>
                                         </div>
                                         <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px' }}>{t('الفارق (التوازن)')}</div>
-                                            <div style={{ fontSize: '20px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: INTER }}>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
+                                            <div style={{ fontSize: '20px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO }}>
                                                 {fMoney(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
+                                                <span style={{ fontSize: '12px', marginInlineStart: '5px', opacity: 0.7 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                     </div>
