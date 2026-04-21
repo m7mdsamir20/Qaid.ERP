@@ -30,9 +30,10 @@ export const GET = withProtection(async (request, session) => {
 
         const invoices = await prisma.invoice.findMany({
             where,
-            include: { 
-                supplier: { select: { name: true } }, 
-                lines: { include: { item: { select: { name: true } } } } 
+            include: {
+                supplier: { select: { name: true } },
+                customer: { select: { name: true } },
+                lines: { include: { item: { select: { name: true } } } }
             },
             orderBy: { date: 'desc' },
         });
