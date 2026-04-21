@@ -59,6 +59,7 @@ export const THEME = {
         iconSize: 18,
         iconPadding: '8px',
         titleSize: '16px',
+        titleWeight: 600,
         subSize: '12px',
     },
     button: {
