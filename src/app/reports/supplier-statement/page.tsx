@@ -125,7 +125,9 @@ export default function SupplierStatementPage() {
 
                     onExportExcel={exportToExcel}
                     printTitle={t("كشف حساب مورد تفصيلي")}
-                    printDate={data ? data.supplier.name : undefined}
+                    accountName={data ? data.supplier.name : undefined}
+                    printLabel={t('المورد:')}
+                    printDate={dateFrom || dateTo ? `${dateFrom ? `من ${dateFrom}` : ''} ${dateTo ? `إلى ${dateTo}` : ''}`.trim() : undefined}
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
@@ -197,7 +199,7 @@ export default function SupplierStatementPage() {
                 ) : (
                     <>
                         {/* Summary Stats Cards */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('رصيد سابق (منقول)'), value: Math.abs(data.initialBalance), sign: data.initialBalance >= 0 ? t('له (مستحق)') : t('عليه (مسدد)'), color: data.initialBalance >= 0 ? '#ef4444' : '#10b981', icon: <History size={20} /> },
                                 { label: t('إجمالي التوريدات (له)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0), sign: t('مشتريات جديدة'), color: '#ef4444', icon: <TrendingDown size={20} /> },
@@ -224,7 +226,7 @@ export default function SupplierStatementPage() {
                             ))}
                         </div>
 
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>

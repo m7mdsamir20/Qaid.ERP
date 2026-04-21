@@ -17,10 +17,11 @@ interface ReportHeaderProps {
   printDate?: string;
   printCode?: string;
   accountName?: string;
+  printLabel?: string;
   branchName?: string;
 }
 
-export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onPrint, printTitle, printDate, accountName: manualAccountName, branchName }: ReportHeaderProps) {
+export default function ReportHeader({ title, subtitle, backTab, onExportExcel, onPrint, printTitle, printDate, accountName: manualAccountName, printLabel, branchName }: ReportHeaderProps) {
   const router = useRouter();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
@@ -106,7 +107,7 @@ export default function ReportHeader({ title, subtitle, backTab, onExportExcel, 
     const dir = isRtl ? 'rtl' : 'ltr';
     const firstColAlign = isRtl ? 'right' : 'left';
     const labelPeriod = isRtl ? 'الفترة:' : 'Period:';
-    const labelAccount = isRtl ? 'تاريخ التقرير:' : 'Report Date:';
+    const labelAccount = printLabel || (isRtl ? 'تاريخ التقرير:' : 'Report Date:');
     const labelBranch = isRtl ? 'الفرع:' : 'Branch:';
 
     const metaItems = [

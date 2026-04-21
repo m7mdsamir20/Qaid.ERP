@@ -7,10 +7,15 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import ReportHeader from '@/components/ReportHeader';
-import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown, History, Printer, FileText, ArrowRightLeft, FileDown, Activity, UserCircle } from 'lucide-react';
+import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown, History, Printer, FileText, UserCircle } from 'lucide-react';
 import * as XLSX from 'xlsx';
 
 import { useCurrency } from '@/hooks/useCurrency';
+
+const getCurrencyName = (code: string) => {
+    const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
+    return map[code] || code;
+};
 
 interface Customer { id: string; name: string; balance: number; createdAt: string; }
 
@@ -120,7 +125,9 @@ export default function CustomerStatementPage() {
                     backTab="partners"
                     onExportExcel={exportToExcel}
                     printTitle={t("كشف حساب عميل تفصيلي")}
-                    printDate={data ? data.customer.name : undefined}
+                    accountName={data ? data.customer.name : undefined}
+                    printLabel={t('العميل:')}
+                    printDate={dateFrom || dateTo ? `${dateFrom ? `من ${dateFrom}` : ''} ${dateTo ? `إلى ${dateTo}` : ''}`.trim() : undefined}
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0 }}>
@@ -172,7 +179,7 @@ export default function CustomerStatementPage() {
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
                             boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                         }}>
-                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} style={{ color: C.primary }} />}
+                            {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                             {t('تحديث البيانات')}
                         </button>
                     </div>
@@ -199,21 +206,31 @@ export default function CustomerStatementPage() {
                     </div>
                 ) : (
                     <>
-                        <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
-                            <div style={{ flex: 1, minWidth: '220px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '10px', background: '#ecfdf5', color: '#10b981', borderRadius: '12px' }}><TrendingUp size={22} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{t('الرصيد الافتتاحي')}</p>
-                                    <p style={{ margin: 0, fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.initialBalance)}</p>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                            {[
+                                { label: t('رصيد سابق (منقول)'), value: Math.abs(data.initialBalance), sign: data.initialBalance > 0 ? t('عليه (مدين)') : t('له (دائن)'), color: data.initialBalance > 0 ? '#ef4444' : '#10b981', icon: <History size={20} /> },
+                                { label: t('إجمالي المبيعات (عليه)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0), sign: t('فواتير مبيعات'), color: '#ef4444', icon: <TrendingDown size={20} /> },
+                                { label: t('إجمالي المدفوعات (له)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0), sign: t('سندات قبض'), color: '#10b981', icon: <TrendingUp size={20} /> },
+                                { label: t('الرصيد النهائي (الآن)'), value: Math.abs(data.finalBalance), sign: data.finalBalance > 0 ? t('عليه (مدين)') : t('له (دائن)'), color: data.finalBalance > 0 ? '#ef4444' : '#10b981', icon: <FileText size={20} /> },
+                            ].map((s, i) => (
+                                <div key={i} style={{
+                                    background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
+                                    padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                                    transition: 'all 0.2s'
+                                }}>
+                                    <div style={{ textAlign: 'start' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value.toLocaleString('en-US')}</span>
+                                            <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                        </div>
+                                        <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
+                                    </div>
+                                    <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                        {s.icon}
+                                    </div>
                                 </div>
-                            </div>
-                            <div style={{ flex: 1, minWidth: '220px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '10px', background: '#eef2ff', color: C.primary, borderRadius: '12px' }}><ArrowRightLeft size={22} /></div>
-                                <div>
-                                    <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{t('الرصيد النهائي')}</p>
-                                    <p style={{ margin: 0, fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{fMoney(data.finalBalance)}</p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
 
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>

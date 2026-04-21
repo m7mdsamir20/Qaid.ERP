@@ -114,7 +114,7 @@ export default function AgingReportPage() {
 
                 {/* Summary Cards */}
                 {buckets && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                    <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                         {[
                             { label: t('مديونية (0 - 30 يوم)'), value: buckets['0-30'].total, count: buckets['0-30'].count, color: '#3b82f6', icon: <Clock size={20} />, sign: t('ديون حديثة') },
                             { label: t('مديونية (31 - 60 يوم)'), value: buckets['31-60'].total, count: buckets['31-60'].count, color: '#eab308', icon: <History size={20} />, sign: t('تنبيه أول') },
@@ -181,7 +181,7 @@ export default function AgingReportPage() {
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على مديونيات متأخرة حالياً في النظام.')}</p>
                     </div>
                 ) : (
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                         <div style={{ overflowX: 'auto' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
@@ -242,16 +242,7 @@ export default function AgingReportPage() {
                                     <tr>
                                         <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
                                         <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
-                                        <td style={{ padding: '20px 24px', textAlign: 'center' }}>
-                                            <button onClick={exportToExcel} style={{ 
-                                                height: '34px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.border}`, 
-                                                background: C.primary, color: '#fff', fontSize: '11.5px', fontWeight: 800, 
-                                                cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
-                                                boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
-                                            }}>
-                                                <Download size={14} /> {t('تصدير Excel')}
-                                            </button>
-                                        </td>
+                                        <td style={{ padding: '20px 24px' }}></td>
                                     </tr>
                                 </tfoot>
                             </table>
