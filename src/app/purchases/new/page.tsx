@@ -423,12 +423,12 @@ export default function NewPurchasePage() {
                     </div>
                 )}
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
+                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('رقم الفاتورة')}</label>

@@ -166,14 +166,14 @@ export default function NewPaymentPage() {
                     </div>
                 </PageHeader>
 
-                <div style={{ display: 'grid', gridTemplateColumns: GRID.main, gap: GRID.gap, alignItems: 'start' }}>
+                <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: GRID.main, gap: GRID.gap, alignItems: 'start' }}>
                     {/* LEFT Column */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
                         {/* 1. Basic Info */}
                         <div style={SC}>
                             <div style={STitle}>البيانات الأساسية للصرف</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '16px' }}>
+                            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={LS}>رقم السند</label>
                                     <div style={{
