@@ -357,16 +357,26 @@ export default function JournalEntriesPage() {
                                 <h2 style={{ margin: 0, fontFamily: CAIRO, fontSize: '18px', fontWeight: 900, color: C.textPrimary }}>{t('إنشاء قيد يومية جديد')}</h2>
                                 <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textMuted }}>{t('أدخل تفاصيل الحسابات وتأكد من توازن المدين والدائن')}</p>
                             </div>
-                            <div style={{ background: C.card, border: `2px solid ${C.primary}30`, padding: '8px 16px', borderRadius: '12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800 }}>{t('رقم القيد')}:</span>
-                                <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary, fontSize: '16px' }}>{nextNumber}</span>
-                            </div>
                         </div>
 
                         <div style={{ padding: '24px' }}>
                             <form onSubmit={e => handleSubmit(e)}>
                                 {/* Basic Info */}
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px', marginBottom: '24px' }}>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'minmax(120px, 150px) 1.5fr 3fr', gap: '20px', marginBottom: '24px' }}>
+                                    <div>
+                                        <label style={LS}>{t('رقم القيد')}</label>
+                                        <div style={{
+                                            height: '42px', borderRadius: '10px',
+                                            background: 'rgba(59,130,244,0.08)',
+                                            border: `1px solid ${C.border}`,
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                            fontFamily: INTER, fontWeight: 900,
+                                            fontSize: '14px', color: C.primary,
+                                            letterSpacing: '1px'
+                                        }}>
+                                            {formatEntryCode(nextNumber)}
+                                        </div>
+                                    </div>
                                     <div><label style={LS}>{t('التاريخ')}</label><input type="date" required value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr' }} /></div>
                                     <div><label style={LS}>{t('البيان العام / الوصف')}</label><input required value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder={t("شرح مختصر للقيد...")} style={IS} /></div>
                                 </div>
