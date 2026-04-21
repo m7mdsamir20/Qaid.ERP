@@ -113,6 +113,10 @@ export default function TreasuryBankReportPage() {
                     title={t("كشف حساب الخزن والبنوك")}
                     subtitle={t("تحليل تفصيلي للحركات المالية والمقبوضات والمدفوعات لكل خزينة أو حساب بنكي.")}
                     backTab="financial"
+                    printTitle={t("كشف حركة الخزينة")}
+                    accountName={data ? data.treasuryName : undefined}
+                    printLabel={t('الخزينة:')}
+                    printDate={from || to ? `${from ? `من ${from}` : ''} ${to ? `إلى ${to}` : ''}`.trim() : undefined}
                 />
 
                 {/* Filters */}
@@ -162,7 +166,7 @@ export default function TreasuryBankReportPage() {
                 ) : (
                     <div>
                         {/* Summary Header */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('رصيد أول المدة')}</div>
                                 <div style={{ fontSize: '12px', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{data.openingBalance.toLocaleString('en-US')} {cSymbol}</div>
@@ -182,7 +186,7 @@ export default function TreasuryBankReportPage() {
                         </div>
 
                         {/* Movements Table */}
-                        <div className="table-container shadow-xl" style={{ background: C.card, borderRadius: '18px', overflow: 'hidden', border: `1px solid ${C.border}` }}>
+                        <div className="print-table-container table-container shadow-xl" style={{ background: C.card, borderRadius: '18px', overflow: 'hidden', border: `1px solid ${C.border}` }}>
                             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 800, color: '#f1f5f9' , fontFamily: CAIRO}}>{t('حركات')} {data.treasuryName}</h3>
                                 <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 , fontFamily: CAIRO}}>{t('إجمالي')} {data.movements.length} {t('حركة مسجلة')}</div>

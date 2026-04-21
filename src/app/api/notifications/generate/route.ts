@@ -20,6 +20,7 @@ export const POST = withProtection(async (request, session) => {
         let settings: any = {
             lowStock: { enabled: true, threshold: 10 },
             latePayment: { enabled: true },
+            agingDebt: { enabled: true },
         };
 
         if (company.notificationSettings) {
@@ -101,7 +102,47 @@ export const POST = withProtection(async (request, session) => {
             }
         }
 
-        // ③ Trial Expiry Notifications
+        // ③ Aging Debt Notifications
+        if (settings.agingDebt?.enabled) {
+            const unpaidInvoices = await prisma.invoice.findMany({
+                where: { companyId, type: 'sale', remaining: { gt: 0 } },
+                select: { remaining: true, date: true, dueDate: true },
+            });
+
+            const buckets = { warning: { count: 0, total: 0 }, critical: { count: 0, total: 0 } };
+
+            for (const inv of unpaidInvoices) {
+                const dateToUse = inv.dueDate || inv.date;
+                const ageDays = Math.floor((now.getTime() - new Date(dateToUse).getTime()) / (1000 * 3600 * 24));
+                if (ageDays > 90) { buckets.critical.count++; buckets.critical.total += inv.remaining; }
+                else if (ageDays > 60) { buckets.warning.count++; buckets.warning.total += inv.remaining; }
+            }
+
+            for (const [key, bucket] of Object.entries(buckets)) {
+                if (bucket.count === 0) continue;
+                const msgKey = key === 'critical' ? 'aging_91' : 'aging_61';
+                const lastNotif = await prisma.notification.findFirst({
+                    where: { companyId, type: 'aging_debt', msg: { contains: msgKey } },
+                    orderBy: { createdAt: 'desc' },
+                });
+                const shouldCreate = !lastNotif ||
+                    (!lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 60 * 24)) ||
+                    (lastNotif.read && lastNotif.createdAt < new Date(now.getTime() - 1000 * 60 * 60 * 12));
+
+                if (shouldCreate) {
+                    const label = key === 'critical' ? 'متأخرة +91 يوم' : 'تحذير 61-90 يوم';
+                    newNotifications.push({
+                        companyId,
+                        type: 'aging_debt',
+                        priority: key === 'critical' ? 'high' : 'medium',
+                        msg: `[${msgKey}] ديون ${label} — ${bucket.count} فاتورة بإجمالي ${bucket.total.toLocaleString('en-US')} ج.م`,
+                        link: '/reports/aging-report',
+                    });
+                }
+            }
+        }
+
+        // ④ Trial Expiry Notifications
         if (company.subscription) {
             const sub = company.subscription as any;
             if (sub.plan === 'trial' || sub.plan === 'تجريبي') {

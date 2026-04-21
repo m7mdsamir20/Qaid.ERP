@@ -2,7 +2,7 @@
  
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO } from '@/constants/theme';
-import { Package, BellRing, Clock, AlertCircle, Check } from 'lucide-react';
+import { Package, BellRing, Clock, AlertCircle, Check, AlertTriangle } from 'lucide-react';
 import { TabHeader, Toggle } from './shared';
 
 interface NotificationsTabProps {
@@ -142,6 +142,38 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                     </div>
                                 </div>
                             ))}
+                        </div>
+                    </>
+                )}
+
+                {/* ── إشعارات أعمار الديون ── */}
+                {!isServices && (
+                    <>
+                        <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            <AlertTriangle size={14} /> {t('أعمار الديون والمديونيات المتأخرة')}
+                        </div>
+
+                        <div style={{ background: C.card, border: `1px solid ${isEditMode ? `${C.primary}30` : C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', marginBottom: '24px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <div style={{ color: notificationsForm.agingDebt?.enabled ? '#ef4444' : C.textMuted }}>
+                                        <AlertTriangle size={16} />
+                                    </div>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تنبيه الديون المتأخرة')}</span>
+                                </div>
+                                <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                    <span style={{ fontSize: '14px', color: notificationsForm.agingDebt?.enabled ? '#ef4444' : C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>
+                                        {notificationsForm.agingDebt?.enabled
+                                            ? t('مفعّل — تنبيه بالفواتير المتأخرة أكثر من 60 يوم')
+                                            : t('معطّل')}
+                                    </span>
+                                    <Toggle
+                                        checked={notificationsForm.agingDebt?.enabled || false}
+                                        onChange={v => setNotificationsForm((p: any) => ({ ...p, agingDebt: { ...p.agingDebt, enabled: v } }))}
+                                        disabled={!isEditMode}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </>
                 )}

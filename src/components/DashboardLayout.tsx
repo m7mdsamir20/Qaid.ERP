@@ -194,6 +194,44 @@ export default function DashboardLayout({
                     [role="dialog"] { width: 92vw !important; max-width: 92vw !important; margin: 10vh auto !important; }
                 }
 
+                @media (max-width: 768px) {
+                    .main-header { padding: 0 10px !important; height: 56px !important; }
+                    .sidebar-wrapper { width: min(280px, 88vw) !important; }
+                    .dashboard-content { width: 100% !important; }
+                    main { padding: 70px 12px 16px !important; }
+
+                    .mobile-column, .mobile-stack { gap: 10px !important; }
+                    .mobile-full { width: 100% !important; max-width: 100% !important; }
+
+                    /* Safe global mobile table behavior */
+                    .table-container,
+                    .scroll-table,
+                    .print-table-container,
+                    [class*="table-container"] {
+                        overflow-x: auto !important;
+                        -webkit-overflow-scrolling: touch !important;
+                    }
+
+                    main :is(div, section, article):has(> table) {
+                        overflow-x: auto !important;
+                        -webkit-overflow-scrolling: touch !important;
+                    }
+
+                    main :is(div, section, article):has(> table) > table,
+                    .table-container > table,
+                    .scroll-table > table,
+                    .print-table-container > table,
+                    [class*="table-container"] > table,
+                    main table {
+                        width: max-content !important;
+                        min-width: 100% !important;
+                    }
+
+                    /* Better touch usability */
+                    button, input, select, textarea { min-height: 44px !important; }
+                    input, select, textarea { font-size: 16px !important; }
+                }
+
                 @media (max-width: 640px) {
                     .stats-grid, .kpi-grid { grid-template-columns: 1fr !important; }
                     main { padding: 72px 12px 16px !important; }

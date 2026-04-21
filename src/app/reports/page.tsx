@@ -80,6 +80,7 @@ function ReportsHubPageInner() {
             { title: t('كشف حساب بنكي'), description: t('تحليل حركات الحساب البنكي والتحويلات والخدمات البنكية'), href: '/reports/bank-statement', icon: Landmark, color: '#3b82f6', status: 'ready', requiredPages: ['/treasuries'] },
             { title: t('تقرير العجز والزيادة'), description: t('مقارنة الرصيد الدفتري بالرصيد الفعلي عند الجرد اليومي'), href: '/reports/treasury-reconciliation', icon: Activity, color: '#f59e0b', status: 'ready', requiredPages: ['/treasuries'] },
             { title: t('تقرير المصروفات'), description: t('عرض تفصيلي لجميع المصروفات المسجلة خلال فترة زمنية محددة'), href: '/reports/expenses-report', icon: TrendingDown, color: '#ef4444', status: 'ready', requiredPages: ['/expenses'] },
+            { title: t('تقرير الإيرادات الأخرى'), description: t('عرض تفصيلي لجميع الإيرادات الأخرى المسجلة خلال فترة زمنية محددة'), href: '/reports/revenues-report', icon: TrendingUp, color: '#10b981', status: 'ready', requiredPages: ['/other-income'] },
         ],
         'hr': [
             { title: t('كشف رواتب الموظفين'), description: t('تفاصيل مسيرات الرواتب، البدلات، والاستقطاعات لكل شهر'), href: '/reports/payroll-statement', icon: DollarSign, color: '#10b981', status: 'ready', requiredPages: ['/payrolls'] },
