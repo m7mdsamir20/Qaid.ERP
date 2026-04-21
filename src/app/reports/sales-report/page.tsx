@@ -40,7 +40,8 @@ export default function SalesReportPage() {
     const { data: session } = useSession();
     const businessType = session?.user?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
-    const { fMoney, currency } = useCurrency();
+    const { symbol: sym } = useCurrency();
+    const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [from, setFrom] = useState('');
@@ -151,7 +152,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalSales)}</span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalSales)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
                             </div>
@@ -160,7 +161,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الخصومات الممنوحة')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalDiscount)}</span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalDiscount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
                             </div>
@@ -169,7 +170,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي التحصيل')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalPaid)}</span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalPaid)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
                             </div>
@@ -178,7 +179,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('المطالبات المتبقية')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: '#ef4444', fontFamily: INTER }}>{fMoney(data.totalRemaining)}</span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: '#ef4444', fontFamily: INTER }}>{fmt(data.totalRemaining)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
                             </div>
@@ -232,20 +233,20 @@ export default function SalesReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{inv.customer?.name || t('عميل نقدي')}</td>
-                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fMoney(inv.total)}</td>
-                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? fMoney(inv.discount) : '—'}</td>
-                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fMoney(inv.paidAmount)}</td>
-                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 1000, color: inv.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: INTER }}>{fMoney(inv.remaining)}</td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 800, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? <>{fmt(inv.discount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '16px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 1000, color: inv.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: INTER }}>{fmt(inv.remaining)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start' }}>{t('إجماليات الفترة المختارة')}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fMoney(data.totalSales)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fMoney(data.totalDiscount)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fMoney(data.totalPaid)}</td>
-                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fMoney(data.totalRemaining)}</td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalSales)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fmt(data.totalDiscount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '15px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalPaid)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '18px', textAlign: 'end', fontSize: '16px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fmt(data.totalRemaining)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                     </tr>
                                 </tfoot>
                             </table>
