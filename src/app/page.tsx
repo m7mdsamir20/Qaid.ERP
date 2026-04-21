@@ -36,6 +36,7 @@ const getInvoicePrefix = (type: string) => {
     case 'receipt': return 'RCP-';
     case 'payment': return 'PMT-';
     case 'installment': return 'PLN-';
+    case 'installment_receipt': return 'INS-';
     case 'sale_return': return 'SRET-';
     case 'purchase_return': return 'PRET-';
     default: return 'INV-';
@@ -50,6 +51,7 @@ const statusLabel: Record<string, { label: string; color: string; bg: string }> 
   receipt: { label: 'سند قبض', color: C.success, bg: C.successBg },
   payment: { label: 'سند صرف', color: C.danger, bg: C.dangerBg },
   installment: { label: 'تقسيط', color: C.primary, bg: C.primaryBg },
+  installment_receipt: { label: 'تحصيل قسط', color: '#06b6d4', bg: 'rgba(6, 182, 212, 0.1)' },
 };
 
 function KpiCard({

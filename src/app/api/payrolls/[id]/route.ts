@@ -38,6 +38,94 @@ export const POST = withProtection(async (request, session, body, context) => {
         if (!payroll) return NextResponse.json({ error: "المسير غير موجود" }, { status: 404 });
         if (payroll.status === 'paid') return NextResponse.json({ error: "المسير معتمد ومصروف مسبقاً" }, { status: 400 });
 
+        if (action === 'sync') {
+            // منطق إعادة المزامنة — جلب السلف والخصومات الجديدة وتحديث السطور
+            const employeeIds = payroll.lines.map((l: any) => l.employeeId);
+            
+            const [allAdvances, allDeductions, allPrevLines] = await Promise.all([
+                prisma.advance.findMany({
+                    where: { employeeId: { in: employeeIds }, companyId, status: 'deducted' },
+                    orderBy: { date: 'asc' }
+                }),
+                prisma.deduction.findMany({
+                    where: { employeeId: { in: employeeIds }, companyId, status: 'deducted' },
+                    orderBy: { date: 'asc' }
+                }),
+                prisma.payrollLine.findMany({
+                    where: { employeeId: { in: employeeIds }, payroll: { companyId, status: 'paid' } },
+                    include: { payroll: true }
+                })
+            ]);
+
+            let [totalSalaries, totalAllowances, totalAdvances, totalDiscounts, totalNet] = [0, 0, 0, 0, 0];
+
+            const updatedLinesRaw = payroll.lines.map((pLine: any) => {
+                const emp = pLine.employee;
+                const basic = Number(emp.basicSalary) || 0;
+                const allowances = (Number(emp.housingAllowance) || 0) + (Number(emp.transportAllowance) || 0) + (Number(emp.foodAllowance) || 0);
+                const statutory = (Number(emp.insuranceDeduction) || 0) + (Number(emp.taxDeduction) || 0);
+
+                const empAdvances = allAdvances.filter((a: any) => a.employeeId === emp.id);
+                const empDeductions = allDeductions.filter((d: any) => d.employeeId === emp.id);
+                const empPastPayrolls = allPrevLines.filter((pl: any) => pl.employeeId === emp.id);
+
+                // FIFO Advances
+                const totalRecoveredAdvances = empPastPayrolls.reduce((sum: number, p: any) => sum + (Number(p.advances) || 0), 0);
+                let remainingRecoveryPool = totalRecoveredAdvances;
+                let currentMonthAdvanceDeduction = 0;
+                for (const adv of empAdvances) {
+                    const advAmt = Number(adv.amount) || 0;
+                    const paidOff = Math.min(advAmt, remainingRecoveryPool);
+                    remainingRecoveryPool -= paidOff;
+                    const outstanding = advAmt - paidOff;
+                    if (outstanding > 0) {
+                        const installment = Number(adv.monthlyAmount) > 0 ? Number(adv.monthlyAmount) : advAmt;
+                        currentMonthAdvanceDeduction += Math.min(installment, outstanding);
+                    }
+                }
+
+                // FIFO Deductions
+                const totalRecoveredDeductions = empPastPayrolls.reduce((sum: number, p: any) => sum + (Number(p.discounts) || 0), 0);
+                let remainingDeductionPool = totalRecoveredDeductions;
+                let currentMonthOtherDeductions = 0;
+                for (const ded of empDeductions) {
+                    const dedAmt = Number(ded.amount) || 0;
+                    const paidOff = Math.min(dedAmt, remainingDeductionPool);
+                    remainingDeductionPool -= paidOff;
+                    const outstanding = dedAmt - paidOff;
+                    if (outstanding > 0) {
+                        currentMonthOtherDeductions += outstanding;
+                    }
+                }
+
+                const totalEmpDiscounts = currentMonthOtherDeductions + statutory;
+                const netSalary = (basic + allowances) - totalEmpDiscounts - currentMonthAdvanceDeduction;
+
+                totalSalaries += basic;
+                totalAllowances += allowances;
+                totalAdvances += currentMonthAdvanceDeduction;
+                totalDiscounts += totalEmpDiscounts;
+                totalNet += netSalary;
+
+                return { id: pLine.id, advances: currentMonthAdvanceDeduction, discounts: totalEmpDiscounts, netSalary };
+            });
+
+            await prisma.$transaction(async (tx) => {
+                for (const line of updatedLinesRaw) {
+                    await tx.payrollLine.update({
+                        where: { id: line.id },
+                        data: { advances: line.advances, discounts: line.discounts, netSalary: line.netSalary }
+                    });
+                }
+                await tx.payroll.update({
+                    where: { id: payrollId },
+                    data: { totalAdvances, totalDiscounts, netTotal: totalNet }
+                });
+            });
+
+            return NextResponse.json({ success: true });
+        }
+
         if (action === 'approve') {
             const { treasuryId } = body;
             if (!treasuryId) return NextResponse.json({ 

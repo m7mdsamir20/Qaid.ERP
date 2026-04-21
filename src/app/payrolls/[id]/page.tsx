@@ -20,7 +20,8 @@ import {
     FileText,
     ClipboardList,
     PieChart,
-    Banknote
+    Banknote,
+    RefreshCw
 } from 'lucide-react';
 import { use } from 'react';
 import Link from 'next/link';
@@ -86,6 +87,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
     const [selectedTreasury, setSelectedTreasury] = useState('');
     const [isApproving, setIsApproving] = useState(false);
     const [showApprovalModal, setShowApprovalModal] = useState(false);
+    const [isSyncing, setIsSyncing] = useState(false);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -137,6 +139,26 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
         }
     };
 
+    const handleSync = async () => {
+        setIsSyncing(true);
+        try {
+            const res = await fetch(`/api/payrolls/${params.id}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'sync' })
+            });
+
+            if (res.ok) {
+                window.location.reload(); 
+            } else {
+                const data = await res.json();
+                alert(data.error || 'فشل في التحديث');
+            }
+        } finally {
+            setIsSyncing(false);
+        }
+    };
+
     if (loading) return (
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px', flexDirection: 'column', gap: '12px' }}>
@@ -178,7 +200,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                                     background: 'rgba(255,255,255,0.03)', 
                                     color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', 
                                     display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
-                                    transition: 'all 0.2s'
+                                    transition: 'all 0.2s', whiteSpace: 'nowrap'
                                 }}
                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                 onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
@@ -187,14 +209,36 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                             </button>,
                             payroll.status === 'draft' ? (
                                 <button 
+                                    key="sync"
+                                    onClick={handleSync}
+                                    disabled={isSyncing}
+                                    style={{ 
+                                        height: '40px', padding: '0 20px', borderRadius: '12px', 
+                                        border: `1px solid ${C.border}`, 
+                                        background: 'rgba(59, 130, 246, 0.1)', 
+                                        color: '#3b82f6', fontSize: '13px', fontWeight: 700, cursor: 'pointer', 
+                                        display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
+                                        transition: 'all 0.2s',
+                                        whiteSpace: 'nowrap'
+                                    }}
+                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'}
+                                >
+                                    {isSyncing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />} 
+                                    تحديث البيانات
+                                </button>
+                            ) : null,
+                            payroll.status === 'draft' ? (
+                                <button 
                                     key="approve"
                                     onClick={() => setShowApprovalModal(true)}
                                     style={{ 
-                                        height: '40px', padding: '0 16px', borderRadius: '12px', border: 'none', 
+                                        height: '40px', padding: '0 20px', borderRadius: '12px', border: 'none', 
                                         background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', 
                                         fontSize: '13px', fontWeight: 800, cursor: 'pointer', 
                                         display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, 
-                                        boxShadow: '0 4px 12px rgba(16,185,129,0.2)' 
+                                        boxShadow: '0 4px 12px rgba(16,185,129,0.2)',
+                                        whiteSpace: 'nowrap'
                                     }}
                                 >
                                     <CheckCircle size={16} /> اعتماد وصرف
