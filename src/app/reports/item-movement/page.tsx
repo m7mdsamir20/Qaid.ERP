@@ -120,9 +120,10 @@ export default function ItemMovementReportPage() {
                     title={t("تقرير حركة صنف")}
                     subtitle={t("متابعة تفصيلية لكافة عمليات الصادر والوارد لكل قطعة بالاسم أو الكود.")}
                     backTab="inventory"
-                    
                     printTitle={t("تقرير حركة صنف تفصيلي")}
-                    printDate={itemDetails ? `${itemDetails.name} (${itemDetails.code})` : undefined}
+                    accountName={itemDetails ? `${itemDetails.name} (${itemDetails.code})` : undefined}
+                    printLabel={t('الصنف:')}
+                    branchName={branchId === 'all' ? t('كل الفروع') : (branches.find(b => b.id === branchId)?.name || '')}
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '12px', marginBottom: '24px', alignItems: 'center' }}>
@@ -188,7 +189,7 @@ export default function ItemMovementReportPage() {
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px', alignItems: 'start' }}>
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
                                 <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
                                 <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الحركات:')} <span style={{ color: C.primary, fontFamily: INTER }}>{movements.length}</span></div>

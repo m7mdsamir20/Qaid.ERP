@@ -527,9 +527,9 @@ model Supplier {
   addressDistrict String?
   addressStreet   String?
   type            String    @default("individual")
-  taxNumber     String?
-  crNumber      String?
-  contactPerson String?
+  taxNumber        String?
+  crNumber         String?
+  contactPerson    String?
   balance       Float     @default(0)
   companyId     String
   createdAt     DateTime  @default(now())
