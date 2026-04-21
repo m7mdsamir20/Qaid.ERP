@@ -466,20 +466,23 @@ export default function JournalEntriesPage() {
                                     <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.success, fontFamily: CAIRO }}>
-                                                {fMoney(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}
+                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.success, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                                {form.lines.reduce((s, l) => s + (l.debit || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.danger, fontFamily: CAIRO }}>
-                                                {fMoney(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}
+                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                                {form.lines.reduce((s, l) => s + (l.credit || 0), 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO }}>
-                                                {fMoney(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
+                                            <div style={{ fontSize: '18px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                                {Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                                                <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                     </div>
