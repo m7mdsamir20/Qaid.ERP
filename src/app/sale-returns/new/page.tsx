@@ -139,8 +139,8 @@ export default function NewReturnPage() {
             const matchCustomer = i.customer?.id === form.customerId && form.customerId;
             const matchSupplier = (i as any).supplier?.id === form.supplierId && form.supplierId;
             if (!matchCustomer && !matchSupplier) return false;
-            const hasAvailableItems = Array.isArray(i.lines) && i.lines.some(l => l.quantity > (l.alreadyReturned || 0));
-            return hasAvailableItems;
+            if (!Array.isArray(i.lines)) return true;
+            return i.lines.some(l => l.quantity > (l.alreadyReturned || 0));
         })
         : [];
 
