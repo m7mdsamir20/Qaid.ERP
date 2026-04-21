@@ -32,6 +32,36 @@ export const GET = withProtection(async (request, session) => {
     }
 });
 
+function parseSafeDate(d: string | null | undefined) {
+    if (!d || String(d).trim() === '') return null;
+    const str = String(d).trim();
+    
+    // Standard ISO/browser format: YYYY-MM-DD
+    let date = new Date(str);
+    if (!isNaN(date.getTime())) return date;
+    
+    // Support DD/MM/YYYY or DD-MM-YYYY
+    const parts = str.split(/[/.-]/);
+    if (parts.length === 3) {
+        // Case: DD/MM/YYYY (common manual entry)
+        if (parts[0].length <= 2 && parts[2].length === 4) {
+            const [day, month, year] = parts.map(Number);
+            if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+                date = new Date(year, month - 1, day);
+                if (!isNaN(date.getTime())) return date;
+            }
+        }
+        // Case: YYYY/MM/DD
+        else if (parts[0].length === 4 && parts[2].length <= 2) {
+            const [year, month, day] = parts.map(Number);
+            date = new Date(year, month - 1, day);
+            if (!isNaN(date.getTime())) return date;
+        }
+    }
+    
+    return null;
+}
+
 export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
@@ -57,6 +87,16 @@ export const POST = withProtection(async (request, session, body) => {
             return NextResponse.json({ error: "كود الموظف مستخدم مسبقاً" }, { status: 400 });
         }
 
+        const targetBranchId = (body.branchId && body.branchId !== 'all') ? body.branchId : 
+                               ((session.user as any).activeBranchId && (session.user as any).activeBranchId !== 'all') ? (session.user as any).activeBranchId : null;
+
+        // Ensure we have a valid branchId if not provided
+        let finalBranchId = targetBranchId;
+        if (!finalBranchId) {
+            const mainBranch = await prisma.branch.findFirst({ where: { companyId, isMain: true } });
+            finalBranchId = mainBranch?.id || null;
+        }
+
         const employee = await prisma.employee.create({
             data: {
                 code,
@@ -64,11 +104,11 @@ export const POST = withProtection(async (request, session, body) => {
                 phone: phone || null,
                 email: email || null,
                 nationalId: nationalId || null,
-                birthDate: birthDate ? new Date(birthDate) : null,
+                birthDate: parseSafeDate(birthDate),
                 gender: gender || null,
                 address: address || null,
                 position: position || null,
-                hireDate: new Date(hireDate),
+                hireDate: parseSafeDate(hireDate) || new Date(),
                 basicSalary: Number(basicSalary),
                 housingAllowance: Number(housingAllowance || 0),
                 transportAllowance: Number(transportAllowance || 0),
@@ -81,7 +121,7 @@ export const POST = withProtection(async (request, session, body) => {
                 departmentId: departmentId || null,
                 status: status || 'active',
                 companyId,
-                branchId: body.branchId || (session.user as any).activeBranchId || null,
+                branchId: finalBranchId,
             } as any,
             include: { department: true }
         });

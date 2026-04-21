@@ -28,6 +28,28 @@ export const GET = withProtection(async (request, session, body, context) => {
     }
 });
 
+function parseSafeDate(d: string | null | undefined) {
+    if (!d || String(d).trim() === '') return null;
+    const str = String(d).trim();
+    let date = new Date(str);
+    if (!isNaN(date.getTime())) return date;
+    const parts = str.split(/[/.-]/);
+    if (parts.length === 3) {
+        if (parts[0].length <= 2 && parts[2].length === 4) {
+            const [day, month, year] = parts.map(Number);
+            if (month >= 1 && month <= 12) {
+                date = new Date(year, month - 1, day);
+                if (!isNaN(date.getTime())) return date;
+            }
+        } else if (parts[0].length === 4 && parts[2].length <= 2) {
+            const [year, month, day] = parts.map(Number);
+            date = new Date(year, month - 1, day);
+            if (!isNaN(date.getTime())) return date;
+        }
+    }
+    return null;
+}
+
 export const PUT = withProtection(async (request, session, body, context) => {
     try {
         const { id } = await context.params;
@@ -49,11 +71,11 @@ export const PUT = withProtection(async (request, session, body, context) => {
                 phone: phone || null,
                 email: email || null,
                 nationalId: nationalId || null,
-                birthDate: birthDate ? new Date(birthDate) : null,
+                birthDate: parseSafeDate(birthDate),
                 gender: gender || null,
                 address: address || null,
                 position: position || null,
-                hireDate: new Date(hireDate),
+                hireDate: parseSafeDate(hireDate) || new Date(),
                 basicSalary: Number(basicSalary),
                 housingAllowance: Number(housingAllowance || 0),
                 transportAllowance: Number(transportAllowance || 0),
@@ -64,7 +86,7 @@ export const PUT = withProtection(async (request, session, body, context) => {
                 bankAccount: bankAccount || null,
                 attachments: attachments ? JSON.stringify(attachments) : null,
                 departmentId: departmentId || null,
-                branchId: body.branchId || null,
+                branchId: (body.branchId && body.branchId !== 'all') ? body.branchId : undefined,
                 status: status || undefined
             } as any
         });
