@@ -158,8 +158,8 @@ export default function TreasuryReconciliationPage() {
                     subtitle={t("مطابقة الأرصدة الفعلية بالأرصدة الدفترية للخزن والحسابات البنكية.")}
                     backTab="treasury-bank"
                     onExportExcel={tab === 'new' ? exportToExcel : undefined}
-                    printTitle={t("تقرير الجرد والعجز والزيادة")}
-                    printDate={new Date().toLocaleDateString('ar-EG')}
+                    printTitle={tab === 'history' && selectedSnapshot ? t("تقرير الجرد والعجز والزيادة") : undefined}
+                    printDate={tab === 'history' && selectedSnapshot ? new Date(selectedSnapshot.createdAt).toLocaleDateString('ar-EG') : undefined}
                 />
 
                 {/* Tabs */}
