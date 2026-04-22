@@ -245,8 +245,15 @@ export default function ItemsPage() {
 
     const fmt = (num: number) => formatNumber(num);
 
-    const itemsLowStock = items.filter(i => (i.minLimit || 0) > 0 && (i.stocks?.reduce((q, st) => q + st.quantity, 0) || 0) <= (i.minLimit || 0)).length;
-    const itemsOutOfStock = items.filter(i => (i.stocks?.reduce((q, st) => q + st.quantity, 0) || 0) === 0).length;
+    const itemsLowStock = items.filter(i => {
+        const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
+        return (i.minLimit || 0) > 0 && q <= (i.minLimit || 0);
+    }).length;
+    const itemsOutOfStock = items.filter(i => {
+        const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
+        return q === 0;
+    }).length;
+    const totalQuantity = items.reduce((s, i) => s + (i.stocks?.reduce((q, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? q + st.quantity : q, 0) || 0), 0);
 
     const usesBarcode = ['SUPERMARKET', 'DISTRIBUTION', 'MANUFACTURING', 'MAINTENANCE', 'RESTAURANT'].includes(companyBusinessType);
 
@@ -270,12 +277,23 @@ export default function ItemsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
                             { id: 'all', label: t('إجمالي الأصناف'), val: items.length, icon: Package, color: C.blue, unit: t('صنف') },
-                            { id: 'value', label: t('قيمة المخزون'), val: items.reduce((s, i) => s + (i.costPrice || 0), 0), icon: TrendingUp, color: C.teal, unit: currencySymbol },
+                            { id: 'qty', label: t('إجمالي الكمية'), val: totalQuantity, icon: Boxes, color: '#a78bfa', unit: t('قطعة') },
+                            { 
+                                id: 'cost', 
+                                label: t('إجمالي التكلفة'), 
+                                val: items.reduce((s, i) => {
+                                    const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
+                                    return s + (q * (i.costPrice || 0));
+                                }, 0), 
+                                icon: TrendingUp, 
+                                color: C.teal, 
+                                unit: currencySymbol 
+                            },
                             { id: 'low', label: t('أصناف منخفضة'), val: itemsLowStock, icon: AlertTriangle, color: C.warning, unit: t('تنبيه') },
-                            { id: 'out', label: t('أصناف نفدت'), val: itemsOutOfStock, icon: PackageX, color: C.danger, unit: t('صنف') }
+
                         ].map((s, idx) => {
                             const isSelected = kpiFilter === s.id;
-                            const isClickable = s.id === 'low' || s.id === 'out';
+                            const isClickable = s.id === 'low';
                             return (
                                 <div key={idx}
                                     onClick={() => isClickable && setKpiFilter(prev => prev === s.id ? 'all' : s.id as any)}
