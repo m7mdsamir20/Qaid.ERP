@@ -11,6 +11,7 @@ import { useSession } from 'next-auth/react';
 
 interface Category {
     id: string;
+    code?: string;
     name: string;
     createdAt: string;
     _count?: {
@@ -37,7 +38,7 @@ export default function CategoriesPage() {
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
 
-    const [form, setForm] = useState({ id: '', name: '' });
+    const [form, setForm] = useState({ id: '', name: '', code: '' });
 
     const fetchCategories = useCallback(async () => {
         setLoading(true);
@@ -73,12 +74,14 @@ export default function CategoriesPage() {
     };
 
     const openCreateModal = () => {
-        setForm({ id: '', name: '' });
+        const nextNum = categories.length + 1;
+        const autoCode = `CAT-${String(nextNum).padStart(3, '0')}`;
+        setForm({ id: '', name: '', code: autoCode });
         setIsModalOpen(true);
     };
 
     const openEditModal = (cat: Category) => {
-        setForm({ id: cat.id, name: cat.name });
+        setForm({ id: cat.id, name: cat.name, code: cat.code || '' });
         setIsModalOpen(true);
     };
 
@@ -152,8 +155,8 @@ export default function CategoriesPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        {[t('الرقم'), t('اسم التصنيف'), isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0, [2, 3].includes(i))}>{h}</th>
+                                        {[t('الكود'), t('اسم التصنيف'), isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
+                                            <th key={i} style={TABLE_STYLE.th(i === 0, [0, 2, 3].includes(i))}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -163,9 +166,9 @@ export default function CategoriesPage() {
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ color: C.textMuted, fontWeight: 900, fontFamily: OUTFIT, fontSize: '12px' }}>
-                                                    #{idx + 1}
+                                            <td style={TABLE_STYLE.td(true, true)}>
+                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '13px' }}>
+                                                    {cat.code || `#${idx + 1}`}
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 800, fontSize: '14px' }}>
@@ -180,8 +183,8 @@ export default function CategoriesPage() {
                                                     {cat._count?.items || 0} {isServices ? t('خدمة') : t('صنف')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', gap: '8px' }}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
+                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                     {canEdit && (
                                                         <button onClick={() => openEditModal(cat)}
                                                             style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
@@ -204,7 +207,6 @@ export default function CategoriesPage() {
                     </div>
                 )}
 
-                {/* Data Modal */}
                 <AppModal
                     show={isModalOpen}
                     onClose={() => setIsModalOpen(false)}
@@ -213,30 +215,27 @@ export default function CategoriesPage() {
                     maxWidth="440px"
                 >
                     <form onSubmit={handleSubmit}>
-                        {/* Info Note */}
-                        <div style={{ 
-                            display: 'flex', alignItems: 'flex-start', gap: '12px', padding: '12px 16px', 
-                            borderRadius: '12px', background: 'rgba(37,106,244,0.05)', border: `1px solid ${C.primary}20`, marginBottom: '20px' 
-                        }}>
-                            <Info size={16} style={{ color: C.primary, marginTop: '2px', flexShrink: 0 }} />
-                            <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, lineHeight: 1.5, fontWeight: 600 }}>
-                                {isServices 
-                                    ? t("استخدم التصنيفات لتجميع الخدمات المتشابهة لتسهيل عملية الفوترة وإصدار التقارير التحليلية.")
-                                    : t("استخدم التصنيفات لتجميع الأصناف المتشابهة في المخزون وفي نقطة البيع (POS).")}
-                            </p>
-                        </div>
-
-                        {/* Category Name */}
-                        <div style={{ marginBottom: '24px' }}>
-                            <label style={LS}>{t('اسم التصنيف')} <span style={{ color: C.danger }}>*</span></label>
-                            <input
-                                type="text" required autoFocus
-                                placeholder={isServices ? t("مثال: صيانة، استشارات، تركيبات...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
-                                value={form.name}
-                                onChange={e => setForm({ ...form, name: e.target.value })}
-                                style={{ ...IS, height: '42px' }}
-                                onFocus={focusIn} onBlur={focusOut}
-                            />
+                        {/* Category Code & Name */}
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '16px', marginBottom: '24px' }}>
+                            <div>
+                                <label style={LS}>{t('كود التصنيف')}</label>
+                                <input
+                                    type="text" readOnly
+                                    value={form.code}
+                                    style={{ ...IS, height: '42px', background: 'rgba(255,255,255,0.02)', color: C.textMuted, cursor: 'not-allowed', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }}
+                                />
+                            </div>
+                            <div>
+                                <label style={LS}>{t('اسم التصنيف')} <span style={{ color: C.danger }}>*</span></label>
+                                <input
+                                    type="text" required autoFocus
+                                    placeholder={isServices ? t("مثال: صيانة، استشارات، تركيبات...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
+                                    value={form.name}
+                                    onChange={e => setForm({ ...form, name: e.target.value })}
+                                    style={{ ...IS, height: '42px' }}
+                                    onFocus={focusIn} onBlur={focusOut}
+                                />
+                            </div>
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px' }}>

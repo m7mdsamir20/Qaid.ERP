@@ -145,7 +145,7 @@ export default function DuePage() {
                                                 t('الحالة'), 
                                                 t('إجراء')
                                             ].map((h, i) => (
-                                                <th key={i} style={TABLE_STYLE.th(i === 0, [3, 4, 5, 6, 7].includes(i))}>{h}</th>
+                                                <th key={i} style={TABLE_STYLE.th(i === 0, [1, 2, 3, 4, 5, 6, 7].includes(i))}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -163,10 +163,10 @@ export default function DuePage() {
                                                         <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>{inst.customer?.name}</div>
                                                         <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{inst.customer?.phone}</div>
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         <span style={{ color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         {inst.installmentNo}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false, true)}>
@@ -178,7 +178,7 @@ export default function DuePage() {
                                                     <td style={TABLE_STYLE.td(false, true)}>
                                                         {fMoneyJSX(inst.remaining || 0)}
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         <div style={{
                                                             display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                             padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 800,

@@ -27,6 +27,7 @@ export const POST = withProtection(async (request, session, body) => {
         const category = await prisma.category.create({
             data: {
                 name: body.name,
+                code: body.code,
                 companyId: companyId,
             },
         });
@@ -44,7 +45,10 @@ export const PUT = withProtection(async (request, session, body) => {
 
         const category = await prisma.category.updateMany({
             where: { id: body.id, companyId },
-            data: { name: body.name },
+            data: { 
+                name: body.name,
+                code: body.code
+            },
         });
 
         if (category.count === 0) return NextResponse.json({ error: 'Category not found' }, { status: 404 });
