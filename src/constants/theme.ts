@@ -221,7 +221,7 @@ export const TABLE_STYLE = {
     },
     th: (isFirst: boolean, isNumeric?: boolean) => ({
         padding: '16px 20px',
-        textAlign: 'start',
+        textAlign: 'start' as 'start',
         fontSize: '12px',
         fontWeight: 700,
         color: C.textMuted,
@@ -237,7 +237,7 @@ export const TABLE_STYLE = {
     }),
     td: (isFirst: boolean, isNumeric?: boolean) => ({
         padding: '16px 20px',
-        textAlign: 'start',
+        textAlign: 'start' as 'start',
         verticalAlign: 'middle' as 'middle'
     }),
     /** Action Button Standard (30x30, Icon 14) */
