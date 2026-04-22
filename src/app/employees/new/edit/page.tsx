@@ -266,7 +266,7 @@ export default function EditEmployeePage() {
                         {/* Main Content Area */}
                         <div>
                             {/* ① شخصية */}
-                            <FormSection label="البيانات الشخصية" icon={UsersIcon} color="#3b82f6" description="المعلومات الأساسية وبيانات التواصل والتعريف">
+                            <FormSection label="البيانات الشخصية" icon={UsersIcon} color="#256af4" description="المعلومات الأساسية وبيانات التواصل والتعريف">
                                 <Grid2>
                                     <Field label="كود الموظف">
                                         <input type="text" className="input" disabled value={form.code} style={{ height: '48px', fontSize: '15px', background: 'rgba(255,255,255,0.02)', color: '#64748b' }} />
@@ -418,9 +418,9 @@ export default function EditEmployeePage() {
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                style={{ width: '100%', height: '56px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff', fontSize: '16px', fontWeight: 800, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 20px rgba(59,130,246,0.2)', transition: 'all 0.2s', fontFamily: 'inherit' }}
-                                onMouseEnter={e => { if (!isSaving) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(59,130,246,0.3)'; } }}
-                                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(59,130,246,0.2)'; }}
+                                style={{ width: '100%', height: '56px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #256af4, #256af4)', color: '#fff', fontSize: '16px', fontWeight: 800, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 20px rgba(37, 106, 244,0.2)', transition: 'all 0.2s', fontFamily: 'inherit' }}
+                                onMouseEnter={e => { if (!isSaving) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(37, 106, 244,0.3)'; } }}
+                                onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(37, 106, 244,0.2)'; }}
                             >
                                 {isSaving ? <><Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> جاري الحفظ...</> : <><Save size={20} /> حفظ التغييرات</>}
                             </button>

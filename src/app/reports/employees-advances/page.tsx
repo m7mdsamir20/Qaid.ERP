@@ -125,8 +125,8 @@ export default function EmployeesAdvancesPage() {
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{
                                                     fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '8px', border: '1px solid currentColor',
-                                                    color: r.status === 'paid' ? '#10b981' : r.status === 'partial' ? '#f59e0b' : '#3b82f6',
-                                                    background: r.status === 'paid' ? 'rgba(16,185,129,0.1)' : r.status === 'partial' ? 'rgba(245,158,11,0.1)' : 'rgba(59,130,246,0.1)'
+                                                    color: r.status === 'paid' ? '#10b981' : r.status === 'partial' ? '#f59e0b' : '#256af4',
+                                                    background: r.status === 'paid' ? 'rgba(16,185,129,0.1)' : r.status === 'partial' ? 'rgba(245,158,11,0.1)' : 'rgba(37, 106, 244,0.1)'
                                                 }}>
                                                     {r.status === 'paid' ? t('تم السداد') : r.status === 'partial' ? t('سداد جزئي') : t('نشطة')}
                                                 </span>

@@ -238,11 +238,11 @@ export default function NewQuotationPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
+                            <div style={{ ...STitle, color: '#256af4' }}><Info size={12} /> {t('بيانات العرض الأساسية')}</div>
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
-                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
                                         QUO-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
@@ -265,7 +265,7 @@ export default function NewQuotationPage() {
 
                         {/* Items Selection */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}><Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}</div>
+                            <div style={{ ...STitle, color: '#256af4' }}><Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}</div>
                             <div className="item-entry-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 60px', gap: '12px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ ...LS, fontSize: '11px' }}>{isServices ? t("اسم الخدمة") : t("اسم الصنف")}</label>
@@ -312,7 +312,7 @@ export default function NewQuotationPage() {
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryPrice(v === '' ? '' : v as any);
                                     }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
-                                <button type="button" onClick={addLine} disabled={!entryItemId} style={{ height: '42px', width: '60px', borderRadius: '10px', background: !entryItemId ? 'rgba(59,130,246,0.3)' : C.primary, color: '#fff', border: 'none', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <button type="button" onClick={addLine} disabled={!entryItemId} style={{ height: '42px', width: '60px', borderRadius: '10px', background: !entryItemId ? 'rgba(37, 106, 244,0.3)' : C.primary, color: '#fff', border: 'none', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Plus size={22} />
                                 </button>
                             </div>
@@ -363,7 +363,7 @@ export default function NewQuotationPage() {
                     {/* Summary Sidebar */}
                     <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <div style={{ ...SC, padding: '12px' }}>
-                            <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
+                            <div style={{ ...STitle, color: '#256af4', fontSize: '12px', marginBottom: '15px' }}>
                                 <Info size={12} /> {t('ملخص عرض السعر')}
                             </div>
 

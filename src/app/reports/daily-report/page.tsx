@@ -285,7 +285,7 @@ table{width:100%;border-collapse:collapse}
                         {/* Summary Cards */}
                         <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#3b82f6', icon: <ShoppingCart size={18} /> },
+                                { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#256af4', icon: <ShoppingCart size={18} /> },
                                 { label: t('إجمالي المقبوضات'), value: fmt(data.receipts), color: '#10b981', icon: <ArrowDownRight size={18} /> },
                                 { label: t('إجمالي المدفوعات'), value: fmt(data.payments), color: '#fb7185', icon: <ArrowUpRight size={18} /> },
                                 { label: t('صافي التدفق اليومي'), value: fmt(data.receipts - data.payments), color: (data.receipts - data.payments) >= 0 ? '#10b981' : '#fb7185', icon: <Activity size={18} /> },
@@ -327,7 +327,7 @@ table{width:100%;border-collapse:collapse}
                                                 </tr>
                                                 <tr>
                                                     <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, }}>{t('صافي المبيعات')}</td>
-                                                    <td style={{ padding: '15px 0', color: '#3b82f6', fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT, }}><Currency amount={data.totalSales - data.saleReturnsTotal} /></td>
+                                                    <td style={{ padding: '15px 0', color: '#256af4', fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT, }}><Currency amount={data.totalSales - data.saleReturnsTotal} /></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -359,8 +359,8 @@ table{width:100%;border-collapse:collapse}
                                         {(data?.treasuries || []).map((tArr: any, i: number) => (
                                             <div key={i} style={{ padding: '16px', borderRadius: '10px', border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                    <div style={{ width: 28, height: 28, borderRadius: '8px', background: tArr.type === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        {tArr.type === 'bank' ? <Landmark size={15} color="#3b82f6" /> : <Wallet size={15} color="#10b981" />}
+                                                    <div style={{ width: 28, height: 28, borderRadius: '8px', background: tArr.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(16, 185, 129, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                        {tArr.type === 'bank' ? <Landmark size={15} color="#256af4" /> : <Wallet size={15} color="#10b981" />}
                                                     </div>
                                                     <span style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{tArr.name}</span>
                                                 </div>
@@ -404,21 +404,7 @@ table{width:100%;border-collapse:collapse}
                 )}
             </div>
 
-            <style>{`
-                .print-only { display: none; }
-                .report-grid { display: grid; grid-template-columns: 1fr 320px; gap: 24px; align-items: start; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    .print-table-container { background: white !important; border: 1px solid #eee !important; border-radius: 12px !important; }
-                    h3 { font-size: 11px !important; margin-bottom: 10px !important; }
-                    .report-grid { grid-template-columns: 1fr !important; }
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator {
-                    cursor: pointer;
-                    filter: invert(34%) sepia(87%) saturate(2751%) hue-rotate(210deg) brightness(97%) contrast(94%);
-                }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

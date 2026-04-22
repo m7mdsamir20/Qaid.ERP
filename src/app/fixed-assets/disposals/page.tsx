@@ -23,7 +23,7 @@ interface Disposal {
 
 const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const REASON_COLORS: Record<string, string> = {
-    'sale': '#3b82f6', 'scrap': '#94a3b8', 'gift': '#a78bfa',
+    'sale': '#256af4', 'scrap': '#94a3b8', 'gift': '#a78bfa',
     'damage': C.danger, 'other': '#64748b',
 };
 

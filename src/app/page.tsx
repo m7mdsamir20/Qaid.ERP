@@ -140,8 +140,7 @@ function SectionCard({ title, icon: Icon, children, action }: {
   );
 }
 
-function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
-  const fmtFull = (n: number) => n.toLocaleString('en-US') + ' ' + cSymbol;
+function ChartTooltip({ active, payload, label, fMoneyJSX, t }: any) {
   if (!active || !payload?.length) return null;
   return (
     <div style={{
@@ -157,7 +156,7 @@ function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
         <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '4px' }}>
           <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: p.color }} />
           <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t(p.name)}:</span>
-          <span style={{ fontWeight: 800, fontFamily: OUTFIT }}>{fmtFull(p.value)}</span>
+          <div style={{ display: 'inline-flex' }}>{fMoneyJSX(p.value)}</div>
         </div>
       ))}
     </div>
@@ -168,7 +167,7 @@ function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
 
 export default function DashboardPage() {
   const { data: session, status: sessionStatus } = useSession();
-  const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
+  const { fMoneyJSX } = useCurrency();
   const { lang, t } = useTranslation();
   const isRtl = lang === 'ar';
 
@@ -504,7 +503,7 @@ export default function DashboardPage() {
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} opacity={0.5} />
                     <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: OUTFIT }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: OUTFIT }} axisLine={false} tickLine={false} tickFormatter={v => Number(v).toLocaleString()} width={40} />
-                    <Tooltip content={<ChartTooltip cSymbol={cSymbol} t={t} />} />
+                    <Tooltip content={<ChartTooltip fMoneyJSX={fMoneyJSX} t={t} />} />
                     {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
                     {isServices
                       ? <Area type="monotone" dataKey="expenses" name={t("مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />

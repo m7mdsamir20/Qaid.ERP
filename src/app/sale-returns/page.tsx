@@ -65,7 +65,7 @@ export default function SaleReturnsListPage() {
     const getStatusStyle = (r: ReturnInvoice) => {
         if (r.paidAmount >= r.total && r.total > 0) return { bg: 'rgba(34,197,94,0.1)', color: '#22c55e', text: 'مكتمل' };
         if (r.paidAmount > 0) return { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', text: 'جزئي' };
-        return { bg: 'rgba(59,130,246,0.1)', color: '#3b82f6', text: 'تسوية رصيد' };
+        return { bg: 'rgba(37, 106, 244,0.1)', color: '#256af4', text: 'تسوية رصيد' };
     };
 
     /* ─── RENDER ─── */
@@ -198,17 +198,7 @@ export default function SaleReturnsListPage() {
                         </div>
                     )}
                 </div>
-                <style jsx global>{` 
-                    @keyframes spin { to { transform:rotate(360deg); } } 
-                    input[type="date"]::-webkit-calendar-picker-indicator {
-                        cursor: pointer;
-                        opacity: 0.45;
-                        transition: opacity 0.2s;
-                    }
-                    input[type="date"]::-webkit-calendar-picker-indicator:hover {
-                        opacity: 1;
-                    }
-                `}</style>
+                
             </div>
         </DashboardLayout>
     );

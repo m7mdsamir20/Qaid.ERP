@@ -235,7 +235,7 @@ ${tableHtml}
     if (loading) return (
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px', flexDirection: 'column', gap: '12px' }}>
-                <Loader2 size={32} className="animate-spin" style={{ color: '#3b82f6' }} />
+                <Loader2 size={32} className="animate-spin" style={{ color: '#256af4' }} />
                 <span style={{ fontSize: '13px', color: '#94a3b8' }}>جاري التحميل...</span>
             </div>
         </DashboardLayout>
@@ -246,7 +246,7 @@ ${tableHtml}
             <div style={{ padding: '40px', textAlign: 'center' }}>
                 <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '16px', opacity: 0.5 }} />
                 <h2 style={{ fontSize: '16px', color: '#fff' }}>المسير غير موجود</h2>
-                <Link href="/payrolls" style={{ marginTop: '16px', color: '#3b82f6', textDecoration: 'none', display: 'inline-block', fontWeight: 700 }}>العودة للقائمة</Link>
+                <Link href="/payrolls" style={{ marginTop: '16px', color: '#256af4', textDecoration: 'none', display: 'inline-block', fontWeight: 700 }}>العودة للقائمة</Link>
             </div>
         </DashboardLayout>
     );
@@ -288,14 +288,14 @@ ${tableHtml}
                                     style={{ 
                                         height: '40px', padding: '0 20px', borderRadius: '12px', 
                                         border: `1px solid ${C.border}`, 
-                                        background: 'rgba(59, 130, 246, 0.1)', 
-                                        color: '#3b82f6', fontSize: '13px', fontWeight: 700, cursor: 'pointer', 
+                                        background: 'rgba(37, 106, 244, 0.1)', 
+                                        color: '#256af4', fontSize: '13px', fontWeight: 700, cursor: 'pointer', 
                                         display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
                                         transition: 'all 0.2s',
                                         whiteSpace: 'nowrap'
                                     }}
-                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.15)'}
-                                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'}
+                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(37, 106, 244, 0.15)'}
+                                    onMouseLeave={e => e.currentTarget.style.background = 'rgba(37, 106, 244, 0.1)'}
                                 >
                                     {isSyncing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />} 
                                     تحديث البيانات

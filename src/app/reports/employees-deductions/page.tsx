@@ -88,7 +88,7 @@ export default function EmployeesDeductionsPage() {
                     {[
                         { label: t('إجمالي مبلغ الخصومات'), value: fmt(data?.totalAmount || 0), color: '#ef4444', icon: <ArrowDownRight size={18} /> },
                         { label: t('عدد الجزاءات المسجلة'), value: String(data?.totalCount || 0), color: '#fb923c', icon: <AlertTriangle size={18} /> },
-                        { label: t('متوسط قيمة الخصم'), value: fmt((data?.totalAmount || 0) / (data?.totalCount || 1)), color: '#3b82f6', icon: <Activity size={18} /> },
+                        { label: t('متوسط قيمة الخصم'), value: fmt((data?.totalAmount || 0) / (data?.totalCount || 1)), color: '#256af4', icon: <Activity size={18} /> },
                     ].map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}22`, borderRadius: '12px',

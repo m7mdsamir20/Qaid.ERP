@@ -1,4 +1,5 @@
-'use client';
+'use client';import { C } from '@/constants/theme';
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -129,7 +130,7 @@ export default function SaleReturnDetailsPage() {
                     </div>
 
                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <button onClick={handlePrint} className="btn btn-ghost" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)', fontWeight: 700, height: '38px', padding: '0 18px', borderRadius: '9px', fontSize: '13px' }}>
+                        <button onClick={handlePrint} className="btn btn-ghost" style={{ background: 'rgba(37, 106, 244,0.1)', color: '#256af4', border: '1px solid rgba(37, 106, 244,0.2)', fontWeight: 700, height: '38px', padding: '0 18px', borderRadius: '9px', fontSize: '13px' }}>
                             <Printer size={16} /> {t('طباعة المرتجع')}
                         </button>
                     </div>
@@ -139,15 +140,15 @@ export default function SaleReturnDetailsPage() {
                 <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '12px 20px', marginBottom: '8px', display: 'flex', gap: '24px', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         <span style={{ fontWeight: 600 }}>{t('رقم المرتجع:')}</span>
-                        <span style={{ color: '#3b82f6', fontWeight: 800, fontFamily: 'monospace' }}>RET-{String(ret.invoiceNumber).padStart(5, '0')}</span>
+                        <span style={{ color: '#256af4', fontWeight: 800, fontFamily: 'monospace' }}>RET-{String(ret.invoiceNumber).padStart(5, '0')}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
-                        <Calendar size={14} style={{ color: '#3b82f6' }} />
+                        <Calendar size={14} style={{ color: C.primary }} />
                         <span style={{ fontWeight: 600 }}>{t('تاريخ المرتجع:')}</span>
                         <span style={{ color: 'var(--text-primary)' }}>{new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { dateStyle: 'long' })}</span>
                     </div>
                     {ret.originalInvoice && (
-                        <div onClick={() => router.push('/sales/' + ret.originalInvoiceId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#3b82f6', cursor: 'pointer', background: 'rgba(59,130,246,0.05)', padding: '2px 10px', borderRadius: '6px' }}>
+                        <div onClick={() => router.push('/sales/' + ret.originalInvoiceId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#256af4', cursor: 'pointer', background: 'rgba(37, 106, 244,0.05)', padding: '2px 10px', borderRadius: '6px' }}>
                             <ShoppingBag size={14} />
                             <span style={{ fontWeight: 600 }}>{isServices ? t("مرجع فاتورة الخدمة:") : t("مرجع فاتورة البيع:")}</span>
                             <span style={{ fontWeight: 800 }}>SRV-{String(ret.originalInvoice.invoiceNumber).padStart(5, '0')}</span>
@@ -158,7 +159,7 @@ export default function SaleReturnDetailsPage() {
                 {/* 3. Info Bar 2: Customer Details */}
                 <div style={{ background: 'var(--surface-background)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '12px 20px', marginBottom: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <User size={16} />
                         </div>
                         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
@@ -189,7 +190,7 @@ export default function SaleReturnDetailsPage() {
                         <div className="table-container" style={{ borderRadius: '18px', overflow: 'hidden' }}>
                             <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
                                 <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
-                                    <Package size={13} color="#3b82f6" strokeWidth={3} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
+                                    <Package size={13} color="#256af4" strokeWidth={3} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
                                 </h3>
                                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{ret.lines.length} {isServices ? t("خدمة") : t("صنف")}</span>
                             </div>
@@ -243,7 +244,7 @@ export default function SaleReturnDetailsPage() {
                             <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '4px 0' }} />
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontWeight: 800 }}>
                                 <span>{isServices ? t("صافي التسوية:") : t("صافي التسوية:")}</span>
-                                <span style={{ color: '#3b82f6', fontSize: '18px' }}>{ret.remaining.toLocaleString()}</span>
+                                <span style={{ color: '#256af4', fontSize: '18px' }}>{ret.remaining.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
@@ -271,13 +272,13 @@ export default function SaleReturnDetailsPage() {
                             </div>
                         </div>
 
-                        <div style={{ background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.1)', borderRadius: '14px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
-                            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <div style={{ background: 'rgba(37, 106, 244,0.04)', border: '1px solid rgba(37, 106, 244,0.1)', borderRadius: '14px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                 <ShoppingBag size={18} />
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('تسوية رصيد')}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#3b82f6' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
+                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#256af4' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 

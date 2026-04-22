@@ -348,7 +348,7 @@ export default function PayrollsPage() {
                             <button 
                                 type="submit" 
                                 disabled={isGenerating}
-                                style={{ flex: 1, height: '44px', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
+                                style={{ flex: 1, height: '44px', background: 'linear-gradient(135deg, #256af4, #256af4)', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
                             >
                                 {isGenerating ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : t('توليد المسير')}
                             </button>

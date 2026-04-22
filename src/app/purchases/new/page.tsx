@@ -427,7 +427,7 @@ export default function NewPurchasePage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
+                            <div style={{ ...STitleStyle, color: '#256af4' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1.2fr 1fr 140px', gap: '10px' }}>
                                 <div>
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
@@ -435,7 +435,7 @@ export default function NewPurchasePage() {
                                     </div>
                                     <div style={{
                                         height: '42px', borderRadius: '10px',
-                                        background: 'rgba(59,130,246,0.08)',
+                                        background: 'rgba(37, 106, 244,0.08)',
                                         border: `1px solid ${C.border}`,
                                         display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center',
                                         fontFamily: OUTFIT, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
@@ -495,12 +495,12 @@ export default function NewPurchasePage() {
                         </div>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}><Package size={12} /> {t('اضافة الاصناف')}</div>
+                            <div style={{ ...STitleStyle, color: '#256af4' }}><Package size={12} /> {t('اضافة الاصناف')}</div>
                             <div className="item-entry-grid" style={{ display: 'grid', gridTemplateColumns: '1.2fr 110px 110px 44px', gap: '12px', alignItems: 'end', marginBottom: '20px' }}>
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('الصنف')}</label>
-                                        {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 800, color: '#3b82f6' }}>{t('متاح:')} {entryStock}</span>}
+                                        {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 800, color: '#256af4' }}>{t('متاح:')} {entryStock}</span>}
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect ref={itemSelectRef} value={entryItemId}
@@ -566,7 +566,7 @@ export default function NewPurchasePage() {
                         </div>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> {t('المرفقات')}</div>
+                            <div style={{ ...STitleStyle, marginBottom: '10px', color: '#256af4' }}><Camera size={12} /> {t('المرفقات')}</div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <div style={{ flex: 1, border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '8px', textAlign: 'center', position: 'relative', cursor: 'pointer', background: C.subtle }}>
                                     <input type="file" multiple onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
@@ -594,7 +594,7 @@ export default function NewPurchasePage() {
 
                     <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}>{t('ملخص الفاتورة')}</div>
+                            <div style={{ ...STitleStyle, color: '#256af4' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
                                     <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
@@ -657,7 +657,7 @@ export default function NewPurchasePage() {
                         </div>
 
                         <div style={SCStyle}>
-                            <div style={{ ...STitleStyle, color: '#3b82f6' }}>{t('التحصيل والسداد')}</div>
+                            <div style={{ ...STitleStyle, color: '#256af4' }}>{t('التحصيل والسداد')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('طريقة الدفع')}</label>
@@ -768,7 +768,7 @@ export default function NewPurchasePage() {
 
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button type="submit" disabled={submitting} style={{
-                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
+                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(37, 106, 244,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
                         }}>
                             {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                         </button>

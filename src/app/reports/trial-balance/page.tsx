@@ -122,7 +122,7 @@ export default function TrialBalancePage() {
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                         <th rowSpan={2} style={{ padding: '16px',  fontSize: '12px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('رمز الحساب')}</th>
                                         <th rowSpan={2} style={{ padding: '16px',  fontSize: '12px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('اسم الحساب')}</th>
-                                        <th colSpan={2} style={{ padding: '10px',  fontSize: '12px', fontWeight: 900, background: 'rgba(59, 130, 246, 0.05)', color: '#60a5fa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, borderInlineStart: `1px solid ${C.border}` }}>{t('بالمجاميع (المعاملات)')}</th>
+                                        <th colSpan={2} style={{ padding: '10px',  fontSize: '12px', fontWeight: 900, background: 'rgba(37, 106, 244, 0.05)', color: '#60a5fa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, borderInlineStart: `1px solid ${C.border}` }}>{t('بالمجاميع (المعاملات)')}</th>
                                         <th colSpan={2} style={{ padding: '10px',  fontSize: '12px', fontWeight: 900, background: 'rgba(139, 92, 246, 0.05)', color: '#a78bfa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}` }}>{t('بالأرصدة (النهائي)')}</th>
                                     </tr>
                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
@@ -146,7 +146,7 @@ export default function TrialBalancePage() {
                                         </tr>
                                     ))}
                                 </tbody>
-                                <tfoot style={{ background: 'rgba(59, 130, 246, 0.05)', borderTop: `2px solid ${C.primary}44` }}>
+                                <tfoot style={{ background: 'rgba(37, 106, 244, 0.05)', borderTop: `2px solid ${C.primary}44` }}>
                                     <tr>
                                         <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950,  fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('الإجماليات الكلية للميزان')}</td>
                                         <td style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalDebit} /></td>

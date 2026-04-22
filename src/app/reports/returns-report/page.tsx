@@ -82,7 +82,7 @@ export default function ReturnsReportPage() {
                 <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
                         { label: t('إجمالي مرتجع البيع'), value: fmt(stats.totalSaleReturns), color: '#ef4444', icon: <TrendingDown size={20} /> },
-                        { label: t('إجمالي مرتجع الشراء'), value: fmt(stats.totalPurchaseReturns), color: '#3b82f6', icon: <TrendingUp size={20} /> },
+                        { label: t('إجمالي مرتجع الشراء'), value: fmt(stats.totalPurchaseReturns), color: '#256af4', icon: <TrendingUp size={20} /> },
                         { label: t('إجمالي عدد الفواتير'), value: data.length.toLocaleString('en-US'), color: '#a78bfa', icon: <FileText size={20} /> },
                         { label: t('متوسط قيمة العملية'), value: fmt(data.length ? (stats.totalSaleReturns + stats.totalPurchaseReturns) / data.length : 0), color: '#10b981', icon: <Activity size={20} /> },
                     ].map((s, i) => (
@@ -177,9 +177,9 @@ export default function ReturnsReportPage() {
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{
                                                     padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
-                                                    background: r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(59, 130, 246, 0.1)',
-                                                    color: r.type === 'sale_return' ? '#ef4444' : '#3b82f6',
-                                                    border: `1px solid ${r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(59, 130, 246, 0.2)'}`
+                                                    background: r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(37, 106, 244, 0.1)',
+                                                    color: r.type === 'sale_return' ? '#ef4444' : '#256af4',
+                                                    border: `1px solid ${r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(37, 106, 244, 0.2)'}`
                                                 }}>
                                                     {r.type === 'sale_return' ? t('مرتجع مبيعات') : t('مرتجع مشتريات')}
                                                 </span>

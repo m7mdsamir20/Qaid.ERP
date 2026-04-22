@@ -569,7 +569,7 @@ function NewSalePageInner() {
 
                         {/* Basic Data */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
+                            <div style={{ ...STitle, color: '#256af4' }}><Receipt size={12} /> {t('بيانات الفاتورة')}</div>
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: isServices ? '100px 1.8fr 140px 140px' : '100px 1.2fr 1fr 140px 140px', gap: '10px' }}>
                                 <div className="mobile-hide">
                                     <div style={{ display: 'flex', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
@@ -577,7 +577,7 @@ function NewSalePageInner() {
                                     </div>
                                     <div style={{
                                         height: '42px', borderRadius: '10px',
-                                        background: 'rgba(59,130,246,0.08)',
+                                        background: 'rgba(37, 106, 244,0.08)',
                                         border: `1px solid ${C.border}`,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                                         fontFamily: OUTFIT, fontWeight: 900,
@@ -658,7 +658,7 @@ function NewSalePageInner() {
 
                         {/* Items */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}>
+                            <div style={{ ...STitle, color: '#256af4' }}>
                                 <Package size={12} /> {isServices ? t('إضافة الخدمات') : t('اضافة الاصناف')}
                             </div>
 
@@ -744,7 +744,7 @@ function NewSalePageInner() {
                                 <button onClick={addLine} disabled={!entryItemId || (!isServices && !form.warehouseId)}
                                     style={{
                                         height: '38px', borderRadius: '10px', border: 'none',
-                                        background: (!entryItemId || (!isServices && !form.warehouseId)) ? 'rgba(59,130,246,0.3)' : C.primary,
+                                        background: (!entryItemId || (!isServices && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : C.primary,
                                         color: '#fff', cursor: (!entryItemId || (!isServices && !form.warehouseId)) ? 'not-allowed' : 'pointer',
                                         display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.15s', width: '60px', flexShrink: 0
                                     }}
@@ -827,7 +827,7 @@ function NewSalePageInner() {
 
                         {/* Attachments */}
                         <div style={SC}>
-                            <div style={{ ...STitle, marginBottom: '10px', color: '#3b82f6' }}><Camera size={12} /> {t('المرفقات')}</div>
+                            <div style={{ ...STitle, marginBottom: '10px', color: '#256af4' }}><Camera size={12} /> {t('المرفقات')}</div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                 <div style={{
                                     flex: 1,
@@ -886,7 +886,7 @@ function NewSalePageInner() {
                     <div style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
 
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}>{t('ملخص الفاتورة')}</div>
+                            <div style={{ ...STitle, color: '#256af4' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
 
                                 {/* إجمالي الأصناف */}
@@ -994,7 +994,7 @@ function NewSalePageInner() {
 
                         {/* Payment */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}>{t('التحصيل والسداد')}</div>
+                            <div style={{ ...STitle, color: '#256af4' }}>{t('التحصيل والسداد')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 {/* Payment Type */}
                                 <div>
@@ -1214,7 +1214,7 @@ function NewSalePageInner() {
 
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button type="submit" disabled={submitting} style={{
-                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(59,130,246,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
+                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(37, 106, 244,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
                         }}>
                             {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                         </button>

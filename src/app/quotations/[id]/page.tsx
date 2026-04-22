@@ -100,7 +100,7 @@ export default function QuotationViewPage() {
 
                         {/* Info Card - Regions */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}><Info size={12} /> {t('معلومات العرض والعميل')}</div>
+                            <div style={{ ...STitle, color: '#256af4' }}><Info size={12} /> {t('معلومات العرض والعميل')}</div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1px 1fr', gap: '40px' }}>
                                 {/* Customer */}
                                 <div>
@@ -135,7 +135,7 @@ export default function QuotationViewPage() {
 
                         {/* Items Table - Region */}
                         <div style={SC}>
-                            <div style={{ ...STitle, color: '#3b82f6' }}><Package size={12} /> {isServices ? t('بنود الخدمة') : t('بنود الأصناف')}</div>
+                            <div style={{ ...STitle, color: '#256af4' }}><Package size={12} /> {isServices ? t('بنود الخدمة') : t('بنود الأصناف')}</div>
                             <div className="scroll-table" style={{ borderRadius: '12px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
@@ -175,7 +175,7 @@ export default function QuotationViewPage() {
                     {/* ── Right Column: Summary ── */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                         <div style={{ ...SC, position: 'sticky', top: '20px' }}>
-                            <div style={{ ...STitle, color: '#3b82f6', fontSize: '12px', marginBottom: '15px' }}>
+                            <div style={{ ...STitle, color: '#256af4', fontSize: '12px', marginBottom: '15px' }}>
                                 <Info size={12} /> {t('ملخص عرض السعر')}
                             </div>
                             

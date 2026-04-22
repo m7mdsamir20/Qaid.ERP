@@ -180,7 +180,7 @@ export default function SuppliersPage() {
     const fmt = (v: number) => v.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 2 });
 
     const stats = [
-        { id: 'total', label: t('إجمالي الموردين'), value: suppliers.length, icon: <Truck size={18} />, iconColor: '#3b82f6', suffix: t('مورد') },
+        { id: 'total', label: t('إجمالي الموردين'), value: suppliers.length, icon: <Truck size={18} />, iconColor: '#256af4', suffix: t('مورد') },
         { id: 'credit', label: t('إجمالي الدائنية (له عندنا)'), value: suppliers.filter(s => s.balance > 0).reduce((a, b) => a + b.balance, 0), icon: <TrendingUp size={18} />, iconColor: '#fb7185', suffix: cSymbol },
         { id: 'debit', label: t('إجمالي المديونية (عليه لنا)'), value: suppliers.filter(s => s.balance < 0).reduce((a, b) => a + Math.abs(b.balance), 0), icon: <TrendingDown size={18} />, iconColor: '#10b981', suffix: cSymbol },
     ];

@@ -46,8 +46,8 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                 const isTrial = sub.plan === 'trial';
                 const totalDays = isTrial ? 14 : 365;
                 const pct = Math.min(100, Math.max(0, (daysLeft / totalDays) * 100));
-                const barColor = daysLeft <= 3 ? '#ef4444' : daysLeft <= 7 ? '#f59e0b' : planColors[sub.plan] || '#3b82f6';
-                const planColor = planColors[sub.plan] || '#3b82f6';
+                const barColor = daysLeft <= 3 ? '#ef4444' : daysLeft <= 7 ? '#f59e0b' : planColors[sub.plan] || '#256af4';
+                const planColor = planColors[sub.plan] || '#256af4';
 
                 return (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
@@ -81,7 +81,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                     <div style={{ flex: 1, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                         <span style={{ fontSize: '14px', fontWeight: 900, color: isExpired ? C.danger : '#10b981', fontFamily: CAIRO }}>
                                             {isExpired ? t('غير مفعّلة / منتهية') : t('مفعّلة ونشطة')}
-                                            {isTrial && !isExpired && <span style={{ marginInlineEnd: '10px', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: 'rgba(59,130,246,0.1)', color: C.primary, border: `1px solid ${C.primary}30` }}>({t('نسخة تجريبية')})</span>}
+                                            {isTrial && !isExpired && <span style={{ marginInlineEnd: '10px', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: 'rgba(37, 106, 244,0.1)', color: C.primary, border: `1px solid ${C.primary}30` }}>({t('نسخة تجريبية')})</span>}
                                         </span>
                                     </div>
                                 </div>

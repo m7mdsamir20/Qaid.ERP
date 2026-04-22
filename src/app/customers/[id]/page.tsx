@@ -1,4 +1,5 @@
-'use client';
+'use client';import { C } from '@/constants/theme';
+
 import React, { useState, useEffect, useCallback, use } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -120,14 +121,14 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>{t('تاريخ البداية')}</label>
                             <div style={{ position: 'relative' }}>
-                                <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
+                                <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                 <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
                             </div>
                         </div>
                         <div>
                             <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 800, color: 'var(--text-secondary)' }}>{t('تاريخ النهاية')}</label>
                             <div style={{ position: 'relative' }}>
-                                <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: 'var(--primary)' }} />
+                                <Calendar size={16} style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                 <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '100%', height: '44px', padding: '0 40px 0 14px', borderRadius: '12px', border: '1px solid var(--border-subtle)', background: 'var(--surface-100)', color: 'var(--text-primary)', fontWeight: 700, outline: 'none', direction: 'ltr' }} />
                             </div>
                         </div>
@@ -195,7 +196,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                             {new Date(row.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })}
                                         </td>
                                         <td style={{ padding: '14px 20px', }}>
-                                            <span style={{ padding: '4px 10px', borderRadius: '8px', background: row.type === 'invoice' ? 'rgba(59,130,246,0.1)' : row.type === 'receipt' ? 'rgba(16,185,129,0.1)' : 'var(--surface-200)', color: row.type === 'invoice' ? 'var(--primary)' : row.type === 'receipt' ? '#10b981' : 'var(--text-secondary)', fontSize: '11px', fontWeight: 900 }}>
+                                            <span style={{ padding: '4px 10px', borderRadius: '8px', background: row.type === 'invoice' ? 'rgba(37, 106, 244,0.1)' : row.type === 'receipt' ? 'rgba(16,185,129,0.1)' : 'var(--surface-200)', color: row.type === 'invoice' ? 'var(--primary)' : row.type === 'receipt' ? '#10b981' : 'var(--text-secondary)', fontSize: '11px', fontWeight: 900 }}>
                                                 {row.type === 'invoice' ? (isServices ? t('فاتورة خدمة') : t('فاتورة مبيعات')) : row.type === 'receipt' ? t('سند تحصيل') : row.type === 'return' ? (isServices ? t('مرتجع خدمة') : t('مرتجع بيع')) : row.type === 'payment' ? t('سند صرف') : row.type === 'refund' ? t('استرداد') : t('حركة محاسبية')}
                                             </span>
                                         </td>
@@ -213,7 +214,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                                 {ledger.length === 0 && (
                                     <tr>
                                         <td colSpan={7} style={{  padding: '100px 24px', color: 'var(--text-muted)', fontWeight: 800, fontSize: '15px' }}>
-                                            <ScrollText size={48} style={{ display: 'block', margin: '0 auto 16px', opacity: 0.2 }} />
+                                            <ScrollText size={48} style={{ display: 'block', margin: '0 auto 16px', }} />
                                             {t('لا توجد حركات مسجلة لهذا العميل في الفترة المحددة')}
                                         </td>
                                     </tr>

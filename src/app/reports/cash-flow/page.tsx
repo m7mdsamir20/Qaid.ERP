@@ -97,7 +97,7 @@ export default function CashFlowReportPage() {
                                 { label: t('إجمالي المقبوضات'), value: fmt(stats.totalIncome), color: '#10b981', icon: <TrendingUp size={18} /> },
                                 { label: t('إجمالي المدفوعات'), value: fmt(stats.totalExpense), color: '#fb7185', icon: <TrendingDown size={18} /> },
                                 { label: t('صافي التدفق'), value: fmt(stats.netFlow), color: stats.netFlow >= 0 ? '#10b981' : '#fb7185', icon: <DollarSign size={18} /> },
-                                { label: t('عدد الحركات'), value: data.length.toString(), color: '#3b82f6', icon: <Activity size={18} /> },
+                                { label: t('عدد الحركات'), value: data.length.toString(), color: '#256af4', icon: <Activity size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',

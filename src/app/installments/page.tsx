@@ -228,7 +228,7 @@ export default function InstallmentsPage() {
     };
 
     const kpiData = [
-        { label: t('إجمالي الخطط'), value: kpis.total, color: '#3b82f6', icon: CreditCard, subtitle: t('إجمالي الحالات') },
+        { label: t('إجمالي الخطط'), value: kpis.total, color: '#256af4', icon: CreditCard, subtitle: t('إجمالي الحالات') },
         { label: t('خطط نشطة'), value: kpis.active, color: '#10b981', icon: CheckCircle2, subtitle: t('جاري التحصيل') },
         { label: t('أقساط متأخرة'), value: kpis.overdue, color: '#fb7185', icon: AlertTriangle, subtitle: t('تحتاج متابعة') },
         { label: t('المتبقي للتحصيل'), value: fmtN(kpis.pending), color: '#a78bfa', icon: Wallet, subtitle: t('إجمالي المديونية'), suffix: cSymbol },
@@ -819,21 +819,7 @@ export default function InstallmentsPage() {
                     </form>
                 </AppModal>
             </div>
-            <style jsx global>{`
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                @keyframes modalSlideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-                .custom-scrollbar::-webkit-scrollbar { width: 6px; }
-                .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.2); border-radius: 10px; }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(59, 130, 246, 0.4); }
-                [dir={isRtl ? 'rtl' : 'ltr'}] input[type="date"]::-webkit-calendar-picker-indicator {
-                    position: absolute;
-                    insetInlineEnd: 0;
-                    width: 40px;
-                    opacity: 0;
-                    cursor: pointer;
-                }
-            `}</style>
+            
         </>
         </DashboardLayout>
     );

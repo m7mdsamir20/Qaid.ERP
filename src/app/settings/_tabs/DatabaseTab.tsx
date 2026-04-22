@@ -76,7 +76,7 @@ export default function DatabaseTab({
                                     URL.revokeObjectURL(url);
                                 } catch { alert(t('فشل التحميل')); }
                             }}
-                            style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: 'none', background: `linear-gradient(135deg, ${C.primary}, #2563eb)`, color: '#fff', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 4px 12px ${C.primary}30`, flexShrink: 0, fontFamily: CAIRO }}>
+                            style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: 'none', background: `linear-gradient(135deg, ${C.primary}, #256af4)`, color: '#fff', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 4px 12px ${C.primary}30`, flexShrink: 0, fontFamily: CAIRO }}>
                             <Download size={14} /> {t('تحميل JSON')}
                         </button>
                     </div>
@@ -203,7 +203,7 @@ export default function DatabaseTab({
                     <div onClick={e => e.stopPropagation()} dir="rtl" style={{ width: '100%', maxWidth: importStep === 2 && importType !== 'items' ? '820px' : importStep === 2 && importType === 'items' ? '780px' : '620px', background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '20px', overflow: 'hidden', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', transition: 'max-width 0.3s ease' }}>
                         <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4' }}>
                                     <FileSpreadsheet size={20} />
                                 </div>
                                 <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
@@ -239,15 +239,15 @@ export default function DatabaseTab({
 
                         <div style={{ padding: '24px' }}>
                             {importStep === 1 && (
-                                <div style={{ textAlign: 'center', padding: '40px 20px', border: '2px dashed rgba(59,130,246,0.2)', borderRadius: '16px', background: 'rgba(59,130,246,0.02)' }}>
-                                    <FileSpreadsheet size={48} style={{ color: '#3b82f6', marginBottom: '16px', opacity: 0.5 }} />
+                                <div style={{ textAlign: 'center', padding: '40px 20px', border: '2px dashed rgba(37, 106, 244,0.2)', borderRadius: '16px', background: 'rgba(37, 106, 244,0.02)' }}>
+                                    <FileSpreadsheet size={48} style={{ color: '#256af4', marginBottom: '16px', opacity: 0.5 }} />
                                     <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 700 }}>{t('اختر ملف Excel')}</h3>
                                     <p style={{ margin: '0 0 24px', fontSize: '13px', color: '#64748b' }}>
                                         {importType === 'items'
                                             ? t('الأعمدة المطلوبة: اسم الصنف، التصنيف، وحدة القياس، سعر التكلفة، سعر البيع، الكمية الافتتاحية')
                                             : t('الأعمدة المطلوبة: الاسم، الهاتف، العنوان، الرصيد الافتتاحي، نوع الرصيد')}
                                     </p>
-                                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 28px', borderRadius: '10px', background: '#3b82f6', color: '#fff', fontWeight: 700, cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(59,130,246,0.3)' }}>
+                                    <label style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 28px', borderRadius: '10px', background: '#256af4', color: '#fff', fontWeight: 700, cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(37, 106, 244,0.3)' }}>
                                         <Plus size={18} /> {t('اختيار الملف')}
                                         <input type="file" hidden accept=".xlsx,.xls,.csv" onChange={handleImportFileChange} />
                                     </label>
@@ -263,7 +263,7 @@ export default function DatabaseTab({
 
                                     {/* ── Warehouse Selector (items only) ── */}
                                     {importType === 'items' && (
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '14px 18px', background: 'rgba(59,130,246,0.05)', border: `1px solid ${C.primary}20`, borderRadius: '12px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px', padding: '14px 18px', background: 'rgba(37, 106, 244,0.05)', border: `1px solid ${C.primary}20`, borderRadius: '12px' }}>
                                             <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, flexShrink: 0 }}>
                                                 <Layers size={16} />
                                             </div>

@@ -18,7 +18,7 @@ const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2
 const statusColor: Record<string, { bg: string; color: string; label: string }> = {
     paid:    { bg: 'rgba(52,211,153,0.1)',  color: '#34d399', label: 'مدفوع'    },
     partial: { bg: 'rgba(245,158,11,0.1)',  color: '#f59e0b', label: 'جزئي'    },
-    pending: { bg: 'rgba(59,130,246,0.1)',  color: '#3b82f6', label: 'قادم'    },
+    pending: { bg: 'rgba(37, 106, 244,0.1)',  color: '#256af4', label: 'قادم'    },
     overdue: { bg: 'rgba(239,68,68,0.1)',   color: '#f87171', label: 'متأخر'   },
 };
 
@@ -236,9 +236,9 @@ export default function InstallmentDetailPage() {
                                 <div style={{ height: '10px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', position: 'relative' }}>
                                     <div style={{ 
                                         width: `${progressPct}%`, height: '100%', 
-                                        background: 'linear-gradient(90deg, #3b82f6, #60a5fa)', 
+                                        background: 'linear-gradient(90deg, #256af4, #60a5fa)', 
                                         borderRadius: '10px', transition: 'width 1s cubic-bezier(0.16, 1, 0.3, 1)',
-                                        boxShadow: '0 0 10px rgba(59, 130, 246, 0.4)'
+                                        boxShadow: '0 0 10px rgba(37, 106, 244, 0.4)'
                                     }} />
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', fontSize: '11px', color: C.textMuted, fontWeight: 700 }}>
@@ -783,7 +783,7 @@ export default function InstallmentDetailPage() {
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 .custom-scrollbar::-webkit-scrollbar { width: 6px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.2); border-radius: 10px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(37, 106, 244, 0.2); border-radius: 10px; }
             `}</style>
         </DashboardLayout>
     );

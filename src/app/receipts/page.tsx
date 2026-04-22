@@ -169,7 +169,7 @@ export default function ReceiptVouchersPage() {
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                     padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                    background: v.treasury?.type === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                                    background: v.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                                     color: v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981',
                                                     border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#10b981'}30`, fontFamily: CAIRO
                                                 }}>
@@ -202,17 +202,7 @@ export default function ReceiptVouchersPage() {
                         </div>
                     )}
                 </div>
-                <style jsx global>{`
-                    @keyframes spin { to { transform:rotate(360deg); } }
-                    input[type="date"]::-webkit-calendar-picker-indicator {
-                        cursor: pointer;
-                        opacity: 0.45;
-                        transition: opacity 0.2s;
-                    }
-                    input[type="date"]::-webkit-calendar-picker-indicator:hover {
-                        opacity: 1;
-                    }
-                `}</style>
+                
             </div>
         </DashboardLayout>
     );

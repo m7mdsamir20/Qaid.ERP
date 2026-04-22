@@ -151,7 +151,7 @@ export default function DetailedBalanceSheetPage() {
 
                         {/* Equity Table */}
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                            <div style={{ padding: '14px 20px', background: 'rgba(59, 130, 246, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#3b82f6' }}>
+                            <div style={{ padding: '14px 20px', background: 'rgba(37, 106, 244, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#256af4' }}>
                                 <Sigma size={18} />
                                 <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>{t('حقوق الملكية (Equity)')}</h3>
                             </div>
@@ -164,14 +164,14 @@ export default function DetailedBalanceSheetPage() {
                                             <td style={{ padding: '10px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={e.balance} /></td>
                                         </tr>
                                     ))}
-                                    <tr style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(59, 130, 246, 0.02)' }}>
+                                    <tr style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(37, 106, 244, 0.02)' }}>
                                         <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}>—</td>
                                         <td style={{ padding: '10px 16px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('صافي الربح / الخسارة')}</td>
                                         <td style={{ padding: '10px 16px',  fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.netIncome} /></td>
                                     </tr>
-                                    <tr style={{ background: 'rgba(59, 130, 246, 0.08)', borderTop: `1px solid #3b82f633` }}>
+                                    <tr style={{ background: 'rgba(37, 106, 244, 0.08)', borderTop: `1px solid #256af433` }}>
                                         <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي حقوق الملكية')}</td>
-                                        <td style={{ padding: '12px 20px',  fontWeight: 950, color: '#3b82f6', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.totalEquities} /></td>
+                                        <td style={{ padding: '12px 20px',  fontWeight: 950, color: '#256af4', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.totalEquities} /></td>
                                     </tr>
                                 </tbody>
                             </table>

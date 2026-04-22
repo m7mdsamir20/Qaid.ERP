@@ -50,7 +50,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
 
                 {/* ── لو مفيش سنة مالية ── */}
                 {!activeFY && closedYears.length === 0 && (
-                    <div style={{ background: 'rgba(59,130,246,0.04)', border: `1px solid ${C.primary}30`, borderRadius: '16px', padding: '32px', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(37, 106, 244,0.04)', border: `1px solid ${C.primary}30`, borderRadius: '16px', padding: '32px', textAlign: 'center' }}>
                         <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, margin: '0 auto 16px' }}>
                             <CalendarDays size={32} />
                         </div>
@@ -77,7 +77,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                             if (new Date(e) <= new Date(s)) { alert(t('النهاية يجب أن تكون بعد البداية')); return; }
                             saveSettings('create_first_financial_year', { startDate: s, endDate: e });
                         }} disabled={isSaving}
-                            style={{ height: '42px', padding: '0 28px', borderRadius: '10px', border: 'none', background: `linear-gradient(135deg, ${C.primary}, #2563eb)`, color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto', boxShadow: `0 8px 20px -6px ${C.primary}40`, fontFamily: CAIRO }}>
+                            style={{ height: '42px', padding: '0 28px', borderRadius: '10px', border: 'none', background: `linear-gradient(135deg, ${C.primary}, #256af4)`, color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', margin: '0 auto', boxShadow: `0 8px 20px -6px ${C.primary}40`, fontFamily: CAIRO }}>
                             {isSaving ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <CalendarCheck size={16} />}
                             {t('تأسيس السنة المالية')}
                         </button>

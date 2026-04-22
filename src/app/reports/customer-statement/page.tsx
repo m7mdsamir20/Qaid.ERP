@@ -177,7 +177,7 @@ export default function CustomerStatementPage() {
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
+                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}>
                             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                             {t('تحديث البيانات')}
@@ -310,19 +310,7 @@ export default function CustomerStatementPage() {
                     </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

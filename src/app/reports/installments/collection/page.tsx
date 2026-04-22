@@ -119,7 +119,7 @@ export default function CollectionReportPage() {
                         background: C.primary, color: '#fff', border: 'none',
                         fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
-                        boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
+                        boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                     }}>
                         {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                         عرض التقرير
@@ -163,7 +163,7 @@ export default function CollectionReportPage() {
                             <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '14px', marginBottom: '24px' }}>
                                 {[
                                     { label: 'إجمالي المحصل', value: fmtN(data.total || 0), color: '#10b981', icon: <CheckCircle2 size={18} /> },
-                                    { label: 'عدد الأقساط', value: data.installments?.length || 0, color: '#3b82f6', icon: <Calendar size={18} /> },
+                                    { label: 'عدد الأقساط', value: data.installments?.length || 0, color: '#256af4', icon: <Calendar size={18} /> },
                                     { label: 'متوسط التحصيل', value: fmtN((data.total || 0) / (data.installments?.length || 1)), color: '#f59e0b', icon: <BarChart3 size={18} /> },
                                 ].map((s, i) => (
                                     <div key={i} style={{

@@ -178,7 +178,7 @@ export default function TreasuryReconciliationPage() {
                         {/* Summary Cards */}
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('إجمالي الرصيد الدفتري'), value: totals.systemTotal, color: '#3b82f6', icon: <HistoryIcon size={20} />, sign: t('المسجل في النظام') },
+                                { label: t('إجمالي الرصيد الدفتري'), value: totals.systemTotal, color: '#256af4', icon: <HistoryIcon size={20} />, sign: t('المسجل في النظام') },
                                 { label: t('إجمالي العجز المكتشف'), value: totals.totalShortage, color: DC, icon: <TrendingDown size={20} />, sign: t('نقص في الأرصدة (-)') },
                                 { label: t('إجمالي الزيادة المكتشفة'), value: totals.totalSurplus, color: SC, icon: <TrendingUp size={20} />, sign: t('زيادة في الأرصدة (+)') },
                                 { label: t('نسبة الجرد المكتملة'), value: treasuries.length > 0 ? (totals.reconciledCount / treasuries.length * 100) : 0, isPercent: true, color: '#a855f7', icon: <ShieldCheck size={20} />, sign: `${totals.reconciledCount} ${t('من أصل')} ${treasuries.length}` },
@@ -316,7 +316,7 @@ export default function TreasuryReconciliationPage() {
                                                 onMouseEnter={e => (e.currentTarget.style.borderColor = C.primary)}
                                                 onMouseLeave={e => (e.currentTarget.style.borderColor = C.border)}>
                                                 <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(37,99,235,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                                                    <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                                         <ClipboardList size={20} />
                                                     </div>
                                                     <div>
@@ -348,7 +348,7 @@ export default function TreasuryReconciliationPage() {
 
                                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                                             {[
-                                                { label: t('الرصيد الدفتري'), value: selectedSnapshot.totalSystem, color: '#3b82f6', sign: t('المسجل في النظام') },
+                                                { label: t('الرصيد الدفتري'), value: selectedSnapshot.totalSystem, color: '#256af4', sign: t('المسجل في النظام') },
                                                 { label: t('الرصيد الفعلي'), value: selectedSnapshot.totalPhysical, color: C.primary, sign: t('حسب العد') },
                                                 { label: t('إجمالي العجز'), value: selectedSnapshot.totalShortage, color: DC, sign: t('نقص (-)') },
                                                 { label: t('إجمالي الزيادة'), value: selectedSnapshot.totalSurplus, color: SC, sign: t('زيادة (+)') },

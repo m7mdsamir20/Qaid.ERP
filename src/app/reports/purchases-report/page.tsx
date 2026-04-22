@@ -135,7 +135,7 @@ export default function PurchasesReportPage() {
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
+                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}>
                             <Search size={16} /> {t('تحديث البيانات')}
                         </button>
@@ -157,7 +157,7 @@ export default function PurchasesReportPage() {
                     <>
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('إجمالي المشتريات'), value: fmt(data.totalPurchases), color: '#3b82f6', icon: <ShoppingCart size={18} /> },
+                                { label: t('إجمالي المشتريات'), value: fmt(data.totalPurchases), color: '#256af4', icon: <ShoppingCart size={18} /> },
                                 { label: t('إجمالي الخصومات'), value: fmt(data.totalDiscount), color: '#fb923c', icon: <ArrowDownRight size={18} /> },
                                 { label: t('المبالغ المسددة'), value: fmt(data.totalPaid), color: '#10b981', icon: <ArrowUpRight size={18} /> },
                                 { label: t('الأرصدة المستحقة'), value: fmt(data.totalRemaining), color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', icon: <DollarSign size={18} /> },
@@ -182,7 +182,7 @@ export default function PurchasesReportPage() {
                         </div>
 
                         <div className="no-print" style={{ position: 'relative', width: '100%', marginBottom: '20px' }}>
-                            <Search size={18} style={{ ...SEARCH_STYLE.icon(C.primary), position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, opacity: 1 }} />
+                            <Search size={18} style={{ ...SEARCH_STYLE.icon(C.primary), position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', zIndex: 10, }} />
                             <input
                                 placeholder={t("ابحث برقم الفاتورة أو اسم المورد...")}
                                 value={q} onChange={e => setQ(e.target.value)}
@@ -223,7 +223,7 @@ export default function PurchasesReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>
+                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>
                                                     PUR-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </span>
                                             </td>
@@ -257,20 +257,7 @@ export default function PurchasesReportPage() {
                     </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg) } }
-                .print-only { display: none; }
-                @media print { 
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    .stat-value { font-size: 11px !important; color: #000 !important; }
-                    .stat-label { font-size: 9px !important; color: #666 !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p, small { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

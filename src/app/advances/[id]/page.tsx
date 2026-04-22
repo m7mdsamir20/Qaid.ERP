@@ -1,4 +1,5 @@
 'use client';
+import { C } from '@/constants/theme';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -109,7 +110,7 @@ export default function AdvanceDetailPage() {
                             <button 
                                 onClick={() => handleUpdateStatus('deducted')} 
                                 disabled={isUpdating}
-                                style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '8px', border: 'none', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff', fontSize: '12px', fontWeight: 700, cursor: isUpdating ? 'wait' : 'pointer', transition: 'all 0.2s' }}
+                                style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '8px', border: 'none', background: 'linear-gradient(135deg, #256af4, #256af4)', color: '#fff', fontSize: '12px', fontWeight: 700, cursor: isUpdating ? 'wait' : 'pointer', transition: 'all 0.2s' }}
                                 onMouseEnter={e => e.currentTarget.style.opacity = '0.9'}
                                 onMouseLeave={e => e.currentTarget.style.opacity = '1'}
                             >
@@ -126,14 +127,14 @@ export default function AdvanceDetailPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                         <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-                                <div style={{ color: '#3b82f6' }}><Receipt size={20} /></div>
+                                <div style={{ color: '#256af4' }}><Receipt size={20} /></div>
                                 <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>{t('البيانات الأساسية')}</h3>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('تاريخ الصرف')}</label>
                                     <div style={{ fontSize: '14px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <Calendar size={14} style={{ color: '#94a3b8' }} /> {new Date(advance.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
+                                        <Calendar size={14} style={{ color: C.primary }} /> {new Date(advance.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                     </div>
                                 </div>
                                 <div>
@@ -179,7 +180,7 @@ export default function AdvanceDetailPage() {
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div style={{ padding: '24px', borderRadius: '20px', background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
-                            <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6', margin: '0 auto 16px' }}>
+                            <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4', margin: '0 auto 16px' }}>
                                 <User size={30} />
                             </div>
                             <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: '#fff' }}>{advance.employee.name}</h2>

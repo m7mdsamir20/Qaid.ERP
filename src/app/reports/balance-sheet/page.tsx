@@ -204,7 +204,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                         <div className="print-main-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px', alignItems: 'stretch' }}>
                             {/* Assets Column */}
                             <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', display: 'flex', flexDirection: 'column' }}>
-                                <div style={{ padding: '20px 24px', background: 'rgba(59, 130, 246, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#3b82f6' }}>
+                                <div style={{ padding: '20px 24px', background: 'rgba(37, 106, 244, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '12px', color: '#256af4' }}>
                                     <Landmark size={20} />
                                     <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, fontFamily: CAIRO }}>{t('الأصول (Assets)')}</h3>
                                 </div>
@@ -221,9 +221,9 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                         ))}
                                     </div>
                                 </div>
-                                <div style={{ padding: '20px 24px', background: 'rgba(59, 130, 246, 0.08)', borderTop: `2px solid #3b82f633`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <div style={{ padding: '20px 24px', background: 'rgba(37, 106, 244, 0.08)', borderTop: `2px solid #256af433`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إجمالي الأصول')}</span>
-                                    <span style={{ fontSize: '14px', fontWeight: 950, color: '#3b82f6', fontFamily: OUTFIT }}><Currency amount={data.totalAssets} /></span>
+                                    <span style={{ fontSize: '14px', fontWeight: 950, color: '#256af4', fontFamily: OUTFIT }}><Currency amount={data.totalAssets} /></span>
                                 </div>
                             </div>
 
@@ -266,9 +266,9 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                                     <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(e.balance)}</span>
                                                 </div>
                                             ))}
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 12px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '8px', border: '1px solid #3b82f633', marginTop: '4px' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 12px', background: 'rgba(37, 106, 244, 0.05)', borderRadius: '8px', border: '1px solid #256af433', marginTop: '4px' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                    <TrendingUp size={14} color="#3b82f6" />
+                                                    <TrendingUp size={14} color="#256af4" />
                                                     <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي دخل الفترة')}</span>
                                                 </div>
                                                 <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.netIncome} /></span>
