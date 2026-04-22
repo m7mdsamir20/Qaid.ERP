@@ -175,8 +175,8 @@ export default function WarehousesPage() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('اسم المخزن')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('عدد الأصناف')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('العنوان')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('عدد الأصناف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراء')}</th>
                                     </tr>
                                 </thead>
@@ -195,13 +195,13 @@ export default function WarehousesPage() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>{wh.name}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: C.textSecondary, fontSize: '13px' }}>
                                                     <MapPin size={14} style={{ opacity: 0.6 }} />
                                                     {wh.address || t('غير محدد')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 800, color: C.purple, }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 800, color: C.purple, }}>
                                                 {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -249,7 +249,7 @@ export default function WarehousesPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input 
                                         type="text" readOnly disabled value={form.code} 
-                                        style={{ ...IS, paddingInlineStart: '32px', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', borderStyle: 'dashed' }} 
+                                        style={{ ...IS, height: '42px', paddingInlineStart: '32px', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', borderStyle: 'dashed' }} 
                                     />
                                     <ShieldCheck size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }} />
                                 </div>
@@ -261,7 +261,7 @@ export default function WarehousesPage() {
                                     placeholder={t("مثال: المخزن الرئيسي، فرع الجيزة...")} 
                                     value={form.name} 
                                     onChange={e => setForm({ ...form, name: e.target.value })} 
-                                    style={IS} 
+                                    style={{ ...IS, height: '42px' }} 
                                     onFocus={focusIn} onBlur={focusOut} 
                                 />
                             </div>
@@ -275,7 +275,7 @@ export default function WarehousesPage() {
                                     placeholder={t("أدخل عنوان المخزن بالتفصيل...")} 
                                     value={form.address} 
                                     onChange={e => setForm({ ...form, address: e.target.value })} 
-                                    style={{ ...IS, paddingInlineEnd: '40px' }} 
+                                    style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} 
                                     onFocus={focusIn} onBlur={focusOut} 
                                 />
                                 <MapPin size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.blue, opacity: 0.8 }} />

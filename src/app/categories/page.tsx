@@ -129,7 +129,7 @@ export default function CategoriesPage() {
                             placeholder={t("ابحث باسم التصنيف...")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
+                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '42px', borderRadius: '10px', background: C.card, fontSize: '13px' }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
@@ -153,7 +153,7 @@ export default function CategoriesPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         {[t('الرقم'), t('اسم التصنيف'), isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0, i === 3)}>{h}</th>
+                                            <th key={i} style={TABLE_STYLE.th(i === 0, [2, 3].includes(i))}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -171,7 +171,7 @@ export default function CategoriesPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 800, fontSize: '14px' }}>
                                                 {cat.name}
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                     padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 900, fontFamily: OUTFIT,
@@ -234,7 +234,7 @@ export default function CategoriesPage() {
                                 placeholder={isServices ? t("مثال: صيانة، استشارات، تركيبات...") : t("مثال: إلكترونيات، ملابس، مأكولات...")}
                                 value={form.name}
                                 onChange={e => setForm({ ...form, name: e.target.value })}
-                                style={IS}
+                                style={{ ...IS, height: '42px' }}
                                 onFocus={focusIn} onBlur={focusOut}
                             />
                         </div>

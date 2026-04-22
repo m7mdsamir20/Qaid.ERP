@@ -309,7 +309,7 @@ export default function AccountsPage() {
                         <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '14px', fontFamily: CAIRO }}>{acc.name}</span>
                     </div>
 
-                    <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                    <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', textAlign: 'center' }}>
                         <span style={{
                             fontSize: '11px', padding: '3px 10px', borderRadius: '8px', fontWeight: 800, fontFamily: CAIRO,
                             background: `${color}15`, color: color, width: 'fit-content'
@@ -336,11 +336,11 @@ export default function AccountsPage() {
                         </div>
                     </div>
 
-                    <div style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success }}>
+                    <div style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success, textAlign: 'center' }}>
                         {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
 
-                    <div style={{ width: '100px', display: 'flex', justifyContent: 'flex-end', gap: '6px' }}>
+                    <div style={{ width: '100px', display: 'flex', justifyContent: 'center', gap: '6px' }}>
                         <button onClick={(e) => { e.stopPropagation(); handleEdit(acc); }} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
                             <Pencil size={14} />
                         </button>
@@ -481,9 +481,9 @@ export default function AccountsPage() {
                             <div style={{ width: '32px' }}></div>
                             <div style={{ width: '100px', textAlign: 'start' }}>{t('الكود')}</div>
                             <div style={{ flex: 1, textAlign: 'start' }}>{t('اسم الحساب')}</div>
-                            <div style={{ width: '120px' }}>{t('النوع')}</div>
-                            <div style={{ width: '150px' }}>{t('الرصيد الحالي')}</div>
-                            <div style={{ width: '100px' }}>{t('إجراءات')}</div>
+                            <div style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
+                            <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
+                            <div style={{ width: '100px', textAlign: 'center' }}>{t('إجراءات')}</div>
                         </div>
 
                         <div style={{ padding: '8px', maxHeight: '70vh', overflowY: 'auto' }}>

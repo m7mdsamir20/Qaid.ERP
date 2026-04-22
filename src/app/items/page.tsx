@@ -377,10 +377,10 @@ export default function ItemsPage() {
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
                                         {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
                                         <th style={{...TABLE_STYLE.th(false)}}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false)}}>{t("الكمية")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false)}}>{t("متوسط التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("متوسط التكلفة")}</th>}
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
                                     </tr>
@@ -395,7 +395,7 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{...TABLE_STYLE.td(true)}}><div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td style={{...TABLE_STYLE.td(true), textAlign: 'start'}}><div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                     <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
@@ -404,14 +404,14 @@ export default function ItemsPage() {
                                                     <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 800, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(item.costPrice)}</td>
+                                                    <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
                                                 )}
-                                                <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(item.sellPrice)}</td>
+                                                <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.sellPrice)}</td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(avgCost)}</td>
+                                                    <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(avgCost)}</td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(totalCost)}</td>
+                                                    <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(totalCost)}</td>
                                                 )}
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>

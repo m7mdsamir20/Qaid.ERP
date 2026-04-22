@@ -126,8 +126,8 @@ export default function OtherIncomePage() {
                                 <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('بند الإيراد')}</th>
-                                <th style={{...TABLE_STYLE.th(false)}}>{t('الخزينة / البنك')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('البيان / التفاصيل')}</th>
+                                <th style={TABLE_STYLE.th(false, true)}>{t('الخزينة / البنك')}</th>
+                                <th style={TABLE_STYLE.th(false, true)}>{t('البيان / التفاصيل')}</th>
                                 <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
                             </tr>
                         </thead>
@@ -146,9 +146,7 @@ export default function OtherIncomePage() {
                                         <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px' }}>{new Date(e.date).toLocaleDateString('en-GB')}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), padding: '8px 12px' }}>
                                             <span style={{ 
-                                                fontFamily: OUTFIT, fontSize: '10px', fontWeight: 900, color: '#fff',
-                                                background: 'linear-gradient(135deg, #475569 0%, #1e293b 100%)',
-                                                padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)'
+                                                fontFamily: OUTFIT, fontSize: '11px', fontWeight: 800, color: C.primary, opacity: 0.7
                                             }}>
                                                 JV-{e.entryNumber.toString().padStart(5, '0')}
                                             </span>
@@ -157,7 +155,7 @@ export default function OtherIncomePage() {
                                             <div style={{ fontWeight: 800, color: C.textPrimary }}>{creditLine?.account?.name}</div>
                                             <div style={{ fontSize: '10px', color: C.textMuted }}>{creditLine?.account?.code}</div>
                                         </td>
-                                        <td style={{...TABLE_STYLE.td(false)}}>
+                                        <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.textPrimary, fontWeight: 700, fontSize: '13px' }}>
                                                     <Banknote size={14} style={{ color: e.sourceType === 'bank' ? '#60a5fa' : C.success, opacity: 0.8 }} />
@@ -173,10 +171,10 @@ export default function OtherIncomePage() {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), maxWidth: '180px', color: C.textSecondary, fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), maxWidth: '180px', color: C.textSecondary, fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                             {e.description || '—'}
                                         </td>
-                                        <td style={{...TABLE_STYLE.td(false)}}>
+                                        <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: OUTFIT }}>
                                                 {(creditLine?.credit || 0).toLocaleString('en-US')}
                                                 <small style={{ fontSize: '11px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>

@@ -187,8 +187,8 @@ export default function CostCentersPage() {
                                 <tr style={TABLE_STYLE.thead}>
                                     <th style={{ ...TABLE_STYLE.th(true) }}>{t('رمز المركز')}</th>
                                     <th style={{ ...TABLE_STYLE.th(false) }}>{t('اسم المركز التكاليفي')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('البيان / الملاحظات')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('البيان / الملاحظات')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
                                     <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('إجمالي المصروفات')}</th>
                                     <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
                                 </tr>
@@ -205,18 +205,18 @@ export default function CostCentersPage() {
                                         <td style={TABLE_STYLE.td(false)}>
                                             <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{cc.name}</div>
                                         </td>
-                                        <td style={TABLE_STYLE.td(false)}>
+                                        <td style={TABLE_STYLE.td(false, true)}>
                                             <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {cc.description || '—'}
                                             </div>
                                         </td>
-                                        <td style={TABLE_STYLE.td(false)}>
+                                        <td style={TABLE_STYLE.td(false, true)}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 800, color: cc.isActive ? C.success : C.danger, background: cc.isActive ? C.successBg : C.dangerBg, padding: '3px 10px', borderRadius: '20px', border: `1px solid ${cc.isActive ? C.successBorder : C.dangerBorder}` }}>
                                                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: cc.isActive ? C.success : C.danger }} />
                                                 {cc.isActive ? t('نشط') : t('موقوف')}
                                             </div>
                                         </td>
-                                        <td style={{...TABLE_STYLE.td(false)}}>
+                                        <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {cc.totalExpenses ? cc.totalExpenses.toLocaleString('en-US') : '0.00'} 
                                                 <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>

@@ -123,11 +123,11 @@ export default function QuotationsPage() {
                     <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
                         <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '42px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
                         </div>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
                         <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '42px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
                         </div>
                     </div>
 
@@ -167,7 +167,7 @@ export default function QuotationsPage() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t("رقم العرض")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t("العميل")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t("الإجمالي")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الحالة")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
@@ -187,10 +187,10 @@ export default function QuotationsPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
                                                     {quo.customer?.name || t('عميل نقدي')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false)}}>
+                                                <td style={{...TABLE_STYLE.td(false, true)}}>
                                                     {fMoneyJSX(quo.total)}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>

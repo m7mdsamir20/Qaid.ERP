@@ -256,8 +256,8 @@ export default function JournalEntriesPage() {
                                     <th style={{...TABLE_STYLE.th(false)}}>{t('البيان / الوصف العام')}</th>
                                     <th style={{...TABLE_STYLE.th(false)}}>{t('المرجع')}</th>
                                     <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                    <th style={{...TABLE_STYLE.th(false)}}>{t('التفاصيل')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('التفاصيل')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -282,10 +282,10 @@ export default function JournalEntriesPage() {
                                                 <td style={{...TABLE_STYLE.td(false)}}>
                                                     {entry.reference ? <span style={{ fontSize: '10px', color: C.textMuted, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{entry.reference}</span> : '—'}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 900, color: C.purple, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     {fMoney(dr)}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false)}}>
+                                                <td style={TABLE_STYLE.td(false, true)}>
                                                     <button onClick={() => togglePost(entry)} disabled={posting === entry.id}
                                                         style={{ 
                                                             display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', 
@@ -297,7 +297,7 @@ export default function JournalEntriesPage() {
                                                         {entry.isPosted ? t('مرحّل') : t('مسودة')}
                                                     </button>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                <td style={TABLE_STYLE.td(false, true)}>
                                                     <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                                                         <button onClick={() => setExpandedId(isExpanded ? null : entry.id)} style={TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textMuted)}><ChevronRight size={16} /></button>
                                                         <button onClick={() => handlePrintEntry(entry)} style={TABLE_STYLE.actionBtn(C.textSecondary)}><Printer size={16} /></button>
