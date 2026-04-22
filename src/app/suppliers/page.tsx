@@ -247,11 +247,11 @@ export default function SuppliersPage() {
 
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '60px', textAlign: 'center' }}>
+                        <div style={{ padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
+                        <div style={{ padding: '70px' }}>
                             <UserX size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد موردين')}</p>
                         </div>
@@ -260,11 +260,11 @@ export default function SuppliersPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('المورد')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('العنوان')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('المورد')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('رقم الهاتف')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -276,7 +276,7 @@ export default function SuppliersPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={TABLE_STYLE.td(true)}>
+                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
                                                         <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{c.name.charAt(0)}</div>
                                                         <Link
@@ -291,7 +291,7 @@ export default function SuppliersPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <span style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
                                                         background: isCredit ? 'rgba(239, 68, 68, 0.12)' : (isDebit ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
@@ -302,7 +302,7 @@ export default function SuppliersPage() {
                                                         <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 800 }}><Currency amount={Math.abs(c.balance)} /></span>
                                                     </span>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => openEdit(c)} style={TABLE_STYLE.actionBtn()}><Edit3 size={TABLE_STYLE.actionIconSize} /></button>
                                                         <button onClick={() => setDeleteItem(c)} style={TABLE_STYLE.actionBtn(C.danger)}><Trash2 size={TABLE_STYLE.actionIconSize} /></button>
@@ -430,7 +430,7 @@ export default function SuppliersPage() {
                                                 if ((v.match(/\./g) || []).length > 1) return;
                                                 setForm({ ...form, openingBalance: v });
                                             }}
-                                            style={{ ...IS, width: '100%', border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }}
+                                            style={{ ...IS, width: '100%', border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 700 }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
                                         <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{cSymbol}</span>

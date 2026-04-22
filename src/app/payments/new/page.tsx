@@ -302,7 +302,7 @@ export default function NewPaymentPage() {
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
                                                 border: 'none', color: C.danger, fontWeight: 900,
-                                                fontSize: '22px', textAlign: 'center', paddingInlineEnd: '20px',
+                                                fontSize: '22px', paddingInlineEnd: '20px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut}

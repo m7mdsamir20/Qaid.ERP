@@ -155,12 +155,12 @@ export default function PartnersPage() {
                 )}
 
                 {loading ? (
-                    <div style={{ padding: '80px', textAlign: 'center' }}>
+                    <div style={{ padding: '80px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ margin: 0, color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري استرجاع سجلات الشركاء...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
+                    <div style={{ padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح')}</p>
@@ -203,11 +203,11 @@ export default function PartnersPage() {
                                         </div>
 
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
-                                            <div style={{ textAlign: 'center' }}>
+                                            <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
                                                 <div style={{ fontSize: '15px', fontWeight: 900, color: C.blue, fontFamily: OUTFIT }}>{p.capital.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span></div>
                                             </div>
-                                            <div style={{ textAlign: 'center' }}>
+                                            <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
                                                 <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
                                                     {p.balance.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>

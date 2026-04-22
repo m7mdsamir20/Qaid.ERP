@@ -25,7 +25,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
             {(() => {
                 const sub = (session?.user as any)?.subscription;
                 if (!sub) return (
-                    <div style={{ textAlign: 'center', padding: '60px', background: 'rgba(239,68,68,0.05)', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.1)' }}>
+                    <div style={{ padding: '60px', background: 'rgba(239,68,68,0.05)', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.1)' }}>
                         <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
                         <h3 style={{ color: '#ef4444', margin: '0 0 8px', fontSize: '16px' }}>{t('لا توجد بيانات اشتراك')}</h3>
                         <p style={{ color: '#64748b', margin: 0, fontSize: '13px' }}>{t('تواصل مع المسؤول لتفعيل اشتراكك')}</p>
@@ -156,7 +156,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                 <ArrowUpRight size={14} /> {t('طلب ترقية أو تجديد')}
                             </div>
 
-                            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '32px', textAlign: 'center', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '32px', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                 <div style={{ width: 56, height: 56, background: `${C.primary}15`, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, margin: '0 auto 20px', boxShadow: `0 8px 16px ${C.primary}20` }}>
                                     <ArrowUpRight size={24} />
                                 </div>

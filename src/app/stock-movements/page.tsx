@@ -81,7 +81,7 @@ export default function StockMovementsPage() {
                             {(session?.user as any)?.commercialRegister && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('السجل التجاري')}: {(session?.user as any)?.commercialRegister}</div>}
                             {(session?.user as any)?.phone && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('الهاتف')}: {(session?.user as any)?.phone}</div>}
                         </div>
-                        <div style={{ textAlign: 'center' }}>
+                        <div style={{ }}>
                             <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{t('سجل حركات المخزون الشامل')}</h3>
                         </div>
                         <div style={{ maxWidth: '150px', textAlign: 'end' }}>
@@ -112,7 +112,7 @@ export default function StockMovementsPage() {
                             <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل حركات المخزون...')}</span>
                         </div>
                     ) : filteredMovements.length === 0 ? (
-                        <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <div style={{ padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <Activity size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                             <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حركات مخزنية')}</h3>
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم تسجيل أي عمليات مخزنية تطابق بحثك.')}</p>

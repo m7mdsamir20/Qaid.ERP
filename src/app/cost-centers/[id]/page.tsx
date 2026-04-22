@@ -80,7 +80,7 @@ export default function CostCenterDetails() {
     if (!data || data.error) {
         return (
             <DashboardLayout>
-                <div style={{ color: C.danger, textAlign: 'center', padding: '80px 20px', fontFamily: CAIRO }}>
+                <div style={{ color: C.danger, padding: '80px 20px', fontFamily: CAIRO }}>
                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.5 }} />
                     {t('لم يتم العثور على مركز التكلفة')}
                 </div>
@@ -195,7 +195,7 @@ export default function CostCenterDetails() {
                     </div>
                     
                     {(!data.journalLines || data.journalLines.length === 0) ? (
-                        <div style={{ textAlign: 'center', padding: '60px 20px', color: C.textMuted }}>
+                        <div style={{ padding: '60px 20px', color: C.textMuted }}>
                             <Activity size={48} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                             <p style={{ margin: 0, fontSize: '14px', fontFamily: CAIRO }}>{t('لا توجد معاملات مسجلة لهذا التصنيف')}</p>
                         </div>

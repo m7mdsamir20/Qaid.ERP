@@ -116,12 +116,12 @@ export default function PartnerAccountsPage() {
                 )}
 
                 {loading ? (
-                    <div style={{ padding: '100px', textAlign: 'center' }}>
+                    <div style={{ padding: '100px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
                         <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل البيانات المالية...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
+                    <div style={{ padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
@@ -167,12 +167,12 @@ export default function PartnerAccountsPage() {
                                             </div>
                                         </div>
 
-                                        <div style={{ textAlign: 'center' }}>
+                                        <div style={{ }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
                                             <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: OUTFIT }}>{p.capital.toLocaleString('en-US')}</div>
                                         </div>
 
-                                         <div style={{ textAlign: 'center' }}>
+                                         <div style={{ }}>
                                              <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '2px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
                                              <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT, direction: 'ltr' }}>
                                                  {p.balance.toLocaleString('en-US')}
@@ -202,12 +202,12 @@ export default function PartnerAccountsPage() {
                                     {isExpanded && (
                                         <div style={{ borderTop: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.15)', animation: 'slideDown 0.3s ease-out' }}>
                                             {loadingTx === p.id ? (
-                                                <div style={{ padding: '40px', textAlign: 'center', color: C.textMuted }}>
+                                                <div style={{ padding: '40px', color: C.textMuted }}>
                                                     <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 8px' }} />
                                                     <span style={{ fontSize: '12px', fontWeight: 800, fontFamily: CAIRO }}>{t('استرجاع الحركات...')}</span>
                                                 </div>
                                             ) : txs.length === 0 ? (
-                                                <div style={{ padding: '30px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>
+                                                <div style={{ padding: '30px', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>
                                                     <AlertCircle size={20} style={{ margin: '0 auto 8px', opacity: 0.5 }} />
                                                     {t('لا توجد حركات مسجلة لهذا الشريك')}
                                                 </div>
@@ -273,7 +273,7 @@ export default function PartnerAccountsPage() {
                             {/* Current Balance Indicator */}
                             <div style={{ 
                                 background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, 
-                                borderRadius: '12px', padding: '12px', marginBottom: '20px', textAlign: 'center' 
+                                borderRadius: '12px', padding: '12px', marginBottom: '20px' 
                             }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري حالياً')}</div>
                                 <div style={{ fontSize: '20px', fontWeight: 950, color: showModal.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>

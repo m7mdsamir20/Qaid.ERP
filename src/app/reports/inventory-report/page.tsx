@@ -149,7 +149,7 @@ export default function InventoryReportPage() {
                                             <td style={TABLE_STYLE.td(true)}>
                                                 <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>{st.item?.code || '-'}</span>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(true), }}>
+                                            <td style={{...TABLE_STYLE.td(true)}}>
                                                 <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{st.item?.unit || '-'}</span></td>
@@ -165,12 +165,12 @@ export default function InventoryReportPage() {
                                                             {st.quantity.toLocaleString('en-US')}
                                                         </span>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}>{fMoneyJSX(st.item?.costPrice || 0)}</td>
+                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(st.item?.costPrice || 0)}</td>
                                                 </>
                                             )}
-                                            <td style={{ ...TABLE_STYLE.td(false), }}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
+                                            <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
                                             {!isServices && (
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                <td style={{...TABLE_STYLE.td(false)}}>
                                                     {fMoneyJSX(st.quantity * (st.item?.costPrice || 0), '', { fontWeight: 900, color: C.primary })}
                                                 </td>
                                             )}

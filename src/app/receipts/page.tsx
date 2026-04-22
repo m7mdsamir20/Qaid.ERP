@@ -127,11 +127,11 @@ export default function ReceiptVouchersPage() {
                 {/* ── Table Section ── */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '60px', textAlign: 'center' }}>
+                        <div style={{ padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filtered.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
+                        <div style={{ padding: '70px' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{t('لا توجد سندات قبض')}</p>
                         </div>
@@ -140,14 +140,14 @@ export default function ReceiptVouchersPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('رقم السند')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('العميل')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم السند')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('العميل')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('طريقة الدفع')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المبلغ')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -165,7 +165,7 @@ export default function ReceiptVouchersPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
                                                 {v.customer?.name || '—'}
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                     padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
@@ -185,7 +185,7 @@ export default function ReceiptVouchersPage() {
                                             <td style={{ ...TABLE_STYLE.td(false),  color: C.success, fontWeight: 700, fontFamily: CAIRO }}>
                                                 <Currency amount={v.amount} />
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                     <button
                                                         onClick={(e) => { e.stopPropagation(); handlePrint(v); }}

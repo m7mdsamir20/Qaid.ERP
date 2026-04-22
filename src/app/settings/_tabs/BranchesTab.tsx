@@ -106,7 +106,7 @@ export default function BranchesTab({
                     </div>
                 ))}
                 {branches.length === 0 && (
-                    <div style={{ textAlign: 'center', padding: '40px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد فروع بعد')}</div>
+                    <div style={{ padding: '40px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد فروع بعد')}</div>
                 )}
             </div>
 

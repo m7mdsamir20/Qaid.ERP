@@ -299,18 +299,18 @@ export default function NewQuotationPage() {
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <input ref={qtyRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryQty === '' ? '1' : fmt(entryQty)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryQty(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
+                                    }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
                                     <input ref={priceRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryPrice === '' ? '0' : fmt(entryPrice)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryPrice(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
+                                    }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <button type="button" onClick={addLine} disabled={!entryItemId} style={{ height: '42px', width: '60px', borderRadius: '10px', background: !entryItemId ? 'rgba(37, 106, 244,0.3)' : C.primary, color: '#fff', border: 'none', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Plus size={22} />
@@ -390,7 +390,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 placeholder="0.00"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
@@ -401,7 +401,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 placeholder="0"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
@@ -440,7 +440,7 @@ export default function NewQuotationPage() {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }}
-                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                    style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 />
                                                 <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>

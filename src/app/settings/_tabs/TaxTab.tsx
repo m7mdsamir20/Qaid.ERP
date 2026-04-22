@@ -110,7 +110,7 @@ export default function TaxTab({
                                         style={{
                                             width: '100px', height: '40px', borderRadius: '10px', border: `1px solid ${C.border}`,
                                             background: 'rgba(0,0,0,0.2)', color: C.textPrimary, padding: '0 12px',
-                                            fontSize: '15px', fontWeight: 800, textAlign: 'center', outline: 'none'
+                                            fontSize: '15px', fontWeight: 800, outline: 'none'
                                         }}
                                     />
                                     <span style={{ fontSize: '14px', fontWeight: 800, color: C.primary }}>%</span>

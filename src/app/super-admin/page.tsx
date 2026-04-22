@@ -120,7 +120,7 @@ export default function SuperAdminPage() {
 
     if (!authorized) return (
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: C.bg, color: C.textSecondary }}>
-            <div style={{ textAlign: 'center' }}>
+            <div style={{ }}>
                 <Loader2 size={36} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px', color: C.primary, margin: '0 auto' }} />
                 <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: CAIRO }}>جاري التحقق من الصلاحيات...</div>
             </div>
@@ -197,7 +197,7 @@ export default function SuperAdminPage() {
 
             {/* Data Grid */}
             {loading ? (
-                <div style={{ textAlign: 'center', padding: '100px 0', color: C.textSecondary }}>
+                <div style={{ padding: '100px 0', color: C.textSecondary }}>
                     <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', display: 'block', margin: '0 auto 20px', color: C.primary }} />
                     <div style={{ fontSize: '16px', fontWeight: 800 }}>جاري استخراج بيانات الشركات والأنشطة...</div>
                 </div>
@@ -298,7 +298,7 @@ export default function SuperAdminPage() {
                     </table>
 
                     {filtered.length === 0 && (
-                        <div style={{ textAlign: 'center', padding: '80px', color: C.textSecondary }}>
+                        <div style={{ padding: '80px', color: C.textSecondary }}>
                             <FileText size={48} style={{ display: 'block', margin: '0 auto 16px', opacity: 0.2 }} />
                             <p style={{ margin: 0, fontWeight: 800, fontSize: '16px' }}>لا توجد حسابات مسجلة تطابق البحث</p>
                         </div>
@@ -311,7 +311,7 @@ export default function SuperAdminPage() {
                 <div onClick={() => !deleting && setDeleteTarget(null)}
                     style={{ position: 'fixed', inset: 0, zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)' }}>
                     <div onClick={e => e.stopPropagation()} dir={isRtl ? 'rtl' : 'ltr'}
-                        style={{ width: '100%', maxWidth: '440px', background: C.bg, border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
+                        style={{ width: '100%', maxWidth: '440px', background: C.bg, border: `1px solid ${C.danger}30`, borderRadius: '24px', padding: '32px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)' }}>
 
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: `${C.danger}15`, border: `1px solid ${C.danger}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: C.danger }}>
                             <Trash2 size={32} />

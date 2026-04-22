@@ -283,7 +283,7 @@ export default function DashboardPage() {
         <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.danger }}>
           <AlertTriangle size={40} />
         </div>
-        <div style={{ textAlign: 'center' }}>
+        <div style={{ }}>
           <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', marginBottom: '8px', fontFamily: CAIRO }}>{t('فشل في تحميل الإحصائيات')}</h2>
           <p style={{ color: C.textSecondary, fontSize: '14px', fontFamily: CAIRO, marginBottom: '24px' }}>{t('حدث خطأ أثناء جلب البيانات من الخادم، يرجى التحقق من الاتصال والمحاولة مرة أخرى.')}</p>
           <button
@@ -462,7 +462,7 @@ export default function DashboardPage() {
                   }}>
                     <action.icon size={20} />
                   </div>
-                  <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, textAlign: 'center', fontFamily: CAIRO }}>{action.label}</span>
+                  <span style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{action.label}</span>
                 </div>
               </Link>
             ))}
@@ -520,7 +520,7 @@ export default function DashboardPage() {
               action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 800, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} {t('حساب')}</span>}>
               <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {!stats.treasuryList || stats.treasuryList.length === 0 ? (
-                  <div style={{ padding: '30px', textAlign: 'center', color: C.textMuted, fontSize: '13px' }}>{t('لا توجد نقدية مسجلة حالياً')}</div>
+                  <div style={{ padding: '30px', color: C.textMuted, fontSize: '13px' }}>{t('لا توجد نقدية مسجلة حالياً')}</div>
                 ) : (
                   stats.treasuryList.map((t: any, i: number) => (
                     <div key={i} style={{

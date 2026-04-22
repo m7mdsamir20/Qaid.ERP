@@ -50,7 +50,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
 
                 {/* ── لو مفيش سنة مالية ── */}
                 {!activeFY && closedYears.length === 0 && (
-                    <div style={{ background: 'rgba(37, 106, 244,0.04)', border: `1px solid ${C.primary}30`, borderRadius: '16px', padding: '32px', textAlign: 'center' }}>
+                    <div style={{ background: 'rgba(37, 106, 244,0.04)', border: `1px solid ${C.primary}30`, borderRadius: '16px', padding: '32px' }}>
                         <div style={{ width: '64px', height: '64px', borderRadius: '16px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, margin: '0 auto 16px' }}>
                             <CalendarDays size={32} />
                         </div>

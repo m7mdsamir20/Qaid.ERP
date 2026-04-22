@@ -251,13 +251,13 @@ export default function JournalEntriesPage() {
                         <table style={TABLE_STYLE.table}>
                             <thead>
                                 <tr style={TABLE_STYLE.thead}>
-                                    <th style={{ ...TABLE_STYLE.th(true), }}>{t('رقم القيد')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), }}>{t('التاريخ')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), }}>{t('البيان / الوصف العام')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), }}>{t('المرجع')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم القيد')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
+                                    <th style={{...TABLE_STYLE.th(false)}}>{t('البيان / الوصف العام')}</th>
+                                    <th style={{...TABLE_STYLE.th(false)}}>{t('المرجع')}</th>
                                     <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), }}>{t('الحالة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), }}>{t('التفاصيل')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                    <th style={{...TABLE_STYLE.th(false)}}>{t('التفاصيل')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -276,16 +276,16 @@ export default function JournalEntriesPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false), fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, }}>
                                                     {new Date(entry.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                <td style={{...TABLE_STYLE.td(false)}}>
                                                     <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{entry.description}</div>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                <td style={{...TABLE_STYLE.td(false)}}>
                                                     {entry.reference ? <span style={{ fontSize: '10px', color: C.textMuted, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{entry.reference}</span> : '—'}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 900, color: C.purple, fontFamily: CAIRO }}>
                                                     {fMoney(dr)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                <td style={{...TABLE_STYLE.td(false)}}>
                                                     <button onClick={() => togglePost(entry)} disabled={posting === entry.id}
                                                         style={{ 
                                                             display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', 
@@ -297,7 +297,7 @@ export default function JournalEntriesPage() {
                                                         {entry.isPosted ? t('مرحّل') : t('مسودة')}
                                                     </button>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                                                         <button onClick={() => setExpandedId(isExpanded ? null : entry.id)} style={TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textMuted)}><ChevronRight size={16} /></button>
                                                         <button onClick={() => handlePrintEntry(entry)} style={TABLE_STYLE.actionBtn(C.textSecondary)}><Printer size={16} /></button>
@@ -422,7 +422,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].credit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, textAlign: 'center', fontFamily: CAIRO, fontWeight: 800, color: C.success }} 
+                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 800, color: C.success }} 
                                                         />
                                                     </td>
                                                     <td style={{ width: '130px', padding: '0 4px' }}>
@@ -434,7 +434,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].debit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, textAlign: 'center', fontFamily: CAIRO, fontWeight: 800, color: C.danger }} 
+                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 800, color: C.danger }} 
                                                         />
                                                     </td>
                                                     <td style={{ padding: '0 4px' }}>

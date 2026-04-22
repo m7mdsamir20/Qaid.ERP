@@ -178,12 +178,12 @@ export default function StocktakingsPage() {
 
                 {/* Main Table Content */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل سجلات الجرد...')}</p>
                     </div>
                 ) : stocktakings.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ padding: '80px 20px', color: C.textMuted }}>
                         <ClipboardList size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{t('لا توجد سجلات جرد مسجلة حالياً')}</p>
                     </div>
@@ -193,13 +193,13 @@ export default function StocktakingsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('رقم الجرد')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('المخزن')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('التعديلات')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('ملاحظات')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجراء')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم الجرد')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('المخزن')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('التعديلات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('ملاحظات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراء')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -217,10 +217,10 @@ export default function StocktakingsPage() {
                                             <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
                                                 {new Date(st.date).toLocaleDateString('en-GB')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), }}>
+                                            <td style={{...TABLE_STYLE.td(false)}}>
                                                 <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px' }}>{st.warehouse?.name || '—'}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 {st.status === 'applied' ? (
                                                     <span style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
@@ -237,7 +237,7 @@ export default function StocktakingsPage() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), }}>
+                                            <td style={{...TABLE_STYLE.td(false)}}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                                                     {st.lines.filter(l => l.difference !== 0).length > 0 ? st.lines.filter(l => l.difference !== 0).map((l, i) => (
                                                         <div key={i} style={{ 
@@ -255,7 +255,7 @@ export default function StocktakingsPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontSize: '12px', fontWeight: 500, maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {st.notes || '—'}
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
                                                     <button onClick={() => printStocktaking(st)}
                                                         style={{ 
@@ -302,7 +302,7 @@ export default function StocktakingsPage() {
                     variant="danger"
                     maxWidth="400px"
                 >
-                    <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                    <div style={{ padding: '10px 0' }}>
                         <div style={{ 
                             width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', 
                             color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' 

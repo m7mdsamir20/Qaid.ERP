@@ -215,12 +215,12 @@ export default function DeductionsPage() {
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px', textAlign: 'center', color: '#64748b' }}>
+                        <div style={{ padding: '80px', color: '#64748b' }}>
                             <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
                             {t('جاري التحميل...')}
                         </div>
                     ) : filteredDeductions.length === 0 ? (
-                        <div style={{ padding: '100px 20px', textAlign: 'center', color: '#475569' }}>
+                        <div style={{ padding: '100px 20px', color: '#475569' }}>
                             <ShieldAlert size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
                             <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{t('لا توجد خصومات مسجلة')}</h3>
                             <p style={{ fontSize: '14px', margin: 0 }}>{t('ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"')}</p>
@@ -230,12 +230,12 @@ export default function DeductionsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('تاريخ الخصم')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('المبلغ')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('تاريخ الخصم')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المبلغ')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('سبب الخصم')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -247,19 +247,19 @@ export default function DeductionsPage() {
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ textAlign: 'center' }}>
+                                                <div style={{ }}>
                                                     <div style={{ fontWeight: 800, color: '#f1f5f9', fontSize: '14px' }}>{ded.employee.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px' }}>{ded.employee.code}</div>
                                                 </div>
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{ded.amount.toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false),  color: '#94a3b8', fontSize: '13px' }}>{ded.reason || '—'}</td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 {ded.status === 'pending' ? (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
                                                         <Clock size={12} /> {t('قيد المراجعة')}
@@ -270,7 +270,7 @@ export default function DeductionsPage() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                                     {ded.status === 'pending' && (
                                                         <button 

@@ -129,7 +129,7 @@ export default function NewTransferPage() {
         return (
             <DashboardLayout>
                 <div style={PAGE_BASE}>
-                    <div style={{ textAlign: 'center', padding: '100px 0', color: C.textMuted }}>
+                    <div style={{ padding: '100px 0', color: C.textMuted }}>
                         <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
                         <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري تهيئة نموذج التحويل...')}</p>
                     </div>
@@ -243,7 +243,7 @@ export default function NewTransferPage() {
                                                             options={items.map(i => ({ value: i.id, label: i.name }))}
                                                         />
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                    <td style={{...TABLE_STYLE.td(false)}}>
                                                         <div style={{ 
                                                             fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, 
                                                             color: available > 0 ? C.success : C.danger,
@@ -260,7 +260,7 @@ export default function NewTransferPage() {
                                                                 value={line.quantity || ''} 
                                                                 onChange={e => updateLine(index, 'quantity', parseFloat(e.target.value))}
                                                                 style={{ 
-                                                                    ...IS, height: '34px', textAlign: 'center', fontSize: '12px',
+                                                                    ...IS, height: '34px', fontSize: '12px',
                                                                     borderColor: isOverstock ? C.danger : C.border,
                                                                     background: isOverstock ? 'rgba(251,113,133,0.03)' : 'rgba(255,255,255,0.01)'
                                                                 }}
@@ -272,7 +272,7 @@ export default function NewTransferPage() {
                                                             )}
                                                         </div>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                         <button
                                                             type="button" onClick={() => removeLine(index)}
                                                             style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(251,113,133,0.05)', border: '1px solid rgba(251,113,133,0.1)', color: C.danger, borderRadius: '8px', cursor: 'pointer', transition: '0.2s' }}

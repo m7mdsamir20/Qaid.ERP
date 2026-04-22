@@ -243,7 +243,7 @@ ${tableHtml}
 
     if (!payroll) return (
         <DashboardLayout>
-            <div style={{ padding: '40px', textAlign: 'center' }}>
+            <div style={{ padding: '40px' }}>
                 <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '16px', opacity: 0.5 }} />
                 <h2 style={{ fontSize: '16px', color: '#fff' }}>المسير غير موجود</h2>
                 <Link href="/payrolls" style={{ marginTop: '16px', color: '#256af4', textDecoration: 'none', display: 'inline-block', fontWeight: 700 }}>العودة للقائمة</Link>
@@ -393,7 +393,7 @@ ${tableHtml}
                     </div>
 
                     {/* الصف الثاني — عنوان الكشف في الوسط */}
-                    <div style={{ textAlign: 'center', borderTop: '1px solid #ddd', paddingTop: '10px' }}>
+                    <div style={{ borderTop: '1px solid #ddd', paddingTop: '10px' }}>
                         <div style={{ fontSize: '15px', fontWeight: 900 }}>
                             مسير رواتب شهر {months.find(m => m.value === payroll?.month)?.label} {payroll?.year}
                         </div>

@@ -88,7 +88,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
     if (!invoice) return (
         <DashboardLayout>
-            <div style={{ textAlign: 'center', padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
+            <div style={{ padding: '100px', color: C.danger }}>{t('الفاتورة غير موجودة أو تم حذفها')}</div>
         </DashboardLayout>
     );
 
@@ -277,7 +277,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     <tbody>
                                         {invoice.lines.map((l, idx) => (
                                             <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), }}>
+                                                <td style={{...TABLE_STYLE.td(true)}}>
                                                     <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                     {l.description
                                                         ? <div style={{ fontSize: '12px', color: C.textMuted, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>

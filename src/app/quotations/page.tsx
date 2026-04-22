@@ -150,11 +150,11 @@ export default function QuotationsPage() {
 
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '60px', textAlign: 'center' }}>
+                        <div style={{ padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '80px', textAlign: 'center' }}>
+                        <div style={{ padding: '80px' }}>
                             <FileText size={48} style={{ color: C.textMuted, opacity: 0.2, margin: '0 auto 15px' }} />
                             <p style={{ fontSize: '16px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>
                                 {searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عروض أسعار مسجلة حالياً')}
@@ -165,12 +165,12 @@ export default function QuotationsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t("رقم العرض")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("العميل")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t("رقم العرض")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t("العميل")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t("التاريخ")}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t("الإجمالي")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("الحالة")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("إجراءات")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الحالة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -190,10 +190,10 @@ export default function QuotationsPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                <td style={{...TABLE_STYLE.td(false)}}>
                                                     {fMoneyJSX(quo.total)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
@@ -202,7 +202,7 @@ export default function QuotationsPage() {
                                                         {status.text} <status.icon size={12} />
                                                     </div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <Link href={`/quotations/${quo.id}`} title={t("عرض التفاصيل")} style={TABLE_STYLE.actionBtn()}><Eye size={TABLE_STYLE.actionIconSize} /></Link>
                                                         <button

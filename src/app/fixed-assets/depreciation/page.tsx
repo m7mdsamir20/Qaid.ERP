@@ -251,13 +251,13 @@ export default function DepreciationPage() {
                         </table>
                     </div>
                 ) : calculated ? (
-                    <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
+                    <div style={{ padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <CheckCircle2 size={48} style={{ color: '#10b981', opacity: 0.3, margin: '0 auto 16px' }} />
                         <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
                         <p style={{ color: C.textMuted, fontSize: '14px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
                     </div>
                 ) : (
-                    <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '20px', border: `1px dashed ${C.border}` }}>
+                    <div style={{ padding: '80px', background: C.card, borderRadius: '20px', border: `1px dashed ${C.border}` }}>
                         <ArrowRightLeft size={48} style={{ color: C.border, margin: '0 auto 16px', opacity: 0.5 }} />
                         <h2 style={{ fontSize: '15px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>{t('قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها')}</h2>
                         <p style={{ marginTop: '6px', color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, opacity: 0.8 }}>{t('سيتم عرض النتائج هنا للمراجعة والموافقة قبل الترحيل لمجمع الإهلاك')}</p>
@@ -266,7 +266,7 @@ export default function DepreciationPage() {
 
                 {/* Confirm Post Modal */}
                 <AppModal show={showConfirm} onClose={() => setShowConfirm(false)} title={t("تأكيد ترحيل القيود للدفاتر")} icon={TrendingDown}>
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={{ }}>
                         <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'rgba(37, 106, 244,0.1)', color: C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                             <Calculator size={32} />
                         </div>
