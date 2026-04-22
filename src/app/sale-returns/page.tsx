@@ -133,11 +133,11 @@ export default function SaleReturnsListPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>التاريخ</th>
                                         <th style={TABLE_STYLE.th(false)}>العميل</th>
                                         <th style={TABLE_STYLE.th(false, true)}>الإجمالي</th>
-                                        <th style={TABLE_STYLE.th(false)}>تم رده</th>
-                                        <th style={TABLE_STYLE.th(false)}>المتبقي</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>تم رده</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>المتبقي</th>
                                         <th style={TABLE_STYLE.th(false, true)}>الحالة</th>
                                         <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
                                     </tr>
@@ -154,15 +154,15 @@ export default function SaleReturnsListPage() {
                                                 <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
                                                     RET-{String(r.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                                     {r.total.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
                                                     {r.paidAmount.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (r.remaining > 0) ? C.danger : C.textMuted, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: (r.remaining > 0) ? C.danger : C.textMuted, fontFamily: CAIRO }}>
                                                     {r.remaining.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>

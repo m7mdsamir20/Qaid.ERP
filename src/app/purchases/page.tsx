@@ -152,11 +152,11 @@ export default function PurchasesListPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t("رقم الفاتورة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
                                         <th style={{...TABLE_STYLE.th(false)}}>{t("المورد")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("الإجمالي")}</th>
-                                        <th style={{...TABLE_STYLE.th(false)}}>{t("المدفوع")}</th>
-                                        <th style={{...TABLE_STYLE.th(false)}}>{t("المتبقي")}</th>
+                                        <th style={{...TABLE_STYLE.th(false, true)}}>{t("المدفوع")}</th>
+                                        <th style={{...TABLE_STYLE.th(false, true)}}>{t("المتبقي")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الحالة")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
                                     </tr>
@@ -173,15 +173,15 @@ export default function PurchasesListPage() {
                                                 <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
                                                     PUR-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{inv.supplier?.name || inv.customer?.name || '—'}</td>
-                                                <td style={{...TABLE_STYLE.td(false)}}>
+                                                <td style={{...TABLE_STYLE.td(false, true)}}>
                                                     {fMoneyJSX(inv.total)}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false)}}>
+                                                <td style={{...TABLE_STYLE.td(false, true)}}>
                                                     {fMoneyJSX(inv.paidAmount, '', { color: C.success })}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false)}}>
+                                                <td style={{...TABLE_STYLE.td(false, true)}}>
                                                     {fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
