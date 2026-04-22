@@ -23,7 +23,12 @@ export const GET = withProtection(async (request, session) => {
 
         const lines = await prisma.journalEntryLine.findMany({
             where: {
-                journalEntry: { companyId, isPosted: true, ...yearFilter },
+                journalEntry: { 
+                    companyId, 
+                    isPosted: true, 
+                    ...yearFilter,
+                    referenceType: { not: 'opening_balance' }
+                },
                 account: {
                     type: { in: ['revenue', 'expense'] }
                 }

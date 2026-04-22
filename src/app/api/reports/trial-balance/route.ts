@@ -37,6 +37,7 @@ export const GET = withProtection(async (request, session) => {
                     where: {
                         journalEntry: {
                             isPosted: true,
+                            referenceType: { not: 'opening_balance' },
                             date: {
                                 gte: currentYear.startDate,
                                 lte: currentYear.endDate
