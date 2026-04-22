@@ -715,8 +715,8 @@ export default function NewPurchasePage() {
                                 )}
                                 {lines.length > 0 && (
                                     <div style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', fontWeight: 800, background: diff > 0 ? 'rgba(239,68,68,0.07)' : diff < 0 ? 'rgba(99,102,241,0.07)' : 'rgba(52,211,153,0.07)', color: diff > 0 ? '#f87171' : diff < 0 ? '#818cf8' : '#34d399', border: `1px solid ${diff > 0 ? 'rgba(239,68,68,0.15)' : diff < 0 ? 'rgba(99,102,241,0.15)' : 'rgba(52,211,153,0.15)'}`, }}>
-                                        <span>{diff > 0 ? `${t('متبقي:')} ${formatNumber(Math.abs(diff))} ${cSymbol}` : diff < 0 ? `${t('زيادة:')} ${formatNumber(Math.abs(diff))} ${cSymbol}` : t('تم السداد بالكامل ✓')}</span>
-                                        {diff !== 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{diff > 0 ? t('آجل') : t('رصيد دائن')}</span>}
+                                        <span>{diff > 0 ? `${t('متبقي:')} ${formatNumber(Math.abs(diff))} ${cSymbol}` : diff < 0 ? `${t('زيادة:')} ${(Math.abs(diff))} ${cSymbol}` : t('تم السداد بالكامل ✓')}</span>
+                                        {diff !== 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{diff > 0  ? formatNumber(t('آجل') : t('رصيد دائن')}</span>}
                                     </div>
                                 )}
                             </div>

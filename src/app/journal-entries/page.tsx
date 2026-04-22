@@ -211,7 +211,7 @@ export default function JournalEntriesPage() {
     const draftCount = entries.filter(e => !e.isPosted).length;
     const totalAmt = entries.reduce((s: number, e: JournalEntry) => s + e.lines.reduce((ls: number, l: JournalLine) => ls + l.debit, 0), 0);
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <PageHeader 
                 title={view === 'create' ? t("إنشاء قيد يومية جديد") : t("قيود اليومية العامة")} 

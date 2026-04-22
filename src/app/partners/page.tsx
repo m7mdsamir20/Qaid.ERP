@@ -78,7 +78,7 @@ export default function PartnersPage() {
     const totalShare = partners.reduce((s, p) => s + p.share, 0);
     const totalBalance = partners.reduce((s, p) => s + p.balance, 0);
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
@@ -111,7 +111,7 @@ export default function PartnersPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{typeof s.val === 'number' ? s.val) : s.val}</span>
+                                        <span>{typeof s.val === 'number' ? s.val : s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
@@ -211,7 +211,7 @@ export default function PartnersPage() {
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
                                                 <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
-                                                    {formatNumber(p.balance)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
+                                                    {(p.balance)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -243,7 +243,7 @@ export default function PartnersPage() {
                 <AppModal
                     show={modal !== null}
                     onClose={() => setModal(null)}
-                    title={modal === 'add' ? t('إضافة شريك جديد') : t(`تعديل بيانات الشريك`)}
+                    title={modal === 'add'  ? formatNumber(t('إضافة شريك جديد') : t(`تعديل بيانات الشريك`)}
                     icon={Users}
                 >
                     <form onSubmit={handleSave}>

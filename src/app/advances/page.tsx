@@ -168,7 +168,7 @@ export default function AdvancesPage() {
     const totalAdvances = advances.reduce((sum, adv) => sum + adv.amount, 0);
     const pendingAdvances = advances.filter(a => a.status === 'pending').reduce((sum, adv) => sum + adv.amount, 0);
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
@@ -285,7 +285,7 @@ export default function AdvancesPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: C.danger, fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{(adv.monthlyAmount || 0))}</span>
+                                                    <span>{formatNumber(adv.monthlyAmount || 0)}</span>
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false, true),  color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>
@@ -464,4 +464,3 @@ export default function AdvancesPage() {
         </DashboardLayout>
     );
 }
-

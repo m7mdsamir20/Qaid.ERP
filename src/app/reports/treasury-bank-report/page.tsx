@@ -104,7 +104,7 @@ export default function TreasuryBankReportPage() {
     const totalReceipts = data?.movements.filter((m) => m.type === 'receipt').reduce((sum, m) => sum + m.amount, 0) || 0;
     const totalPayments = data?.movements.filter((m) => m.type === 'payment').reduce((sum, m) => sum + m.amount, 0) || 0;
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
                 <ReportHeader

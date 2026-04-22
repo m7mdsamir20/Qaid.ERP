@@ -287,7 +287,7 @@ function InfoItem({ label, value, icon: Icon, family }: any) {
 }
 
 function SummaryRow({ label, value, color, prefix = '', unit }: any) {
-    return formatNumber((
+    return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
             <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
             <span style={{ fontSize: '13px', color, fontWeight: 800, fontFamily: OUTFIT }}>

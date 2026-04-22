@@ -67,7 +67,7 @@ export default function PurchasePaymentsPage() {
 
     const printPayVoucher = (voucher: any, supplier: any, voucherNumber: number, form: any) => {
         const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const amount = formatNumber((voucher.amount || 0));
+        const amount = formatNumber(voucher.amount || 0);
         const COMPANY = {
             name: 'شركة النور للتجارة', nameEn: 'Al-Nour Trading Company',
             address: 'القاهرة، مصر - شارع التحرير، عمارة 12',
