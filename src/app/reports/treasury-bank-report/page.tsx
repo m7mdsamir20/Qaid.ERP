@@ -50,7 +50,7 @@ export default function TreasuryBankReportPage() {
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
 
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [from, setFrom] = useState('');
     const [to, setTo] = useState('');
     const [selectedTreasuryId, setSelectedTreasuryId] = useState('');
