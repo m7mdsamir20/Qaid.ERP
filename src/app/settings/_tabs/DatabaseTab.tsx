@@ -384,7 +384,7 @@ export default function DatabaseTab({
                                                                         {formatNumber(findV(['تكلفة', 'cost']))}
                                                                     </td>
                                                                     <td style={{ padding: '11px 14px',  fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace', background: 'rgba(245,158,11,0.03)' }}>
-                                                                        {(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']) * findV(['تكلفة', 'cost'])))}
+                                                                        {formatNumber(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']) * findV(['تكلفة', 'cost']))}
                                                                     </td>
                                                                 </>
                                                             ) : (

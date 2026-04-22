@@ -243,7 +243,7 @@ export default function PartnersPage() {
                 <AppModal
                     show={modal !== null}
                     onClose={() => setModal(null)}
-                    title={modal === 'add'  ? formatNumber(t('إضافة شريك جديد') : t(`تعديل بيانات الشريك`)}
+                    title={modal === 'add' ? t('إضافة شريك جديد') : t('تعديل بيانات الشريك')}
                     icon={Users}
                 >
                     <form onSubmit={handleSave}>

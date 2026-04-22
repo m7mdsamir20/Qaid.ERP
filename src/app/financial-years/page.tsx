@@ -16,8 +16,8 @@ const fmt = (d: any, locale: string = 'ar-EG-u-nu-latn') =>
 const calcDays = (s: any, e: any) =>
     Math.max(0, Math.ceil((new Date(e).getTime() - new Date(s).getTime()) / 86400000) + 1);
 
-const fmtMoney = formatNumber((n: number) =>
-    n);
+const fmtMoney = (n: number) => formatNumber(n);
+
 
 const CURRENCY_AR: Record<string, string> = {
     EGP: 'ج.م', SAR: 'ر.س', AED: 'د.إ', KWD: 'د.ك',
@@ -405,7 +405,7 @@ export default function FinancialYearsPage() {
                                                         </td>
                                                         {/* قيود */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
-                                                            {s ? s.journalEntries) : '—'}
+                                                            {s ? formatNumber(s.journalEntries) : '—'}
                                                         </td>
                                                         {/* الحالة */}
                                                         <td style={TABLE_STYLE.td(false)}>

@@ -177,7 +177,7 @@ export default function ExpensesPage() {
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true), textAlign: 'center'}}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>
-                                                {(debitLine?.debit || 0))}
+                                                {formatNumber(debitLine?.debit || 0)}
                                                 <small style={{ fontSize: '11px', marginInlineStart: '4px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
                                             </span>
                                         </td>

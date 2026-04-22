@@ -222,10 +222,10 @@ export default function TreasuryBankReportPage() {
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#e2e8f0' , fontFamily: CAIRO}}>{m.description}</td>
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8' , fontFamily: CAIRO}}>{m.party}</td>
                                             <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 800, color: SC , fontFamily: CAIRO}}>
-                                                {m.type === 'receipt' ? m.amount.toLocaleString('en-US') : ''}
+                                                {m.type === 'receipt' ? formatNumber(m.amount) : ''}
                                             </td>
                                             <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 800, color: DC , fontFamily: CAIRO}}>
-                                                {m.type === 'payment' ? m.amount) : ''}
+                                                {m.type === 'payment' ? formatNumber(m.amount) : ''}
                                             </td>
                                             <td style={{ padding: '14px 16px',  fontSize: '15px', fontWeight: 900, color: '#fff', background: 'rgba(255,255,255,0.01)' , fontFamily: CAIRO}}>
                                                 {formatNumber(m.runningBalance)}

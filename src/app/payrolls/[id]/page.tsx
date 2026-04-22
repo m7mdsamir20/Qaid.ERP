@@ -399,7 +399,7 @@ ${tableHtml}
                             مسير رواتب شهر {months.find(m => m.value === payroll?.month)?.label} {payroll?.year}
                         </div>
                         <div style={{ fontSize: '11px', marginTop: '4px', color: '#444' }}>
-                            إجمالي الصافي: {payroll?.netTotal?)} ج.م
+                            إجمالي الصافي: {formatNumber(payroll?.netTotal)} ج.م
                         </div>
                     </div>
                 </div>

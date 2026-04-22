@@ -9,7 +9,7 @@ import { useSession } from 'next-auth/react';
 import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
-import { getCurrencySymbol } from '@/lib/currency';
+import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 
 interface PaymentVoucher {
     id: string; voucherNumber: number; date: string;
