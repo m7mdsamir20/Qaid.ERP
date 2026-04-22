@@ -71,7 +71,7 @@ export default function InventoryReportPage() {
                 {data && (
                     <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                         {[
-                            { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#3b82f6', icon: <Package size={20} /> },
+                            { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#256af4', icon: <Package size={20} /> },
                             ...(!isServices ? [
                                 { label: t('إجمالي الكميات'), value: data.totalQuantity.toLocaleString('en-US'), color: '#10b981', icon: <Box size={20} /> },
                                 { label: t('قيمة المخزون (تكلفة)'), value: data.totalValue.toLocaleString('en-US'), color: '#f59e0b', icon: <DollarSign size={20} /> },
@@ -147,7 +147,7 @@ export default function InventoryReportPage() {
                                     {filtered.map((st, idx) => (
                                         <tr key={st.id} style={TABLE_STYLE.row(idx === filtered.length - 1)}>
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>{st.item?.code || '-'}</span>
+                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>{st.item?.code || '-'}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(true), }}>
                                                 <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>

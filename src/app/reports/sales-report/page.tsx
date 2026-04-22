@@ -126,7 +126,7 @@ export default function SalesReportPage() {
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
+                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}>
                             <Search size={16} /> {t('تحديث البيانات')}
                         </button>
@@ -149,7 +149,7 @@ export default function SalesReportPage() {
 
                         <div style={{ display: 'flex', gap: '14px', marginBottom: '24px', flexWrap: 'wrap' }}>
                             <div style={{ flex: 1, minWidth: '200px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ padding: '8px', background: 'rgba(59,130,246,0.08)', color: '#3b82f6', borderRadius: '10px' }}><BarChart3 size={20} /></div>
+                                <div style={{ padding: '8px', background: 'rgba(37, 106, 244,0.08)', color: '#256af4', borderRadius: '10px' }}><BarChart3 size={20} /></div>
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
@@ -228,7 +228,7 @@ export default function SalesReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>
+                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>
                                                     SAL-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </span>
                                             </td>
@@ -255,20 +255,7 @@ export default function SalesReportPage() {
                     </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg) } }
-                .print-only { display: none; }
-                @media print { 
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    .stat-value { font-size: 11px !important; color: #000 !important; }
-                    .stat-label { font-size: 9px !important; color: #666 !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p, small { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.5; cursor: pointer; }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

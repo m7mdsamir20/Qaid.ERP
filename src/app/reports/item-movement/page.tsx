@@ -88,7 +88,7 @@ export default function ItemMovementReportPage() {
             return {
                 label: t('تحويل'),
                 color: '#60a5fa',
-                background: 'rgba(59,130,246,0.1)',
+                background: 'rgba(37, 106, 244,0.1)',
                 sign: qty < 0 ? '-' : '+',
                 quantity: Math.abs(qty),
             };
@@ -265,7 +265,7 @@ export default function ItemMovementReportPage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', boxShadow: '0 10px 30px -15px rgba(0,0,0,0.4)' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '24px' }}>
-                                    <div style={{ width: 48, height: 48, borderRadius: '14px', background: 'rgba(59,130,246,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                                    <div style={{ width: 48, height: 48, borderRadius: '14px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                         <Package size={24} />
                                     </div>
                                     <div>

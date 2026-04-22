@@ -110,7 +110,7 @@ export default function FixedAssetsReportPage() {
                         {/* ── KPI Cards ── */}
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('إجمالي التكلفة'), value: fmt(totalCost), color: '#3b82f6', icon: <DollarSign size={18} /> },
+                                { label: t('إجمالي التكلفة'), value: fmt(totalCost), color: '#256af4', icon: <DollarSign size={18} /> },
                                 { label: t('مجمع الإهلاك'), value: fmt(totalAccum), color: '#fb7185', icon: <TrendingDown size={18} /> },
                                 { label: t('الصافي الدفتري'), value: fmt(totalNet), color: '#10b981', icon: <Building2 size={18} /> },
                                 { label: t('نسبة الاستهلاك'), value: `${depPct}%`, color: '#f59e0b', icon: <FileBarChart2 size={18} /> },
@@ -190,7 +190,7 @@ export default function FixedAssetsReportPage() {
                         alignItems: 'center'
                     }}>
                         {[
-                            { key: 'all',      label: t('الكل'),          color: '#3b82f6' },
+                            { key: 'all',      label: t('الكل'),          color: '#256af4' },
                             { key: 'active',   label: t('نشط'),           color: '#10b981' },
                             { key: 'fully_dep',label: t('مستهلك كلياً'),  color: '#94a3b8' },
                             { key: 'disposed', label: t('مُستبعد'),        color: '#fb7185' },

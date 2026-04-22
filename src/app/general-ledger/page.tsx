@@ -104,7 +104,7 @@ export default function GeneralLedgerPage() {
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                 <div>
                     <h1 className="page-title">
-                        <ScrollText size={20} style={{ color: '#3b82f6' }} /> {t('كشف حساب عام')}
+                        <ScrollText size={20} style={{ color: C.primary }} /> {t('كشف حساب عام')}
                     </h1>
                     <p className="page-subtitle">{t('عرض وتتبع كافة الحركات المالية لأي حساب — كشف حركة الأستاذ')}</p>
                 </div>
@@ -157,7 +157,7 @@ export default function GeneralLedgerPage() {
                                         setShowAccountList(false);
                                     }}
                                     style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', cursor: 'pointer', borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background 0.1s' }}
-                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(59,130,246,0.08)'}
+                                    onMouseEnter={e => e.currentTarget.style.background = 'rgba(37, 106, 244,0.08)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                     <span style={{ fontFamily: 'monospace', fontSize: '12px', fontWeight: 700, color: typeColors[a.type] || '#64748b', minWidth: '50px' }}>
                                         {a.code}
@@ -192,7 +192,7 @@ export default function GeneralLedgerPage() {
             {!selectedAccount ? (
                 /* No account selected */
                 <div style={{ textAlign: 'center', padding: '100px 20px', color: '#475569' }}>
-                    <ScrollText size={64} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.07 }} />
+                    <ScrollText size={64} style={{ margin: '0 auto 16px', display: 'block', }} />
                     <p style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#334155' }}>{t('اختر الحساب')}</p>
                     <p style={{ margin: '8px 0 0', fontSize: '13px' }}>{t('ابحث عن الحساب أعلاه لعرض حركاته')}</p>
                 </div>
@@ -269,7 +269,7 @@ export default function GeneralLedgerPage() {
                                 <tbody>
 
                                     {/* Opening Balance Row */}
-                                    <tr style={{ background: 'rgba(59,130,246,0.06)', borderBottom: `1px solid ${C.border}` }}>
+                                    <tr style={{ background: 'rgba(37, 106, 244,0.06)', borderBottom: `1px solid ${C.border}` }}>
                                         <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>
                                             {fromDate ? `${t('رصيد مرحّل حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')}` : t('الرصيد الافتتاحي')}
                                         </td>

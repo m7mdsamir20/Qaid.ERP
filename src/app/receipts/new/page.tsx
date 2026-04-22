@@ -187,7 +187,7 @@ export default function NewReceiptPage() {
                                         <label style={{ ...LS, fontSize: '11px' }}>رقم السند</label>
                                         <div style={{
                                             height: '42px', borderRadius: '10px',
-                                            background: 'rgba(59,130,246,0.08)',
+                                            background: 'rgba(37, 106, 244,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             fontFamily: OUTFIT, fontWeight: 900,

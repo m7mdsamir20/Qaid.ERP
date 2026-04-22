@@ -259,7 +259,7 @@ export default function InstallmentReportsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={fetchReport} disabled={loading || (activeTab === 'customer' && !customerReport)}
                                 style={{ ...BTN_PRIMARY(false, loading), height: '42px', width: 'auto', padding: '0 24px', opacity: (activeTab === 'customer' && !customerReport) ? 0.5 : 1 }}>
-                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} style={{ color: C.primary, opacity: 1 }} /> {t('عرض النتائج')}</>}
+                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} style={{ color: C.primary, }} /> {t('عرض النتائج')}</>}
                             </button>
                             {data && (
                                 <button onClick={handlePrint} style={{ ...BTN_SUCCESS(false, false), height: '42px', width: 'auto', padding: '0 24px' }}>
@@ -457,9 +457,9 @@ export default function InstallmentReportsPage() {
                                                                     <td style={{ padding: '12px 24px' }}>
                                                                         <div style={{
                                                                             display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 800,
-                                                                            background: inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(59,130,246,0.1)',
+                                                                            background: inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(37, 106, 244,0.1)',
                                                                             color: inst.status === 'paid' ? '#10b981' : C.primary,
-                                                                            border: `1px solid ${inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(59,130,246,0.1)'}`
+                                                                            border: `1px solid ${inst.status === 'paid' ? 'rgba(16,185,129,0.1)' : 'rgba(37, 106, 244,0.1)'}`
                                                                         }}>
                                                                             {inst.status === 'paid' ? t('تم التحصيل') : t('قيد الانتظار')}
                                                                         </div>

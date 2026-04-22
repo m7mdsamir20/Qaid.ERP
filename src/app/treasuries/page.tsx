@@ -105,7 +105,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
 
                 {/* Bank fields */}
                 {form.type === 'bank' && (
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: 'rgba(59,130,246,0.02)', border: `1px solid rgba(59,130,246,0.1)`, borderRadius: '16px', padding: '16px', animation: 'fadeIn 0.2s ease', borderInlineStart: `3px solid ${C.primary}` }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: 'rgba(37, 106, 244,0.02)', border: `1px solid rgba(37, 106, 244,0.1)`, borderRadius: '16px', padding: '16px', animation: 'fadeIn 0.2s ease', borderInlineStart: `3px solid ${C.primary}` }}>
                         <div>
                             <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>{t('اسم البنك')}</label>
                             <input value={form.bankName} onChange={e => setForm(f => ({ ...f, bankName: e.target.value }))}

@@ -148,7 +148,7 @@ export default function NewPurchasePaymentPage() {
                                         <label style={{ ...LS, fontSize: '11px' }}>رقم السند</label>
                                         <div style={{
                                             height: '42px', borderRadius: '10px',
-                                            background: 'rgba(59,130,246,0.08)',
+                                            background: 'rgba(37, 106, 244,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             fontFamily: OUTFIT, fontWeight: 900,
@@ -380,17 +380,17 @@ function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, for
 <style>
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:'Segoe UI',Tahoma,Arial,sans-serif;color:#1e293b;font-size:13px;direction:rtl;background:#fff}
-  .page{width:148mm;min-height:105mm;margin:10mm auto;padding:10mm 12mm;border:2px solid #3b82f6;border-radius:12px;display:flex;flex-direction:column;gap:14px}
+  .page{width:148mm;min-height:105mm;margin:10mm auto;padding:10mm 12mm;border:2px solid #256af4;border-radius:12px;display:flex;flex-direction:column;gap:14px}
   .header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:12px;border-bottom:2px dashed #e2e8f0}
-  .logo-box{width:50px;height:50px;border-radius:10px;background:linear-gradient(135deg,#3b82f6,#2563eb);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900;overflow:hidden}
+  .logo-box{width:50px;height:50px;border-radius:10px;background:linear-gradient(135deg,#256af4,#256af4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:900;overflow:hidden}
   .logo-area{display:flex;gap:10px;align-items:center}
-  .company-info h1{font-size:15px;font-weight:900;color:#3b82f6;margin-bottom:2px}
+  .company-info h1{font-size:15px;font-weight:900;color:#256af4;margin-bottom:2px}
   .company-info p{font-size:10px;color:#64748b;line-height:1.6}
   .badge-area{text-align:left}
   .badge-type{display:inline-block;background:#eff6ff;color:#1e40af;padding:4px 14px;border-radius:20px;font-size:13px;font-weight:800;margin-bottom:6px}
-  .badge-num{font-size:22px;font-weight:900;color:#3b82f6;font-family:monospace;text-align:left}
+  .badge-num{font-size:22px;font-weight:900;color:#256af4;font-family:monospace;text-align:left}
   .badge-date{font-size:11px;color:#64748b;text-align:left;margin-top:2px}
-  .amount-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #3b82f6;border-radius:10px;padding:14px 20px;text-align:center}
+  .amount-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:2px solid #256af4;border-radius:10px;padding:14px 20px;text-align:center}
   .amount-label{font-size:12px;color:#64748b;font-weight:600;margin-bottom:4px}
   .amount-value{font-size:32px;font-weight:900;color:#1d4ed8}
   .amount-words{font-size:11px;color:#64748b;margin-top:4px}
@@ -455,7 +455,7 @@ function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, for
   </div>
   <div class="footer">
     <div class="sig"><div class="sl">توقيع المستفيد</div><div class="ss">الاسم والتوقيع</div></div>
-    <div class="cf"><strong>${COMPANY.name}</strong><br/>${COMPANY.address}<br/><span style="color:#3b82f6;font-weight:700">سند رسمي معتمد</span></div>
+    <div class="cf"><strong>${COMPANY.name}</strong><br/>${COMPANY.address}<br/><span style="color:#256af4;font-weight:700">سند رسمي معتمد</span></div>
     <div class="sig"><div class="sl">توقيع المُصرِف</div><div class="ss">الاسم والتوقيع</div></div>
   </div>
 </div>

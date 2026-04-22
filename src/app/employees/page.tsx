@@ -79,7 +79,7 @@ export default function EmployeesPage() {
     });
 
     const stats = [
-        { label: t('إجمالي الموظفين'), value: employees.length, icon: UsersIcon, color: '#3b82f6' },
+        { label: t('إجمالي الموظفين'), value: employees.length, icon: UsersIcon, color: '#256af4' },
         { label: t('موظفين نشطين'), value: employees.filter(e => e.status === 'active').length, icon: UserPlus, color: '#10b981' },
         { label: t('متوسط الأجور'), value: employees.length ? (employees.reduce((acc, curr) => acc + curr.basicSalary, 0) / employees.length).toLocaleString() : 0, icon: TrendingUp, color: '#a78bfa', unit: currencySymbol },
         { label: t('تعيينات حديثة'), value: employees.filter(e => new Date(e.hireDate) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)).length, icon: UserPlus, color: '#5286ed' },

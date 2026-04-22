@@ -195,17 +195,7 @@ export default function PurchaseReturnsListPage() {
                     )}
                 </div>
             </div>
-            <style>{`
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                input[type="date"]::-webkit-calendar-picker-indicator {
-                    cursor: pointer;
-                    opacity: 0.45;
-                    transition: opacity 0.2s;
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator:hover {
-                    opacity: 1;
-                }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

@@ -226,17 +226,7 @@ export default function SalesPage() {
                     )}
                 </div>
             </div>
-            <style jsx global>{` 
-                @keyframes spin { to { transform:rotate(360deg); } } 
-                input[type="date"]::-webkit-calendar-picker-indicator {
-                    cursor: pointer;
-                    opacity: 0.45;
-                    transition: opacity 0.2s;
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator:hover {
-                    opacity: 1;
-                }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

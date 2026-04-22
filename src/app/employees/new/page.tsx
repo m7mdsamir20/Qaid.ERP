@@ -101,7 +101,7 @@ export default function NewEmployeePage() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             
                             {/* ① البيانات الشخصية */}
-                            <FormSection label={t("البيانات الشخصية والتعريفية")} icon={UsersIcon} color="#3b82f6">
+                            <FormSection label={t("البيانات الشخصية والتعريفية")} icon={UsersIcon} color="#256af4">
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("كود الموظف")}>
                                         <input type="text" readOnly value={form.code} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textMuted, fontSize: '14px', fontWeight: 800, padding: '0 16px', cursor: 'not-allowed', fontFamily: OUTFIT }} />
@@ -308,7 +308,7 @@ export default function NewEmployeePage() {
                                 <button
                                     type="submit"
                                     disabled={isSaving}
-                                    style={{ width: '100%', height: '52px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff', fontSize: '15px', fontWeight: 800, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 8px 20px rgba(37,99,235,0.3)', transition: 'all 0.2s' }}
+                                    style={{ width: '100%', height: '52px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #256af4, #256af4)', color: '#fff', fontSize: '15px', fontWeight: 800, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 8px 20px rgba(37, 106, 244,0.3)', transition: 'all 0.2s' }}
                                     onMouseEnter={e => { if (!isSaving) e.currentTarget.style.transform = 'translateY(-2px)'; }}
                                     onMouseLeave={e => { e.currentTarget.style.transform = 'none'; }}
                                 >

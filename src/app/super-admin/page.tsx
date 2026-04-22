@@ -10,16 +10,16 @@ import PageHeader from '@/components/PageHeader';
 
 const PLANS: Record<string, { label: string; color: string; bg: string }> = {
     trial: { label: 'تجريبي', color: '#fb923c', bg: 'rgba(251,146,60,0.1)' },
-    basic: { label: 'أساسي', color: '#60a5fa', bg: 'rgba(59,130,246,0.1)' },
+    basic: { label: 'أساسي', color: '#60a5fa', bg: 'rgba(37, 106, 244,0.1)' },
     pro: { label: 'متقدم', color: '#a78bfa', bg: 'rgba(167,139,250,0.1)' },
     premium: { label: 'بريميوم', color: '#fbbf24', bg: 'rgba(251,191,36,0.1)' },
     custom: { label: 'مخصص', color: '#34d399', bg: 'rgba(52,211,153,0.1)' },
 };
 
 const B_TYPES: Record<string, { label: string; color: string; bg: string }> = {
-    TRADING: { label: 'تجارة', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
+    TRADING: { label: 'تجارة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
     SERVICES: { label: 'خدمات', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
-    trading: { label: 'تجارة', color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
+    trading: { label: 'تجارة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
     RESTAURANT: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
 };
 
@@ -144,7 +144,7 @@ export default function SuperAdminPage() {
             {/* Stats Overview */}
             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginBottom: '32px' }}>
                 {[
-                    { label: 'إجمالي الشركات', value: stats.totalCompanies || companies.length || 0, color: '#3b82f6', icon: <Building2 size={18} />, suffix: 'شركة' },
+                    { label: 'إجمالي الشركات', value: stats.totalCompanies || companies.length || 0, color: '#256af4', icon: <Building2 size={18} />, suffix: 'شركة' },
                     { label: 'حسابات نشطة', value: stats.activeCompanies || companies.filter(c=>c.isActive).length || 0, color: '#10b981', icon: <CheckCircle2 size={18} />, suffix: 'حساب' },
                     { label: 'أنشطة متعددة', value: new Set(companies.map(c=>c.businessType)).size || 0, color: '#8b5cf6', icon: <Globe size={18} />, suffix: 'أنواع' },
                     { label: 'تنتهي قريباً', value: companies.filter(c => c.subscription && daysLeft(c.subscription.endDate) <= 30 && daysLeft(c.subscription.endDate) >= 0).length || 0, color: '#f59e0b', icon: <AlertTriangle size={18} />, suffix: 'اشتراك' },
@@ -174,7 +174,7 @@ export default function SuperAdminPage() {
             {/* Filter Section */}
             <div className="mobile-column" style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px', background: C.card, padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}` }}>
                 <div style={{ flex: 1, position: 'relative' }}>
-                    <Search size={18} style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.7, pointerEvents: 'none' }} />
+                    <Search size={18} style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', color: C.primary,  pointerEvents: 'none' }} />
                     <input
                         type="text"
                         placeholder="ابحث باسم الشركة، البريد الإلكتروني، أو نوع النشاط..."

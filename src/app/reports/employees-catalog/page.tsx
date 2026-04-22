@@ -84,8 +84,8 @@ export default function EmployeesCatalogPage() {
                                         <td style={{ padding: '14px 16px' }}>
                                             <span style={{
                                                 fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '8px',
-                                                background: e.status === 'active' ? 'rgba(16,185,129,0.1)' : e.status === 'on_vacation' ? 'rgba(59,130,246,0.1)' : 'rgba(100,116,139,0.1)',
-                                                color: e.status === 'active' ? '#10b981' : e.status === 'on_vacation' ? '#3b82f6' : '#64748b',
+                                                background: e.status === 'active' ? 'rgba(16,185,129,0.1)' : e.status === 'on_vacation' ? 'rgba(37, 106, 244,0.1)' : 'rgba(100,116,139,0.1)',
+                                                color: e.status === 'active' ? '#10b981' : e.status === 'on_vacation' ? '#256af4' : '#64748b',
                                                 fontFamily: CAIRO, border: '1px solid currentColor'
                                             }}>
                                                 {e.status === 'active' ? t('نشط') : e.status === 'on_vacation' ? t('في إجازة') : t('غير نشط')}

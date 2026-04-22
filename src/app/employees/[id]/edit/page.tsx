@@ -157,7 +157,7 @@ export default function EditEmployeePage() {
                         {/* Main Content Area */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             {/* ① شخصية */}
-                            <FormSection label={t("البيانات الشخصية والتعريفية")} icon={UsersIcon} color="#3b82f6">
+                            <FormSection label={t("البيانات الشخصية والتعريفية")} icon={UsersIcon} color="#256af4">
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("كود الموظف")}>
                                         <input type="text" readOnly value={form.code} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textMuted, fontSize: '14px', fontWeight: 800, padding: '0 16px', cursor: 'not-allowed', fontFamily: OUTFIT }} />

@@ -229,7 +229,7 @@ export default function AccountsPage() {
 
     const flatAll = getFlattenedAccounts(accounts);
     const stats = [
-        { label: t('الحسابات'), value: flatAll.length, icon: <BookOpen size={16} />, color: '#3b82f6' },
+        { label: t('الحسابات'), value: flatAll.length, icon: <BookOpen size={16} />, color: '#256af4' },
         { label: t('تحليلية'), value: flatAll.filter(a => a.accountCategory === 'detail').length, icon: <Layers size={16} />, color: '#6366f1' },
         { label: t('أصول'), value: flatAll.filter(a => a.type === 'asset').length, icon: <Wallet size={16} />, color: '#10b981' },
         { label: t('خصوم'), value: flatAll.filter(a => a.type === 'liability').length, icon: <CreditCard size={16} />, color: '#f87171' },
@@ -319,7 +319,7 @@ export default function AccountsPage() {
                         <div style={{ display: 'flex', gap: '4px' }}>
                             <span style={{ 
                                 fontSize: '9px', padding: '2px 6px', borderRadius: '5px', 
-                                background: acc.accountCategory === 'summary' ? 'rgba(59,130,246,0.1)' : 'rgba(167,139,240,0.1)', 
+                                background: acc.accountCategory === 'summary' ? 'rgba(37, 106, 244,0.1)' : 'rgba(167,139,240,0.1)', 
                                 color: acc.accountCategory === 'summary' ? '#60a5fa' : '#a78bfa', 
                                 fontWeight: 800 
                             }}>
@@ -600,7 +600,7 @@ export default function AccountsPage() {
             </AppModal>
 
             <style jsx global>{`
-                .account-row-hover:hover { background: rgba(59,130,246,0.05) !important; }
+                .account-row-hover:hover { background: rgba(37, 106, 244,0.05) !important; }
                 @keyframes spin { to { transform: rotate(360deg); } }
             `}</style>
         </DashboardLayout>

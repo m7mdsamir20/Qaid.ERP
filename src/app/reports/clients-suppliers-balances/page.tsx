@@ -143,7 +143,7 @@ export default function ClientsSuppliersBalancesPage() {
                     <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '4px' }}>
                         {[
                             { key: 'all', label: t('الكل'), icon: UserCheck, color: C.primary },
-                            { key: 'customer', label: t('العملاء'), icon: Users, color: '#3b82f6' },
+                            { key: 'customer', label: t('العملاء'), icon: Users, color: '#256af4' },
                             { key: 'supplier', label: t('الموردين'), icon: Truck, color: '#fb923c' },
                             { key: 'debtor', label: t('المدينون (عليهم)'), icon: ArrowUpRight, color: '#ef4444' },
                             { key: 'creditor', label: t('الدائنون (لهم)'), icon: ArrowDownLeft, color: '#10b981' },
@@ -244,8 +244,8 @@ export default function ClientsSuppliersBalancesPage() {
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 900, fontFamily: CAIRO,
-                                                        background: p.partnerType === 'customer' ? 'rgba(59,130,246,0.1)' : 'rgba(245,158,11,0.1)',
-                                                        color: p.partnerType === 'customer' ? '#3b82f6' : '#f59e0b'
+                                                        background: p.partnerType === 'customer' ? 'rgba(37, 106, 244,0.1)' : 'rgba(245,158,11,0.1)',
+                                                        color: p.partnerType === 'customer' ? '#256af4' : '#f59e0b'
                                                     }}>
                                                         {p.partnerType === 'customer' ? t('عميل') : t('مورد')}
                                                     </span>

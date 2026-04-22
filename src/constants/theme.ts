@@ -18,7 +18,7 @@ export const THEME = {
         warningBg: 'var(--c-warning-bg, rgba(251,191,36,0.1))',
         warningBorder: 'var(--c-warning-border, rgba(251,191,36,0.22))',
 
-        blue: '#3b82f6',
+        blue: '#256af4',
         teal: '#14b8a6',
         purple: '#a78bfa',
 
@@ -121,7 +121,7 @@ export const SC: React.CSSProperties = {
 export const STitle: React.CSSProperties = {
     fontSize: '13px',
     fontWeight: 800,
-    color: '#3b82f6', // Bright Azure Blue
+    color: '#256af4', // Bright Azure Blue
     marginBottom: '16px',
     display: 'flex',
     alignItems: 'center',
@@ -145,7 +145,7 @@ export const PAGE_BASE: React.CSSProperties = {
 /** Primary Action Button Style (أزرار الحفظ الأساسية) */
 export const BTN_PRIMARY = (disabled: boolean, submitting: boolean): React.CSSProperties => ({
     width: '100%', height: '52px', borderRadius: '14px', border: 'none',
-    background: (disabled || submitting) ? 'rgba(59,130,246,0.18)' : C.primary,
+    background: (disabled || submitting) ? 'rgba(37, 106, 244,0.18)' : C.primary,
     color: (disabled || submitting) ? C.textMuted : '#fff', fontWeight: 800, fontSize: '15px',
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
     cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
@@ -189,7 +189,7 @@ export const SEARCH_STYLE = {
     icon: (color: string = C.primary): React.CSSProperties => ({
         position: 'absolute' as 'absolute', insetInlineStart: '14px', top: '50%', right: undefined, left: undefined,
         transform: 'translateY(-50%)', color: color, pointerEvents: 'none' as 'none',
-        opacity: 0.85
+        opacity: 1
     }),
     iconSize: 16
 };

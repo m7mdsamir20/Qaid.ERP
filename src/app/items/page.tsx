@@ -558,7 +558,7 @@ export default function ItemsPage() {
                                 </div>
 
                                 {!form.id && (
-                                    <div style={{ padding: '10px 14px', borderRadius: '12px', background: 'rgba(59,130,246,0.03)', border: `1px solid rgba(59,130,246,0.15)`, marginTop: '0px' }}>
+                                    <div style={{ padding: '10px 14px', borderRadius: '12px', background: 'rgba(37, 106, 244,0.03)', border: `1px solid rgba(37, 106, 244,0.15)`, marginTop: '0px' }}>
                                         <div style={{ ...STitle, marginBottom: '6px', color: C.primary }}><MapPin size={14} /> {t('الرصيد الافتتاحي')}</div>
                                         <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>{t('اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات')}</p>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
@@ -579,7 +579,7 @@ export default function ItemsPage() {
                                             </div>
                                         </div>
                                         {form.initialQuantity > 0 && form.costPrice > 0 && (
-                                            <div style={{ marginTop: '8px', padding: '6px 12px', borderRadius: '8px', background: 'rgba(59,130,246,0.08)', fontSize: '11px', color: C.primary, fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
+                                            <div style={{ marginTop: '8px', padding: '6px 12px', borderRadius: '8px', background: 'rgba(37, 106, 244,0.08)', fontSize: '11px', color: C.primary, fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
                                                 <span>{t('القيمة الإجمالية للمخزون')}</span>
                                                 <span style={{ fontFamily: OUTFIT }}>{(form.initialQuantity * form.costPrice).toLocaleString()} <span style={{ fontFamily: CAIRO }}>{currencySymbol}</span></span>
                                             </div>
@@ -590,7 +590,7 @@ export default function ItemsPage() {
                         )}
 
                         <div style={{ display: 'flex', gap: '12px', borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '0px' }}>
-                            <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(59,130,246,0.3)' : 'linear-gradient(135deg,#3b82f6,#2563eb)', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
+                            <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : 'linear-gradient(135deg,#256af4,#256af4)', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
                                 {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>

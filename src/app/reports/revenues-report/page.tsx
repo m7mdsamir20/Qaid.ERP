@@ -86,7 +86,7 @@ export default function RevenuesReportPage() {
                     <input type="date" value={to} onChange={e => setTo(e.target.value)}
                         style={{ ...IS, width: '170px', height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '13.5px', fontWeight: 600, outline: 'none', fontFamily: OUTFIT, textAlign: 'start', direction: 'ltr' }} />
                     <button onClick={fetchReport}
-                        style={{ height: '42px', padding: '0 24px', borderRadius: '12px', background: C.primary, color: '#fff', border: 'none', fontSize: '13.5px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(37,99,235,0.25)' }}>
+                        style={{ height: '42px', padding: '0 24px', borderRadius: '12px', background: C.primary, color: '#fff', border: 'none', fontSize: '13.5px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO, boxShadow: '0 4px 12px rgba(37, 106, 244,0.25)' }}>
                         {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                         {t('عرض التقرير')}
                     </button>
@@ -146,7 +146,7 @@ export default function RevenuesReportPage() {
                                                     <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</td>
                                                     <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.revenueAccountName}</td>
                                                     <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>
-                                                        <span style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, background: row.sourceType === 'bank' ? 'rgba(59,130,246,0.1)' : 'rgba(16,185,129,0.1)', color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399' }}>
+                                                        <span style={{ padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700, background: row.sourceType === 'bank' ? 'rgba(37, 106, 244,0.1)' : 'rgba(16,185,129,0.1)', color: row.sourceType === 'bank' ? '#60a5fa' : '#34d399' }}>
                                                             {row.sourceName}
                                                         </span>
                                                     </td>
@@ -171,19 +171,7 @@ export default function RevenuesReportPage() {
                     </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg); } }
-                .animate-spin { animation: spin 1s linear infinite; }
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

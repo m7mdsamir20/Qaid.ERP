@@ -143,7 +143,7 @@ function CustomerStatementReportContent() {
                     background: C.primary, color: '#fff', border: 'none',
                     fontSize: '13.5px', fontWeight: 800, cursor: !selectedCustomer ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
-                    boxShadow: '0 4px 12px rgba(37,99,235,0.2)', opacity: !selectedCustomer ? 0.6 : 1
+                    boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', opacity: !selectedCustomer ? 0.6 : 1
                 }}>
                     {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                     {t('عرض كشف الحساب')}

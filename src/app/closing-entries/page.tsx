@@ -177,7 +177,7 @@ export default function ClosingEntriesPage() {
                     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)' }}>
                         <div style={{ background: '#0e172a', border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', maxWidth: '460px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', position: 'relative' }}>
                             <button onClick={() => setShowConfirm(false)} style={{ position: 'absolute', top: '16px', insetInlineStart: '16px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', width: '32px', height: '32px', color: C.textSecondary, cursor: 'pointer' }}><X size={18} /></button>
-                            <div style={{ width: '64px', height: '64px', background: 'rgba(59,130,246,0.15)', color: '#3b82f6', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                            <div style={{ width: '64px', height: '64px', background: 'rgba(37, 106, 244,0.15)', color: '#256af4', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <ShieldCheck size={32} />
                             </div>
                             <h2 style={{ fontSize: '20px', fontWeight: 900, marginBottom: '12px', color: C.textPrimary }}>{t('تأكيد تنفيذ الإقفال المحاسبي')}</h2>
@@ -185,7 +185,7 @@ export default function ClosingEntriesPage() {
                                 {t('هل أنت متأكد من تصفير حسابات السنة الحالية وترحيل الأرصدة الختامية؟ لا يمكن التراجع عن هذه العملية بمجرد البدء.')}
                             </p>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                                <button onClick={handleExecuteFinal} style={{ height: '52px', background: 'linear-gradient(135deg, #3b82f6, #2563eb)', border: 'none', borderRadius: '14px', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer' }}>{t('تأكيد التنفيذ')}</button>
+                                <button onClick={handleExecuteFinal} style={{ height: '52px', background: 'linear-gradient(135deg, #256af4, #256af4)', border: 'none', borderRadius: '14px', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer' }}>{t('تأكيد التنفيذ')}</button>
                                 <button onClick={() => setShowConfirm(false)} style={{ height: '52px', background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '14px', color: C.textPrimary, fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>{t('إلغاء')}</button>
                             </div>
                         </div>
@@ -269,8 +269,8 @@ export default function ClosingEntriesPage() {
                                         disabled={executing}
                                         style={{ 
                                             display: 'flex', alignItems: 'center', gap: '8px', height: '48px', padding: '0 28px', borderRadius: '14px', border: 'none', 
-                                            background: 'linear-gradient(135deg, #3b82f6, #2563eb)', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer',
-                                            boxShadow: '0 8px 16px rgba(37,99,235,0.25)', transition: '0.2s', opacity: executing ? 0.7 : 1
+                                            background: 'linear-gradient(135deg, #256af4, #256af4)', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer',
+                                            boxShadow: '0 8px 16px rgba(37, 106, 244,0.25)', transition: '0.2s', opacity: executing ? 0.7 : 1
                                         }}
                                         onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                                         onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}
@@ -336,7 +336,7 @@ export default function ClosingEntriesPage() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                                    <StatCard label={t("إجمالي الإيرادات")} value={result.revenueTotal} color="#3b82f6" compact />
+                                    <StatCard label={t("إجمالي الإيرادات")} value={result.revenueTotal} color="#256af4" compact />
                                     <StatCard label={t("إجمالي المصروفات")} value={result.expenseTotal} color="#ef4444" compact />
                                     <StatCard label={result.isProfit ? t("صافي أرباح العام") : t("صافي خسائر العام")} value={Math.abs(result.netIncome)} color={result.isProfit ? '#10b981' : '#f59e0b'} compact />
                                 </div>
@@ -344,7 +344,7 @@ export default function ClosingEntriesPage() {
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                                    <StatCard label={t("رصيد الإيرادات")} value={totalRev} color="#3b82f6" icon={ArrowUpRight} />
+                                    <StatCard label={t("رصيد الإيرادات")} value={totalRev} color="#256af4" icon={ArrowUpRight} />
                                     <StatCard label={t("رصيد المصروفات")} value={totalExp} color="#ef4444" icon={ArrowDownRight} />
                                     <StatCard label={isProfitValue ? t("الأرباح المتوقعة") : t("الخسائر المتوقعة")} value={Math.abs(netIncomeValue)} color={isProfitValue ? '#10b981' : '#f87171'} icon={TrendingUp} />
                                 </div>
@@ -357,7 +357,7 @@ export default function ClosingEntriesPage() {
                                 )}
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                                    <DetailTable title={t("حسابات الإيرادات")} accounts={revenues} color="#3b82f6" t={t} />
+                                    <DetailTable title={t("حسابات الإيرادات")} accounts={revenues} color="#256af4" t={t} />
                                     <DetailTable title={t("حسابات المصروفات")} accounts={expenses} color="#ef4444" t={t} />
                                 </div>
                             </div>
@@ -391,8 +391,8 @@ export default function ClosingEntriesPage() {
                             </div>
                         </div>
 
-                        <div style={{ background: 'rgba(59, 130, 246, 0.05)', border: '1px solid rgba(59, 130, 246, 0.15)', borderRadius: '16px', padding: '20px' }}>
-                            <h4 style={{ fontSize: '14px', fontWeight: 900, color: '#3b82f6', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: '8px' }}><Info size={16}/> {t('ملاحظات محاسبية')}</h4>
+                        <div style={{ background: 'rgba(37, 106, 244, 0.05)', border: '1px solid rgba(37, 106, 244, 0.15)', borderRadius: '16px', padding: '20px' }}>
+                            <h4 style={{ fontSize: '14px', fontWeight: 900, color: '#256af4', margin: '0 0 10px', display: 'flex', alignItems: 'center', gap: '8px' }}><Info size={16}/> {t('ملاحظات محاسبية')}</h4>
                             <p style={{ fontSize: '12px', color: C.textMuted, margin: 0, lineHeight: 1.6 }}>
                                 {t('عملية الإقفال تقوم بتصفير حسابات (الإيرادات والمصروفات) ونقل صافي النتيجة إلى حساب الأرباح والخسائر. يرجى مراجعة كافة القيود قبل البدء.')}
                             </p>

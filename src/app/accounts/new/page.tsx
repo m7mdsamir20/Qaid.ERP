@@ -143,8 +143,8 @@ export default function NewAccountPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <div style={{
-                        width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#3b82f6'
+                        width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4'
                     }}>
                         <BookOpen size={20} />
                     </div>
@@ -193,7 +193,7 @@ export default function NewAccountPage() {
                                 value={form.name}
                                 onChange={e => setForm({ ...form, name: e.target.value })}
                                 style={IS}
-                                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(59,130,246,0.6)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(59,130,246,0.12)'; }}
+                                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(37, 106, 244,0.6)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37, 106, 244,0.12)'; }}
                                 onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.boxShadow = 'none'; }}
                             />
                         </div>
@@ -269,11 +269,11 @@ export default function NewAccountPage() {
                             disabled={saving}
                             style={{
                                 flex: 2, height: '48px', borderRadius: '12px', border: 'none',
-                                background: saving ? 'rgba(59,130,246,0.25)' : 'linear-gradient(135deg,#3b82f6,#2563eb)',
+                                background: saving ? 'rgba(37, 106, 244,0.25)' : 'linear-gradient(135deg,#256af4,#256af4)',
                                 color: '#fff', fontSize: '15px', fontWeight: 700,
                                 cursor: saving ? 'not-allowed' : 'pointer',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                                boxShadow: saving ? 'none' : '0 4px 14px rgba(59,130,246,0.3)', transition: 'all 0.15s'
+                                boxShadow: saving ? 'none' : '0 4px 14px rgba(37, 106, 244,0.3)', transition: 'all 0.15s'
                             }}
                         >
                             {saving ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={18} /> {t('إضافة الحساب للدليل')}</>}

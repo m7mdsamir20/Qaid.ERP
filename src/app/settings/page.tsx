@@ -706,7 +706,7 @@ function SettingsContent() {
                 }
                 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
                 .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
-                .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(59,130,246,0.3); borderRadius: 10px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(37, 106, 244,0.3); borderRadius: 10px; }
             `}</style>
         </DashboardLayout>
     );

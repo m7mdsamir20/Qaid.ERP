@@ -174,7 +174,7 @@ export default function PaymentVouchersPage() {
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
-                                                    <td style={{ padding: '11px 16px',  fontWeight: 500, fontSize: '11px', color: 'rgba(59, 130, 246, 0.65)', fontFamily: CAIRO, width: '120px' }}>
+                                                    <td style={{ padding: '11px 16px',  fontWeight: 500, fontSize: '11px', color: 'rgba(37, 106, 244, 0.65)', fontFamily: CAIRO, width: '120px' }}>
                                                         PMT-{String(v.voucherNumber).padStart(5, '0')}
                                                     </td>
                                                     <td style={{ padding: '11px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
@@ -183,7 +183,7 @@ export default function PaymentVouchersPage() {
                                                         <div style={{
                                                             display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                             padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
-                                                            background: v.treasury?.type === 'bank' ? 'rgba(59, 130, 246, 0.1)' : 'rgba(52, 211, 153, 0.1)',
+                                                            background: v.treasury?.type === 'bank' ? 'rgba(37, 106, 244, 0.1)' : 'rgba(52, 211, 153, 0.1)',
                                                             color: v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399',
                                                             border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399'}30`, fontFamily: CAIRO
                                                         }}>
@@ -221,17 +221,7 @@ export default function PaymentVouchersPage() {
                     )}
                 </div>
             </div>
-            <style>{`
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                input[type="date"]::-webkit-calendar-picker-indicator {
-                    cursor: pointer;
-                    opacity: 0.45;
-                    transition: opacity 0.2s;
-                }
-                input[type="date"]::-webkit-calendar-picker-indicator:hover {
-                    opacity: 1;
-                }
-            `}</style>
+            
         </DashboardLayout>
     );
 }

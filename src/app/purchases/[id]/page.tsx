@@ -104,7 +104,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                         {/* ── Invoice Metadata Overview ── */}
                         <div style={{ ...SC, display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '15px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <User size={20} />
                                 </div>
                                 <div>

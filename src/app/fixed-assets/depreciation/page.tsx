@@ -168,7 +168,7 @@ export default function DepreciationPage() {
                     </div>
                     <button onClick={handleCalculate} disabled={loading} style={{ 
                         height: THEME.button.height, padding: '0 24px', borderRadius: THEME.button.radius, border: 'none',
-                        background: loading ? 'rgba(59,130,246,0.3)' : C.primary, color: '#fff', fontSize: '14px', fontWeight: 900, 
+                        background: loading ? 'rgba(37, 106, 244,0.3)' : C.primary, color: '#fff', fontSize: '14px', fontWeight: 900, 
                         flexShrink: 0, opacity: loading ? 0.6 : 1, cursor: loading ? 'wait' : 'pointer',
                         display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
                         boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}30`, transition: 'all 0.2s'
@@ -267,7 +267,7 @@ export default function DepreciationPage() {
                 {/* Confirm Post Modal */}
                 <AppModal show={showConfirm} onClose={() => setShowConfirm(false)} title={t("تأكيد ترحيل القيود للدفاتر")} icon={TrendingDown}>
                     <div style={{ textAlign: 'center' }}>
-                        <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'rgba(59,130,246,0.1)', color: C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
+                        <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'rgba(37, 106, 244,0.1)', color: C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                             <Calculator size={32} />
                         </div>
                         <h3 style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من تسجيل هذه القيود؟')}</h3>

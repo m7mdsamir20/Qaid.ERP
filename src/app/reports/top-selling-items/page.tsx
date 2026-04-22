@@ -151,8 +151,8 @@ export default function TopSellingReportPage() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ background: 'linear-gradient(145deg, rgba(59,130,246,0.1), rgba(37,99,235,0.05))', border: `1px solid rgba(59,130,246,0.2)`, borderRadius: '18px', padding: '24px', boxShadow: '0 10px 25px -10px rgba(0,0,0,0.3)' }}>
-                            <div style={{ width: '45px', height: '45px', borderRadius: '14px', background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', marginBottom: '16px' }}>
+                        <div style={{ background: 'linear-gradient(145deg, rgba(37, 106, 244,0.1), rgba(37, 106, 244,0.05))', border: `1px solid rgba(37, 106, 244,0.2)`, borderRadius: '18px', padding: '24px', boxShadow: '0 10px 25px -10px rgba(0,0,0,0.3)' }}>
+                            <div style={{ width: '45px', height: '45px', borderRadius: '14px', background: 'rgba(37, 106, 244,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#60a5fa', marginBottom: '16px' }}>
                                 <TrendingUp size={24} />
                             </div>
                             <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{isServices ? t("إجمالي قيمة الخدمات") : t("إجمالي القيمة البيعية")}</div>

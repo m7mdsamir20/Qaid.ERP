@@ -209,7 +209,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                         {/* ── Metadata Icons ── */}
                         <div className="stats-grid" style={{ ...SC, display: 'grid', gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)', gap: '15px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <User size={18} />
                                 </div>
                                 <div>
@@ -219,7 +219,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             </div>
 
                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Receipt size={18} />
                                 </div>
                                 <div>
@@ -230,7 +230,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
 
                             {!isServices && (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', color: '#256af4', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <Building2 size={18} />
                                     </div>
                                     <div>

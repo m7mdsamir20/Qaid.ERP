@@ -116,7 +116,7 @@ export default function AgingReportPage() {
                 {buckets && (
                     <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                         {[
-                            { label: t('مديونية (0 - 30 يوم)'), value: buckets['0-30'].total, count: buckets['0-30'].count, color: '#3b82f6', icon: <Clock size={20} />, sign: t('ديون حديثة') },
+                            { label: t('مديونية (0 - 30 يوم)'), value: buckets['0-30'].total, count: buckets['0-30'].count, color: '#256af4', icon: <Clock size={20} />, sign: t('ديون حديثة') },
                             { label: t('مديونية (31 - 60 يوم)'), value: buckets['31-60'].total, count: buckets['31-60'].count, color: '#eab308', icon: <History size={20} />, sign: t('تنبيه أول') },
                             { label: t('مديونية (61 - 90 يوم)'), value: buckets['61-90'].total, count: buckets['61-90'].count, color: '#f59e0b', icon: <TrendingDown size={20} />, sign: t('حذر شديد') },
                             { label: t('متأخرات (91+ يوم)'), value: buckets['91+'].total, count: buckets['91+'].count, color: '#ef4444', icon: <AlertTriangle size={20} />, sign: t('خطر التحصيل') },
@@ -202,7 +202,7 @@ export default function AgingReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px', }}>
-                                                <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: OUTFIT, background: 'rgba(37,99,235,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
+                                                <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
                                                     SAL-{String(inv.invoiceNumber).padStart(4, '0')}
                                                 </span>
                                             </td>

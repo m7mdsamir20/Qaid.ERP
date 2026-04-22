@@ -192,7 +192,7 @@ export default function CustomersPage() {
     };
 
     const stats = [
-        { label: t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#3b82f6', suffix: t('عميل') },
+        { label: t('إجمالي العملاء'), value: customers.length, icon: <Users size={18} />, color: '#256af4', suffix: t('عميل') },
         { label: t('مديونيات العملاء'), value: customers.filter(c => c.balance > 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingUp size={18} />, color: '#10b981', suffix: cSymbol },
         { label: t('أرصدة مقدمة'), value: customers.filter(c => c.balance < 0).reduce((s, c) => s + Math.abs(c.balance), 0), icon: <TrendingDown size={18} />, color: '#fb7185', suffix: cSymbol },
     ];

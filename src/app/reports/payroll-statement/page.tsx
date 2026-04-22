@@ -105,7 +105,7 @@ export default function PayrollStatementPage() {
                     <>
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('إجمالي الأجور الأساسية'), value: fmt(data.summary.totalSalaries), color: '#3b82f6', icon: <Users size={18} /> },
+                                { label: t('إجمالي الأجور الأساسية'), value: fmt(data.summary.totalSalaries), color: '#256af4', icon: <Users size={18} /> },
                                 { label: t('إجمالي البدلات'), value: fmt(data.summary.totalAllowances), color: '#10b981', icon: <ArrowUpRight size={18} /> },
                                 { label: t('إجمالي الاستقطاعات'), value: fmt(data.summary.totalDiscounts), color: '#f59e0b', icon: <TrendingDown size={18} /> },
                                 { label: t('صافي المنصرف'), value: fmt(data.summary.netTotal), color: C.primary, icon: <Wallet size={18} /> },

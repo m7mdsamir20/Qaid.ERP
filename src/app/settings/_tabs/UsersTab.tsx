@@ -257,7 +257,7 @@ export default function UsersTab({
                             </button>
                         )}
                         <button onClick={(e: any) => handleCreateUser(e)} disabled={isSaving}
-                            style={{ flex: 1, height: '42px', borderRadius: '12px', border: 'none', background: isSaving ? `${C.primary}50` : `linear-gradient(135deg, ${C.primary}, #2563eb)`, color: '#fff', fontSize: '13px', fontWeight: 900, cursor: isSaving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: `0 8px 20px -6px ${C.primary}40`, fontFamily: CAIRO }}>
+                            style={{ flex: 1, height: '42px', borderRadius: '12px', border: 'none', background: isSaving ? `${C.primary}50` : `linear-gradient(135deg, ${C.primary}, #256af4)`, color: '#fff', fontSize: '13px', fontWeight: 900, cursor: isSaving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: `0 8px 20px -6px ${C.primary}40`, fontFamily: CAIRO }}>
                             {isSaving ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الحفظ...')}</> : <>{editingUserId ? <RefreshCw size={16} /> : <UserPlus size={16} />} {editingUserId ? t('تحديث البيانات') : t('إضافة المستخدم')}</>}
                         </button>
                     </div>

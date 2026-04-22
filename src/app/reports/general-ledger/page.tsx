@@ -176,22 +176,22 @@ export default function GeneralLedgerPage() {
 
                 {!selectedAccount ? (
                     <div style={{ textAlign: 'start', padding: '120px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px' }}>
-                        <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(59,130,246,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
-                            <ScrollText size={40} style={{ opacity: 0.1, color: '#3b82f6' }} />
+                        <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(37, 106, 244,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
+                            <ScrollText size={40} style={{  color: C.primary }} />
                         </div>
                         <h2 style={{ margin: 0, fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('ابدأ بطلب كشف الحساب')}</h2>
                         <p style={{ margin: '10px 0 0', fontSize: '12px', maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('اختر الحساب المطلوب والفترة الزمنية من الأعلى لعرض تفاصيل الحركات والرصيد الافتتاحي والختامي.')}</p>
                     </div>
                 ) : loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '16px', color: '#475569' }}>
-                        <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: '#3b82f6' }} />
+                        <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: '#256af4' }} />
                         <span style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استعادة الحركات المالية...')}</span>
                     </div>
                 ) : (
                     <>
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[
-                                { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#3b82f6', icon: <Wallet size={16} /> },
+                                { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#256af4', icon: <Wallet size={16} /> },
                                 { label: t('إجمالي مدين (+)'), value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={16} /> },
                                 { label: t('إجمالي دائن (-)'), value: fmt(totalCredit), color: '#fb7185', icon: <ArrowDownRight size={16} /> },
                                 { label: t('الرصيد الختامي'), value: fmt(closingBalance), color: tColor, icon: <Activity size={16} /> },
@@ -354,14 +354,7 @@ export default function GeneralLedgerPage() {
                     </>
                 )}
             </div>
-            <style>{`
-                @keyframes spin { to { transform: rotate(360deg) } }
-                @media print { .no-print { display: none !important; } }
-                input[type="date"]::-webkit-calendar-picker-indicator {
-                    filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%);
-                    cursor: pointer;
-                }
-            `}</style>
+            
         </DashboardLayout>
     );
 }
