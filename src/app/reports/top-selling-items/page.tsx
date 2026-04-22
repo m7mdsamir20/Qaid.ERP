@@ -98,7 +98,7 @@ export default function TopSellingReportPage() {
                                 <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? t("جاري تحليل حركة الخدمات...") : t("جاري تحليل حركة الأصناف...")}</span>
                             </div>
                         ) : filtered.length === 0 ? (
-                            <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                            <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                                 <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("لا توجد خدمات منفذة") : t("لا توجد أصناف مباعة")}</h3>
                                 <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{isServices ? t("لم يتم تسجيل عمليات طلب لهذه الخدمات في الفترة الحالية.") : t("لم يتم تسجيل عمليات بيع لهذه الأصناف في الفترة الحالية.")}</p>
@@ -110,9 +110,9 @@ export default function TopSellingReportPage() {
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>#</th>
                                             <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{isServices ? t("بيانات الخدمة") : t("بيانات الصنف")}</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'center', fontWeight: 800, fontFamily: CAIRO }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>{t('القيمة')}</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'end', fontWeight: 800, fontFamily: CAIRO }}>{t('الربح التقديري')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('القيمة')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('الربح التقديري')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -122,18 +122,18 @@ export default function TopSellingReportPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: INTER }}>{idx + 1}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '3px', fontFamily: INTER }}>{item.code} — {item.category}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{item.totalQuantity.toLocaleString('en-US')}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 600, color: C.primary, fontSize: '14px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 600, color: C.primary, fontSize: '14px', fontFamily: INTER }}>
                                                     {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <span style={{
                                                         color: '#10b981', background: 'rgba(16,185,129,0.08)',
                                                         padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',

@@ -174,7 +174,7 @@ export default function GeneralLedgerPage() {
                 </div>
 
                 {!selectedAccount ? (
-                    <div style={{ textAlign: 'center', padding: '120px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px' }}>
+                    <div style={{ textAlign: 'start', padding: '120px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.04)', borderRadius: '20px' }}>
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(59,130,246,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <ScrollText size={40} style={{ opacity: 0.1, color: '#3b82f6' }} />
                         </div>
@@ -203,7 +203,7 @@ export default function GeneralLedgerPage() {
                                     onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
                                     onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                                 >
-                                    <div style={{ textAlign: 'center', flex: 1 }}>
+                                    <div style={{ textAlign: 'start', flex: 1 }}>
                                         <p className="stat-label" style={{ fontSize: '10.5px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                             <span className="stat-value" style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -236,7 +236,7 @@ export default function GeneralLedgerPage() {
                                                 padding: '12px 14px',
                                                 fontSize: '12px',
                                                 whiteSpace: 'nowrap',
-                                                textAlign: i === 0 ? 'start' : 'center',
+                                                textAlign: 'start',
                                                 borderBottom: `2px solid ${C.border}`,
                                                 color: C.textSecondary
                                             }}>{h}</th>
@@ -245,11 +245,11 @@ export default function GeneralLedgerPage() {
                                 </thead>
                                 <tbody>
                                     <tr style={{ background: C.card, borderBottom: `1.5px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
+                                        <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start'}}>
                                             {fromDate ? `${t('رصيد مرحّل من الفترة السابقة (حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')})` : t('الرصيد الافتتاحي')}
                                         </td>
                                         <td colSpan={2} style={{ borderBottom: `1.5px solid ${C.border}` }} />
-                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                        <td style={{ padding: '12px 18px', textAlign: 'start', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                 <span>{fmt(openingBalance)}</span>
                                                 <small style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>
@@ -259,7 +259,7 @@ export default function GeneralLedgerPage() {
 
                                     {filtered.length === 0 ? (
                                         <tr>
-                                            <td colSpan={7} style={{ padding: '60px 20px', textAlign: 'center', color: C.textMuted }}>
+                                            <td colSpan={7} style={{ padding: '60px 20px', textAlign: 'start', color: C.textMuted }}>
                                                 <div className="no-print" style={{ opacity: 0.3, marginBottom: '8px' }}><Search size={32} /></div>
                                                 <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات مالية مسجلة لهذه الفترة')}</p>
                                             </td>
@@ -269,12 +269,12 @@ export default function GeneralLedgerPage() {
                                             style={{ ...TABLE_STYLE.row(idx === filtered.length - 1), background: C.card }}>
 
                                             {/* التاريخ */}
-                                            <td style={{ ...TABLE_STYLE.td(true, false), padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: INTER, textAlign: 'start' }}>
+                                            <td style={{ ...TABLE_STYLE.td(true, false), padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: INTER, textAlign: 'start'}}>
                                                 {new Date(line.date).toLocaleDateString('en-GB')}
                                             </td>
 
                                             {/* رقم القيد */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', textAlign: 'start'}}>
                                                 <span style={{ 
                                                     fontFamily: INTER, 
                                                     fontSize: '11px', 
@@ -287,12 +287,12 @@ export default function GeneralLedgerPage() {
                                             </td>
 
                                             {/* البيان الوصفي */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, textAlign: 'center', minWidth: '160px' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, textAlign: 'start', minWidth: '160px' }}>
                                                 {line.description}
                                             </td>
 
                                             {/* مركز التكلفة */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', textAlign: 'start'}}>
                                                 {line.costCenter?.name
                                                     ? <span style={{ background: 'rgba(139,92,246,0.06)', border: `1px solid ${C.border}`, borderRadius: '20px', padding: '2px 10px', fontSize: '10px', color: '#a78bfa', fontFamily: CAIRO }}>
                                                         {line.costCenter.name}
@@ -301,7 +301,7 @@ export default function GeneralLedgerPage() {
                                             </td>
 
                                             {/* مدين */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '14px', fontWeight: 600, color: line.debit > 0 ? '#10b981' : C.textMuted, fontFamily: INTER, textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '14px', fontWeight: 600, color: line.debit > 0 ? '#10b981' : C.textMuted, fontFamily: INTER, textAlign: 'start'}}>
                                                 {line.debit > 0 ? (
                                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                         <span>{fmt(line.debit)}</span>
@@ -311,7 +311,7 @@ export default function GeneralLedgerPage() {
                                             </td>
 
                                             {/* دائن */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '14px', fontWeight: 600, color: line.credit > 0 ? '#f87171' : C.textMuted, fontFamily: INTER, textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '14px', fontWeight: 600, color: line.credit > 0 ? '#f87171' : C.textMuted, fontFamily: INTER, textAlign: 'start'}}>
                                                 {line.credit > 0 ? (
                                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                         <span>{fmt(line.credit)}</span>
@@ -321,7 +321,7 @@ export default function GeneralLedgerPage() {
                                             </td>
 
                                             {/* الرصيد */}
-                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '14px', fontWeight: 900, color: line.balance >= 0 ? tColor : '#f87171', fontFamily: INTER, textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, false), padding: '10px 14px', fontSize: '14px', fontWeight: 900, color: line.balance >= 0 ? tColor : '#f87171', fontFamily: INTER, textAlign: 'start'}}>
                                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                     <span>{fmt(line.balance)}</span>
                                                     <small style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>
@@ -332,22 +332,22 @@ export default function GeneralLedgerPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: C.card, borderTop: `2px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>
+                                        <td colSpan={4} style={{ padding: '12px 18px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start'}}>
                                             {t('إجماليات الحركات والأرصدة')}
                                         </td>
-                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                        <td style={{ padding: '12px 18px', textAlign: 'start', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                 <span>{fmt(totalDebit)}</span>
                                                 <small style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                        <td style={{ padding: '12px 18px', textAlign: 'start', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                 <span>{fmt(totalCredit)}</span>
                                                 <small style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '12px 18px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                        <td style={{ padding: '12px 18px', textAlign: 'start', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
                                                 <span>{fmt(closingBalance)}</span>
                                                 <small style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</small>

@@ -191,7 +191,7 @@ export default function SupplierStatementPage() {
                         <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري تحميل البيانات...')}</span>
                     </div>
                 ) : !data ? (
-                    <div style={{ padding: '120px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                    <div style={{ padding: '120px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <UserCircle size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار المورد')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('يرجى اختيار المورد وتحديد الفترة الزمنية لعرض كشف الحساب التفصيلي.')}</p>
@@ -211,7 +211,7 @@ export default function SupplierStatementPage() {
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     transition: 'all 0.2s'
                                 }}>
-                                    <div style={{ textAlign: 'start' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value.toLocaleString('en-US')}</span>
@@ -234,7 +234,7 @@ export default function SupplierStatementPage() {
                                             {[t('التاريخ'), t('طبيعة الحركة'), t('المـرجع'), t('البيان والتفاصيل'), t('مسدد (مدين)'), t('مستحق (دائن)'), t('الرصيد')].map((h, i) => (
                                                 <th key={i} style={{
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
-                                                    textAlign: i === 3 ? 'start' : i >= 4 ? 'end' : 'center',
+                                                    textAlign: 'start',
                                                     fontWeight: 600, fontFamily: CAIRO
                                                 }}>{h}</th>
                                             ))}
@@ -243,17 +243,17 @@ export default function SupplierStatementPage() {
                                     <tbody>
                                         {data.initialBalance !== 0 && (
                                             <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: INTER }}>
                                                     {dateFrom || (data.supplier?.createdAt ? new Date(data.supplier.createdAt).toLocaleDateString('en-GB') : '—')}
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <span style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, fontSize: '11px', fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد افتتاحي')}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted }}>—</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO, textAlign: 'start' }}>{t('رصيد ما قبل فترة التقرير')}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: data.initialBalance < 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance < 0 ? <>{Math.abs(data.initialBalance).toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: data.initialBalance > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance > 0 ? <>{data.initialBalance.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 1000, color: data.initialBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: INTER }}>{Math.abs(data.initialBalance).toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted }}>—</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO, textAlign: 'start'}}>{t('رصيد ما قبل فترة التقرير')}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: data.initialBalance < 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance < 0 ? <>{Math.abs(data.initialBalance).toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: data.initialBalance > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{data.initialBalance > 0 ? <>{data.initialBalance.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 1000, color: data.initialBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: INTER }}>{Math.abs(data.initialBalance).toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                             </tr>
                                         )}
                                         {data.statement.map((row: StatementRow, i: number) => (
@@ -261,10 +261,10 @@ export default function SupplierStatementPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: INTER }}>
                                                     {new Date(row.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <span style={{
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
                                                         background: row.type.includes('مشتريات') ? 'rgba(239,68,68,0.1)' : row.type.includes('صرف') ? 'rgba(16,185,129,0.1)' : 'rgba(255,255,255,0.05)',
@@ -273,26 +273,26 @@ export default function SupplierStatementPage() {
                                                         {t(row.type)}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{row.ref || '—'}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, textAlign: 'start' }}>{row.description}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.debit > 0 ? <>{row.debit.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.credit > 0 ? <>{row.credit.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 1000, color: row.balance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: INTER }}>{Math.abs(row.balance).toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, textAlign: 'start'}}>{row.description}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.debit > 0 ? <>{row.debit.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{row.credit > 0 ? <>{row.credit.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 1000, color: row.balance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: INTER }}>{Math.abs(row.balance).toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
                                             <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'start', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'end', color: '#10b981', fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>
+                                            <td style={{ padding: '20px 20px', textAlign: 'start', color: '#10b981', fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>
                                                 {(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                             </td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'end', color: '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>
+                                            <td style={{ padding: '20px 20px', textAlign: 'start', color: '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>
                                                 {(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                             </td>
-                                            <td style={{ padding: '20px 24px', textAlign: 'end', color: data.finalBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontWeight: 900, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>
+                                            <td style={{ padding: '20px 24px', textAlign: 'start', color: data.finalBalance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontWeight: 900, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>
                                                 {Math.abs(data.finalBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                             </td>
                                         </tr>

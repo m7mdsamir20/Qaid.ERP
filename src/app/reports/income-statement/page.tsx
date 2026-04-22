@@ -74,7 +74,7 @@ export default function IncomeStatementPage() {
                         <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد قائمة الدخل...')}</span>
                     </div>
                 ) : !data || (data.revenues.length === 0 && data.expenses.length === 0) ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'start'}}>
                          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <PieChart size={40} style={{ opacity: 0.2, color: C.textMuted }} />
                         </div>
@@ -95,7 +95,7 @@ export default function IncomeStatementPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
                                     padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'start' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -126,7 +126,7 @@ export default function IncomeStatementPage() {
                                             <td style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 600, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>{fmt(rev.balance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
-                                    {data.revenues.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات إيرادات مسجلة')}</td></tr>}
+                                    {data.revenues.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات إيرادات مسجلة')}</td></tr>}
                                 </tbody>
 
                                 <thead>
@@ -144,7 +144,7 @@ export default function IncomeStatementPage() {
                                             <td style={{ padding: '14px 24px', textAlign: 'start', fontWeight: 600, color: '#fb7185', fontSize: '14px', fontFamily: INTER }}>{fmt(exp.balance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
-                                    {data.expenses.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات مصروفات مسجلة')}</td></tr>}
+                                    {data.expenses.length === 0 && <tr><td colSpan={3} style={{ padding: '24px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات مصروفات مسجلة')}</td></tr>}
                                 </tbody>
 
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>

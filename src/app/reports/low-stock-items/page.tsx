@@ -96,7 +96,7 @@ export default function LowStockReportPage() {
                                 <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري فحص النواقص...')}</span>
                             </div>
                         ) : filtered.length === 0 ? (
-                            <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                            <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Box size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                                 <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد نواقص')}</h3>
                                 <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً.')}</p>
@@ -109,7 +109,7 @@ export default function LowStockReportPage() {
                                             {[t('الصنف'), t('التصنيف'), t('الرصيد الحالي'), t('الحد الأدنى'), t('قيمة النقص')].map((h, i) => (
                                                 <th key={i} style={{
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
-                                                    textAlign: i >= 4 ? 'end' : (i >= 2 ? 'center' : 'start'),
+                                                    textAlign: 'start',
                                                     fontWeight: 800, fontFamily: CAIRO
                                                 }}>{h}</th>
                                             ))}
@@ -121,12 +121,12 @@ export default function LowStockReportPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start' }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: INTER, fontWeight: 700 }}>{item.code}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, textAlign: 'start' }}>{item.category}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, textAlign: 'start'}}>{item.category}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <span style={{
                                                         background: item.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
                                                         color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b',
@@ -135,10 +135,10 @@ export default function LowStockReportPage() {
                                                         {item.totalStock.toLocaleString('en-US')}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
                                                     {item.minLimit.toLocaleString('en-US')}
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 600, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 600, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>
                                                     {item.value.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                             </tr>
@@ -147,7 +147,7 @@ export default function LowStockReportPage() {
                                     <tfoot>
                                         <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
                                             <td colSpan={4} style={{ padding: '18px 24px', textAlign: 'start', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
-                                            <td style={{ padding: '18px 20px', textAlign: 'end', fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>
+                                            <td style={{ padding: '18px 20px', textAlign: 'start', fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: INTER }}>
                                                 {totalValue.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>
                                         </tr>

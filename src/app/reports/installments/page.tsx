@@ -192,8 +192,7 @@ export default function InstallmentReportsPage() {
                                     padding: '16px', borderRadius: '16px', border: `1px solid ${active ? C.primaryBorder : C.border}`,
                                     background: active ? 'linear-gradient(135deg, rgba(37,106,244,0.1), rgba(37,106,244,0.05))' : C.card,
                                     color: active ? C.primary : C.textSecondary, transition: 'all 0.2s', cursor: 'pointer',
-                                    display: 'flex', alignItems: 'center', gap: '14px', textAlign: 'start'
-                                }}>
+                                    display: 'flex', alignItems: 'center', gap: '14px', textAlign: 'start'}}>
                                 <div style={{ width: '42px', height: '42px', borderRadius: '12px', background: active ? C.primaryBg : 'rgba(255,255,255,0.02)', color: active ? C.primary : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <tab.icon size={22} />
                                 </div>
@@ -282,12 +281,12 @@ export default function InstallmentReportsPage() {
                 {/* Results Container */}
                 <div style={{ minHeight: '400px', animation: 'slideUp 0.3s ease-out' }}>
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '120px 0', color: C.textMuted }}>
+                        <div style={{ textAlign: 'start', padding: '120px 0', color: C.textMuted }}>
                             <Loader2 size={42} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '16px' }} />
                             <p style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استخراج وتحليل بيانات التقرير...')}</p>
                         </div>
                     ) : !data ? (
-                        <div style={{ textAlign: 'center', padding: '120px 0', color: C.textMuted }}>
+                        <div style={{ textAlign: 'start', padding: '120px 0', color: C.textMuted }}>
                             <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.02)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <BarChart3 size={40} style={{ opacity: 0.1 }} />
                             </div>
@@ -311,7 +310,7 @@ export default function InstallmentReportsPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'end' }}>
+                                        <div style={{ textAlign: 'start'}}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('عدد العمليات الصالحة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>
@@ -359,7 +358,7 @@ export default function InstallmentReportsPage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div style={{ textAlign: 'end' }}>
+                                        <div style={{ textAlign: 'start'}}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الأقساط المتعثرة')}</div>
                                             <div style={{ fontSize: '12px', fontWeight: 800, color: C.danger, fontFamily: INTER }}>{data.installments?.length || 0}</div>
                                         </div>

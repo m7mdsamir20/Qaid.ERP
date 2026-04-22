@@ -81,7 +81,7 @@ export default function InventoryReportPage() {
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                 padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                             }}>
-                                <div style={{ textAlign: 'start' }}>
+                                <div style={{ textAlign: 'start'}}>
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                         <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -121,7 +121,7 @@ export default function InventoryReportPage() {
                         <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{isServices ? t("جاري تحميل قائمة الخدمات...") : t("جاري تحميل بيانات المخزون...")}</span>
                     </div>
                 ) : filtered.length === 0 ? (
-                    <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                    <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                         <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات مخزون')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على نتائج تطابق معايير البحث الحالية.')}</p>
@@ -149,7 +149,7 @@ export default function InventoryReportPage() {
                                             <td style={TABLE_STYLE.td(true)}>
                                                 <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>{st.item?.code || '-'}</span>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start'}}>
                                                 <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{st.item?.unit || '-'}</span></td>
@@ -165,12 +165,12 @@ export default function InventoryReportPage() {
                                                             {st.quantity.toLocaleString('en-US')}
                                                         </span>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(st.item?.costPrice || 0)}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start'}}>{fMoneyJSX(st.item?.costPrice || 0)}</td>
                                                 </>
                                             )}
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start'}}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
                                             {!isServices && (
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'end' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start'}}>
                                                     {fMoneyJSX(st.quantity * (st.item?.costPrice || 0), '', { fontWeight: 900, color: C.primary })}
                                                 </td>
                                             )}

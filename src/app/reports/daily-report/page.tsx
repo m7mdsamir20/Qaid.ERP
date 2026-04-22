@@ -107,13 +107,13 @@ export default function DailyReportPage() {
         const anaRow = (label: string, value: number, isTotal = false) => `
             <tr style="${isTotal ? 'background:#f5f5f5;' : ''}">
                 <td style="padding:7px 8px;font-size:${isTotal ? '12' : '11'}px;font-weight:${isTotal ? 800 : 600};color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${label}</td>
-                <td style="padding:7px 8px;font-size:${isTotal ? '12' : '11'}px;font-weight:${isTotal ? 900 : 700};color:#000;text-align:${bAlign};border-bottom:1px solid #ddd;">${fmt(value)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
+                <td style="padding:7px 8px;font-size:${isTotal ? '12' : '11'}px;font-weight:${isTotal ? 900 : 700};color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${fmt(value)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
             </tr>`;
 
         const treasuryRows = (data.treasuries || []).map(tr => `
             <tr>
                 <td style="padding:7px 8px;font-size:11px;font-weight:600;color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${tr.name} <span style="font-size:9.5px;color:#555;">(${tr.type === 'bank' ? (isRtl ? 'بنك' : 'Bank') : (isRtl ? 'خزينة' : 'Cash')})</span></td>
-                <td style="padding:7px 8px;font-size:11px;font-weight:800;color:#000;text-align:${bAlign};border-bottom:1px solid #ddd;">${fmt(tr.balance)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
+                <td style="padding:7px 8px;font-size:11px;font-weight:800;color:#000;text-align:${fAlign};border-bottom:1px solid #ddd;">${fmt(tr.balance)} <span style="font-size:10px;font-weight:600;color:#000;">${sym}</span></td>
             </tr>`).join('');
 
         const html = `<!DOCTYPE html>
@@ -298,7 +298,7 @@ table{width:100%;border-collapse:collapse}
                                     transition: 'all 0.2s', position: 'relative'
                                 }}
                                 >
-                                    <div style={{ textAlign: 'center' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 6px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'center' }}>
                                             <span style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -320,32 +320,32 @@ table{width:100%;border-collapse:collapse}
                                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                             <tbody>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المبيعات')}</td>
-                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.totalSales)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المبيعات')}</td>
+                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.totalSales)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الواردة')} (-)</td>
-                                                    <td style={{ padding: '12px 0', color: '#fb7185', fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.saleReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الواردة')} (-)</td>
+                                                    <td style={{ padding: '12px 0', color: '#fb7185', fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.saleReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, textAlign: 'right' }}>{t('صافي المبيعات')}</td>
-                                                    <td style={{ padding: '15px 0', color: '#3b82f6', fontWeight: 900, fontSize: '14px', fontFamily: INTER, textAlign: 'left' }}>{fmt(data.totalSales - data.saleReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
+                                                    <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, textAlign: 'start'}}>{t('صافي المبيعات')}</td>
+                                                    <td style={{ padding: '15px 0', color: '#3b82f6', fontWeight: 900, fontSize: '14px', fontFamily: INTER, textAlign: 'start'}}>{fmt(data.totalSales - data.saleReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                             <tbody>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المشتريات')}</td>
-                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.totalPurchases)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المشتريات')}</td>
+                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.totalPurchases)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'right', borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الصادرة')} (-)</td>
-                                                    <td style={{ padding: '12px 0', color: '#10b981', fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'left', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.purchaseReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
+                                                    <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الصادرة')} (-)</td>
+                                                    <td style={{ padding: '12px 0', color: '#10b981', fontWeight: 600, fontSize: '14px', fontFamily: INTER, textAlign: 'start', borderBottom: `1px solid ${C.border}44` }}>{fmt(data.purchaseReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
                                                 </tr>
                                                 <tr>
-                                                    <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, textAlign: 'right' }}>{t('صافي المشتريات')}</td>
-                                                    <td style={{ padding: '15px 0', color: '#f59e0b', fontWeight: 900, fontSize: '14px', fontFamily: INTER, textAlign: 'left' }}>{fmt(data.totalPurchases - data.purchaseReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
+                                                    <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, textAlign: 'start'}}>{t('صافي المشتريات')}</td>
+                                                    <td style={{ padding: '15px 0', color: '#f59e0b', fontWeight: 900, fontSize: '14px', fontFamily: INTER, textAlign: 'start'}}>{fmt(data.totalPurchases - data.purchaseReturnsTotal)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span></td>
                                                 </tr>
                                             </tbody>
                                         </table>

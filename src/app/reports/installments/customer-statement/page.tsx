@@ -182,7 +182,7 @@ function CustomerStatementReportContent() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'start' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -210,7 +210,7 @@ function CustomerStatementReportContent() {
                                         <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</div>
                                     </div>
                                     <div style={{ width: 1, height: 32, background: C.border }} />
-                                    <div style={{ textAlign: 'end' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('إجمالي الخطة')}</div>
                                         <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                             {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
