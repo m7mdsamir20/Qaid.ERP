@@ -367,7 +367,7 @@ export default function DashboardPage() {
         {/* ── Header ── */}
         <div className="dashboard-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', animation: 'fadeUp 0.3s ease both', gap: '20px' }}>
           <div>
-            <h1 style={{ fontSize: '24px', fontWeight: 900, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h1 style={{ fontSize: '21px', fontWeight: 900, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
               {t(greetingKey)}{isRtl ? '،' : ','} <span style={{ color: C.primary }}>{session?.user?.name || t('مستخدم النظام')}</span>
             </h1>
             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
