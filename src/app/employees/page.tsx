@@ -150,7 +150,7 @@ export default function EmployeesPage() {
                             type="text"
                             placeholder={t("ابحث باسم الموظف أو الكود أو المنصب الوظيفي...")}
                             style={{
-                                ...IS, paddingInlineStart: '40px', height: '40px', fontSize: '13px',
+                                ...IS, paddingInlineStart: '40px', height: '42px', fontSize: '13px',
                                 borderRadius: '12px'
                             }}
                             onFocus={focusIn}

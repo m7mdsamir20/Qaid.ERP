@@ -109,12 +109,12 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                         <div>
                             <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>{t('اسم البنك')}</label>
                             <input value={form.bankName} onChange={e => setForm(f => ({ ...f, bankName: e.target.value }))}
-                                placeholder={t("مثال: بنك مصر")} style={{ ...IS, fontSize: '12px', height: '36px' }} onFocus={focusIn} onBlur={focusOut} />
+                                placeholder={t("مثال: بنك مصر")} style={{ ...IS, fontSize: '12px', height: '42px' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                         <div>
                             <label style={{ ...LS, fontSize: '10px', marginBottom: '6px', color: C.textMuted }}>{t('رقم الحساب / IBAN')}</label>
                             <input value={form.accountNumber} onChange={e => setForm(f => ({ ...f, accountNumber: e.target.value }))}
-                                placeholder="XXXX-XXXX-XXXX" style={{ ...IS, fontSize: '12px', height: '36px', direction: 'ltr', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
+                                placeholder="XXXX-XXXX-XXXX" style={{ ...IS, fontSize: '12px', height: '42px', direction: 'ltr', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
                     </div>
                 )}

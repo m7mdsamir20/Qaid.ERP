@@ -85,7 +85,7 @@ export const IS: React.CSSProperties = {
     width: '100%', height: THEME.input.height, padding: '0 16px',
     textAlign: 'start',
     borderRadius: THEME.input.radius, border: `1px solid ${C.border}`,
-    background: C.inputBg, color: C.textPrimary, fontSize: THEME.input.fontSize,
+    background: C.card, color: C.textPrimary, fontSize: THEME.input.fontSize,
     fontWeight: 500, outline: 'none', transition: 'all 0.15s', boxSizing: 'border-box',
     fontFamily: CAIRO,
 };
@@ -183,7 +183,7 @@ export const SEARCH_STYLE = {
     wrapper: { flex: 1, position: 'relative' as 'relative' },
     input: {
         ...IS, width: '100%', paddingInlineStart: '42px', paddingInlineEnd: '16px', paddingRight: undefined, paddingLeft: undefined, height: '42px',
-        borderRadius: '10px', background: C.inputBg, fontSize: '13.5px',
+        borderRadius: '10px', background: C.card, fontSize: '13.5px',
         border: `1px solid ${C.border}`, transition: 'all 0.2s ease-in-out'
     },
     icon: (color: string = C.primary): React.CSSProperties => ({

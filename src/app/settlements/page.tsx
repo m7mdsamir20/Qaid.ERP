@@ -52,7 +52,7 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
                         <div style={{ position: 'relative' }}>
                             <Search size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                             <input autoFocus value={q} onChange={e => setQ(e.target.value)} placeholder={t("ابحث في القائمة...")}
-                                style={{ ...IS, height: '36px', paddingInlineStart: '36px', fontSize: '12px' }} />
+                                style={{ ...IS, height: '42px', paddingInlineStart: '36px', fontSize: '12px' }} />
                         </div>
                     </div>
                     <div style={{ maxHeight: '250px', overflowY: 'auto' }}>
@@ -212,9 +212,9 @@ export default function ComprehensiveSettlementPage() {
                         onClick={() => setShowForm(true)}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '6px',
-                            height: '36px', padding: '0 14px', borderRadius: '8px',
+                            height: '42px', padding: '0 18px', borderRadius: '8px',
                             background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13px', fontWeight: 500, cursor: 'pointer',
+                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                             transition: 'all 0.15s',
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
@@ -234,7 +234,7 @@ export default function ComprehensiveSettlementPage() {
                         style={{
                             ...IS,
                             width: '100%',
-                            height: '36px',
+                            height: '42px',
                             paddingInlineStart: '40px',
                             boxSizing: 'border-box',
                             background: C.card,
