@@ -136,7 +136,7 @@ export default function OverduePage() {
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
                                             {[t('العميل المتأخر'), t('رقم الخطة'), t('القسط'), t('تاريخ الاستحقاق'), t('مدة التأخير'), t('المبلغ المتبقي'), t('إجراء')].map((h, i) => (
-                                                <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
+                                                <th key={i} style={TABLE_STYLE.th(i === 0, i === 6)}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>

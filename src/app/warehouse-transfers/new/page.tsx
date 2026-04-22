@@ -219,7 +219,7 @@ export default function NewTransferPage() {
                                             <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>{t('الصنف')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '120px' }}>{t('الرصيد المتاح')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '150px' }}>{t('الكمية المحولة')}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '60px' }}>{t('إجراء')}</th>
+                                            <th style={{ textAlign: 'center', ...TABLE_STYLE.th(false), fontSize: '11px', width: '60px' }}>{t('إجراء')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

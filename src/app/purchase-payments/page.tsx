@@ -239,11 +239,11 @@ export default function PurchasePaymentsPage() {
                                         <th style={TABLE_STYLE.th(true)}>رقم السند</th>
                                         <th style={TABLE_STYLE.th(false)}>التاريخ</th>
                                         <th style={TABLE_STYLE.th(false)}>المورد</th>
-                                        <th style={TABLE_STYLE.th(false)}>طريقة الدفع</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>طريقة الدفع</th>
                                         <th style={TABLE_STYLE.th(false)}>الخزينة / البنك</th>
                                         <th style={TABLE_STYLE.th(false)}>البيان</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true), }}>المبلغ</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>

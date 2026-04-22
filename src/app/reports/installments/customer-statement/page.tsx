@@ -218,7 +218,7 @@ function CustomerStatementReportContent() {
                                     <thead>
                                         <tr>
                                             {[t('م'), t('الاستحقاق'), t('المبلغ'), t('المدفوع'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                <th key={i} style={{ padding: '12px 16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>

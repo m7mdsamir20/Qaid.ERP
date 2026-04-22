@@ -107,8 +107,7 @@ export default function LowStockReportPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             {[t('الصنف'), t('التصنيف'), t('الرصيد الحالي'), t('الحد الأدنى'), t('قيمة النقص')].map((h, i) => (
-                                                <th key={i} style={{
-                                                    padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
+                                                <th key={i} style={{ textAlign: i === 2 ? 'center' : 'start', padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
                                                     
                                                     fontWeight: 800, fontFamily: CAIRO
                                                 }}>{h}</th>

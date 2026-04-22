@@ -216,7 +216,7 @@ export default function EmployeesPage() {
                                         <th style={TABLE_STYLE.th(false)}>{t('تاريخ التعيين')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('صافي الراتب')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الإجراءات')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الإجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>

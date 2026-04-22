@@ -159,11 +159,11 @@ export default function PaymentVouchersPage() {
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO, width: '120px' }}>رقم السند</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>التاريخ</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO }}>المورد</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>طريقة الدفع</th>
+                                            <th style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>طريقة الدفع</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO }}>الخزينة / البنك</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO }}>البيان</th>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>المبلغ</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>إجراءات</th>
+                                            <th style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>إجراءات</th>
                                         </tr>
                                     </thead>
                                     <tbody>

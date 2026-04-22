@@ -66,7 +66,7 @@ export default function EmployeesCatalogPage() {
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                     {[t('الموظف'), t('القسم'), t('المسمى الوظيفي'), t('تاريخ التعيين'), t('الهاتف'), t('الحالة')].map((h, i) => (
-                                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
+                                        <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>

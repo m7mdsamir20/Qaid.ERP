@@ -145,7 +145,7 @@ export default function DuePage() {
                                                 t('الحالة'), 
                                                 t('إجراء')
                                             ].map((h, i) => (
-                                                <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
+                                                <th key={i} style={TABLE_STYLE.th(i === 0, [6, 7].includes(i))}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>

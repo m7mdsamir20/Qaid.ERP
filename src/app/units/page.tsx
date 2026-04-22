@@ -161,7 +161,7 @@ export default function UnitsPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         {[t('الكود'), t('اسم الوحدة'), t('الحالة'), t('إجراء')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
+                                            <th key={i} style={TABLE_STYLE.th(i === 0, [2, 3].includes(i))}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -171,13 +171,13 @@ export default function UnitsPage() {
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(true)}>
+                                            <td style={TABLE_STYLE.td(true, true)}>
                                                 <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
                                                     {unit.code}
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 800, fontSize: '14px' }}>{unit.name}</td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                     padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 800,
