@@ -138,13 +138,13 @@ export default function TreasuryBankReportPage() {
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('من')}</label>
                             <div style={{ flex: 1 }}>
-                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'end', colorScheme: 'dark' }} />
+                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start', colorScheme: 'dark' }} />
                             </div>
                         </div>
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('إلى')}</label>
                             <div style={{ flex: 1 }}>
-                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'end', colorScheme: 'dark' }} />
+                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start', colorScheme: 'dark' }} />
                             </div>
                         </div>
                         <button onClick={fetchReport} className="btn btn-primary" style={{ height: '42px', padding: '0 30px', fontWeight: 800, gap: '10px', borderRadius: '12px', fontFamily: CAIRO, display: 'flex', alignItems: 'center' }}>
@@ -154,12 +154,12 @@ export default function TreasuryBankReportPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '100px', textAlign: 'center' }}>
+                    <div style={{ padding: '100px', textAlign: 'start'}}>
                         <Loader2 size={40} className="animate-spin" style={{ color: PC }} />
                         <p style={{ marginTop: '20px', color: '#64748b' }}>{t('جاري استخراج كشف الحساب...')}</p>
                     </div>
                 ) : !data ? (
-                    <div style={{ padding: '80px', textAlign: 'center', background: C.card, borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
+                    <div style={{ padding: '80px', textAlign: 'start', background: C.card, borderRadius: '24px', border: '1px dashed rgba(255,255,255,0.1)' }}>
                         <FileText size={60} style={{ opacity: 0.1, marginBottom: '20px' }} />
                         <h3 style={{ color: '#64748b', fontSize: '15px' , fontFamily: CAIRO}}>{t('يرجى اختيار الخزينة وتحديد الفترة لعرض التقرير')}</h3>
                     </div>
@@ -198,16 +198,16 @@ export default function TreasuryBankReportPage() {
                                         <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8' , fontFamily: CAIRO}}>{t('النوع')}</th>
                                         <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8' , fontFamily: CAIRO}}>{t('البيان')}</th>
                                         <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#94a3b8' , fontFamily: CAIRO}}>{t('الجهة')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'center', color: '#22c55e' , fontFamily: CAIRO}}>{t('مدين (+)')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'center', color: '#ef4444' , fontFamily: CAIRO}}>{t('دائن (-)')}</th>
-                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'center', color: '#fff' , fontFamily: CAIRO}}>{t('الرصيد')}</th>
+                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#22c55e' , fontFamily: CAIRO}}>{t('مدين (+)')}</th>
+                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#ef4444' , fontFamily: CAIRO}}>{t('دائن (-)')}</th>
+                                        <th style={{ padding: '16px', fontSize: '12px', textAlign: 'start', color: '#fff' , fontFamily: CAIRO}}>{t('الرصيد')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                         <td colSpan={4} style={{ padding: '12px 24px', fontWeight: 700, color: '#64748b' , fontFamily: CAIRO}}>{t('رصيد افتتاحي (ما قبـل الفترة)')}</td>
-                                        <td colSpan={2} style={{ padding: '12px 24px', textAlign: 'center', fontWeight: 900, color: '#94a3b8' , fontFamily: CAIRO}}></td>
-                                        <td style={{ padding: '12px 24px', textAlign: 'center', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{data.openingBalance.toLocaleString('en-US')}</td>
+                                        <td colSpan={2} style={{ padding: '12px 24px', textAlign: 'start', fontWeight: 900, color: '#94a3b8' , fontFamily: CAIRO}}></td>
+                                        <td style={{ padding: '12px 24px', textAlign: 'start', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{data.openingBalance.toLocaleString('en-US')}</td>
                                     </tr>
                                     {movements.map((m) => (
                                         <tr key={m.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}>
@@ -223,13 +223,13 @@ export default function TreasuryBankReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#e2e8f0' , fontFamily: CAIRO}}>{m.description}</td>
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8' , fontFamily: CAIRO}}>{m.party}</td>
-                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 800, color: SC , fontFamily: CAIRO}}>
+                                            <td style={{ padding: '14px 16px', textAlign: 'start', fontSize: '12px', fontWeight: 800, color: SC , fontFamily: CAIRO}}>
                                                 {m.type === 'receipt' ? m.amount.toLocaleString('en-US') : ''}
                                             </td>
-                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '12px', fontWeight: 800, color: DC , fontFamily: CAIRO}}>
+                                            <td style={{ padding: '14px 16px', textAlign: 'start', fontSize: '12px', fontWeight: 800, color: DC , fontFamily: CAIRO}}>
                                                 {m.type === 'payment' ? m.amount.toLocaleString('en-US') : ''}
                                             </td>
-                                            <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: '#fff', background: 'rgba(255,255,255,0.01)' , fontFamily: CAIRO}}>
+                                            <td style={{ padding: '14px 16px', textAlign: 'start', fontSize: '15px', fontWeight: 900, color: '#fff', background: 'rgba(255,255,255,0.01)' , fontFamily: CAIRO}}>
                                                 {m.runningBalance.toLocaleString('en-US')}
                                             </td>
                                         </tr>
@@ -237,10 +237,10 @@ export default function TreasuryBankReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: '2px solid rgba(255,255,255,0.1)' }}>
                                     <tr style={{ fontWeight: 950 , fontFamily: CAIRO}}>
-                                        <td colSpan={4} style={{ padding: '20px', textAlign: 'center' }}>{t('إجماليات الحركات المحددة')}</td>
-                                        <td style={{ padding: '20px', textAlign: 'center', color: SC }}>{totalReceipts.toLocaleString('en-US')} {cSymbol}</td>
-                                        <td style={{ padding: '20px', textAlign: 'center', color: DC }}>{totalPayments.toLocaleString('en-US')} {cSymbol}</td>
-                                        <td style={{ padding: '20px', textAlign: 'center', color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{data.currentBalance.toLocaleString('en-US')} {cSymbol}</td>
+                                        <td colSpan={4} style={{ padding: '20px', textAlign: 'start'}}>{t('إجماليات الحركات المحددة')}</td>
+                                        <td style={{ padding: '20px', textAlign: 'start', color: SC }}>{totalReceipts.toLocaleString('en-US')} {cSymbol}</td>
+                                        <td style={{ padding: '20px', textAlign: 'start', color: DC }}>{totalPayments.toLocaleString('en-US')} {cSymbol}</td>
+                                        <td style={{ padding: '20px', textAlign: 'start', color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{data.currentBalance.toLocaleString('en-US')} {cSymbol}</td>
                                     </tr>
                                 </tfoot>
                             </table>

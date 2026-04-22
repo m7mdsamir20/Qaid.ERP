@@ -89,7 +89,7 @@ export default function ReturnsReportPage() {
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                             padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                         }}>
-                            <div style={{ textAlign: 'start' }}>
+                            <div style={{ textAlign: 'start'}}>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -144,7 +144,7 @@ export default function ReturnsReportPage() {
                             <span style={{ fontWeight: 700, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري استرجاع بيانات المرتجعات...')}</span>
                         </div>
                     ) : filtered.length === 0 ? (
-                        <div style={{ padding: '100px', textAlign: 'center', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                        <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <ArrowRightLeft size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
                             <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مرتجعات مسجلة')}</h3>
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.')}</p>
@@ -157,7 +157,7 @@ export default function ReturnsReportPage() {
                                         {[t('رقم الفاتورة'), t('التاريخ'), t('نوع المرتجع'), t('الطرف الآخر'), t('الأصناف'), t('القيمة الإجمالية')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
-                                                textAlign: i === 5 ? 'left' : (i === 4 ? 'center' : 'right'), 
+                                                textAlign: 'start', 
                                                 fontWeight: 800, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}
@@ -184,8 +184,8 @@ export default function ReturnsReportPage() {
                                                 </span>
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER }}>
                                                 {fmt(r.total)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>
                                         </tr>

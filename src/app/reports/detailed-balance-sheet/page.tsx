@@ -79,7 +79,7 @@ export default function DetailedBalanceSheetPage() {
                     subtitle={t("حدث خطأ أثناء محاولة جلب بيانات التقرير.")}
                     backTab="financial" 
                 />
-                <div style={{ padding: '60px', textAlign: 'center', background: C.card, borderRadius: '24px', border: `1px solid ${C.border}` }}>
+                <div style={{ padding: '60px', textAlign: 'start', background: C.card, borderRadius: '24px', border: `1px solid ${C.border}` }}>
                     <AlertCircle size={60} style={{ opacity: 0.2, marginBottom: '20px' }} />
                     <h3 style={{ fontFamily: CAIRO }}>{t('خطأ في تحميل البيانات')}</h3>
                 </div>
@@ -139,7 +139,7 @@ export default function DetailedBalanceSheetPage() {
                                             <td style={{ padding: '10px 16px', textAlign: 'start', fontWeight: 600, color: C.textPrimary, fontSize: '14px', fontFamily: INTER }}>{fmt(l.balance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', marginInlineStart: '2px', color: C.textMuted }}>{sym}</span></td>
                                         </tr>
                                     ))}
-                                    {data.liabilities.length === 0 && <tr><td colSpan={3} style={{ padding: '16px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد التزامات جارية')}</td></tr>}
+                                    {data.liabilities.length === 0 && <tr><td colSpan={3} style={{ padding: '16px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد التزامات جارية')}</td></tr>}
                                     <tr style={{ background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533` }}>
                                         <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي الخصوم')}</td>
                                         <td style={{ padding: '12px 20px', textAlign: 'start', fontWeight: 900, color: '#fb7185', fontSize: '14px', fontFamily: INTER }}>{fmt(data.totalLiabilities)} <span style={{ fontFamily: CAIRO, fontSize: '11px', marginInlineStart: '2px', color: C.textMuted }}>{sym}</span></td>

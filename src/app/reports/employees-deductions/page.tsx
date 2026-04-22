@@ -115,7 +115,7 @@ export default function EmployeesDeductionsPage() {
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                     {[t('الموظف'), t('التاريخ'), t('نوع الخصم'), t('السبب'), t('القيمة')].map((h, i) => (
-                                        <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: i === 4 ? 'center' : 'right', fontFamily: CAIRO }}>{h}</th>
+                                        <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -128,7 +128,7 @@ export default function EmployeesDeductionsPage() {
                                             <span style={{ fontSize: '10px', fontWeight: 900, color: typeColors[r.type], fontFamily: CAIRO }}>{typeLabels[r.type]}</span>
                                         </td>
                                         <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{r.reason}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: '#ef4444', fontFamily: INTER }}>-{fmt(r.amount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '14px', fontWeight: 600, color: '#ef4444', fontFamily: INTER }}>-{fmt(r.amount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                     </tr>
                                 ))}
                             </tbody>

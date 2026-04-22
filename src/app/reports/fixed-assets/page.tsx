@@ -121,7 +121,7 @@ export default function FixedAssetsReportPage() {
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                     padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                 }}>
-                                    <div style={{ textAlign: 'start' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             <span className="stat-value" style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
@@ -240,7 +240,7 @@ export default function FixedAssetsReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
+                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
                                     ) : filtered.map((a, i) => {
                                         const st = STATUS_MAP[a.status];
                                         const depPctRow = a.purchaseCost > 0
@@ -257,12 +257,12 @@ export default function FixedAssetsReportPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: C.textPrimary, fontWeight: 600, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.purchaseCost)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start' }}>
+                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: C.textPrimary, fontWeight: 600, fontFamily: INTER, textAlign: 'start'}}>{fmt(a.purchaseCost)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                     <div style={{ fontSize: '14px', color: '#fb7185', fontWeight: 600, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: '#10b981', fontWeight: 600, fontFamily: INTER, textAlign: 'start' }}>{fmt(a.netBookValue)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: '#10b981', fontWeight: 600, fontFamily: INTER, textAlign: 'start'}}>{fmt(a.netBookValue)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: INTER }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>

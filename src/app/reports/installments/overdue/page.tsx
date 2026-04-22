@@ -145,14 +145,14 @@ export default function OverdueReportPage() {
                         <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
                             <div className="print-only">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                    <div style={{ textAlign: 'start' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
                                         {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
                                     </div>
-                                    <div style={{ textAlign: 'center' }}>
+                                    <div style={{ textAlign: 'start'}}>
                                         <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>الأقساط المستحقة والمتأخرة</h3>
                                     </div>
-                                    <div style={{ maxWidth: '150px', textAlign: 'end' }}>
+                                    <div style={{ maxWidth: '150px', textAlign: 'start'}}>
                                         {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
                                     </div>
                                 </div>
@@ -169,7 +169,7 @@ export default function OverdueReportPage() {
                                         background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                         padding: '16px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                                     }}>
-                                        <div style={{ textAlign: 'start' }}>
+                                        <div style={{ textAlign: 'start'}}>
                                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>

@@ -78,27 +78,27 @@ export default function BalanceSheetPage() {
         const companyName = company.companyName || company.name || '';
 
         const rowsHTML = (items: AccountLine[], emptyMsg: string) => items.length === 0
-            ? `<tr><td colspan="3" style="padding:10px;text-align:center;color:#888;">${emptyMsg}</td></tr>`
+            ? `<tr><td colspan="3" style="padding:10px;text-align:${fAlign};color:#888;">${emptyMsg}</td></tr>`
             : items.map(a => `<tr>
                 <td style="padding:8px 10px;font-size:11px;border:1px solid #ddd;text-align:${fAlign}">${a.name}</td>
-                <td style="padding:8px 10px;font-size:10px;border:1px solid #ddd;text-align:center;color:#888">${a.code}</td>
-                <td style="padding:8px 10px;font-size:11px;font-weight:700;border:1px solid #ddd;text-align:${bAlign}">${fmt(a.balance)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
+                <td style="padding:8px 10px;font-size:10px;border:1px solid #ddd;text-align:${fAlign};color:#888">${a.code}</td>
+                <td style="padding:8px 10px;font-size:11px;font-weight:700;border:1px solid #ddd;text-align:${fAlign}">${fmt(a.balance)} <span style="font-family:Cairo,sans-serif;font-size:9px">${sym}</span></td>
             </tr>`).join('');
 
         const totalRow = (label: string, value: number) => `
             <tr style="background:#e8e8e8">
                 <td colspan="2" style="padding:9px 10px;font-size:12px;font-weight:900;border:1px solid #bbb;text-align:${fAlign}">${label}</td>
-                <td style="padding:9px 10px;font-size:13px;font-weight:900;border:1px solid #bbb;text-align:${bAlign}">${fmt(value)} <span style="font-family:Cairo,sans-serif;font-size:10px">${sym}</span></td>
+                <td style="padding:9px 10px;font-size:13px;font-weight:900;border:1px solid #bbb;text-align:${fAlign}">${fmt(value)} <span style="font-family:Cairo,sans-serif;font-size:10px">${sym}</span></td>
             </tr>`;
 
         const sectionTable = (title: string, items: AccountLine[], totalLabel: string, total: number, emptyMsg: string) => `
             <div style="margin-bottom:16px">
-                <div style="background:#e8e8e8;padding:8px 12px;font-size:13px;font-weight:900;border:1px solid #bbb;border-bottom:none">${title}</div>
+                <div style="background:#e8e8e8;padding:8px 12px;font-size:13px;font-weight:900;border:1px solid #bbb;border-bottom:none;text-align:${fAlign}">${title}</div>
                 <table style="width:100%;border-collapse:collapse">
                     <thead><tr style="background:#f0f0f0">
                         <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? 'الحساب' : 'Account'}</th>
-                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:center">${isRtl ? 'الكود' : 'Code'}</th>
-                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${bAlign}">${isRtl ? 'الرصيد' : 'Balance'}</th>
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? 'الكود' : 'Code'}</th>
+                        <th style="padding:7px 10px;font-size:11px;font-weight:800;border:1px solid #bbb;text-align:${fAlign}">${isRtl ? 'الرصيد' : 'Balance'}</th>
                     </tr></thead>
                     <tbody>${rowsHTML(items, emptyMsg)}${totalRow(totalLabel, total)}</tbody>
                 </table>
@@ -168,7 +168,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                         <span style={{ fontWeight: 600, fontFamily: CAIRO, color: C.textSecondary }}>{t('جاري توليد المركز المالي...')}</span>
                     </div>
                 ) : !data || (data.assets.length === 0 && data.liabilities.length === 0 && data.equities.length === 0) ? (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '20px', textAlign: 'start'}}>
                          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Scale size={40} style={{ opacity: 0.2, color: C.textMuted }} />
                         </div>
@@ -242,7 +242,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                                     <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{fmt(l.balance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></span>
                                                 </div>
                                             ))}
-                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
+                                            {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'start', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -296,7 +296,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                 <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</p>
                                 <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalLiabilitiesAndEquities)} <small style={{ fontSize: '14px', fontFamily: CAIRO }}>{getCurrencyName(currency)}</small></h2>
                             </div>
-                            <div className="no-print" style={{ textAlign: 'end' }}>
+                            <div className="no-print" style={{ textAlign: 'start'}}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontFamily: CAIRO }}>{t('فرق التوازن')}</div>
                                 <div style={{ fontWeight: 800, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: INTER }}>{fmt(Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities))} <span style={{ fontFamily: CAIRO, fontSize: '11px', marginInlineStart: '2px' }}>{getCurrencyName(currency)}</span></div>
                             </div>
