@@ -373,7 +373,7 @@ export default function ComprehensiveSettlementPage() {
                                                     { label: t('المبلغ'), width: '14%' },
                                                     { label: t('إجراء'), width: '6%' }
                                                 ].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: (i === 0 || i === 5 || i === 6) ? 'center' : 'start', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
+                                                    <th key={i} style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 800, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
                                                 ))}
                                             </tr>
                                         </thead>
@@ -383,35 +383,35 @@ export default function ComprehensiveSettlementPage() {
                                                     <td style={{ padding: '11px 16px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                         {new Date(s.date).toLocaleDateString('en-GB')}
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', }}>
-                                                        <span style={{ padding: '2px 8px', borderRadius: '6px', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 700, fontSize: '11px', fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'center' }}>
+                                                        <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 900, fontSize: '11px', fontFamily: OUTFIT }}>
                                                             {String(s.entryNumber).padStart(4, '0')}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'flex-start' }}>
+                                                    <td style={{ padding: '11px 16px' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'center' }}>
                                                             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.dangerBg, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserMinus size={12} /></div>
-                                                            <span style={{ fontWeight: 500, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.fromConfig?.name}</span>
+                                                            <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.fromConfig?.name}</span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'flex-start' }}>
+                                                    <td style={{ padding: '11px 16px' }}>
+                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'center' }}>
                                                             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.successBg, color: C.success, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserPlus size={12} /></div>
-                                                            <span style={{ fontWeight: 500, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.toConfig?.name}</span>
+                                                            <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.toConfig?.name}</span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px',  fontSize: '13px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.notes || '-'}</td>
+                                                    <td style={{ padding: '11px 16px',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, textAlign: 'center' }}>{s.notes || '-'}</td>
                                                     <td style={{ padding: '11px 16px', textAlign: 'center' }}>
-                                                        <div style={{ fontSize: '14px', fontWeight: 700, color: C.success, fontFamily: OUTFIT }}>
-                                                            {s.amount.toLocaleString()} <span style={{ fontSize: '10px' }}>{currencySign}</span>
+                                                        <div style={{ fontSize: '16px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                                            {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>{currencySign}</span>
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'center' }}>
                                                         <button onClick={() => setDetailsModal(s)}
-                                                            style={{ width: '29px', height: '29px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', margin: '0 0 0 auto' }}
+                                                            style={{ width: '32px', height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', margin: '0 auto' }}
                                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                            <History size={13} />
+                                                            <History size={14} />
                                                         </button>
                                                     </td>
                                                 </tr>
@@ -446,7 +446,7 @@ export default function ComprehensiveSettlementPage() {
                                 </div>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>{t('إجمالي القيد')}</div>
-                                    <div style={{ fontSize: '18px', color: C.success, fontWeight: 900, fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.7 }}>{currencySign}</span></div>
+                                    <div style={{ fontSize: '20px', color: '#10b981', fontWeight: 900, fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{currencySign}</span></div>
                                 </div>
                             </div>
 

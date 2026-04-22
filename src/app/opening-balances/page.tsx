@@ -347,7 +347,7 @@ export default function OpeningBalancesPage() {
                                 <thead style={TABLE_STYLE.thead}>
                                     <tr>
                                         {[t('الكود المحاسبي'), t('اسم الحساب'), t('النوع'), t('الطبيعة'), t('مدين'), t('دائن')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0, i >= 2)}>{h}</th>
+                                            <th key={i} style={TABLE_STYLE.th(false, true)}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -366,10 +366,10 @@ export default function OpeningBalancesPage() {
                                                 style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                                                 onMouseLeave={e => e.currentTarget.style.background  = 'rgba(0,0,0,0.15)'}>
-                                                <td style={TABLE_STYLE.td(true)}>
-                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 800 }}>{account.code}</span>
+                                                <td style={TABLE_STYLE.td(true, true)}>
+                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 900 }}>{account.code}</span>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(true)}>{account.name}</td>
+                                                <td style={{ ...TABLE_STYLE.td(true, true), textAlign: 'center', fontWeight: 800 }}>{account.name}</td>
                                                 <td style={TABLE_STYLE.td(false, true)}>
                                                     <span style={{ fontSize: '11px', fontWeight: 800, padding: '4px 8px', borderRadius: '6px', background: `${tColor}12`, color: tColor, border: `1px solid ${tColor}20`, fontFamily: CAIRO }}>
                                                         {typeLabels[account.type]}
@@ -382,34 +382,42 @@ export default function OpeningBalancesPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
                                                     <input 
-                                                        type="number" min="0" step="0.01" 
-                                                        value={hasDr ? balance.debit : ''} 
-                                                        onChange={e => handleChange(account.id, 'debit', e.target.value)}
+                                                        type="text" 
+                                                        value={hasDr ? balance.debit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''} 
+                                                        onChange={e => {
+                                                            const val = e.target.value.replace(/[^0-9.]/g, '');
+                                                            handleChange(account.id, 'debit', val);
+                                                        }}
                                                         placeholder="0.00" 
                                                         disabled={hasCr || isReadlyOnly}
                                                         style={{ 
-                                                            ...IS, height: '32px', fontSize: '14px', fontWeight: 900,
+                                                            ...IS, height: '36px', fontSize: '15px', fontWeight: 900,
+                                                            textAlign: 'center',
                                                             borderColor: hasDr ? `${C.success}50` : C.border, 
                                                             color: hasDr ? C.success : C.textPrimary, 
                                                             background: hasDr ? `${C.success}05` : 'transparent',
-                                                            borderRadius: '6px', fontFamily: OUTFIT
+                                                            borderRadius: '8px', fontFamily: OUTFIT
                                                         }}
                                                         onFocus={focusIn} onBlur={focusOut} 
                                                     />
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
                                                     <input 
-                                                        type="number" min="0" step="0.01" 
-                                                        value={hasCr ? balance.credit : ''} 
-                                                        onChange={e => handleChange(account.id, 'credit', e.target.value)}
+                                                        type="text"
+                                                        value={hasCr ? balance.credit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''} 
+                                                        onChange={e => {
+                                                            const val = e.target.value.replace(/[^0-9.]/g, '');
+                                                            handleChange(account.id, 'credit', val);
+                                                        }}
                                                         placeholder="0.00" 
                                                         disabled={hasDr || isReadlyOnly}
                                                         style={{ 
-                                                            ...IS, height: '32px', fontSize: '14px', fontWeight: 900,
+                                                            ...IS, height: '36px', fontSize: '15px', fontWeight: 900,
+                                                            textAlign: 'center',
                                                             borderColor: hasCr ? `${C.danger}50` : C.border, 
                                                             color: hasCr ? C.danger : C.textPrimary, 
                                                             background: hasCr ? `${C.danger}05` : 'transparent',
-                                                            borderRadius: '6px', fontFamily: OUTFIT
+                                                            borderRadius: '8px', fontFamily: OUTFIT
                                                         }}
                                                         onFocus={focusIn} onBlur={focusOut} 
                                                     />
@@ -420,9 +428,9 @@ export default function OpeningBalancesPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary,  fontFamily: CAIRO }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.success, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.danger, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '14px', fontWeight: 800, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '16px', fontWeight: 900, color: C.success, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '16px', fontWeight: 900, color: C.danger, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
