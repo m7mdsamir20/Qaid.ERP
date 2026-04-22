@@ -64,7 +64,7 @@ export default function ItemsPage() {
         setLoading(true);
         try {
             const [iRes, wRes, cRes, uRes, setRes] = await Promise.all([
-                fetch('/api/items?all=true'), // ✅ Essential: Get all items to prevent KPI filter crash
+                fetch('/api/items?all=true'), // âœ… Essential: Get all items to prevent KPI filter crash
                 fetch('/api/warehouses'),
                 fetch('/api/categories'),
                 fetch('/api/units'),
@@ -158,11 +158,11 @@ export default function ItemsPage() {
                 setShowModal(false);
             } else {
                 const errorData = await res.json();
-                alert(t('فشل حفظ الصنف') + ': ' + (errorData.message || res.statusText));
+                alert(t('ظپط´ظ„ ط­ظپط¸ ط§ظ„صنف') + ': ' + (errorData.message || res.statusText));
             }
         } catch (err) {
             console.error(err);
-            alert(t("An unexpected error occurred while saving the item."));
+            alert(t("An unexpected error occurred while saving the item"));
         }
         finally { setIsSubmitting(false); }
     };
@@ -197,7 +197,7 @@ export default function ItemsPage() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name: newUnitName })
             });
-            if (res.ok) {
+                        if (res.ok) {
                 const data = await res.json();
                 setNewUnitName('');
                 setShowAddUnit(false);
@@ -221,7 +221,7 @@ export default function ItemsPage() {
             }
         } catch (err) {
             console.error(err);
-            alert(t("حدث خطأ غير متوقع أثناء محاولة حذف الصنف."));
+            alert(t("حدث خطأ غير متوقع أثناء محاولة حذف الصنف"));
         }
         finally { setIsSubmitting(false); }
     };
@@ -230,11 +230,14 @@ export default function ItemsPage() {
         const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
             u.code.toLowerCase().includes(search.toLowerCase());
         if (!matchesSearch) return false;
+        
+        const totalQty = u.stocks?.reduce((q, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? q + st.quantity : q, 0) || 0;
+        
         if (warehouseFilter !== 'all') {
-            const hasStock = u.stocks?.some(s => s.warehouseId === warehouseFilter && s.quantity > 0);
-            if (!hasStock) return false;
+            const hasStockRecord = u.stocks?.some(s => s.warehouseId === warehouseFilter);
+            if (kpiFilter === 'all' && !hasStockRecord && totalQty === 0) return false;
         }
-        const totalQty = u.stocks?.reduce((q, st) => q + st.quantity, 0) || 0;
+
         if (kpiFilter === 'low') return (u.minLimit || 0) > 0 && totalQty <= (u.minLimit || 0);
         if (kpiFilter === 'out') return totalQty === 0;
         return true;
@@ -277,7 +280,7 @@ export default function ItemsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
                             { id: 'all', label: t('إجمالي الأصناف'), val: items.length, icon: Package, color: C.blue, unit: t('صنف') },
-                            { id: 'qty', label: t('إجمالي الكمية'), val: totalQuantity, icon: Boxes, color: '#a78bfa', unit: t('قطعة') },
+                            { id: 'out', label: t('أصناف نفدت'), val: itemsOutOfStock, icon: PackageX, color: C.danger, unit: t('صنف') },
                             { 
                                 id: 'cost', 
                                 label: t('إجمالي التكلفة'), 
@@ -293,7 +296,7 @@ export default function ItemsPage() {
 
                         ].map((s, idx) => {
                             const isSelected = kpiFilter === s.id;
-                            const isClickable = s.id === 'low';
+                            const isClickable = s.id === 'low' || s.id === 'out';
                             return (
                                 <div key={idx}
                                     onClick={() => isClickable && setKpiFilter(prev => prev === s.id ? 'all' : s.id as any)}
@@ -339,7 +342,7 @@ export default function ItemsPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder={kpiFilter === 'low' ? t("البحث في الأصناف منخفضة المخزون...") : (kpiFilter === 'out' ? t("البحث في الأصناف التي نفدت...") : t("ابحث باسم الصنف أو كود المنتج..."))}
+                            placeholder={kpiFilter === 'low' ? t("ط§ظ„ط¨ط­ط« ظپظٹ الأصناف ظ…ظ†ط®ظپط¶ط© ط§ظ„ظ…ط®ط²ظˆظ†...") : (kpiFilter === 'out' ? t("ط§ظ„ط¨ط­ط« ظپظٹ الأصناف ط§ظ„طھظٹ ظ†ظپط¯طھ...") : t("ط§ط¨ط­ط« ط¨ط§ط³ظ… ط§ظ„صنف ط£ظˆ ظƒظˆط¯ ط§ظ„ظ…ظ†طھط¬..."))}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             style={{
@@ -358,7 +361,7 @@ export default function ItemsPage() {
                                     borderRadius: '4px', fontSize: '10px', padding: '2px 6px', cursor: 'pointer'
                                 }}
                             >
-                                {t("عرض الكل")} ✕
+                                {t("ط¹ط±ط¶ ط§ظ„ظƒظ„")} âœ•
                             </button>
                         )}
                     </div>
@@ -369,7 +372,7 @@ export default function ItemsPage() {
                                 onChange={v => setWarehouseFilter(v)}
                                 style={{ height: '42px', borderRadius: '10px' }}
                                 options={[
-                                    { value: 'all', label: t('جميع المخازن'), icon: MapPin },
+                                    { value: 'all', label: t('ط¬ظ…ظٹط¹ ط§ظ„ظ…ط®ط§ط²ظ†'), icon: MapPin },
                                     ...warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))
                                 ]}
                             />
@@ -380,12 +383,12 @@ export default function ItemsPage() {
                 {loading ? (
                     <div style={{ padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
+                        <p style={{ fontWeight: 600 }}>{t('ط¬ط§ط±ظٹ ط§ط³طھط®ط±ط§ط¬ ط§ظ„ط¨ظٹط§ظ†ط§طھ...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
                     <div style={{ padding: '80px 20px', color: C.textMuted }}>
                         <Package size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}</p>
+                        <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('ظ„ط§ طھظˆط¬ط¯ ظ†طھط§ط¦ط¬ ط¨ط­ط« طھط·ط§ط¨ظ‚ ط§ط³طھظپط³ط§ط±ظƒ') : (companyBusinessType === 'SERVICES' ? t('ظ„ط§ طھظˆط¬ط¯ ط®ط¯ظ…ط§طھ ظ…ط³ط¬ظ„ط© ط­ط§ظ„ظٹط§ظ‹') : t('ظ„ط§ طھظˆط¬ط¯ ط£طµظ†ط§ظپ ظ…ط³ط¬ظ„ط© ط­ط§ظ„ظٹط§ظ‹'))}</p>
                     </div>
                 ) : (
                     <div style={TABLE_STYLE.container}>
@@ -393,15 +396,15 @@ export default function ItemsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
-                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
-                                        <th style={{...TABLE_STYLE.th(false)}}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("متوسط التكلفة")}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t("ط§ظ„ظƒظˆط¯")}</th>
+                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false) }}>{t("ط§ظ„ط¨ط§ط±ظƒظˆط¯")}</th>}
+                                        <th style={{...TABLE_STYLE.th(false)}}>{companyBusinessType === 'SERVICES' ? t('ط§ظ„ط®ط¯ظ…ط©') : t('ط§ظ„صنف')}</th>
+                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("ط§ظ„ظƒظ…ظٹط©")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("ط³ط¹ط± ط§ظ„طھظƒظ„ظپط©")}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('ط³ط¹ط± ط§ظ„ط®ط¯ظ…ط©') : t('ط³ط¹ط± ط§ظ„ط¨ظٹط¹')}</th>
+                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("ظ…طھظˆط³ط· ط§ظ„طھظƒظ„ظپط©")}</th>}
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("ط¥ط¬ط±ط§ط،")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -416,11 +419,11 @@ export default function ItemsPage() {
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
                                                 <td style={{...TABLE_STYLE.td(true), textAlign: 'start'}}><div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                    <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
+                                                    <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || 'â€”'}</div></td>
                                                 )}
                                                 <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('ظ‚ط·ط¹ط©')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
@@ -435,7 +438,7 @@ export default function ItemsPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
                                                         {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                            <button onClick={() => { setPrintBarcodeItem(item); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title={t("طباعة باركود")}>
+                                                            <button onClick={() => { setPrintBarcodeItem(item); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title={t("ط·ط¨ط§ط¹ط© ط¨ط§ط±ظƒظˆط¯")}>
                                                                 <Printer size={TABLE_STYLE.actionIconSize} />
                                                             </button>
                                                         )}
@@ -456,7 +459,7 @@ export default function ItemsPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title={companyBusinessType === 'SERVICES' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
+                    title={companyBusinessType === 'SERVICES' ? (form.id ? t('طھط¹ط¯ظٹظ„ ط¨ظٹط§ظ†ط§طھ ط§ظ„ط®ط¯ظ…ط©') : t('إضافة خدمة جديدة')) : (form.id ? t('طھط¹ط¯ظٹظ„ ط¨ظٹط§ظ†ط§طھ ط§ظ„صنف') : t('ط¥ط¶ط§ظپط© صنف ط¬ط¯ظٹط¯'))}
                     icon={form.id ? Pencil : Plus}
                     maxWidth="640px"
                 >
@@ -464,7 +467,7 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'SERVICES' || !usesBarcode) ? '140px 1fr' : '120px 160px 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('كود الخدمة') : t('كود الصنف')}</label>
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('ظƒظˆط¯ ط§ظ„ط®ط¯ظ…ط©') : t('ظƒظˆط¯ ط§ظ„صنف')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="text" readOnly disabled value={form.code} style={{ ...IS, color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
                                     <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
@@ -473,23 +476,23 @@ export default function ItemsPage() {
 
                             {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                 <div>
-                                    <label style={LS}>{t('الباركود الإضافي')}</label>
-                                    <input type="text" placeholder={t("سكان الباركود...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, fontFamily: OUTFIT, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <label style={LS}>{t('ط§ظ„ط¨ط§ط±ظƒظˆط¯ ط§ظ„ط¥ط¶ط§ظپظٹ')}</label>
+                                    <input type="text" placeholder={t("ط³ظƒط§ظ† ط§ظ„ط¨ط§ط±ظƒظˆط¯...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, fontFamily: OUTFIT, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             )}
 
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('اسم الخدمة') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
-                                <input type="text" required autoFocus placeholder={companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('ط§ط³ظ… ط§ظ„ط®ط¯ظ…ط©') : t('ط§ط³ظ… ط§ظ„صنف')} <span style={{ color: C.danger }}>*</span></label>
+                                <input type="text" required autoFocus placeholder={companyBusinessType === 'SERVICES' ? t("ظ…ط«ط§ظ„: ط§ط³طھط´ط§ط±ط© ظ‚ط§ظ†ظˆظ†ظٹط©") : (usesBarcode ? t("ظ…ط«ط§ظ„: ط²ظٹطھ ظ…ظˆطھط± 5 ظ„طھط±") : t("ط§ط³ظ… ط§ظ„ظ…ظ†طھط¬"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('تصنيف الخدمة') : t('التصنيف')}</label>
+                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('طھطµظ†ظٹظپ ط§ظ„ط®ط¯ظ…ط©') : t('ط§ظ„طھطµظ†ظٹظپ')}</label>
                                 <div style={{ display: 'flex', gap: '8px' }}>
                                     <div style={{ flex: 1 }}>
-                                        <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder={t("اختر التصنيف...")} maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
+                                        <CustomSelect value={form.categoryId} onChange={v => setForm({ ...form, categoryId: v })} placeholder={t("ط§ط®طھط± ط§ظ„طھطµظ†ظٹظپ...")} maxHeight="165px" options={categories.map(c => ({ value: c.id, label: c.name, icon: Boxes }))} />
                                     </div>
                                     <button type="button" onClick={() => setShowAddCat(true)}
                                         style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, width: '42px', height: '42px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -502,22 +505,22 @@ export default function ItemsPage() {
                             </div>
                             {companyBusinessType === 'SERVICES' ? (
                                 <div>
-                                    <label style={LS}>{t('حالة الخدمة')}</label>
+                                    <label style={LS}>{t('ط­ط§ظ„ط© ط§ظ„ط®ط¯ظ…ط©')}</label>
                                     <CustomSelect
                                         value={form.status}
                                         onChange={v => setForm({ ...form, status: v })}
                                         options={[
-                                            { value: 'active', label: t('نشط'), icon: Check },
-                                            { value: 'inactive', label: t('غير نشط'), icon: X }
+                                            { value: 'active', label: t('ظ†ط´ط·'), icon: Check },
+                                            { value: 'inactive', label: t('ط؛ظٹط± ظ†ط´ط·'), icon: X }
                                         ]}
                                     />
                                 </div>
                             ) : (
                                 <div>
-                                    <label style={LS}>{t('وحدة القياس')}</label>
+                                    <label style={LS}>{t('ظˆط­ط¯ط© ط§ظ„ظ‚ظٹط§ط³')}</label>
                                     <div style={{ display: 'flex', gap: '8px' }}>
                                         <div style={{ flex: 1 }}>
-                                            <CustomSelect value={form.unitId} onChange={v => setForm({ ...form, unitId: v })} placeholder={t("قطعة، كرتونة...")} maxHeight="165px" options={unitsData.map(u => ({ value: u.id, label: u.name, icon: Package }))} />
+                                            <CustomSelect value={form.unitId} onChange={v => setForm({ ...form, unitId: v })} placeholder={t("ظ‚ط·ط¹ط©طŒ ظƒط±طھظˆظ†ط©...")} maxHeight="165px" options={unitsData.map(u => ({ value: u.id, label: u.name, icon: Package }))} />
                                         </div>
                                         <button type="button" onClick={() => setShowAddUnit(true)}
                                             style={{ background: C.inputBg, border: `1px solid ${C.border}`, color: C.textSecondary, width: '42px', height: '42px', borderRadius: '10px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
@@ -533,11 +536,11 @@ export default function ItemsPage() {
 
                         {companyBusinessType === 'SERVICES' ? (
                             <div>
-                                <label style={LS}>{t('وصف الخدمة')}</label>
+                                <label style={LS}>{t('ظˆطµظپ ط§ظ„ط®ط¯ظ…ط©')}</label>
                                 <textarea
                                     value={form.description}
                                     onChange={e => setForm({ ...form, description: e.target.value })}
-                                    placeholder={t("اكتب تفاصيل الخدمة هنا ليتم سحبها في الفاتورة...")}
+                                    placeholder={t("ط§ظƒطھط¨ طھظپط§طµظٹظ„ ط§ظ„ط®ط¯ظ…ط© ظ‡ظ†ط§ ظ„ظٹطھظ… ط³ط­ط¨ظ‡ط§ ظپظٹ ط§ظ„ظپط§طھظˆط±ط©...")}
                                     style={{ ...IS, height: '100px', padding: '10px', resize: 'none' }}
                                     onFocus={focusIn} onBlur={focusOut}
                                 />
@@ -546,14 +549,14 @@ export default function ItemsPage() {
                             <>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                     <div>
-                                        <label style={LS}>{t('سعر التكلفة')}</label>
+                                        <label style={LS}>{t('ط³ط¹ط± ط§ظ„طھظƒظ„ظپط©')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
-                                        <label style={LS}>{t('سعر البيع')}</label>
+                                        <label style={LS}>{t('ط³ط¹ط± ط§ظ„ط¨ظٹط¹')}</label>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
@@ -563,7 +566,7 @@ export default function ItemsPage() {
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                     <div>
-                                        <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
+                                        <label style={LS}>{t('ط­ط¯ ط§ظ„ط·ظ„ط¨')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه ظ†ظ‚طµ ط§ظ„ظ…ط®ط²ظˆظ†')})</span></label>
                                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                             {!form.minLimit && (
                                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
@@ -578,15 +581,15 @@ export default function ItemsPage() {
 
                                 {!form.id && (
                                     <div style={{ padding: '10px 14px', borderRadius: '12px', background: 'rgba(37, 106, 244,0.03)', border: `1px solid rgba(37, 106, 244,0.15)`, marginTop: '0px' }}>
-                                        <div style={{ ...STitle, marginBottom: '6px', color: C.primary }}><MapPin size={14} /> {t('الرصيد الافتتاحي')}</div>
-                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>{t('اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات')}</p>
+                                        <div style={{ ...STitle, marginBottom: '6px', color: C.primary }}><MapPin size={14} /> {t('ط§ظ„ط±طµظٹط¯ ط§ظ„ط§ظپطھطھط§ط­ظٹ')}</div>
+                                        <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>{t('ط§ط®طھظٹط§ط±ظٹ â€” ظٹظ…ظƒظ† ط¥ط¶ط§ظپط© ط§ظ„ظƒظ…ظٹط© ظ„ط§ط­ظ‚ط§ظ‹ ظ…ظ† ظپط§طھظˆط±ط© ظ…ط´طھط±ظٹط§طھ')}</p>
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                             <div>
-                                                <label style={LS}>{t('المخزن')} {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineStart: '6px' }}>* {t('مطلوب')}</span>}</label>
-                                                <CustomSelect value={form.warehouseId} onChange={v => { setForm({ ...form, warehouseId: v }); localStorage.setItem('last_warehouse_id', v); }} openUp={true} hideSearch={true} placeholder={t("اختر المخزن...")} options={warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))} />
+                                                <label style={LS}>{t('ط§ظ„ظ…ط®ط²ظ†')} {form.initialQuantity > 0 && !form.warehouseId && <span style={{ color: C.danger, marginInlineStart: '6px' }}>* {t('ظ…ط·ظ„ظˆط¨')}</span>}</label>
+                                                <CustomSelect value={form.warehouseId} onChange={v => { setForm({ ...form, warehouseId: v }); localStorage.setItem('last_warehouse_id', v); }} openUp={true} hideSearch={true} placeholder={t("ط§ط®طھط± ط§ظ„ظ…ط®ط²ظ†...")} options={warehouses.map(w => ({ value: w.id, label: w.name, icon: MapPin }))} />
                                             </div>
                                             <div>
-                                                <label style={LS}>{t('الكمية الافتتاحية')}</label>
+                                                <label style={LS}>{t('ط§ظ„ظƒظ…ظٹط© ط§ظ„ط§ظپطھطھط§ط­ظٹط©')}</label>
                                                 <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                                     {!form.initialQuantity && (
                                                         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
@@ -599,7 +602,7 @@ export default function ItemsPage() {
                                         </div>
                                         {form.initialQuantity > 0 && form.costPrice > 0 && (
                                             <div style={{ marginTop: '8px', padding: '6px 12px', borderRadius: '8px', background: 'rgba(37, 106, 244,0.08)', fontSize: '11px', color: C.primary, fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
-                                                <span>{t('القيمة الإجمالية للمخزون')}</span>
+                                                <span>{t('ط§ظ„ظ‚ظٹظ…ط© ط§ظ„ط¥ط¬ظ…ط§ظ„ظٹط© ظ„ظ„ظ…ط®ط²ظˆظ†')}</span>
                                                 <span style={{ fontFamily: OUTFIT }}>{(form.initialQuantity * form.costPrice).toLocaleString()} <span style={{ fontFamily: CAIRO }}>{currencySymbol}</span></span>
                                             </div>
                                         )}
@@ -610,17 +613,17 @@ export default function ItemsPage() {
 
                         <div style={{ display: 'flex', gap: '12px', borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '0px' }}>
                             <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : 'linear-gradient(135deg,#256af4,#256af4)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
-                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
+                                {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('ط­ظپط¸ ط§ظ„ط®ط¯ظ…ط©') : t('ط¥ط¶ط§ظپط© ط§ظ„ط®ط¯ظ…ط©')) : (form.id ? t('ط­ظپط¸ ط§ظ„طھط¹ط¯ظٹظ„ط§طھ') : t('ط¥ط¶ط§ظپط© ط§ظ„صنف')))}
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('طھط±ط§ط¬ط¹')}</button>
                         </div>
                     </form>
                 </AppModal>
 
-                <AppModal show={!!deleteItem} onClose={() => setDeleteItem(null)} isDelete={true} title={t("تأكيد حذف الصنف")} itemName={deleteItem?.name} onConfirm={confirmDelete} isSubmitting={isSubmitting} />
+                <AppModal show={!!deleteItem} onClose={() => setDeleteItem(null)} isDelete={true} title={t("طھط£ظƒظٹط¯ ط­ط°ظپ ط§ظ„صنف")} itemName={deleteItem?.name} onConfirm={confirmDelete} isSubmitting={isSubmitting} />
 
                 {/* Print Barcode Modal */}
-                <AppModal show={!!printBarcodeItem} onClose={() => setPrintBarcodeItem(null)} title={t("طباعة باركود الصنف")} icon={Printer} maxWidth="360px">
+                <AppModal show={!!printBarcodeItem} onClose={() => setPrintBarcodeItem(null)} title={t("ط·ط¨ط§ط¹ط© ط¨ط§ط±ظƒظˆط¯ ط§ظ„صنف")} icon={Printer} maxWidth="360px">
                     {printBarcodeItem && (
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
                             <div id="barcode-svg-container" style={{ display: 'none' }}>
@@ -632,7 +635,7 @@ export default function ItemsPage() {
                             </div>
 
                             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <label style={{ ...LS }}>{t('عدد النسخ المراد طباعتها')}</label>
+                                <label style={{ ...LS }}>{t('ط¹ط¯ط¯ ط§ظ„ظ†ط³ط® ط§ظ„ظ…ط±ط§ط¯ ط·ط¨ط§ط¹طھظ‡ط§')}</label>
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button onClick={() => setBarcodeCopies(c => Math.max(1, c - 1))} style={{ width: '48px', height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, cursor: 'pointer', fontSize: '24px', fontWeight: 'bold' }}>-</button>
                                     <input type="number" value={barcodeCopies} onChange={e => setBarcodeCopies(parseInt(e.target.value) || 1)} style={{ ...IS, height: '48px', flex: 1, fontSize: '18px', fontWeight: 'bold' }} />
@@ -647,7 +650,7 @@ export default function ItemsPage() {
                                 const svgElement = svgContainer ? svgContainer.innerHTML : '';
                                 const barcodeName = printBarcodeItem.name;
 
-                                let htmlString = `<!DOCTYPE html><html dir="${isRtl ? 'rtl' : 'ltr'}"><head><title>${t('طباعة باركود')}</title>`;
+                                let htmlString = `<!DOCTYPE html><html dir="${isRtl ? 'rtl' : 'ltr'}"><head><title>${t('ط·ط¨ط§ط¹ط© ط¨ط§ط±ظƒظˆط¯')}</title>`;
                                 htmlString += `<style>@page { margin: 0; size: auto; } body { margin: 0; padding: 10px; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; font-family: sans-serif; }`;
                                 htmlString += `.barcode-ticket { width: 38mm; height: 25mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; overflow: hidden; page-break-inside: avoid; }`;
                                 htmlString += `.barcode-name { font-size: 10px; font-weight: bold; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; direction: rtl; }`;
