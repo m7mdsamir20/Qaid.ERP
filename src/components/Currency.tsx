@@ -1,5 +1,5 @@
 import React from 'react';
-import { getCurrencySymbol } from '@/lib/currency';
+import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import { C } from '@/constants/theme';
@@ -24,9 +24,7 @@ export function Currency({ amount, code: propCode, lang: propLang, className = '
     const symbolText = getCurrencySymbol(code, lang);
     const absAmount = Math.abs(amount);
     
-    const fmt = (v: number) => {
-        return v.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    };
+    const fmt = (v: number) => formatNumber(v);
 
     const amountEl = (
         <span style={{ 

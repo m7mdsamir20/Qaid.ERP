@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -73,7 +74,7 @@ export default function SalesPage() {
 
     useEffect(() => { setCurrentPage(1); }, [searchTerm, dateFrom, dateTo]);
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     const getStatusStyle = (total: number, paid: number) => {
         if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };

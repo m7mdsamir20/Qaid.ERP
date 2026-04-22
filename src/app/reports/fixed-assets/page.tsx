@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import React, { useEffect, useState } from 'react';
@@ -31,7 +32,7 @@ const getCurrencyName = (code: string) => {
     return map[code] || code;
 };
 
-const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => formatNumber(n);
 
 export default function FixedAssetsReportPage() {
     const { lang, t } = useTranslation();

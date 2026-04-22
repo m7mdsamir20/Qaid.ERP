@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -33,7 +34,7 @@ interface ReportData {
     };
 }
 
-const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => formatNumber(n);
 
 export default function PayrollStatementPage() {
     const { lang, t } = useTranslation();

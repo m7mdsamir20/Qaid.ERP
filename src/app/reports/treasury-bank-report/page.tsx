@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -103,7 +104,7 @@ export default function TreasuryBankReportPage() {
     const totalReceipts = data?.movements.filter((m) => m.type === 'receipt').reduce((sum, m) => sum + m.amount, 0) || 0;
     const totalPayments = data?.movements.filter((m) => m.type === 'payment').reduce((sum, m) => sum + m.amount, 0) || 0;
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
                 <ReportHeader
@@ -166,19 +167,19 @@ export default function TreasuryBankReportPage() {
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('رصيد أول المدة')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{data.openingBalance.toLocaleString('en-US')} {cSymbol}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)} {cSymbol}</div>
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${SC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('إجمالي المقبوضات (وارد)')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 900, color: SC , fontFamily: CAIRO}}>+ {totalReceipts.toLocaleString('en-US')}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 900, color: SC , fontFamily: CAIRO}}>+ {formatNumber(totalReceipts)}</div>
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${DC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('إجمالي المدفوعات (صادر)')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 900, color: DC , fontFamily: CAIRO}}>- {totalPayments.toLocaleString('en-US')}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 900, color: DC , fontFamily: CAIRO}}>- {formatNumber(totalPayments)}</div>
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${PC}`, background: 'rgba(79, 70, 229, 0.05)' }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('الرصيد الحالي')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 950, color: PC , fontFamily: CAIRO}}>{data.currentBalance.toLocaleString('en-US')} {cSymbol}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 950, color: PC , fontFamily: CAIRO}}>{formatNumber(data.currentBalance)} {cSymbol}</div>
                             </div>
                         </div>
 
@@ -204,7 +205,7 @@ export default function TreasuryBankReportPage() {
                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                         <td colSpan={4} style={{ padding: '12px 24px', fontWeight: 700, color: '#64748b' , fontFamily: CAIRO}}>{t('رصيد افتتاحي (ما قبـل الفترة)')}</td>
                                         <td colSpan={2} style={{ padding: '12px 24px',  fontWeight: 900, color: '#94a3b8' , fontFamily: CAIRO}}></td>
-                                        <td style={{ padding: '12px 24px',  fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{data.openingBalance.toLocaleString('en-US')}</td>
+                                        <td style={{ padding: '12px 24px',  fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)}</td>
                                     </tr>
                                     {movements.map((m) => (
                                         <tr key={m.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}>
@@ -224,10 +225,10 @@ export default function TreasuryBankReportPage() {
                                                 {m.type === 'receipt' ? m.amount.toLocaleString('en-US') : ''}
                                             </td>
                                             <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 800, color: DC , fontFamily: CAIRO}}>
-                                                {m.type === 'payment' ? m.amount.toLocaleString('en-US') : ''}
+                                                {m.type === 'payment' ? m.amount) : ''}
                                             </td>
                                             <td style={{ padding: '14px 16px',  fontSize: '15px', fontWeight: 900, color: '#fff', background: 'rgba(255,255,255,0.01)' , fontFamily: CAIRO}}>
-                                                {m.runningBalance.toLocaleString('en-US')}
+                                                {formatNumber(m.runningBalance)}
                                             </td>
                                         </tr>
                                     ))}
@@ -237,7 +238,7 @@ export default function TreasuryBankReportPage() {
                                         <td colSpan={4} style={{ padding: '20px', }}>{t('إجماليات الحركات المحددة')}</td>
                                         <td style={{ padding: '20px',  color: SC }}>{fMoneyJSX(totalReceipts)}</td>
                                         <td style={{ padding: '20px',  color: DC }}>{fMoneyJSX(totalPayments)}</td>
-                                        <td style={{ padding: '20px',  color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{data.currentBalance.toLocaleString('en-US')} {cSymbol}</td>
+                                        <td style={{ padding: '20px',  color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{formatNumber(data.currentBalance)} {cSymbol}</td>
                                     </tr>
                                 </tfoot>
                             </table>

@@ -8,15 +8,16 @@ import { Wallet, Save, Loader2, Search, CheckCircle2, XCircle, AlertTriangle, Ca
 import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, SEARCH_STYLE, focusIn, focusOut, LS, IS, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import PriceInput from '@/components/PriceInput';
 import { useTranslation } from '@/lib/i18n';
-import { getCurrencySymbol } from '@/lib/currency';
+import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 
 interface FinancialYear { id: string; name: string; isOpen: boolean; openingBalancesLocked: boolean; startDate: string; }
 interface Account { id: string; code: string; name: string; nature: string; type: string; isParent: boolean; accountCategory?: string; }
 interface OpeningBalance { id: string; accountId: string; debit: number; credit: number; account: Account; }
 
 const ALLOWED_TYPES = ['asset', 'liability', 'equity'];
-const fmtDisplay = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtDisplay = (n: number) => formatNumber(n);
 
 export default function OpeningBalancesPage() {
     const { data: session } = useSession();
@@ -86,12 +87,12 @@ export default function OpeningBalancesPage() {
             .finally(() => setLoading(false));
     }, [selectedYear]);
 
-    const handleChange = (accountId: string, field: 'debit' | 'credit', value: string) => {
+    const handleChange = (accountId: string, field: 'debit' | 'credit', value: number) => {
         if (isReadlyOnly) return;
         const next = new Map(balances);
         const cur  = next.get(accountId) || { debit: 0, credit: 0 };
-        if (field === 'debit')  { cur.debit  = parseFloat(value) || 0; if (cur.debit  > 0) cur.credit = 0; }
-        else                    { cur.credit = parseFloat(value) || 0; if (cur.credit > 0) cur.debit  = 0; }
+        if (field === 'debit')  { cur.debit  = value; if (cur.debit  > 0) cur.credit = 0; }
+        else                    { cur.credit = value; if (cur.credit > 0) cur.debit  = 0; }
         next.set(accountId, { ...cur });
         setBalances(next);
         setSaved(false);
@@ -399,45 +400,27 @@ export default function OpeningBalancesPage() {
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
-                                                    <input 
-                                                        type="text" 
-                                                        value={hasDr ? balance.debit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''} 
-                                                        onChange={e => {
-                                                            const val = e.target.value.replace(/[^0-9.]/g, '');
-                                                            handleChange(account.id, 'debit', val);
-                                                        }}
-                                                        placeholder="0.00" 
+                                                    <PriceInput 
+                                                        value={hasDr ? balance.debit : ''} 
+                                                        onChange={val => handleChange(account.id, 'debit', val)}
                                                         disabled={hasCr || isReadlyOnly}
                                                         style={{ 
-                                                            ...IS, height: '36px', fontSize: '15px', fontWeight: 900,
-                                                            textAlign: 'center',
                                                             borderColor: hasDr ? `${C.success}50` : C.border, 
                                                             color: hasDr ? C.success : C.textPrimary, 
                                                             background: hasDr ? `${C.success}05` : 'transparent',
-                                                            borderRadius: '8px', fontFamily: OUTFIT
                                                         }}
-                                                        onFocus={focusIn} onBlur={focusOut} 
                                                     />
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
-                                                    <input 
-                                                        type="text"
-                                                        value={hasCr ? balance.credit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''} 
-                                                        onChange={e => {
-                                                            const val = e.target.value.replace(/[^0-9.]/g, '');
-                                                            handleChange(account.id, 'credit', val);
-                                                        }}
-                                                        placeholder="0.00" 
+                                                    <PriceInput 
+                                                        value={hasCr ? balance.credit : ''} 
+                                                        onChange={val => handleChange(account.id, 'credit', val)}
                                                         disabled={hasDr || isReadlyOnly}
                                                         style={{ 
-                                                            ...IS, height: '36px', fontSize: '15px', fontWeight: 900,
-                                                            textAlign: 'center',
                                                             borderColor: hasCr ? `${C.danger}50` : C.border, 
                                                             color: hasCr ? C.danger : C.textPrimary, 
                                                             background: hasCr ? `${C.danger}05` : 'transparent',
-                                                            borderRadius: '8px', fontFamily: OUTFIT
                                                         }}
-                                                        onFocus={focusIn} onBlur={focusOut} 
                                                     />
                                                 </td>
                                             </tr>

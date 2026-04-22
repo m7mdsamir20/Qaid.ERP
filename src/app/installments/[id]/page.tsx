@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -13,7 +14,7 @@ import AppModal from '@/components/AppModal';
 
 
 const fmt  = (d: string, lang: string) => new Date(d).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB');
-const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtN = (n: number) => formatNumber(n);
 
 const statusColor: Record<string, { bg: string; color: string; label: string }> = {
     paid:    { bg: 'rgba(52,211,153,0.1)',  color: '#34d399', label: 'مدفوع'    },

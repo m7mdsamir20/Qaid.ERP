@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -86,7 +87,7 @@ export default function CapitalPage() {
         }
     };
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
@@ -115,7 +116,7 @@ export default function CapitalPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{typeof s.val === 'number' ? s.val.toLocaleString('en-US') : s.val}</span>
+                                        <span>{typeof s.val === 'number' ? s.val) : s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
@@ -173,7 +174,7 @@ export default function CapitalPage() {
                                         <div style={{ background: 'rgba(0,0,0,0.15)', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px', marginBottom: '18px' }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي القيمة الرأسمالية')}</div>
                                             <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: OUTFIT }}>
-                                                {p.capital.toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
+                                                {formatNumber(p.capital)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
                                             </div>
                                         </div>
 
@@ -181,11 +182,11 @@ export default function CapitalPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
                                             <div style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '12px', padding: '10px' }}>
                                                 <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('زيادات')}</div>
-                                                <div style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{increased.toLocaleString('en-US')}</div>
+                                                <div style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{formatNumber(increased)}</div>
                                             </div>
                                             <div style={{ background: `${C.danger}05`, border: `1px solid ${C.danger}10`, borderRadius: '12px', padding: '10px' }}>
                                                 <div style={{ fontSize: '10px', color: C.danger, fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('تخفيضات')}</div>
-                                                <div style={{ fontSize: '14px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>{decreased.toLocaleString('en-US')}</div>
+                                                <div style={{ fontSize: '14px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>{formatNumber(decreased)}</div>
                                             </div>
                                         </div>
 

@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -14,7 +15,7 @@ const formatWithCommas = (val: any) => {
     if (val === undefined || val === null || val === '') return '';
     const s = String(val).replace(/,/g, '');
     if (isNaN(Number(s))) return s;
-    return Number(s).toLocaleString('en-US', { maximumFractionDigits: 2 });
+    return formatNumber(Number(s));
 };
 
 interface Employee {
@@ -167,7 +168,7 @@ export default function AdvancesPage() {
     const totalAdvances = advances.reduce((sum, adv) => sum + adv.amount, 0);
     const pendingAdvances = advances.filter(a => a.status === 'pending').reduce((sum, adv) => sum + adv.amount, 0);
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
@@ -203,7 +204,7 @@ export default function AdvancesPage() {
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>}
-                                        <span>{s.val.toLocaleString('en-US')}</span>
+                                        <span>{formatNumber(s.val)}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
@@ -275,7 +276,7 @@ export default function AdvancesPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{adv.amount.toLocaleString('en-US')}</span>
+                                                    <span>{formatNumber(adv.amount)}</span>
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false, true)}>
@@ -284,7 +285,7 @@ export default function AdvancesPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: C.danger, fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{(adv.monthlyAmount || 0).toLocaleString('en-US')}</span>
+                                                    <span>{(adv.monthlyAmount || 0))}</span>
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false, true),  color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>

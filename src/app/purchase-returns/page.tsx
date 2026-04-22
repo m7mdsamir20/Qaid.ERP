@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -53,7 +54,7 @@ export default function PurchaseReturnsListPage() {
         return matchSearch && matchFrom && matchTo;
     });
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     const getStatusStyle = (total: number, paid: number) => {
         if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: 'مدفوعة', icon: CheckCircle2 };

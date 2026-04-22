@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -149,7 +150,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
         const printDate = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
         const printTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true });
         const sym = formatCurrency(company?.currency || 'EGP');
-        const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
+        const fmt = (n: number) => formatNumber((n || 0));
         const logoHtml = companyLogo
             ? `<img src="${companyLogo}" style="max-height:60px;max-width:120px;object-fit:contain;" />`
             : `<div style="font-size:16px;font-weight:900">${companyName}</div>`;
@@ -251,7 +252,7 @@ ${tableHtml}
         </DashboardLayout>
     );
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%' }}>
                 
@@ -340,7 +341,7 @@ ${tableHtml}
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800, color: stat.color, fontFamily: OUTFIT }} dir="ltr">
                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
-                                    <span>{stat.val.toLocaleString('en-US')}</span>
+                                    <span>{formatNumber(stat.val)}</span>
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${stat.color}15`, border: `1px solid ${stat.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: stat.color }}>
@@ -398,7 +399,7 @@ ${tableHtml}
                             مسير رواتب شهر {months.find(m => m.value === payroll?.month)?.label} {payroll?.year}
                         </div>
                         <div style={{ fontSize: '11px', marginTop: '4px', color: '#444' }}>
-                            إجمالي الصافي: {payroll?.netTotal?.toLocaleString('en-US')} ج.م
+                            إجمالي الصافي: {payroll?.netTotal?)} ج.م
                         </div>
                     </div>
                 </div>
@@ -431,19 +432,19 @@ ${tableHtml}
                                         </div>
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }} dir="ltr">
-                                        {line.basicSalary.toLocaleString('en-US')}
+                                        {formatNumber(line.basicSalary)}
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT }} dir="ltr">
-                                        +{line.allowances.toLocaleString('en-US')}
+                                        +{formatNumber(line.allowances)}
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }} dir="ltr">
-                                        -{line.advances.toLocaleString('en-US')}
+                                        -{formatNumber(line.advances)}
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }} dir="ltr">
-                                        -{line.discounts.toLocaleString('en-US')}
+                                        -{formatNumber(line.discounts)}
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: OUTFIT }} dir="ltr">
-                                        {line.netSalary.toLocaleString('en-US')}
+                                        {formatNumber(line.netSalary)}
                                     </td>
                                 </tr>
                             ))}
@@ -461,7 +462,7 @@ ${tableHtml}
                     <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
                         سيتم إغلاق المسير وتوليد قيود محاسبية تلقائية، وخصم السلف المستحقة من أرصدة الموظفين.
                         <br/><br/>
-                        <strong style={{ color: '#fff' }}>المبلغ المطلوب:</strong> <span style={{ color: C.success, fontWeight: 800, fontSize: '16px', fontFamily: OUTFIT }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{payroll.netTotal.toLocaleString('en-US')}</span></div></span>
+                        <strong style={{ color: '#fff' }}>المبلغ المطلوب:</strong> <span style={{ color: C.success, fontWeight: 800, fontSize: '16px', fontFamily: OUTFIT }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{formatNumber(payroll.netTotal)}</span></div></span>
                     </div>
 
                     <div style={{ marginBottom: '24px' }}>
@@ -473,7 +474,7 @@ ${tableHtml}
                             placeholder="اختر الخزينة..."
                             hideSearch={true}
                             openUp={true}
-                            options={treasuries.map(tr => ({ value: tr.id, label: `${tr.name} (${formatCurrency(company?.currency)} ${tr.balance.toLocaleString('en-US')})` }))}
+                            options={treasuries.map(tr => ({ value: tr.id, label: `${tr.name} (${formatCurrency(company?.currency)} ${formatNumber(tr.balance)})` }))}
                         />
                         {(() => {
                             const tr = treasuries.find(t => t.id === selectedTreasury);
@@ -481,7 +482,7 @@ ${tableHtml}
                                 return (
                                     <div style={{ marginTop: '8px', padding: '8px 12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', color: '#ef4444', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <AlertCircle size={14} />
-                                        رصيد الخزينة غير كافٍ. المتوفر ({tr.balance.toLocaleString('en-US')} ج.م)
+                                        رصيد الخزينة غير كافٍ. المتوفر ({formatNumber(tr.balance)} ج.م)
                                     </div>
                                 );
                             }

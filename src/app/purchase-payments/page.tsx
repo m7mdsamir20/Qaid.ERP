@@ -63,11 +63,11 @@ export default function PurchasePaymentsPage() {
         return matchSearch && matchFrom && matchTo;
     });
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     const printPayVoucher = (voucher: any, supplier: any, voucherNumber: number, form: any) => {
         const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        const amount = (voucher.amount || 0).toLocaleString('en-US');
+        const amount = formatNumber((voucher.amount || 0));
         const COMPANY = {
             name: 'شركة النور للتجارة', nameEn: 'Al-Nour Trading Company',
             address: 'القاهرة، مصر - شارع التحرير، عمارة 12',
@@ -142,7 +142,7 @@ export default function PurchasePaymentsPage() {
       <div class="ml">
         <span class="mk">الرصيد بعد السند</span>
         <span class="mv" style="color:${((supplier?.balance || 0) + (voucher.amount || 0)) >= 0 ? '#166534' : '#dc2626'}">
-          ${((supplier?.balance || 0) + (voucher.amount || 0)).toLocaleString('en-US')} ج.م
+          ${formatNumber(((supplier?.balance || 0) + (voucher.amount || 0)))} ج.م
         </span>
       </div>
     </div>

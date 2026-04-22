@@ -8,6 +8,8 @@ import { TrendingUp, Search, Lock, Loader2, Building2, Banknote, CheckCircle2, A
 import { useCurrency } from '@/hooks/useCurrency';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC, STitle, BTN_PRIMARY, BTN_SUCCESS } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import PriceInput from '@/components/PriceInput';
+import { formatNumber } from '@/lib/currency';
 
 /* ── Types ── */
 interface Supplier { id: string; name: string; balance: number; }
@@ -72,21 +74,6 @@ export default function NewPaymentPage() {
 
     const selectedSupplier = Array.isArray(suppliers) ? suppliers.find(c => c.id === form.supplierId) : null;
     const availTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => form.paymentType === 'cash' ? t.type !== 'bank' : t.type === 'bank') : [];
-
-    const fmtInput = (v: any) => {
-        if (v === '' || v === undefined || v === null) return '';
-        const n = parseFloat(String(v).replace(/,/g, ''));
-        if (isNaN(n)) return '';
-        return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    };
-
-    const handleAmountChange = (val: string) => {
-        const v = val.replace(/,/g, '');
-        if (v === '' || !isNaN(Number(v)) || v === '.') {
-            setForm((f: any) => ({ ...f, amount: v }));
-            clearError('amount');
-        }
-    };
 
     const handlePrint = (v: any) => {
         window.open(`/print/voucher/${v.id}`, '_blank');
@@ -204,7 +191,7 @@ export default function NewPaymentPage() {
                                             options={suppliers.map(s => ({
                                                 value: s.id,
                                                 label: s.name,
-                                                sub: s.balance < 0 ? `له: ${Math.abs(s.balance).toLocaleString()} ${cSymbol}` : s.balance > 0 ? `عليه: ${s.balance.toLocaleString()} ${cSymbol}` : 'رصيد: صفر'
+                                                sub: s.balance < 0 ? `له: ${formatNumber(Math.abs(s.balance))} ${cSymbol}` : s.balance > 0 ? `عليه: ${formatNumber(s.balance)} ${cSymbol}` : 'رصيد: صفر'
                                             }))}
                                         />
                                         <InlineError field="supplierId" />
@@ -212,7 +199,7 @@ export default function NewPaymentPage() {
                                     {selectedSupplier && (
                                         <div style={{ marginTop: '8px' }}>
                                             <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '20px', fontWeight: 700, background: selectedSupplier.balance < 0 ? `${C.success}15` : `${C.danger}15`, color: selectedSupplier.balance < 0 ? C.success : C.danger, border: `1px solid ${selectedSupplier.balance < 0 ? C.success : C.danger}30` }}>
-                                                {selectedSupplier.balance < 0 ? `للمورد طرفنا ${Math.abs(selectedSupplier.balance).toLocaleString()} ${cSymbol}` : selectedSupplier.balance > 0 ? `على المورد طرفنا ${selectedSupplier.balance.toLocaleString()} ${cSymbol}` : 'رصيد المورد صفر'}
+                                                {selectedSupplier.balance < 0 ? `للمورد طرفنا ${formatNumber(Math.abs(selectedSupplier.balance))} ${cSymbol}` : selectedSupplier.balance > 0 ? `على المورد طرفنا ${formatNumber(selectedSupplier.balance)} ${cSymbol}` : 'رصيد المورد صفر'}
                                             </span>
                                         </div>
                                     )}
@@ -263,7 +250,7 @@ export default function NewPaymentPage() {
                                         options={availTreasuries.map(t => ({
                                             value: t.id,
                                             label: t.name,
-                                            sub: `رصيد الحالي: ${t.balance.toLocaleString()} ${cSymbol}`,
+                                            sub: `رصيد الحالي: ${formatNumber(t.balance)} ${cSymbol}`,
                                         }))}
                                     />
                                     <InlineError field="treasuryId" />
@@ -295,20 +282,19 @@ export default function NewPaymentPage() {
                                     overflow: 'visible', position: 'relative'
                                 }}>
                                     <div style={{ flex: 1, position: 'relative' }}>
-                                        <input
-                                            type="text" inputMode="decimal" placeholder="0.00"
-                                            value={fmtInput(form.amount)}
-                                            onChange={e => handleAmountChange(e.target.value)}
+                                        <PriceInput 
+                                            value={form.amount}
+                                            onChange={val => { setForm((f: any) => ({ ...f, amount: val })); clearError('amount'); }}
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
                                                 border: 'none', color: C.danger, fontWeight: 900,
-                                                fontSize: '22px', paddingInlineEnd: '20px',
+                                                fontSize: '22px', paddingInlineEnd: '44px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
-                                            onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut}
+                                            placeholder="0.00"
                                         />
                                         <InlineError field="amount" top="-42px" />
-                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.danger, opacity: 0.6 }}>
+                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.danger, opacity: 0.6, pointerEvents: 'none' }}>
                                             {form.paymentType === 'cash' ? <Banknote size={20} /> : <Building2 size={20} />}
                                         </div>
                                     </div>
@@ -323,7 +309,7 @@ export default function NewPaymentPage() {
                                             fontSize: '15px', fontWeight: 800, fontFamily: CAIRO,
                                             color: ((selectedSupplier.balance - (parseFloat(form.amount) || 0))) >= 0 ? C.danger : C.success
                                         }}>
-                                            {Math.abs(selectedSupplier.balance - (parseFloat(form.amount) || 0)).toLocaleString()} {cSymbol}
+                                            {formatNumber(Math.abs(selectedSupplier.balance - (parseFloat(form.amount) || 0)))} {cSymbol}
                                         </span>
                                     ) : (
                                         <span style={{ fontSize: '14px', color: C.textMuted }}>—</span>

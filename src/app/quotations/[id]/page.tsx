@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -59,7 +60,7 @@ export default function QuotationViewPage() {
         </DashboardLayout>
     );
 
-    const fmt = (num: number) => Number(num || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(Number(num || 0));
     const quoCode = `QUO-${String(quotation.quotationNumber).padStart(5, '0')}`;
     const dateStr = new Date(quotation.date).toLocaleDateString('en-GB');
 

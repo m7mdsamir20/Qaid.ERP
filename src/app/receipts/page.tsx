@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -63,7 +64,7 @@ export default function ReceiptVouchersPage() {
         return matchSearch && matchFrom && matchTo;
     });
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     const handlePrint = (v: Voucher) => {
         window.open(`/print/voucher/${v.id}`, '_blank');

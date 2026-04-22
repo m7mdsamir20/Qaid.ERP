@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -325,7 +326,7 @@ export default function EditEmployeePage() {
                                     <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '6px' }}>{t('صافي الراتب المتوقع')}</div>
                                     <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '8px' }} dir="ltr">
                                         <span style={{ fontSize: '15px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
-                                        <span>{net.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
+                                        <span>{formatNumber(net)}</span>
                                     </div>
                                     <CreditCard size={80} style={{ position: 'absolute', left: -10, top: -10, opacity: 0.05, transform: 'rotate(-20deg)', pointerEvents: 'none' }} />
                                 </div>
@@ -414,11 +415,11 @@ function Field({ label, required, children }: any) {
 }
 
 function SummaryItem({ label, value, color, prefix = '', unit }: any) {
-    return (
+    return formatNumber((
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
             <span style={{ color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
             <span style={{ color, fontWeight: 800, fontFamily: OUTFIT }}>
-                {prefix} {(+value || 0).toLocaleString('en-US')} <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{unit}</span>
+                {prefix} {(+value || 0))} <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{unit}</span>
             </span>
         </div>
     );

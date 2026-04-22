@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -138,7 +139,7 @@ export default function ExpensesPage() {
                             ) : paginated.map((e, idx) => {
                                 const debitLine = e.lines.find((l: any) => l.debit > 0);
                                 const creditLine = e.lines.find((l: any) => l.credit > 0);
-                                return (
+                                return formatNumber((
                                     <tr key={e.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
@@ -176,7 +177,7 @@ export default function ExpensesPage() {
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true), textAlign: 'center'}}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>
-                                                {(debitLine?.debit || 0).toLocaleString('en-US')}
+                                                {(debitLine?.debit || 0))}
                                                 <small style={{ fontSize: '11px', marginInlineStart: '4px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
                                             </span>
                                         </td>

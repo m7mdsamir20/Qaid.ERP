@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -257,7 +258,7 @@ export default function PayrollsPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '11px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
-                                                    <span>{pr.netTotal.toLocaleString('en-US')}</span>
+                                                    <span>{formatNumber(pr.netTotal)}</span>
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false, true)}>

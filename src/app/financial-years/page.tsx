@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -15,8 +16,8 @@ const fmt = (d: any, locale: string = 'ar-EG-u-nu-latn') =>
 const calcDays = (s: any, e: any) =>
     Math.max(0, Math.ceil((new Date(e).getTime() - new Date(s).getTime()) / 86400000) + 1);
 
-const fmtMoney = (n: number) =>
-    n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+const fmtMoney = formatNumber((n: number) =>
+    n);
 
 const CURRENCY_AR: Record<string, string> = {
     EGP: 'ج.م', SAR: 'ر.س', AED: 'د.إ', KWD: 'د.ك',
@@ -281,7 +282,7 @@ export default function FinancialYearsPage() {
                                     <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                                         <KpiCard icon={Calendar} label={t("تاريخ البداية")} value={fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color={C.primary} />
                                         <KpiCard icon={CalendarCheck} label={t("تاريخ الانتهاء")} value={fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color="#8b5cf6" />
-                                        <KpiCard icon={Clock} label={t("الأيام المتبقية")} value={`${remaining.toLocaleString('en-US')} ${t('يوم')}`} color={remaining < 30 ? C.danger : '#f59e0b'}
+                                        <KpiCard icon={Clock} label={t("الأيام المتبقية")} value={`${formatNumber(remaining)} ${t('يوم')}`} color={remaining < 30 ? C.danger : '#f59e0b'}
                                             sub={remaining < 30 ? t('تقترب نهاية السنة') : undefined} />
                                         {activeFY.stats && <>
                                             <KpiCard icon={TrendingUp} label={t("إجمالي المبيعات")}
@@ -290,7 +291,7 @@ export default function FinancialYearsPage() {
                                             <KpiCard icon={TrendingDown} label={t("إجمالي المشتريات")}
                                                 value={`${fmtMoney(activeFY.stats.purchasesTotal)} ${CURRENCY_AR[currency] || currency}`} color={C.danger}
                                                 sub={`${activeFY.stats.purchasesCount} ${t('فاتورة')}`} />
-                                            <KpiCard icon={BookOpen} label={t("قيود يومية")} value={activeFY.stats.journalEntries.toLocaleString('en-US')} color="#f59e0b" />
+                                            <KpiCard icon={BookOpen} label={t("قيود يومية")} value={formatNumber(activeFY.stats.journalEntries)} color="#f59e0b" />
                                         </>}
                                     </div>
                                 </div>
@@ -353,7 +354,7 @@ export default function FinancialYearsPage() {
                                                 const s = fy.stats;
                                                 const profit = s ? s.salesTotal - s.purchasesTotal : 0;
                                                 const isLast = idx === closedYears.length - 1;
-                                                return (
+                                                return formatNumber((
                                                     <tr key={fy.id} style={TABLE_STYLE.row(isLast)}
                                                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.025)'}
                                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
@@ -371,7 +372,7 @@ export default function FinancialYearsPage() {
                                                         </td>
                                                         {/* الأيام */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted }}>
-                                                            {calcDays(fy.startDate, fy.endDate).toLocaleString('en-US')}
+                                                            {formatNumber(calcDays(fy.startDate, fy.endDate))}
                                                         </td>
                                                         {/* المبيعات */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
@@ -404,7 +405,7 @@ export default function FinancialYearsPage() {
                                                         </td>
                                                         {/* قيود */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
-                                                            {s ? s.journalEntries.toLocaleString('en-US') : '—'}
+                                                            {s ? s.journalEntries) : '—'}
                                                         </td>
                                                         {/* الحالة */}
                                                         <td style={TABLE_STYLE.td(false)}>

@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
@@ -183,12 +184,12 @@ export default function CustomersPage() {
 
     useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
     const fmtInput = (v: any) => {
         if (v === '' || v === undefined || v === null) return '';
         const n = parseFloat(String(v).replace(/,/g, ''));
         if (isNaN(n)) return '';
-        return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+        return formatNumber(n);
     };
 
     const stats = [

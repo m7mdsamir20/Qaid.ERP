@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -21,7 +22,7 @@ interface Disposal {
     gainLoss: number; notes?: string;
 }
 
-const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => formatNumber(n);
 const REASON_COLORS: Record<string, string> = {
     'sale': '#256af4', 'scrap': '#94a3b8', 'gift': '#a78bfa',
     'damage': C.danger, 'other': '#64748b',
@@ -126,7 +127,7 @@ export default function DisposalsPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{s.val.toLocaleString('en-US')}</span>
+                                        <span>{formatNumber(s.val)}</span>
                                         {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                     </div>
                                 </div>

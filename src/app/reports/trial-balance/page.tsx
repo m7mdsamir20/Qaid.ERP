@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import React, { useState, useEffect } from 'react';
@@ -14,7 +15,7 @@ const getCurrencyName = (code: string) => {
     return map[code] || code;
 };
 
-const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => formatNumber(n);
 
 interface TrialBalanceLine {
     code: string;

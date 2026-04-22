@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { C } from '@/constants/theme';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -140,7 +141,7 @@ export default function AdvanceDetailPage() {
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('المبلغ الإجمالي')}</label>
                                     <div style={{ fontSize: '18px', fontWeight: 900, color: '#10b981' }} dir="ltr">
-                                        {advance.amount.toLocaleString('en-US')} <span style={{ fontSize: '12px' }}></span>
+                                        {formatNumber(advance.amount)} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ gridColumn: 'span 2' }}>
@@ -165,7 +166,7 @@ export default function AdvanceDetailPage() {
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.1)' }}>
                                     <div style={{ fontSize: '11px', color: '#8b5cf6', fontWeight: 700, marginBottom: '6px' }}>{t('القسط الشهري')}</div>
                                     <div style={{ fontSize: '20px', fontWeight: 900, color: '#8b5cf6' }} dir="ltr">
-                                        {advance.monthlyAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px' }}></span>
+                                        {formatNumber(advance.monthlyAmount)} <span style={{ fontSize: '10px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)' }}>
@@ -199,7 +200,7 @@ export default function AdvanceDetailPage() {
                 onClose={() => setShowDeleteModal(false)}
                 onConfirm={handleDelete}
                 title={t("تأكيد حذف السلفة")}
-                itemName={`${t('سلفة الموظف')} ${advance.employee.name} ${t('بقيمة')} ${advance.amount.toLocaleString('en-US')} `}
+                itemName={`${t('سلفة الموظف')} ${advance.employee.name} ${t('بقيمة')} ${formatNumber(advance.amount)} `}
                 isDelete={true}
                 isSubmitting={isDeleting}
             />

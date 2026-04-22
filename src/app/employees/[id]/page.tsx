@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -150,7 +151,7 @@ export default function EmployeeDetailPage() {
                                     <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '8px', opacity: 0.8 }}>{t('صافي الراتب المتوقع')}</div>
                                     <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: OUTFIT }} dir="ltr">
                                         <span style={{ fontSize: '16px', color: C.textMuted, marginInlineEnd: '8px' }}>{currencySymbol}</span>
-                                        {net.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                        {formatNumber(net)}
                                     </div>
                                 </div>
                                 <div style={{ textAlign: 'end', zIndex: 1 }}>
@@ -286,11 +287,11 @@ function InfoItem({ label, value, icon: Icon, family }: any) {
 }
 
 function SummaryRow({ label, value, color, prefix = '', unit }: any) {
-    return (
+    return formatNumber((
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
             <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
             <span style={{ fontSize: '13px', color, fontWeight: 800, fontFamily: OUTFIT }}>
-                {prefix} {(+value || 0).toLocaleString('en-US')} <span style={{ fontSize: '10px', opacity: 0.7 }}>{unit}</span>
+                {prefix} {(+value || 0))} <span style={{ fontSize: '10px', opacity: 0.7 }}>{unit}</span>
             </span>
         </div>
     );

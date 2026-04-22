@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -30,7 +31,7 @@ interface ReportData {
     totalCount: number;
 }
 
-const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => formatNumber(n);
 
 const typeColors: Record<string, string> = {
     late: '#fb923c',

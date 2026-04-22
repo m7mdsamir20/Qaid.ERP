@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -103,7 +104,7 @@ export default function PartnerAccountsPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{s.val.toLocaleString('en-US')}</span>
+                                        <span>{formatNumber(s.val)}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
@@ -169,22 +170,22 @@ export default function PartnerAccountsPage() {
 
                                         <div style={{ }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                            <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: OUTFIT }}>{p.capital.toLocaleString('en-US')}</div>
+                                            <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: OUTFIT }}>{formatNumber(p.capital)}</div>
                                         </div>
 
                                          <div style={{ }}>
                                              <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '2px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
                                              <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT, direction: 'ltr' }}>
-                                                 {p.balance.toLocaleString('en-US')}
+                                                 {formatNumber(p.balance)}
                                              </div>
                                          </div>
 
                                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
                                             <div title={t("إجمالي الإيداعات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.2)', fontFamily: OUTFIT }}>
-                                                ↑ {deposits.toLocaleString('en-US')}
+                                                ↑ {formatNumber(deposits)}
                                             </div>
                                             <div title={t("إجمالي المسحوبات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontFamily: OUTFIT }}>
-                                                ↓ {withdrawals.toLocaleString('en-US')}
+                                                ↓ {formatNumber(withdrawals)}
                                             </div>
                                         </div>
 
@@ -241,7 +242,7 @@ export default function PartnerAccountsPage() {
                                                                             </span>
                                                                         </td>
                                                                         <td style={{ ...TABLE_STYLE.td(false), fontWeight: 900, color: meta.color, fontFamily: OUTFIT, fontSize: '14px' }}>
-                                                                            {tx.amount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                                                                            {formatNumber(tx.amount)} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                                                         </td>
                                                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                                             {tx.notes || '—'}
@@ -277,7 +278,7 @@ export default function PartnerAccountsPage() {
                             }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري حالياً')}</div>
                                 <div style={{ fontSize: '20px', fontWeight: 950, color: showModal.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
-                                    {showModal.balance.toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                                    {formatNumber(showModal.balance)} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                 </div>
                             </div>
 
@@ -316,7 +317,7 @@ export default function PartnerAccountsPage() {
                                         onChange={v => setForm(f => ({ ...f, treasuryId: v }))}
                                         icon={Wallet}
                                         placeholder={t("اختر الخزينة...")}
-                                        options={treasuries.map(t_ => ({ value: t_.id, label: `${t_.name} (${t_.balance.toLocaleString('en-US')} ${t('ج.م')})` }))}
+                                        options={treasuries.map(t_ => ({ value: t_.id, label: `${t_.name} (${formatNumber(t_.balance)} ${t('ج.م')})` }))}
                                     />
                                 </div>
                             )}

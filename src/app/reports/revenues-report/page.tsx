@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -65,7 +66,7 @@ export default function RevenuesReportPage() {
         XLSX.writeFile(wb, `${t('تقرير_الإيرادات')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
                 <ReportHeader
@@ -109,7 +110,7 @@ export default function RevenuesReportPage() {
                             <div style={{ background: `${SC}08`, border: `1px solid ${SC}33`, borderRadius: '12px', padding: '20px 24px' }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي الإيرادات')}</div>
                                 <div style={{ fontSize: '22px', fontWeight: 900, color: SC, fontFamily: OUTFIT }}>
-                                    {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{cSymbol}</span>
+                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '20px 24px' }}>
@@ -151,7 +152,7 @@ export default function RevenuesReportPage() {
                                                         </span>
                                                     </td>
                                                     <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: SC, fontFamily: OUTFIT }}>
-                                                        {Number(row.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                                        {formatNumber(Number(row.amount))}
                                                     </td>
                                                 </tr>
                                             ))}
@@ -160,7 +161,7 @@ export default function RevenuesReportPage() {
                                             <tr>
                                                 <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
                                                 <td style={{ padding: '18px 16px',  fontWeight: 900, fontSize: '14px', color: SC, fontFamily: OUTFIT }}>
-                                                    {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    {Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>
                                         </tfoot>

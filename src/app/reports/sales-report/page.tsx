@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -42,7 +43,7 @@ export default function SalesReportPage() {
     const businessType = session?.user?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
     const { symbol: sym } = useCurrency();
-    const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (n: number) => formatNumber(n);
     const [data, setData] = useState<ReportData | null>(null);
     const [loading, setLoading] = useState(false);
     const [from, setFrom] = useState('');

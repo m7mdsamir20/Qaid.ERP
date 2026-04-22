@@ -11,6 +11,7 @@ import { ScrollText, Calendar, Loader2, Users, Search, TrendingUp, TrendingDown,
 import * as XLSX from 'xlsx';
 
 import { useCurrency } from '@/hooks/useCurrency';
+import { formatNumber } from '@/lib/currency';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -221,7 +222,7 @@ export default function CustomerStatementPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value.toLocaleString('en-US')}</span>
+                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                         <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
@@ -258,9 +259,9 @@ export default function CustomerStatementPage() {
                                                 </td>
                                                 <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO, }}>{t('رصيد ما قبل فترة التقرير')}</td>
-                                                <td style={{ padding: '14px 20px',  color: data.initialBalance > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{data.initialBalance > 0 ? <>{Math.abs(data.initialBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  color: data.initialBalance < 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{data.initialBalance < 0 ? <>{Math.abs(data.initialBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 900, color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{Math.abs(data.initialBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
+                                                <td style={{ padding: '14px 20px',  color: data.initialBalance > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{data.initialBalance > 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  color: data.initialBalance < 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{data.initialBalance < 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 900, color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
                                             </tr>
                                         )}
                                         {data.statement.map((row: StatementRow, i: number) => (
@@ -284,9 +285,9 @@ export default function CustomerStatementPage() {
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{row.ref || '—'}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, }}>{row.description}</td>
-                                                <td style={{ padding: '14px 20px',  color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{row.debit > 0 ? <>{row.debit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{row.credit > 0 ? <>{row.credit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 900, color: row.balance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{Math.abs(row.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
+                                                <td style={{ padding: '14px 20px',  color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{row.debit > 0 ? <>{formatNumber(row.debit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{row.credit > 0 ? <>{formatNumber(row.credit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 900, color: row.balance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(row.balance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -294,13 +295,13 @@ export default function CustomerStatementPage() {
                                         <tr>
                                             <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
                                             <td style={{ padding: '20px 20px',  color: '#10b981', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT }}>
-                                                {(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
+                                                {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
                                             <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT }}>
-                                                {(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
+                                                {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
                                             <td style={{ padding: '20px 24px',  color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>
-                                                {Math.abs(data.finalBalance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
+                                                {formatNumber(Math.abs(data.finalBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
                                         </tr>
                                     </tfoot>

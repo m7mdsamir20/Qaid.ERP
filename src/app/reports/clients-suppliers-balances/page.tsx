@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -195,7 +196,7 @@ export default function ClientsSuppliersBalancesPage() {
                                 }}>
                                     <span style={{ fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{s.label}</span>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                        <span style={{ fontSize: '24px', fontWeight: 1000, color: s.color, fontFamily: OUTFIT }}>{s.value.toLocaleString('en-US')}</span>
+                                        <span style={{ fontSize: '24px', fontWeight: 1000, color: s.color, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
                                         <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                     </div>
                                 </div>
@@ -238,7 +239,7 @@ export default function ClientsSuppliersBalancesPage() {
                                         const owesUs = (p.partnerType === 'customer' && p.balance > 0) || (p.partnerType === 'supplier' && p.balance < 0);
                                         const weOweThem = (p.partnerType === 'customer' && p.balance < 0) || (p.partnerType === 'supplier' && p.balance > 0);
 
-                                        return (
+                                        return formatNumber((
                                             <tr key={p.id} 
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
@@ -280,7 +281,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                             )}
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
-                                                            {Math.abs(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                            {Math.abs(p.balance))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                         </td>
                                                     </>
                                                 )}
