@@ -556,7 +556,7 @@ export default function NewPurchasePage() {
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
                                                 <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {t('الأصناف')}</td>
-                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>{subtotal.toLocaleString()} {cSymbol}</td>
+                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
                                                 <td />
                                             </tr>
                                         </tfoot>
@@ -650,7 +650,7 @@ export default function NewPurchasePage() {
                                 )}
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))', padding: '10px 14px', borderRadius: '12px', marginTop: '6px', border: `1px solid ${C.primaryBorder}`, boxShadow: '0 4px 12px rgba(37,106,244,0.08)' }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>{netTotal.toLocaleString()} {cSymbol}</span>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>{fMoneyJSX(netTotal)}</span>
                                     <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
                             </div>

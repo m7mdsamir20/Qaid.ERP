@@ -1,6 +1,7 @@
 'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
+import { useCurrency } from '@/hooks/useCurrency';
 import { useTranslation } from '@/lib/i18n';
 
 const getCurrencyName = (code: string) => {
@@ -30,6 +31,7 @@ interface ReportResult {
 }
 
 export default function ClientsSuppliersBalancesPage() {
+    const { fMoney, fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
@@ -256,10 +258,10 @@ export default function ClientsSuppliersBalancesPage() {
                                                 {filter === 'all' ? (
                                                     <>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
-                                                            {maden > 0 ? <>{maden.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}
+                                                            {fMoneyJSX(maden > 0 ? <>{maden)}</> : '—'}
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
-                                                            {daen > 0 ? <>{daen.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}
+                                                            {fMoneyJSX(daen > 0 ? <>{daen)}</> : '—'}
                                                         </td>
                                                     </>
                                                 ) : (

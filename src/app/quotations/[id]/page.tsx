@@ -198,7 +198,7 @@ export default function QuotationViewPage() {
                                     }}>
                                         <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{t('الخصم الممنوح')}</label>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, color: C.danger }}>- {fmt(quotation.discountAmt)} {cSymbol}</div>
+                                            <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, color: C.danger }}>- {fMoneyJSX(quotation.discountAmt)}</div>
                                             {quotation.discountPct > 0 && <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted }}>({quotation.discountPct}%)</span>}
                                         </div>
                                     </div>
@@ -216,7 +216,7 @@ export default function QuotationViewPage() {
                                         gap: '10px'
                                     }}>
                                         <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{quotation.taxLabel || 'VAT'} ({quotation.taxRate}%)</label>
-                                        <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, color: C.primary }}>+ {fmt(quotation.taxAmount)} {cSymbol}</div>
+                                        <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, color: C.primary }}>+ {fMoneyJSX(quotation.taxAmount)}</div>
                                     </div>
                                 )}
 

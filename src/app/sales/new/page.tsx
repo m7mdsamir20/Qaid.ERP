@@ -815,7 +815,7 @@ function NewSalePageInner() {
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
                                                 <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>
-                                                    {subtotal.toLocaleString()} {cSymbol}
+                                                    {fMoneyJSX(subtotal)}
                                                 </td>
                                                 <td />
                                             </tr>

@@ -2,6 +2,7 @@ import React from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
 import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
+import { C } from '@/constants/theme';
 
 interface CurrencyProps {
     amount: number;
@@ -44,11 +45,12 @@ export function Currency({ amount, code: propCode, lang: propLang, className = '
             fontFamily: "'Cairo', sans-serif", 
             fontSize: '11px', 
             fontWeight: 600,
-            color: '#94a3b8',
+            color: C.textSecondary,
             marginInlineStart: isRtl ? '3px' : '0',
             marginInlineEnd: isRtl ? '0' : '3px',
             verticalAlign: 'baseline',
-            display: 'inline-block'
+            display: 'inline-block',
+            opacity: 1
         }}>
             {symbolText}
         </span>

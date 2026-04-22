@@ -18,7 +18,7 @@ export default function InstallmentsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
     const [plans, setPlans] = useState<any[]>([]);
     const [customers, setCustomers] = useState<any[]>([]);
     const [treasuries, setTreasuries] = useState<any[]>([]);
@@ -280,8 +280,14 @@ export default function InstallmentsPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
+                                    {typeof k.value === 'string' && k.suffix ? (
+                                        fMoneyJSX(parseFloat(k.value.replace(/,/g, '')))
+                                    ) : (
+                                        <>
+                                            <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
+                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
+                                        </>
+                                    )}
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${k.color}15`, border: `1px solid ${k.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: k.color }}>
@@ -315,7 +321,7 @@ export default function InstallmentsPage() {
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
                                             {[t('الخطة'), t('المنتج'), t('الهاتف'), t('العميل'), t('إجمالي الخطة'), t('المقدم'), t('القسط'), t('المدة'), t('الحالة'), t('إجراء')].map((h, i) => (
-                                                <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
+                                                <th key={i} style={TABLE_STYLE.th(i === 0, [8, 9].includes(i))}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -344,19 +350,19 @@ export default function InstallmentsPage() {
                                                     <td style={{ padding: '12px 16px', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>{p.customer?.phone || '—'}</td>
                                                     <td style={{ padding: '12px 16px', fontWeight: 600, color: C.textPrimary }}>{p.customer?.name}</td>
                                                     <td style={{ padding: '12px 16px',  fontWeight: 800, fontFamily: OUTFIT }}>
-                                                        {fmtN(p.grandTotal)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(p.grandTotal)}
                                                     </td>
                                                     <td style={{ padding: '12px 16px',  color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                        {fmtN(p.downPayment)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(p.downPayment)}
                                                     </td>
                                                     <td style={{ padding: '12px 16px',  color: C.primary, fontWeight: 800, fontFamily: OUTFIT }}>
-                                                        {fmtN(p.installmentAmount)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(p.installmentAmount)}
                                                     </td>
                                                     <td style={{ padding: '12px 16px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>
                                                         {paidCount} <span style={{ margin: '0 2px', opacity: 0.4 }}>/</span> {p.monthsCount}
                                                         <span style={{ fontSize: '10px', marginInlineStart: '4px' }}>{t('شهر')}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', }}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         {overdueCount > 0 ? (
                                                             <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 800, gap: '4px', alignItems: 'center' }}>
                                                                 <AlertTriangle size={10} /> {overdueCount} {t('متأخر')}
@@ -371,7 +377,7 @@ export default function InstallmentsPage() {
                                                             </span>
                                                         )}
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', }} onClick={e => e.stopPropagation()}>
+                                                    <td style={TABLE_STYLE.td(false, true)} onClick={e => e.stopPropagation()}>
                                                         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                                             <button onClick={() => router.push(`/installments/${p.id}`)}
                                                                 style={{ width: 32, height: 32, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', transition: '0.2s' }}

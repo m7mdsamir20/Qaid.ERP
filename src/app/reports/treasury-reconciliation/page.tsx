@@ -250,7 +250,7 @@ export default function TreasuryReconciliationPage() {
                                                                 : <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: SC, padding: '4px 10px', borderRadius: '8px', background: 'rgba(16,185,129,0.1)', fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}><Wallet size={14} /> {t('نقدي')}</span>}
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 900, fontSize: '14.5px', fontFamily: OUTFIT, color: C.textPrimary }}>
-                                                            {sys.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span>
+                                                            {fMoneyJSX(sys)}
                                                         </td>
                                                         <td style={{ padding: '14px 20px', }}>
                                                             <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-start' }}>
@@ -260,7 +260,7 @@ export default function TreasuryReconciliationPage() {
                                                                     style={{ width: '140px', height: '36px', textAlign: 'start', borderRadius: '8px', border: `1px solid ${hasActual ? C.primary : C.border}`, background: hasActual ? `${C.primary}08` : C.card, color: C.textPrimary, fontSize: '13px', fontWeight: 800, fontFamily: OUTFIT, outline: 'none' }} />
                                                             </div>
                                                             <div className="print-only" style={{ display: 'none', fontWeight: 900, fontFamily: OUTFIT, textAlign: 'start'}}>
-                                                                {hasActual ? <>{act.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
+                                                                {fMoneyJSX(hasActual ? <>{act)}</> : '—'}
                                                             </div>
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 1000, color: !hasActual ? C.textMuted : (diff > 0 ? SC : diff < 0 ? DC : C.primary), fontSize: '15px', fontFamily: OUTFIT }}>

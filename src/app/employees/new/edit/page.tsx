@@ -385,17 +385,17 @@ export default function EditEmployeePage() {
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                                         <span style={{ color: '#10b981' }}>إجمالي البدلات:</span>
-                                        <span style={{ color: '#10b981', fontWeight: 600 }}>+ {allowances.toLocaleString('en-US')} {cSymbol}</span>
+                                        <span style={{ color: '#10b981', fontWeight: 600 }}>+ {fMoneyJSX(allowances)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
                                         <span style={{ color: '#ef4444' }}>إجمالي الخصومات:</span>
-                                        <span style={{ color: '#ef4444', fontWeight: 600 }}>- {deductions.toLocaleString('en-US')} {cSymbol}</span>
+                                        <span style={{ color: '#ef4444', fontWeight: 600 }}>- {fMoneyJSX(deductions)}</span>
                                     </div>
                                     <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '4px 0' }} />
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', paddingTop: '4px' }}>
                                         <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 700 }}>صافي الراتب المتوقع</span>
                                         <span style={{ fontSize: '28px', fontWeight: 950, color: '#fff', letterSpacing: '-0.5px' }} dir="ltr">
-                                            {net.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '14px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                            {fMoneyJSX(net)}
                                         </span>
                                     </div>
                                 </div>
