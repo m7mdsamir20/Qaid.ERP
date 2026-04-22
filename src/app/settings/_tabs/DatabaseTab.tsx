@@ -207,7 +207,7 @@ export default function DatabaseTab({
                                 <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4' }}>
                                     <FileSpreadsheet size={20} />
                                 </div>
-                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>
+                                <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 600 }}>
                                     {t('استيراد')} {importType === 'customers' ? t('العملاء') : importType === 'suppliers' ? t('الموردين') : t('الأصناف')}
                                 </h2>
                             </div>
@@ -425,7 +425,7 @@ export default function DatabaseTab({
                             {importStep === 3 && (
                                 <div style={{ padding: '40px 20px' }}>
                                     <Loader2 size={48} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '24px' }} />
-                                    <h3 style={{ margin: '0 0 12px', fontSize: '18px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري معالجة البيانات...')}</h3>
+                                    <h3 style={{ margin: '0 0 12px', fontSize: '16px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري معالجة البيانات...')}</h3>
                                     <p style={{ margin: '0 0 24px', color: C.textMuted, fontFamily: CAIRO }}>
                                         {t('جاري استيراد السجل')} {currentImportIndex + 1} {t('من')} {importData.length}
                                     </p>

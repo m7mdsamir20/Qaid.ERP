@@ -106,7 +106,7 @@ export default function QuotationViewPage() {
                                 {/* Customer */}
                                 <div>
                                     <label style={LS}>{t('معلومات العميل')}</label>
-                                    <div style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, marginBottom: '4px' }}>
+                                    <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, marginBottom: '4px' }}>
                                         {quotation.customer?.name || t('عميل نقدي')}
                                     </div>
                                     {quotation.customer?.phone && (

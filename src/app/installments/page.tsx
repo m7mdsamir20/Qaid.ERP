@@ -285,7 +285,7 @@ export default function InstallmentsPage() {
                                         fMoneyJSX(parseFloat(k.value.replace(/,/g, '')))
                                     ) : (
                                         <>
-                                            <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
+                                            <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
                                         </>
                                     )}

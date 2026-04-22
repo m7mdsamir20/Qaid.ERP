@@ -258,7 +258,7 @@ export default function SaleReturnDetailsPage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{isServices ? t("إجمالي الملغي") : t("إجمالي المرتجع")}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 600, color: '#ef4444' }}>{ret.total.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
+                                <div style={{ fontSize: '16px', fontWeight: 600, color: '#ef4444' }}>{ret.total.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
@@ -268,7 +268,7 @@ export default function SaleReturnDetailsPage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('رد نقدي مباشر')}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 600, color: '#10b981' }}>{ret.paidAmount.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
+                                <div style={{ fontSize: '16px', fontWeight: 600, color: '#10b981' }}>{ret.paidAmount.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
@@ -278,7 +278,7 @@ export default function SaleReturnDetailsPage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('تسوية رصيد')}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 600, color: '#256af4' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
+                                <div style={{ fontSize: '16px', fontWeight: 600, color: '#256af4' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 

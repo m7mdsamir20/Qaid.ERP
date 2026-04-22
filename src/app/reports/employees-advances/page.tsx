@@ -84,7 +84,7 @@ export default function EmployeesAdvancesPage() {
                         }}>
                             <div>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textMuted }}>{getCurrencyName(currency)}</small></span>
+                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textMuted }}>{getCurrencyName(currency)}</small></span>
                             </div>
                             <div style={{ width: 40, height: 40, borderRadius: '10px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{s.icon}</div>
                         </div>

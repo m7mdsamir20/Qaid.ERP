@@ -299,7 +299,7 @@ export default function NewCompanyPage() {
                 {/* ══ Step 1: بيانات الشركة ══ */}
                 {step === 1 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
-                        <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
+                        <h2 style={{ margin: '0 0 28px', fontSize: '16px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                 <Building2 size={22} />
                             </div>
@@ -378,7 +378,7 @@ export default function NewCompanyPage() {
                 {/* ══ Step 2: بيانات المدير ══ */}
                 {step === 2 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
-                        <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
+                        <h2 style={{ margin: '0 0 28px', fontSize: '16px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.blue}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
                                 <User size={22} />
                             </div>

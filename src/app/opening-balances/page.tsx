@@ -261,7 +261,7 @@ export default function OpeningBalancesPage() {
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                             <Wallet size={40} style={{ color: C.textMuted, opacity: 0.5 }} />
                         </div>
-                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('برجاء اختيار السنة المالية')}</p>
+                        <p style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('برجاء اختيار السنة المالية')}</p>
                         <p style={{ margin: '8px 0 0', fontSize: '13px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('حدد السنة المالية المناسبة لاستعراض أو إدخال الأرصدة الافتتاحية')}</p>
                     </div>
                 ) : loading ? (
@@ -316,7 +316,7 @@ export default function OpeningBalancesPage() {
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                            <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                            <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.sub}</span>
                                         </div>
                                     </div>

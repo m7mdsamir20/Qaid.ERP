@@ -140,7 +140,7 @@ export default function AdvanceDetailPage() {
                                 </div>
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('المبلغ الإجمالي')}</label>
-                                    <div style={{ fontSize: '18px', fontWeight: 600, color: '#10b981' }} dir="ltr">
+                                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#10b981' }} dir="ltr">
                                         {formatNumber(advance.amount)} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>

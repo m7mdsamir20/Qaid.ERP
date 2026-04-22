@@ -472,21 +472,21 @@ export default function JournalEntriesPage() {
                                     <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 600, color: C.success, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: 600, color: C.success, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}
                                                 <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 600, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: 600, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}
                                                 <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 600, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: 600, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
                                                 <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>

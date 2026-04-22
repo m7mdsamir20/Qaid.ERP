@@ -138,7 +138,7 @@ export default function DeductionDetailPage() {
                                 </div>
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('مبلغ الخصم')}</label>
-                                    <div style={{ fontSize: '18px', fontWeight: 600, color: '#256af4' }} dir="ltr">
+                                    <div style={{ fontSize: '16px', fontWeight: 600, color: '#256af4' }} dir="ltr">
                                         {formatNumber(deduction.amount)} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>

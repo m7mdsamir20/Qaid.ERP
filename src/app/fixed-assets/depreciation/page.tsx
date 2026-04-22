@@ -254,7 +254,7 @@ export default function DepreciationPage() {
                 ) : calculated ? (
                     <div style={{ padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <CheckCircle2 size={48} style={{ color: '#10b981', opacity: 0.3, margin: '0 auto 16px' }} />
-                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
+                        <h3 style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
                         <p style={{ color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
                     </div>
                 ) : (
@@ -271,7 +271,7 @@ export default function DepreciationPage() {
                         <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'rgba(37, 106, 244,0.1)', color: C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                             <Calculator size={32} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من تسجيل هذه القيود؟')}</h3>
+                        <h3 style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من تسجيل هذه القيود؟')}</h3>
                         <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: `1px solid ${C.border}`, marginBottom: '24px', textAlign: 'start' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
                                 <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('عدد الأصول المشمولة')}:</span>

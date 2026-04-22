@@ -100,7 +100,7 @@ export default function TaxTab({
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px' }}>
                             <label style={{ display: 'block', fontSize: '12px', fontWeight: 700, color: C.textMuted, marginBottom: '12px', fontFamily: CAIRO }}>{t('النسبة الافتراضية (%)')}</label>
                             {!isEditMode ? (
-                                <div style={{ fontSize: '18px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{taxForm.rate}%</div>
+                                <div style={{ fontSize: '16px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{taxForm.rate}%</div>
                             ) : (
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <input

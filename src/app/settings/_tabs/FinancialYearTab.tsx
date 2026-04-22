@@ -107,7 +107,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                             {/* Info details */}
                             <div style={{ flex: 1 }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-                                    <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{activeFY.name}</h3>
+                                    <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{activeFY.name}</h3>
                                     <span style={{ background: 'rgba(16,185,129,0.1)', color: '#10b981', padding: '4px 12px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>{t('دورة نشطة')}</span>
                                 </div>
 

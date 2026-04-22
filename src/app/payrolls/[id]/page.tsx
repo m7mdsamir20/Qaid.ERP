@@ -369,7 +369,7 @@ ${tableHtml}
                     }}>
                         {/* يمين — بيانات الشركة */}
                         <div>
-                            {companyName   && <div style={{ fontSize: '18px', fontWeight: 600, marginBottom: '4px' }}>{companyName}</div>}
+                            {companyName   && <div style={{ fontSize: '16px', fontWeight: 600, marginBottom: '4px' }}>{companyName}</div>}
                             {taxNumber     && <div style={{ fontSize: '12px', marginBottom: '2px' }}>الرقم الضريبي: {taxNumber}</div>}
                             {commercialReg && <div style={{ fontSize: '12px', marginBottom: '2px' }}>السجل التجاري: {commercialReg}</div>}
                             {phone         && <div style={{ fontSize: '12px', marginBottom: '2px' }}>هاتف: {phone}</div>}

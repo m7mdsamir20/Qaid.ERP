@@ -129,7 +129,7 @@ export default function EmployeesPage() {
                              <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>

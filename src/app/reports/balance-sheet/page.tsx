@@ -174,7 +174,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                          <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Scale size={40} style={{ opacity: 0.2, color: C.textMuted }} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أرصدة متاحة')}</h3>
+                        <h3 style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أرصدة متاحة')}</h3>
                         <p style={{ fontSize: '13px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('المشروع بانتظار استكمال القيد الافتتاحي أو ترحيل الحركات التأسيسية')}</p>
                     </div>
                 ) : (

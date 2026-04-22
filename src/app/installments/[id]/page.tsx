@@ -149,7 +149,7 @@ export default function InstallmentDetailPage() {
         <DashboardLayout>
             <div style={{ padding: '100px', color: C.textMuted }}>
                 <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
-                <p style={{ fontSize: '18px', fontWeight: 600 }}>{t('عذراً، الخطة غير موجودة')}</p>
+                <p style={{ fontSize: '16px', fontWeight: 600 }}>{t('عذراً، الخطة غير موجودة')}</p>
                 <button onClick={() => router.push('/installments')} style={{ marginTop: '20px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>{t('العودة للقائمة')}</button>
             </div>
         </DashboardLayout>
@@ -664,7 +664,7 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={settleForm.amount}
                                         onChange={e => setSettleForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 600, fontFamily: OUTFIT, color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 600, fontFamily: OUTFIT, color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>

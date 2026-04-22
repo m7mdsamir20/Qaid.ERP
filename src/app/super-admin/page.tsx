@@ -160,7 +160,7 @@ export default function SuperAdminPage() {
                          <div style={{ textAlign: 'start' }}>
                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                 <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
                             </div>
                         </div>
@@ -320,7 +320,7 @@ export default function SuperAdminPage() {
                         <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 600, color: C.textPrimary }}>حذف نشاط الشركة نهائياً</h3>
                         <p style={{ margin: '0 0 16px', fontSize: '15px', color: C.textSecondary }}>هل أنت متأكد من رغبتك في حذف:</p>
                         
-                        <div style={{ margin: '0 auto 24px', fontSize: '18px', fontWeight: 600, color: C.danger, background: `${C.danger}08`, padding: '12px 20px', borderRadius: '12px', display: 'inline-block' }}>
+                        <div style={{ margin: '0 auto 24px', fontSize: '16px', fontWeight: 600, color: C.danger, background: `${C.danger}08`, padding: '12px 20px', borderRadius: '12px', display: 'inline-block' }}>
                             {deleteTarget.name}
                         </div>
                         

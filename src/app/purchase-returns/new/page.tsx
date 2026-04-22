@@ -669,8 +669,7 @@ export default function NewPurchaseReturnPage() {
                                                     style={{
                                                         ...IS,
                                                         height: '44px',
-                                                        fontSize: '18px',
-                                                        fontWeight: 600,
+                                                        fontSize: '16px', fontWeight: 600,
                                                         border: `1px solid ${C.primary}50`,
                                                         color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.primary,
                                                         background: 'rgba(37, 106, 244,0.03)',

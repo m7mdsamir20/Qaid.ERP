@@ -314,7 +314,7 @@ export default function ItemsPage() {
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             {s.id === 'value' ? fMoneyJSX(s.val) : (
                                                 <>
-                                                    <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.val)}</span>
+                                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.val)}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.unit}</span>
                                                 </>
                                             )}
