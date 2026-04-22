@@ -279,7 +279,6 @@ export default function ItemsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
                             { id: 'all', label: t('إجمالي الأصناف'), val: items.length, icon: Package, color: C.blue, unit: t('صنف') },
-                            { id: 'out', label: t('أصناف نفدت'), val: itemsOutOfStock, icon: PackageX, color: C.danger, unit: t('صنف') },
                             { 
                                 id: 'cost', 
                                 label: t('إجمالي التكلفة'), 
@@ -292,6 +291,7 @@ export default function ItemsPage() {
                                 unit: currencySymbol 
                             },
                             { id: 'low', label: t('أصناف منخفضة'), val: itemsLowStock, icon: AlertTriangle, color: C.warning, unit: t('تنبيه') },
+                            { id: 'out', label: t('أصناف نفدت'), val: itemsOutOfStock, icon: PackageX, color: C.danger, unit: t('صنف') },
                         ].map((s, idx) => {
                             const isSelected = kpiFilter === s.id;
                             const isClickable = s.id === 'low' || s.id === 'out';
