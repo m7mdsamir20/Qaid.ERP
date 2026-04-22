@@ -122,7 +122,7 @@ export default function EmployeesDeductionsPage() {
                             <tbody>
                                 {data?.records.filter(r => r.employeeName.includes(q) || r.reason.includes(q)).map((r) => (
                                     <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                        <td style={{ padding: '14px 20px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
+                                        <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
                                         <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textMuted, fontFamily: INTER }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
                                         <td style={{ padding: '14px 20px' }}>
                                             <span style={{ fontSize: '10px', fontWeight: 900, color: typeColors[r.type], fontFamily: CAIRO }}>{typeLabels[r.type]}</span>

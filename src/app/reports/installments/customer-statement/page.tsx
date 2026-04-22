@@ -170,21 +170,6 @@ function CustomerStatementReportContent() {
 
                 {!loading && data && (
                     <div className="report-content" style={{ animation: 'fadeIn 0.4s ease-out' }}>
-                        <div className="print-only">
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
-                                <div style={{ textAlign: 'start' }}>
-                                    <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
-                                    {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('الرقم الضريبي:')} {session?.user?.taxNumber}</div>}
-                                </div>
-                                <div style={{ textAlign: 'center' }}>
-                                    <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{t('كشف حساب أقساط عميل')}</h3>
-                                </div>
-                                <div style={{ maxWidth: '150px', textAlign: 'end' }}>
-                                    {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
-                                </div>
-                            </div>
-                        </div>
-
                         {/* ── KPI Cards (Fixed Assets Style) ── */}
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
@@ -214,14 +199,22 @@ function CustomerStatementReportContent() {
                         <div className="print-table-container">
                         {(data.plans || []).map((plan) => (
                             <div key={plan.id} style={{ background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '24px', marginBottom: '24px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
-                                <div style={{ padding: '16px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>PLAN-{String(plan.planNumber || 0).padStart(4, '0')}</span>
-                                        <div style={{ width: 1, height: 14, background: C.border }}></div>
-                                        <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</span>
+                                <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '32px' }}>
+                                    <div>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('رقم الخطة')}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>PLAN-{String(plan.planNumber || 0).padStart(4, '0')}</div>
                                     </div>
-                                    <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
-                                        {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                    <div style={{ width: 1, height: 32, background: C.border }} />
+                                    <div style={{ flex: 1 }}>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('المنتج')}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</div>
+                                    </div>
+                                    <div style={{ width: 1, height: 32, background: C.border }} />
+                                    <div style={{ textAlign: 'end' }}>
+                                        <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('إجمالي الخطة')}</div>
+                                        <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                            {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                        </div>
                                     </div>
                                 </div>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
