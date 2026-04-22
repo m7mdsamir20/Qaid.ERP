@@ -293,7 +293,7 @@ export default function UsersTab({
                         {/* Header */}
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`, fontSize: '11px', fontWeight: 900, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', position: 'sticky', top: 0, zIndex: 10, fontFamily: CAIRO }}>
                             <div>{t('القائمة / الصفحة')}</div>
-                            <div style={{ textAlign: 'center' }}></div>
+                            <div style={{ }}></div>
                         </div>
 
                         <div style={{ maxHeight: '450px', overflowY: 'auto' }} className="custom-scrollbar">

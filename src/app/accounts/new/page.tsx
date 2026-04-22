@@ -129,7 +129,7 @@ export default function NewAccountPage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ textAlign: 'center', padding: '60px', color: '#475569' }}>
+                <div style={{ padding: '60px', color: '#475569' }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', margin: '0 auto 12px', display: 'block' }} />
                     {t('جاري التحميل...')}
                 </div>
@@ -209,7 +209,7 @@ export default function NewAccountPage() {
                                         padding: '12px 6px', borderRadius: '12px', border: '1px solid',
                                         borderColor: form.type === opt.value ? `${opt.color}50` : 'rgba(255,255,255,0.07)',
                                         background: form.type === opt.value ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
-                                        cursor: 'pointer', transition: 'all 0.15s', textAlign: 'center',
+                                        cursor: 'pointer', transition: 'all 0.15s',
                                     }}>
                                     <div style={{ fontSize: '14px', color: form.type === opt.value ? opt.color : '#64748b', fontWeight: 800 }}>{opt.label}</div>
                                     <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px', fontWeight: 600 }}>
@@ -234,7 +234,7 @@ export default function NewAccountPage() {
                                             padding: '12px', borderRadius: '12px', border: '1px solid',
                                             borderColor: form.accountCategory === opt.val ? `${opt.color}50` : 'rgba(255,255,255,0.07)',
                                             background: form.accountCategory === opt.val ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
-                                            cursor: 'pointer', transition: 'all 0.15s', textAlign: 'center',
+                                            cursor: 'pointer', transition: 'all 0.15s',
                                         }}>
                                         <div style={{ fontSize: '14px', color: form.accountCategory === opt.val ? opt.color : '#64748b', fontWeight: 800 }}>{opt.label}</div>
                                         <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>{opt.sub}</div>

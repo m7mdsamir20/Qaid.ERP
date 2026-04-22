@@ -159,12 +159,12 @@ export default function ProfitDistributionPage() {
                     </div>
 
                     {loading ? (
-                        <div style={{ padding: '80px', textAlign: 'center' }}>
+                        <div style={{ padding: '80px' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
                             <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل سجل التوزيعات...')}</p>
                         </div>
                     ) : distributions.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
+                        <div style={{ padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                             <PieChart size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                             <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا توجد عمليات توزيع مسجلة')}</h3>
                             <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('سجّل أول عملية توزيع أرباح لزيادة أرصدة الشركاء بناءً على حصصهم')}</p>
@@ -191,13 +191,13 @@ export default function ProfitDistributionPage() {
                                                     <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{d.notes || t('لا يوجد بيان')}</div>
                                                 </div>
                                             </div>
-                                            <div style={{ textAlign: 'center' }}>
+                                            <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('تاريخ القيد')}</div>
                                                 <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: OUTFIT }}>
                                                     {new Date(d.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </div>
-                                            <div style={{ textAlign: 'center' }}>
+                                            <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي التوزيع')}</div>
                                                 <div style={{ fontSize: '18px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>
                                                     {d.totalAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>

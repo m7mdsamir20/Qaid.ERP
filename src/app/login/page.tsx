@@ -141,7 +141,7 @@ export default function LoginPage() {
 
             <div style={{ width: '100%', maxWidth: '420px', position: 'relative', zIndex: 1 }}>
                 {/* الهوية البصرية */}
-                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                <div style={{ marginBottom: '32px' }}>
                     {showLogos ? (
                         <img
                             key={isDarkTheme ? 'logo-dark' : 'logo-light'}
@@ -172,10 +172,10 @@ export default function LoginPage() {
                     WebkitBackdropFilter: 'var(--c-auth-card-blur)',
                     borderRadius: '24px', padding: '32px',
                 }}>
-                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>{t('تسجيل الدخول')}</h2>
+                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary }}>{t('تسجيل الدخول')}</h2>
 
                     {error && (
-                        <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', textAlign: 'center', fontWeight: 600 }}>
+                        <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', fontWeight: 600 }}>
                             {error}
                         </div>
                     )}
@@ -239,7 +239,7 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '14px', color: C.textSecondary }}>
+                    <p style={{ marginTop: '20px', fontSize: '14px', color: C.textSecondary }}>
                         {t('ليس لديك حساب؟')}{' '}
                         <Link href="/register" style={{ color: C.primary, fontWeight: 800, textDecoration: 'none' }}>{t('إنشاء حساب جديد')}</Link>
                     </p>

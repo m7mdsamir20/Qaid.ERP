@@ -146,7 +146,7 @@ export default function InstallmentDetailPage() {
 
     if (!plan) return (
         <DashboardLayout>
-            <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+            <div style={{ padding: '100px', color: C.textMuted }}>
                 <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                 <p style={{ fontSize: '18px', fontWeight: 600 }}>{t('عذراً، الخطة غير موجودة')}</p>
                 <button onClick={() => router.push('/installments')} style={{ marginTop: '20px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700 }}>{t('العودة للقائمة')}</button>
@@ -474,7 +474,7 @@ export default function InstallmentDetailPage() {
                                                     setCollectForm(f => ({ ...f, treasuryId: firstTr?.id || '', selectedType: t.id } as any));
                                                 }}
                                                 style={{
-                                                    flex: 1, padding: '10px', borderRadius: '12px', cursor: 'pointer', textAlign: 'center', transition: '0.2s',
+                                                    flex: 1, padding: '10px', borderRadius: '12px', cursor: 'pointer', transition: '0.2s',
                                                     border: `1px solid ${isSelectedType ? C.primary : C.border}`,
                                                     background: isSelectedType ? 'rgba(37,106,244,0.12)' : 'rgba(255,255,255,0.02)',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
@@ -541,7 +541,7 @@ export default function InstallmentDetailPage() {
 
                     {/* Success Screen after collection */}
                     {!collectTarget && lastCollected && (
-                        <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                        <div style={{ padding: '10px 0' }}>
                             <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16,185,129,0.1)', border: '2px solid #10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                                 <Check size={28} color="#10b981" />
                             </div>
@@ -608,11 +608,11 @@ export default function InstallmentDetailPage() {
                         <form onSubmit={handleSettle}>
                             {/* Summary Cards */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}`, marginBottom: '20px', background: C.subtle }}>
-                                <div style={{ textAlign: 'center' }}>
+                                <div style={{ }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الأصل المتبقي')}</div>
                                     <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fmtN(remPrincipal)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
                                 </div>
-                                <div style={{ textAlign: 'center' }}>
+                                <div style={{ }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الفوائد المتبقية (يُعفى منها)')}</div>
                                     <div style={{ fontSize: '15px', fontWeight: 900, color: C.textMuted, fontFamily: OUTFIT, textDecoration: 'line-through' }}>{fmtN(remInterest)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
                                 </div>
@@ -663,12 +663,12 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={settleForm.amount}
                                         onChange={e => setSettleForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: OUTFIT, textAlign: 'center', color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: OUTFIT, color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
-                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '5px', textAlign: 'center' }}>
+                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '5px' }}>
                                     {feeRate > 0 ? `💡 ${t('الإجمالي يشمل أصل المبلغ + رسوم السداد المعجل')}` : `💡 ${t('سيتم التنازل عن الفوائد المتبقية للعميل')}`}
                                 </p>
                             </div>
@@ -716,7 +716,7 @@ export default function InstallmentDetailPage() {
                     variant="danger"
                     maxWidth="500px"
                 >
-                    <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                    <div style={{ marginBottom: '24px' }}>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>
                             {t('رقم الخطة:')} <span style={{ color: '#5286ed', fontWeight: 700 }}>PLAN-{String(plan.planNumber || 1).padStart(4, '0')}</span> — {t('للعميل:')} {plan.customer?.name}
                         </p>
@@ -730,7 +730,7 @@ export default function InstallmentDetailPage() {
                                 { label: t('المبلغ المتبقي'), value: fmtN(plan.grandTotal - totalPaid), color: C.danger },
                                 { label: t('أقساط قادمة للغلق'), value: (plan.monthsCount - paidCount), color: C.textPrimary, unit: t('قسط') },
                             ].map((item, i) => (
-                                <div key={i} style={{ padding: '10px', background: C.card, borderRadius: '12px', textAlign: 'center', border: `1px solid ${C.border}` }}>
+                                <div key={i} style={{ padding: '10px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
                                     <div style={{ fontSize: '14px', fontWeight: 800, color: item.color, fontFamily: OUTFIT }}>{item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{item.unit || cSymbol}</span></div>
                                 </div>

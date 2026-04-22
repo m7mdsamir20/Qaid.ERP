@@ -193,12 +193,12 @@ export default function EmployeesPage() {
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px', textAlign: 'center' }}>
+                        <div style={{ padding: '80px' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ margin: 0, color: C.textMuted, fontWeight: 800 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
                     ) : filteredEmployees.length === 0 ? (
-                        <div style={{ padding: '100px 20px', textAlign: 'center' }}>
+                        <div style={{ padding: '100px 20px' }}>
                             <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                 <UsersIcon size={40} style={{ color: C.textMuted }} />
                             </div>
@@ -210,12 +210,12 @@ export default function EmployeesPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('الكود')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('المنصب والقسم')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('المنصب والقسم')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('تاريخ التعيين')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('صافي الراتب')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الإجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -236,7 +236,7 @@ export default function EmployeesPage() {
                                                     <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '14px' }}>{emp.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT }}>{emp.email || '—'}</div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{emp.position || '—'}</div>
                                                     <div style={{ fontSize: '11px', color: C.primary, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}>
                                                         <Building2 size={12} /> {emp.department?.name || t('غير مصنف')}
@@ -264,7 +264,7 @@ export default function EmployeesPage() {
                                                         {emp.status === 'active' ? t('نشط') : t('متوقف')}
                                                     </div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                                         <button 
                                                             onClick={() => router.push(`/employees/${emp.id}`)}

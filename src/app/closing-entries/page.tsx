@@ -175,7 +175,7 @@ export default function ClosingEntriesPage() {
                 {/* Custom Confirmation Modal */}
                 {showConfirm && (
                     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)' }}>
-                        <div style={{ background: '#0e172a', border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', maxWidth: '460px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', position: 'relative' }}>
+                        <div style={{ background: '#0e172a', border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', maxWidth: '460px', width: '90%', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)', position: 'relative' }}>
                             <button onClick={() => setShowConfirm(false)} style={{ position: 'absolute', top: '16px', insetInlineStart: '16px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', width: '32px', height: '32px', color: C.textSecondary, cursor: 'pointer' }}><X size={18} /></button>
                             <div style={{ width: '64px', height: '64px', background: 'rgba(37, 106, 244,0.15)', color: '#256af4', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <ShieldCheck size={32} />
@@ -195,7 +195,7 @@ export default function ClosingEntriesPage() {
                 {/* Undo Confirmation Modal */}
                 {showUndoConfirm && (
                     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(8px)' }}>
-                        <div style={{ background: '#0e172a', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '24px', padding: '32px', maxWidth: '460px', width: '90%', textAlign: 'center', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+                        <div style={{ background: '#0e172a', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '24px', padding: '32px', maxWidth: '460px', width: '90%', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
                             <div style={{ width: '64px', height: '64px', background: 'rgba(239,68,68,0.15)', color: '#ef4444', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <RotateCcw size={32} />
                             </div>
@@ -214,7 +214,7 @@ export default function ClosingEntriesPage() {
                 {/* Draft Warning Modal */}
                 {showDraftWarning && (
                     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(4px)' }}>
-                        <div style={{ background: '#0e172a', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '24px', padding: '32px', maxWidth: '450px', width: '90%', textAlign: 'center' }}>
+                        <div style={{ background: '#0e172a', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '24px', padding: '32px', maxWidth: '450px', width: '90%' }}>
                             <div style={{ width: '64px', height: '64px', background: 'rgba(239,68,68,0.1)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <AlertTriangle size={32} style={{ color: '#ef4444' }} />
                             </div>
@@ -284,7 +284,7 @@ export default function ClosingEntriesPage() {
 
                         {/* Rendering Areas */}
                         {!selectedYear ? (
-                            <div style={{ textAlign: 'center', padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textMuted }}>
+                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textMuted }}>
                                 <Info size={48} style={{ opacity: 0.1, margin: '0 auto 20px' }} />
                                 <h3 style={{ fontSize: '16px', fontWeight: 700 }}>{t('يرجى اختيار السنة المالية للمعاينة')}</h3>
                                 <p style={{ fontSize: '13px', marginTop: '4px' }}>{t('سيتم سحب كافة حسابات الإيرادات والمصروفات لموسم المختارة')}</p>
@@ -295,7 +295,7 @@ export default function ClosingEntriesPage() {
                                 <span style={{ fontSize: '14px', color: C.textMuted, fontWeight: 700 }}>{t('جاري تحليل البيانات المحاسبية...')}</span>
                             </div>
                         ) : alreadyClosed ? (
-                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', textAlign: 'center' }}>
+                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <div style={{ width: '96px', height: '96px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                     <CheckCircle2 size={48} />
                                 </div>
@@ -383,7 +383,7 @@ export default function ClosingEntriesPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div style={{ textAlign: 'center', padding: '20px 0', opacity: 0.5 }}>
+                                    <div style={{ padding: '20px 0', opacity: 0.5 }}>
                                         <HistoryIcon size={32} style={{ marginBottom: '8px', opacity: 0.2 }} />
                                         <p style={{ color: C.textMuted, fontSize: '12px' }}>{t('لا توجد سنوات مقفلة بعد')}</p>
                                     </div>

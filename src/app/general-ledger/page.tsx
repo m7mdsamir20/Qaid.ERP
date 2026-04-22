@@ -191,7 +191,7 @@ export default function GeneralLedgerPage() {
 
             {!selectedAccount ? (
                 /* No account selected */
-                <div style={{ textAlign: 'center', padding: '100px 20px', color: '#475569' }}>
+                <div style={{ padding: '100px 20px', color: '#475569' }}>
                     <ScrollText size={64} style={{ margin: '0 auto 16px', display: 'block', }} />
                     <p style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#334155' }}>{t('اختر الحساب')}</p>
                     <p style={{ margin: '8px 0 0', fontSize: '13px' }}>{t('ابحث عن الحساب أعلاه لعرض حركاته')}</p>
@@ -248,7 +248,7 @@ export default function GeneralLedgerPage() {
 
                     {/* ── Ledger Table ── */}
                     {filtered.length === 0 ? (
-                        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '14px' }}>
+                        <div style={{ padding: '60px 20px', color: '#475569', background: 'rgba(255,255,255,0.01)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '14px' }}>
                             <FileText size={48} style={{ margin: '0 auto 12px', display: 'block', opacity: 0.08 }} />
                             <p style={{ margin: 0, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد حركات في هذه الفترة')}</p>
                         </div>

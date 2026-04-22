@@ -120,7 +120,7 @@ export default function ProfilePage() {
                     boxShadow: 'var(--c-auth-card-shadow)' 
                 }}>
 
-                    <div style={{ padding: '16px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
+                    <div style={{ padding: '16px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                         {/* Avatar */}
                         <div style={{ 
                             width: '80px', 
@@ -322,7 +322,7 @@ export default function ProfilePage() {
                                 </div>
 
                                 {isEditMode && (
-                                    <p style={{ fontSize: '11px', color: 'var(--c-text-muted)', marginTop: '12px', textAlign: 'center' }}>
+                                    <p style={{ fontSize: '11px', color: 'var(--c-text-muted)', marginTop: '12px' }}>
                                         {t('انقر على الأفاتار الذي يشبهك لتغيير مظهرك في النظام')}
                                     </p>
                                 )}

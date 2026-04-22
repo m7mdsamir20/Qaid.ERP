@@ -228,7 +228,7 @@ export default function RegisterPage() {
 
             <div style={{ width: '100%', maxWidth: '480px', position: 'relative', zIndex: 1 }}>
                 {/* الهوية البصرية */}
-                <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+                <div style={{ marginBottom: '24px' }}>
                     {BRAND_LOGO ? (
                         <img key={theme} src={BRAND_LOGO} alt={BRAND_NAME} style={{ display: 'block', margin: '0 auto 12px', width: '100%', maxWidth: '240px', height: 'auto', objectFit: 'contain', filter: theme === 'dark' ? 'drop-shadow(0 15px 35px rgba(0,0,0,0.3))' : 'none', mixBlendMode: theme === 'light' ? 'multiply' : 'normal' }} />
                     ) : (
@@ -246,10 +246,10 @@ export default function RegisterPage() {
                     WebkitBackdropFilter: 'var(--c-auth-card-blur)',
                     borderRadius: '24px', padding: '32px',
                 }}>
-                    <h2 style={{ margin: '0 0 16px', fontSize: '20px', fontWeight: 900, color: C.textPrimary, textAlign: 'center' }}>{t('إنشاء الحساب')}</h2>
+                    <h2 style={{ margin: '0 0 16px', fontSize: '20px', fontWeight: 900, color: C.textPrimary }}>{t('إنشاء الحساب')}</h2>
 
                     {error && (
-                        <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', textAlign: 'center', fontWeight: 600 }}>{error}</div>
+                        <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', fontWeight: 600 }}>{error}</div>
                     )}
 
                     <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -412,7 +412,7 @@ export default function RegisterPage() {
                         </button>
                     </form>
 
-                    <p style={{ textAlign: 'center', marginTop: '16px', fontSize: '13px', color: C.textSecondary }}>
+                    <p style={{ marginTop: '16px', fontSize: '13px', color: C.textSecondary }}>
                         {t('لديك حساب بالفعل؟')}{' '}
                         <Link href="/login" style={{ color: C.primary, fontWeight: 800, textDecoration: 'none' }}>{t('تسجيل الدخول')}</Link>
                     </p>

@@ -240,7 +240,7 @@ function ReportsHubPageInner() {
 
         if (reports.length === 0) {
             return (
-                <div style={{ textAlign: 'center', padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: `1px dashed ${C.border}` }}>
+                <div style={{ padding: '40px', background: 'rgba(255,255,255,0.02)', borderRadius: '20px', border: `1px dashed ${C.border}` }}>
                     <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('لا تملك صلاحيات لعرض أي تقارير في هذا القسم.')}</p>
                 </div>
             );

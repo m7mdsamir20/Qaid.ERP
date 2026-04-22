@@ -209,7 +209,7 @@ export default function NewStocktakingPage() {
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                <div style={{ padding: '100px', color: C.textMuted }}>
                     <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                     <p style={{ fontWeight: 600 }}>{t('جاري استرجاع البيانات...')}</p>
                 </div>
@@ -297,7 +297,7 @@ export default function NewStocktakingPage() {
                                                             value={line.actualQuantity === 0 && line.systemQuantity === 0 && line.difference === 0 ? '' : line.actualQuantity}
                                                             onChange={e => updateActualQuantity(index, parseFloat(e.target.value || '0'))}
                                                             placeholder="0"
-                                                            style={{ ...IS, textAlign: 'center', height: '32px', background: 'rgba(255,255,255,0.03)', fontSize: '12px' }}
+                                                            style={{ ...IS, height: '32px', background: 'rgba(255,255,255,0.03)', fontSize: '12px' }}
                                                             onFocus={focusIn} onBlur={focusOut}
                                                         />
                                                     </td>
@@ -313,7 +313,7 @@ export default function NewStocktakingPage() {
                         )}
 
                         {!form.warehouseId && (
-                            <div style={{ textAlign: 'center', padding: '60px', background: 'rgba(255,255,255,0.01)', borderRadius: '16px', border: `1px dashed ${C.border}` }}>
+                            <div style={{ padding: '60px', background: 'rgba(255,255,255,0.01)', borderRadius: '16px', border: `1px dashed ${C.border}` }}>
                                 <Building2 size={40} style={{ color: C.textMuted, opacity: 0.3, marginBottom: '16px' }} />
                                 <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600 }}>{t('يرجى اختيار المخزن أولاً لعرض قائمة الأصناف الحالية')}</p>
                             </div>

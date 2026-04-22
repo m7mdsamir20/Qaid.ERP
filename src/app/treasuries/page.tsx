@@ -137,7 +137,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     if ((val.match(/\./g) || []).length > 1) return;
                                     setForm(f => ({ ...f, balance: val }));
                                 }}
-                                style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 900, color: C.textPrimary, height: '46px', fontSize: '17px', width: '100%', padding: '0' }} onFocus={focusIn} onBlur={focusOut} />
+                                style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 900, color: C.textPrimary, height: '46px', fontSize: '17px', width: '100%', padding: '0' }} onFocus={focusIn} onBlur={focusOut} />
                             <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
                         </div>
                     </div>
@@ -296,12 +296,12 @@ export default function TreasuriesPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
+                    <div style={{ padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ margin: 0, color: C.textSecondary, fontWeight: 700, fontSize: '15px', fontFamily: CAIRO }}>{t('جاري جرد الخزن والبنوك...')}</p>
                     </div>
                 ) : treasuries.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
+                    <div style={{ padding: '80px', background: C.card, borderRadius: '24px', border: `1px dashed ${C.border}` }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: C.subtle, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textMuted, margin: '0 auto 20px' }}>
                             <Landmark size={36} />
                         </div>
@@ -421,7 +421,7 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 900, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px', opacity: 0.1 }}>
                     0.00
                 </div>
-                <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
+                <div style={{ position: 'relative', zIndex: 1 }}>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
                         {item.balance.toLocaleString('en-US')}
                         <span style={{ fontSize: '11px', color: accentColor, fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>

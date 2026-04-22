@@ -125,7 +125,7 @@ export default function OverduePage() {
                         </div>
                     </div>
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                        <div style={{ padding: '100px', color: C.textMuted }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.danger, margin: '0 auto 16px' }} />
                             <p style={{ fontWeight: 600 }}>{t('جاري استخراج بيانات التعثر...')}</p>
                         </div>
@@ -176,7 +176,7 @@ export default function OverduePage() {
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     {fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)} onClick={e => e.stopPropagation()}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }} onClick={e => e.stopPropagation()}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => {
                                                             setCollectTarget(inst);
@@ -215,7 +215,7 @@ export default function OverduePage() {
                                     </tbody>
                                 </table>
                                 {installments.length === 0 && (
-                                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
+                                    <div style={{ padding: '80px', color: C.textMuted }}>
                                         <AlertTriangle size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                         <p style={{ fontSize: '15px' }}>{t('لا توجد متأخرات مسجلة حالياً')}</p>
                                     </div>
@@ -276,7 +276,7 @@ export default function OverduePage() {
                                                     setCollectForm(f => ({ ...f, treasuryId: firstTr?.id || '', selectedType: t_tr.id } as any));
                                                 }}
                                                 style={{
-                                                    flex: 1, padding: '10px', borderRadius: '12px', cursor: 'pointer', textAlign: 'center', transition: '0.2s',
+                                                    flex: 1, padding: '10px', borderRadius: '12px', cursor: 'pointer', transition: '0.2s',
                                                     border: `1px solid ${isSelectedType ? C.danger : C.border}`,
                                                     background: isSelectedType ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.02)',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',

@@ -61,7 +61,7 @@ export default function EmployeeDetailPage() {
         return (
             <DashboardLayout>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textMuted }}>
-                    <div style={{ textAlign: 'center' }}>
+                    <div style={{ }}>
                         <div style={{ width: '48px', height: '48px', border: `4px solid ${C.primaryBg}`, borderTopColor: C.primary, borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 20px' }} />
                         <span style={{ fontSize: '15px', fontWeight: 800 }}>{t('جاري استرجاع الملف الشخصي للموظف...')}</span>
                     </div>
@@ -173,7 +173,7 @@ export default function EmployeeDetailPage() {
                     <aside style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         
                         {/* Status Card */}
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', textAlign: 'center', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.2)' }}>
+                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.2)' }}>
                             <div style={{ width: '80px', height: '80px', borderRadius: '25px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: C.primary }}>
                                 <User size={40} />
                             </div>
@@ -221,7 +221,7 @@ export default function EmployeeDetailPage() {
                                     ))}
                                 </div>
                             ) : (
-                                <div style={{ textAlign: 'center', padding: '24px', color: C.textMuted, background: 'rgba(255,255,255,0.01)', borderRadius: '16px', border: `1px dashed ${C.border}` }}>
+                                <div style={{ padding: '24px', color: C.textMuted, background: 'rgba(255,255,255,0.01)', borderRadius: '16px', border: `1px dashed ${C.border}` }}>
                                     <div style={{ fontSize: '12px', fontWeight: 700 }}>{t('لا توجد مرفقات')}</div>
                                 </div>
                             )}

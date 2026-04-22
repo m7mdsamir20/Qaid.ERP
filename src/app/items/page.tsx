@@ -359,12 +359,12 @@ export default function ItemsPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري استخراج البيانات...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ padding: '80px 20px', color: C.textMuted }}>
                         <Package size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : (companyBusinessType === 'SERVICES' ? t('لا توجد خدمات مسجلة حالياً') : t('لا توجد أصناف مسجلة حالياً'))}</p>
                     </div>
@@ -374,15 +374,15 @@ export default function ItemsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true), }}>{t("الكود")}</th>
-                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false), }}>{t("الباركود")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false), }}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), }}>{t("الكمية")}</th>}
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
+                                        {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
+                                        <th style={{...TABLE_STYLE.th(false)}}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
+                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false)}}>{t("الكمية")}</th>}
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false), }}>{t("متوسط التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false)}}>{t("متوسط التكلفة")}</th>}
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
-                                        <th style={{ ...TABLE_STYLE.th(false), }}>{t("إجراء")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -395,25 +395,25 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), }}><div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td style={{...TABLE_STYLE.td(true)}}><div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
+                                                    <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
+                                                <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 800, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}>{fMoneyJSX(item.costPrice)}</td>
+                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(item.costPrice)}</td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), }}>{fMoneyJSX(item.sellPrice)}</td>
+                                                <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(item.sellPrice)}</td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}>{fMoneyJSX(avgCost)}</td>
+                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(avgCost)}</td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}>{fMoneyJSX(totalCost)}</td>
+                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(totalCost)}</td>
                                                 )}
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
                                                         {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                             <button onClick={() => { setPrintBarcodeItem(item); setBarcodeCopies(1); }} style={TABLE_STYLE.actionBtn(C.teal)} title={t("طباعة باركود")}>
@@ -447,7 +447,7 @@ export default function ItemsPage() {
                             <div>
                                 <label style={LS}>{companyBusinessType === 'SERVICES' ? t('كود الخدمة') : t('كود الصنف')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="text" readOnly disabled value={form.code} style={{ ...IS, textAlign: 'center', color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
+                                    <input type="text" readOnly disabled value={form.code} style={{ ...IS, color: C.textSecondary, background: C.inputBg, borderStyle: 'dashed', paddingInlineStart: '32px' }} />
                                     <ShieldCheck size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', opacity: 0.4 }} />
                                 </div>
                             </div>
@@ -455,7 +455,7 @@ export default function ItemsPage() {
                             {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                 <div>
                                     <label style={LS}>{t('الباركود الإضافي')}</label>
-                                    <input type="text" placeholder={t("سكان الباركود...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="text" placeholder={t("سكان الباركود...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, fontFamily: OUTFIT, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             )}
 
@@ -529,14 +529,14 @@ export default function ItemsPage() {
                                     <div>
                                         <label style={LS}>{t('سعر التكلفة')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
                                         <label style={LS}>{t('سعر البيع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
@@ -551,7 +551,7 @@ export default function ItemsPage() {
                                                     0
                                                 </div>
                                             )}
-                                            <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: CAIRO, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', fontFamily: CAIRO, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
                                             <AlertTriangle size={12} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.warning, opacity: 0.6 }} />
                                         </div>
                                     </div>
@@ -574,7 +574,7 @@ export default function ItemsPage() {
                                                             0
                                                         </div>
                                                     )}
-                                                    <input type="text" inputMode="decimal" value={form.initialQuantity === 0 ? '' : form.initialQuantity} onChange={e => setForm({ ...form, initialQuantity: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: CAIRO, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
+                                                    <input type="text" inputMode="decimal" value={form.initialQuantity === 0 ? '' : form.initialQuantity} onChange={e => setForm({ ...form, initialQuantity: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', fontFamily: CAIRO, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
                                                 </div>
                                             </div>
                                         </div>
@@ -613,10 +613,10 @@ export default function ItemsPage() {
                             </div>
 
                             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                <label style={{ ...LS, textAlign: 'center' }}>{t('عدد النسخ المراد طباعتها')}</label>
+                                <label style={{ ...LS }}>{t('عدد النسخ المراد طباعتها')}</label>
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button onClick={() => setBarcodeCopies(c => Math.max(1, c - 1))} style={{ width: '48px', height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, cursor: 'pointer', fontSize: '24px', fontWeight: 'bold' }}>-</button>
-                                    <input type="number" value={barcodeCopies} onChange={e => setBarcodeCopies(parseInt(e.target.value) || 1)} style={{ ...IS, height: '48px', flex: 1, textAlign: 'center', fontSize: '18px', fontWeight: 'bold' }} />
+                                    <input type="number" value={barcodeCopies} onChange={e => setBarcodeCopies(parseInt(e.target.value) || 1)} style={{ ...IS, height: '48px', flex: 1, fontSize: '18px', fontWeight: 'bold' }} />
                                     <button onClick={() => setBarcodeCopies(c => c + 1)} style={{ width: '48px', height: '48px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, cursor: 'pointer', fontSize: '24px', fontWeight: 'bold' }}>+</button>
                                 </div>
                             </div>

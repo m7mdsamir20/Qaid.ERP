@@ -209,12 +209,12 @@ export default function PayrollsPage() {
                 {/* Main Content Table Area */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px', textAlign: 'center', color: '#64748b' }}>
+                        <div style={{ padding: '80px', color: '#64748b' }}>
                             <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
                             {t('جاري التحميل...')}
                         </div>
                     ) : filteredPayrolls.length === 0 ? (
-                        <div style={{ padding: '100px 20px', textAlign: 'center', color: '#475569' }}>
+                        <div style={{ padding: '100px 20px', color: '#475569' }}>
                             <FileDown size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
                             <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد مسيرات رواتب')}</h3>
                             <p style={{ fontSize: '14px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بتوليد أول مسير من زر "توليد مسير جديد"')}</p>
@@ -224,12 +224,12 @@ export default function PayrollsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('الشهر / السنة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('تاريخ الإصدار')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('عدد الموظفين')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('الشهر / السنة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('تاريخ الإصدار')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('عدد الموظفين')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('إجمالي الصافي')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('العمليات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('العمليات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -254,7 +254,7 @@ export default function PayrollsPage() {
                                                     {pr._count?.lines || 0} {t('موظف')}
                                                 </span>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false) }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '11px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{pr.netTotal.toLocaleString('en-US')}</span>
@@ -267,7 +267,7 @@ export default function PayrollsPage() {
                                                     <span style={{ padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>{t('معتمد')}</span>
                                                 )}
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                     <Link href={`/payrolls/${pr.id}`} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
                                                         <Search size={TABLE_STYLE.actionIconSize} />

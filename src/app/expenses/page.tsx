@@ -125,7 +125,7 @@ export default function ExpensesPage() {
                                 <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('بند المصروف')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false), }}>{t('الخزينة / البنك')}</th>
+                                <th style={{...TABLE_STYLE.th(false)}}>{t('الخزينة / البنك')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('البيان / التفاصيل')}</th>
                                 <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
                             </tr>
@@ -157,7 +157,7 @@ export default function ExpensesPage() {
                                             <div style={{ fontSize: '10px', color: C.textMuted }}>{debitLine?.account?.code}</div>
                                             {debitLine?.costCenter && <div style={{ fontSize: '10px', color: C.primary, marginTop: '2px' }}>{t('مركز')}: {debitLine.costCenter.name}</div>}
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), }}>
+                                        <td style={{...TABLE_STYLE.td(false)}}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.textPrimary, fontWeight: 700, fontSize: '13px' }}>
                                                     <Banknote size={14} style={{ color: e.sourceType === 'bank' ? '#60a5fa' : C.success, opacity: 0.8 }} />
@@ -176,7 +176,7 @@ export default function ExpensesPage() {
                                         <td style={{ ...TABLE_STYLE.td(false), maxWidth: '180px', color: C.textSecondary, fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                             {e.description || '—'}
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), }}>
+                                        <td style={{...TABLE_STYLE.td(false)}}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>
                                                 {(debitLine?.debit || 0).toLocaleString('en-US')}
                                                 <small style={{ fontSize: '11px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
@@ -238,7 +238,7 @@ export default function ExpensesPage() {
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
                                     className="amount-input"
                                     style={{ 
-                                        border: 'none', background: 'transparent', textAlign: 'center', 
+                                        border: 'none', background: 'transparent', 
                                         fontWeight: 900, color: C.danger, height: '100%', 
                                         fontSize: '17px', width: '100%', padding: '0 45px', 
                                         outline: 'none', fontFamily: OUTFIT 

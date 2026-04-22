@@ -176,7 +176,7 @@ export default function CostCentersPage() {
                         <span style={{ fontSize: '14px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ padding: '80px 20px', color: C.textMuted }}>
                         <Layers size={60} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>{search ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مراكز تكلفة مضافة بعد')}</p>
                     </div>
@@ -185,12 +185,12 @@ export default function CostCentersPage() {
                         <table style={TABLE_STYLE.table}>
                             <thead>
                                 <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('رمز المركز')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('اسم المركز التكاليفي')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('البيان / الملاحظات')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('إجمالي المصروفات')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(true) }}>{t('رمز المركز')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('اسم المركز التكاليفي')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('البيان / الملاحظات')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('إجمالي المصروفات')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -216,13 +216,13 @@ export default function CostCentersPage() {
                                                 {cc.isActive ? t('نشط') : t('موقوف')}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), }}>
+                                        <td style={{...TABLE_STYLE.td(false)}}>
                                             <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {cc.totalExpenses ? cc.totalExpenses.toLocaleString('en-US') : '0.00'} 
                                                 <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </div>
                                         </td>
-                                        <td style={TABLE_STYLE.td(false)}>
+                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                             <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                 {canEdit && (
                                                     <button onClick={() => openEdit(cc)} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>

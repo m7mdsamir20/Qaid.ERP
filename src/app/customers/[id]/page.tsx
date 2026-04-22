@@ -64,7 +64,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
     if (error || !data) {
         return (
             <DashboardLayout>
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '20px', textAlign: 'center' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '20px' }}>
                     <div style={{ width: 64, height: 64, borderRadius: '20px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}><ScrollText size={32} /></div>
                     <p style={{ color: 'var(--text-primary)', fontWeight: 800, fontSize: '18px' }}>{error || t('لا تتوفر بيانات لهذا العميل حالياً')}</p>
                     <Link href="/customers" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: 'var(--surface-100)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', textDecoration: 'none', fontWeight: 700, transition: 'all 0.2s' }}>
@@ -104,7 +104,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                 </div>
 
                 {/* Print Branding (Hidden in Web) */}
-                <div className="print-only" style={{ display: 'none', textAlign: 'center', borderBottom: '2px solid #000', paddingBottom: '30px', marginBottom: '30px' }}>
+                <div className="print-only" style={{ display: 'none', borderBottom: '2px solid #000', paddingBottom: '30px', marginBottom: '30px' }}>
                     <h1 style={{ fontSize: '28px', color: '#000', margin: '0 0 10px 0' }}>{t('كشف حساب تفصيلي')}</h1>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', direction: 'inherit', textAlign: 'start', fontSize: '14px', color: '#000' }}>
                         <div><strong>{t('اسم العميل:')}</strong> {customer.name}</div>

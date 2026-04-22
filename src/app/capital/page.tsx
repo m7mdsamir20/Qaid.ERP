@@ -128,12 +128,12 @@ export default function CapitalPage() {
                 )}
 
                 {loading ? (
-                    <div style={{ padding: '100px', textAlign: 'center' }}>
+                    <div style={{ padding: '100px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
                         <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل البيانات الرأسمالية...')}</p>
                     </div>
                 ) : data.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
+                    <div style={{ padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <DollarSign size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
                         <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
@@ -170,7 +170,7 @@ export default function CapitalPage() {
                                         </div>
 
                                         {/* Main Value */}
-                                        <div style={{ background: 'rgba(0,0,0,0.15)', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px', marginBottom: '18px', textAlign: 'center' }}>
+                                        <div style={{ background: 'rgba(0,0,0,0.15)', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px', marginBottom: '18px' }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي القيمة الرأسمالية')}</div>
                                             <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: OUTFIT }}>
                                                 {p.capital.toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
@@ -210,7 +210,7 @@ export default function CapitalPage() {
                                                 </div>
                                                 
                                                 {changes.length === 0 ? (
-                                                    <div style={{ padding: '16px', textAlign: 'center', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                                                    <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                                         <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد حركات سابقة')}</div>
                                                     </div>
                                                 ) : (

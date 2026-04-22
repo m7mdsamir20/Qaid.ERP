@@ -706,7 +706,7 @@ function NewSalePageInner() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmtNum(entryQty)}
                                             disabled={!entryItemId}
@@ -717,13 +717,13 @@ function NewSalePageInner() {
                                                 }
                                             }}
                                             onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()}
-                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }}
+                                            style={{ ...IS, height: '38px', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <input ref={priceRef} type="text" inputMode="decimal"
                                             value={entryPrice === '' ? '0' : fmtNum(entryPrice)}
@@ -736,7 +736,7 @@ function NewSalePageInner() {
                                                 }
                                             }}
                                             onKeyDown={e => e.key === 'Enter' && addLine()}
-                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }}
+                                            style={{ ...IS, height: '38px', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryPrice" />
                                     </div>
@@ -834,7 +834,6 @@ function NewSalePageInner() {
                                     border: '1px dashed var(--border-color)',
                                     borderRadius: '8px',
                                     padding: '8px',
-                                    textAlign: 'center',
                                     position: 'relative',
                                     cursor: 'pointer',
                                     background: 'rgba(255,255,255,0.01)'
@@ -920,7 +919,7 @@ function NewSalePageInner() {
                                                         }));
                                                     }
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '32px' }}
+                                                style={{ ...IS, height: '34px', fontSize: '13px', paddingInlineStart: '32px' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
                                         </div>
                                         <div style={{ position: 'relative' }}>
@@ -934,7 +933,7 @@ function NewSalePageInner() {
                                                         discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)),
                                                     }));
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '28px' }}
+                                                style={{ ...IS, height: '34px', fontSize: '13px', paddingInlineStart: '28px' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                         </div>
@@ -951,7 +950,7 @@ function NewSalePageInner() {
                                             <div style={{ position: 'relative' }}>
                                                 <input type="number" step="0.01" value={form.taxRate}
                                                     onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '22px' }}
+                                                    style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '22px' }}
                                                     onFocus={focusIn} onBlur={focusOut} />
                                                 <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
@@ -969,7 +968,7 @@ function NewSalePageInner() {
                                                             }));
                                                         }
                                                     }}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
+                                                    style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
                                                     onFocus={focusIn} onBlur={focusOut} />
                                             </div>
                                         </div>
@@ -1036,7 +1035,6 @@ function NewSalePageInner() {
                                                     height: '44px',
                                                     fontSize: '18px',
                                                     fontWeight: 900,
-                                                    textAlign: 'center',
                                                     paddingInlineEnd: '44px',
                                                     color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary,
                                                     fontFamily: OUTFIT,

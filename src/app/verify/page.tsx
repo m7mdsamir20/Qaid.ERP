@@ -94,7 +94,7 @@ function VerifyContent() {
     };
 
     return (
-        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', textAlign: 'center', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden' }}>
             {/* زخرفة داخلية */}
             <div style={{ position: 'absolute', top: '-20px', insetInlineEnd: '-20px', width: '100px', height: '100px', background: `${C.primary}10`, borderRadius: '50%', filter: 'blur(30px)' }} />
             
@@ -140,7 +140,7 @@ function VerifyContent() {
                                 onFocus={focusIn}
                                 onBlur={focusOut}
                                 style={{ 
-                                    width: '46px', height: '60px', textAlign: 'center', fontSize: '24px', 
+                                    width: '46px', height: '60px', fontSize: '24px', 
                                     fontWeight: 900, fontFamily: OUTFIT, borderRadius: '14px', 
                                     border: `1px solid ${digit ? C.primary : C.border}`, 
                                     background: digit ? `${C.primary}05` : C.inputBg, 
@@ -227,7 +227,7 @@ export default function VerifyPage() {
 
             <div style={{ width: '100%', maxWidth: '440px', position: 'relative', zIndex: 1 }}>
                 <Suspense fallback={
-                    <div style={{ ...THEME.glass.card, borderRadius: '24px', padding: '60px 40px', textAlign: 'center' }}>
+                    <div style={{ ...THEME.glass.card, borderRadius: '24px', padding: '60px 40px' }}>
                         <Loader2 size={40} style={{ color: C.primary, margin: '0 auto', animation: 'spin 1.5s linear infinite' }} />
                         <p style={{ color: C.textSecondary, marginTop: '20px', fontFamily: CAIRO, fontWeight: 700 }}>{t('جاري التحميل...')}</p>
                     </div>
@@ -236,7 +236,7 @@ export default function VerifyPage() {
                 </Suspense>
 
                 {/* تذييل الصفحة */}
-                <div style={{ textAlign: 'center', marginTop: '32px' }}>
+                <div style={{ marginTop: '32px' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', opacity: 0.6 }}>
                         <div style={{ width: 24, height: 24, borderRadius: '6px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 900, color: '#fff' }}>{t('ق')}</div>
                         <span style={{ fontSize: '14px', fontWeight: 800, color: C.textSecondary, letterSpacing: '0.5px' }}>{t('قيد ERP — النظام المحاسبي المتكامل')}</span>

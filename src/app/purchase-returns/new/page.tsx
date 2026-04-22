@@ -492,7 +492,7 @@ export default function NewPurchaseReturnPage() {
                                         { label: t('المدفوع'), value: `${selectedInvoice.paidAmount.toLocaleString()} ${cSymbol}`, color: '#10b981' },
                                         { label: t('المتبقي'), value: `${selectedInvoice.remaining.toLocaleString()} ${cSymbol}`, color: C.textMuted },
                                     ].map((item, i) => (
-                                        <div key={i} style={{ borderRadius: '8px', padding: '10px', textAlign: 'center', border: `1px solid ${C.border}` }}>
+                                        <div key={i} style={{ borderRadius: '8px', padding: '10px', border: `1px solid ${C.border}` }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
                                             <div style={{ fontSize: '13px', color: item.color, fontWeight: 700, fontFamily: CAIRO }}>{item.value}</div>
                                         </div>
@@ -510,7 +510,7 @@ export default function NewPurchaseReturnPage() {
                                     <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} {t('صنف متاح')}</div>
                                 </div>
                                 <div className="scroll-table" style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '11px' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
                                         <thead>
                                             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '10px', width: '30px' }}>✓</th>
@@ -549,7 +549,7 @@ export default function NewPurchaseReturnPage() {
                                                                         disabled={!l.selected || fullyReturned}
                                                                         onChange={e => updateReturnQty(i, parseFloat(e.target.value) || 0)}
                                                                         style={{
-                                                                            width: '100%', height: '32px', textAlign: 'center',
+                                                                            width: '100%', height: '32px',
                                                                             background: 'transparent', border: 'none',
                                                                             color: l.selected ? C.textPrimary : C.textMuted,
                                                                             fontSize: '13px', fontWeight: 800, padding: 0
@@ -670,7 +670,6 @@ export default function NewPurchaseReturnPage() {
                                                         height: '44px',
                                                         fontSize: '18px',
                                                         fontWeight: 800,
-                                                        textAlign: 'center',
                                                         border: `1px solid ${C.primary}50`,
                                                         color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.primary,
                                                         background: 'rgba(37, 106, 244,0.03)',

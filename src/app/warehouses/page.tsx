@@ -158,12 +158,12 @@ export default function WarehousesPage() {
 
                 {/* Table Content */}
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                    <div style={{ padding: '100px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 600 }}>{t('جاري تحميل قائمة المخازن...')}</p>
                     </div>
                 ) : filteredAll.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '80px 20px', color: C.textMuted }}>
+                    <div style={{ padding: '80px 20px', color: C.textMuted }}>
                         <Warehouse size={56} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
                         <p style={{ margin: 0, fontSize: '15px', fontWeight: 700 }}>{search ? t('لا توجد نتائج بحث تطابق استفسارك') : t('لا توجد مخازن مسجلة حالياً')}</p>
                     </div>
@@ -173,11 +173,11 @@ export default function WarehousesPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>{t('الكود')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('اسم المخزن')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('العنوان')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('اسم المخزن')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('العنوان')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('عدد الأصناف')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجراء')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراء')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -193,9 +193,9 @@ export default function WarehousesPage() {
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px', textAlign: 'center' }}>{wh.name}</div>
+                                                <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>{wh.name}</div>
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: C.textSecondary, fontSize: '13px' }}>
                                                     <MapPin size={14} style={{ opacity: 0.6 }} />
                                                     {wh.address || t('غير محدد')}
@@ -204,7 +204,7 @@ export default function WarehousesPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 800, color: C.purple, }}>
                                                 {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
                                                     <button onClick={() => handleOpenModal(wh)}
                                                         style={TABLE_STYLE.actionBtn()}
@@ -249,7 +249,7 @@ export default function WarehousesPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input 
                                         type="text" readOnly disabled value={form.code} 
-                                        style={{ ...IS, paddingInlineStart: '32px', textAlign: 'center', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', borderStyle: 'dashed' }} 
+                                        style={{ ...IS, paddingInlineStart: '32px', color: C.textSecondary, background: 'rgba(255,255,255,0.03)', borderStyle: 'dashed' }} 
                                     />
                                     <ShieldCheck size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.5 }} />
                                 </div>

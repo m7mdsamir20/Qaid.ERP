@@ -125,7 +125,7 @@ export default function DuePage() {
                     </div>
 
                     {loading ? (
-                        <div style={{ textAlign: 'center', padding: '100px', color: C.textMuted }}>
+                        <div style={{ padding: '100px', color: C.textMuted }}>
                             <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ fontWeight: 600 }}>{t('جاري جلب بيانات الأقساط...')}</p>
                         </div>
@@ -189,7 +189,7 @@ export default function DuePage() {
                                                             {isOverdue ? t('متأخر') : t('قادم')}
                                                         </div>
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)} onClick={e => e.stopPropagation()}>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }} onClick={e => e.stopPropagation()}>
                                                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                             <button onClick={() => {
                                                                 setCollectTarget(inst);
@@ -231,7 +231,7 @@ export default function DuePage() {
                                     </tbody>
                                 </table>
                                 {installments.length === 0 && (
-                                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
+                                    <div style={{ padding: '80px', color: C.textMuted }}>
                                         <Clock size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                         <p style={{ fontSize: '15px' }}>{t('لا توجد أقساط مستحقة للفترة المختارة')}</p>
                                     </div>
@@ -293,7 +293,7 @@ export default function DuePage() {
                                                     setCollectForm(f => ({ ...f, treasuryId: firstTr?.id || '', selectedType: t.id } as any));
                                                 }}
                                                 style={{
-                                                    flex: 1, padding: '10px', borderRadius: '12px', cursor: 'pointer', textAlign: 'center', transition: '0.2s',
+                                                    flex: 1, padding: '10px', borderRadius: '12px', cursor: 'pointer', transition: '0.2s',
                                                     border: `1px solid ${isSelectedType ? C.primary : C.border}`,
                                                     background: isSelectedType ? 'rgba(37,106,244,0.12)' : 'rgba(255,255,255,0.02)',
                                                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',

@@ -141,19 +141,19 @@ export default function PaymentVouchersPage() {
                     boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
                 }}>
                     {loading ? (
-                        <div style={{ padding: '80px', textAlign: 'center' }}>
+                        <div style={{ padding: '80px' }}>
                             <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, display: 'block', margin: '0 auto 10px' }} />
                             <span style={{ fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>جاري تحميل البيانات...</span>
                         </div>
                     ) : filteredAll.length === 0 ? (
-                        <div style={{ padding: '70px', textAlign: 'center' }}>
+                        <div style={{ padding: '70px' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
                             <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? 'لا توجد نتائج' : 'لا توجد سندات صرف'}</p>
                         </div>
                     ) : (
                         <>
                             <div className="scroll-table">
-                                <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'center', fontSize: '14px', minWidth: '1000px' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', minWidth: '1000px' }}>
                                     <thead>
                                         <tr style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO, width: '120px' }}>رقم السند</th>

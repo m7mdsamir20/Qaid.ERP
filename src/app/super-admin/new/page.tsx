@@ -499,7 +499,7 @@ export default function NewCompanyPage() {
                                     { label: 'عدد المستخدمين', value: form.maxUsers },
                                     { label: 'عدد الفروع', value: form.maxBranches },
                                 ].map((item, i) => (
-                                    <div key={i} style={{ textAlign: 'center' }}>
+                                    <div key={i} style={{ }}>
                                         <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '3px' }}>{item.label}</div>
                                         <div style={{ fontSize: '14px', fontWeight: 800, color: '#e2e8f0' }}>{item.value}</div>
                                     </div>

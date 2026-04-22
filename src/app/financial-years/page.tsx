@@ -172,7 +172,7 @@ export default function FinancialYearsPage() {
                 ) : !activeFY ? (
                     <div style={{
                         background: `${C.primary}06`, border: `1px solid ${C.primary}25`,
-                        borderRadius: '20px', padding: '48px', textAlign: 'center'
+                        borderRadius: '20px', padding: '48px'
                     }}>
                         <div style={{
                             width: '72px', height: '72px', borderRadius: '20px',
@@ -337,15 +337,15 @@ export default function FinancialYearsPage() {
                                     <table style={TABLE_STYLE.table}>
                                         <thead>
                                             <tr style={TABLE_STYLE.thead}>
-                                                <th style={TABLE_STYLE.th(true)}>{t('السنة المالية')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('من')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('إلى')}</th>
+                                                <th style={{ ...TABLE_STYLE.th(true) }}>{t('السنة المالية')}</th>
+                                                <th style={{ ...TABLE_STYLE.th(false) }}>{t('من')}</th>
+                                                <th style={{ ...TABLE_STYLE.th(false) }}>{t('إلى')}</th>
                                                 <th style={TABLE_STYLE.th(false)}>{t('الأيام')}</th>
                                                 <th style={TABLE_STYLE.th(false)}>{t('المبيعات')}</th>
                                                 <th style={TABLE_STYLE.th(false)}>{t('المشتريات')}</th>
                                                 <th style={TABLE_STYLE.th(false)}>{t('صافي الفترة')}</th>
                                                 <th style={TABLE_STYLE.th(false)}>{t('قيود')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>

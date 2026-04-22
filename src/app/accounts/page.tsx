@@ -309,7 +309,7 @@ export default function AccountsPage() {
                         <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '14px', fontFamily: CAIRO }}>{acc.name}</span>
                     </div>
 
-                    <div style={{ width: '120px', textAlign: 'center', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
+                    <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                         <span style={{
                             fontSize: '11px', padding: '3px 10px', borderRadius: '8px', fontWeight: 800, fontFamily: CAIRO,
                             background: `${color}15`, color: color, width: 'fit-content'
@@ -336,7 +336,7 @@ export default function AccountsPage() {
                         </div>
                     </div>
 
-                    <div style={{ width: '150px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success }}>
+                    <div style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success }}>
                         {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
 
@@ -466,7 +466,7 @@ export default function AccountsPage() {
                 </div>
 
                 {loading ? (
-                    <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
+                    <div style={{ padding: '80px', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                         <p style={{ fontWeight: 700 }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
                     </div>
@@ -481,9 +481,9 @@ export default function AccountsPage() {
                             <div style={{ width: '32px' }}></div>
                             <div style={{ width: '100px', textAlign: 'start' }}>{t('الكود')}</div>
                             <div style={{ flex: 1, textAlign: 'start' }}>{t('اسم الحساب')}</div>
-                            <div style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
-                            <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
-                            <div style={{ width: '100px', textAlign: 'center' }}>{t('إجراءات')}</div>
+                            <div style={{ width: '120px' }}>{t('النوع')}</div>
+                            <div style={{ width: '150px' }}>{t('الرصيد الحالي')}</div>
+                            <div style={{ width: '100px' }}>{t('إجراءات')}</div>
                         </div>
 
                         <div style={{ padding: '8px', maxHeight: '70vh', overflowY: 'auto' }}>
@@ -494,7 +494,7 @@ export default function AccountsPage() {
                                     effectiveAccounts.map(acc => renderAccountRow(acc, 0))
                                 )
                             ) : (
-                                <div style={{ textAlign: 'center', padding: '60px', color: C.textMuted }}>
+                                <div style={{ padding: '60px', color: C.textMuted }}>
                                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', opacity: 0.1 }} />
                                     <p style={{ fontWeight: 700 }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
                                 </div>
@@ -516,7 +516,7 @@ export default function AccountsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px' }}>
                         <div>
                             <label style={LS}>{t('كود الحساب')}</label>
-                            <input disabled value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textMuted }} />
+                            <input disabled value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed', fontFamily: OUTFIT, fontWeight: 700, color: C.textMuted }} />
                         </div>
                         <div>
                             <label style={LS}>{t('اسم الحساب بالعربية')} <span style={{ color: C.danger }}>*</span></label>
@@ -565,7 +565,7 @@ export default function AccountsPage() {
                 icon={RefreshCcw}
                 maxWidth="500px"
             >
-                <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <div style={{ padding: '20px 0' }}>
                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                         <AlertTriangle size={32} />
                     </div>

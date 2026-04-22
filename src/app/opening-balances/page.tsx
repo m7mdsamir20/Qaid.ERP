@@ -238,7 +238,7 @@ export default function OpeningBalancesPage() {
                 />
 
                 {!selectedYear ? (
-                    <div style={{ ...SC, padding: '120px 20px', textAlign: 'center', borderStyle: 'dashed' }}>
+                    <div style={{ ...SC, padding: '120px 20px', borderStyle: 'dashed' }}>
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                             <Wallet size={40} style={{ color: C.textMuted, opacity: 0.5 }} />
                         </div>
@@ -251,7 +251,7 @@ export default function OpeningBalancesPage() {
                         <span style={{ fontSize: '15px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</span>
                     </div>
                 ) : accounts.length === 0 ? (
-                    <div style={{ ...SC, padding: '100px 20px', textAlign: 'center', borderStyle: 'styled' }}>
+                    <div style={{ ...SC, padding: '100px 20px', borderStyle: 'styled' }}>
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <AlertTriangle size={36} style={{ color: C.warning }} />
                         </div>
@@ -388,7 +388,7 @@ export default function OpeningBalancesPage() {
                                                         placeholder="0.00" 
                                                         disabled={hasCr || isReadlyOnly}
                                                         style={{ 
-                                                            ...IS, height: '32px', textAlign: 'center', fontSize: '14px', fontWeight: 900,
+                                                            ...IS, height: '32px', fontSize: '14px', fontWeight: 900,
                                                             borderColor: hasDr ? `${C.success}50` : C.border, 
                                                             color: hasDr ? C.success : C.textPrimary, 
                                                             background: hasDr ? `${C.success}05` : 'transparent',
@@ -405,7 +405,7 @@ export default function OpeningBalancesPage() {
                                                         placeholder="0.00" 
                                                         disabled={hasDr || isReadlyOnly}
                                                         style={{ 
-                                                            ...IS, height: '32px', textAlign: 'center', fontSize: '14px', fontWeight: 900,
+                                                            ...IS, height: '32px', fontSize: '14px', fontWeight: 900,
                                                             borderColor: hasCr ? `${C.danger}50` : C.border, 
                                                             color: hasCr ? C.danger : C.textPrimary, 
                                                             background: hasCr ? `${C.danger}05` : 'transparent',
@@ -446,7 +446,7 @@ export default function OpeningBalancesPage() {
                 title={t("تأكيد ترحيل الأرصدة")}
                 icon={ArrowRightLeft}
             >
-                <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                <div style={{ padding: '10px 0' }}>
                     <div style={{ width: 60, height: 60, borderRadius: '20px', background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.success, margin: '0 auto 20px' }}>
                         <ArrowRightLeft size={30} />
                     </div>

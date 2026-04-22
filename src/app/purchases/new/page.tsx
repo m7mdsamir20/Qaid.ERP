@@ -511,16 +511,16 @@ export default function NewPurchasePage() {
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
                                     </div>
                                 </div>
                                 <div>
-                                    <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('التكلفة')}</label>
+                                    <label style={{ ...LS, fontSize: '11px' }}>{t('التكلفة')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryPrice" />
                                     </div>
                                 </div>
@@ -568,7 +568,7 @@ export default function NewPurchasePage() {
                         <div style={SCStyle}>
                             <div style={{ ...STitleStyle, marginBottom: '10px', color: '#256af4' }}><Camera size={12} /> {t('المرفقات')}</div>
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                <div style={{ flex: 1, border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '8px', textAlign: 'center', position: 'relative', cursor: 'pointer', background: C.subtle }}>
+                                <div style={{ flex: 1, border: '1px dashed var(--border-color)', borderRadius: '8px', padding: '8px', position: 'relative', cursor: 'pointer', background: C.subtle }}>
                                     <input type="file" multiple onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
                                     <div style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}><Plus size={14} /> {t('رفع ملفات')}</div>
                                 </div>
@@ -604,11 +604,11 @@ export default function NewPurchasePage() {
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.discountAmt || '')} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { const amt = v === '' ? 0 : parseFloat(v) || 0; setForm((f: any) => ({ ...f, discountAmt: amt, discountPct: subtotal > 0 ? Number(((amt / subtotal) * 100).toFixed(2)) : 0 })); } }} style={{ ...IS, height: '36px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '32px' }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.discountAmt || '')} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { const amt = v === '' ? 0 : parseFloat(v) || 0; setForm((f: any) => ({ ...f, discountAmt: amt, discountPct: subtotal > 0 ? Number(((amt / subtotal) * 100).toFixed(2)) : 0 })); } }} style={{ ...IS, height: '36px', fontSize: '13px', paddingInlineStart: '32px' }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                         </div>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', textAlign: 'center', fontSize: '13px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', fontSize: '13px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                         </div>
                                     </div>
@@ -624,7 +624,7 @@ export default function NewPurchasePage() {
                                             <div style={{ position: 'relative' }}>
                                                 <input type="number" step="0.01" value={form.taxRate}
                                                     onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '22px' }}
+                                                    style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '22px' }}
                                                     onFocus={focusIn} onBlur={focusOut} />
                                                 <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
@@ -641,7 +641,7 @@ export default function NewPurchasePage() {
                                                             }));
                                                         }
                                                     }}
-                                                    style={{ ...IS, height: '30px', textAlign: 'center', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
+                                                    style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
                                                     onFocus={focusIn} onBlur={focusOut} />
                                                 <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
                                             </div>
@@ -671,7 +671,7 @@ export default function NewPurchasePage() {
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المدفوع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.paidAmount)} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setForm((f: any) => ({ ...f, paidAmount: v })); clearError('paidAmount'); } }} style={{ ...IS, height: '48px', fontSize: '18px', fontWeight: 900, textAlign: 'center', paddingInlineEnd: '44px', color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.paidAmount)} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setForm((f: any) => ({ ...f, paidAmount: v })); clearError('paidAmount'); } }} style={{ ...IS, height: '48px', fontSize: '18px', fontWeight: 900, paddingInlineEnd: '44px', color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                             {form.paymentType === 'bank' ? <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} /> : <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />}
                                             <InlineError field="paidAmount" />
                                         </div>

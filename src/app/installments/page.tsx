@@ -305,7 +305,7 @@ export default function InstallmentsPage() {
                 </div>
 
                     {loading ? (
-                        <div style={{ padding: '60px', textAlign: 'center' }}>
+                        <div style={{ padding: '60px' }}>
                             <Loader2 size={26} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto' }} />
                         </div>
                     ) : (
@@ -389,7 +389,7 @@ export default function InstallmentsPage() {
                                 </tbody>
                             </table>
                             {filtered.length === 0 && (
-                                <div style={{ textAlign: 'center', padding: '80px', color: C.textMuted }}>
+                                <div style={{ padding: '80px', color: C.textMuted }}>
                                     <CreditCard size={48} style={{ opacity: 0.1, marginBottom: '16px' }} />
                                     <p style={{ fontSize: '15px' }}>{t('لا توجد خطط تقسيط مطابقة للبحث')}</p>
                                 </div>
@@ -481,13 +481,13 @@ export default function InstallmentsPage() {
 
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('الكمية')}</label>
-                                <input type="number" min="1" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="number" min="1" value={form.quantity} onChange={e => setForm(f => ({ ...f, quantity: e.target.value }))} style={{ ...IS, height: '38px' }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
 
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('قيمة المنتج الإجمالية')} <span style={{ color: C.danger }}>*</span></label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" required min="0" placeholder="0.00" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '40px' }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
@@ -511,7 +511,7 @@ export default function InstallmentsPage() {
                                                     else taxAmt = total * (r / 100);
                                                     setForm(f => ({ ...f, taxRate: e.target.value, taxAmount: String(taxAmt.toFixed(2)) }));
                                                 }} 
-                                                style={{ ...IS, height: '34px', paddingInlineStart: '28px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} 
+                                                style={{ ...IS, height: '34px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} 
                                             />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
                                         </div>
@@ -529,7 +529,7 @@ export default function InstallmentsPage() {
                                                         setForm(f => ({ ...f, taxAmount: v, taxRate: String(r.toFixed(2)) }));
                                                     }
                                                 }}
-                                                style={{ ...IS, height: '34px', paddingInlineStart: '32px', textAlign: 'center', fontWeight: 800, color: C.primary }} onFocus={focusIn} onBlur={focusOut} 
+                                                style={{ ...IS, height: '34px', paddingInlineStart: '32px', fontWeight: 800, color: C.primary }} onFocus={focusIn} onBlur={focusOut} 
                                             />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                         </div>
@@ -546,7 +546,7 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('الدفعة المقدمة')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="0" placeholder="0.00" value={form.downPayment} onChange={e => setForm(f => ({ ...f, downPayment: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '40px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" min="0" placeholder="0.00" value={form.downPayment} onChange={e => setForm(f => ({ ...f, downPayment: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '40px' }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
@@ -554,7 +554,7 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('فائدة سنوية %')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '28px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
                                 </div>
                             </div>
@@ -582,7 +582,7 @@ export default function InstallmentsPage() {
                             <div>
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('مدة التقسيط (شهر)')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <input type="number" min="1" placeholder="12" value={form.monthsCount} onChange={e => setForm(f => ({ ...f, monthsCount: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '42px', textAlign: 'center' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="number" min="1" placeholder="12" value={form.monthsCount} onChange={e => setForm(f => ({ ...f, monthsCount: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '42px' }} onFocus={focusIn} onBlur={focusOut} />
                                     <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', fontWeight: 700, color: C.textMuted }}>{t('شهر')}</span>
                                 </div>
                             </div>
@@ -639,7 +639,7 @@ export default function InstallmentsPage() {
                                                         setForm(f => ({ ...f, activeMonths: newMonths }));
                                                     }}
                                                     style={{
-                                                        padding: '8px 4px', borderRadius: '8px', fontSize: '11px', fontWeight: 700, textAlign: 'center', cursor: 'pointer', transition: '0.2s',
+                                                        padding: '8px 4px', borderRadius: '8px', fontSize: '11px', fontWeight: 700, cursor: 'pointer', transition: '0.2s',
                                                         border: `1px solid ${isActive ? C.primary : 'rgba(255,255,255,0.05)'}`,
                                                         background: isActive ? 'rgba(37,106,244,0.15)' : 'transparent',
                                                         color: isActive ? C.primary : C.textMuted
@@ -691,7 +691,6 @@ export default function InstallmentsPage() {
                                             background: 'rgba(255,255,255,0.02)', 
                                             borderRadius: '12px', 
                                             padding: '8px 4px', 
-                                            textAlign: 'center', 
                                             border: `1px solid ${C.border}` 
                                         }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{inv_item.label}</div>
@@ -736,7 +735,7 @@ export default function InstallmentsPage() {
                         icon={AlertTriangle} 
                         variant="danger"
                     >
-                        <div style={{ textAlign: 'center', padding: '10px 0' }}>
+                        <div style={{ padding: '10px 0' }}>
                             <p style={{ fontWeight: 700, fontSize: '16px', color: C.textPrimary }}>{t('هل أنت متأكد من حذف هذه الخطة نهائياً؟')}</p>
                             <p style={{ color: C.textMuted, fontSize: '14px', marginTop: '8px', lineHeight: 1.6 }}>{t('سيتم حذف كافة الأقساط والتحصيلات المرتبطة بها. هذا الإجراء لا يمكن التراجع عنه.')}</p>
                             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>

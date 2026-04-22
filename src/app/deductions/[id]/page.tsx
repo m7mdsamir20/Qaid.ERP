@@ -152,7 +152,7 @@ export default function DeductionDetailPage() {
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-                        <div style={{ padding: '24px', borderRadius: '20px', background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+                        <div style={{ padding: '24px', borderRadius: '20px', background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)' }}>
                             <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4', margin: '0 auto 16px' }}>
                                 <User size={30} />
                             </div>
