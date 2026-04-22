@@ -4,9 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { RotateCcw, Plus, Printer, Loader2, Search, ChevronDown, Package, Trash2, Calendar, Eye, X } from 'lucide-react';
-
 import { useSession } from 'next-auth/react';
-
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -61,14 +59,12 @@ export default function SaleReturnsListPage() {
         window.open(`/print/invoice/${r.id}`, '_blank');
     };
 
-    /* ─── Status badge ─── */
     const getStatusStyle = (r: ReturnInvoice) => {
         if (r.paidAmount >= r.total && r.total > 0) return { bg: 'rgba(34,197,94,0.1)', color: '#22c55e', text: 'مكتمل' };
         if (r.paidAmount > 0) return { bg: 'rgba(245,158,11,0.1)', color: '#f59e0b', text: 'جزئي' };
         return { bg: 'rgba(37, 106, 244,0.1)', color: '#256af4', text: 'تسوية رصيد' };
     };
 
-    /* ─── RENDER ─── */
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', paddingTop: THEME.header.pt, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
@@ -94,13 +90,13 @@ export default function SaleReturnsListPage() {
                         />
                     </div>
                     <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, borderRadius: '8px', fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1 }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, borderRadius: '8px', fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1 }} />
                         </div>
                     </div>
 
@@ -109,19 +105,17 @@ export default function SaleReturnsListPage() {
                             className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
                             style={{
-                                display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
+                                display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '42px',
                                 background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
-
+                            <Trash2 size={14} /> {t("مسح")}
                         </button>
                     )}
                 </div>
-
 
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
@@ -161,8 +155,8 @@ export default function SaleReturnsListPage() {
                                                     RET-{String(r.invoiceNumber).padStart(5, '0')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: 'rgba(255,255,255,0.92)', fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: 'rgba(255,255,255,0.92)', fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                                     {r.total.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
@@ -198,9 +192,7 @@ export default function SaleReturnsListPage() {
                         </div>
                     )}
                 </div>
-                
             </div>
         </DashboardLayout>
     );
 }
-

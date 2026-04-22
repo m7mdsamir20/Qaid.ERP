@@ -108,13 +108,13 @@ export default function PurchasesListPage() {
                         />
                     </div>
                     <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, borderRadius: '8px', fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1 }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
+                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, borderRadius: '8px', fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1 }} />
                         </div>
                     </div>
 

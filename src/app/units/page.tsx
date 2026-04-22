@@ -137,7 +137,7 @@ export default function UnitsPage() {
                             placeholder={t("ابحث باسم الوحدة أو الكود...")}
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '36px', borderRadius: '6px', background: C.card, fontSize: '13px' }}
+                            style={{ ...IS, width: '100%', paddingInlineStart: '40px', height: '42px', borderRadius: '10px', background: C.card, fontSize: '13px' }}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>

@@ -133,6 +133,36 @@
   --danger-500: var(--c-danger);
   --danger-600: var(--c-danger);
   --warning-500: var(--c-warning);
+  --warning-600: var(--c-warning);
+}
+
+/* ════════════════════════════════════════════════════════
+   UNIFIED INPUTS STRATEGY (Search & Date)
+   Ensures 42px height and consistent background globally.
+   ════════════════════════════════════════════════════════ */
+input[type="date"],
+input[type="text"][placeholder*="ابحث"],
+input[type="text"][placeholder*="Search"],
+input[type="text"][placeholder*="رقم الفاتورة"],
+input[type="text"][placeholder*="اسم العميل"],
+.search-input,
+.filter-input {
+  height: 42px !important;
+  background-color: var(--c-card) !important;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+[data-theme='light'] input[type="date"],
+[data-theme='light'] input[type="text"][placeholder*="ابحث"],
+[data-theme='light'] input[type="text"][placeholder*="Search"],
+[data-theme='light'] .search-input {
+  background-color: var(--c-input-bg) !important;
+}
+
+/* Chrome/Safari date icon alignment */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
 }
 
 [data-theme='light'] {
