@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -15,7 +16,7 @@ const getCurrencyName = (code: string) => {
     return map[code] || code;
 };
 
-const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => formatNumber(n);
 
 interface ReturnInvoice {
     id: string;
@@ -68,7 +69,7 @@ export default function ReturnsReportPage() {
 
     const filtered = data.filter(r => (r.party || '').toLowerCase().includes(q.toLowerCase()) || String(r.invoiceNumber).includes(q));
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
@@ -83,7 +84,7 @@ export default function ReturnsReportPage() {
                     {[
                         { label: t('إجمالي مرتجع البيع'), value: fmt(stats.totalSaleReturns), color: '#ef4444', icon: <TrendingDown size={20} /> },
                         { label: t('إجمالي مرتجع الشراء'), value: fmt(stats.totalPurchaseReturns), color: '#256af4', icon: <TrendingUp size={20} /> },
-                        { label: t('إجمالي عدد الفواتير'), value: data.length.toLocaleString('en-US'), color: '#a78bfa', icon: <FileText size={20} /> },
+                        { label: t('إجمالي عدد الفواتير'), value: data.length), color: '#a78bfa', icon: <FileText size={20} /> },
                         { label: t('متوسط قيمة العملية'), value: fmt(data.length ? (stats.totalSaleReturns + stats.totalPurchaseReturns) / data.length : 0), color: '#10b981', icon: <Activity size={20} /> },
                     ].map((s, i) => (
                         <div key={i} style={{

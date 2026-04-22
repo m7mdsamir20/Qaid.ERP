@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
  
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';
@@ -364,7 +365,7 @@ export default function DatabaseTab({
                                                         }
                                                     }
 
-                                                    return (
+                                                    return formatNumber((
                                                         <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background 0.15s' }}
                                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
@@ -377,25 +378,25 @@ export default function DatabaseTab({
                                                             {importType === 'items' ? (
                                                                 <>
                                                                     <td style={{ padding: '11px 14px',  fontWeight: 800, color: C.textSecondary, fontFamily: 'monospace' }}>
-                                                                        {findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']).toLocaleString('en-US')}
+                                                                        {formatNumber(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']))}
                                                                     </td>
                                                                     <td style={{ padding: '11px 14px',  fontWeight: 800, color: C.primary, fontFamily: 'monospace' }}>
-                                                                        {findV(['تكلفة', 'cost']).toLocaleString('en-US')}
+                                                                        {formatNumber(findV(['تكلفة', 'cost']))}
                                                                     </td>
                                                                     <td style={{ padding: '11px 14px',  fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace', background: 'rgba(245,158,11,0.03)' }}>
-                                                                        {(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']) * findV(['تكلفة', 'cost'])).toLocaleString('en-US')}
+                                                                        {(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']) * findV(['تكلفة', 'cost'])))}
                                                                     </td>
                                                                 </>
                                                             ) : (
                                                                 <>
                                                                     <td style={{ padding: '11px 14px',  background: 'rgba(239,68,68,0.03)' }}>
                                                                         {previewDebit > 0
-                                                                            ? <span style={{ fontWeight: 900, color: '#ef4444', fontFamily: 'monospace' }}>{previewDebit.toLocaleString('en-US')}</span>
+                                                                            ? <span style={{ fontWeight: 900, color: '#ef4444', fontFamily: 'monospace' }}>{formatNumber(previewDebit)}</span>
                                                                             : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>—</span>}
                                                                     </td>
                                                                     <td style={{ padding: '11px 14px',  background: 'rgba(16,185,129,0.03)' }}>
                                                                         {previewCredit > 0
-                                                                            ? <span style={{ fontWeight: 900, color: '#10b981', fontFamily: 'monospace' }}>{previewCredit.toLocaleString('en-US')}</span>
+                                                                            ? <span style={{ fontWeight: 900, color: '#10b981', fontFamily: 'monospace' }}>{formatNumber(previewCredit)}</span>
                                                                             : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>—</span>}
                                                                     </td>
                                                                 </>

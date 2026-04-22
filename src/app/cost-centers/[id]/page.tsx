@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
@@ -104,7 +105,7 @@ export default function CostCenterDetails() {
 
     const maxMonthValue = Math.max(...monthlyData, 1);
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <PageHeader 
                 title={`${t('مركز التكلفة')}: ${data.name}`}
@@ -177,7 +178,7 @@ export default function CostCenterDetails() {
                         <div>
                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{kpi.label}</div>
                             <div style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                {kpi.isCount ? kpi.value.toLocaleString('en-US') : (kpi.value || 0).toLocaleString('en-US')}
+                                {kpi.isCount ? kpi.value.toLocaleString('en-US') : (kpi.value || 0))}
                                 {!kpi.isCount && <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>}
                             </div>
                         </div>
@@ -223,7 +224,7 @@ export default function CostCenterDetails() {
                                                 <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{line.description || line.journalEntry.description || '—'}</div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>
-                                                {line.debit.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
+                                                {formatNumber(line.debit)} <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '6px', background: C.inputBg, border: `1px solid ${C.border}`, fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>

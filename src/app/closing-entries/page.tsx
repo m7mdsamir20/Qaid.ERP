@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -27,7 +28,7 @@ interface ClosingResult {
 
 const fmt = (n: number) => {
     if (n === undefined || n === null) return '0.00';
-    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return formatNumber(n);
 };
 
 /* ══════════════════════════════════════════ */

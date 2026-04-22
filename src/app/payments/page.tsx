@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -74,7 +75,7 @@ export default function PaymentVouchersPage() {
 
     useEffect(() => { setCurrentPage(1); }, [searchTerm, dateFrom, dateTo]);
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     return (
         <DashboardLayout>

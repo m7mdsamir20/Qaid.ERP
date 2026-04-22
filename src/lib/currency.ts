@@ -64,5 +64,30 @@ export function formatMoneyHTML(amount: number, code: string = 'EGP', lang: 'ar'
     return `<span class="money-wrapper" style="white-space: nowrap; direction: ${lang === 'ar' ? 'rtl' : 'ltr'};">${sign}${content}</span>`;
 }
 
+/**
+ * Formats a number with thousand separators.
+ * Useful for inputs and plain numeric displays.
+ */
+export function formatNumber(value: number | string | undefined | null, decimals: number = 2): string {
+    if (value === undefined || value === null || value === '') return '';
+    const num = typeof value === 'string' ? parseFloat(value.replace(/[^0-9.-]/g, '')) : value;
+    if (isNaN(num)) return '';
+    
+    return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals,
+    }).format(num);
+}
+
+/**
+ * Strips all non-numeric characters except the decimal point and minus sign.
+ * Useful for processing input values before saving to DB.
+ */
+export function parseNumber(value: string): number {
+    const clean = value.replace(/[^0-9.-]/g, '');
+    const num = parseFloat(clean);
+    return isNaN(num) ? 0 : num;
+}
+
 // Backward compatibility
 export const formatCurrency = formatMoney;

@@ -10,7 +10,9 @@ import { CompanyInfo } from '@/lib/printInvoices';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import PriceInput from '@/components/PriceInput';
 import { useCurrency } from '@/hooks/useCurrency';
+import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 
 interface Supplier { id: string; name: string; phone?: string; balance: number; partnerType?: string; }
 interface Warehouse { id: string; name: string; }
@@ -19,13 +21,7 @@ interface Item { id: string; code: string; name: string; costPrice: number; sell
 interface InvoiceLine { itemId: string; itemCode: string; itemName: string; unit: string; quantity: number; price: number; total: number; stock: number; }
 
 const getUnitName = (u: any) => !u ? '' : typeof u === 'string' ? u : (u.name || u.nameEn || '');
-const fmt = (v: any) => {
-    if (v === '' || v === undefined || v === null) return '';
-    const s = v.toString().replace(/,/g, '');
-    const parts = s.split('.');
-    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return parts.join('.');
-};
+
 
 
 
@@ -470,7 +466,7 @@ export default function NewPurchasePage() {
                                             border: `1px solid ${selectedPartner.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : selectedPartner.balance > 0 ? 'rgba(74,222,128,0.22)' : 'var(--border-color)'}`,
                                         }}>
                                             <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
-                                            {selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : t('متزن')}
+                                            {selectedPartner.balance > 0 ? `${t('عليه لنا:')} ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance < 0 ? `${t('له عندنا:')} ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : t('متزن')}
                                         </div>
                                     )}
                                 </div>
@@ -513,14 +509,24 @@ export default function NewPurchasePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <PriceInput 
+                                            value={entryQty} 
+                                            onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
+                                            disabled={!entryItemId}
+                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1 }}
+                                        />
                                         <InlineError field="entryQty" />
                                     </div>
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('التكلفة')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <PriceInput 
+                                            value={entryPrice} 
+                                            onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
+                                            disabled={!entryItemId}
+                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary }}
+                                        />
                                         <InlineError field="entryPrice" />
                                     </div>
                                 </div>
@@ -539,9 +545,9 @@ export default function NewPurchasePage() {
                                             <tr key={i} style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{l.itemName}</td>
                                                 <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{l.quantity}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{l.price.toLocaleString()}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{l.total.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
                                                 <td style={{ padding: '10px 12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -604,8 +610,18 @@ export default function NewPurchasePage() {
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.discountAmt || '')} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { const amt = v === '' ? 0 : parseFloat(v) || 0; setForm((f: any) => ({ ...f, discountAmt: amt, discountPct: subtotal > 0 ? Number(((amt / subtotal) * 100).toFixed(2)) : 0 })); } }} style={{ ...IS, height: '36px', fontSize: '13px', paddingInlineStart: '32px' }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                            <PriceInput 
+                                                value={form.discountAmt || 0}
+                                                onChange={val => {
+                                                    setForm((f: any) => ({
+                                                        ...f,
+                                                        discountAmt: val,
+                                                        discountPct: subtotal > 0 ? Number(((val / subtotal) * 100).toFixed(2)) : 0,
+                                                    }));
+                                                }}
+                                                style={{ height: '36px', fontSize: '13px' }}
+                                                textAlign="right"
+                                            />
                                         </div>
                                         <div style={{ position: 'relative' }}>
                                             <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', fontSize: '13px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} />
@@ -629,21 +645,18 @@ export default function NewPurchasePage() {
                                                 <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
-                                                <input type="text" inputMode="decimal" value={fmt(form.taxAmount.toFixed(2))}
-                                                    onChange={e => {
-                                                        const v = e.target.value.replace(/,/g, '');
-                                                        if (v === '' || !isNaN(Number(v)) || v === '.') {
-                                                            const amt = v === '' ? 0 : parseFloat(v) || 0;
-                                                            setForm((f: any) => ({
-                                                                ...f,
-                                                                taxAmount: amt,
-                                                                taxRate: afterDisc > 0 ? (amt / afterDisc) * 100 : f.taxRate
-                                                            }));
-                                                        }
+                                                <PriceInput 
+                                                    value={form.taxAmount}
+                                                    onChange={val => {
+                                                        setForm((f: any) => ({
+                                                            ...f,
+                                                            taxAmount: val,
+                                                            taxRate: afterDisc > 0 ? (val / afterDisc) * 100 : f.taxRate
+                                                        }));
                                                     }}
-                                                    style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '24px', fontWeight: 800, color: C.primary }}
-                                                    onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: '#64748b', fontWeight: 700 }}>{cSymbol}</span>
+                                                    style={{ height: '30px', fontSize: '12px', fontWeight: 800, color: C.primary }}
+                                                    textAlign="right"
+                                                />
                                             </div>
                                         </div>
                                     </div>
@@ -671,8 +684,13 @@ export default function NewPurchasePage() {
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المدفوع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.paidAmount)} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setForm((f: any) => ({ ...f, paidAmount: v })); clearError('paidAmount'); } }} style={{ ...IS, height: '48px', fontSize: '18px', fontWeight: 900, paddingInlineEnd: '44px', color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
-                                            {form.paymentType === 'bank' ? <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} /> : <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />}
+                                            <PriceInput 
+                                                value={form.paidAmount}
+                                                onChange={val => { setForm((f: any) => ({ ...f, paidAmount: val })); clearError('paidAmount'); }}
+                                                style={{ height: '48px', fontSize: '18px', fontWeight: 900, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
+                                                placeholder="0.00"
+                                            />
+                                            {form.paymentType === 'bank' ? <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} /> : <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />}
                                             <InlineError field="paidAmount" />
                                         </div>
                                     </div>
@@ -697,7 +715,7 @@ export default function NewPurchasePage() {
                                 )}
                                 {lines.length > 0 && (
                                     <div style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', fontWeight: 800, background: diff > 0 ? 'rgba(239,68,68,0.07)' : diff < 0 ? 'rgba(99,102,241,0.07)' : 'rgba(52,211,153,0.07)', color: diff > 0 ? '#f87171' : diff < 0 ? '#818cf8' : '#34d399', border: `1px solid ${diff > 0 ? 'rgba(239,68,68,0.15)' : diff < 0 ? 'rgba(99,102,241,0.15)' : 'rgba(52,211,153,0.15)'}`, }}>
-                                        <span>{diff > 0 ? `${t('متبقي:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}` : diff < 0 ? `${t('زيادة:')} ${Math.abs(diff).toLocaleString()} ${cSymbol}` : t('تم السداد بالكامل ✓')}</span>
+                                        <span>{diff > 0 ? `${t('متبقي:')} ${formatNumber(Math.abs(diff))} ${cSymbol}` : diff < 0 ? `${t('زيادة:')} ${formatNumber(Math.abs(diff))} ${cSymbol}` : t('تم السداد بالكامل ✓')}</span>
                                         {diff !== 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{diff > 0 ? t('آجل') : t('رصيد دائن')}</span>}
                                     </div>
                                 )}

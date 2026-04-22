@@ -9,6 +9,8 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC, STitle, BTN_PRIMARY, BTN_SUCCESS } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import PriceInput from '@/components/PriceInput';
+import { formatNumber } from '@/lib/currency';
 
 /* ── Types ── */
 interface Customer { id: string; name: string; balance: number; }
@@ -81,21 +83,6 @@ export default function NewReceiptPage() {
 
     const selectedPartner = partners.find(p => p.id === form.customerId);
     const availTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => form.paymentType === 'cash' ? t.type !== 'bank' : t.type === 'bank') : [];
-
-    const fmtInput = (v: any) => {
-        if (v === '' || v === undefined || v === null) return '';
-        const n = parseFloat(String(v).replace(/,/g, ''));
-        if (isNaN(n)) return '';
-        return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    };
-
-    const handleAmountChange = (val: string) => {
-        const v = val.replace(/,/g, '');
-        if (v === '' || !isNaN(Number(v)) || v === '.') {
-            setForm((f: any) => ({ ...f, amount: v }));
-            clearError('amount');
-        }
-    };
 
     const handleSubmit = async (andPrint = false) => {
         setFieldErrors({});
@@ -251,8 +238,8 @@ export default function NewReceiptPage() {
                                             }}>
                                                 <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                                 {selectedPartner.ptype === 'supplier'
-                                                    ? (selectedPartner.balance > 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
-                                                    : (selectedPartner.balance < 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                    ? (selectedPartner.balance > 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                    : (selectedPartner.balance < 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : 'رصيده الحالي: صفر')
                                                 }
                                             </div>
                                         )}
@@ -299,7 +286,7 @@ export default function NewReceiptPage() {
                                                 options={availTreasuries.map(t => ({
                                                     value: t.id,
                                                     label: t.name,
-                                                    sub: `رصيد: ${t.balance.toLocaleString()} ${cSymbol}`,
+                                                    sub: `رصيد: ${formatNumber(t.balance)} ${cSymbol}`,
                                                 }))}
                                             />
                                             <InlineError field="treasuryId" />
@@ -333,20 +320,19 @@ export default function NewReceiptPage() {
                                     overflow: 'visible', position: 'relative'
                                 }}>
                                     <div style={{ flex: 1, position: 'relative' }}>
-                                        <input
-                                            type="text" inputMode="decimal" placeholder="0.00"
-                                            value={fmtInput(form.amount)}
-                                            onChange={e => handleAmountChange(e.target.value)}
+                                        <PriceInput 
+                                            value={form.amount}
+                                            onChange={val => { setForm((f: any) => ({ ...f, amount: val })); clearError('amount'); }}
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
                                                 border: 'none', color: C.primary, fontWeight: 900,
-                                                fontSize: '22px', paddingInlineEnd: '20px',
+                                                fontSize: '22px', paddingInlineEnd: '44px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
-                                            onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut}
+                                            placeholder="0.00"
                                         />
                                         <InlineError field="amount" top="-42px" />
-                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.6 }}>
+                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.6, pointerEvents: 'none' }}>
                                             {form.paymentType === 'cash' ? <Banknote size={20} /> : <Building2 size={20} />}
                                         </div>
                                     </div>
@@ -358,8 +344,6 @@ export default function NewReceiptPage() {
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600 }}>الرصيد بعد السند</span>
                                     {selectedPartner ? (() => {
                                         const amt = parseFloat(form.amount) || 0;
-                                        // Customer: Balance (Debt) decreases with Receipt
-                                        // Supplier: Balance (Our Debt) increases with Receipt (Deposit)
                                         const nextBal = selectedPartner.ptype === 'customer'
                                             ? selectedPartner.balance - amt
                                             : selectedPartner.balance + amt;
@@ -371,7 +355,7 @@ export default function NewReceiptPage() {
                                                 fontSize: '15px', fontWeight: 800, fontFamily: CAIRO,
                                                 color: hasCredit ? '#fb7185' : '#10b981'
                                             }}>
-                                                {Math.abs(nextBal).toLocaleString()} {cSymbol}
+                                                {formatNumber(Math.abs(nextBal))} {cSymbol}
                                             </span>
                                         );
                                     })() : (
@@ -408,5 +392,3 @@ export default function NewReceiptPage() {
         </DashboardLayout>
     );
 }
-
-

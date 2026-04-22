@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -129,7 +130,7 @@ export default function AgingReportPage() {
                                 <div style={{ textAlign: 'start'}}>
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                        <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value.toLocaleString('en-US')}</span>
+                                        <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
                                         <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                     </div>
                                     <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.count} {t('فاتورة')} | {s.sign}</div>
@@ -221,7 +222,7 @@ export default function AgingReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', }}>
                                                 <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'baseline', gap: '4px' }}>
-                                                    <span style={{ fontWeight: 1000, color: '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{inv.remaining.toLocaleString('en-US')}</span>
+                                                    <span style={{ fontWeight: 1000, color: '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(inv.remaining)}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </div>
                                             </td>
@@ -241,7 +242,7 @@ export default function AgingReportPage() {
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
-                                        <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 1000, fontFamily: OUTFIT }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 1000, fontFamily: OUTFIT }}>{formatNumber(filtered.reduce((s, i) => s + i.remaining, 0))} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         <td style={{ padding: '20px 24px' }}></td>
                                     </tr>
                                 </tfoot>

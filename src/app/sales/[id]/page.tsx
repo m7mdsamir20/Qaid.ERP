@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback, use } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -92,7 +93,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
         </DashboardLayout>
     );
 
-    const fmt = (v: number) => v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (v: number) => formatNumber(v);
 
     const getStatus = () => {
         if (invoice.paidAmount >= invoice.total) return { label: t('مدفوعة بالكامل'), color: C.success, icon: CheckCircle2, bg: 'rgba(74,222,128,0.1)' };

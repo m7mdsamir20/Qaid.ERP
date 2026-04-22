@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -131,14 +132,14 @@ export default function LowStockReportPage() {
                                                         color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b',
                                                         padding: '4px 12px', borderRadius: '10px', fontWeight: 1000, fontSize: '12px', fontFamily: OUTFIT
                                                     }}>
-                                                        {item.totalStock.toLocaleString('en-US')}
+                                                        {formatNumber(item.totalStock)}
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
-                                                    {item.minLimit.toLocaleString('en-US')}
+                                                    {formatNumber(item.minLimit)}
                                                 </td>
                                                 <td style={{ padding: '14px 20px',  fontWeight: 600, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }}>
-                                                    {item.value.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                    {formatNumber(item.value)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                             </tr>
                                         ))}
@@ -147,7 +148,7 @@ export default function LowStockReportPage() {
                                         <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
                                             <td colSpan={4} style={{ padding: '18px 24px',  fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
                                             <td style={{ padding: '18px 20px',  fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }}>
-                                                {totalValue.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                {formatNumber(totalValue)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>
                                         </tr>
                                     </tfoot>
@@ -163,7 +164,7 @@ export default function LowStockReportPage() {
                             </div>
                             <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي عدد النواقص')}</div>
                             <div style={{ fontSize: '32px', fontWeight: 1000, color: '#ef4444', fontFamily: OUTFIT }}>
-                                {filtered.length.toLocaleString('en-US')}
+                                {formatNumber(filtered.length)}
                                 <span style={{ fontSize: '14px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{t('صنف')}</span>
                             </div>
                         </div>

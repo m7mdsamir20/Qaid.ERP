@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -86,7 +87,7 @@ export default function ProfitDistributionPage() {
 
         const totalDistributed = distributions.reduce((s, d) => s + d.totalAmount, 0);
 
-        return (
+        return formatNumber((
             <DashboardLayout>
                 <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                     
@@ -120,7 +121,7 @@ export default function ProfitDistributionPage() {
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                            <span>{typeof s.val === 'number' ? s.val.toLocaleString('en-US') : s.val}</span>
+                                            <span>{typeof s.val === 'number' ? s.val) : s.val}</span>
                                             {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                         </div>
                                     </div>
@@ -200,7 +201,7 @@ export default function ProfitDistributionPage() {
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي التوزيع')}</div>
                                                 <div style={{ fontSize: '18px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>
-                                                    {d.totalAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                                                    {formatNumber(d.totalAmount)} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                                 </div>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
@@ -226,7 +227,7 @@ export default function ProfitDistributionPage() {
                                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('نسبة الحصة')}: {l.share}%</div>
                                                             </div>
                                                             <div style={{ textAlign: 'end' }}>
-                                                                <div style={{ fontSize: '15px', fontWeight: 950, color: C.primary, fontFamily: OUTFIT }}>{l.amount.toLocaleString('en-US')}</div>
+                                                                <div style={{ fontSize: '15px', fontWeight: 950, color: C.primary, fontFamily: OUTFIT }}>{formatNumber(l.amount)}</div>
                                                                 <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>{t('ج.م')}</div>
                                                             </div>
                                                         </div>
@@ -298,7 +299,7 @@ export default function ProfitDistributionPage() {
                                             <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
                                                 <span style={{ color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{p.name} <span style={{ fontSize: '10px', opacity: 0.6 }}>({p.share}%)</span></span>
                                                 <div style={{ flex: 1, borderBottom: `1px dotted ${C.border}`, margin: '0 10px' }} />
-                                                <span style={{ color: C.primary, fontWeight: 950, fontFamily: OUTFIT }}>{p.gets.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                <span style={{ color: C.primary, fontWeight: 950, fontFamily: OUTFIT }}>{formatNumber(p.gets)}</span>
                                             </div>
                                         ))}
                                     </div>

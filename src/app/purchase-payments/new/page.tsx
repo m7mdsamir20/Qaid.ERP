@@ -10,6 +10,8 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC
 import { useCurrency } from '@/hooks/useCurrency';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import PriceInput from '@/components/PriceInput';
+import { formatNumber } from '@/lib/currency';
 
 /* ── Types ── */
 interface Supplier { id: string; name: string; balance: number; }
@@ -72,20 +74,6 @@ export default function NewPurchasePaymentPage() {
 
     const selectedPartner = partners.find(p => p.id === form.partnerId);
     const availTreasuries = Array.isArray(treasuries) ? treasuries.filter(t => form.paymentType === 'cash' ? t.type !== 'bank' : t.type === 'bank') : [];
-
-    const fmtInput = (v: any) => {
-        if (v === '' || v === undefined || v === null) return '';
-        const n = parseFloat(String(v).replace(/,/g, ''));
-        if (isNaN(n)) return '';
-        return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
-    };
-
-    const handleAmountChange = (val: string) => {
-        const v = val.replace(/,/g, '');
-        if (v === '' || !isNaN(Number(v)) || v === '.') {
-            setForm((f: any) => ({ ...f, amount: v }));
-        }
-    };
 
     const handleSubmit = async (andPrint = false) => {
         if (!form.partnerId || !form.treasuryId || !form.amount) {
@@ -208,8 +196,8 @@ export default function NewPurchasePaymentPage() {
                                             }}>
                                                 <div style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'currentColor' }} />
                                                 {selectedPartner.ptype === 'supplier'
-                                                    ? (selectedPartner.balance > 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
-                                                    : (selectedPartner.balance < 0 ? `له عندنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${Math.abs(selectedPartner.balance).toLocaleString()} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                    ? (selectedPartner.balance > 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance < 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : 'رصيده الحالي: صفر')
+                                                    : (selectedPartner.balance < 0 ? `له عندنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : selectedPartner.balance > 0 ? `عليه لنا: ${formatNumber(Math.abs(selectedPartner.balance))} ${cSymbol}` : 'رصيده الحالي: صفر')
                                                 }
                                             </div>
                                         )}
@@ -255,7 +243,7 @@ export default function NewPurchasePaymentPage() {
                                             options={availTreasuries.map(t => ({
                                                 value: t.id,
                                                 label: t.name,
-                                                sub: `رصيد: ${t.balance.toLocaleString()} ${cSymbol}`,
+                                                sub: `رصيد: ${formatNumber(t.balance)} ${cSymbol}`,
                                             }))}
                                         />
                                     </div>
@@ -284,21 +272,21 @@ export default function NewPurchasePaymentPage() {
                                     display: 'flex', alignItems: 'center',
                                     background: 'rgba(255,255,255,0.05)',
                                     borderRadius: '12px', border: `1px solid ${C.primary}`,
-                                    overflow: 'hidden'
+                                    overflow: 'visible', position: 'relative'
                                 }}>
                                     <div style={{ flex: 1, position: 'relative' }}>
-                                        <input
-                                            type="text" inputMode="decimal" placeholder="0.00"
-                                            value={fmtInput(form.amount)}
-                                            onChange={e => handleAmountChange(e.target.value)}
+                                        <PriceInput 
+                                            value={form.amount}
+                                            onChange={val => setForm((f: any) => ({ ...f, amount: val }))}
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
                                                 border: 'none', color: C.primary, fontWeight: 900,
-                                                fontSize: '22px', paddingInlineEnd: '20px',
+                                                fontSize: '22px', paddingInlineEnd: '44px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
+                                            placeholder="0.00"
                                         />
-                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.6 }}>
+                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.6, pointerEvents: 'none' }}>
                                             {form.paymentType === 'cash' ? <Banknote size={20} /> : <Building2 size={20} />}
                                         </div>
                                     </div>
@@ -321,7 +309,7 @@ export default function NewPurchasePaymentPage() {
                                                 fontSize: '15px', fontWeight: 800, fontFamily: CAIRO,
                                                 color: hasCredit ? '#fb7185' : '#10b981'
                                             }}>
-                                                {Math.abs(nextBal).toLocaleString()} {cSymbol}
+                                                {formatNumber(Math.abs(nextBal))} {cSymbol}
                                             </span>
                                         );
                                     })() : (
@@ -362,7 +350,7 @@ export default function NewPurchasePaymentPage() {
 
 function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, form: any, cSymbol: string) {
     const date = new Date(form.date || new Date()).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-    const amount = (voucher.amount || 0).toLocaleString('en-US');
+    const amount = formatNumber(voucher.amount || 0);
     const COMPANY = {
         name: 'شركة النور للتجارة', nameEn: 'Al-Nour Trading Company',
         address: 'القاهرة، مصر - شارع التحرير، عمارة 12',
@@ -441,7 +429,7 @@ function printPayVoucher(voucher: any, supplier: any, voucherNumber: number, for
       <div class="ml">
         <span class="mk">الرصيد بعد السند</span>
         <span class="mv" style="color:${(isCust ? nextBal < 0 : nextBal > 0) ? '#dc2626' : '#166534'}">
-          ${Math.abs(nextBal).toLocaleString('en-US')} ${cSymbol}
+          ${formatNumber(Math.abs(nextBal))} ${cSymbol}
         </span>
       </div>
     </div>

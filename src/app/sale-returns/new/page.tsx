@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { useTranslation } from '@/lib/i18n';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -67,7 +68,7 @@ const fmt = (v: any) => {
     if (v === '' || v === undefined || v === null) return '';
     const n = parseFloat(String(v).replace(/,/g, ''));
     if (isNaN(n)) return '';
-    return n.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    return formatNumber(n);
 };
 
 

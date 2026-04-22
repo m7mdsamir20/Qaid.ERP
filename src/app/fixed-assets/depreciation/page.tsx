@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -19,7 +20,7 @@ interface FixedAsset {
 interface FinancialYear { id: string; name: string; isOpen: boolean; startDate: string; endDate: string; }
 interface DepLine { asset: FixedAsset; depAmount: number; netBook: number; alreadyDone: boolean; }
 
-const fmt = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmt = (n: number) => formatNumber(n);
 
 function calcDepreciation(asset: FixedAsset, months: number): number {
     const depreciableBase = asset.purchaseCost - asset.salvageValue;
@@ -138,7 +139,7 @@ export default function DepreciationPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                    <span>{s.val.toLocaleString('en-US')}</span>
+                                    <span>{formatNumber(s.val)}</span>
                                     {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                 </div>
                             </div>

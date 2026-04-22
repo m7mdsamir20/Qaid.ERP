@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -57,7 +58,7 @@ export default function InventoryReportPage() {
         (s.warehouse?.name?.toLowerCase() || '').includes(search.toLowerCase())
     ) || [];
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
@@ -74,7 +75,7 @@ export default function InventoryReportPage() {
                             { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#256af4', icon: <Package size={20} /> },
                             ...(!isServices ? [
                                 { label: t('إجمالي الكميات'), value: data.totalQuantity.toLocaleString('en-US'), color: '#10b981', icon: <Box size={20} /> },
-                                { label: t('قيمة المخزون (تكلفة)'), value: data.totalValue.toLocaleString('en-US'), color: '#f59e0b', icon: <DollarSign size={20} /> },
+                                { label: t('قيمة المخزون (تكلفة)'), value: data.totalValue), color: '#f59e0b', icon: <DollarSign size={20} /> },
                             ] : [])
                         ].map((s, i) => (
                             <div key={i} style={{
@@ -162,7 +163,7 @@ export default function InventoryReportPage() {
                                                             fontFamily: OUTFIT, background: st.quantity <= 0 ? 'rgba(239, 68, 68, 0.1)' : st.quantity <= 10 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                                             padding: '4px 10px', borderRadius: '10px'
                                                         }}>
-                                                            {st.quantity.toLocaleString('en-US')}
+                                                            {formatNumber(st.quantity)}
                                                         </span>
                                                     </td>
                                                     <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(st.item?.costPrice || 0)}</td>

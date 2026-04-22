@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { C } from '@/constants/theme';
 
 import DashboardLayout from '@/components/DashboardLayout';
@@ -138,7 +139,7 @@ export default function DeductionDetailPage() {
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('مبلغ الخصم')}</label>
                                     <div style={{ fontSize: '18px', fontWeight: 900, color: '#256af4' }} dir="ltr">
-                                        {deduction.amount.toLocaleString('en-US')} <span style={{ fontSize: '12px' }}></span>
+                                        {formatNumber(deduction.amount)} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ gridColumn: 'span 2', marginTop: '10px' }}>

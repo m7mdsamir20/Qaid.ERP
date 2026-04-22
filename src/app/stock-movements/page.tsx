@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -160,7 +161,7 @@ export default function StockMovementsPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse?.name || '—'}</td>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{ fontSize: '14px', fontWeight: 900, color: typeConfig.color, fontFamily: OUTFIT }}>
-                                                        {m.quantity > 0 ? '+' : ''}{m.quantity.toLocaleString('en-US')}
+                                                        {m.quantity > 0 ? '+' : ''}{formatNumber(m.quantity)}
                                                     </span>
                                                 </td>
                                             </tr>

@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -15,7 +16,7 @@ import { BarChart3, Printer, Loader2, Search, Calendar, CheckCircle2, ArrowRight
 import { THEME, C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
-const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtN = (n: number) => formatNumber(n);
 
 const IS: React.CSSProperties = {
     height: '38px', padding: '0 12px', textAlign: 'start', direction: 'inherit',

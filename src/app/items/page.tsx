@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -242,7 +243,7 @@ export default function ItemsPage() {
     const paginated = filteredAll.slice((currentPage - 1) * pageSize, currentPage * pageSize);
     useEffect(() => { setCurrentPage(1); }, [search, warehouseFilter, kpiFilter]);
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     const itemsLowStock = items.filter(i => (i.minLimit || 0) > 0 && (i.stocks?.reduce((q, st) => q + st.quantity, 0) || 0) <= (i.minLimit || 0)).length;
     const itemsOutOfStock = items.filter(i => (i.stocks?.reduce((q, st) => q + st.quantity, 0) || 0) === 0).length;

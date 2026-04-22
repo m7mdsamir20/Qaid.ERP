@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -12,7 +13,7 @@ import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 
 const fmt = (d: string) => new Date(d).toLocaleDateString('en-GB');
-const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const fmtN = (n: number) => formatNumber(n);
 
 export default function InstallmentsPage() {
     const { lang, t } = useTranslation();

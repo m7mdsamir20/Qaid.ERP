@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -125,7 +126,7 @@ export default function WarehousesPage() {
 
     useEffect(() => { setCurrentPage(1); }, [search]);
 
-    const fmt = (num: number) => num.toLocaleString('en-US');
+    const fmt = (num: number) => formatNumber(num);
 
     return (
         <DashboardLayout>

@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
@@ -140,7 +141,7 @@ export default function CostCentersPage() {
 
 
 
-    return (
+    return formatNumber((
         <DashboardLayout>
             <PageHeader
                 title={t("مراكز التكلفة")}
@@ -218,7 +219,7 @@ export default function CostCentersPage() {
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {cc.totalExpenses ? cc.totalExpenses.toLocaleString('en-US') : '0.00'} 
+                                                {cc.totalExpenses ? cc.totalExpenses) : '0.00'} 
                                                 <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </div>
                                         </td>

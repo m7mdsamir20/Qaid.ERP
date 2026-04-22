@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
@@ -254,7 +255,7 @@ export default function TreasuriesPage() {
     const totalBank = bankList.reduce((s, t) => s + t.balance, 0);
     const totalAll = totalCash + totalBank;
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     return (
         <DashboardLayout>
@@ -423,7 +424,7 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                 </div>
                 <div style={{ position: 'relative', zIndex: 1 }}>
                     <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
-                        {item.balance.toLocaleString('en-US')}
+                        {formatNumber(item.balance)}
                         <span style={{ fontSize: '11px', color: accentColor, fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
                 </div>

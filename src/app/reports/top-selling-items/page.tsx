@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
@@ -127,11 +128,11 @@ export default function TopSellingReportPage() {
                                                     <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '3px', fontFamily: OUTFIT }}>{item.code} — {item.category}</div>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', }}>
-                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{item.totalQuantity.toLocaleString('en-US')}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(item.totalQuantity)}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.primary, fontSize: '14px', fontFamily: OUTFIT }}>
-                                                    {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
+                                                    {formatNumber(item.totalSales)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{
@@ -139,7 +140,7 @@ export default function TopSellingReportPage() {
                                                         padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
                                                         fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT
                                                     }}>
-                                                        {item.totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
+                                                        {formatNumber(item.totalProfit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                     </span>
                                                 </td>
                                             </tr>
@@ -157,7 +158,7 @@ export default function TopSellingReportPage() {
                             </div>
                             <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{isServices ? t("إجمالي قيمة الخدمات") : t("إجمالي القيمة البيعية")}</div>
                             <div style={{ fontSize: '20px', fontWeight: 1000, color: '#60a5fa', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                {totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+                                {formatNumber(totalSales)}
                                 <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                             </div>
                         </div>

@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -250,7 +251,7 @@ export default function ItemMovementReportPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse.name}</td>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{ fontSize: '14px', fontWeight: 900, color: meta.color, fontFamily: OUTFIT }}>
-                                                        {meta.sign}{meta.quantity.toLocaleString('en-US')}
+                                                        {meta.sign}{formatNumber(meta.quantity)}
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{m.description || m.notes || '—'}</td>
@@ -277,7 +278,7 @@ export default function ItemMovementReportPage() {
                                 <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'start'}}>
                                     <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, marginBottom: '6px', fontFamily: CAIRO }}>{t('الرصيد الكلي المتوفر')}</div>
                                     <div style={{ fontSize: '32px', fontWeight: 1000, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
-                                        {itemDetails.totalStock.toLocaleString('en-US')}
+                                        {formatNumber(itemDetails.totalStock)}
                                         <span style={{ fontSize: '14px', fontWeight: 700, color: '#10b981', fontFamily: CAIRO }}>{t(itemDetails.unit)}</span>
                                     </div>
                                 </div>
@@ -289,7 +290,7 @@ export default function ItemMovementReportPage() {
                                     {itemDetails.stockByWarehouse.map(sw => (
                                         <div key={sw.warehouse} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', fontSize: '13px' }}>
                                             <span style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{sw.warehouse}</span>
-                                            <span style={{ color: C.textPrimary, fontWeight: 900, fontFamily: OUTFIT }}>{sw.quantity.toLocaleString('en-US')}</span>
+                                            <span style={{ color: C.textPrimary, fontWeight: 900, fontFamily: OUTFIT }}>{formatNumber(sw.quantity)}</span>
                                         </div>
                                     ))}
                                 </div>

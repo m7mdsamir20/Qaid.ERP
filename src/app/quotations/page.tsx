@@ -1,4 +1,5 @@
 'use client';
+import { formatNumber } from '@/lib/currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -72,7 +73,7 @@ export default function QuotationsPage() {
 
     useEffect(() => { setCurrentPage(1); }, [searchTerm, dateFrom, dateTo]);
 
-    const fmt = (num: number) => num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmt = (num: number) => formatNumber(num);
 
     const getStatusStyle = (status: string) => {
         if (status === 'converted') return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('تم التحويل لفاتورة'), icon: CheckCircle2 };
