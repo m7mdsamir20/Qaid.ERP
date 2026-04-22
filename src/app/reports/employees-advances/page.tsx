@@ -111,7 +111,7 @@ export default function EmployeesAdvancesPage() {
                                     const pct = (r.paidAmount / r.totalAmount) * 100;
                                     return (
                                         <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                            <td style={{ padding: '14px 20px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, fontFamily: INTER }}>{fmt(r.totalAmount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>{fmt(r.paidAmount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, color: '#ef4444', fontFamily: INTER }}>{fmt(r.remainingAmount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
