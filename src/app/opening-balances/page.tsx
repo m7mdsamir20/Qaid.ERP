@@ -206,33 +206,51 @@ export default function OpeningBalancesPage() {
                     )}
                     actions={selectedYear ? [
                         !isLocked && filledCount === 0 && years.some(y => new Date(y.startDate) < new Date(curYear?.startDate || '')) && (
-                            <button key="carry" onClick={() => setShowCarryModal(true)} disabled={carrying} 
-                                style={{ 
-                                    ...BTN_PRIMARY(carrying, false), width: 'auto', height: THEME.button.height, 
-                                    padding: '0 16px', fontSize: '13px', boxShadow: 'none',
-                                    background: 'rgba(16,185,129,0.1)', border: `1px solid ${C.success}30`, color: C.success 
-                                }}>
-                                {carrying ? <Loader2 size={16} className="animate-spin" /> : <ArrowRightLeft size={16} />}
-                                {t('ترحيل من سنة سابقة')}
-                            </button>
+                             <button key="carry" onClick={() => setShowCarryModal(true)} disabled={carrying} 
+                                 style={{ 
+                                     display: 'flex', alignItems: 'center', gap: '8px', height: '42px', padding: '0 18px', 
+                                     borderRadius: '10px', fontSize: '13px', fontWeight: 700, cursor: carrying ? 'not-allowed' : 'pointer',
+                                     background: 'rgba(16,185,129,0.08)', border: `1px solid ${C.success}30`, color: C.success,
+                                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', fontFamily: CAIRO
+                                 }}
+                                 onMouseEnter={e => { if(!carrying) { e.currentTarget.style.background = 'rgba(16,185,129,0.15)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                                 onMouseLeave={e => { if(!carrying) { e.currentTarget.style.background = 'rgba(16,185,129,0.08)'; e.currentTarget.style.transform = 'none'; } }}
+                             >
+                                 {carrying ? <Loader2 size={16} className="animate-spin" /> : <ArrowRightLeft size={16} />}
+                                 {t('ترحيل من سنة سابقة')}
+                             </button>
                         ),
                         canUnlock && (
-                            <button key="lock" onClick={toggleLock} disabled={locking} 
-                                style={{ 
-                                    ...BTN_PRIMARY(locking, false), width: 'auto', height: THEME.button.height, 
-                                    padding: '0 16px', fontSize: '13px', boxShadow: 'none',
-                                    color: isLocked ? C.danger : C.textSecondary, background: isLocked ? `${C.danger}15` : 'rgba(255,255,255,0.03)', border: `1px solid ${isLocked ? `${C.danger}30` : C.border}` 
-                                }}>
-                                {locking ? <Loader2 size={16} className="animate-spin" /> : isLocked ? <Lock size={16} /> : <Unlock size={16} />}
-                                {isLocked ? t('فتح القفل') : t('قفل الأرصدة')}
-                            </button>
+                             <button key="lock" onClick={toggleLock} disabled={locking} 
+                                 style={{ 
+                                     display: 'flex', alignItems: 'center', gap: '8px', height: '42px', padding: '0 18px', 
+                                     borderRadius: '10px', fontSize: '13px', fontWeight: 700, cursor: locking ? 'not-allowed' : 'pointer',
+                                     color: isLocked ? C.danger : C.textSecondary, background: isLocked ? `${C.danger}12` : 'rgba(255,255,255,0.03)', border: `1px solid ${isLocked ? `${C.danger}30` : C.border}`,
+                                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', fontFamily: CAIRO
+                                 }}
+                                 onMouseEnter={e => { if(!locking) { e.currentTarget.style.background = isLocked ? `${C.danger}20` : 'rgba(255,255,255,0.06)'; e.currentTarget.style.transform = 'translateY(-1px)'; } }}
+                                 onMouseLeave={e => { if(!locking) { e.currentTarget.style.background = isLocked ? `${C.danger}12` : 'rgba(255,255,255,0.03)'; e.currentTarget.style.transform = 'none'; } }}
+                             >
+                                 {locking ? <Loader2 size={16} className="animate-spin" /> : isLocked ? <Lock size={16} /> : <Unlock size={16} />}
+                                 {isLocked ? t('فتح القفل') : t('قفل الأرصدة')}
+                             </button>
                         ),
                         !isReadlyOnly && (
-                            <button key="save" onClick={handleSave} disabled={saving || !filledCount} 
-                                style={{ ...BTN_PRIMARY(saving || !filledCount, saved), width: 'auto', height: THEME.button.height, padding: '0 20px', fontSize: '13px', boxShadow: 'none' }}>
-                                {saving ? <Loader2 size={16} className="animate-spin" /> : saved ? <CheckCircle2 size={16} /> : <Save size={16} />}
-                                {saving ? t('جاري الحفظ...') : saved ? t('تم الحفظ بنجاح') : t('حفظ الأرصدة')}
-                            </button>
+                             <button key="save" onClick={handleSave} disabled={saving || !filledCount} 
+                                 style={{ 
+                                     display: 'flex', alignItems: 'center', gap: '10px', height: '42px', padding: '0 24px', 
+                                     borderRadius: '10px', fontSize: '14px', fontWeight: 800, cursor: (saving || !filledCount) ? 'not-allowed' : 'pointer',
+                                     background: saved ? '#10b981' : C.primary, color: 'white', border: 'none',
+                                     boxShadow: (saving || !filledCount) ? 'none' : '0 4px 12px rgba(37,106,244,0.25)',
+                                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', opacity: (saving || !filledCount) ? 0.6 : 1,
+                                     fontFamily: CAIRO
+                                 }}
+                                 onMouseEnter={e => { if(!saving && filledCount) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(37,106,244,0.35)'; } }}
+                                 onMouseLeave={e => { if(!saving && filledCount) { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(37,106,244,0.25)'; } }}
+                             >
+                                 {saving ? <Loader2 size={18} className="animate-spin" /> : saved ? <CheckCircle2 size={18} /> : <Save size={18} />}
+                                 {saving ? t('جاري الحفظ...') : saved ? t('تم الحفظ بنجاح') : t('حفظ الأرصدة')}
+                             </button>
                         )
                     ].filter(Boolean) as React.ReactNode[] : undefined}
                 />
