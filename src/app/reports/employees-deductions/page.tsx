@@ -80,10 +80,10 @@ export default function EmployeesDeductionsPage() {
                     title={t("سجل الخصومات والجزاءات الفترية")}
                     subtitle={t("تحليل مالي وإداري لجميع الخصومات المطبقة على الموظفين (تأخيرات، غياب، وجزاءات).")}
                     backTab="hr"
-                    
+                    printTitle={t("سجل الخصومات والجزاءات الفترية")}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
                         { label: t('إجمالي مبلغ الخصومات'), value: fmt(data?.totalAmount || 0), color: '#ef4444', icon: <ArrowDownRight size={18} /> },
                         { label: t('عدد الجزاءات المسجلة'), value: String(data?.totalCount || 0), color: '#fb923c', icon: <AlertTriangle size={18} /> },
@@ -110,7 +110,7 @@ export default function EmployeesDeductionsPage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}><Loader2 size={40} className="animate-spin" style={{ color: C.primary }} /></div>
                 ) : (
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
