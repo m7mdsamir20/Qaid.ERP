@@ -248,20 +248,20 @@ export default function AdvancesPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('تاريخ الصرف')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('تاريخ الصرف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('إجمالي السلفة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الأقساط')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('القسط الشهري')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الأقساط')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('القسط الشهري')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('البيان')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {filteredAdvances.map((adv, idx) => (
                                         <tr key={adv.id} style={TABLE_STYLE.row(idx === filteredAdvances.length - 1)}>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
                                                     {new Date(adv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
@@ -278,7 +278,7 @@ export default function AdvancesPage() {
                                                     <span>{adv.amount.toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>{adv.installmentCount}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -287,8 +287,8 @@ export default function AdvancesPage() {
                                                     <span>{(adv.monthlyAmount || 0).toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 {adv.status === 'pending' ? (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
                                                         <Clock size={12} /> {t('قيد الانتظار')}
@@ -299,7 +299,7 @@ export default function AdvancesPage() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                                     {adv.status === 'pending' && (
                                                         <button 

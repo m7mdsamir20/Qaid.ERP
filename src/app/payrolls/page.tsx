@@ -225,10 +225,10 @@ export default function PayrollsPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t('الشهر / السنة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('تاريخ الإصدار')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('عدد الموظفين')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('تاريخ الإصدار')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('عدد الموظفين')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('إجمالي الصافي')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('العمليات')}</th>
                                     </tr>
                                 </thead>
@@ -246,10 +246,10 @@ export default function PayrollsPage() {
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '12px', color: '#94a3b8' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontSize: '12px', color: '#94a3b8' }}>
                                                 {new Date(pr.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 800 }}>
                                                     {pr._count?.lines || 0} {t('موظف')}
                                                 </span>
@@ -260,7 +260,7 @@ export default function PayrollsPage() {
                                                     <span>{pr.netTotal.toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
-                                            <td style={TABLE_STYLE.td(false)}>
+                                            <td style={TABLE_STYLE.td(false, true)}>
                                                 {pr.status === 'draft' ? (
                                                     <span style={{ padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>{t('مسودة')}</span>
                                                 ) : (

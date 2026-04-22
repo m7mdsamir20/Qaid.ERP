@@ -212,10 +212,10 @@ export default function EmployeesPage() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('المنصب والقسم')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المنصب والقسم')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('تاريخ التعيين')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('صافي الراتب')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('الإجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -252,7 +252,7 @@ export default function EmployeesPage() {
                                                         {fMoneyJSX(empNet)}
                                                     </div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={TABLE_STYLE.td(false, true)}>
                                                     <div style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900,

@@ -6,7 +6,8 @@ import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
 import { BookMarked, Loader2, CheckCircle2, AlertTriangle, ArrowUpRight, ArrowDownRight, Play, History as HistoryIcon, Calendar, FileCheck, ArrowLeftRight, Info, X, RotateCcw, Printer, Search, ChevronDown, Settings, TrendingUp, ShieldCheck } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
-import { THEME, C, CAIRO, OUTFIT, TABLE_STYLE, PAGE_BASE } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, TABLE_STYLE, PAGE_BASE, SC } from '@/constants/theme';
+import { useCurrency } from '@/hooks/useCurrency';
 
 /* ── Types ── */
 interface FinancialYear { id: string; name: string; isOpen: boolean; startDate: string; endDate: string; }
@@ -32,6 +33,7 @@ const fmt = (n: number) => {
 /* ══════════════════════════════════════════ */
 export default function ClosingEntriesPage() {
     const { lang, t } = useTranslation();
+    const { symbol: currencySign } = useCurrency();
     const isRtl = lang === 'ar';
 
     const [years, setYears] = useState<FinancialYear[]>([]);
@@ -336,17 +338,17 @@ export default function ClosingEntriesPage() {
                                     </div>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                                    <StatCard label={t("إجمالي الإيرادات")} value={result.revenueTotal} color="#256af4" compact />
-                                    <StatCard label={t("إجمالي المصروفات")} value={result.expenseTotal} color="#ef4444" compact />
-                                    <StatCard label={result.isProfit ? t("صافي أرباح العام") : t("صافي خسائر العام")} value={Math.abs(result.netIncome)} color={result.isProfit ? '#10b981' : '#f59e0b'} compact />
+                                    <StatCard label={t("إجمالي الإيرادات")} value={result.revenueTotal} color="#256af4" compact currencySign={currencySign} />
+                                    <StatCard label={t("إجمالي المصروفات")} value={result.expenseTotal} color="#ef4444" compact currencySign={currencySign} />
+                                    <StatCard label={result.isProfit ? t("صافي أرباح العام") : t("صافي خسائر العام")} value={Math.abs(result.netIncome)} color={result.isProfit ? '#10b981' : '#f59e0b'} compact currencySign={currencySign} />
                                 </div>
                             </div>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-                                    <StatCard label={t("رصيد الإيرادات")} value={totalRev} color="#256af4" icon={ArrowUpRight} />
-                                    <StatCard label={t("رصيد المصروفات")} value={totalExp} color="#ef4444" icon={ArrowDownRight} />
-                                    <StatCard label={isProfitValue ? t("الأرباح المتوقعة") : t("الخسائر المتوقعة")} value={Math.abs(netIncomeValue)} color={isProfitValue ? '#10b981' : '#f87171'} icon={TrendingUp} />
+                                    <StatCard label={t("رصيد الإيرادات")} value={totalRev} color="#3b82f6" icon={ArrowUpRight} currencySign={currencySign} />
+                                    <StatCard label={t("رصيد المصروفات")} value={totalExp} color="#f87171" icon={ArrowDownRight} currencySign={currencySign} />
+                                    <StatCard label={isProfitValue ? t("الأرباح المتوقعة") : t("الخسائر المتوقعة")} value={Math.abs(netIncomeValue)} color={isProfitValue ? '#34d399' : '#fb923c'} icon={TrendingUp} currencySign={currencySign} />
                                 </div>
 
                                 {draftCount > 0 && (
@@ -357,8 +359,8 @@ export default function ClosingEntriesPage() {
                                 )}
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
-                                    <DetailTable title={t("حسابات الإيرادات")} accounts={revenues} color="#256af4" t={t} />
-                                    <DetailTable title={t("حسابات المصروفات")} accounts={expenses} color="#ef4444" t={t} />
+                                    <DetailTable title={t("حسابات الإيرادات")} accounts={revenues} color="#3b82f6" t={t} currencySign={currencySign} />
+                                    <DetailTable title={t("حسابات المصروفات")} accounts={expenses} color="#f87171" t={t} currencySign={currencySign} />
                                 </div>
                             </div>
                         )}
@@ -412,29 +414,32 @@ export default function ClosingEntriesPage() {
     );
 }
 
-function StatCard({ label, value, color, icon: Icon, compact }: any) {
+function StatCard({ label, value, color, icon: Icon, compact, currencySign }: any) {
     return (
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: compact ? '20px' : '24px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: compact ? '20px' : '28px', position: 'relative', overflow: 'hidden', boxShadow: THEME.shadows.md }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
                 <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 800 }}>{label}</span>
-                {Icon && <div style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px' }}><Icon size={16} style={{ color, opacity: 0.8 }} /></div>}
+                {Icon && <div style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: `1px solid ${C.border}` }}><Icon size={16} style={{ color, opacity: 0.8 }} /></div>}
             </div>
-            <div style={{ fontSize: compact ? '22px' : '26px', fontWeight: 900, color, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>{fmt(value)}</div>
-            <div style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.03 }}>
-                {Icon && <Icon size={80} />}
+            <div style={{ fontSize: compact ? '24px' : '30px', fontWeight: 900, color, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start', display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                {fmt(value)}
+                <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</span>
+            </div>
+            <div style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.03, color }}>
+                {Icon && <Icon size={100} />}
             </div>
         </div>
     );
 }
 
-function DetailTable({ title, accounts, color, t }: any) {
+function DetailTable({ title, accounts, color, t, currencySign }: any) {
     return (
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden', boxShadow: THEME.shadows.md }}>
             <div style={{ padding: '16px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontSize: '13px', fontWeight: 900, color }}>{title}</span>
-                <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px', color: C.textMuted }}>{accounts.length} {t('حساب')}</span>
+                <span style={{ fontSize: '11px', background: 'rgba(255,255,255,0.05)', padding: '2px 8px', borderRadius: '10px', color: C.textMuted, border: `1px solid ${C.border}` }}>{accounts.length} {t('حساب')}</span>
             </div>
-            <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+            <div style={{ maxHeight: '420px', overflowY: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                     <tbody>
                         {accounts.length > 0 ? accounts.map((acc: any, i: number) => (
@@ -444,15 +449,18 @@ function DetailTable({ title, accounts, color, t }: any) {
                             >
                                 <td style={{ padding: '14px 20px' }}>
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{acc.name}</div>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600 }}>{acc.code}</div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{acc.code}</div>
                                 </td>
-                                <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 900, color, direction: 'ltr', fontFamily: OUTFIT }}>
-                                    {fmt(acc.balance)}
+                                <td style={{ padding: '14px 20px', textAlign: 'end' }}>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color, direction: 'ltr', fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
+                                        {fmt(acc.balance)}
+                                        <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</span>
+                                    </div>
                                 </td>
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan={2} style={{ padding: '40px',  color: C.textMuted, fontSize: '12px' }}>{t('لا توجد أرصدة حالياً')}</td>
+                                <td colSpan={2} style={{ padding: '60px',  color: C.textMuted, fontSize: '13px', textAlign: 'center', fontFamily: CAIRO }}>{t('لا توجد أرصدة حالياً')}</td>
                             </tr>
                         )}
                     </tbody>
