@@ -192,8 +192,7 @@ export default function CapitalPage() {
 
                                         {/* Actions */}
                                         <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'increase' }
-    ); }}
+                                            <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'increase' })); }}
                                                 style={{ flex: 1, height: '38px', borderRadius: '10px', border: 'none', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontFamily: CAIRO }}>
                                                 <TrendingUp size={14} /> {t('زيادة')}
                                             </button>

@@ -419,7 +419,7 @@ function SummaryItem({ label, value, color, prefix = '', unit }: any) {
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
             <span style={{ color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
             <span style={{ color, fontWeight: 800, fontFamily: OUTFIT }}>
-                {prefix} {(+value || 0))} <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{unit}</span>
+                {prefix} {formatNumber(+value || 0)} <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{unit}</span>
             </span>
         </div>
     );
