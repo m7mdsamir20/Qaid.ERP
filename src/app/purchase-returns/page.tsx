@@ -152,7 +152,7 @@ export default function PurchaseReturnsListPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
                                                     RTN-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>

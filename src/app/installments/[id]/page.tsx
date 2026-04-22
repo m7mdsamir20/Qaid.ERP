@@ -188,8 +188,8 @@ export default function InstallmentDetailPage() {
                         </div>
                         <div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                <h1 style={{ fontSize: '16px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('خطة تقسيط')} <span style={{ color: '#5286ed' }}>PLAN-{String(plan.planNumber || 1).padStart(4, '0')}</span></h1>
-                                {isCancelled && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: 'rgba(239,68,68,0.1)', color: C.danger, border: `1px solid ${C.danger}20`, fontWeight: 800 }}>{t('ملغاة')}</span>}
+                                <h1 style={{ fontSize: '13px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('خطة تقسيط')} <span style={{ color: '#5286ed' }}>PLAN-{String(plan.planNumber || 1).padStart(4, '0')}</span></h1>
+                                {isCancelled && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '20px', background: 'rgba(239,68,68,0.1)', color: C.danger, border: `1px solid ${C.danger}20`, fontWeight: 600 }}>{t('ملغاة')}</span>}
                             </div>
                             <p style={{ fontSize: '13px', color: C.textMuted, margin: '2px 0 0', fontWeight: 600 }}>{t('تتبع دورة التحصيل وعمليات السداد للخطة')}</p>
                         </div>
@@ -227,7 +227,7 @@ export default function InstallmentDetailPage() {
                         {!isCancelled && (
                             <div style={{ ...SC, background: 'linear-gradient(135deg, rgba(37,106,244,0.05), rgba(37,106,244,0.02))', border: `1px solid ${C.primaryBorder}` }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: C.primary, fontWeight: 800, fontSize: '14px' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: C.primary, fontWeight: 600, fontSize: '13px' }}>
                                         <TrendingUp size={16} /> {t('مؤشر تقدم التحصيل')}
                                     </div>
                                     <div style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
@@ -253,7 +253,7 @@ export default function InstallmentDetailPage() {
                         <div style={SC}>
                             <div style={STitle}><Info size={16} /> {t('جدول استحقاق الأقساط')}</div>
                             <div style={{ overflowX: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', color: C.textPrimary }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', color: C.textPrimary }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {[t('رقم القسط'), t('تاريخ الاستحقاق'), t('المبلغ المستحق'), t('المدفوع'), t('المتبقي'), t('الحالة'), t('إجراء')].map((h, i) => (
@@ -270,7 +270,7 @@ export default function InstallmentDetailPage() {
                                                     onMouseEnter={e => inst.status !== 'cancelled' && (e.currentTarget.style.background = C.hover)}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
-                                                    <td style={{ padding: '16px', fontWeight: 800, color: C.primary, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '16px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>
                                                         {inst.installmentNo}
                                                     </td>
                                                     <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>
@@ -282,13 +282,13 @@ export default function InstallmentDetailPage() {
                                                     <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(inst.paidAmount || 0)}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(inst.remaining || 0)}
                                                     </td>
                                                     <td style={{ padding: '16px' }}>
                                                         <div style={{ 
                                                             display: 'inline-flex', alignItems: 'center', gap: '5px', 
-                                                            padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 800,
+                                                            padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
                                                             background: st.bg, color: st.color, border: `1px solid ${st.color}20`
                                                         }}>
                                                             {t(st.label)}
@@ -358,7 +358,7 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', fontSize: '12.5px' }}>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center', paddingBottom: '10px', borderBottom: `1px solid ${C.border}`, marginBottom: '2px' }}>
                                         <span style={{ color: C.textMuted }}>{t('صاحب التعاقد :')}</span>
-                                        <span style={{ color: C.primary, fontWeight: 900, fontSize: '14px' }}>{plan.customer?.name}</span>
+                                        <span style={{ color: C.primary, fontWeight: 600, fontSize: '13px' }}>{plan.customer?.name}</span>
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                         <span style={{ color: C.textMuted }}>{t('تاريخ البداية :')}</span>
@@ -366,19 +366,19 @@ export default function InstallmentDetailPage() {
                                     </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('المنتج :')}</span>
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.primary, fontWeight: 800 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.primary, fontWeight: 600 }}>
                                         <Package size={13} /> {plan.productName || '—'}
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('القسط الشهري :')}</span>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '14.5px', fontFamily: OUTFIT }}>
+                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT }}>
                                         {fMoneyJSX(plan.installmentAmount)}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('نسبة الفائدة :')}</span>
-                                    <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{plan.interestRate || 0}%</span>
+                                    <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{plan.interestRate || 0}%</span>
                                 </div>
                                 {plan.notes && (
                                     <div style={{ marginTop: '8px', padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}`, fontSize: '11.5px', color: C.textSecondary, lineHeight: 1.5 }}>
@@ -411,7 +411,7 @@ export default function InstallmentDetailPage() {
                                             </div>
                                             <span style={{ fontSize: '11.5px', color: C.textSecondary, fontWeight: 700 }}>{s.label}</span>
                                         </div>
-                                        <div style={{ fontSize: '14px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }}>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }}>
                                             {typeof s.value === 'number' ? fmtN(s.value) : s.value} 
                                             <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.6, marginInlineEnd: '3px' }}>{s.unit || cSymbol}</span>
                                         </div>
@@ -435,11 +435,11 @@ export default function InstallmentDetailPage() {
                             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل:')}</span>
-                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800 }}>{plan.customer?.name}</span>
+                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600 }}>{plan.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر تحصيله:')}</span>
-                                    <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>
+                                    <span style={{ fontSize: '13px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>
                                         {fMoneyJSX(collectTarget.remaining || collectTarget.amount)}
                                     </span>
                                 </div>
@@ -450,10 +450,10 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT }} 
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
-                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -484,7 +484,7 @@ export default function InstallmentDetailPage() {
                                                 <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: isSelectedType ? C.primary : 'rgba(255,255,255,0.05)', color: isSelectedType ? '#fff' : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <t.icon size={14} />
                                                 </div>
-                                                <div style={{ fontSize: '11.5px', fontWeight: 800, color: isSelectedType ? C.primary : C.textSecondary }}>{t.label}</div>
+                                                <div style={{ fontSize: '11.5px', fontWeight: 600, color: isSelectedType ? C.primary : C.textSecondary }}>{t.label}</div>
                                             </div>
                                         );
                                     })}
@@ -522,14 +522,14 @@ export default function InstallmentDetailPage() {
 
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={collecting} 
-                                    style={{ ...BTN_PRIMARY(false, collecting), flex: 1.5, height: '46px', borderRadius: '12px', fontSize: '14px' }}>
+                                    style={{ ...BTN_PRIMARY(false, collecting), flex: 1.5, height: '46px', borderRadius: '12px', fontSize: '13px' }}>
                                     {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> {t('تأكيد التحصيل')}</>}
                                 </button>
                                 <button type="button" onClick={() => setCollectTarget(null)} 
                                     style={{ 
                                         flex: 1, borderRadius: '12px', border: `1px solid ${C.border}`, 
                                         background: 'rgba(255,255,255,0.03)', color: C.textSecondary, 
-                                        fontWeight: 800, cursor: 'pointer', transition: '0.2s', fontSize: '14px' 
+                                        fontWeight: 600, cursor: 'pointer', transition: '0.2s', fontSize: '13px' 
                                     }}
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
@@ -546,7 +546,7 @@ export default function InstallmentDetailPage() {
                             <div style={{ width: '60px', height: '60px', borderRadius: '50%', background: 'rgba(16,185,129,0.1)', border: '2px solid #10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                                 <Check size={28} color="#10b981" />
                             </div>
-                            <h3 style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, marginBottom: '6px' }}>{t('تم التحصيل بنجاح!')}</h3>
+                            <h3 style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, marginBottom: '6px' }}>{t('تم التحصيل بنجاح!')}</h3>
                             <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '20px' }}>
                                 {t('تم تحصيل القسط')} #{lastCollected.installmentNo} — {lastCollected.planCode}
                             </p>
@@ -554,11 +554,11 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '14px', marginBottom: '24px' }}>
                                 <div>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('المبلغ المحصّل')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(lastCollected.amount)}</div>
+                                    <div style={{ fontSize: '15px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(lastCollected.amount)}</div>
                                 </div>
                                 <div>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('العميل')}</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{lastCollected.customerName}</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{lastCollected.customerName}</div>
                                 </div>
                             </div>
 
@@ -611,11 +611,11 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}`, marginBottom: '20px', background: C.subtle }}>
                                 <div style={{ }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الأصل المتبقي')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(remPrincipal)}</div>
+                                    <div style={{ fontSize: '15px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(remPrincipal)}</div>
                                 </div>
                                 <div style={{ }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الفوائد المتبقية (يُعفى منها)')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textMuted, fontFamily: OUTFIT, textDecoration: 'line-through' }}>{fMoneyJSX(remInterest)}</div>
+                                    <div style={{ fontSize: '15px', fontWeight: 600, color: C.textMuted, fontFamily: OUTFIT, textDecoration: 'line-through' }}>{fMoneyJSX(remInterest)}</div>
                                 </div>
                             </div>
 
@@ -624,7 +624,7 @@ export default function InstallmentDetailPage() {
                                 <label style={{ ...LS, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                     <span>{t('رسوم السداد المعجل')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 400 }}>({t('اختياري')})</span></span>
                                     {feeRate > 0 && (
-                                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#f59e0b', fontFamily: OUTFIT }}>
+                                        <span style={{ fontSize: '11px', fontWeight: 600, color: '#f59e0b', fontFamily: OUTFIT }}>
                                             + {fMoneyJSX(feeAmount)}
                                         </span>
                                     )}
@@ -641,7 +641,7 @@ export default function InstallmentDetailPage() {
                                             style={{ ...IS, paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
-                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 800, color: C.textMuted, fontSize: '14px' }}>%</span>
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 600, color: C.textMuted, fontSize: '13px' }}>%</span>
                                     </div>
                                     {feeRate > 0 && (
                                         <button type="button"
@@ -664,7 +664,7 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={settleForm.amount}
                                         onChange={e => setSettleForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: OUTFIT, color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 600, fontFamily: OUTFIT, color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
@@ -733,7 +733,7 @@ export default function InstallmentDetailPage() {
                             ].map((item, i) => (
                                 <div key={i} style={{ padding: '10px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
-                                    <div style={{ fontSize: '14px', fontWeight: 800, color: item.color, fontFamily: OUTFIT }}>{item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{item.unit || cSymbol}</span></div>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: item.color, fontFamily: OUTFIT }}>{item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{item.unit || cSymbol}</span></div>
                                 </div>
                             ))}
                         </div>

@@ -64,7 +64,7 @@ export default function EmployeeDetailPage() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textMuted }}>
                     <div style={{ }}>
                         <div style={{ width: '48px', height: '48px', border: `4px solid ${C.primaryBg}`, borderTopColor: C.primary, borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 20px' }} />
-                        <span style={{ fontSize: '15px', fontWeight: 800 }}>{t('جاري استرجاع الملف الشخصي للموظف...')}</span>
+                        <span style={{ fontSize: '15px', fontWeight: 600 }}>{t('جاري استرجاع الملف الشخصي للموظف...')}</span>
                     </div>
                 </div>
                 <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
@@ -97,7 +97,7 @@ export default function EmployeeDetailPage() {
                         <button 
                             key="print-btn"
                             onClick={() => window.print()}
-                            style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '44px', padding: '0 20px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '13px', fontWeight: 800, cursor: 'pointer', transition: '0.2s' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '8px', height: '44px', padding: '0 20px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', transition: '0.2s' }}
                             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#fff'; }}
                             onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.color = C.textSecondary; }}
                         >
@@ -148,9 +148,9 @@ export default function EmployeeDetailPage() {
                                 overflow: 'hidden' 
                             }}>
                                 <div>
-                                    <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '8px', opacity: 0.8 }}>{t('صافي الراتب المتوقع')}</div>
+                                    <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 600, marginBottom: '8px', opacity: 0.8 }}>{t('صافي الراتب المتوقع')}</div>
                                     <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: OUTFIT }} dir="ltr">
-                                        <span style={{ fontSize: '16px', color: C.textMuted, marginInlineEnd: '8px' }}>{currencySymbol}</span>
+                                        <span style={{ fontSize: '13px', color: C.textMuted, marginInlineEnd: '8px' }}>{currencySymbol}</span>
                                         {formatNumber(net)}
                                     </div>
                                 </div>
@@ -185,14 +185,14 @@ export default function EmployeeDetailPage() {
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{t('الحالة الوظيفية')}</span>
-                                    <span style={{ padding: '4px 12px', borderRadius: '20px', background: 'rgba(16,185,129,0.1)', color: '#10b981', fontSize: '11px', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{t('الحالة الوظيفية')}</span>
+                                    <span style={{ padding: '4px 12px', borderRadius: '20px', background: 'rgba(16,185,129,0.1)', color: '#10b981', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
                                         <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }} /> {t('نشط')}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{t('تاريخ الانضمام')}</span>
-                                    <span style={{ fontSize: '12px', color: '#fff', fontWeight: 800, fontFamily: OUTFIT }}>{new Date(employee.hireDate).getFullYear()}</span>
+                                    <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{t('تاريخ الانضمام')}</span>
+                                    <span style={{ fontSize: '12px', color: '#fff', fontWeight: 600, fontFamily: OUTFIT }}>{new Date(employee.hireDate).getFullYear()}</span>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +201,7 @@ export default function EmployeeDetailPage() {
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '18px' }}>
                                 <Paperclip size={18} style={{ color: C.blue }} />
-                                <span style={{ fontSize: '14px', fontWeight: 900, color: '#fff' }}>{t('ملف المرفقات')}</span>
+                                <span style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{t('ملف المرفقات')}</span>
                             </div>
                             {employee.attachments?.length > 0 ? (
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -247,7 +247,7 @@ function StatCard({ icon: Icon, label, value, color, family }: any) {
         }}>
             <div style={{ textAlign: 'start' }}>
                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{label}</p>
-                <div style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: family }}>{value}</div>
+                <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: family }}>{value}</div>
             </div>
             <div style={{ 
                 width: '38px', height: '38px', borderRadius: '10px', 
@@ -265,7 +265,7 @@ function ProfileSection({ title, icon: Icon, color, children }: any) {
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden', boxShadow: '0 10px 30px -15px rgba(0,0,0,0.5)' }}>
             <div style={{ padding: '16px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{ color, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '28px', height: '28px', borderRadius: '8px', background: `${color}10` }}><Icon size={15} /></div>
-                <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: '#fff' }}>{title}</h3>
+                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#fff' }}>{title}</h3>
             </div>
             <div style={{ padding: '24px' }}>{children}</div>
         </div>
@@ -280,7 +280,7 @@ function InfoItem({ label, value, icon: Icon, family }: any) {
             </div>
             <div>
                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{label}</div>
-                <div style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: 800, fontFamily: family }}>{value || '—'}</div>
+                <div style={{ fontSize: '13px', color: '#f1f5f9', fontWeight: 600, fontFamily: family }}>{value || '—'}</div>
             </div>
         </div>
     );
@@ -290,7 +290,7 @@ function SummaryRow({ label, value, color, prefix = '', unit }: any) {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
             <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
-            <span style={{ fontSize: '13px', color, fontWeight: 800, fontFamily: OUTFIT }}>
+            <span style={{ fontSize: '13px', color, fontWeight: 600, fontFamily: OUTFIT }}>
                 {prefix} {formatNumber(+value || 0)} <span style={{ fontSize: '10px', opacity: 0.7 }}>{unit}</span>
             </span>
         </div>

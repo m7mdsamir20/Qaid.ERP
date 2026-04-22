@@ -125,7 +125,7 @@ export default function SalesReportPage() {
                         <button onClick={fetchReport} style={{
                             height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
+                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
                             boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}>
@@ -142,7 +142,7 @@ export default function SalesReportPage() {
                 ) : !data || data.invoices.length === 0 ? (
                     <div className="no-print" style={{ textAlign: 'start', padding: '120px 20px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <BarChart3 size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("لا توجد خدمات مسجلة") : t("لا توجد فواتير متاحة")}</h3>
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("لا توجد خدمات مسجلة") : t("لا توجد فواتير متاحة")}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, maxWidth: '400px', marginInline: 'auto', lineHeight: 1.6, fontFamily: CAIRO }}>{isServices ? t("برجاء اختيار فترة زمنية أخرى أو تعديل معايير البحث لعرض تفاصيل الخدمات.") : t("برجاء اختيار فترة زمنية أخرى أو تعديل معايير البحث لعرض تفاصيل المبيعات.")}</p>
                     </div>
                 ) : (
@@ -154,7 +154,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي المبيعات')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalSales} /></span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalSales} /></span>
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +163,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الخصومات الممنوحة')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></span>
                                     </div>
                                 </div>
                             </div>
@@ -172,7 +172,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي التحصيل')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></span>
                                     </div>
                                 </div>
                             </div>
@@ -181,7 +181,7 @@ export default function SalesReportPage() {
                                 <div>
                                     <p style={{ margin: 0, fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('المطالبات المتبقية')}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px' }}>
-                                        <span style={{ fontSize: '15.5px', fontWeight: 900, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></span>
+                                        <span style={{ fontSize: '15.5px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></span>
                                     </div>
                                 </div>
                             </div>
@@ -229,26 +229,26 @@ export default function SalesReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>
+                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>
                                                     SAL-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </span>
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{inv.customer?.name || t('عميل نقدي')}</td>
-                                            <td style={{ padding: '16px 20px',  fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={inv.total} /></td>
-                                            <td style={{ padding: '16px 20px',  fontSize: '14px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: OUTFIT }}>{inv.discount > 0 ? <><Currency amount={inv.discount} /></> : '—'}</td>
-                                            <td style={{ padding: '16px 20px',  fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.paidAmount} /></td>
-                                            <td style={{ padding: '16px 20px',  fontSize: '14px', fontWeight: 600, color: inv.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.remaining} /></td>
+                                            <td style={{ padding: '16px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={inv.total} /></td>
+                                            <td style={{ padding: '16px 20px',  fontSize: '13px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: OUTFIT }}>{inv.discount > 0 ? <><Currency amount={inv.discount} /></> : '—'}</td>
+                                            <td style={{ padding: '16px 20px',  fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.paidAmount} /></td>
+                                            <td style={{ padding: '16px 20px',  fontSize: '13px', fontWeight: 600, color: inv.remaining > 0 ? '#ef4444' : '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.remaining} /></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, }}>{t('إجماليات الفترة المختارة')}</td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalSales} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
+                                        <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{t('إجماليات الفترة المختارة')}</td>
+                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalSales} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '13px', fontWeight: 600, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
                                     </tr>
                                 </tfoot>
                             </table>

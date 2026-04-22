@@ -303,7 +303,7 @@ export default function NewStocktakingPage() {
                                                             />
                                                         </div>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 900, color: line.difference > 0 ? '#34d399' : (line.difference < 0 ? '#f87171' : C.textMuted), fontSize: '13px' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 600, color: line.difference > 0 ? '#34d399' : (line.difference < 0 ? '#f87171' : C.textMuted), fontSize: '13px' }}>
                                                         {line.difference > 0 ? '+' : ''}{line.difference}
                                                     </td>
                                                 </tr>
@@ -340,7 +340,7 @@ export default function NewStocktakingPage() {
                                 style={{ 
                                     ...BTN_PRIMARY(!form.warehouseId, isSubmitting), 
                                     height: '48px', 
-                                    fontSize: '14px',
+                                    fontSize: '13px',
                                     background: !form.warehouseId ? 'rgba(255,255,255,0.05)' : (form.status === 'applied' ? 'linear-gradient(135deg,#059669, #10b981)' : 'linear-gradient(135deg,#d97706, #f59e0b)'),
                                     boxShadow: !form.warehouseId ? 'none' : (form.status === 'applied' ? '0 8px 24px rgba(16,185,129,0.2)' : '0 8px 24px rgba(245,158,11,0.2)')
                                 }}>

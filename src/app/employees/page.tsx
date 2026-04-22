@@ -129,7 +129,7 @@ export default function EmployeesPage() {
                              <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                    <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>
@@ -195,15 +195,15 @@ export default function EmployeesPage() {
                     {loading ? (
                         <div style={{ padding: '80px' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                            <p style={{ margin: 0, color: C.textMuted, fontWeight: 800 }}>{t('جاري استرجاع السجلات...')}</p>
+                            <p style={{ margin: 0, color: C.textMuted, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
                     ) : filteredEmployees.length === 0 ? (
                         <div style={{ padding: '100px 20px' }}>
                             <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                 <UsersIcon size={40} style={{ color: C.textMuted }} />
                             </div>
-                            <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 900, margin: '0 0 8px' }}>{t('لا توجد نتائج')}</h3>
-                            <p style={{ fontSize: '14px', color: C.textMuted, margin: 0 }}>{searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}</p>
+                            <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 600, margin: '0 0 8px' }}>{t('لا توجد نتائج')}</h3>
+                            <p style={{ fontSize: '13px', color: C.textMuted, margin: 0 }}>{searchTerm ? t('لم يتم العثور على موظفين تطابق البحث') : t('ابدأ بإضافة موظفين جدد لسجلك')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
@@ -229,16 +229,16 @@ export default function EmployeesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, color: C.primary, opacity: 0.65, fontFamily: OUTFIT, fontSize: '12px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, color: C.primary, opacity: 0.65, fontFamily: OUTFIT, fontSize: '12px' }}>
                                                     {emp.code}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '14px' }}>{emp.name}</div>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{emp.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT }}>{emp.email || '—'}</div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{emp.position || '—'}</div>
-                                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 900, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{emp.position || '—'}</div>
+                                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '6px' }}>
                                                         <Building2 size={12} /> {emp.department?.name || t('غير مصنف')}
                                                     </div>
                                                 </td>
@@ -248,14 +248,14 @@ export default function EmployeesPage() {
                                                     </div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true) }}>
-                                                    <div style={{ fontWeight: 900, color: '#10b981', fontSize: '16px', fontFamily: OUTFIT }}>
+                                                    <div style={{ fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(empNet)}
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false, true)}>
                                                     <div style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '6px',
-                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900,
+                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600,
                                                         background: emp.status === 'active' ? '#10b98115' : '#ef444415',
                                                         color: emp.status === 'active' ? '#10b981' : '#ef4444',
                                                         border: `1px solid ${emp.status === 'active' ? '#10b98130' : '#ef444430'}`

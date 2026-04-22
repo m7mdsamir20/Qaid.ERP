@@ -103,7 +103,7 @@ export default function PartnerAccountsPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{formatNumber(s.val)}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -119,12 +119,12 @@ export default function PartnerAccountsPage() {
                 {loading ? (
                     <div style={{ padding: '100px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px', display: 'block' }} />
-                        <p style={{ color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل البيانات المالية...')}</p>
+                        <p style={{ color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات المالية...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
                     <div style={{ padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
+                        <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
                     </div>
                 ) : (
@@ -159,37 +159,37 @@ export default function PartnerAccountsPage() {
                                     {/* Partner Summary Row */}
                                     <div style={{ display: 'grid', gridTemplateColumns: 'minmax(200px, 2fr) 1fr 1fr 1fr 100px 90px', gap: '20px', alignItems: 'center', padding: '16px 20px' }}>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                            <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.primary}15`, border: `1px solid ${C.primary}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>
+                                            <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.primary}15`, border: `1px solid ${C.primary}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: CAIRO }}>
                                                 {p.name.charAt(0)}
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
+                                                <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
                                                  <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('نسبة المساهمة')}: {p.share}%</div>
                                             </div>
                                         </div>
 
                                         <div style={{ }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                            <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: OUTFIT }}>{formatNumber(p.capital)}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#f1f5f9', fontFamily: OUTFIT }}>{formatNumber(p.capital)}</div>
                                         </div>
 
                                          <div style={{ }}>
                                              <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '2px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
-                                             <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                             <div style={{ fontSize: '15px', fontWeight: 600, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT, direction: 'ltr' }}>
                                                  {formatNumber(p.balance)}
                                              </div>
                                          </div>
 
                                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                                            <div title={t("إجمالي الإيداعات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.2)', fontFamily: OUTFIT }}>
+                                            <div title={t("إجمالي الإيداعات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.2)', fontFamily: OUTFIT }}>
                                                 ↑ {formatNumber(deposits)}
                                             </div>
-                                            <div title={t("إجمالي المسحوبات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontFamily: OUTFIT }}>
+                                            <div title={t("إجمالي المسحوبات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontFamily: OUTFIT }}>
                                                 ↓ {formatNumber(withdrawals)}
                                             </div>
                                         </div>
 
-                                        <button onClick={() => setShowModal(p)} style={{ height: '36px', borderRadius: '10px', border: 'none', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(37,106,244,0.25)', fontFamily: CAIRO }}>
+                                        <button onClick={() => setShowModal(p)} style={{ height: '36px', borderRadius: '10px', border: 'none', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 4px 12px rgba(37,106,244,0.25)', fontFamily: CAIRO }}>
                                             + {t('حركة')}
                                         </button>
 
@@ -205,7 +205,7 @@ export default function PartnerAccountsPage() {
                                             {loadingTx === p.id ? (
                                                 <div style={{ padding: '40px', color: C.textMuted }}>
                                                     <Loader2 size={24} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 8px' }} />
-                                                    <span style={{ fontSize: '12px', fontWeight: 800, fontFamily: CAIRO }}>{t('استرجاع الحركات...')}</span>
+                                                    <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('استرجاع الحركات...')}</span>
                                                 </div>
                                             ) : txs.length === 0 ? (
                                                 <div style={{ padding: '30px', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>
@@ -235,13 +235,13 @@ export default function PartnerAccountsPage() {
                                                                             <span style={{ 
                                                                                 display: 'inline-flex', alignItems: 'center', gap: '6px',
                                                                                 padding: '4px 12px', borderRadius: '20px', fontSize: '11px', 
-                                                                                fontWeight: 800, background: meta.bg, color: meta.color,
+                                                                                fontWeight: 600, background: meta.bg, color: meta.color,
                                                                                 fontFamily: CAIRO
                                                                             }}>
                                                                                 {t(meta.label)}
                                                                             </span>
                                                                         </td>
-                                                                        <td style={{ ...TABLE_STYLE.td(false), fontWeight: 900, color: meta.color, fontFamily: OUTFIT, fontSize: '14px' }}>
+                                                                        <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: meta.color, fontFamily: OUTFIT, fontSize: '13px' }}>
                                                                             {formatNumber(tx.amount)} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                                                         </td>
                                                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
@@ -299,7 +299,7 @@ export default function PartnerAccountsPage() {
                                                 border: `1px solid ${form.type === opt.val ? opt.color : C.border}`, 
                                                 background: form.type === opt.val ? `${opt.color}15` : 'transparent', 
                                                 color: form.type === opt.val ? opt.color : C.textSecondary, 
-                                                fontSize: '11px', fontWeight: 900, cursor: 'pointer', transition: 'all 0.2s',
+                                                fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s',
                                                 fontFamily: CAIRO
                                             }}>
                                             {opt.label}
@@ -326,7 +326,7 @@ export default function PartnerAccountsPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={LS}>{t('المبلغ (ج.م) *')}</label>
-                                    <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 900, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                    <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
                                 </div>
                                 <div>
                                     <label style={LS}>{t('التاريخ')}</label>
@@ -346,7 +346,7 @@ export default function PartnerAccountsPage() {
                                     {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Plus size={18} />}
                                     <span style={{ marginInlineEnd: '8px' }}>{t('اعتماد الحركة')}</span>
                                 </button>
-                                <button type="button" onClick={() => setShowModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                                <button type="button" onClick={() => setShowModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                     {t('إلغاء')}
                                 </button>
                             </div>

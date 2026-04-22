@@ -240,7 +240,7 @@ export default function OpeningBalancesPage() {
                              <button key="save" onClick={handleSave} disabled={saving || !filledCount} 
                                  style={{ 
                                      display: 'flex', alignItems: 'center', gap: '10px', height: '42px', padding: '0 24px', 
-                                     borderRadius: '10px', fontSize: '14px', fontWeight: 800, cursor: (saving || !filledCount) ? 'not-allowed' : 'pointer',
+                                     borderRadius: '10px', fontSize: '13px', fontWeight: 600, cursor: (saving || !filledCount) ? 'not-allowed' : 'pointer',
                                      background: saved ? '#10b981' : C.primary, color: 'white', border: 'none',
                                      boxShadow: (saving || !filledCount) ? 'none' : '0 4px 12px rgba(37,106,244,0.25)',
                                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', opacity: (saving || !filledCount) ? 0.6 : 1,
@@ -261,8 +261,8 @@ export default function OpeningBalancesPage() {
                         <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                             <Wallet size={40} style={{ color: C.textMuted, opacity: 0.5 }} />
                         </div>
-                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('برجاء اختيار السنة المالية')}</p>
-                        <p style={{ margin: '8px 0 0', fontSize: '14px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('حدد السنة المالية المناسبة لاستعراض أو إدخال الأرصدة الافتتاحية')}</p>
+                        <p style={{ margin: 0, fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('برجاء اختيار السنة المالية')}</p>
+                        <p style={{ margin: '8px 0 0', fontSize: '13px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('حدد السنة المالية المناسبة لاستعراض أو إدخال الأرصدة الافتتاحية')}</p>
                     </div>
                 ) : loading ? (
                     <div style={{ ...SC, height: '40vh', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '16px' }}>
@@ -274,8 +274,8 @@ export default function OpeningBalancesPage() {
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                             <AlertTriangle size={36} style={{ color: C.warning }} />
                         </div>
-                        <p style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حسابات تحليلية متاحة')}</p>
-                        <p style={{ margin: '8px 0 0', fontSize: '14px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('يجب إضافة حسابات "أصول" أو "خصوم" أو "حقوق ملكية" في دليل الحسابات أولاً')}</p>
+                        <p style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حسابات تحليلية متاحة')}</p>
+                        <p style={{ margin: '8px 0 0', fontSize: '13px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('يجب إضافة حسابات "أصول" أو "خصوم" أو "حقوق ملكية" في دليل الحسابات أولاً')}</p>
                     </div>
                 ) : (
                     <>
@@ -283,7 +283,7 @@ export default function OpeningBalancesPage() {
                             <div style={{ 
                                 display: 'flex', alignItems: 'center', gap: '12px', padding: '16px 20px', borderRadius: '16px', 
                                 background: 'rgba(248,113,113,0.05)', border: `1px solid ${C.danger}20`, marginBottom: '24px', 
-                                fontSize: '14px', color: C.danger, fontWeight: 700, fontFamily: CAIRO 
+                                fontSize: '13px', color: C.danger, fontWeight: 700, fontFamily: CAIRO 
                             }}>
                                 <div style={{ width: 32, height: 32, borderRadius: '8px', background: `${C.danger}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Lock size={18} />
@@ -316,7 +316,7 @@ export default function OpeningBalancesPage() {
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                            <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                            <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.sub}</span>
                                         </div>
                                     </div>
@@ -349,7 +349,7 @@ export default function OpeningBalancesPage() {
                                 {FILTER_BTNS.map(btn => (
                                     <button key={btn.key} onClick={() => setFilterType(btn.key)} style={{
                                         height: '36px', padding: '0 14px', borderRadius: '6px', border: '1px solid',
-                                        fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+                                        fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
                                         borderColor: filterType === btn.key ? `${btn.color}50` : C.border,
                                         background:  filterType === btn.key ? `${btn.color}15`  : 'transparent',
                                         color:       filterType === btn.key ? btn.color          : C.textSecondary,
@@ -386,16 +386,16 @@ export default function OpeningBalancesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                                                 onMouseLeave={e => e.currentTarget.style.background  = 'rgba(0,0,0,0.15)'}>
                                                 <td style={TABLE_STYLE.td(true, true)}>
-                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 900 }}>{account.code}</span>
+                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 600 }}>{account.code}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(true, true), textAlign: 'center', fontWeight: 800 }}>{account.name}</td>
+                                                <td style={{ ...TABLE_STYLE.td(true, true), textAlign: 'center', fontWeight: 600 }}>{account.name}</td>
                                                 <td style={TABLE_STYLE.td(false, true)}>
-                                                    <span style={{ fontSize: '11px', fontWeight: 800, padding: '4px 8px', borderRadius: '6px', background: `${tColor}12`, color: tColor, border: `1px solid ${tColor}20`, fontFamily: CAIRO }}>
+                                                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', borderRadius: '6px', background: `${tColor}12`, color: tColor, border: `1px solid ${tColor}20`, fontFamily: CAIRO }}>
                                                         {typeLabels[account.type]}
                                                     </span>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false, true)}>
-                                                    <span style={{ fontSize: '11px', fontWeight: 800, padding: '4px 8px', borderRadius: '6px', background: `${natureColor}12`, color: natureColor, border: `1px solid ${natureColor}20`, fontFamily: CAIRO }}>
+                                                    <span style={{ fontSize: '11px', fontWeight: 600, padding: '4px 8px', borderRadius: '6px', background: `${natureColor}12`, color: natureColor, border: `1px solid ${natureColor}20`, fontFamily: CAIRO }}>
                                                         {account.nature === 'debit' ? t('مدين') : t('دائن')}
                                                     </span>
                                                 </td>
@@ -429,16 +429,16 @@ export default function OpeningBalancesPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '14px', fontWeight: 800, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '16px', fontWeight: 900, color: C.success, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '16px', fontWeight: 900, color: C.danger, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.success, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.danger, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
-                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 800, color: C.warning,  fontFamily: CAIRO }}>
+                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 600, color: C.warning,  fontFamily: CAIRO }}>
                                                 <AlertTriangle size={14} style={{ display: 'inline', marginInlineStart: '6px' }} /> {t('يرجى مراجعة المدخلات - القيد غير متوازن')}
                                             </td>
-                                            <td colSpan={2} style={{ padding: '10px 20px',  fontSize: '14px', fontWeight: 900, color: C.warning, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(Math.abs(difference))}</td>
+                                            <td colSpan={2} style={{ padding: '10px 20px',  fontSize: '13px', fontWeight: 600, color: C.warning, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(Math.abs(difference))}</td>
                                         </tr>
                                     )}
                                 </tfoot>
@@ -459,7 +459,7 @@ export default function OpeningBalancesPage() {
                     <div style={{ width: 60, height: 60, borderRadius: '20px', background: 'rgba(16,185,129,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.success, margin: '0 auto 20px' }}>
                         <ArrowRightLeft size={30} />
                     </div>
-                    <p style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من ترحيل الأرصدة الختامية؟')}</p>
+                    <p style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من ترحيل الأرصدة الختامية؟')}</p>
                     <p style={{ fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, lineHeight: 1.6 }}>
                         {t('سيتم استيراد كافة الأرصدة الختامية من السنة المالية السابقة كأرصدة افتتاحية لهذه السنة')} ({curYear?.name}).
                         <br />
@@ -471,7 +471,7 @@ export default function OpeningBalancesPage() {
                         {carrying ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
                         <span style={{ marginInlineEnd: '8px' }}>{t('تأكيد الترحيل الآن')}</span>
                     </button>
-                    <button onClick={() => setShowCarryModal(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', flex: 1, fontFamily: CAIRO }}>
+                    <button onClick={() => setShowCarryModal(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', flex: 1, fontFamily: CAIRO }}>
                         {t('تراجع')}
                     </button>
                 </div>

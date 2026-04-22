@@ -129,24 +129,24 @@ export default function AdvanceDetailPage() {
                         <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                                 <div style={{ color: '#256af4' }}><Receipt size={20} /></div>
-                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>{t('البيانات الأساسية')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{t('البيانات الأساسية')}</h3>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('تاريخ الصرف')}</label>
-                                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <Calendar size={14} style={{ color: C.primary }} /> {new Date(advance.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                     </div>
                                 </div>
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('المبلغ الإجمالي')}</label>
-                                    <div style={{ fontSize: '18px', fontWeight: 900, color: '#10b981' }} dir="ltr">
+                                    <div style={{ fontSize: '18px', fontWeight: 600, color: '#10b981' }} dir="ltr">
                                         {formatNumber(advance.amount)} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ gridColumn: 'span 2' }}>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('البيان / الملاحظات')}</label>
-                                    <div style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                                    <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)' }}>
                                         {advance.notes || t('لا توجد ملاحظات مسجلة')}
                                     </div>
                                 </div>
@@ -156,22 +156,22 @@ export default function AdvanceDetailPage() {
                         <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                                 <div style={{ color: '#8b5cf6' }}><FileText size={20} /></div>
-                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>{t('تفاصيل الأقساط')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{t('تفاصيل الأقساط')}</h3>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
                                     <div style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, marginBottom: '6px' }}>{t('عدد الأقساط')}</div>
-                                    <div style={{ fontSize: '20px', fontWeight: 900, color: '#f1f5f9' }}>{advance.installmentCount}</div>
+                                    <div style={{ fontSize: '20px', fontWeight: 600, color: '#f1f5f9' }}>{advance.installmentCount}</div>
                                 </div>
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(139,92,246,0.05)', border: '1px solid rgba(139,92,246,0.1)' }}>
                                     <div style={{ fontSize: '11px', color: '#8b5cf6', fontWeight: 700, marginBottom: '6px' }}>{t('القسط الشهري')}</div>
-                                    <div style={{ fontSize: '20px', fontWeight: 900, color: '#8b5cf6' }} dir="ltr">
+                                    <div style={{ fontSize: '20px', fontWeight: 600, color: '#8b5cf6' }} dir="ltr">
                                         {formatNumber(advance.monthlyAmount)} <span style={{ fontSize: '10px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ padding: '16px', borderRadius: '12px', background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)' }}>
                                     <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, marginBottom: '6px' }}>{t('الحالة الحالية')}</div>
-                                    <div style={{ fontSize: '13px', fontWeight: 800, color: advance.status === 'pending' ? '#f59e0b' : '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '100%' }}>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: advance.status === 'pending' ? '#f59e0b' : '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '100%' }}>
                                         {advance.status === 'pending' ? <><Clock size={14} /> {t('قيد الانتظار')}</> : <><CheckCircle2 size={14} /> {t('تم الخصم')}</>}
                                     </div>
                                 </div>
@@ -184,7 +184,7 @@ export default function AdvanceDetailPage() {
                             <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4', margin: '0 auto 16px' }}>
                                 <User size={30} />
                             </div>
-                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: '#fff' }}>{advance.employee.name}</h2>
+                            <h2 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#fff' }}>{advance.employee.name}</h2>
                             <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6366f1', fontWeight: 700 }}>{advance.employee.code}</p>
                             <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.05)', margin: '16px 0' }} />
                             <button onClick={() => router.push(`/employees/${advance.employee.id}`)} style={{ width: '100%', height: '40px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>

@@ -246,7 +246,7 @@ ${tableHtml}
         <DashboardLayout>
             <div style={{ padding: '40px' }}>
                 <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '16px', opacity: 0.5 }} />
-                <h2 style={{ fontSize: '16px', color: '#fff' }}>المسير غير موجود</h2>
+                <h2 style={{ fontSize: '13px', color: '#fff' }}>المسير غير موجود</h2>
                 <Link href="/payrolls" style={{ marginTop: '16px', color: '#256af4', textDecoration: 'none', display: 'inline-block', fontWeight: 700 }}>العودة للقائمة</Link>
             </div>
         </DashboardLayout>
@@ -309,7 +309,7 @@ ${tableHtml}
                                     style={{ 
                                         height: '40px', padding: '0 20px', borderRadius: '12px', border: 'none', 
                                         background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', 
-                                        fontSize: '13px', fontWeight: 800, cursor: 'pointer', 
+                                        fontSize: '13px', fontWeight: 600, cursor: 'pointer', 
                                         display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, 
                                         boxShadow: '0 4px 12px rgba(16,185,129,0.2)',
                                         whiteSpace: 'nowrap'
@@ -339,7 +339,7 @@ ${tableHtml}
                         >
                              <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800, color: stat.color, fontFamily: OUTFIT }} dir="ltr">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600, color: stat.color, fontFamily: OUTFIT }} dir="ltr">
                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
                                     <span>{formatNumber(stat.val)}</span>
                                 </div>
@@ -369,7 +369,7 @@ ${tableHtml}
                     }}>
                         {/* يمين — بيانات الشركة */}
                         <div>
-                            {companyName   && <div style={{ fontSize: '18px', fontWeight: 900, marginBottom: '4px' }}>{companyName}</div>}
+                            {companyName   && <div style={{ fontSize: '18px', fontWeight: 600, marginBottom: '4px' }}>{companyName}</div>}
                             {taxNumber     && <div style={{ fontSize: '12px', marginBottom: '2px' }}>الرقم الضريبي: {taxNumber}</div>}
                             {commercialReg && <div style={{ fontSize: '12px', marginBottom: '2px' }}>السجل التجاري: {commercialReg}</div>}
                             {phone         && <div style={{ fontSize: '12px', marginBottom: '2px' }}>هاتف: {phone}</div>}
@@ -384,7 +384,7 @@ ${tableHtml}
                                 : <div style={{ 
                                     width: '65px', height: '65px', borderRadius: '50%',
                                     background: '#f0f0f0', display: 'flex', alignItems: 'center',
-                                    justifyContent: 'center', fontSize: '26px', fontWeight: 900,
+                                    justifyContent: 'center', fontSize: '26px', fontWeight: 600,
                                     color: '#000', border: '1px solid #ddd'
                                   }}>
                                     {companyName?.charAt(0)}
@@ -395,7 +395,7 @@ ${tableHtml}
 
                     {/* الصف الثاني — عنوان الكشف في الوسط */}
                     <div style={{ borderTop: '1px solid #ddd', paddingTop: '10px' }}>
-                        <div style={{ fontSize: '15px', fontWeight: 900 }}>
+                        <div style={{ fontSize: '15px', fontWeight: 600 }}>
                             مسير رواتب شهر {months.find(m => m.value === payroll?.month)?.label} {payroll?.year}
                         </div>
                         <div style={{ fontSize: '11px', marginTop: '4px', color: '#444' }}>
@@ -423,11 +423,11 @@ ${tableHtml}
                             {payroll.lines.map((line: any, idx: number) => (
                                 <tr key={line.id} style={TABLE_STYLE.row(idx === payroll.lines.length - 1)}>
                                     <td style={TABLE_STYLE.td(true)}>
-                                        <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: OUTFIT }}>{line.employee.code}</span>
+                                        <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>{line.employee.code}</span>
                                     </td>
                                     <td style={TABLE_STYLE.td(false)}>
                                         <div style={{ textAlign: 'start' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 800, color: '#fff' }}>{line.employee.name}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{line.employee.name}</div>
                                             <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{line.employee.position || 'موظف'}</div>
                                         </div>
                                     </td>
@@ -443,7 +443,7 @@ ${tableHtml}
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }} dir="ltr">
                                         -{formatNumber(line.discounts)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: OUTFIT }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 600, color: C.success, fontFamily: OUTFIT }} dir="ltr">
                                         {formatNumber(line.netSalary)}
                                     </td>
                                 </tr>
@@ -462,7 +462,7 @@ ${tableHtml}
                     <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
                         سيتم إغلاق المسير وتوليد قيود محاسبية تلقائية، وخصم السلف المستحقة من أرصدة الموظفين.
                         <br/><br/>
-                        <strong style={{ color: '#fff' }}>المبلغ المطلوب:</strong> <span style={{ color: C.success, fontWeight: 800, fontSize: '16px', fontFamily: OUTFIT }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{formatNumber(payroll.netTotal)}</span></div></span>
+                        <strong style={{ color: '#fff' }}>المبلغ المطلوب:</strong> <span style={{ color: C.success, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{formatNumber(payroll.netTotal)}</span></div></span>
                     </div>
 
                     <div style={{ marginBottom: '24px' }}>
@@ -494,13 +494,13 @@ ${tableHtml}
                         <button 
                             onClick={handleApprove}
                             disabled={isApproving}
-                            style={{ flex: 2, height: '48px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', borderRadius: '12px', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO }}
+                            style={{ flex: 2, height: '48px', background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', borderRadius: '12px', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}
                         >
                             {isApproving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : 'تأكيد وصرف الرواتب'}
                         </button>
                         <button 
                             onClick={() => setShowApprovalModal(false)}
-                            style={{ flex: 1, height: '48px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '12px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}
+                            style={{ flex: 1, height: '48px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '12px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}
                         >
                             إلغاء
                         </button>

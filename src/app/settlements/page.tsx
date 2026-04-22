@@ -93,7 +93,7 @@ function Modal({ isOpen, onClose, title, icon, children, maxWidth = '800px' }: {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <div style={{ width: 40, height: 40, borderRadius: '10px', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{icon}</div>
                         <div>
-                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{title}</h2>
+                            <h2 style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{title}</h2>
                             <p style={{ margin: '2px 0 0', fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{t('قم بإدخال بيانات التسوية بدقة لتحديث أرصدة الحسابات')}</p>
                         </div>
                     </div>
@@ -341,8 +341,8 @@ export default function ComprehensiveSettlementPage() {
                                             </div>
 
                                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '10px', marginTop: '10px' }}>
-                                                <button onClick={() => setShowForm(false)} style={{ height: '42px', borderRadius: '10px', background: C.inputBg, color: C.textSecondary, border: `1px solid ${C.border}`, fontSize: '14px', fontWeight: 500, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
-                                                <button onClick={handleSave} disabled={submitting || !form.amount} style={{ height: '42px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontSize: '14px', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: (submitting || !form.amount) ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                                <button onClick={() => setShowForm(false)} style={{ height: '42px', borderRadius: '10px', background: C.inputBg, color: C.textSecondary, border: `1px solid ${C.border}`, fontSize: '13px', fontWeight: 500, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
+                                                <button onClick={handleSave} disabled={submitting || !form.amount} style={{ height: '42px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontSize: '13px', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', opacity: (submitting || !form.amount) ? 0.7 : 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
                                                     {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={16} /> {t('حفظ التسوية')}</>}
                                                 </button>
                                             </div>
@@ -355,13 +355,13 @@ export default function ComprehensiveSettlementPage() {
                         {filteredSettlements.length === 0 ? (
                             <div style={{ padding: '100px 20px', background: C.card, border: `1px dashed ${C.border}`, borderRadius: '32px' }}>
                                 <div style={{ width: 80, height: 80, borderRadius: '50%', background: C.primaryBg, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}><ArrowRightLeft size={36} opacity={0.5} /></div>
-                                <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 800, margin: '0 0 10px', fontFamily: CAIRO }}>{settlementSearch ? t('لم نجد أي مطابقات') : t('سجل التسويات فارغ')}</h3>
-                                <p style={{ color: C.textSecondary, fontSize: '14px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>
+                                <h3 style={{ fontSize: '18px', color: C.textPrimary, fontWeight: 600, margin: '0 0 10px', fontFamily: CAIRO }}>{settlementSearch ? t('لم نجد أي مطابقات') : t('سجل التسويات فارغ')}</h3>
+                                <p style={{ color: C.textSecondary, fontSize: '13px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>
                             </div>
                         ) : (
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', overflow: 'hidden' }}>
                                 <div style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start', fontSize: '14px' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start', fontSize: '13px' }}>
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                 {[
@@ -373,7 +373,7 @@ export default function ComprehensiveSettlementPage() {
                                                     { label: t('المبلغ'), width: '14%' },
                                                     { label: t('إجراء'), width: '6%' }
                                                 ].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 800, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
+                                                    <th key={i} style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 600, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
                                                 ))}
                                             </tr>
                                         </thead>
@@ -384,25 +384,25 @@ export default function ComprehensiveSettlementPage() {
                                                         {new Date(s.date).toLocaleDateString('en-GB')}
                                                     </td>
                                                     <td style={{ padding: '11px 16px', textAlign: 'center' }}>
-                                                        <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 900, fontSize: '11px', fontFamily: OUTFIT }}>
+                                                        <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 600, fontSize: '11px', fontFamily: OUTFIT }}>
                                                             {String(s.entryNumber).padStart(4, '0')}
                                                         </span>
                                                     </td>
                                                     <td style={{ padding: '11px 16px' }}>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'center' }}>
                                                             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.dangerBg, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserMinus size={12} /></div>
-                                                            <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.fromConfig?.name}</span>
+                                                            <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.fromConfig?.name}</span>
                                                         </div>
                                                     </td>
                                                     <td style={{ padding: '11px 16px' }}>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'center' }}>
                                                             <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.successBg, color: C.success, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserPlus size={12} /></div>
-                                                            <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.toConfig?.name}</span>
+                                                            <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.toConfig?.name}</span>
                                                         </div>
                                                     </td>
                                                     <td style={{ padding: '11px 16px',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, textAlign: 'center' }}>{s.notes || '-'}</td>
                                                     <td style={{ padding: '11px 16px', textAlign: 'center' }}>
-                                                        <div style={{ fontSize: '16px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
                                                             {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>{currencySign}</span>
                                                         </div>
                                                     </td>
@@ -446,7 +446,7 @@ export default function ComprehensiveSettlementPage() {
                                 </div>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>{t('إجمالي القيد')}</div>
-                                    <div style={{ fontSize: '20px', color: '#10b981', fontWeight: 900, fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{currencySign}</span></div>
+                                    <div style={{ fontSize: '20px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{currencySign}</span></div>
                                 </div>
                             </div>
 
@@ -465,16 +465,16 @@ export default function ComprehensiveSettlementPage() {
                                                 <td style={{ padding: '12px 16px' }}>
                                                     <div style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{line.accountName}</div>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: C.success, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT, textAlign: 'center' }}>{line.debit > 0 ? line.debit.toLocaleString() : '-'}</td>
-                                                <td style={{ padding: '12px 16px', color: C.danger, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT, textAlign: 'center' }}>{line.credit > 0 ? line.credit.toLocaleString() : '-'}</td>
+                                                <td style={{ padding: '12px 16px', color: C.success, fontSize: '13px', fontWeight: 700,  fontFamily: OUTFIT, textAlign: 'center' }}>{line.debit > 0 ? line.debit.toLocaleString() : '-'}</td>
+                                                <td style={{ padding: '12px 16px', color: C.danger, fontSize: '13px', fontWeight: 700,  fontFamily: OUTFIT, textAlign: 'center' }}>{line.credit > 0 ? line.credit.toLocaleString() : '-'}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `1px solid ${C.border}` }}>
                                         <tr>
                                             <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي القيد')}</td>
-                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT, textAlign: 'center' }}>{detailsModal.amount.toLocaleString()}</td>
-                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT, textAlign: 'center' }}>{detailsModal.amount.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 600,  fontFamily: OUTFIT, textAlign: 'center' }}>{detailsModal.amount.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 600,  fontFamily: OUTFIT, textAlign: 'center' }}>{detailsModal.amount.toLocaleString()}</td>
                                         </tr>
                                     </tfoot>
                                 </table>

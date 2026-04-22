@@ -66,7 +66,7 @@ export default function EmployeesCatalogPage() {
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                     {[t('الموظف'), t('القسم'), t('المسمى الوظيفي'), t('تاريخ التعيين'), t('الهاتف'), t('الحالة')].map((h, i) => (
-                                        <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
+                                        <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '14px 16px', fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -83,7 +83,7 @@ export default function EmployeesCatalogPage() {
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{e.phone}</td>
                                         <td style={{ padding: '14px 16px' }}>
                                             <span style={{
-                                                fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '8px',
+                                                fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '8px',
                                                 background: e.status === 'active' ? 'rgba(16,185,129,0.1)' : e.status === 'on_vacation' ? 'rgba(37, 106, 244,0.1)' : 'rgba(100,116,139,0.1)',
                                                 color: e.status === 'active' ? '#10b981' : e.status === 'on_vacation' ? '#256af4' : '#64748b',
                                                 fontFamily: CAIRO, border: '1px solid currentColor'

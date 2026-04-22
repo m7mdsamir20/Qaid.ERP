@@ -44,7 +44,7 @@ export default function DatabaseTab({
                 t={t}
             />
 
-            <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                 <Database size={14} /> {t('النسخ الاحتياطي اليدوي')}
             </div>
 
@@ -54,7 +54,7 @@ export default function DatabaseTab({
                     <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: C.primary }}><Download size={15} /></div>
                         <div>
-                            <div style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة كاملة (JSON)')}</div>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة كاملة (JSON)')}</div>
                             <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('مثالي للاستعادة الكاملة')}</div>
                         </div>
                     </div>
@@ -77,7 +77,7 @@ export default function DatabaseTab({
                                     URL.revokeObjectURL(url);
                                 } catch { alert(t('فشل التحميل')); }
                             }}
-                            style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: 'none', background: `linear-gradient(135deg, ${C.primary}, #256af4)`, color: '#fff', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 4px 12px ${C.primary}30`, flexShrink: 0, fontFamily: CAIRO }}>
+                            style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: 'none', background: `linear-gradient(135deg, ${C.primary}, #256af4)`, color: '#fff', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 4px 12px ${C.primary}30`, flexShrink: 0, fontFamily: CAIRO }}>
                             <Download size={14} /> {t('تحميل JSON')}
                         </button>
                     </div>
@@ -88,7 +88,7 @@ export default function DatabaseTab({
                     <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: '#10b981' }}><FileSpreadsheet size={15} /></div>
                         <div>
-                            <div style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة Excel')}</div>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('نسخة Excel')}</div>
                             <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('للمراجعة والطباعة')}</div>
                         </div>
                     </div>
@@ -111,7 +111,7 @@ export default function DatabaseTab({
                                     URL.revokeObjectURL(url);
                                 } catch { alert(t('فشل التحميل')); }
                             }}
-                            style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: `1px solid rgba(16,185,129,0.3)`, background: 'rgba(16,185,129,0.08)', color: '#10b981', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
+                            style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: `1px solid rgba(16,185,129,0.3)`, background: 'rgba(16,185,129,0.08)', color: '#10b981', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
                             <Download size={14} /> {t('تحميل Excel')}
                         </button>
                     </div>
@@ -123,7 +123,7 @@ export default function DatabaseTab({
                     <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                         <div style={{ color: '#f59e0b' }}><UploadCloud size={15} /></div>
                         <div>
-                            <div style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('استعادة نسخة')}</div>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('استعادة نسخة')}</div>
                             <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{t('من ملف JSON فقط')}</div>
                         </div>
                     </div>
@@ -131,7 +131,7 @@ export default function DatabaseTab({
                         <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
                             {t('استعادة كافة بيانات النظام من نسخة احتياطية سابقة محملة مسبقاً')}
                         </span>
-                        <label className="action-btn" style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: `1px solid rgba(245,158,11,0.3)`, background: 'rgba(245,158,11,0.08)', color: '#f59e0b', fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
+                        <label className="action-btn" style={{ height: '38px', padding: '0 20px', borderRadius: '10px', border: `1px solid rgba(245,158,11,0.3)`, background: 'rgba(245,158,11,0.08)', color: '#f59e0b', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
                             <UploadCloud size={14} /> {t('اختر ملف JSON')}
                             <input type="file" accept=".json" style={{ display: 'none' }}
                                 onChange={async e => {
@@ -171,7 +171,7 @@ export default function DatabaseTab({
 
 
             {/* ── استيراد Excel ── */}
-            <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '24px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '24px' }}>
                 <FileSpreadsheet size={14} /> {t('استيراد البيانات من Excel')}
             </div>
 
@@ -184,13 +184,13 @@ export default function DatabaseTab({
                     <div key={item.id} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
                         <div style={{ width: '220px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '10px', padding: '16px 20px', borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
                             <div style={{ color: item.color }}>{item.icon}</div>
-                            <span style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{item.label}</span>
+                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{item.label}</span>
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{item.desc}</span>
                             <button className="action-btn"
                                 onClick={() => { setImportType(item.id as any); setShowImportModal(true); setImportStep(1); }}
-                                style={{ height: '36px', padding: '0 18px', borderRadius: '10px', border: `1px solid ${item.color}30`, background: `${item.color}10`, color: item.color, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
+                                style={{ height: '36px', padding: '0 18px', borderRadius: '10px', border: `1px solid ${item.color}30`, background: `${item.color}10`, color: item.color, fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0, fontFamily: CAIRO }}>
                                 <FileSpreadsheet size={13} /> {t('فتح معالج الاستيراد')}
                             </button>
                         </div>
@@ -207,7 +207,7 @@ export default function DatabaseTab({
                                 <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4' }}>
                                     <FileSpreadsheet size={20} />
                                 </div>
-                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
+                                <h2 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>
                                     {t('استيراد')} {importType === 'customers' ? t('العملاء') : importType === 'suppliers' ? t('الموردين') : t('الأصناف')}
                                 </h2>
                             </div>
@@ -242,7 +242,7 @@ export default function DatabaseTab({
                             {importStep === 1 && (
                                 <div style={{ padding: '40px 20px', border: '2px dashed rgba(37, 106, 244,0.2)', borderRadius: '16px', background: 'rgba(37, 106, 244,0.02)' }}>
                                     <FileSpreadsheet size={48} style={{ color: '#256af4', marginBottom: '16px', opacity: 0.5 }} />
-                                    <h3 style={{ margin: '0 0 8px', fontSize: '16px', fontWeight: 700 }}>{t('اختر ملف Excel')}</h3>
+                                    <h3 style={{ margin: '0 0 8px', fontSize: '13px', fontWeight: 700 }}>{t('اختر ملف Excel')}</h3>
                                     <p style={{ margin: '0 0 24px', fontSize: '13px', color: '#64748b' }}>
                                         {importType === 'items'
                                             ? t('الأعمدة المطلوبة: اسم الصنف، التصنيف، وحدة القياس، سعر التكلفة، سعر البيع، الكمية الافتتاحية')
@@ -296,20 +296,20 @@ export default function DatabaseTab({
                                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                                             <thead style={{ background: 'rgba(255,255,255,0.04)', position: 'sticky', top: 0, zIndex: 5 }}>
                                                 <tr>
-                                                    <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>{t('الاسم')}</th>
-                                                    <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>
+                                                    <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 600, fontSize: '12px' }}>{t('الاسم')}</th>
+                                                    <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 600, fontSize: '12px' }}>
                                                         {importType === 'items' ? t('الوحدة') : t('الهاتف')}
                                                     </th>
                                                     {importType === 'items' ? (
                                                         <>
-                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>{t('الكمية')}</th>
-                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.primary, fontWeight: 900, fontSize: '12px' }}>{t('سعر التكلفة')}</th>
-                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#f59e0b', fontWeight: 900, fontSize: '12px', background: 'rgba(245,158,11,0.04)' }}>{t('إجمالي التكلفة')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 600, fontSize: '12px' }}>{t('الكمية')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.primary, fontWeight: 600, fontSize: '12px' }}>{t('سعر التكلفة')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#f59e0b', fontWeight: 600, fontSize: '12px', background: 'rgba(245,158,11,0.04)' }}>{t('إجمالي التكلفة')}</th>
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#ef4444', fontWeight: 900, fontSize: '12px', background: 'rgba(239,68,68,0.04)' }}>{t('مدين (عليه)')}</th>
-                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#10b981', fontWeight: 900, fontSize: '12px', background: 'rgba(16,185,129,0.04)' }}>{t('دائن (له)')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#ef4444', fontWeight: 600, fontSize: '12px', background: 'rgba(239,68,68,0.04)' }}>{t('مدين (عليه)')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#10b981', fontWeight: 600, fontSize: '12px', background: 'rgba(16,185,129,0.04)' }}>{t('دائن (له)')}</th>
                                                         </>
                                                     )}
                                                 </tr>
@@ -377,13 +377,13 @@ export default function DatabaseTab({
                                                             </td>
                                                             {importType === 'items' ? (
                                                                 <>
-                                                                    <td style={{ padding: '11px 14px',  fontWeight: 800, color: C.textSecondary, fontFamily: 'monospace' }}>
+                                                                    <td style={{ padding: '11px 14px',  fontWeight: 600, color: C.textSecondary, fontFamily: 'monospace' }}>
                                                                         {formatNumber(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']))}
                                                                     </td>
-                                                                    <td style={{ padding: '11px 14px',  fontWeight: 800, color: C.primary, fontFamily: 'monospace' }}>
+                                                                    <td style={{ padding: '11px 14px',  fontWeight: 600, color: C.primary, fontFamily: 'monospace' }}>
                                                                         {formatNumber(findV(['تكلفة', 'cost']))}
                                                                     </td>
-                                                                    <td style={{ padding: '11px 14px',  fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace', background: 'rgba(245,158,11,0.03)' }}>
+                                                                    <td style={{ padding: '11px 14px',  fontWeight: 600, color: '#f59e0b', fontFamily: 'monospace', background: 'rgba(245,158,11,0.03)' }}>
                                                                         {formatNumber(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']) * findV(['تكلفة', 'cost']))}
                                                                     </td>
                                                                 </>
@@ -391,13 +391,13 @@ export default function DatabaseTab({
                                                                 <>
                                                                     <td style={{ padding: '11px 14px',  background: 'rgba(239,68,68,0.03)' }}>
                                                                         {previewDebit > 0
-                                                                            ? <span style={{ fontWeight: 900, color: '#ef4444', fontFamily: 'monospace' }}>{formatNumber(previewDebit)}</span>
-                                                                            : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>—</span>}
+                                                                            ? <span style={{ fontWeight: 600, color: '#ef4444', fontFamily: 'monospace' }}>{formatNumber(previewDebit)}</span>
+                                                                            : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '13px' }}>—</span>}
                                                                     </td>
                                                                     <td style={{ padding: '11px 14px',  background: 'rgba(16,185,129,0.03)' }}>
                                                                         {previewCredit > 0
-                                                                            ? <span style={{ fontWeight: 900, color: '#10b981', fontFamily: 'monospace' }}>{formatNumber(previewCredit)}</span>
-                                                                            : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>—</span>}
+                                                                            ? <span style={{ fontWeight: 600, color: '#10b981', fontFamily: 'monospace' }}>{formatNumber(previewCredit)}</span>
+                                                                            : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '13px' }}>—</span>}
                                                                     </td>
                                                                 </>
                                                             )}
@@ -414,7 +414,7 @@ export default function DatabaseTab({
                                     </div>
 
                                     <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
-                                        <button onClick={processImport} style={{ flex: 1, height: '46px', borderRadius: '12px', border: 'none', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', boxShadow: '0 10px 20px -5px rgba(16,185,129,0.4)', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                        <button onClick={processImport} style={{ flex: 1, height: '46px', borderRadius: '12px', border: 'none', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', boxShadow: '0 10px 20px -5px rgba(16,185,129,0.4)', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                             <Save size={16} /> {t('تأكيد وحفظ البيانات')}
                                         </button>
                                         <button onClick={() => { setImportStep(1); setImportData([]); }} style={{ height: '46px', padding: '0 24px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
@@ -425,7 +425,7 @@ export default function DatabaseTab({
                             {importStep === 3 && (
                                 <div style={{ padding: '40px 20px' }}>
                                     <Loader2 size={48} style={{ animation: 'spin 1s linear infinite', color: C.primary, marginBottom: '24px' }} />
-                                    <h3 style={{ margin: '0 0 12px', fontSize: '18px', fontWeight: 900, fontFamily: CAIRO }}>{t('جاري معالجة البيانات...')}</h3>
+                                    <h3 style={{ margin: '0 0 12px', fontSize: '18px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري معالجة البيانات...')}</h3>
                                     <p style={{ margin: '0 0 24px', color: C.textMuted, fontFamily: CAIRO }}>
                                         {t('جاري استيراد السجل')} {currentImportIndex + 1} {t('من')} {importData.length}
                                     </p>

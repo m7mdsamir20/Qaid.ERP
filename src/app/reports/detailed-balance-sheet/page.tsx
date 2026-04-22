@@ -105,7 +105,7 @@ export default function DetailedBalanceSheetPage() {
                     <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                         <div style={{ padding: '16px 24px', background: 'rgba(16, 185, 129, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#10b981' }}>
                             <Landmark size={20} />
-                            <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, fontFamily: CAIRO }}>{t('الأصول (Assets)')}</h3>
+                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الأصول (Assets)')}</h3>
                         </div>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <tbody>
@@ -113,12 +113,12 @@ export default function DetailedBalanceSheetPage() {
                                     <tr key={a.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }}>
                                         <td style={{ padding: '12px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span></td>
                                         <td style={{ padding: '12px 16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{a.name}</td>
-                                        <td style={{ padding: '12px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={a.balance} /></td>
+                                        <td style={{ padding: '12px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={a.balance} /></td>
                                     </tr>
                                 ))}
                                 <tr style={{ background: 'rgba(16, 185, 129, 0.08)', borderTop: `2px solid #10b98133` }}>
-                                    <td colSpan={2} style={{ padding: '16px 24px', fontWeight: 900, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي الأصول')}</td>
-                                    <td style={{ padding: '16px 24px',  fontWeight: 950, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.totalAssets} /></td>
+                                    <td colSpan={2} style={{ padding: '16px 24px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي الأصول')}</td>
+                                    <td style={{ padding: '16px 24px',  fontWeight: 950, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={data.totalAssets} /></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -130,7 +130,7 @@ export default function DetailedBalanceSheetPage() {
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                             <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#fb7185' }}>
                                 <Scale size={18} />
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>{t('الخصوم (Liabilities)')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('الخصوم (Liabilities)')}</h3>
                             </div>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <tbody>
@@ -138,13 +138,13 @@ export default function DetailedBalanceSheetPage() {
                                         <tr key={l.code} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textMuted }}>{l.code}</span></td>
                                             <td style={{ padding: '10px 16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{l.name}</td>
-                                            <td style={{ padding: '10px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={l.balance} /></td>
+                                            <td style={{ padding: '10px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={l.balance} /></td>
                                         </tr>
                                     ))}
                                     {data.liabilities.length === 0 && <tr><td colSpan={3} style={{ padding: '16px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد التزامات جارية')}</td></tr>}
                                     <tr style={{ background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533` }}>
-                                        <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي الخصوم')}</td>
-                                        <td style={{ padding: '12px 20px',  fontWeight: 900, color: '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.totalLiabilities} /></td>
+                                        <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي الخصوم')}</td>
+                                        <td style={{ padding: '12px 20px',  fontWeight: 600, color: '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={data.totalLiabilities} /></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -154,7 +154,7 @@ export default function DetailedBalanceSheetPage() {
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                             <div style={{ padding: '14px 20px', background: 'rgba(37, 106, 244, 0.05)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px', color: '#256af4' }}>
                                 <Sigma size={18} />
-                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 900, fontFamily: CAIRO }}>{t('حقوق الملكية (Equity)')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('حقوق الملكية (Equity)')}</h3>
                             </div>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <tbody>
@@ -162,17 +162,17 @@ export default function DetailedBalanceSheetPage() {
                                         <tr key={e.code} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}><span style={{ fontSize: '11px', fontFamily: OUTFIT, color: C.textMuted }}>{e.code}</span></td>
                                             <td style={{ padding: '10px 16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{e.name}</td>
-                                            <td style={{ padding: '10px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={e.balance} /></td>
+                                            <td style={{ padding: '10px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={e.balance} /></td>
                                         </tr>
                                     ))}
                                     <tr style={{ borderBottom: `1px solid ${C.border}`, background: 'rgba(37, 106, 244, 0.02)' }}>
                                         <td style={{ padding: '10px 16px', borderInlineStart: `1px solid ${C.border}` }}>—</td>
                                         <td style={{ padding: '10px 16px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('صافي الربح / الخسارة')}</td>
-                                        <td style={{ padding: '10px 16px',  fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.netIncome} /></td>
+                                        <td style={{ padding: '10px 16px',  fontWeight: 600, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={data.netIncome} /></td>
                                     </tr>
                                     <tr style={{ background: 'rgba(37, 106, 244, 0.08)', borderTop: `1px solid #256af433` }}>
-                                        <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي حقوق الملكية')}</td>
-                                        <td style={{ padding: '12px 20px',  fontWeight: 950, color: '#256af4', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.totalEquities} /></td>
+                                        <td colSpan={2} style={{ padding: '12px 20px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('إجمالي حقوق الملكية')}</td>
+                                        <td style={{ padding: '12px 20px',  fontWeight: 950, color: '#256af4', fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={data.totalEquities} /></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -188,7 +188,7 @@ export default function DetailedBalanceSheetPage() {
                             justifyContent: 'space-between',
                             alignItems: 'center'
                         }}>
-                             <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</span>
+                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</span>
                              <span style={{ fontSize: '18px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalLiabilitiesAndEquities} /></span>
                         </div>
                     </div>
@@ -197,7 +197,7 @@ export default function DetailedBalanceSheetPage() {
                 <div className="no-print" style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '24px', padding: '14px 18px', background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '12px' }}>
                     <Info size={16} style={{ color: C.primary }} />
                     <p style={{ margin: 0, fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>
-                        {t('الميزانية متزنة تفصيلياً:')} <span style={{ color: C.success, fontWeight: 800 }}>{t('الأصول')} ({fmt(data.totalAssets)})</span> = <span style={{ color: C.primary, fontWeight: 800 }}>{t('الخصوم وحقوق الملكية')} ({fmt(data.totalLiabilitiesAndEquities)})</span>
+                        {t('الميزانية متزنة تفصيلياً:')} <span style={{ color: C.success, fontWeight: 600 }}>{t('الأصول')} ({fmt(data.totalAssets)})</span> = <span style={{ color: C.primary, fontWeight: 600 }}>{t('الخصوم وحقوق الملكية')} ({fmt(data.totalLiabilitiesAndEquities)})</span>
                     </p>
                 </div>
             </div>

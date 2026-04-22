@@ -204,7 +204,7 @@ export default function CashStatementPage() {
                         <button onClick={() => fetchReport()} disabled={loading} style={{ 
                             height: '42px', padding: '0 24px', borderRadius: '12px', 
                             background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
+                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
                             boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}>
@@ -222,7 +222,7 @@ export default function CashStatementPage() {
                 ) : !data ? (
                     <div style={{ padding: '120px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Wallet size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار الخزينة')}</h3>
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار الخزينة')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('يرجى اختيار الخزينة وتحديد الفترة الزمنية لعرض كشف الحركة التفصيلي.')}</p>
                     </div>
                 ) : (
@@ -243,10 +243,10 @@ export default function CashStatementPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
+                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
                                             <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
-                                        <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
+                                        <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
                                     </div>
                                     <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
                                         {s.icon}
@@ -264,18 +264,18 @@ export default function CashStatementPage() {
                                                 <th key={i} style={{ 
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                      
-                                                    fontWeight: 800, fontFamily: CAIRO 
+                                                    fontWeight: 600, fontFamily: CAIRO 
                                                 }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            <td colSpan={2} style={{ padding: '14px 20px',  fontSize: '12.5px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد افتتاحي (قبل الفترة المحددة)')}</td>
+                                            <td colSpan={2} style={{ padding: '14px 20px',  fontSize: '12.5px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('رصيد افتتاحي (قبل الفترة المحددة)')}</td>
                                             <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
                                             <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
-                                            <td style={{ padding: '14px 20px',  fontWeight: 1000, color: data.openingBalance >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(data.openingBalance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 600, color: data.openingBalance >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(data.openingBalance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                         {movements.map((m, i: number) => (
                                             <tr key={m.id + i} 
@@ -286,22 +286,22 @@ export default function CashStatementPage() {
                                                     {new Date(m.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start'}}>{m.party}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start'}}>{m.party}</div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, textAlign: 'start', fontFamily: CAIRO, marginTop: '2px' }}>{m.description}</div>
                                                 </td>
                                                 <td style={{ padding: '14px 20px',  color: C.textMuted, fontSize: '13.5px', fontFamily: OUTFIT }}>{formatNumber(m.balanceBefore)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
-                                                <td style={{ padding: '14px 20px',  color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 900, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'receipt' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 900, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'payment' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 1000, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT, background: 'rgba(255,255,255,0.01)' }}>{formatNumber(m.balanceAfter)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px',  color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'receipt' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 600, fontSize: '14.5px', fontFamily: OUTFIT }}>{m.type === 'payment' ? <>{formatNumber(m.amount)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '15px', fontFamily: OUTFIT, background: 'rgba(255,255,255,0.01)' }}>{formatNumber(m.balanceAfter)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <td colSpan={3} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي حركة التداول والتحويلات')}</td>
-                                            <td style={{ padding: '20px 20px',  color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT }}>+{fMoneyJSX(totalReceipts)}</td>
-                                            <td style={{ padding: '20px 20px',  color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT }}>-{fMoneyJSX(totalPayments)}</td>
-                                            <td style={{ padding: '20px 24px',  color: C.textPrimary, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>{formatNumber(data.currentBalance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td colSpan={3} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي حركة التداول والتحويلات')}</td>
+                                            <td style={{ padding: '20px 20px',  color: SC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>+{fMoneyJSX(totalReceipts)}</td>
+                                            <td style={{ padding: '20px 20px',  color: DC, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>-{fMoneyJSX(totalPayments)}</td>
+                                            <td style={{ padding: '20px 24px',  color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>{formatNumber(data.currentBalance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     </tfoot>
                                 </table>

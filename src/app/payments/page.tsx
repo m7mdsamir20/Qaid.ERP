@@ -144,7 +144,7 @@ export default function PaymentVouchersPage() {
                     {loading ? (
                         <div style={{ padding: '80px' }}>
                             <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, display: 'block', margin: '0 auto 10px' }} />
-                            <span style={{ fontSize: '14px', color: C.textSecondary, fontWeight: 600 }}>جاري تحميل البيانات...</span>
+                            <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>جاري تحميل البيانات...</span>
                         </div>
                     ) : filteredAll.length === 0 ? (
                         <div style={{ padding: '70px' }}>
@@ -154,7 +154,7 @@ export default function PaymentVouchersPage() {
                     ) : (
                         <>
                             <div className="scroll-table">
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', minWidth: '1000px' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '1000px' }}>
                                     <thead>
                                         <tr style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO, width: '120px' }}>رقم السند</th>

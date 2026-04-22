@@ -77,13 +77,13 @@ export default function StockMovementsPage() {
                 <div className="print-only">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
                         <div style={{ textAlign: 'start' }}>
-                            <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
+                            <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{(session?.user as any)?.companyName || ''}</h2>
                             {(session?.user as any)?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('الرقم الضريبي')}: {(session?.user as any)?.taxNumber}</div>}
                             {(session?.user as any)?.commercialRegister && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('السجل التجاري')}: {(session?.user as any)?.commercialRegister}</div>}
                             {(session?.user as any)?.phone && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>{t('الهاتف')}: {(session?.user as any)?.phone}</div>}
                         </div>
                         <div style={{ }}>
-                            <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{t('سجل حركات المخزون الشامل')}</h3>
+                            <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{t('سجل حركات المخزون الشامل')}</h3>
                         </div>
                         <div style={{ maxWidth: '150px', textAlign: 'end' }}>
                             {(session?.user as any)?.companyLogo && <img src={(session?.user as any)?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
@@ -115,7 +115,7 @@ export default function StockMovementsPage() {
                     ) : filteredMovements.length === 0 ? (
                         <div style={{ padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <Activity size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حركات مخزنية')}</h3>
+                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد حركات مخزنية')}</h3>
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم تسجيل أي عمليات مخزنية تطابق بحثك.')}</p>
                         </div>
                     ) : (
@@ -127,7 +127,7 @@ export default function StockMovementsPage() {
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                 textAlign: i === 5 ? 'center' : 'right', 
-                                                fontWeight: 800, fontFamily: CAIRO 
+                                                fontWeight: 600, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}
                                     </tr>
@@ -148,7 +148,7 @@ export default function StockMovementsPage() {
                                                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                                                         padding: '4px 12px', borderRadius: '10px',
                                                         background: typeConfig.bg, border: `1px solid ${typeConfig.border}`,
-                                                        color: typeConfig.color, fontSize: '11px', fontWeight: 900, fontFamily: CAIRO
+                                                        color: typeConfig.color, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO
                                                     }}>
                                                         {typeConfig.icon}
                                                         {typeConfig.label}
@@ -160,7 +160,7 @@ export default function StockMovementsPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{m.item?.name || '—'}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse?.name || '—'}</td>
                                                 <td style={{ padding: '14px 20px', }}>
-                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: typeConfig.color, fontFamily: OUTFIT }}>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: typeConfig.color, fontFamily: OUTFIT }}>
                                                         {m.quantity > 0 ? '+' : ''}{formatNumber(m.quantity)}
                                                     </span>
                                                 </td>

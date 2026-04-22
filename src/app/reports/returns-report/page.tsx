@@ -94,7 +94,7 @@ export default function ReturnsReportPage() {
                             <div style={{ textAlign: 'start'}}>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                     {i !== 2 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                 </div>
                             </div>
@@ -135,8 +135,8 @@ export default function ReturnsReportPage() {
 
                     {error && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                            <span style={{ fontSize: '16px' }}>⚠️</span>{error}
-                            <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                            <span style={{ fontSize: '13px' }}>⚠️</span>{error}
+                            <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
                         </div>
                     )}
 
@@ -148,7 +148,7 @@ export default function ReturnsReportPage() {
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                             <ArrowRightLeft size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                            <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مرتجعات مسجلة')}</h3>
+                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مرتجعات مسجلة')}</h3>
                             <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('برجاء تعديل معايير البحث أو تسجيل عمليات جديدة في النظام.')}</p>
                         </div>
                     ) : (
@@ -160,7 +160,7 @@ export default function ReturnsReportPage() {
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                  
-                                                fontWeight: 800, fontFamily: CAIRO 
+                                                fontWeight: 600, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}
                                     </tr>
@@ -177,7 +177,7 @@ export default function ReturnsReportPage() {
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{
-                                                    padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
+                                                    padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
                                                     background: r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.1)' : 'rgba(37, 106, 244, 0.1)',
                                                     color: r.type === 'sale_return' ? '#ef4444' : '#256af4',
                                                     border: `1px solid ${r.type === 'sale_return' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(37, 106, 244, 0.2)'}`
@@ -187,7 +187,7 @@ export default function ReturnsReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
                                             <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT }}>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
                                                 <Currency amount={r.total} />
                                             </td>
                                         </tr>

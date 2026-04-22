@@ -312,7 +312,7 @@ export default function NewReturnPage() {
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#475569', flexDirection: 'column', gap: '12px' }}>
                 <Loader2 size={36} className="spin" />
-                <span style={{ fontSize: '14px' }}>{t('جاري التحميل...')}</span>
+                <span style={{ fontSize: '13px' }}>{t('جاري التحميل...')}</span>
             </div>
             
         </DashboardLayout>

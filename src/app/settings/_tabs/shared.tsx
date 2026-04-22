@@ -17,7 +17,7 @@ export function TabHeader({ title, sub, isEdit, onEdit, onCancel, onSave, isSavi
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', paddingBottom: '12px', borderBottom: `1px solid ${C.border}` }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div>
-                    <h2 style={{ margin: '0 0 1px', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{title}</h2>
+                    <h2 style={{ margin: '0 0 1px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{title}</h2>
                     <p style={{ margin: 0, fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{sub}</p>
                 </div>
             </div>

@@ -111,7 +111,7 @@ export default function NewPaymentPage() {
         if (!fieldErrors[field]) return null;
         return (
             <div style={{
-                position: 'absolute', top, insetInlineStart: '4px', fontSize: '11px', color: '#fff', fontWeight: 800,
+                position: 'absolute', top, insetInlineStart: '4px', fontSize: '11px', color: '#fff', fontWeight: 600,
                 background: 'linear-gradient(135deg, #ef4444, #b91c1c)', padding: '4px 10px', borderRadius: '8px',
                 pointerEvents: 'none', zIndex: 100, boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
                 display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap',
@@ -129,7 +129,7 @@ export default function NewPaymentPage() {
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textSecondary, flexDirection: 'column', gap: '14px' }}>
                 <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                <span style={{ fontSize: '14px', fontWeight: 600 }}>جاري تحميل البيانات...</span>
+                <span style={{ fontSize: '13px', fontWeight: 600 }}>جاري تحميل البيانات...</span>
             </div>
             <style jsx global>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </DashboardLayout>
@@ -164,7 +164,7 @@ export default function NewPaymentPage() {
                                         background: 'rgba(244, 63, 94, 0.08)',
                                         border: `1px solid ${C.border}`,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontFamily: CAIRO, fontWeight: 900,
+                                        fontFamily: CAIRO, fontWeight: 600,
                                         fontSize: '13px', color: '#f43f5e',
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
@@ -287,7 +287,7 @@ export default function NewPaymentPage() {
                                             onChange={val => { setForm((f: any) => ({ ...f, amount: val })); clearError('amount'); }}
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
-                                                border: 'none', color: C.danger, fontWeight: 900,
+                                                border: 'none', color: C.danger, fontWeight: 600,
                                                 fontSize: '22px', paddingInlineEnd: '44px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
@@ -306,13 +306,13 @@ export default function NewPaymentPage() {
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600 }}>الرصيد بعد السند</span>
                                     {selectedSupplier ? (
                                         <span style={{
-                                            fontSize: '15px', fontWeight: 800, fontFamily: CAIRO,
+                                            fontSize: '15px', fontWeight: 600, fontFamily: CAIRO,
                                             color: ((selectedSupplier.balance - (parseFloat(form.amount) || 0))) >= 0 ? C.danger : C.success
                                         }}>
                                             {formatNumber(Math.abs(selectedSupplier.balance - (parseFloat(form.amount) || 0)))} {cSymbol}
                                         </span>
                                     ) : (
-                                        <span style={{ fontSize: '14px', color: C.textMuted }}>—</span>
+                                        <span style={{ fontSize: '13px', color: C.textMuted }}>—</span>
                                     )}
                                 </div>
                             </div>

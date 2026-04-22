@@ -174,7 +174,7 @@ export default function CostCentersPage() {
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textMuted }}>
                         <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                        <span style={{ fontSize: '14px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
+                        <span style={{ fontSize: '13px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                     </div>
                 ) : filteredAll.length === 0 ? (
                     <div style={{ padding: '80px 20px', color: C.textMuted }}>
@@ -200,7 +200,7 @@ export default function CostCentersPage() {
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                     >
-                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
+                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
                                             {cc.code}
                                         </td>
                                         <td style={TABLE_STYLE.td(false)}>
@@ -212,13 +212,13 @@ export default function CostCentersPage() {
                                             </div>
                                         </td>
                                         <td style={TABLE_STYLE.td(false, true)}>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 800, color: cc.isActive ? C.success : C.danger, background: cc.isActive ? C.successBg : C.dangerBg, padding: '3px 10px', borderRadius: '20px', border: `1px solid ${cc.isActive ? C.successBorder : C.dangerBorder}` }}>
+                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '11px', fontWeight: 600, color: cc.isActive ? C.success : C.danger, background: cc.isActive ? C.successBg : C.dangerBg, padding: '3px 10px', borderRadius: '20px', border: `1px solid ${cc.isActive ? C.successBorder : C.dangerBorder}` }}>
                                                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: cc.isActive ? C.success : C.danger }} />
                                                 {cc.isActive ? t('نشط') : t('موقوف')}
                                             </div>
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                            <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {cc.totalExpenses ? formatNumber(cc.totalExpenses) : '0.00'} 
                                                 <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </div>
@@ -304,7 +304,7 @@ export default function CostCentersPage() {
                             {saving ? <Loader2 size={18} className="animate-spin" /> : (editItem ? <CheckCircle2 size={18} /> : <Plus size={18} />)}
                             <span style={{ marginInlineEnd: '8px' }}>{editItem ? t('حفظ التعديلات') : t('إضافة المركز')}</span>
                         </button>
-                        <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '12px', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
+                        <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '12px', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                     </div>
                 </form>
             </AppModal>

@@ -73,7 +73,7 @@ export default function SaleReturnDetailsPage() {
             <DashboardLayout>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '14px', color: '#475569' }}>
                     <Loader2 size={36} style={{ animation: 'spin 1s linear infinite' }} />
-                    <span style={{ fontSize: '14px', fontWeight: 600 }}>{t('جاري استرجاع تفاصيل المرتجع...')}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600 }}>{t('جاري استرجاع تفاصيل المرتجع...')}</span>
                 </div>
                 <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
             </DashboardLayout>
@@ -140,7 +140,7 @@ export default function SaleReturnDetailsPage() {
                 <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border-subtle)', borderRadius: '12px', padding: '12px 20px', marginBottom: '8px', display: 'flex', gap: '24px', alignItems: 'center' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         <span style={{ fontWeight: 600 }}>{t('رقم المرتجع:')}</span>
-                        <span style={{ color: '#256af4', fontWeight: 800, fontFamily: 'monospace' }}>RET-{String(ret.invoiceNumber).padStart(5, '0')}</span>
+                        <span style={{ color: '#256af4', fontWeight: 600, fontFamily: 'monospace' }}>RET-{String(ret.invoiceNumber).padStart(5, '0')}</span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-muted)' }}>
                         <Calendar size={14} style={{ color: C.primary }} />
@@ -151,7 +151,7 @@ export default function SaleReturnDetailsPage() {
                         <div onClick={() => router.push('/sales/' + ret.originalInvoiceId)} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: '#256af4', cursor: 'pointer', background: 'rgba(37, 106, 244,0.05)', padding: '2px 10px', borderRadius: '6px' }}>
                             <ShoppingBag size={14} />
                             <span style={{ fontWeight: 600 }}>{isServices ? t("مرجع فاتورة الخدمة:") : t("مرجع فاتورة البيع:")}</span>
-                            <span style={{ fontWeight: 800 }}>SRV-{String(ret.originalInvoice.invoiceNumber).padStart(5, '0')}</span>
+                            <span style={{ fontWeight: 600 }}>SRV-{String(ret.originalInvoice.invoiceNumber).padStart(5, '0')}</span>
                         </div>
                     )}
                 </div>
@@ -163,7 +163,7 @@ export default function SaleReturnDetailsPage() {
                             <User size={16} />
                         </div>
                         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-primary)' }}>{customer?.name || t('عميل عام (نقدي)')}</div>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>{customer?.name || t('عميل عام (نقدي)')}</div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: 'var(--text-muted)' }}>
                                 <Phone size={13} />
                                 <span>{customer?.phone || ''}</span>
@@ -174,7 +174,7 @@ export default function SaleReturnDetailsPage() {
                     {customer && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('رصيد العميل الحالي:')}</div>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: customer.balance > 0 ? '#f87171' : '#10b981' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: customer.balance > 0 ? '#f87171' : '#10b981' }}>
                                 <span style={{ fontSize: '11px', marginInlineStart: '4px' }}>{customer.balance > 0 ? t('عليه') : t('له')}</span>
                                 {Math.abs(customer.balance).toLocaleString()}
                             </div>
@@ -189,7 +189,7 @@ export default function SaleReturnDetailsPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         <div className="table-container" style={{ borderRadius: '18px', overflow: 'hidden' }}>
                             <div style={{ padding: '14px 20px', borderBottom: '1px solid var(--border-subtle)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)' }}>
-                                <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
+                                <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
                                     <Package size={13} color="#256af4" strokeWidth={3} /> {isServices ? t("الخدمات الملغاة") : t("الأصناف المرتجعة")}
                                 </h3>
                                 <span style={{ fontSize: '11px', color: 'var(--text-muted)', fontWeight: 600 }}>{ret.lines.length} {isServices ? t("خدمة") : t("صنف")}</span>
@@ -214,7 +214,7 @@ export default function SaleReturnDetailsPage() {
                                             <td style={{ padding: '12px 16px',  fontSize: '12px' }}>{l.item.unit?.name || '—'}</td>
                                             <td style={{ padding: '12px 16px',  fontSize: '13px', fontWeight: 700, color: '#f87171' }}>{l.quantity}</td>
                                             <td style={{ padding: '12px 16px',  fontSize: '12px' }}>{l.price.toLocaleString()}</td>
-                                            <td style={{ padding: '12px 16px',  fontSize: '13px', fontWeight: 800 }}>{l.total.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px',  fontSize: '13px', fontWeight: 600 }}>{l.total.toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -242,7 +242,7 @@ export default function SaleReturnDetailsPage() {
                                 <span style={{ color: '#10b981' }}>{ret.paidAmount.toLocaleString()}</span>
                             </div>
                             <div style={{ height: '1px', background: 'var(--border-subtle)', margin: '4px 0' }} />
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px', fontWeight: 800 }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', fontWeight: 600 }}>
                                 <span>{isServices ? t("صافي التسوية:") : t("صافي التسوية:")}</span>
                                 <span style={{ color: '#256af4', fontSize: '18px' }}>{ret.remaining.toLocaleString()}</span>
                             </div>
@@ -258,7 +258,7 @@ export default function SaleReturnDetailsPage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{isServices ? t("إجمالي الملغي") : t("إجمالي المرتجع")}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#ef4444' }}>{ret.total.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
+                                <div style={{ fontSize: '18px', fontWeight: 600, color: '#ef4444' }}>{ret.total.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
@@ -268,7 +268,7 @@ export default function SaleReturnDetailsPage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('رد نقدي مباشر')}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#10b981' }}>{ret.paidAmount.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
+                                <div style={{ fontSize: '18px', fontWeight: 600, color: '#10b981' }}>{ret.paidAmount.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
@@ -278,7 +278,7 @@ export default function SaleReturnDetailsPage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 600 }}>{t('تسوية رصيد')}</div>
-                                <div style={{ fontSize: '18px', fontWeight: 800, color: '#256af4' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
+                                <div style={{ fontSize: '18px', fontWeight: 600, color: '#256af4' }}>{ret.remaining.toLocaleString()} <span style={{ fontSize: '11px' }}></span></div>
                             </div>
                         </div>
 
@@ -286,7 +286,7 @@ export default function SaleReturnDetailsPage() {
                         {ret.paymentMethod && (
                             <div style={{ padding: '16px', border: '1px solid var(--border-subtle)', borderRadius: '14px', background: 'rgba(255,255,255,0.02)', borderStyle: 'dashed' }}>
                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontWeight: 700, marginBottom: '8px', textTransform: 'uppercase' }}>{t('آلية المرتجع')}</div>
-                                <div style={{ fontSize: '14px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
+                                <div style={{ fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-primary)' }}>
                                     <div style={{ width: '28px', height: '28px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                         <CreditCard size={14} />
                                     </div>

@@ -118,8 +118,8 @@ export default function OverduePage() {
                                 <Wallet size={16} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>{t('إجمالي المتأخرات')}</div>
-                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600 }}>{t('إجمالي المتأخرات')}</div>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                     {fMoneyJSX(totalOverdue)}
                                 </div>
                             </div>
@@ -149,13 +149,13 @@ export default function OverduePage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                 <td style={{ padding: '14px 16px' }}>
-                                                    <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
                                                         {inst.plan?.customer?.name}
                                                     </div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{inst.plan?.customer?.phone}</div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>
+                                                    <div style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>
                                                         #{inst.plan?.planNumber}
                                                     </div>
                                                 </td>
@@ -168,7 +168,7 @@ export default function OverduePage() {
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px', 
-                                                        padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 800,
+                                                        padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
                                                         background: 'rgba(239,68,68,0.12)', color: C.danger, border: `1px solid ${C.danger}22`
                                                     }}>
                                                         {inst.daysOverdue} {t('يوم تأخير')}
@@ -194,7 +194,7 @@ export default function OverduePage() {
                                                             style={{ 
                                                                 height: '32px', padding: '0 16px', borderRadius: '10px', border: 'none',
                                                                 background: C.danger, color: '#fff', 
-                                                                fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: '0.2s',
+                                                                fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '0.2s',
                                                                 boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                                                             }}
                                                             onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
@@ -238,11 +238,11 @@ export default function OverduePage() {
                             <div style={{ background: 'rgba(251,113,133,0.03)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.danger}20`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل المتعثر')}:</span>
-                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800 }}>{collectTarget.plan?.customer?.name}</span>
+                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600 }}>{collectTarget.plan?.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('إجمالي المتأخر')}:</span>
-                                    <span style={{ fontSize: '15px', color: C.danger, fontWeight: 900, fontFamily: OUTFIT }}>
+                                    <span style={{ fontSize: '15px', color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>
                                         {fMoneyJSX(collectTarget.remaining || collectTarget.amount)}
                                     </span>
                                 </div>
@@ -253,10 +253,10 @@ export default function OverduePage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, border: `1px solid ${C.danger}30` }} 
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, border: `1px solid ${C.danger}30` }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
-                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -286,7 +286,7 @@ export default function OverduePage() {
                                                 <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: isSelectedType ? C.danger : 'rgba(255,255,255,0.05)', color: isSelectedType ? '#fff' : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <t_tr.icon size={14} />
                                                 </div>
-                                                <div style={{ fontSize: '11.5px', fontWeight: 800, color: isSelectedType ? C.danger : C.textSecondary }}>{t_tr.label}</div>
+                                                <div style={{ fontSize: '11.5px', fontWeight: 600, color: isSelectedType ? C.danger : C.textSecondary }}>{t_tr.label}</div>
                                             </div>
                                         );
                                     })}
@@ -323,14 +323,14 @@ export default function OverduePage() {
 
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={collecting} 
-                                    style={{ ...BTN_DANGER(false, collecting), flex: 1.5, height: '48px', borderRadius: '12px', fontSize: '14px' }}>
+                                    style={{ ...BTN_DANGER(false, collecting), flex: 1.5, height: '48px', borderRadius: '12px', fontSize: '13px' }}>
                                     {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> {t('تسوية وتحصيل')}</>}
                                 </button>
                                 <button type="button" onClick={() => setCollectTarget(null)} 
                                     style={{ 
                                         flex: 1, borderRadius: '12px', border: `1px solid ${C.border}`, 
                                         background: 'rgba(255,255,255,0.03)', color: C.textSecondary, 
-                                        fontWeight: 800, cursor: 'pointer', transition: '0.2s', fontSize: '14px' 
+                                        fontWeight: 600, cursor: 'pointer', transition: '0.2s', fontSize: '13px' 
                                     }}
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}

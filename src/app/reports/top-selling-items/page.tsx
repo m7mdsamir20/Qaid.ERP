@@ -80,14 +80,14 @@ export default function TopSellingReportPage() {
                                 />
                             </div>
                             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>
-                                {t('تم العثور على:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>{filtered.length}</span> {isServices ? t("خدمة") : t("صنف")}
+                                {t('تم العثور على:')} <span style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>{filtered.length}</span> {isServices ? t("خدمة") : t("صنف")}
                             </div>
                         </div>
 
                         {error && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                                <span style={{ fontSize: '16px' }}>⚠️</span>{error}
-                                <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                                <span style={{ fontSize: '13px' }}>⚠️</span>{error}
+                                <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
                             </div>
                         )}
 
@@ -99,7 +99,7 @@ export default function TopSellingReportPage() {
                         ) : filtered.length === 0 ? (
                             <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("لا توجد خدمات منفذة") : t("لا توجد أصناف مباعة")}</h3>
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{isServices ? t("لا توجد خدمات منفذة") : t("لا توجد أصناف مباعة")}</h3>
                                 <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{isServices ? t("لم يتم تسجيل عمليات طلب لهذه الخدمات في الفترة الحالية.") : t("لم يتم تسجيل عمليات بيع لهذه الأصناف في الفترة الحالية.")}</p>
                             </div>
                         ) : (
@@ -107,11 +107,11 @@ export default function TopSellingReportPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>#</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{isServices ? t("بيانات الخدمة") : t("بيانات الصنف")}</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('القيمة')}</th>
-                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الربح التقديري')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>#</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{isServices ? t("بيانات الخدمة") : t("بيانات الصنف")}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('القيمة')}</th>
+                                            <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('الربح التقديري')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -129,14 +129,14 @@ export default function TopSellingReportPage() {
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(item.totalQuantity)}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.primary, fontSize: '14px', fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.primary, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {formatNumber(item.totalSales)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{
                                                         color: '#10b981', background: 'rgba(16,185,129,0.08)',
                                                         padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
-                                                        fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT
+                                                        fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT
                                                     }}>
                                                         {formatNumber(item.totalProfit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                     </span>
@@ -155,22 +155,22 @@ export default function TopSellingReportPage() {
                                 <TrendingUp size={24} />
                             </div>
                             <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{isServices ? t("إجمالي قيمة الخدمات") : t("إجمالي القيمة البيعية")}</div>
-                            <div style={{ fontSize: '20px', fontWeight: 1000, color: '#60a5fa', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                            <div style={{ fontSize: '20px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                                 {formatNumber(totalSales)}
                                 <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                             </div>
                         </div>
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '18px', padding: '20px' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 800, color: '#fb923c', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#fb923c', marginBottom: '18px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                 <Activity size={16} /> {isServices ? t("أعلى 5 خدمات") : t("أعلى 5 أصناف")}
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 {filtered.slice(0, 5).map((item, idx) => (
                                     <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 900, color: idx < 3 ? '#000' : C.textMuted, fontFamily: OUTFIT }}>{idx + 1}</div>
+                                        <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 600, color: idx < 3 ? '#000' : C.textMuted, fontFamily: OUTFIT }}>{idx + 1}</div>
                                         <div style={{ flex: 1, minWidth: 0 }}>
-                                            <div style={{ fontSize: '12px', color: C.textPrimary, fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: CAIRO }}>{item.name}</div>
+                                            <div style={{ fontSize: '12px', color: C.textPrimary, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: CAIRO }}>{item.name}</div>
                                             <div style={{ width: '100%', height: '5px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', marginTop: '6px' }}>
                                                 <div style={{ width: `${(item.totalSales / (filtered[0]?.totalSales || 1)) * 100}%`, height: '100%', background: C.primary, borderRadius: '10px' }} />
                                             </div>

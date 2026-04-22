@@ -85,7 +85,7 @@ export default function InventoryReportPage() {
                                 <div style={{ textAlign: 'start'}}>
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                        <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                         {i === 2 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                     </div>
                                 </div>
@@ -111,8 +111,8 @@ export default function InventoryReportPage() {
 
                 {error && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                        <span style={{ fontSize: '16px' }}>⚠️</span>{error}
-                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                        <span style={{ fontSize: '13px' }}>⚠️</span>{error}
+                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
                     </div>
                 )}
 
@@ -124,7 +124,7 @@ export default function InventoryReportPage() {
                 ) : filtered.length === 0 ? (
                     <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <Package size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات مخزون')}</h3>
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات مخزون')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على نتائج تطابق معايير البحث الحالية.')}</p>
                     </div>
                 ) : (
@@ -148,7 +148,7 @@ export default function InventoryReportPage() {
                                     {filtered.map((st, idx) => (
                                         <tr key={st.id} style={TABLE_STYLE.row(idx === filtered.length - 1)}>
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>{st.item?.code || '-'}</span>
+                                                <span style={{ background: 'rgba(37, 106, 244,0.1)', border: '1px solid rgba(37, 106, 244,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#60a5fa', fontFamily: OUTFIT }}>{st.item?.code || '-'}</span>
                                             </td>
                                             <td style={{...TABLE_STYLE.td(true)}}>
                                                 <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
@@ -159,7 +159,7 @@ export default function InventoryReportPage() {
                                                     <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{st.warehouse?.name || t('مخزن غير معرف')}</span></td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <span style={{
-                                                            fontSize: '13px', fontWeight: 900, color: st.quantity <= 0 ? '#ef4444' : st.quantity <= 10 ? '#f59e0b' : '#10b981',
+                                                            fontSize: '13px', fontWeight: 600, color: st.quantity <= 0 ? '#ef4444' : st.quantity <= 10 ? '#f59e0b' : '#10b981',
                                                             fontFamily: OUTFIT, background: st.quantity <= 0 ? 'rgba(239, 68, 68, 0.1)' : st.quantity <= 10 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                                             padding: '4px 10px', borderRadius: '10px'
                                                         }}>
@@ -172,7 +172,7 @@ export default function InventoryReportPage() {
                                             <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
                                             {!isServices && (
                                                 <td style={{...TABLE_STYLE.td(false)}}>
-                                                    {fMoneyJSX(st.quantity * (st.item?.costPrice || 0), '', { fontWeight: 900, color: C.primary })}
+                                                    {fMoneyJSX(st.quantity * (st.item?.costPrice || 0), '', { fontWeight: 600, color: C.primary })}
                                                 </td>
                                             )}
                                         </tr>

@@ -242,7 +242,7 @@ export default function NewQuotationPage() {
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
-                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
                                         QUO-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
@@ -321,10 +321,10 @@ export default function NewQuotationPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 800 }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 800 }}>{t('السعر')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 800 }}>{t('الإجمالي')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 600 }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 600 }}>{t('السعر')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 600 }}>{t('الإجمالي')}</th>
                                             <th style={{ padding: '12px', width: '80px' }}></th>
                                         </tr>
                                     </thead>
@@ -332,11 +332,11 @@ export default function NewQuotationPage() {
                                         {lines.map((l, idx) => (
                                             <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44`, background: 'rgba(255,255,255,0.02)' }}>
                                                 <td style={{ padding: '12px' }}>
-                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
+                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px' }}>{l.itemName}</div>
                                                 </td>
-                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{l.quantity}</td>
                                                 <td style={{ padding: '12px',  fontFamily: OUTFIT, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                                <td style={{ padding: '12px',  fontWeight: 900, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
+                                                <td style={{ padding: '12px',  fontWeight: 600, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -356,7 +356,7 @@ export default function NewQuotationPage() {
                         {/* Notes */}
                         <div style={SC}>
                             <div style={STitle}><FileText size={12} /> {t('ملاحظات وشروط العرض')}</div>
-                            <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} style={{ ...IS, height: '100px', padding: '12px', fontSize: '14px' }} placeholder={t("اكتب أي ملاحظات أو شروط تود ظهورها في عرض السعر...")} />
+                            <textarea value={form.notes} onChange={e => setForm({ ...form, notes: e.target.value })} style={{ ...IS, height: '100px', padding: '12px', fontSize: '13px' }} placeholder={t("اكتب أي ملاحظات أو شروط تود ظهورها في عرض السعر...")} />
                         </div>
                     </div>
 
@@ -370,7 +370,7 @@ export default function NewQuotationPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
                                     <span style={{ color: '#64748b' }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
-                                    <span style={{ fontWeight: 800, fontFamily: OUTFIT, color: '#e2e8f0' }}><Currency amount={subtotal} /> </span>
+                                    <span style={{ fontWeight: 600, fontFamily: OUTFIT, color: '#e2e8f0' }}><Currency amount={subtotal} /> </span>
                                 </div>
 
                                 {/* Discount Section */}
@@ -381,7 +381,7 @@ export default function NewQuotationPage() {
                                     border: `1px solid ${C.border}`
                                 }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textSecondary }}>{t('الخصم')}</label>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 600, color: C.textSecondary }}>{t('الخصم')}</label>
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
@@ -404,7 +404,7 @@ export default function NewQuotationPage() {
                                                 style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 placeholder="0"
                                             />
-                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -421,7 +421,7 @@ export default function NewQuotationPage() {
                                         background: C.subtle
                                     }}>
                                         <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textSecondary }}>
+                                            <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 600, color: C.textSecondary }}>
                                                 {taxSettings.label || 'VAT'}
                                             </label>
                                         </div>
@@ -430,7 +430,7 @@ export default function NewQuotationPage() {
                                                 height: '34px', borderRadius: '8px', border: `1px solid ${C.border}`,
                                                 background: C.card, color: '#60a5fa',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                fontFamily: OUTFIT, fontSize: '13px', fontWeight: 800, position: 'relative'
+                                                fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, position: 'relative'
                                             }}>
                                                 <Currency amount={taxAmount} />
                                             </div>
@@ -442,7 +442,7 @@ export default function NewQuotationPage() {
                                                     }}
                                                     style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 />
-                                                <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                                <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>
                                         </div>
                                     </div>
@@ -455,14 +455,14 @@ export default function NewQuotationPage() {
                                     border: `1px solid ${C.primaryBorder}`,
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>
+                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>
                                         <Currency amount={finalTotal} />
                                     </span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
                                 </div>
                             </div>
 
-                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '52px', background: C.primary, color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 900, fontSize: '16px', marginTop: '14px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', transition: 'all 0.2s', boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)', fontFamily: CAIRO }}>
+                            <button onClick={() => handleSubmit()} disabled={submitting} style={{ width: '100%', height: '52px', background: C.primary, color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 600, fontSize: '13px', marginTop: '14px', cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', transition: 'all 0.2s', boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)', fontFamily: CAIRO }}>
                                 {submitting ? <Loader2 className="animate-spin" /> : <>{t('حفظ وطباعة العرض')} <Printer size={20} /></>}
                             </button>
                         </div>

@@ -157,7 +157,7 @@ export default function QuotationsPage() {
                     ) : filteredAll.length === 0 ? (
                         <div style={{ padding: '80px' }}>
                             <FileText size={48} style={{ color: C.textMuted, opacity: 0.2, margin: '0 auto 15px' }} />
-                            <p style={{ fontSize: '16px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>
+                            <p style={{ fontSize: '13px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>
                                 {searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا يوجد عروض أسعار مسجلة حالياً')}
                             </p>
                         </div>
@@ -182,7 +182,7 @@ export default function QuotationsPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
                                                     QUO-{quo.quotationNumber.toString().padStart(5, '0')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>

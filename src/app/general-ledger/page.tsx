@@ -194,7 +194,7 @@ export default function GeneralLedgerPage() {
                 /* No account selected */
                 <div style={{ padding: '100px 20px', color: '#475569' }}>
                     <ScrollText size={64} style={{ margin: '0 auto 16px', display: 'block', }} />
-                    <p style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: '#334155' }}>{t('اختر الحساب')}</p>
+                    <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: '#334155' }}>{t('اختر الحساب')}</p>
                     <p style={{ margin: '8px 0 0', fontSize: '13px' }}>{t('ابحث عن الحساب أعلاه لعرض حركاته')}</p>
                 </div>
             ) : loading ? (
@@ -214,7 +214,7 @@ export default function GeneralLedgerPage() {
                         ].map((s, i) => (
                             <div key={i} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '10px', padding: '10px 12px' }}>
                                 <div style={{ fontSize: '11px', color: '#475569', fontWeight: 600, marginBottom: '2px' }}>{s.label}</div>
-                                <div style={{ fontSize: '14px', fontWeight: 800, color: s.color, direction: 'ltr', textAlign: 'start' }}>{s.value}</div>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: s.color, direction: 'ltr', textAlign: 'start' }}>{s.value}</div>
                             </div>
                         ))}
                     </div>
@@ -275,7 +275,7 @@ export default function GeneralLedgerPage() {
                                             {fromDate ? `${t('رصيد مرحّل حتى')} ${new Date(fromDate).toLocaleDateString('en-GB')}` : t('الرصيد الافتتاحي')}
                                         </td>
                                         <td colSpan={2} style={TABLE_STYLE.td(false)} />
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 800, color: C.primary, direction: 'ltr' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.primary, direction: 'ltr' }}>
                                             {fmt(openingBalance)}
                                         </td>
                                     </tr>
@@ -294,7 +294,7 @@ export default function GeneralLedgerPage() {
 
                                             {/* Entry Number */}
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <span style={{ fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
+                                                <span style={{ fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
                                                     {line.entryNumber}
                                                 </span>
                                                 {line.reference && (
@@ -336,7 +336,7 @@ export default function GeneralLedgerPage() {
                                             </td>
 
                                             {/* Running Balance */}
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 800, color: line.balance >= 0 ? C.primary : C.danger, direction: 'ltr' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: line.balance >= 0 ? C.primary : C.danger, direction: 'ltr' }}>
                                                 {fmt(line.balance)}
                                             </td>
                                         </tr>
@@ -349,13 +349,13 @@ export default function GeneralLedgerPage() {
                                         <td colSpan={4} style={{ ...TABLE_STYLE.td(true), fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>
                                             {t('الإجمالي')} — {filtered.length} {t('حركة')}
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '14px', fontWeight: 900, color: '#10b981', direction: 'ltr' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: '#10b981', direction: 'ltr' }}>
                                             {fmt(totalDebit)}
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '14px', fontWeight: 900, color: C.danger, direction: 'ltr' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.danger, direction: 'ltr' }}>
                                             {fmt(totalCredit)}
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '14px', fontWeight: 900, color: C.primary, direction: 'ltr' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 600, color: C.primary, direction: 'ltr' }}>
                                             {fmt(closingBalance)}
                                         </td>
                                     </tr>

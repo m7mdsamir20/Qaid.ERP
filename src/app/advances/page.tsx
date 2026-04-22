@@ -202,7 +202,7 @@ export default function AdvancesPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>}
                                         <span>{formatNumber(s.val)}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
@@ -242,7 +242,7 @@ export default function AdvancesPage() {
                         <div style={{ padding: '100px 20px', color: '#475569' }}>
                             <Banknote size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
                             <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد سلف مسجلة')}</h3>
-                            <p style={{ fontSize: '14px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بصرف أول سلفة من زر "صرف سلفة جديدة"')}</p>
+                            <p style={{ fontSize: '13px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بصرف أول سلفة من زر "صرف سلفة جديدة"')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
@@ -269,12 +269,12 @@ export default function AdvancesPage() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ }}>
-                                                    <div style={{ fontWeight: 800, color: '#f1f5f9', fontSize: '14px' }}>{adv.employee.name}</div>
+                                                    <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '13px' }}>{adv.employee.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px' }}>{adv.employee.code}</div>
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: '#f1f5f9', fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{formatNumber(adv.amount)}</span>
                                                 </div>
@@ -283,7 +283,7 @@ export default function AdvancesPage() {
                                                 <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>{adv.installmentCount}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: C.danger, fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.danger, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{formatNumber(adv.monthlyAmount || 0)}</span>
                                                 </div>
@@ -291,11 +291,11 @@ export default function AdvancesPage() {
                                             <td style={{ ...TABLE_STYLE.td(false, true),  color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>
                                             <td style={TABLE_STYLE.td(false, true)}>
                                                 {adv.status === 'pending' ? (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
                                                         <Clock size={12} /> {t('قيد الانتظار')}
                                                     </span>
                                                 ) : (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
                                                         {t('تم الاعتماد')} <CheckCircle2 size={12} />
                                                     </span>
                                                 )}
@@ -394,7 +394,7 @@ export default function AdvancesPage() {
                                                     monthlyAmount: inst > 0 ? (Number(val) / inst).toString() : '0'
                                                 });
                                             }}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}
                                             onFocus={focusIn}
                                             onBlur={focusOut}
                                         />
@@ -424,7 +424,7 @@ export default function AdvancesPage() {
                                             type="text" 
                                             readOnly
                                             value={formatWithCommas(formData.monthlyAmount)}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 800, color: C.success }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.success }}
                                         />
                                     </div>
                                 </div>
@@ -439,7 +439,7 @@ export default function AdvancesPage() {
                             <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), flex: 1, height: '46px' }}>
                                 {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : t('اعتماد وصرف السلفة')}
                             </button>
-                            <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                            <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                 {t('إلغاء')}
                             </button>
                         </div>

@@ -145,7 +145,7 @@ export default function TreasuryBankReportPage() {
                                 <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start', colorScheme: 'dark' }} />
                             </div>
                         </div>
-                        <button onClick={fetchReport} className="btn btn-primary" style={{ height: '42px', padding: '0 30px', fontWeight: 800, gap: '10px', borderRadius: '12px', fontFamily: CAIRO, display: 'flex', alignItems: 'center' }}>
+                        <button onClick={fetchReport} className="btn btn-primary" style={{ height: '42px', padding: '0 30px', fontWeight: 600, gap: '10px', borderRadius: '12px', fontFamily: CAIRO, display: 'flex', alignItems: 'center' }}>
                             <Search size={18} /> {t('عرض التقرير')}
                         </button>
                     </div>
@@ -167,15 +167,15 @@ export default function TreasuryBankReportPage() {
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('رصيد أول المدة')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)} {cSymbol}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)} {cSymbol}</div>
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${SC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('إجمالي المقبوضات (وارد)')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 900, color: SC , fontFamily: CAIRO}}>+ {formatNumber(totalReceipts)}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: SC , fontFamily: CAIRO}}>+ {formatNumber(totalReceipts)}</div>
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${DC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('إجمالي المدفوعات (صادر)')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 900, color: DC , fontFamily: CAIRO}}>- {formatNumber(totalPayments)}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: DC , fontFamily: CAIRO}}>- {formatNumber(totalPayments)}</div>
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${PC}`, background: 'rgba(79, 70, 229, 0.05)' }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('الرصيد الحالي')}</div>
@@ -186,7 +186,7 @@ export default function TreasuryBankReportPage() {
                         {/* Movements Table */}
                         <div className="print-table-container table-container shadow-xl" style={{ background: C.card, borderRadius: '18px', overflow: 'hidden', border: `1px solid ${C.border}` }}>
                             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 800, color: '#f1f5f9' , fontFamily: CAIRO}}>{t('حركات')} {data.treasuryName}</h3>
+                                <h3 style={{ margin: 0, fontSize: '12px', fontWeight: 600, color: '#f1f5f9' , fontFamily: CAIRO}}>{t('حركات')} {data.treasuryName}</h3>
                                 <div style={{ fontSize: '12px', color: '#64748b', fontWeight: 600 , fontFamily: CAIRO}}>{t('إجمالي')} {data.movements.length} {t('حركة مسجلة')}</div>
                             </div>
                             <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -204,15 +204,15 @@ export default function TreasuryBankReportPage() {
                                 <tbody>
                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                                         <td colSpan={4} style={{ padding: '12px 24px', fontWeight: 700, color: '#64748b' , fontFamily: CAIRO}}>{t('رصيد افتتاحي (ما قبـل الفترة)')}</td>
-                                        <td colSpan={2} style={{ padding: '12px 24px',  fontWeight: 900, color: '#94a3b8' , fontFamily: CAIRO}}></td>
-                                        <td style={{ padding: '12px 24px',  fontWeight: 900, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)}</td>
+                                        <td colSpan={2} style={{ padding: '12px 24px',  fontWeight: 600, color: '#94a3b8' , fontFamily: CAIRO}}></td>
+                                        <td style={{ padding: '12px 24px',  fontWeight: 600, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)}</td>
                                     </tr>
                                     {movements.map((m) => (
                                         <tr key={m.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.03)', transition: 'background 0.2s' }}>
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8' , fontFamily: CAIRO}}>{new Date(m.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 16px' }}>
                                                 <span style={{
-                                                    padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 800,
+                                                    padding: '4px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 600,
                                                     background: m.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
                                                     color: m.type === 'receipt' ? SC : DC
                                                 }}>
@@ -221,13 +221,13 @@ export default function TreasuryBankReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#e2e8f0' , fontFamily: CAIRO}}>{m.description}</td>
                                             <td style={{ padding: '14px 16px', fontSize: '12px', color: '#94a3b8' , fontFamily: CAIRO}}>{m.party}</td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 800, color: SC , fontFamily: CAIRO}}>
+                                            <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 600, color: SC , fontFamily: CAIRO}}>
                                                 {m.type === 'receipt' ? formatNumber(m.amount) : ''}
                                             </td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 800, color: DC , fontFamily: CAIRO}}>
+                                            <td style={{ padding: '14px 16px',  fontSize: '12px', fontWeight: 600, color: DC , fontFamily: CAIRO}}>
                                                 {m.type === 'payment' ? formatNumber(m.amount) : ''}
                                             </td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '15px', fontWeight: 900, color: '#fff', background: 'rgba(255,255,255,0.01)' , fontFamily: CAIRO}}>
+                                            <td style={{ padding: '14px 16px',  fontSize: '15px', fontWeight: 600, color: '#fff', background: 'rgba(255,255,255,0.01)' , fontFamily: CAIRO}}>
                                                 {formatNumber(m.runningBalance)}
                                             </td>
                                         </tr>

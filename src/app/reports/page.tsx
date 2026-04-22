@@ -281,7 +281,7 @@ function ReportsHubPageInner() {
                             <div style={{ width: 44, height: 44, borderRadius: '14px', background: `${report.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                 <report.icon size={22} color={report.color} />
                             </div>
-                            <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>
+                            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                 {report.title.includes('(') ? (
                                     <>
                                         {report.title.split('(')[0]}

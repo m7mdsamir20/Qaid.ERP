@@ -81,7 +81,7 @@ export default function ChangePasswordPage() {
                         <div style={{ padding: '10px', background: 'var(--c-primary-bg)', color: 'var(--c-primary)', borderRadius: '12px' }}>
                             <Lock size={24} />
                         </div>
-                        <h1 style={{ fontSize: '24px', fontWeight: 900, color: textColor, margin: 0 }}>{t('تغيير كلمة المرور')}</h1>
+                        <h1 style={{ fontSize: '24px', fontWeight: 600, color: textColor, margin: 0 }}>{t('تغيير كلمة المرور')}</h1>
                     </div>
                     <p style={{ fontSize: '13px', color: subColor }}>{t('يفضل اختيار كلمة مرور قوية تحتوي على أحرف وأرقام لضمان أمان حسابك')}</p>
                 </div>
@@ -117,7 +117,7 @@ export default function ChangePasswordPage() {
                                         border: '1px solid var(--c-border)', 
                                         borderRadius: '12px', 
                                         color: textColor, 
-                                        fontSize: '14px', 
+                                        fontSize: '13px', 
                                         boxSizing: 'border-box', 
                                         outline: 'none', 
                                         transition: 'all 0.2s' 
@@ -148,7 +148,7 @@ export default function ChangePasswordPage() {
                                         border: '1px solid var(--c-border)', 
                                         borderRadius: '12px', 
                                         color: textColor, 
-                                        fontSize: '14px', 
+                                        fontSize: '13px', 
                                         boxSizing: 'border-box', 
                                         outline: 'none', 
                                         transition: 'all 0.2s' 
@@ -177,7 +177,7 @@ export default function ChangePasswordPage() {
                                         border: '1px solid var(--c-border)', 
                                         borderRadius: '12px', 
                                         color: textColor, 
-                                        fontSize: '14px', 
+                                        fontSize: '13px', 
                                         boxSizing: 'border-box', 
                                         outline: 'none', 
                                         transition: 'all 0.2s' 
@@ -203,8 +203,8 @@ export default function ChangePasswordPage() {
                                 background: 'linear-gradient(135deg, var(--c-primary), var(--c-primary-hover))', 
                                 border: 'none', 
                                 color: '#fff', 
-                                fontSize: '16px', 
-                                fontWeight: 800, 
+                                fontSize: '13px', 
+                                fontWeight: 600, 
                                 cursor: 'pointer', 
                                 transition: 'all 0.2s', 
                                 boxShadow: '0 8px 16px var(--c-primary-bg)' 

@@ -233,7 +233,7 @@ export default function JournalEntriesPage() {
                                 <div style={KPI_ICON(s.color)}>{s.icon}</div>
                                 <div style={{ textAlign: 'start' }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{s.label}</div>
-                                    <div style={{ fontSize: s.small ? '15px' : '20px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                    <div style={{ fontSize: s.small ? '15px' : '20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                         {s.value} {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted }}>{s.suffix}</span>}
                                     </div>
                                 </div>
@@ -271,7 +271,7 @@ export default function JournalEntriesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, }}>
                                                     {formatEntryCode(entry.entryNumber)}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, }}>
@@ -283,14 +283,14 @@ export default function JournalEntriesPage() {
                                                 <td style={{...TABLE_STYLE.td(false)}}>
                                                     {entry.reference ? <span style={{ fontSize: '10px', color: C.textMuted, border: `1px solid ${C.border}`, padding: '2px 8px', borderRadius: '4px' }}>{entry.reference}</span> : '—'}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     {fMoney(dr)}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false, true)}>
                                                     <button onClick={() => togglePost(entry)} disabled={posting === entry.id}
                                                         style={{ 
                                                             display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '5px 12px', borderRadius: '20px', 
-                                                            border: '1px solid', fontSize: '10px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO,
+                                                            border: '1px solid', fontSize: '10px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO,
                                                             ...(entry.isPosted ? { background: C.successBg, color: C.success, borderColor: C.successBorder } : { background: C.warningBg, color: C.warning, borderColor: C.warningBorder }) 
                                                         }}
                                                     >
@@ -327,8 +327,8 @@ export default function JournalEntriesPage() {
                                                                                 <div style={{ fontSize: '10px', color: C.primary, fontFamily: OUTFIT }}>{line.account.code}</div>
                                                                             </td>
                                                                             <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary }}>{line.costCenter?.name || '—'}</td>
-                                                                            <td style={{  fontWeight: 900, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
-                                                                            <td style={{  fontWeight: 900, color: C.danger, fontFamily: CAIRO }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
+                                                                            <td style={{  fontWeight: 600, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
+                                                                            <td style={{  fontWeight: 600, color: C.danger, fontFamily: CAIRO }}>{line.credit > 0 ? fMoney(line.credit) : '—'}</td>
                                                                             <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textMuted }}>{line.description || '—'}</td>
                                                                         </tr>
                                                                     ))}
@@ -361,8 +361,8 @@ export default function JournalEntriesPage() {
                                             background: 'rgba(59,130,244,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontFamily: OUTFIT, fontWeight: 900,
-                                            fontSize: '14px', color: C.primary,
+                                            fontFamily: OUTFIT, fontWeight: 600,
+                                            fontSize: '13px', color: C.primary,
                                             letterSpacing: '1px'
                                         }}>
                                             {formatEntryCode(nextNumber)}
@@ -377,11 +377,11 @@ export default function JournalEntriesPage() {
                                     <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 8px' }}>
                                         <thead>
                                             <tr>
-                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('مركز التكلفة')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('مدين')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('دائن')}</th>
-                                                <th style={{ fontSize: '11px', fontWeight: 800, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('البيان')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('الحساب المحاسبي')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('مركز التكلفة')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('مدين')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('دائن')}</th>
+                                                <th style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, padding: '0 8px',  fontFamily: CAIRO }}>{t('البيان')}</th>
                                                 <th style={{ width: '40px' }}></th>
                                             </tr>
                                         </thead>
@@ -423,7 +423,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].credit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 800, color: C.success }} 
+                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 600, color: C.success }} 
                                                         />
                                                     </td>
                                                     <td style={{ width: '130px', padding: '0 4px' }}>
@@ -435,7 +435,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].debit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 800, color: C.danger }} 
+                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 600, color: C.danger }} 
                                                         />
                                                     </td>
                                                     <td style={{ padding: '0 4px' }}>
@@ -463,7 +463,7 @@ export default function JournalEntriesPage() {
                                 </div>
 
                                 <button type="button" onClick={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })}
-                                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: C.subtle, border: `1px dashed ${C.border}`, color: C.textPrimary, fontSize: '13px', fontWeight: 800, cursor: 'pointer', marginBottom: '24px', fontFamily: CAIRO }}>
+                                    style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', borderRadius: '12px', background: C.subtle, border: `1px dashed ${C.border}`, color: C.textPrimary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', marginBottom: '24px', fontFamily: CAIRO }}>
                                     <Plus size={16} /> {t('إضافة حطوة جديدة')}
                                 </button>
 
@@ -471,22 +471,22 @@ export default function JournalEntriesPage() {
                                 <div style={{ background: C.subtle, borderRadius: '16px', padding: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
                                     <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
                                         <div>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.success, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
+                                            <div style={{ fontSize: '18px', fontWeight: 600, color: C.success, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}
                                                 <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 900, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
+                                            <div style={{ fontSize: '18px', fontWeight: 600, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}
                                                 <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
-                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 800, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
-                                            <div style={{ fontSize: '18px', fontWeight: 900, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
+                                            <div style={{ fontSize: '18px', fontWeight: 600, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
                                                 <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
                                             </div>
@@ -494,7 +494,7 @@ export default function JournalEntriesPage() {
                                     </div>
 
                                     <div style={{ display: 'flex', gap: '12px' }}>
-                                        <button type="button" onClick={() => setView('list')} style={{ height: '48px', padding: '0 24px', borderRadius: '12px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>{t('إلغاء')}</button>
+                                        <button type="button" onClick={() => setView('list')} style={{ height: '48px', padding: '0 24px', borderRadius: '12px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>{t('إلغاء')}</button>
                                         <button type="submit" disabled={submitting} 
                                             style={{ ...BTN_PRIMARY(submitting, false), width: '200px', height: '48px', boxShadow: '0 10px 20px -5px rgba(37,106,244,0.3)' }}>
                                             {submitting ? <Loader2 size={18} className="animate-spin" /> : <CheckCircle2 size={18} />}
@@ -504,7 +504,7 @@ export default function JournalEntriesPage() {
                                 </div>
 
                                 {formError && (
-                                    <div style={{ marginTop: '16px', padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', color: C.danger, fontSize: '13px', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ marginTop: '16px', padding: '12px 16px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '10px', color: C.danger, fontSize: '13px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <AlertTriangle size={16} /> {formError}
                                     </div>
                                 )}

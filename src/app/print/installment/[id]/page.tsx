@@ -79,7 +79,7 @@ export default function PrintInstallmentPage() {
         </div>
     );
     if (error) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>{error}</div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1a1a2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '13px' }}>{error}</div>
     );
 
     return (
@@ -91,7 +91,7 @@ export default function PrintInstallmentPage() {
                     <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: 'rgba(37,106,244,0.2)', border: '1px solid rgba(37,106,244,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#5286ed' }}>
                         <CreditCard size={16} />
                     </div>
-                    <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px' }}>
+                    <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '13px' }}>
                         جدول الأقساط — <span style={{ color: '#5286ed' }}>{planCode}</span>
                     </span>
                 </div>

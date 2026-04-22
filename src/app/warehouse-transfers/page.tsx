@@ -77,7 +77,7 @@ export default function WarehouseTransfersPage() {
                                         <td colSpan={6} style={{ padding: '80px 0',  color: C.textMuted }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
                                                 <History size={48} style={{ opacity: 0.2 }} />
-                                                <div style={{ fontFamily: CAIRO, fontSize: '14px', fontWeight: 600 }}>{t('لا توجد عمليات تحويل مسجلة حالياً')}</div>
+                                                <div style={{ fontFamily: CAIRO, fontSize: '13px', fontWeight: 600 }}>{t('لا توجد عمليات تحويل مسجلة حالياً')}</div>
                                             </div>
                                         </td>
                                     </tr>
@@ -89,7 +89,7 @@ export default function WarehouseTransfersPage() {
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                     >
                                         <td style={TABLE_STYLE.td(true)}>
-                                            <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.8 }}>
+                                            <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.8 }}>
                                                 {tf.code || `TRF-${tf.transferNumber}`}
                                             </div>
                                         </td>
@@ -97,12 +97,12 @@ export default function WarehouseTransfersPage() {
                                             {new Date(tf.date).toLocaleDateString('en-GB')}
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(251,113,133,0.05)', color: '#fb7185', fontSize: '12px', fontWeight: 800 }}>
+                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(251,113,133,0.05)', color: '#fb7185', fontSize: '12px', fontWeight: 600 }}>
                                                 <Building2 size={12} /> {tf.fromWarehouse?.name || '—'}
                                             </div>
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(52,211,153,0.05)', color: '#34d399', fontSize: '12px', fontWeight: 800 }}>
+                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(52,211,153,0.05)', color: '#34d399', fontSize: '12px', fontWeight: 600 }}>
                                                 <Building2 size={12} /> {tf.toWarehouse?.name || '—'}
                                             </div>
                                         </td>

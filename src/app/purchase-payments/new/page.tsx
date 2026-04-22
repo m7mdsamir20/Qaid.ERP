@@ -139,8 +139,8 @@ export default function NewPurchasePaymentPage() {
                                             background: 'rgba(37, 106, 244,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontFamily: OUTFIT, fontWeight: 900,
-                                            fontSize: '14px', color: '#60a5fa',
+                                            fontFamily: OUTFIT, fontWeight: 600,
+                                            fontSize: '13px', color: '#60a5fa',
                                             letterSpacing: '1px',
                                             boxSizing: 'border-box'
                                         }}>
@@ -280,7 +280,7 @@ export default function NewPurchasePaymentPage() {
                                             onChange={val => setForm((f: any) => ({ ...f, amount: val }))}
                                             style={{
                                                 width: '100%', height: '52px', background: 'transparent',
-                                                border: 'none', color: C.primary, fontWeight: 900,
+                                                border: 'none', color: C.primary, fontWeight: 600,
                                                 fontSize: '22px', paddingInlineEnd: '44px',
                                                 fontFamily: CAIRO, outline: 'none'
                                             }}
@@ -306,14 +306,14 @@ export default function NewPurchasePaymentPage() {
 
                                         return (
                                             <span style={{
-                                                fontSize: '15px', fontWeight: 800, fontFamily: CAIRO,
+                                                fontSize: '15px', fontWeight: 600, fontFamily: CAIRO,
                                                 color: hasCredit ? '#fb7185' : '#10b981'
                                             }}>
                                                 {formatNumber(Math.abs(nextBal))} {cSymbol}
                                             </span>
                                         );
                                     })() : (
-                                        <span style={{ fontSize: '14px', color: C.textMuted }}>—</span>
+                                        <span style={{ fontSize: '13px', color: C.textMuted }}>—</span>
                                     )}
                                 </div>
                             </div>

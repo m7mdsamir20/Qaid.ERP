@@ -218,7 +218,7 @@ export default function PayrollsPage() {
                         <div style={{ padding: '100px 20px', color: '#475569' }}>
                             <FileDown size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
                             <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{searchTerm ? t('لا توجد نتائج مطابقة') : t('لا توجد مسيرات رواتب')}</h3>
-                            <p style={{ fontSize: '14px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بتوليد أول مسير من زر "توليد مسير جديد"')}</p>
+                            <p style={{ fontSize: '13px', margin: 0 }}>{searchTerm ? t('جرب البحث بكلمات أخرى') : t('ابدأ بتوليد أول مسير من زر "توليد مسير جديد"')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
@@ -242,7 +242,7 @@ export default function PayrollsPage() {
                                         >
                                             <td style={TABLE_STYLE.td(true)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                    <span style={{ fontWeight: 800, fontSize: '14px' }}>
+                                                    <span style={{ fontWeight: 600, fontSize: '13px' }}>
                                                         {getMonthLabel(pr.month.toString(), t)} / {pr.year}
                                                     </span>
                                                 </div>
@@ -251,21 +251,21 @@ export default function PayrollsPage() {
                                                 {new Date(pr.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                             </td>
                                             <td style={TABLE_STYLE.td(false, true)}>
-                                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 800 }}>
+                                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 600 }}>
                                                     {pr._count?.lines || 0} {t('موظف')}
                                                 </span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '11px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{formatNumber(pr.netTotal)}</span>
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false, true)}>
                                                 {pr.status === 'draft' ? (
-                                                    <span style={{ padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>{t('مسودة')}</span>
+                                                    <span style={{ padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>{t('مسودة')}</span>
                                                 ) : (
-                                                    <span style={{ padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>{t('معتمد')}</span>
+                                                    <span style={{ padding: '4px 10px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>{t('معتمد')}</span>
                                                 )}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -349,14 +349,14 @@ export default function PayrollsPage() {
                             <button 
                                 type="submit" 
                                 disabled={isGenerating}
-                                style={{ flex: 1, height: '44px', background: 'linear-gradient(135deg, #256af4, #256af4)', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
+                                style={{ flex: 1, height: '44px', background: 'linear-gradient(135deg, #256af4, #256af4)', border: 'none', borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}
                             >
                                 {isGenerating ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : t('توليد المسير')}
                             </button>
                             <button 
                                 type="button" 
                                 onClick={() => setIsModalOpen(false)}
-                                style={{ height: '44px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
+                                style={{ height: '44px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}
                             >
                                 {t('إلغاء')}
                             </button>
@@ -372,7 +372,7 @@ export default function PayrollsPage() {
                     icon={Trash2}
                     variant="danger"
                 >
-                    <p style={{ fontSize: '14px', color: '#94a3b8', lineHeight: '1.6', marginBottom: '24px' }}>
+                    <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: '1.6', marginBottom: '24px' }}>
                         {t('هل أنت متأكد من رغبتك في حذف هذا المسير؟')}
                         <br />
                         <span style={{ fontSize: '12px', color: C.danger, fontWeight: 700 }}>{t('سيتم حذف كافة السلف والخصومات المرتبطة بهذا المسير ولا يمكن التراجع عن هذه العملية!')}</span>
@@ -381,13 +381,13 @@ export default function PayrollsPage() {
                         <button 
                             onClick={handleDelete}
                             disabled={isDeleting}
-                            style={{ flex: 1, height: '44px', background: C.danger, border: 'none', borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer' }}
+                            style={{ flex: 1, height: '44px', background: C.danger, border: 'none', borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}
                         >
                             {isDeleting ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : t('تأكيد الحذف')}
                         </button>
                         <button 
                             onClick={() => setDeleteModal({ open: false, id: null })}
-                            style={{ height: '44px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}
+                            style={{ height: '44px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}
                         >
                             {t('إلغاء')}
                         </button>

@@ -127,24 +127,24 @@ export default function DeductionDetailPage() {
                         <div style={{ background: 'var(--surface-800)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
                                 <div style={{ color: '#256af4' }}><ShieldAlert size={20} /></div>
-                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 800 }}>{t('بيانات الخصم')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 600 }}>{t('بيانات الخصم')}</h3>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('تاريخ الخصم')}</label>
-                                    <div style={{ fontSize: '14px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#f1f5f9', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                         <Calendar size={14} style={{ color: C.primary }} /> {new Date(deduction.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                     </div>
                                 </div>
                                 <div>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('مبلغ الخصم')}</label>
-                                    <div style={{ fontSize: '18px', fontWeight: 900, color: '#256af4' }} dir="ltr">
+                                    <div style={{ fontSize: '18px', fontWeight: 600, color: '#256af4' }} dir="ltr">
                                         {formatNumber(deduction.amount)} <span style={{ fontSize: '12px' }}></span>
                                     </div>
                                 </div>
                                 <div style={{ gridColumn: 'span 2', marginTop: '10px' }}>
                                     <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700, display: 'block', marginBottom: '4px' }}>{t('السبب / الملاحظات')}</label>
-                                    <div style={{ fontSize: '14px', color: '#94a3b8', lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                                    <div style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.04)' }}>
                                         {deduction.reason || t('لا يوجد سبب مسجل')}
                                     </div>
                                 </div>
@@ -157,7 +157,7 @@ export default function DeductionDetailPage() {
                             <div style={{ width: '60px', height: '60px', borderRadius: '18px', background: 'rgba(37, 106, 244,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4', margin: '0 auto 16px' }}>
                                 <User size={30} />
                             </div>
-                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: '#fff' }}>{deduction.employee.name}</h2>
+                            <h2 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#fff' }}>{deduction.employee.name}</h2>
                             <p style={{ margin: '4px 0 0', fontSize: '12px', color: '#6366f1', fontWeight: 700 }}>{deduction.employee.code}</p>
                             <div style={{ width: '100%', height: '1px', background: 'rgba(255,255,255,0.05)', margin: '16px 0' }} />
                             <button onClick={() => router.push(`/employees/${deduction.employee.id}`)} style={{ width: '100%', height: '40px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '12px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }} onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#f1f5f9'; }} onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}>

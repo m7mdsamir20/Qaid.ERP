@@ -172,15 +172,15 @@ export default function UnitsPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
+                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
                                                     {unit.code}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 800, fontSize: '14px' }}>{unit.name}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 600, fontSize: '13px' }}>{unit.name}</td>
                                             <td style={TABLE_STYLE.td(false, true)}>
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                    padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 800,
+                                                    padding: '4px 10px', borderRadius: '20px', fontSize: '11px', fontWeight: 600,
                                                     background: unit.status === 'active' ? 'rgba(74,222,128,0.12)' : 'rgba(251,113,133,0.12)',
                                                     color: unit.status === 'active' ? C.success : C.danger, 
                                                     border: `1px solid ${unit.status === 'active' ? 'rgba(74,222,128,0.22)' : 'rgba(251,113,133,0.22)'}`
@@ -308,14 +308,14 @@ export default function UnitsPage() {
 
                         <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
                             <button type="submit" disabled={isSubmitting} 
-                                style={{ ...BTN_PRIMARY(false, isSubmitting), flex: 1.5, height: '48px', fontSize: '14px' }}>
+                                style={{ ...BTN_PRIMARY(false, isSubmitting), flex: 1.5, height: '48px', fontSize: '13px' }}>
                                 {isSubmitting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ البيانات')}
                             </button>
                             <button type="button" onClick={() => setIsModalOpen(false)} 
                                 style={{ 
                                     flex: 1, borderRadius: '14px', border: `1px solid ${C.border}`, 
                                     background: 'rgba(255,255,255,0.03)', color: C.textSecondary, 
-                                    fontWeight: 800, cursor: 'pointer', transition: '0.2s', fontSize: '14px' 
+                                    fontWeight: 600, cursor: 'pointer', transition: '0.2s', fontSize: '13px' 
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textPrimary; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = C.textSecondary; }}

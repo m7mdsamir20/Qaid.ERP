@@ -122,7 +122,7 @@ export default function SuperAdminPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: C.bg, color: C.textSecondary }}>
             <div style={{ }}>
                 <Loader2 size={36} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px', color: C.primary, margin: '0 auto' }} />
-                <div style={{ fontSize: '15px', fontWeight: 800, fontFamily: CAIRO }}>جاري التحقق من الصلاحيات...</div>
+                <div style={{ fontSize: '15px', fontWeight: 600, fontFamily: CAIRO }}>جاري التحقق من الصلاحيات...</div>
             </div>
         </div>
     );
@@ -160,7 +160,7 @@ export default function SuperAdminPage() {
                          <div style={{ textAlign: 'start' }}>
                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                 <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
                             </div>
                         </div>
@@ -179,7 +179,7 @@ export default function SuperAdminPage() {
                         type="text"
                         placeholder="ابحث باسم الشركة، البريد الإلكتروني، أو نوع النشاط..."
                         style={{
-                            ...IS, paddingInlineStart: '48px', height: '48px', fontSize: '14px',
+                            ...IS, paddingInlineStart: '48px', height: '48px', fontSize: '13px',
                             background: 'rgba(255,255,255,0.02)',
                             borderRadius: '12px',
                             border: `1px solid ${C.border}`
@@ -199,7 +199,7 @@ export default function SuperAdminPage() {
             {loading ? (
                 <div style={{ padding: '100px 0', color: C.textSecondary }}>
                     <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', display: 'block', margin: '0 auto 20px', color: C.primary }} />
-                    <div style={{ fontSize: '16px', fontWeight: 800 }}>جاري استخراج بيانات الشركات والأنشطة...</div>
+                    <div style={{ fontSize: '13px', fontWeight: 600 }}>جاري استخراج بيانات الشركات والأنشطة...</div>
                 </div>
             ) : (
                 <div className="scroll-table" style={{ ...TABLE_STYLE.container, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden' }}>
@@ -207,7 +207,7 @@ export default function SuperAdminPage() {
                         <thead style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
                             <tr>
                                 {['معلومات الشركة', 'النشاط', 'الباقة والمستخدمين', 'تاريخ الانتهاء', 'حالة الحساب', 'إجراءات'].map((h, i) => (
-                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, textAlign: i === 0 ? 'right' : (i === 5 ? 'center' : 'start') }}>{h}</th>
+                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, textAlign: i === 0 ? 'right' : (i === 5 ? 'center' : 'start') }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -225,11 +225,11 @@ export default function SuperAdminPage() {
                                         {/* Company Info */}
                                         <td style={{ padding: '16px', }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'flex-start' }}>
-                                                <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 900, fontSize: '18px', flexShrink: 0 }}>
+                                                <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 600, fontSize: '18px', flexShrink: 0 }}>
                                                     {c.name.charAt(0)}
                                                 </div>
                                                 <div style={{ textAlign: 'right' }}>
-                                                    <div style={{ fontWeight: 900, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
                                                     <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{c.email || '—'}</div>
                                                 </div>
                                             </div>
@@ -237,7 +237,7 @@ export default function SuperAdminPage() {
 
                                         {/* Activity/Business Type */}
                                         <td style={{ padding: '16px', }}>
-                                            <span style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '24px', background: bType.bg, color: bType.color, fontWeight: 800, border: `1px solid ${bType.color}20`, display: 'inline-block' }}>
+                                            <span style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '24px', background: bType.bg, color: bType.color, fontWeight: 600, border: `1px solid ${bType.color}20`, display: 'inline-block' }}>
                                                 {bType.label}
                                             </span>
                                         </td>
@@ -245,7 +245,7 @@ export default function SuperAdminPage() {
                                         {/* Plan & Users */}
                                         <td style={{ padding: '16px', }}>
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
-                                                <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '8px', background: plan.bg, color: plan.color, fontWeight: 800 }}>
+                                                <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '8px', background: plan.bg, color: plan.color, fontWeight: 600 }}>
                                                     {plan.label}
                                                 </span>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>
@@ -258,7 +258,7 @@ export default function SuperAdminPage() {
                                         <td style={{ padding: '16px', }}>
                                             {sub ? (
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <div style={{ fontSize: '14px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 900, fontFamily: OUTFIT, marginBottom: '4px' }}>
+                                                    <div style={{ fontSize: '13px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 600, fontFamily: OUTFIT, marginBottom: '4px' }}>
                                                         {isExpired ? `موقوف (${Math.abs(days)} يوم)` : days === 0 ? 'ينتهي اليوم ⚠️' : `${days} يوم`}
                                                     </div>
                                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>
@@ -266,14 +266,14 @@ export default function SuperAdminPage() {
                                                     </div>
                                                 </div>
                                             ) : (
-                                                <span style={{ color: C.danger, fontSize: '12px', fontWeight: 800 }}>❌ لا يوجدشتراك</span>
+                                                <span style={{ color: C.danger, fontSize: '12px', fontWeight: 600 }}>❌ لا يوجدشتراك</span>
                                             )}
                                         </td>
 
                                         {/* Status */}
                                         <td style={{ padding: '16px', }}>
                                             <button onClick={() => handleToggle(c.id, c.isActive)}
-                                                style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${c.isActive ? C.success : C.danger}40`, background: c.isActive ? `${C.success}15` : `${C.danger}15`, color: c.isActive ? C.success : C.danger, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>
+                                                style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${c.isActive ? C.success : C.danger}40`, background: c.isActive ? `${C.success}15` : `${C.danger}15`, color: c.isActive ? C.success : C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
                                                 {c.isActive ? <><CheckCircle2 size={16} /> مُفعل</> : <><X size={16} /> معطل</>}
                                             </button>
                                         </td>
@@ -300,7 +300,7 @@ export default function SuperAdminPage() {
                     {filtered.length === 0 && (
                         <div style={{ padding: '80px', color: C.textSecondary }}>
                             <FileText size={48} style={{ display: 'block', margin: '0 auto 16px', opacity: 0.2 }} />
-                            <p style={{ margin: 0, fontWeight: 800, fontSize: '16px' }}>لا توجد حسابات مسجلة تطابق البحث</p>
+                            <p style={{ margin: 0, fontWeight: 600, fontSize: '13px' }}>لا توجد حسابات مسجلة تطابق البحث</p>
                         </div>
                     )}
                 </div>
@@ -317,10 +317,10 @@ export default function SuperAdminPage() {
                             <Trash2 size={32} />
                         </div>
 
-                        <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 900, color: C.textPrimary }}>حذف نشاط الشركة نهائياً</h3>
+                        <h3 style={{ margin: '0 0 8px', fontSize: '20px', fontWeight: 600, color: C.textPrimary }}>حذف نشاط الشركة نهائياً</h3>
                         <p style={{ margin: '0 0 16px', fontSize: '15px', color: C.textSecondary }}>هل أنت متأكد من رغبتك في حذف:</p>
                         
-                        <div style={{ margin: '0 auto 24px', fontSize: '18px', fontWeight: 900, color: C.danger, background: `${C.danger}08`, padding: '12px 20px', borderRadius: '12px', display: 'inline-block' }}>
+                        <div style={{ margin: '0 auto 24px', fontSize: '18px', fontWeight: 600, color: C.danger, background: `${C.danger}08`, padding: '12px 20px', borderRadius: '12px', display: 'inline-block' }}>
                             {deleteTarget.name}
                         </div>
                         
@@ -332,11 +332,11 @@ export default function SuperAdminPage() {
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={handleDelete} disabled={deleting}
-                                style={{ flex: 1.5, height: '52px', borderRadius: '14px', border: 'none', background: deleting ? 'rgba(239,68,68,0.4)' : C.danger, color: '#fff', fontSize: '15px', fontWeight: 800, cursor: deleting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                                style={{ flex: 1.5, height: '52px', borderRadius: '14px', border: 'none', background: deleting ? 'rgba(239,68,68,0.4)' : C.danger, color: '#fff', fontSize: '15px', fontWeight: 600, cursor: deleting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
                                 {deleting ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جاري الحذف...</> : <><Trash2 size={18} /> تأكيد الحذف</>}
                             </button>
                             <button onClick={() => setDeleteTarget(null)} disabled={deleting}
-                                style={{ flex: 1, height: '52px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '15px', fontWeight: 800, cursor: 'pointer' }}>
+                                style={{ flex: 1, height: '52px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '15px', fontWeight: 600, cursor: 'pointer' }}>
                                 إلغاء
                             </button>
                         </div>

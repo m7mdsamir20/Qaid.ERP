@@ -96,7 +96,7 @@ export default function QuotationViewPage() {
                             display: 'flex', alignItems: 'center', gap: '12px', color: statusColor
                         }}>
                             {quotation.status === 'converted' ? <CheckCircle size={20} /> : <FileText size={20} />}
-                            <span style={{ fontWeight: 800, fontSize: '15px' }}>{statusLabel}</span>
+                            <span style={{ fontWeight: 600, fontSize: '15px' }}>{statusLabel}</span>
                         </div>
 
                         {/* Info Card - Regions */}
@@ -106,7 +106,7 @@ export default function QuotationViewPage() {
                                 {/* Customer */}
                                 <div>
                                     <label style={LS}>{t('معلومات العميل')}</label>
-                                    <div style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, marginBottom: '4px' }}>
+                                    <div style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, marginBottom: '4px' }}>
                                         {quotation.customer?.name || t('عميل نقدي')}
                                     </div>
                                     {quotation.customer?.phone && (
@@ -121,11 +121,11 @@ export default function QuotationViewPage() {
                                 <div>
                                     <label style={LS}>{t('تفاصيل المستند')}</label>
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                             <span style={{ color: C.textMuted }}>{t('رقم العرض:')}</span>
-                                            <span style={{ fontWeight: 900, fontFamily: OUTFIT, color: C.primary }}>{quoCode}</span>
+                                            <span style={{ fontWeight: 600, fontFamily: OUTFIT, color: C.primary }}>{quoCode}</span>
                                         </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                             <span style={{ color: C.textMuted }}>{t('التاريخ:')}</span>
                                             <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>{dateStr}</span>
                                         </div>
@@ -141,22 +141,22 @@ export default function QuotationViewPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</th>
-                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, width: '100px', fontWeight: 800 }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, width: '130px', fontWeight: 800 }}>{t('السعر')}</th>
-                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, width: '140px', fontWeight: 800 }}>{t('الإجمالي')}</th>
+                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</th>
+                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, width: '100px', fontWeight: 600 }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, width: '130px', fontWeight: 600 }}>{t('السعر')}</th>
+                                            <th style={{ padding: '12px 20px',  fontSize: '12px', color: C.textMuted, width: '140px', fontWeight: 600 }}>{t('الإجمالي')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {quotation.lines?.map((l: any, idx: number) => (
                                             <tr key={idx} style={{ borderBottom: idx === quotation.lines.length - 1 ? 'none' : `1px solid ${C.border}44`, background: 'rgba(255,255,255,0.02)' }}>
                                                 <td style={{ padding: '15px 20px' }}>
-                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
+                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px' }}>{l.itemName}</div>
                                                     {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '3px' }}>{l.description}</div>}
                                                 </td>
-                                                <td style={{ padding: '15px 20px',  fontFamily: OUTFIT, fontWeight: 900, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ padding: '15px 20px',  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{l.quantity}</td>
                                                 <td style={{ padding: '15px 20px',  fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                                <td style={{ padding: '15px 20px',  fontFamily: OUTFIT, fontWeight: 900, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
+                                                <td style={{ padding: '15px 20px',  fontFamily: OUTFIT, fontWeight: 600, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -168,7 +168,7 @@ export default function QuotationViewPage() {
                         {quotation.notes && (
                             <div style={SC}>
                                 <div style={STitle}><FileText size={12} /> {t('ملاحظات وشروط العرض')}</div>
-                                <div style={{ fontSize: '14px', lineHeight: '1.8', color: C.textSecondary, whiteSpace: 'pre-wrap' }}>{quotation.notes}</div>
+                                <div style={{ fontSize: '13px', lineHeight: '1.8', color: C.textSecondary, whiteSpace: 'pre-wrap' }}>{quotation.notes}</div>
                             </div>
                         )}
                     </div>
@@ -181,9 +181,9 @@ export default function QuotationViewPage() {
                             </div>
                             
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '14px', padding: '0 5px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
                                     <span style={{ color: C.textMuted, fontWeight: 700 }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}:</span>
-                                    <span style={{ fontWeight: 800, fontFamily: OUTFIT, color: C.textPrimary }}><Currency amount={quotation.subtotal} /> </span>
+                                    <span style={{ fontWeight: 600, fontFamily: OUTFIT, color: C.textPrimary }}><Currency amount={quotation.subtotal} /> </span>
                                 </div>
 
                                 {/* Discount View */}
@@ -197,9 +197,9 @@ export default function QuotationViewPage() {
                                         flexDirection: 'column',
                                         gap: '10px'
                                     }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{t('الخصم الممنوح')}</label>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 600, color: C.textMuted }}>{t('الخصم الممنوح')}</label>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                            <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, color: C.danger }}>- {fMoneyJSX(quotation.discountAmt)}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, color: C.danger }}>- {fMoneyJSX(quotation.discountAmt)}</div>
                                             {quotation.discountPct > 0 && <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted }}>({quotation.discountPct}%)</span>}
                                         </div>
                                     </div>
@@ -216,8 +216,8 @@ export default function QuotationViewPage() {
                                         flexDirection: 'column',
                                         gap: '10px'
                                     }}>
-                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 800, color: C.textMuted }}>{quotation.taxLabel || 'VAT'} ({quotation.taxRate}%)</label>
-                                        <div style={{ fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, color: C.primary }}>+ {fMoneyJSX(quotation.taxAmount)}</div>
+                                        <label style={{ ...LS, marginBottom: 0, fontSize: '11px', fontWeight: 600, color: C.textMuted }}>{quotation.taxLabel || 'VAT'} ({quotation.taxRate}%)</label>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, color: C.primary }}>+ {fMoneyJSX(quotation.taxAmount)}</div>
                                     </div>
                                 )}
 
@@ -228,14 +228,14 @@ export default function QuotationViewPage() {
                                     border: `1px solid ${C.primaryBorder}`,
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>
+                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>
                                         <Currency amount={quotation.total} />
                                     </span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
                                 </div>
 
                                 {quotation.status === 'pending' && (
-                                    <button onClick={handleConvert} disabled={converting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 800, fontSize: '16px', marginTop: '10px', cursor: converting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 15px rgba(74,222,128,0.3)' }}>
+                                    <button onClick={handleConvert} disabled={converting} style={{ width: '100%', height: '54px', background: 'linear-gradient(135deg, #4ade80 0%, #22c55e 100%)', color: '#fff', border: 'none', borderRadius: '14px', fontWeight: 600, fontSize: '13px', marginTop: '10px', cursor: converting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 4px 15px rgba(74,222,128,0.3)' }}>
                                         {converting ? <Loader2 className="animate-spin" /> : <Package size={20} />}
                                         {t('تحويل لفاتورة مبيعات')}
                                     </button>

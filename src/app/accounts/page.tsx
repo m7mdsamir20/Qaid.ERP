@@ -306,12 +306,12 @@ export default function AccountsPage() {
                         }}>
                             {acc.accountCategory === 'summary' ? <FolderOpen size={16} /> : <FileText size={16} />}
                         </div>
-                        <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '14px', fontFamily: CAIRO }}>{acc.name}</span>
+                        <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{acc.name}</span>
                     </div>
 
                     <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', textAlign: 'center' }}>
                         <span style={{
-                            fontSize: '11px', padding: '3px 10px', borderRadius: '8px', fontWeight: 800, fontFamily: CAIRO,
+                            fontSize: '11px', padding: '3px 10px', borderRadius: '8px', fontWeight: 600, fontFamily: CAIRO,
                             background: `${color}15`, color: color, width: 'fit-content'
                         }}>
                             {accountTypes.find(t => t.value === acc.type)?.label || acc.type}
@@ -321,7 +321,7 @@ export default function AccountsPage() {
                                 fontSize: '9px', padding: '2px 6px', borderRadius: '5px', 
                                 background: acc.accountCategory === 'summary' ? 'rgba(37, 106, 244,0.1)' : 'rgba(167,139,240,0.1)', 
                                 color: acc.accountCategory === 'summary' ? '#60a5fa' : '#a78bfa', 
-                                fontWeight: 800 
+                                fontWeight: 600 
                             }}>
                                 {acc.accountCategory === 'summary' ? t('إجمالي') : t('تحليلي')}
                             </span>
@@ -329,14 +329,14 @@ export default function AccountsPage() {
                                 fontSize: '9px', padding: '2px 6px', borderRadius: '5px', 
                                 background: acc.nature === 'debit' ? 'rgba(16,185,129,0.1)' : 'rgba(239, 68, 68, 0.1)', 
                                 color: acc.nature === 'debit' ? '#10b981' : '#f87171', 
-                                fontWeight: 800 
+                                fontWeight: 600 
                             }}>
                                 {acc.nature === 'debit' ? t('مدين') : t('دائن')}
                             </span>
                         </div>
                     </div>
 
-                    <div style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success, textAlign: 'center' }}>
+                    <div style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 600, color: (acc.balance || 0) < 0 ? C.danger : C.success, textAlign: 'center' }}>
                         {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
 
@@ -371,7 +371,7 @@ export default function AccountsPage() {
                         <button key="reset" onClick={() => setShowResetModal(true)} style={{
                             display: 'flex', alignItems: 'center', gap: '8px', height: '38px', padding: '0 16px',
                             borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444',
-                            border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '13px', fontWeight: 800,
+                            border: '1px solid rgba(239, 68, 68, 0.2)', fontSize: '13px', fontWeight: 600,
                             cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'}
@@ -407,7 +407,7 @@ export default function AccountsPage() {
                             </div>
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '10px', fontWeight: 700, color: C.textMuted, margin: '0 0 2px', fontFamily: CAIRO }}>{s.label}</p>
-                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</div>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</div>
                             </div>
                         </div>
                     ))}
@@ -432,7 +432,7 @@ export default function AccountsPage() {
                         <button onClick={() => setTypeFilter('all')} style={{
                             padding: '0 12px', height: '32px', borderRadius: '8px', border: 'none',
                             background: typeFilter === 'all' ? C.primary : 'transparent', color: typeFilter === 'all' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
+                            cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
                         }}>
                             {t('الكل')}
                         </button>
@@ -440,7 +440,7 @@ export default function AccountsPage() {
                             <button key={type.value} onClick={() => setTypeFilter(type.value)} style={{
                                 padding: '0 12px', height: '32px', borderRadius: '8px', border: 'none',
                                 background: typeFilter === type.value ? C.primary : 'transparent', color: typeFilter === type.value ? '#fff' : C.textMuted,
-                                cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
+                                cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
                             }}>
                                 {type.label}
                             </button>
@@ -451,14 +451,14 @@ export default function AccountsPage() {
                         <button onClick={() => setViewMode('tree')} style={{
                             padding: '6px 12px', borderRadius: '8px', border: 'none',
                             background: viewMode === 'tree' ? C.primary : 'transparent', color: viewMode === 'tree' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
                         }}>
                             <RefreshCcw size={14} /> {t('شجرة')}
                         </button>
                         <button onClick={() => setViewMode('table')} style={{
                             padding: '6px 12px', borderRadius: '8px', border: 'none',
                             background: viewMode === 'table' ? C.primary : 'transparent', color: viewMode === 'table' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO
+                            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
                         }}>
                             <LayoutGrid size={14} /> {t('جدول')}
                         </button>
@@ -476,7 +476,7 @@ export default function AccountsPage() {
                         <div style={{
                             display: 'flex', alignItems: 'center', padding: '14px 16px',
                             background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`,
-                            fontSize: '11px', fontWeight: 800, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
+                            fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
                         }}>
                             <div style={{ width: '32px' }}></div>
                             <div style={{ width: '100px', textAlign: 'start' }}>{t('الكود')}</div>
@@ -569,11 +569,11 @@ export default function AccountsPage() {
                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                         <AlertTriangle size={32} />
                     </div>
-                    <h3 style={{ fontSize: '18px', fontWeight: 900, color: '#fff', marginBottom: '12px', fontFamily: CAIRO }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
-                    <p style={{ fontSize: '14px', color: C.textMuted, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#fff', marginBottom: '12px', fontFamily: CAIRO }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
+                    <p style={{ fontSize: '13px', color: C.textMuted, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px' }}>
                         {t('سيتم حذف شجرة الحسابات الحالية بالكامل وإعادة بناء الشجرة الافتتاحية الأساسية للنظام.')}
                         <br />
-                        <span style={{ color: '#ef4444', fontWeight: 800 }}>{t('تنبيه: لا يمكن التراجع عن هذه الخطوة، وستفشل العملية إذا كان هناك قيود مالية مسجلة.')}</span>
+                        <span style={{ color: '#ef4444', fontWeight: 600 }}>{t('تنبيه: لا يمكن التراجع عن هذه الخطوة، وستفشل العملية إذا كان هناك قيود مالية مسجلة.')}</span>
                     </p>
 
                     <div style={{ display: 'flex', gap: '12px' }}>
@@ -583,7 +583,7 @@ export default function AccountsPage() {
                             style={{
                                 flex: 2, height: '46px', borderRadius: '12px', border: 'none',
                                 background: 'linear-gradient(135deg, #ef4444, #dc2626)', color: '#fff',
-                                fontSize: '14px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO,
+                                fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO,
                                 boxShadow: '0 10px 20px -5px rgba(239,68,68,0.3)', display: 'flex',
                                 alignItems: 'center', justifyContent: 'center', gap: '8px'
                             }}>

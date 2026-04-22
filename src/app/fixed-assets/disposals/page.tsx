@@ -126,7 +126,7 @@ export default function DisposalsPage() {
                             }}>
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{formatNumber(s.val)}</span>
                                         {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                     </div>
@@ -152,7 +152,7 @@ export default function DisposalsPage() {
                     <div style={{ display: 'flex', gap: '8px', background: THEME.colors.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}`, height: SEARCH_STYLE.input.height, boxSizing: 'border-box', alignItems: 'center' }}>
                         {['all', ...Object.keys(REASON_LABELS)].map(r => (
                             <button key={r} onClick={() => setReasonFilter(r)} style={{
-                                padding: '0 14px', height: '100%', borderRadius: '8px', border: 'none', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
+                                padding: '0 14px', height: '100%', borderRadius: '8px', border: 'none', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
                                 cursor: 'pointer', transition: 'all 0.2s',
                                 background: reasonFilter === r ? (REASON_COLORS[r] || C.blue) : 'transparent',
                                 color: reasonFilter === r ? '#fff' : C.textMuted,
@@ -185,25 +185,25 @@ export default function DisposalsPage() {
                             {loadingList ? (
                                 <tr><td colSpan={7} style={{ padding: '80px', }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={7} style={{ padding: '80px',  color: C.textMuted, fontFamily: CAIRO, fontWeight: 800 }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
+                                <tr><td colSpan={7} style={{ padding: '80px',  color: C.textMuted, fontFamily: CAIRO, fontWeight: 600 }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
                             ) : filtered.map((d, i) => {
                                 const isG = d.gainLoss > 0;
                                 return (
                                     <tr key={d.id} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.10s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ padding: '14px 16px' }}>
-                                            <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{d.assetName}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{d.assetName}</div>
                                             <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px' }}>{d.assetCode}</div>
                                         </td>
                                         <td style={{ padding: '11px 14px' }}>
-                                            <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
+                                            <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
                                                 {REASON_LABELS[d.reason] || d.reason}
                                             </span>
                                         </td>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(d.salePrice)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}>{fmt(d.netBookValue)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(d.salePrice)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}>{fmt(d.netBookValue)}</td>
                                         <td style={{ padding: '14px 16px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
                                                 {d.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
                                                 <span style={{ fontFamily: OUTFIT }}>{fmt(Math.abs(d.gainLoss))}</span>
                                             </div>
@@ -219,7 +219,7 @@ export default function DisposalsPage() {
                 {/* Disposal Modal */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title={t("تسجيل عملية استبعاد / بيع أصل")} icon={ArrowRightLeft}>
                     <form onSubmit={handleSubmit}>
-                        {error && <div style={{ background: `${C.danger}10`, color: C.danger, padding: '12px', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', border: `1px solid ${C.danger}25`, fontWeight: 800, fontFamily: CAIRO }}><AlertTriangle size={14} style={{ marginBottom: '-3px', marginInlineStart: '6px' }} /> {error}</div>}
+                        {error && <div style={{ background: `${C.danger}10`, color: C.danger, padding: '12px', borderRadius: '10px', marginBottom: '16px', fontSize: '13px', border: `1px solid ${C.danger}25`, fontWeight: 600, fontFamily: CAIRO }}><AlertTriangle size={14} style={{ marginBottom: '-3px', marginInlineStart: '6px' }} /> {error}</div>}
                         
                         <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: `1px solid ${C.border}`, marginBottom: '20px' }}>
                             <div style={{ marginBottom: '16px' }}>
@@ -245,7 +245,7 @@ export default function DisposalsPage() {
                         {selectedAsset && (
                             <div style={{ padding: '16px', background: isGain ? '#10b98108' : isLoss ? `${C.danger}08` : 'rgba(255,255,255,0.02)', borderRadius: '16px', border: `1px solid ${isGain ? '#10b98133' : isLoss ? `${C.danger}33` : C.border}`, marginBottom: '24px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px' }}>
-                                    <h5 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('معاينة نتائج الاستبعاد')}:</h5>
+                                    <h5 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('معاينة نتائج الاستبعاد')}:</h5>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('الصافي الدفتري الحالي')}: <b>{fmt(selectedAsset.netBookValue)}</b></span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -271,9 +271,9 @@ export default function DisposalsPage() {
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={saving || !selectedAsset} style={{ ...BTN_PRIMARY(false, saving || !selectedAsset), flex: 1.5, height: '48px' }}>
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <CheckCircle2 size={18} />}
-                                <span style={{ marginInlineEnd: '8px', fontWeight: 900 }}>{t('تأكيد وترحيل عملية الاستبعاد')}</span>
+                                <span style={{ marginInlineEnd: '8px', fontWeight: 600 }}>{t('تأكيد وترحيل عملية الاستبعاد')}</span>
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

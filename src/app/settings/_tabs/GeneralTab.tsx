@@ -99,7 +99,7 @@ export default function GeneralTab({
                 saveSettings('update_general', { ...generalForm, currency: finalCurrency });
             }}>
 
-                <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                     <Globe size={14} /> {t('إعدادات النظام')}
                 </div>
 
@@ -113,7 +113,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', position: 'relative' }} className="custom-dropdown">
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <span style={{ fontSize: '18px' }}>{selectedCountry.flag}</span>
                                     {selectedCountry.name}
                                 </div>
@@ -124,7 +124,7 @@ export default function GeneralTab({
                                         style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '280px', height: '40px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.primary}40`, background: `${C.primary}10`, color: C.textPrimary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                         <ChevronDown size={16} style={{ color: C.primary, transform: openDropdown === 'country' ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }} />
                                         <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                            <span style={{ fontSize: '16px' }}>{selectedCountry.flag}</span>
+                                            <span style={{ fontSize: '13px' }}>{selectedCountry.flag}</span>
                                             {selectedCountry.name}
                                         </span>
                                     </button>
@@ -146,7 +146,7 @@ export default function GeneralTab({
                                                             }}
                                                             style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', textAlign: 'start', fontFamily: CAIRO }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                                <span style={{ fontSize: '16px' }}>{opt.flag}</span>
+                                                                <span style={{ fontSize: '13px' }}>{opt.flag}</span>
                                                                 <span>{opt.name}</span>
                                                             </div>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -175,7 +175,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', position: 'relative' }} className="custom-dropdown">
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
                                     {currencyOptions[generalForm.currency] || `${t('أخرى')} (${generalForm.currency})`}
                                 </div>
                             ) : (
@@ -281,7 +281,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', position: 'relative' }} className="custom-dropdown">
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', textAlign: 'start', fontFamily: OUTFIT }}>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', textAlign: 'start', fontFamily: OUTFIT }}>
                                     {generalForm.timezone}
                                 </div>
                             ) : (
@@ -322,7 +322,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px' }}>
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
                                     {generalForm.calendarType === 'Gregorian' ? t('ميلادي') : t('هجري')}
                                 </div>
                             ) : (
@@ -330,7 +330,7 @@ export default function GeneralTab({
                                     {[{ v: 'Gregorian', l: t('ميلادي') }, { v: 'Hijri', l: t('هجري') }].map(opt => (
                                         <button key={opt.v} type="button"
                                             onClick={() => setGeneralForm((p: any) => ({ ...p, calendarType: opt.v }))}
-                                            style={{ height: '36px', padding: '0 20px', borderRadius: '10px', border: `1px solid ${generalForm.calendarType === opt.v ? `${C.primary}40` : C.border}`, background: generalForm.calendarType === opt.v ? `${C.primary}15` : 'transparent', color: generalForm.calendarType === opt.v ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }}>
+                                            style={{ height: '36px', padding: '0 20px', borderRadius: '10px', border: `1px solid ${generalForm.calendarType === opt.v ? `${C.primary}40` : C.border}`, background: generalForm.calendarType === opt.v ? `${C.primary}15` : 'transparent', color: generalForm.calendarType === opt.v ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, transition: 'all 0.2s' }}>
                                             {generalForm.calendarType === opt.v && <Check size={14} />}
                                             {opt.l}
                                         </button>
@@ -348,7 +348,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', fontFamily: OUTFIT }}>
+                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', fontFamily: OUTFIT }}>
                                     {generalForm.dateFormat}
                                 </div>
                             ) : (
@@ -357,7 +357,7 @@ export default function GeneralTab({
                                         {['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD'].map(fmt => (
                                             <button key={fmt} type="button"
                                                 onClick={() => setGeneralForm((p: any) => ({ ...p, dateFormat: fmt }))}
-                                                style={{ height: '36px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${generalForm.dateFormat === fmt ? `${C.primary}40` : C.border}`, background: generalForm.dateFormat === fmt ? `${C.primary}15` : 'transparent', color: generalForm.dateFormat === fmt ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', fontFamily: OUTFIT, direction: 'ltr', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
+                                                style={{ height: '36px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${generalForm.dateFormat === fmt ? `${C.primary}40` : C.border}`, background: generalForm.dateFormat === fmt ? `${C.primary}15` : 'transparent', color: generalForm.dateFormat === fmt ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: OUTFIT, direction: 'ltr', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
                                                 {generalForm.dateFormat === fmt && <Check size={14} />}
                                                 {fmt}
                                             </button>

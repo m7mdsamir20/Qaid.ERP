@@ -351,7 +351,7 @@ export default function NewPurchasePage() {
         boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
     };
     const STitleStyle: React.CSSProperties = {
-        fontSize: '13px', fontWeight: 800,
+        fontSize: '13px', fontWeight: 600,
         color: C.primary,
         marginBottom: '16px',
         display: 'flex', alignItems: 'center', gap: '8px',
@@ -367,7 +367,7 @@ export default function NewPurchasePage() {
                 insetInlineStart: '4px',
                 fontSize: '11px',
                 color: '#fff',
-                fontWeight: 800,
+                fontWeight: 600,
                 background: 'linear-gradient(135deg, #ef4444, #b91c1c)',
                 padding: '4px 10px',
                 borderRadius: '8px',
@@ -409,7 +409,7 @@ export default function NewPurchasePage() {
                     }}>
                         <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
                         <div>
-                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
                                 {t('يرجى تحديد فرع أولاً')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
@@ -434,7 +434,7 @@ export default function NewPurchasePage() {
                                         background: 'rgba(37, 106, 244,0.08)',
                                         border: `1px solid ${C.border}`,
                                         display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center',
-                                        fontFamily: OUTFIT, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
+                                        fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
                                     }}>
                                         PUR-{String(nextNum).padStart(5, '0')}
                                     </div>
@@ -496,7 +496,7 @@ export default function NewPurchasePage() {
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('الصنف')}</label>
-                                        {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 800, color: '#256af4' }}>{t('متاح:')} {entryStock}</span>}
+                                        {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 600, color: '#256af4' }}>{t('متاح:')} {entryStock}</span>}
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect ref={itemSelectRef} value={entryItemId}
@@ -537,7 +537,7 @@ export default function NewPurchasePage() {
                                 <table className="table">
                                     <thead>
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
-                                            {[t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>)}
+                                            {[t('الصنف'), t('الوحدة'), t('الكمية'), t('التكلفة'), t('الإجمالي'), ''].map((h, i) => <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>)}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -545,9 +545,9 @@ export default function NewPurchasePage() {
                                             <tr key={i} style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{l.itemName}</td>
                                                 <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.quantity)}</td>
                                                 <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
                                                 <td style={{ padding: '10px 12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -561,8 +561,8 @@ export default function NewPurchasePage() {
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {t('الأصناف')}</td>
-                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
+                                                <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {t('الأصناف')}</td>
+                                                <td style={{ padding: '12px',  fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(subtotal)}</td>
                                                 <td />
                                             </tr>
                                         </tfoot>
@@ -625,7 +625,7 @@ export default function NewPurchasePage() {
                                         </div>
                                         <div style={{ position: 'relative' }}>
                                             <input type="number" min="0" max="100" placeholder="0" value={form.discountPct || ''} onChange={e => { const pct = parseFloat(e.target.value) || 0; setForm((f: any) => ({ ...f, discountPct: pct, discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)) })); }} style={{ ...IS, height: '36px', fontSize: '13px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -634,7 +634,7 @@ export default function NewPurchasePage() {
                                 {taxSettings?.enabled && (
                                     <div style={{ padding: '8px 12px', background: C.subtle, borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
+                                            <span style={{ color: '#64748b', fontSize: '11px', fontWeight: 600 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
                                             <div style={{ position: 'relative' }}>
@@ -642,7 +642,7 @@ export default function NewPurchasePage() {
                                                     onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
                                                     style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '22px' }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
                                                 <PriceInput 
@@ -654,7 +654,7 @@ export default function NewPurchasePage() {
                                                             taxRate: afterDisc > 0 ? (val / afterDisc) * 100 : f.taxRate
                                                         }));
                                                     }}
-                                                    style={{ height: '30px', fontSize: '12px', fontWeight: 800, color: C.primary }}
+                                                    style={{ height: '30px', fontSize: '12px', fontWeight: 600, color: C.primary }}
                                                     textAlign="right"
                                                 />
                                             </div>
@@ -663,8 +663,8 @@ export default function NewPurchasePage() {
                                 )}
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))', padding: '10px 14px', borderRadius: '12px', marginTop: '6px', border: `1px solid ${C.primaryBorder}`, boxShadow: '0 4px 12px rgba(37,106,244,0.08)' }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>{fMoneyJSX(netTotal)}</span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>{fMoneyJSX(netTotal)}</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
                             </div>
                         </div>
@@ -676,7 +676,7 @@ export default function NewPurchasePage() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('طريقة الدفع')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
                                         {(['cash', 'bank', 'credit'] as const).map(tType => (
-                                            <button key={tType} onClick={() => setForm((f: any) => ({ ...f, paymentType: tType, paidAmount: tType === 'credit' ? 0 : f.paidAmount }))} style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO, borderColor: form.paymentType === tType ? C.primary : C.border, background: form.paymentType === tType ? C.primaryBg : 'transparent', color: form.paymentType === tType ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>{tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}</button>
+                                            <button key={tType} onClick={() => setForm((f: any) => ({ ...f, paymentType: tType, paidAmount: tType === 'credit' ? 0 : f.paidAmount }))} style={{ height: '36px', borderRadius: '8px', border: '1px solid', fontFamily: CAIRO, borderColor: form.paymentType === tType ? C.primary : C.border, background: form.paymentType === tType ? C.primaryBg : 'transparent', color: form.paymentType === tType ? C.primary : C.textSecondary, fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>{tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}</button>
                                         ))}
                                     </div>
                                 </div>
@@ -687,7 +687,7 @@ export default function NewPurchasePage() {
                                             <PriceInput 
                                                 value={form.paidAmount}
                                                 onChange={val => { setForm((f: any) => ({ ...f, paidAmount: val })); clearError('paidAmount'); }}
-                                                style={{ height: '48px', fontSize: '18px', fontWeight: 900, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
+                                                style={{ height: '48px', fontSize: '18px', fontWeight: 600, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
                                                 placeholder="0.00"
                                             />
                                             {form.paymentType === 'bank' ? <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} /> : <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />}
@@ -714,7 +714,7 @@ export default function NewPurchasePage() {
                                     </div>
                                 )}
                                 {lines.length > 0 && (
-                                    <div style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', fontWeight: 800, background: diff > 0 ? 'rgba(239,68,68,0.07)' : diff < 0 ? 'rgba(99,102,241,0.07)' : 'rgba(52,211,153,0.07)', color: diff > 0 ? '#f87171' : diff < 0 ? '#818cf8' : '#34d399', border: `1px solid ${diff > 0 ? 'rgba(239,68,68,0.15)' : diff < 0 ? 'rgba(99,102,241,0.15)' : 'rgba(52,211,153,0.15)'}`, }}>
+                                    <div style={{ padding: '10px 14px', borderRadius: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', fontWeight: 600, background: diff > 0 ? 'rgba(239,68,68,0.07)' : diff < 0 ? 'rgba(99,102,241,0.07)' : 'rgba(52,211,153,0.07)', color: diff > 0 ? '#f87171' : diff < 0 ? '#818cf8' : '#34d399', border: `1px solid ${diff > 0 ? 'rgba(239,68,68,0.15)' : diff < 0 ? 'rgba(99,102,241,0.15)' : 'rgba(52,211,153,0.15)'}`, }}>
                                         <span>{diff > 0 ? `${t('متبقي:')} ${formatNumber(Math.abs(diff))} ${cSymbol}` : diff < 0 ? `${t('زيادة:')} ${formatNumber(Math.abs(diff))} ${cSymbol}` : t('تم السداد بالكامل ✓')}</span>
                                         {diff !== 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{diff > 0 ? t('آجل') : t('رصيد دائن')}</span>}
                                     </div>
@@ -723,7 +723,7 @@ export default function NewPurchasePage() {
                         </div>
 
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
-                            <button onClick={() => handleSubmit(false)} disabled={submitting} className="btn btn-primary" style={{ width: '100%', height: '52px', fontSize: '16px', fontWeight: 900, gap: '12px', background: C.primary, boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)', border: 'none', borderRadius: '14px', opacity: submitting ? 0.5 : 1, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO, color: '#fff' }}>
+                            <button onClick={() => handleSubmit(false)} disabled={submitting} className="btn btn-primary" style={{ width: '100%', height: '52px', fontSize: '13px', fontWeight: 600, gap: '12px', background: C.primary, boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)', border: 'none', borderRadius: '14px', opacity: submitting ? 0.5 : 1, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO, color: '#fff' }}>
                                 {submitting ? <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /> : <>{t('حفظ الفاتورة')} <CheckCircle size={20} /></>}
                             </button>
                             <button onClick={() => handleSubmit(true)} disabled={submitting} style={{ width: '100%', height: '42px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.06)', color: '#34d399', fontSize: '13px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Cairo, sans-serif', opacity: submitting ? 0.5 : 1, transition: 'all 0.2s', }}>{t('حفظ وطباعة الفاتورة')} <Printer size={15} /></button>
@@ -764,8 +764,8 @@ export default function NewPurchasePage() {
                     } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                 }}>
                     <div style={{ marginBottom: '16px', display: 'flex', background: C.subtle, borderRadius: '12px', padding: '4px' }}>
-                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
-                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
+                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
+                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
                     </div>
 
                     <div style={{ marginBottom: '16px' }}>
@@ -786,7 +786,7 @@ export default function NewPurchasePage() {
 
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button type="submit" disabled={submitting} style={{
-                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(37, 106, 244,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
+                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(37, 106, 244,0.5)' : C.primary, color: '#fff', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
                         }}>
                             {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                         </button>

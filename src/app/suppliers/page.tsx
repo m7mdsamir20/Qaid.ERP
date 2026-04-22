@@ -214,7 +214,7 @@ export default function SuppliersPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.value as number)}</span>
+                                    <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.value as number)}</span>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
                                 </div>
                             </div>
@@ -299,7 +299,7 @@ export default function SuppliersPage() {
                                                         border: `1px solid ${isCredit ? 'rgba(239, 68, 68, 0.22)' : (isDebit ? 'rgba(74,222,128,0.22)' : C.border)}`,
                                                     }}>
                                                         <span style={{ fontFamily: CAIRO }}>{isCredit ? t('له عندنا') : (isDebit ? t('عليه لنا') : t('متزن'))}</span>
-                                                        <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 800 }}><Currency amount={Math.abs(c.balance)} /></span>
+                                                        <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600 }}><Currency amount={Math.abs(c.balance)} /></span>
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -335,7 +335,7 @@ export default function SuppliersPage() {
                                             type="button"
                                             onClick={() => setForm({ ...form, type: 'individual' })}
                                             style={{
-                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s',
                                                 background: form.type === 'individual' ? C.primary : 'transparent',
                                                 color: form.type === 'individual' ? '#fff' : C.textSecondary
                                             }}
@@ -344,7 +344,7 @@ export default function SuppliersPage() {
                                             type="button"
                                             onClick={() => setForm({ ...form, type: 'company' })}
                                             style={{
-                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 800, fontFamily: CAIRO, transition: 'all 0.2s',
+                                                flex: 1, height: '32px', borderRadius: '7px', border: 'none', cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, transition: 'all 0.2s',
                                                 background: form.type === 'company' ? C.primary : 'transparent',
                                                 color: form.type === 'company' ? '#fff' : C.textSecondary
                                             }}
@@ -439,7 +439,7 @@ export default function SuppliersPage() {
                             )}
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
-                            <button disabled={submitting} type="submit" style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 800, fontSize: '14px', fontFamily: CAIRO, cursor: submitting ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}>
+                            <button disabled={submitting} type="submit" style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: submitting ? 'not-allowed' : 'pointer', transition: 'all 0.2s' }}>
                                 {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : (editingId ? t('حفظ التعديلات') : t('إضافة المورد الآن'))}
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>{t('إلغاء')}</button>

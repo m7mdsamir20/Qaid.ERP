@@ -167,17 +167,17 @@ export default function CategoriesPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={TABLE_STYLE.td(true, true)}>
-                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '13px' }}>
+                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px' }}>
                                                     {cat.code || `#${idx + 1}`}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 800, fontSize: '14px' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textPrimary, fontWeight: 600, fontSize: '13px' }}>
                                                 {cat.name}
                                             </td>
                                             <td style={TABLE_STYLE.td(false, true)}>
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                    padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 900, fontFamily: OUTFIT,
+                                                    padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT,
                                                     background: 'rgba(56,189,248,0.1)', color: '#38bdf8'
                                                 }}>
                                                     {cat._count?.items || 0} {isServices ? t('خدمة') : t('صنف')}
@@ -240,14 +240,14 @@ export default function CategoriesPage() {
 
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button type="submit" disabled={isSubmitting} 
-                                style={{ ...BTN_PRIMARY(false, isSubmitting), flex: 1.5, height: '48px', fontSize: '14px' }}>
+                                style={{ ...BTN_PRIMARY(false, isSubmitting), flex: 1.5, height: '48px', fontSize: '13px' }}>
                                 {isSubmitting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ البيانات')}
                             </button>
                             <button type="button" onClick={() => setIsModalOpen(false)} 
                                 style={{ 
                                     flex: 1, borderRadius: '14px', border: `1px solid ${C.border}`, 
                                     background: 'rgba(255,255,255,0.03)', color: C.textSecondary, 
-                                    fontWeight: 800, cursor: 'pointer', transition: '0.2s', fontSize: '14px' 
+                                    fontWeight: 600, cursor: 'pointer', transition: '0.2s', fontSize: '13px' 
                                 }}
                                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.06)'; e.currentTarget.style.color = C.textPrimary; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.03)'; e.currentTarget.style.color = C.textSecondary; }}

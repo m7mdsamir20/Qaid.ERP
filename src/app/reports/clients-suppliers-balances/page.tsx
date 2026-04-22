@@ -172,9 +172,9 @@ export default function ClientsSuppliersBalancesPage() {
 
                 {error && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                        <span style={{ fontSize: '16px' }}>⚠️</span>
+                        <span style={{ fontSize: '13px' }}>⚠️</span>
                         {t(error)}
-                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
                     </div>
                 )}
 
@@ -196,7 +196,7 @@ export default function ClientsSuppliersBalancesPage() {
                                 }}>
                                     <span style={{ fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{s.label}</span>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                        <span style={{ fontSize: '24px', fontWeight: 1000, color: s.color, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
+                                        <span style={{ fontSize: '24px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
                                         <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                     </div>
                                 </div>
@@ -207,19 +207,19 @@ export default function ClientsSuppliersBalancesPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('النوع')}</th>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الاسم')}</th>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الهاتف')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('النوع')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('الاسم')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('الهاتف')}</th>
                                         
                                         {filter === 'all' ? (
                                             <>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('عليه (مدين)')}</th>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('له (دائن)')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('عليه (مدين)')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('له (دائن)')}</th>
                                             </>
                                         ) : (
                                             <>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الوضع المالي')}</th>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('صافي الرصيد')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('الوضع المالي')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 600, fontFamily: CAIRO }}>{t('صافي الرصيد')}</th>
                                             </>
                                         )}
                                     </tr>
@@ -246,7 +246,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{
-                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 900, fontFamily: CAIRO,
+                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 600, fontFamily: CAIRO,
                                                         background: p.partnerType === 'customer' ? 'rgba(37, 106, 244,0.1)' : 'rgba(245,158,11,0.1)',
                                                         color: p.partnerType === 'customer' ? '#256af4' : '#f59e0b'
                                                     }}>
@@ -258,10 +258,10 @@ export default function ClientsSuppliersBalancesPage() {
                                                 
                                                 {filter === 'all' ? (
                                                     <>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '13px', fontFamily: OUTFIT }}>
                                                             {maden > 0 ? fMoneyJSX(maden) : '—'}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '13px', fontFamily: OUTFIT }}>
                                                             {daen > 0 ? fMoneyJSX(daen) : '—'}
                                                         </td>
                                                     </>
@@ -272,7 +272,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                                 <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('رصيد صفري')}</span>
                                                             ) : (
                                                                 <span style={{
-                                                                    padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
+                                                                    padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
                                                                     background: owesUs ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)',
                                                                     border: `1px solid ${owesUs ? 'rgba(239,68,68,0.2)' : 'rgba(16,185,129,0.2)'}`
                                                                 }}>
@@ -280,7 +280,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                                 </span>
                                                             )}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '13px', fontFamily: OUTFIT }}>
                                                             {formatNumber(Math.abs(p.balance))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                         </td>
                                                     </>

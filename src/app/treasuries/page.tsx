@@ -94,7 +94,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     background: form.type === opt.val ? `${opt.color}15` : C.subtle,
                                     cursor: 'pointer', transition: 'all 0.2s',
                                     display: 'flex', alignItems: 'center', gap: '10px',
-                                    justifyContent: 'center', fontSize: '13px', fontWeight: 800, fontFamily: CAIRO,
+                                    justifyContent: 'center', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO,
                                     color: form.type === opt.val ? C.textPrimary : C.textSecondary
                                 }}>
                                 <span style={{ opacity: form.type === opt.val ? 1 : 0.6, color: form.type === opt.val ? opt.color : 'inherit' }}>{opt.icon}</span>
@@ -127,7 +127,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                             {/* Background Zeros Layer (Only visible when empty) */}
                             {!form.balance && (
-                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', fontWeight: 900, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
                                     0.00
                                 </div>
                             )}
@@ -138,8 +138,8 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     if ((val.match(/\./g) || []).length > 1) return;
                                     setForm(f => ({ ...f, balance: val }));
                                 }}
-                                style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 900, color: C.textPrimary, height: '46px', fontSize: '17px', width: '100%', padding: '0' }} onFocus={focusIn} onBlur={focusOut} />
-                            <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
+                                style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '46px', fontSize: '17px', width: '100%', padding: '0' }} onFocus={focusIn} onBlur={focusOut} />
+                            <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 600, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
                         </div>
                     </div>
                 )}
@@ -152,7 +152,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                     margin: '0 -22px -22px',
                     background: C.card, zIndex: 10
                 }}>
-                    <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(saving, false), height: '44px', fontSize: '14px' }}>
+                    <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(saving, false), height: '44px', fontSize: '13px' }}>
                         {saving ? <Loader2 size={18} className="animate-spin" /> : (isEdit ? <CheckCircle2 size={18} /> : <Plus size={18} />)}
                         <span style={{ fontFamily: CAIRO }}>{isEdit ? t('حفظ التعديلات') : t('إضافة الخزينة / البنك')}</span>
                     </button>
@@ -306,8 +306,8 @@ export default function TreasuriesPage() {
                         <div style={{ width: 72, height: 72, borderRadius: '20px', background: C.subtle, border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.textMuted, margin: '0 auto 20px' }}>
                             <Landmark size={36} />
                         </div>
-                        <h3 style={{ margin: '0 0 10px', color: C.textPrimary, fontWeight: 800, fontSize: '18px', fontFamily: CAIRO }}>{t('لا توجد بيانات')}</h3>
-                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: CAIRO }}>{t('ابدأ بإضافة أول خزينة أو حساب بنكي لتتبع أموالك.')}</p>
+                        <h3 style={{ margin: '0 0 10px', color: C.textPrimary, fontWeight: 600, fontSize: '18px', fontFamily: CAIRO }}>{t('لا توجد بيانات')}</h3>
+                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('ابدأ بإضافة أول خزينة أو حساب بنكي لتتبع أموالك.')}</p>
                     </div>
                 ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
@@ -315,8 +315,8 @@ export default function TreasuriesPage() {
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', padding: '0 4px' }}>
                                     <Banknote size={20} style={{ color: C.success }} />
-                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الخزن النقدية')}</span>
-                                    <span style={{ fontSize: '11px', color: C.success, background: `${C.success}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.success}20`, fontFamily: OUTFIT }}>{cashList.length}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الخزن النقدية')}</span>
+                                    <span style={{ fontSize: '11px', color: C.success, background: `${C.success}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 600, border: `1px solid ${C.success}20`, fontFamily: OUTFIT }}>{cashList.length}</span>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
                                     {cashList.map(t => (
@@ -329,8 +329,8 @@ export default function TreasuriesPage() {
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', padding: '0 4px' }}>
                                     <Building size={20} style={{ color: C.primary }} />
-                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الحسابات البنكية')}</span>
-                                    <span style={{ fontSize: '11px', color: C.primary, background: `${C.primary}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.primary}20`, fontFamily: OUTFIT }}>{bankList.length}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الحسابات البنكية')}</span>
+                                    <span style={{ fontSize: '11px', color: C.primary, background: `${C.primary}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 600, border: `1px solid ${C.primary}20`, fontFamily: OUTFIT }}>{bankList.length}</span>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
                                     {bankList.map(t => (
@@ -398,7 +398,7 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                         <Icon size={20} />
                     </div>
                     <div>
-                        <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800, fontFamily: CAIRO }}>{item.name}</div>
+                        <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{item.name}</div>
                         <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{item.type === 'cash' ? t('خزينة') : t('بنك')}</div>
                     </div>
                 </div>
@@ -419,13 +419,13 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
             {/* Balance Row (Applied Modal Style) */}
             <div style={{ position: 'relative', background: C.inputBg, borderRadius: '12px', padding: '14px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                 {/* Digital Watermark */}
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 900, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px', opacity: 0.1 }}>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 600, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px', opacity: 0.1 }}>
                     0.00
                 </div>
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
+                    <div style={{ fontSize: '22px', fontWeight: 600, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
                         {formatNumber(item.balance)}
-                        <span style={{ fontSize: '11px', color: accentColor, fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
+                        <span style={{ fontSize: '11px', color: accentColor, fontWeight: 600, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
                 </div>
             </div>

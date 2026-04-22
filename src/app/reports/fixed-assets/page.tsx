@@ -123,7 +123,7 @@ export default function FixedAssetsReportPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                            <span className="stat-value" style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             {i < 3 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
@@ -202,7 +202,7 @@ export default function FixedAssetsReportPage() {
                                 borderRadius: '8px', 
                                 border: 'none',
                                 fontSize: '11.5px', 
-                                fontWeight: 800, 
+                                fontWeight: 600, 
                                 cursor: 'pointer', 
                                 transition: 'all 0.2s', 
                                 fontFamily: CAIRO,
@@ -215,7 +215,7 @@ export default function FixedAssetsReportPage() {
 
                 <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '12px', paddingInlineStart: '4px' }}>
                     <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
-                        {t('عدد الأصول المفلترة:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '14px' }}>{filtered.length}</span>
+                        {t('عدد الأصول المفلترة:')} <span style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px' }}>{filtered.length}</span>
                     </div>
                 </div>
 
@@ -227,7 +227,7 @@ export default function FixedAssetsReportPage() {
                                         {[t('الكود'), t('اسم الأصل'), t('الفئة'), t('تاريخ الشراء'), t('التكلفة'), t('مجمع الإهلاك'), t('الصافي الدفتري'), t('المعدل'), t('الحالة')].map((h, i) => (
                                             <th key={i} style={{ textAlign: i === 8 ? 'center' : 'start', padding: '16px 20px',
                                                 fontSize: '12px',
-                                                fontWeight: 800,
+                                                fontWeight: 600,
                                                 color: C.textSecondary,
                                                 
                                                 fontFamily: CAIRO,
@@ -250,20 +250,20 @@ export default function FixedAssetsReportPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
                                                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                                 <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: '#a78bfa', fontWeight: 900 }}>{a.code}</span>
+                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: '#a78bfa', fontWeight: 600 }}>{a.code}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.purchaseCost} /></td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.purchaseCost} /></td>
                                                 <td style={{ padding: '14px 20px', }}>
-                                                    <div style={{ fontSize: '14px', color: '#fb7185', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
+                                                    <div style={{ fontSize: '13px', color: '#fb7185', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.netBookValue} /></td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT, }}><Currency amount={a.netBookValue} /></td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: OUTFIT }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
+                                                    <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
                                                         {t(st.label)}
                                                     </span>
                                                 </td>
@@ -273,10 +273,10 @@ export default function FixedAssetsReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary,  fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: C.textPrimary,  fontFamily: OUTFIT }}><Currency amount={totalCost} /></td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: '#fb7185',  fontFamily: OUTFIT }}><Currency amount={totalAccum} /></td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: '#10b981',  fontFamily: OUTFIT }}><Currency amount={totalNet} /></td>
+                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: OUTFIT }}><Currency amount={totalCost} /></td>
+                                        <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: '#fb7185',  fontFamily: OUTFIT }}><Currency amount={totalAccum} /></td>
+                                        <td style={{ padding: '18px 20px', fontSize: '13px', fontWeight: 600, color: '#10b981',  fontFamily: OUTFIT }}><Currency amount={totalNet} /></td>
                                         <td colSpan={2} />
                                     </tr>
                                 </tfoot>

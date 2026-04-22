@@ -68,7 +68,7 @@ export default function LoginPage() {
                         height: '36px', padding: '0 12px', borderRadius: '10px',
                         border: `1px solid ${C.primary}30`, background: `${C.primary}10`,
                         color: C.primary, cursor: 'pointer', transition: 'all 0.2s',
-                        fontSize: '13px', fontWeight: 900, fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO,
+                        fontSize: '13px', fontWeight: 600, fontFamily: lang === 'ar' ? 'sans-serif' : CAIRO,
                         display: 'flex', alignItems: 'center', justifyContent: 'center'
                     }}
                     onMouseEnter={e => e.currentTarget.style.background = `${C.primary}20`}
@@ -160,7 +160,7 @@ export default function LoginPage() {
                     ) : (
                         <div style={{ display: 'block', margin: '0 auto 12px', width: '220px', height: '80px' }} />
                     )}
-                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{t('مرحباً بعودتك لنظامك السحابي')}</p>
+                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '13px', fontWeight: 600 }}>{t('مرحباً بعودتك لنظامك السحابي')}</p>
                 </div>
 
                 {/* كارت التسجيل */}
@@ -172,7 +172,7 @@ export default function LoginPage() {
                     WebkitBackdropFilter: 'var(--c-auth-card-blur)',
                     borderRadius: '24px', padding: '32px',
                 }}>
-                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 900, color: C.textPrimary }}>{t('تسجيل الدخول')}</h2>
+                    <h2 style={{ margin: '0 0 24px', fontSize: '22px', fontWeight: 600, color: C.textPrimary }}>{t('تسجيل الدخول')}</h2>
 
                     {error && (
                         <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '12px 16px', marginBottom: '20px', color: C.danger, fontSize: '13px', fontWeight: 600 }}>
@@ -232,16 +232,16 @@ export default function LoginPage() {
                         </div>
 
                         <button type="submit" disabled={loading}
-                            style={{ height: '50px', borderRadius: '12px', border: 'none', background: loading ? C.primaryBg : C.primary, color: '#fff', fontSize: '16px', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO, marginTop: '8px', boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}40`, transition: 'all 0.2s' }}
+                            style={{ height: '50px', borderRadius: '12px', border: 'none', background: loading ? C.primaryBg : C.primary, color: '#fff', fontSize: '13px', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO, marginTop: '8px', boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}40`, transition: 'all 0.2s' }}
                             onMouseEnter={e => { if (!loading) e.currentTarget.style.background = C.primaryHover; }}
                             onMouseLeave={e => { if (!loading) e.currentTarget.style.background = C.primary; }}>
                             {loading ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الدخول...')}</> : t('تسجيل الدخول')}
                         </button>
                     </form>
 
-                    <p style={{ marginTop: '20px', fontSize: '14px', color: C.textSecondary }}>
+                    <p style={{ marginTop: '20px', fontSize: '13px', color: C.textSecondary }}>
                         {t('ليس لديك حساب؟')}{' '}
-                        <Link href="/register" style={{ color: C.primary, fontWeight: 800, textDecoration: 'none' }}>{t('إنشاء حساب جديد')}</Link>
+                        <Link href="/register" style={{ color: C.primary, fontWeight: 600, textDecoration: 'none' }}>{t('إنشاء حساب جديد')}</Link>
                     </p>
                 </div>
             </div>
