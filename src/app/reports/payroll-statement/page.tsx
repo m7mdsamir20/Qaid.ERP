@@ -73,7 +73,9 @@ export default function PayrollStatementPage() {
                     title={t("كشف رواتب الموظفين التفصيلي")}
                     subtitle={t("مراجعة شاملة لمسيرات الرواتب، الحوافز، الاستقطاعات، وصافي المستحقات لفترة محددة.")}
                     backTab="hr"
-                    
+                    printTitle={data && data.records.length > 0 ? t("مسير رواتب الموظفين") : undefined}
+                    printDate={new Date(month + '-01').toLocaleDateString('ar-EG', { year: 'numeric', month: 'long' })}
+                    printLabel={t('الشهر:')}
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
@@ -100,7 +102,7 @@ export default function PayrollStatementPage() {
                     </div>
                 ) : (
                     <>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('إجمالي الأجور الأساسية'), value: fmt(data.summary.totalSalaries), color: '#3b82f6', icon: <Users size={18} /> },
                                 { label: t('إجمالي البدلات'), value: fmt(data.summary.totalAllowances), color: '#10b981', icon: <ArrowUpRight size={18} /> },
@@ -123,12 +125,12 @@ export default function PayrollStatementPage() {
                             ))}
                         </div>
 
-                        <div style={{ position: 'relative', marginBottom: '20px' }}>
+                        <div className="no-print" style={{ position: 'relative', marginBottom: '20px' }}>
                             <Search size={18} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                             <input placeholder={t("ابحث باسم الموظف...")} value={q} onChange={e => setQ(e.target.value)} style={{ ...IS, paddingInlineStart: '45px', height: '42px', background: C.card, borderRadius: '12px', border: `1px solid ${C.border}` }} />
                         </div>
 
-                        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                        <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
@@ -148,16 +150,24 @@ export default function PayrollStatementPage() {
                                         </tr>
                                     ))}
                                 </tbody>
+                                <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
+                                    <tr>
+                                        <td style={{ padding: '16px 20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.summary.totalSalaries)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>+{fmt(data.summary.totalAllowances)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: '#ef4444', fontFamily: INTER }}>-{fmt(data.summary.totalDiscounts)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{fmt(data.summary.netTotal)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
+                                    </tr>
+                                </tfoot>
                             </table>
                         </div>
                     </>
                 )}
             </div>
             <style>{`
-                input::-webkit-calendar-picker-indicator {
-                    filter: invert(1) sepia(0) saturate(0) hue-rotate(0deg) brightness(0.7);
-                    cursor: pointer;
-                }
+                input::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
+                .animate-spin { animation: spin 1s linear infinite; }
+                @keyframes spin { to { transform: rotate(360deg); } }
             `}</style>
         </DashboardLayout>
     );
