@@ -373,14 +373,14 @@ export default function ComprehensiveSettlementPage() {
                                                     { label: t('المبلغ'), width: '14%' },
                                                     { label: t('إجراء'), width: '6%' }
                                                 ].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 12 ? 'center' : 'start', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
+                                                    <th key={i} style={{ textAlign: (i === 0 || i === 5 || i === 6) ? 'center' : 'start', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
                                                 ))}
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {filteredSettlements.map((s: any, idx) => (
                                                 <tr key={s.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < filteredSettlements.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                    <td style={{ padding: '11px 16px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '11px 16px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT, textAlign: 'center' }}>
                                                         {new Date(s.date).toLocaleDateString('en-GB')}
                                                     </td>
                                                     <td style={{ padding: '11px 16px', }}>
@@ -401,7 +401,7 @@ export default function ComprehensiveSettlementPage() {
                                                         </div>
                                                     </td>
                                                     <td style={{ padding: '11px 16px',  fontSize: '13px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.notes || '-'}</td>
-                                                    <td style={{ padding: '11px 16px', }}>
+                                                    <td style={{ padding: '11px 16px', textAlign: 'center' }}>
                                                         <div style={{ fontSize: '14px', fontWeight: 700, color: C.success, fontFamily: OUTFIT }}>
                                                             {s.amount.toLocaleString()} <span style={{ fontSize: '10px' }}>{currencySign}</span>
                                                         </div>
@@ -455,8 +455,8 @@ export default function ComprehensiveSettlementPage() {
                                     <thead style={{ background: 'rgba(255,255,255,0.02)' }}>
                                         <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <th style={{ padding: '10px 16px',  color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>{t('الحساب المتأثر')}</th>
-                                            <th style={{ padding: '10px 16px',  color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>{t('مدين (+)')}</th>
-                                            <th style={{ padding: '10px 16px',  color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO }}>{t('دائن (-)')}</th>
+                                            <th style={{ padding: '10px 16px',  color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO, textAlign: 'center' }}>{t('مدين (+)')}</th>
+                                            <th style={{ padding: '10px 16px',  color: C.textMuted, fontSize: '12px', fontWeight: 500, fontFamily: CAIRO, textAlign: 'center' }}>{t('دائن (-)')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -465,16 +465,16 @@ export default function ComprehensiveSettlementPage() {
                                                 <td style={{ padding: '12px 16px' }}>
                                                     <div style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{line.accountName}</div>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: C.success, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT }}>{line.debit > 0 ? line.debit.toLocaleString() : '-'}</td>
-                                                <td style={{ padding: '12px 16px', color: C.danger, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT }}>{line.credit > 0 ? line.credit.toLocaleString() : '-'}</td>
+                                                <td style={{ padding: '12px 16px', color: C.success, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT, textAlign: 'center' }}>{line.debit > 0 ? line.debit.toLocaleString() : '-'}</td>
+                                                <td style={{ padding: '12px 16px', color: C.danger, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT, textAlign: 'center' }}>{line.credit > 0 ? line.credit.toLocaleString() : '-'}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `1px solid ${C.border}` }}>
                                         <tr>
                                             <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي القيد')}</td>
-                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()}</td>
-                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT, textAlign: 'center' }}>{detailsModal.amount.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT, textAlign: 'center' }}>{detailsModal.amount.toLocaleString()}</td>
                                         </tr>
                                     </tfoot>
                                 </table>

@@ -213,8 +213,8 @@ export default function EmployeesPage() {
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('المنصب والقسم')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('تاريخ التعيين')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('صافي الراتب')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('تاريخ التعيين')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('صافي الراتب')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('الإجراءات')}</th>
                                     </tr>
@@ -242,12 +242,12 @@ export default function EmployeesPage() {
                                                         <Building2 size={12} /> {emp.department?.name || t('غير مصنف')}
                                                     </div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
                                                         {new Date(emp.hireDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
                                                     </div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     <div style={{ fontWeight: 900, color: '#10b981', fontSize: '16px', fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(empNet)}
                                                     </div>

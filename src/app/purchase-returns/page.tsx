@@ -133,11 +133,11 @@ export default function PurchaseReturnsListPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>التاريخ</th>
                                         <th style={TABLE_STYLE.th(false)}>المورد</th>
                                         <th style={TABLE_STYLE.th(false, true)}>الإجمالي</th>
-                                        <th style={TABLE_STYLE.th(false)}>المدفوع</th>
-                                        <th style={TABLE_STYLE.th(false)}>المتبقي</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>المدفوع</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>المتبقي</th>
                                         <th style={TABLE_STYLE.th(false, true)}>الحالة</th>
                                         <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
                                     </tr>
@@ -154,15 +154,15 @@ export default function PurchaseReturnsListPage() {
                                                 <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
                                                     RTN-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.supplier?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                                     <Currency amount={inv.total} />
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
                                                     <Currency amount={inv.paidAmount} />
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: CAIRO }}>
                                                     <Currency amount={inv.remaining} />
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>

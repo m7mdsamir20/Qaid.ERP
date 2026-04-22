@@ -237,7 +237,7 @@ export default function PurchasePaymentsPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>رقم السند</th>
-                                        <th style={TABLE_STYLE.th(false)}>التاريخ</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>التاريخ</th>
                                         <th style={TABLE_STYLE.th(false)}>المورد</th>
                                         <th style={TABLE_STYLE.th(false, true)}>طريقة الدفع</th>
                                         <th style={TABLE_STYLE.th(false)}>الخزينة / البنك</th>
@@ -255,7 +255,7 @@ export default function PurchasePaymentsPage() {
                                             <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
                                                 PMT-{String(v.voucherNumber).padStart(5, '0')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>
                                                 {new Date(v.date).toLocaleDateString('en-GB')}
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
@@ -278,7 +278,7 @@ export default function PurchasePaymentsPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {v.description || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}>
                                                 <Currency amount={v.amount} />
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
