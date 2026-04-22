@@ -121,25 +121,25 @@ export default function TopSellingReportPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontWeight: 900, fontFamily: INTER }}>{idx + 1}</td>
-                                                <td style={{ padding: '14px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: INTER }}>{idx + 1}</td>
+                                                <td style={{ padding: '14px 20px', textAlign: 'start' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '3px', fontFamily: INTER }}>{item.code} — {item.category}</div>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                    <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{item.totalQuantity.toLocaleString('en-US')}</span>
-                                                    <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{item.totalQuantity.toLocaleString('en-US')}</span>
+                                                    <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.primary, fontSize: '13.5px', fontFamily: INTER }}>
-                                                    {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span>
+                                                <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 600, color: C.primary, fontSize: '14px', fontFamily: INTER }}>
+                                                    {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', textAlign: 'end' }}>
                                                     <span style={{
                                                         color: '#10b981', background: 'rgba(16,185,129,0.08)',
                                                         padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
-                                                        fontWeight: 1000, fontSize: '12px', fontFamily: INTER
+                                                        fontWeight: 600, fontSize: '14px', fontFamily: INTER
                                                     }}>
-                                                        {item.totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span>
+                                                        {item.totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                     </span>
                                                 </td>
                                             </tr>
