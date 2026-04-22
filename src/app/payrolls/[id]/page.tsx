@@ -150,7 +150,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
         const printDate = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
         const printTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true });
         const sym = formatCurrency(company?.currency || 'EGP');
-        const fmt = (n: number) => formatNumber((n || 0));
+        const fmt = (n: number) => formatNumber(n || 0);
         const logoHtml = companyLogo
             ? `<img src="${companyLogo}" style="max-height:60px;max-width:120px;object-fit:contain;" />`
             : `<div style="font-size:16px;font-weight:900">${companyName}</div>`;
@@ -252,7 +252,7 @@ ${tableHtml}
         </DashboardLayout>
     );
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%' }}>
                 

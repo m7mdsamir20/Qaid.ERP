@@ -141,7 +141,7 @@ export default function CostCentersPage() {
 
 
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <PageHeader
                 title={t("مراكز التكلفة")}

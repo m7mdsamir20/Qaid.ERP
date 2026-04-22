@@ -53,7 +53,7 @@ export default function ExpensesReportPage() {
         finally { setLoading(false); }
     };
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
                 <ReportHeader
@@ -186,7 +186,7 @@ export default function ExpensesReportPage() {
                                             <tr>
                                                 <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
                                                 <td style={{ padding: '18px 16px',  fontWeight: 900, fontSize: '14px', color: DC, fontFamily: OUTFIT }}>
-                                                    {Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>
                                         </tfoot>

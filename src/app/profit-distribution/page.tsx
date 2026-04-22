@@ -87,7 +87,7 @@ export default function ProfitDistributionPage() {
 
         const totalDistributed = distributions.reduce((s, d) => s + d.totalAmount, 0);
 
-        return formatNumber((
+        return (
             <DashboardLayout>
                 <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                     
@@ -121,7 +121,7 @@ export default function ProfitDistributionPage() {
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                            <span>{typeof s.val === 'number' ? s.val) : s.val}</span>
+                                            <span>{typeof s.val === 'number' ? s.val : s.val}</span>
                                             {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                         </div>
                                     </div>

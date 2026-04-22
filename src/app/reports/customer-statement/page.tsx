@@ -298,7 +298,7 @@ export default function CustomerStatementPage() {
                                                 {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
                                             <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT }}>
-                                                {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
+                                                {(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0  ? formatNumber(Math.abs(data.initialBalance) : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
                                             <td style={{ padding: '20px 24px',  color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>
                                                 {formatNumber(Math.abs(data.finalBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>

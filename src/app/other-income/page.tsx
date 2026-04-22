@@ -140,7 +140,7 @@ export default function OtherIncomePage() {
                             ) : paginated.map((e, idx) => {
                                 const creditLine = e.lines.find((l: any) => l.credit > 0);
                                 const debitLine = e.lines.find((l: any) => l.debit > 0);
-                                return formatNumber((
+                                return (
                                     <tr key={e.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>

@@ -365,7 +365,7 @@ export default function DatabaseTab({
                                                         }
                                                     }
 
-                                                    return formatNumber((
+                                                    return (
                                                         <tr key={i} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)', transition: 'background 0.15s' }}
                                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>

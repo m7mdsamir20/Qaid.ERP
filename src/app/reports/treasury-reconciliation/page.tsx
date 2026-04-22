@@ -146,7 +146,7 @@ export default function TreasuryReconciliationPage() {
         (s.notes || '').toLowerCase().includes(historyQ.toLowerCase())
     );
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
@@ -237,7 +237,7 @@ export default function TreasuryReconciliationPage() {
                                                 const act = parseFloat(physicalBalances[tData.id]) || 0;
                                                 const diff = act - sys;
                                                 const hasActual = physicalBalances[tData.id] !== undefined && physicalBalances[tData.id] !== '';
-                                                return formatNumber((
+                                                return (
                                                     <tr key={tData.id} style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                         onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
@@ -387,10 +387,10 @@ export default function TreasuryReconciliationPage() {
                                                                         ? <span style={{ color: '#6366f1', fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}>{t('بنكي')}</span>
                                                                         : <span style={{ color: SC, fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}>{t('نقدي')}</span>}
                                                                 </td>
-                                                                <td style={{ padding: '12px 20px',  fontWeight: 800, fontFamily: OUTFIT, color: C.textPrimary }}>{formatNumber(item.systemBalance?)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></td>
-                                                                <td style={{ padding: '12px 20px',  fontWeight: 800, fontFamily: OUTFIT, color: C.textPrimary }}>{item.physicalBalance != null ? <>{formatNumber(item.physicalBalance?)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}</td>
+                                                                <td style={{ padding: '12px 20px',  fontWeight: 800, fontFamily: OUTFIT, color: C.textPrimary }}>{formatNumber(item.systemBalance || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></td>
+                                                                <td style={{ padding: '12px 20px',  fontWeight: 800, fontFamily: OUTFIT, color: C.textPrimary }}>{item.physicalBalance != null ? <>{formatNumber(item.physicalBalance || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}</td>
                                                                 <td style={{ padding: '12px 20px',  fontWeight: 900, fontFamily: OUTFIT, color: item.diff == null ? C.textMuted : item.diff > 0 ? SC : item.diff < 0 ? DC : C.primary, fontSize: '14px' }}>
-                                                                    {item.diff != null ? <>{item.diff > 0 ? '+' : ''}{formatNumber(item.diff?)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
+                                                                    {item.diff != null ? <>{item.diff > 0 ? '+' : ''}{formatNumber(item.diff || 0)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
                                                                 </td>
                                                                 <td style={{ padding: '12px 20px', }}>
                                                                     {item.status === 'matched' && <span style={{ color: SC, fontSize: '11px', fontWeight: 800, fontFamily: CAIRO, background: 'rgba(16,185,129,0.1)', padding: '3px 8px', borderRadius: '6px' }}>{t('مطابق')}</span>}

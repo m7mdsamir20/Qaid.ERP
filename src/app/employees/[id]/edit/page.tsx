@@ -415,7 +415,7 @@ function Field({ label, required, children }: any) {
 }
 
 function SummaryItem({ label, value, color, prefix = '', unit }: any) {
-    return formatNumber((
+    return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
             <span style={{ color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
             <span style={{ color, fontWeight: 800, fontFamily: OUTFIT }}>

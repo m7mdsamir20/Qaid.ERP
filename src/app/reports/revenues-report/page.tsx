@@ -66,7 +66,7 @@ export default function RevenuesReportPage() {
         XLSX.writeFile(wb, `${t('تقرير_الإيرادات')}_${new Date().toLocaleDateString('en-GB')}.xlsx`);
     };
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%', paddingBottom: '60px' }}>
                 <ReportHeader
@@ -161,7 +161,7 @@ export default function RevenuesReportPage() {
                                             <tr>
                                                 <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
                                                 <td style={{ padding: '18px 16px',  fontWeight: 900, fontSize: '14px', color: SC, fontFamily: OUTFIT }}>
-                                                    {Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>
                                         </tfoot>

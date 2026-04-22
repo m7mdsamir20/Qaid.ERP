@@ -87,7 +87,7 @@ export default function CapitalPage() {
         }
     };
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 
@@ -116,7 +116,7 @@ export default function CapitalPage() {
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{typeof s.val === 'number' ? s.val) : s.val}</span>
+                                        <span>{typeof s.val === 'number' ? s.val : s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
@@ -192,7 +192,8 @@ export default function CapitalPage() {
 
                                         {/* Actions */}
                                         <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'increase' })); }}
+                                            <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'increase' }
+    ); }}
                                                 style={{ flex: 1, height: '38px', borderRadius: '10px', border: 'none', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontFamily: CAIRO }}>
                                                 <TrendingUp size={14} /> {t('زيادة')}
                                             </button>

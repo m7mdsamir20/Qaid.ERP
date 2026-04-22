@@ -354,7 +354,7 @@ export default function FinancialYearsPage() {
                                                 const s = fy.stats;
                                                 const profit = s ? s.salesTotal - s.purchasesTotal : 0;
                                                 const isLast = idx === closedYears.length - 1;
-                                                return formatNumber((
+                                                return (
                                                     <tr key={fy.id} style={TABLE_STYLE.row(isLast)}
                                                         onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.025)'}
                                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>

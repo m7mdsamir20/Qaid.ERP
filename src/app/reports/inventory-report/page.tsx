@@ -58,7 +58,7 @@ export default function InventoryReportPage() {
         (s.warehouse?.name?.toLowerCase() || '').includes(search.toLowerCase())
     ) || [];
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <ReportHeader
@@ -75,7 +75,7 @@ export default function InventoryReportPage() {
                             { label: isServices ? t('عدد الخدمات') : t('عدد الأصناف'), value: data.totalItems.toLocaleString('en-US'), color: '#256af4', icon: <Package size={20} /> },
                             ...(!isServices ? [
                                 { label: t('إجمالي الكميات'), value: data.totalQuantity.toLocaleString('en-US'), color: '#10b981', icon: <Box size={20} /> },
-                                { label: t('قيمة المخزون (تكلفة)'), value: data.totalValue), color: '#f59e0b', icon: <DollarSign size={20} /> },
+                                { label: t('قيمة المخزون (تكلفة)'), value: formatNumber(data.totalValue), color: '#f59e0b', icon: <DollarSign size={20} /> },
                             ] : [])
                         ].map((s, i) => (
                             <div key={i} style={{

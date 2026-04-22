@@ -61,9 +61,7 @@ export default function TopSellingReportPage() {
                     title={isServices ? t("تحليل الخدمات الأكثر طلباً") : t("تحليل الأصناف الأكثر مبيعاً")}
                     subtitle={isServices ? t("نظرة شاملة على الخدمات الأعلى حركة وطلباً في نشاطك.") : t("نظرة شاملة على المنتجات الأعلى حركة وكفاءة ربحية في محفظة مبيعاتك.")}
                     backTab="sales-purchases"
-                    
                 />
-
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 320px', gap: '24px', marginBottom: '24px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -201,4 +199,3 @@ export default function TopSellingReportPage() {
         </DashboardLayout>
     );
 }
-

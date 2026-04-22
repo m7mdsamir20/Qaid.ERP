@@ -105,7 +105,7 @@ export default function CostCenterDetails() {
 
     const maxMonthValue = Math.max(...monthlyData, 1);
 
-    return formatNumber((
+    return (
         <DashboardLayout>
             <PageHeader 
                 title={`${t('مركز التكلفة')}: ${data.name}`}
@@ -178,7 +178,7 @@ export default function CostCenterDetails() {
                         <div>
                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{kpi.label}</div>
                             <div style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                {kpi.isCount ? kpi.value.toLocaleString('en-US') : (kpi.value || 0))}
+                                {kpi.isCount ? kpi.value.toLocaleString('en-US') : (kpi.value || 0)}
                                 {!kpi.isCount && <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>}
                             </div>
                         </div>
