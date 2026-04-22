@@ -197,7 +197,7 @@ export default function StocktakingsPage() {
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('المخزن')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t('التعديلات')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('التعديلات')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('ملاحظات')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراء')}</th>
                                     </tr>
@@ -237,7 +237,7 @@ export default function StocktakingsPage() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td style={{...TABLE_STYLE.td(false)}}>
+                                            <td style={{...TABLE_STYLE.td(false, true)}}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                                                     {st.lines.filter(l => l.difference !== 0).length > 0 ? st.lines.filter(l => l.difference !== 0).map((l, i) => (
                                                         <div key={i} style={{ 

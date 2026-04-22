@@ -65,9 +65,9 @@ export default function WarehouseTransfersPage() {
                                 <tr style={TABLE_STYLE.thead}>
                                     <th style={{ ...TABLE_STYLE.th(true), width: '120px' }}>{t('رقم التحويل')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('من مخزن')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('إلى مخزن')}</th>
-                                    <th style={{...TABLE_STYLE.th(false)}}>{t('الأصناف المحولة')}</th>
+                                    <th style={TABLE_STYLE.th(false, true)}>{t('من مخزن')}</th>
+                                    <th style={TABLE_STYLE.th(false, true)}>{t('إلى مخزن')}</th>
+                                    <th style={{...TABLE_STYLE.th(false, true)}}>{t('الأصناف المحولة')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('الملاحظات')}</th>
                                 </tr>
                             </thead>
@@ -96,18 +96,18 @@ export default function WarehouseTransfersPage() {
                                         <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
                                             {new Date(tf.date).toLocaleDateString('en-GB')}
                                         </td>
-                                        <td style={{...TABLE_STYLE.td(false)}}>
+                                        <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(251,113,133,0.05)', color: '#fb7185', fontSize: '12px', fontWeight: 800 }}>
                                                 <Building2 size={12} /> {tf.fromWarehouse?.name || '—'}
                                             </div>
                                         </td>
-                                        <td style={{...TABLE_STYLE.td(false)}}>
+                                        <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(52,211,153,0.05)', color: '#34d399', fontSize: '12px', fontWeight: 800 }}>
                                                 <Building2 size={12} /> {tf.toWarehouse?.name || '—'}
                                             </div>
                                         </td>
-                                        <td style={{...TABLE_STYLE.td(false)}}>
-                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                        <td style={{...TABLE_STYLE.td(false, true)}}>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                                                 {tf.lines.map((l, i) => (
                                                     <div key={i} style={{ 
                                                         fontSize: '11px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', 

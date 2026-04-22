@@ -145,7 +145,7 @@ export default function DuePage() {
                                                 t('الحالة'), 
                                                 t('إجراء')
                                             ].map((h, i) => (
-                                                <th key={i} style={TABLE_STYLE.th(i === 0, [6, 7].includes(i))}>{h}</th>
+                                                <th key={i} style={TABLE_STYLE.th(i === 0, [3, 4, 5, 6, 7].includes(i))}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -169,13 +169,13 @@ export default function DuePage() {
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         {inst.installmentNo}
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         {fmt(inst.dueDate, lang)}
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         {fMoneyJSX(inst.amount)}
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         {fMoneyJSX(inst.remaining || 0)}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>

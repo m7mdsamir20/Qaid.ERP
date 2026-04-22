@@ -171,7 +171,7 @@ export default function UnitsPage() {
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(true, true)}>
+                                            <td style={TABLE_STYLE.td(true)}>
                                                 <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
                                                     {unit.code}
                                                 </div>

@@ -169,7 +169,7 @@ export default function NewTransferPage() {
                                     type="date" required
                                     value={form.date}
                                     onChange={e => setForm({ ...form, date: e.target.value })}
-                                    style={{ ...IS, fontSize: '12px', height: '38px' }}
+                                    style={{ ...IS, fontSize: '13px', height: '42px', fontFamily: OUTFIT }}
                                     onFocus={focusIn} onBlur={focusOut}
                                 />
                             </div>
@@ -218,7 +218,7 @@ export default function NewTransferPage() {
                                         <tr style={TABLE_STYLE.thead}>
                                             <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>{t('الصنف')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '120px' }}>{t('الرصيد المتاح')}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '150px' }}>{t('الكمية المحولة')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '150px' }}>{t('الكمية المحولة')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '60px' }}>{t('إجراء')}</th>
                                         </tr>
                                     </thead>
@@ -243,7 +243,7 @@ export default function NewTransferPage() {
                                                             options={items.map(i => ({ value: i.id, label: i.name }))}
                                                         />
                                                     </td>
-                                                    <td style={{...TABLE_STYLE.td(false)}}>
+                                                    <td style={{...TABLE_STYLE.td(false, true)}}>
                                                         <div style={{ 
                                                             fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, 
                                                             color: available > 0 ? C.success : C.danger,
@@ -253,7 +253,7 @@ export default function NewTransferPage() {
                                                             {available.toLocaleString()}
                                                         </div>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), padding: '8px 16px' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), padding: '8px 16px' }}>
                                                         <div style={{ position: 'relative' }}>
                                                             <input
                                                                 required type="number" step="0.01" min="0.01"

@@ -347,7 +347,7 @@ export default function OpeningBalancesPage() {
                                 <thead style={TABLE_STYLE.thead}>
                                     <tr>
                                         {[t('الكود المحاسبي'), t('اسم الحساب'), t('النوع'), t('الطبيعة'), t('مدين'), t('دائن')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0)}>{h}</th>
+                                            <th key={i} style={TABLE_STYLE.th(i === 0, i >= 2)}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -370,17 +370,17 @@ export default function OpeningBalancesPage() {
                                                     <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 800 }}>{account.code}</span>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(true)}>{account.name}</td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={TABLE_STYLE.td(false, true)}>
                                                     <span style={{ fontSize: '11px', fontWeight: 800, padding: '4px 8px', borderRadius: '6px', background: `${tColor}12`, color: tColor, border: `1px solid ${tColor}20`, fontFamily: CAIRO }}>
                                                         {typeLabels[account.type]}
                                                     </span>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false)}>
+                                                <td style={TABLE_STYLE.td(false, true)}>
                                                     <span style={{ fontSize: '11px', fontWeight: 800, padding: '4px 8px', borderRadius: '6px', background: `${natureColor}12`, color: natureColor, border: `1px solid ${natureColor}20`, fontFamily: CAIRO }}>
                                                         {account.nature === 'debit' ? t('مدين') : t('دائن')}
                                                     </span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), width: '160px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
                                                     <input 
                                                         type="number" min="0" step="0.01" 
                                                         value={hasDr ? balance.debit : ''} 
@@ -397,7 +397,7 @@ export default function OpeningBalancesPage() {
                                                         onFocus={focusIn} onBlur={focusOut} 
                                                     />
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), width: '160px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), width: '160px' }}>
                                                     <input 
                                                         type="number" min="0" step="0.01" 
                                                         value={hasCr ? balance.credit : ''} 
