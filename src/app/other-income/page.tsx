@@ -231,7 +231,7 @@ export default function OtherIncomePage() {
                                     alignItems: 'center'
                                 }}
                             >
-                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
+                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
                                 <input 
                                     type="number" step="0.01" value={form.amount} 
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 

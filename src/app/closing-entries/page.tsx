@@ -221,7 +221,7 @@ export default function ClosingEntriesPage() {
                             <div style={{ width: '64px', height: '64px', background: 'rgba(239,68,68,0.1)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <AlertTriangle size={32} style={{ color: '#ef4444' }} />
                             </div>
-                            <h2 style={{ fontSize: '18px', fontWeight: 600, marginBottom: '12px', color: '#ef4444' }}>{t('تنبيه: قيود غير مرحلة')}</h2>
+                            <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#ef4444' }}>{t('تنبيه: قيود غير مرحلة')}</h2>
                             <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
                                 {t('يوجد عدد')} <strong style={{ color: '#fff' }}>{draftCount}</strong> {t('قيود في حالة "مسودة". يرجى ترحيل كافة القيود قبل إقفال السنة المالية لضمان دقة النتائج.')}
                             </p>

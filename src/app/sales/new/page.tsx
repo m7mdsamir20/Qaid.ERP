@@ -999,7 +999,7 @@ function NewSalePageInner() {
                                             <PriceInput 
                                                 value={form.paidAmount}
                                                 onChange={val => { setForm((f: any) => ({ ...f, paidAmount: val })); clearError('paidAmount'); }}
-                                                style={{ height: '44px', fontSize: '18px', fontWeight: 600, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
+                                                style={{ height: '44px', fontSize: '16px', fontWeight: 600, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
                                                 placeholder="0.00"
                                             />
                                             {form.paymentType === 'bank' ? (
