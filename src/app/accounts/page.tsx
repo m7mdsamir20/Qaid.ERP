@@ -4,16 +4,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
-import {
-    BookOpen, Plus, ChevronRight, FolderOpen, FileText, X, Pencil, Trash2,
-    AlertTriangle, Loader2, Lock, RefreshCcw, LayoutGrid, Search, MoreHorizontal,
-    PieChart, Layers, Wallet, CreditCard, TrendingUp, TrendingDown, Activity, Book
-} from 'lucide-react';
+import { BookOpen, Plus, ChevronRight, FolderOpen, FileText, X, Pencil, Trash2, AlertTriangle, Loader2, Lock, RefreshCcw, LayoutGrid, Search, MoreHorizontal, PieChart, Layers, Wallet, CreditCard, TrendingUp, TrendingDown, Activity, Book } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
-import {
-    C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut, LS, IS, SC, STitle
-} from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut, LS, IS, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useTranslation } from '@/lib/i18n';
@@ -303,7 +297,7 @@ export default function AccountsPage() {
                         )}
                     </div>
 
-                    <div style={{ width: '100px', fontFamily: INTER, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'start' }}>{acc.code}</div>
+                    <div style={{ width: '100px', fontFamily: OUTFIT, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'start' }}>{acc.code}</div>
 
                     <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
                         <div style={{
@@ -342,7 +336,7 @@ export default function AccountsPage() {
                         </div>
                     </div>
 
-                    <div style={{ width: '150px', textAlign: 'center', fontFamily: INTER, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success }}>
+                    <div style={{ width: '150px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 900, color: (acc.balance || 0) < 0 ? C.danger : C.success }}>
                         {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
 
@@ -413,7 +407,7 @@ export default function AccountsPage() {
                             </div>
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '10px', fontWeight: 700, color: C.textMuted, margin: '0 0 2px', fontFamily: CAIRO }}>{s.label}</p>
-                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</div>
+                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</div>
                             </div>
                         </div>
                     ))}
@@ -522,7 +516,7 @@ export default function AccountsPage() {
                     <div style={{ display: 'grid', gridTemplateColumns: '120px 1fr', gap: '12px' }}>
                         <div>
                             <label style={LS}>{t('كود الحساب')}</label>
-                            <input disabled value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed', textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textMuted }} />
+                            <input disabled value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', cursor: 'not-allowed', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textMuted }} />
                         </div>
                         <div>
                             <label style={LS}>{t('اسم الحساب بالعربية')} <span style={{ color: C.danger }}>*</span></label>

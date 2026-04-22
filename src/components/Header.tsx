@@ -3,13 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import {
-    Search, Bell, ChevronDown,
-    User, Settings, KeyRound, LogOut,
-    FileText, Package, Users, Receipt, Loader2,
-    Globe, AlertTriangle, GitBranch, Menu,
-    Sun, Moon, X
-} from 'lucide-react';
+import { Search, Bell, ChevronDown, User, Settings, KeyRound, LogOut, FileText, Package, Users, Receipt, Loader2, Globe, AlertTriangle, GitBranch, Menu, Sun, Moon, X } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
 import { Avatar } from '@/components/UserAvatar';
 

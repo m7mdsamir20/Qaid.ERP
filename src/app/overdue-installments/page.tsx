@@ -5,7 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { AlertTriangle, Loader2, X, Banknote, ChevronDown, Calendar, ArrowLeftCircle, ListFilter, Wallet, Check, Eye } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
-import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_SUCCESS, BTN_DANGER, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_SUCCESS, BTN_DANGER, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useRouter } from 'next/navigation';
@@ -118,7 +118,7 @@ export default function OverduePage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>{t('إجمالي المتأخرات')}</div>
-                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                     {fmtN(totalOverdue)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
@@ -151,10 +151,10 @@ export default function OverduePage() {
                                                     <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>
                                                         {inst.plan?.customer?.name}
                                                     </div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{inst.plan?.customer?.phone}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{inst.plan?.customer?.phone}</div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>
+                                                    <div style={{ color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>
                                                         #{inst.plan?.planNumber}
                                                     </div>
                                                 </td>
@@ -241,7 +241,7 @@ export default function OverduePage() {
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('إجمالي المتأخر')}:</span>
-                                    <span style={{ fontSize: '15px', color: C.danger, fontWeight: 900, fontFamily: INTER }}>
+                                    <span style={{ fontSize: '15px', color: C.danger, fontWeight: 900, fontFamily: OUTFIT }}>
                                         {fmtN(collectTarget.remaining || collectTarget.amount)} {cSymbol}
                                     </span>
                                 </div>
@@ -252,7 +252,7 @@ export default function OverduePage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER, border: `1px solid ${C.danger}30` }} 
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT, border: `1px solid ${C.danger}30` }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>

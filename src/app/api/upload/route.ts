@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
 import { withProtection } from '@/lib/apiHandler';
 import { supabase } from '@/lib/supabase';
 import path from 'path';

@@ -7,7 +7,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useSession } from 'next-auth/react';
 import { FileBarChart2, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
-import { C, CAIRO, PAGE_BASE, INTER } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, OUTFIT } from '@/constants/theme';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -112,7 +112,7 @@ export default function TrialBalancePage() {
                                 </span>
                             </div>
                             <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
-                                {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{report.length}</span>
+                                {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{report.length}</span>
                             </div>
                         </div>
 
@@ -135,24 +135,24 @@ export default function TrialBalancePage() {
                                 <tbody>
                                     {report.map((line) => (
                                         <tr key={line.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>
+                                            <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>
                                                 <span style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}` }}>{line.code}</span>
                                             </td>
                                             <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{line.name}</td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', color: line.totalDebit > 0 ? C.textPrimary : C.textMuted, fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.totalDebit > 0 ? fmt(line.totalDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', color: line.totalCredit > 0 ? C.textPrimary : C.textMuted, fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.totalCredit > 0 ? fmt(line.totalCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: line.balanceDebit > 0 ? C.success : C.textMuted, background: 'rgba(16, 185, 129, 0.01)', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}>{line.balanceDebit > 0 ? fmt(line.balanceDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: line.balanceCredit > 0 ? C.danger : C.textMuted, background: 'rgba(239, 68, 68, 0.01)', fontFamily: INTER }}>{line.balanceCredit > 0 ? fmt(line.balanceCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '14px', color: line.totalDebit > 0 ? C.textPrimary : C.textMuted, fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.totalDebit > 0 ? fmt(line.totalDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '14px', color: line.totalCredit > 0 ? C.textPrimary : C.textMuted, fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.totalCredit > 0 ? fmt(line.totalCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: line.balanceDebit > 0 ? C.success : C.textMuted, background: 'rgba(16, 185, 129, 0.01)', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.balanceDebit > 0 ? fmt(line.balanceDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: line.balanceCredit > 0 ? C.danger : C.textMuted, background: 'rgba(239, 68, 68, 0.01)', fontFamily: OUTFIT }}>{line.balanceCredit > 0 ? fmt(line.balanceCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(59, 130, 246, 0.05)', borderTop: `2px solid ${C.primary}44` }}>
                                     <tr>
                                         <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950,  fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('الإجماليات الكلية للميزان')}</td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalDebit} /></td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalCredit} /></td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.success, fontSize: '14px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: INTER, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandBalanceDebit} /></td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.danger, fontSize: '14px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: INTER }}><Currency amount={grandBalanceCredit} /></td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalDebit} /></td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalCredit} /></td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.success, fontSize: '14px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandBalanceDebit} /></td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.danger, fontSize: '14px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: OUTFIT }}><Currency amount={grandBalanceCredit} /></td>
                                     </tr>
                                 </tfoot>
                             </table>

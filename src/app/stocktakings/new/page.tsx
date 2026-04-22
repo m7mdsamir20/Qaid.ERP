@@ -5,12 +5,8 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import {
-    ClipboardList, ListChecks, Loader2, Printer, Building2, ArrowRight, Save, CheckCircle2, FileText, AlertTriangle
-} from 'lucide-react';
-import {
-    C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut, LS, IS, SC
-} from '@/constants/theme';
+import { ClipboardList, ListChecks, Loader2, Printer, Building2, ArrowRight, Save, CheckCircle2, FileText, AlertTriangle } from 'lucide-react';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut, LS, IS, SC } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 
 interface Warehouse { id: string; name: string }
@@ -293,7 +289,7 @@ export default function NewStocktakingPage() {
                                             return (
                                                 <tr key={index} style={TABLE_STYLE.row(index === lines.length - 1)}>
                                                     <td style={{ ...TABLE_STYLE.td(true), fontWeight: 700, color: C.textPrimary, fontSize: '12px' }}>{itemName}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, fontWeight: 700, color: C.textSecondary, fontSize: '12px' }}>{line.systemQuantity}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary, fontSize: '12px' }}>{line.systemQuantity}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), padding: '8px 12px', width: '150px' }}>
                                                         <input 
                                                             type="number" step="0.01" 
@@ -305,7 +301,7 @@ export default function NewStocktakingPage() {
                                                             onFocus={focusIn} onBlur={focusOut}
                                                         />
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, fontWeight: 900, color: line.difference > 0 ? '#34d399' : (line.difference < 0 ? '#f87171' : C.textMuted), fontSize: '13px' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 900, color: line.difference > 0 ? '#34d399' : (line.difference < 0 ? '#f87171' : C.textMuted), fontSize: '13px' }}>
                                                         {line.difference > 0 ? '+' : ''}{line.difference}
                                                     </td>
                                                 </tr>

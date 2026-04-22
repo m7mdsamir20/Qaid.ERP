@@ -2,11 +2,8 @@
  
 import { useTranslation } from '@/lib/i18n';
 import { useState } from 'react';
-import { C, CAIRO, INTER } from '@/constants/theme';
-import {
-    Shield, Users, User, Loader2, Eye, Check, X, ChevronDown, Plus, Trash2, Pencil,
-    RefreshCw, UserPlus, Store
-} from 'lucide-react';
+import { C, CAIRO, OUTFIT } from '@/constants/theme';
+import { Shield, Users, User, Loader2, Eye, Check, X, ChevronDown, Plus, Trash2, Pencil, RefreshCw, UserPlus, Store } from 'lucide-react';
 import { TabHeader } from './shared';
 
 interface UsersTabProps {
@@ -118,7 +115,7 @@ export default function UsersTab({
                                         borderRadius: '10px', border: `1px solid ${C.border}`,
                                         background: 'rgba(255,255,255,0.02)', color: C.textPrimary,
                                         fontSize: '13px', outline: 'none', boxSizing: 'border-box',
-                                        fontFamily: f.key === 'username' || f.key === 'password' ? INTER : CAIRO,
+                                        fontFamily: f.key === 'username' || f.key === 'password' ? OUTFIT : CAIRO,
                                         direction: f.dir as any
                                     }}
                                 />
@@ -452,7 +449,7 @@ export default function UsersTab({
                                         <div style={{ fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{u.name}</div>
                                         <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{u.email}</div>
                                     </td>
-                                    <td style={{ padding: '14px 20px', fontFamily: INTER, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
+                                    <td style={{ padding: '14px 20px', fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
                                     <td style={{ padding: '14px 20px', }}>
                                         <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}30`, fontWeight: 900, fontFamily: CAIRO }}>
                                             {roleLabels[u.role] || u.role}

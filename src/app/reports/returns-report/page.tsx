@@ -3,7 +3,7 @@ import { Currency } from '@/components/Currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
-import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
@@ -93,7 +93,7 @@ export default function ReturnsReportPage() {
                             <div style={{ textAlign: 'start'}}>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                     {i !== 2 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                 </div>
                             </div>
@@ -170,10 +170,10 @@ export default function ReturnsReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {r.type === 'sale_return' ? 'SLR-' : 'PUR-'}{String(r.invoiceNumber).padStart(4, '0')}
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{
                                                     padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
@@ -186,7 +186,7 @@ export default function ReturnsReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
                                             <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT }}>
                                                 <Currency amount={r.total} />
                                             </td>
                                         </tr>

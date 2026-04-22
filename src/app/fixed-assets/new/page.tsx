@@ -5,11 +5,8 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import {
-    Briefcase, Plus, ArrowRight, TrendingDown,
-    Building2, AlertTriangle, Loader2, Save
-} from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, SC, STitle, BTN_PRIMARY } from '@/constants/theme';
+import { Briefcase, Plus, ArrowRight, TrendingDown, Building2, AlertTriangle, Loader2, Save } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SC, STitle, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 
 interface Account {

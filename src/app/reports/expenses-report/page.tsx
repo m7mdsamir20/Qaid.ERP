@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
-import { C, CAIRO, IS, INTER } from '@/constants/theme';
+import { C, CAIRO, IS, OUTFIT } from '@/constants/theme';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { Search, FileText, Loader2 } from 'lucide-react';
@@ -74,7 +74,7 @@ export default function ExpensesReportPage() {
                             ...IS, width: '170px', height: '42px', padding: '0 12px',
                             borderRadius: '12px', border: `1px solid ${C.border}`,
                             background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                            fontWeight: 600, outline: 'none', fontFamily: INTER,
+                            fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
                             textAlign: 'start', direction: 'ltr'
                         }}
                     />
@@ -87,7 +87,7 @@ export default function ExpensesReportPage() {
                             ...IS, width: '170px', height: '42px', padding: '0 12px',
                             borderRadius: '12px', border: `1px solid ${C.border}`,
                             background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                            fontWeight: 600, outline: 'none', fontFamily: INTER,
+                            fontWeight: 600, outline: 'none', fontFamily: OUTFIT,
                             textAlign: 'start', direction: 'ltr'
                         }}
                     />
@@ -122,13 +122,13 @@ export default function ExpensesReportPage() {
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             <div style={{ background: `${DC}08`, border: `1px solid ${DC}33`, borderRadius: '12px', padding: '20px 24px' }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي المصروفات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 900, color: DC, fontFamily: INTER }}>
+                                <div style={{ fontSize: '22px', fontWeight: 900, color: DC, fontFamily: OUTFIT }}>
                                     {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '20px 24px' }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('عدد العمليات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{data.rows.length}</div>
+                                <div style={{ fontSize: '22px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{data.rows.length}</div>
                             </div>
                         </div>
 
@@ -160,8 +160,8 @@ export default function ExpensesReportPage() {
                                                     style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                     onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>#{row.entryNumber}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, direction: 'ltr' }}>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>#{row.entryNumber}</td>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, direction: 'ltr' }}>
                                                         {new Date(row.date).toLocaleDateString('en-GB')}
                                                     </td>
                                                     <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</td>
@@ -175,7 +175,7 @@ export default function ExpensesReportPage() {
                                                             {row.sourceName}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: DC, fontFamily: INTER }}>
+                                                    <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: DC, fontFamily: OUTFIT }}>
                                                         {Number(row.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                     </td>
                                                 </tr>
@@ -184,7 +184,7 @@ export default function ExpensesReportPage() {
                                         <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                             <tr>
                                                 <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                                <td style={{ padding: '18px 16px',  fontWeight: 900, fontSize: '14px', color: DC, fontFamily: INTER }}>
+                                                <td style={{ padding: '18px 16px',  fontWeight: 900, fontSize: '14px', color: DC, fontFamily: OUTFIT }}>
                                                     {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>

@@ -1,17 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-  TrendingUp, TrendingDown, Package, AlertTriangle,
-  Users, CreditCard, ArrowUpRight, ArrowDownRight,
-  Bell, ChevronDown, BarChart2, ShoppingCart,
-  Wallet, RefreshCw, Calendar, Store, Eye,
-  LayoutDashboard, Receipt, Clock, Filter, MapPin, FileText, ArrowRight, Truck, Loader2, Shield, Landmark, Briefcase, DollarSign
-} from 'lucide-react';
-import {
-  AreaChart, Area, BarChart, Bar, XAxis, YAxis,
-  Tooltip, ResponsiveContainer, CartesianGrid
-} from 'recharts';
+import { TrendingUp, TrendingDown, Package, AlertTriangle, Users, CreditCard, ArrowUpRight, ArrowDownRight, Bell, ChevronDown, BarChart2, ShoppingCart, Wallet, RefreshCw, Calendar, Store, Eye, LayoutDashboard, Receipt, Clock, Filter, MapPin, FileText, ArrowRight, Truck, Loader2, Shield, Landmark, Briefcase, DollarSign } from 'lucide-react';
+import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
@@ -21,7 +12,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 /* ══════════════════════════════════════════════
    DASHBOARD RE-DESIGN (PREMIUM)
    ══════════════════════════════════════════════ */
-import { THEME, C, CAIRO, INTER } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { getDashboardCache, setDashboardCache } from '@/lib/dashboardCache';
 import { useTranslation } from '@/lib/i18n';
@@ -110,7 +101,7 @@ function KpiCard({
 
       <div style={{
         fontSize: '15px', fontWeight: 800, color: C.textPrimary,
-        letterSpacing: '-0.2px', lineHeight: 1.1, marginBottom: '4px', fontFamily: INTER,
+        letterSpacing: '-0.2px', lineHeight: 1.1, marginBottom: '4px', fontFamily: OUTFIT,
         display: 'flex', alignItems: 'baseline', gap: '4px'
       }}>
         {value}
@@ -166,7 +157,7 @@ function ChartTooltip({ active, payload, label, cSymbol, t }: any) {
         <div key={i} style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '4px' }}>
           <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: p.color }} />
           <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t(p.name)}:</span>
-          <span style={{ fontWeight: 800, fontFamily: INTER }}>{fmtFull(p.value)}</span>
+          <span style={{ fontWeight: 800, fontFamily: OUTFIT }}>{fmtFull(p.value)}</span>
         </div>
       ))}
     </div>
@@ -387,7 +378,7 @@ export default function DashboardPage() {
                 return toEnDigits(str);
               })()}
               <span className="hide-mobile" style={{ margin: '0 8px', color: C.border }}>|</span>
-              <span className="hide-mobile" style={{ color: C.textSecondary, fontFamily: INTER }}>{time}</span>
+              <span className="hide-mobile" style={{ color: C.textSecondary, fontFamily: OUTFIT }}>{time}</span>
             </div>
           </div>
 
@@ -511,8 +502,8 @@ export default function DashboardPage() {
                       </linearGradient>
                     </defs>
                     <CartesianGrid stroke={C.border} strokeDasharray="3 3" vertical={false} opacity={0.5} />
-                    <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: INTER }} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: INTER }} axisLine={false} tickLine={false} tickFormatter={v => Number(v).toLocaleString()} width={40} />
+                    <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: OUTFIT }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: OUTFIT }} axisLine={false} tickLine={false} tickFormatter={v => Number(v).toLocaleString()} width={40} />
                     <Tooltip content={<ChartTooltip cSymbol={cSymbol} t={t} />} />
                     {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
                     {isServices
@@ -603,13 +594,13 @@ export default function DashboardPage() {
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                             <td style={{ padding: '14px 16px' }}>
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
-                              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
+                              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
                             <td style={{ padding: '14px 16px', fontSize: '14px', }}>{renderCurrency(inv.total)}</td>
                             <td style={{ padding: '14px 16px', }}>
                               <span style={{ fontSize: '11px', fontWeight: 800, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO }}>{t(s.label)}</span>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: INTER, }}>
+                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, }}>
                               {getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}
                             </td>
                           </tr>

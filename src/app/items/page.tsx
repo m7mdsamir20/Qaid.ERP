@@ -3,13 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import {
-    Boxes, Package, PackageX, TrendingUp, AlertTriangle, Search, Pencil, Trash2, MapPin, Plus, Loader2, ShieldCheck, Printer, Check, X,
-} from 'lucide-react';
-import {
-    THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut,
-    PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, KPI_STYLE, KPI_ICON, STitle
-} from '@/constants/theme';
+import { Boxes, Package, PackageX, TrendingUp, AlertTriangle, Search, Pencil, Trash2, MapPin, Plus, Loader2, ShieldCheck, Printer, Check, X } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, KPI_STYLE, KPI_ICON, STitle } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
@@ -299,7 +294,7 @@ export default function ItemsPage() {
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             {s.id === 'value' ? fMoneyJSX(s.val) : (
                                                 <>
-                                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.val)}</span>
+                                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.val)}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.unit}</span>
                                                 </>
                                             )}
@@ -400,13 +395,13 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), }}><div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td style={{ ...TABLE_STYLE.td(true), }}><div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), }}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: INTER, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), }}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
                                                 <td style={{ ...TABLE_STYLE.td(false), }}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: INTER, fontWeight: 800, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 800, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={{ ...TABLE_STYLE.td(false), }}>{fMoneyJSX(item.costPrice)}</td>
@@ -460,7 +455,7 @@ export default function ItemsPage() {
                             {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                 <div>
                                     <label style={LS}>{t('الباركود الإضافي')}</label>
-                                    <input type="text" placeholder={t("سكان الباركود...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, textAlign: 'center', fontFamily: INTER, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="text" placeholder={t("سكان الباركود...")} value={form.barcode} onChange={e => setForm({ ...form, barcode: e.target.value })} style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600, direction: 'ltr' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             )}
 
@@ -534,14 +529,14 @@ export default function ItemsPage() {
                                     <div>
                                         <label style={LS}>{t('سعر التكلفة')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
                                         <label style={LS}>{t('سعر البيع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
@@ -552,7 +547,7 @@ export default function ItemsPage() {
                                         <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
                                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                             {!form.minLimit && (
-                                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: INTER }}>
+                                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
                                                     0
                                                 </div>
                                             )}
@@ -575,7 +570,7 @@ export default function ItemsPage() {
                                                 <label style={LS}>{t('الكمية الافتتاحية')}</label>
                                                 <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                                     {!form.initialQuantity && (
-                                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: INTER }}>
+                                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
                                                             0
                                                         </div>
                                                     )}
@@ -586,7 +581,7 @@ export default function ItemsPage() {
                                         {form.initialQuantity > 0 && form.costPrice > 0 && (
                                             <div style={{ marginTop: '8px', padding: '6px 12px', borderRadius: '8px', background: 'rgba(59,130,246,0.08)', fontSize: '11px', color: C.primary, fontWeight: 700, display: 'flex', justifyContent: 'space-between' }}>
                                                 <span>{t('القيمة الإجمالية للمخزون')}</span>
-                                                <span style={{ fontFamily: INTER }}>{(form.initialQuantity * form.costPrice).toLocaleString()} <span style={{ fontFamily: CAIRO }}>{currencySymbol}</span></span>
+                                                <span style={{ fontFamily: OUTFIT }}>{(form.initialQuantity * form.costPrice).toLocaleString()} <span style={{ fontFamily: CAIRO }}>{currencySymbol}</span></span>
                                             </div>
                                         )}
                                     </div>

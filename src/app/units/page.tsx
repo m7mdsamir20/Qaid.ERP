@@ -6,15 +6,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import AppModal from '@/components/AppModal';
 import PageHeader from '@/components/PageHeader';
-import {
-    Plus, Lock, Loader2, Scale, Search,
-    CheckCircle, XCircle, Pencil, Info, X, Wallet, Trash2
-} from 'lucide-react';
-import { 
-    C, CAIRO, INTER, IS, LS, SC, PAGE_BASE, 
-    BTN_PRIMARY, focusIn, focusOut, 
-    TABLE_STYLE, KPI_STYLE, KPI_ICON 
-} from '@/constants/theme';
+import { Plus, Lock, Loader2, Scale, Search, CheckCircle, XCircle, Pencil, Info, X, Wallet, Trash2 } from 'lucide-react';
+import { C, CAIRO, OUTFIT, IS, LS, SC, PAGE_BASE, BTN_PRIMARY, focusIn, focusOut, TABLE_STYLE, KPI_STYLE, KPI_ICON } from '@/constants/theme';
 
 interface Unit {
     id: string;
@@ -179,7 +172,7 @@ export default function UnitsPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.7 }}>
+                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
                                                     {unit.code}
                                                 </div>
                                             </td>
@@ -250,7 +243,7 @@ export default function UnitsPage() {
                             <div style={{ position: 'relative' }}>
                                 <input
                                     type="text" readOnly disabled value={form.code}
-                                    style={{ ...IS, paddingInlineStart: '42px', color: C.textMuted, cursor: 'not-allowed', background: 'rgba(255,255,255,0.01)', fontFamily: INTER }}
+                                    style={{ ...IS, paddingInlineStart: '42px', color: C.textMuted, cursor: 'not-allowed', background: 'rgba(255,255,255,0.01)', fontFamily: OUTFIT }}
                                 />
                                 <Lock size={14} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
                             </div>

@@ -4,18 +4,10 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import {
-    UsersIcon, Briefcase, Building2,
-    CreditCard, Paperclip, Eye, Pencil,
-    ArrowRight, Phone, Mail, MapPin, 
-    Calendar, ShieldCheck, Landmark,
-    FileText, User, Download, ExternalLink,
-    AlertCircle, Printer, CheckCircle2,
-    ChevronLeft
-} from 'lucide-react';
+import { UsersIcon, Briefcase, Building2, CreditCard, Paperclip, Eye, Pencil, ArrowRight, Phone, Mail, MapPin, Calendar, ShieldCheck, Landmark, FileText, User, Download, ExternalLink, AlertCircle, Printer, CheckCircle2, ChevronLeft } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 import PageHeader from '@/components/PageHeader';
-import { THEME, C, CAIRO, INTER, PAGE_BASE } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, PAGE_BASE } from '@/constants/theme';
 
 /* ── Types ── */
 interface Department { id: string; name: string; }
@@ -120,7 +112,7 @@ export default function EmployeeDetailPage() {
                         
                         {/* Summary Stats Row */}
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
-                            <StatCard icon={ShieldCheck} label={t("كود الموظف")} value={employee.code} color={C.primary} family={INTER} />
+                            <StatCard icon={ShieldCheck} label={t("كود الموظف")} value={employee.code} color={C.primary} family={OUTFIT} />
                             <StatCard icon={Briefcase} label={t("المسمى الوظيفي")} value={employee.position || '—'} color="#8b5cf6" />
                             <StatCard icon={Building2} label={t("القسم الإداري")} value={employee.department?.name || t('غير محدد')} color="#f59e0b" />
                         </div>
@@ -128,12 +120,12 @@ export default function EmployeeDetailPage() {
                         {/* Personal Details */}
                         <ProfileSection title={t("البيانات الشخصية")} icon={User} color={C.primary}>
                             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px' }}>
-                                <InfoItem label={t("الرقم القومي")} value={employee.nationalId} icon={ShieldCheck} family={INTER} />
+                                <InfoItem label={t("الرقم القومي")} value={employee.nationalId} icon={ShieldCheck} family={OUTFIT} />
                                 <InfoItem label={t("تاريخ الميلاد")} value={employee.birthDate ? new Date(employee.birthDate).toLocaleDateString('en-GB') : '—'} icon={Calendar} />
                                 <InfoItem label={t("الجنس")} value={employee.gender === 'male' ? t('ذكر') : employee.gender === 'female' ? t('أنثى') : '—'} icon={User} />
                                 <InfoItem label={t("تاريخ التعيين")} value={new Date(employee.hireDate).toLocaleDateString('en-GB')} icon={FileText} />
-                                <InfoItem label={t("رقم الهاتف")} value={employee.phone} icon={Phone} family={INTER} />
-                                <InfoItem label={t("البريد الإلكتروني")} value={employee.email} icon={Mail} family={INTER} />
+                                <InfoItem label={t("رقم الهاتف")} value={employee.phone} icon={Phone} family={OUTFIT} />
+                                <InfoItem label={t("البريد الإلكتروني")} value={employee.email} icon={Mail} family={OUTFIT} />
                                 <div style={{ gridColumn: '1 / -1' }}>
                                     <InfoItem label={t("العنوان السكني")} value={employee.address} icon={MapPin} />
                                 </div>
@@ -156,7 +148,7 @@ export default function EmployeeDetailPage() {
                             }}>
                                 <div>
                                     <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '8px', opacity: 0.8 }}>{t('صافي الراتب المتوقع')}</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: INTER }} dir="ltr">
+                                    <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: OUTFIT }} dir="ltr">
                                         <span style={{ fontSize: '16px', color: C.textMuted, marginInlineEnd: '8px' }}>{currencySymbol}</span>
                                         {net.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                     </div>
@@ -172,7 +164,7 @@ export default function EmployeeDetailPage() {
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                 <InfoItem label={t("البنك المعتمد")} value={employee.bankName} icon={Landmark} />
-                                <InfoItem label={t("رقم الحساب / IBAN")} value={employee.bankAccount} icon={CreditCard} family={INTER} />
+                                <InfoItem label={t("رقم الحساب / IBAN")} value={employee.bankAccount} icon={CreditCard} family={OUTFIT} />
                             </div>
                         </ProfileSection>
                     </div>
@@ -199,7 +191,7 @@ export default function EmployeeDetailPage() {
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{t('تاريخ الانضمام')}</span>
-                                    <span style={{ fontSize: '12px', color: '#fff', fontWeight: 800, fontFamily: INTER }}>{new Date(employee.hireDate).getFullYear()}</span>
+                                    <span style={{ fontSize: '12px', color: '#fff', fontWeight: 800, fontFamily: OUTFIT }}>{new Date(employee.hireDate).getFullYear()}</span>
                                 </div>
                             </div>
                         </div>
@@ -297,7 +289,7 @@ function SummaryRow({ label, value, color, prefix = '', unit }: any) {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '20px' }}>
             <span style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
-            <span style={{ fontSize: '13px', color, fontWeight: 800, fontFamily: INTER }}>
+            <span style={{ fontSize: '13px', color, fontWeight: 800, fontFamily: OUTFIT }}>
                 {prefix} {(+value || 0).toLocaleString('en-US')} <span style={{ fontSize: '10px', opacity: 0.7 }}>{unit}</span>
             </span>
         </div>

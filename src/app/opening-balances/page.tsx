@@ -4,13 +4,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { 
-    Wallet, Save, Loader2, Search, CheckCircle2, XCircle, AlertTriangle, 
-    CalendarDays, Lock, Unlock, ArrowRightLeft, TrendingUp, TrendingDown, Scale
-} from 'lucide-react';
-import {
-    THEME, C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, SEARCH_STYLE, focusIn, focusOut, LS, IS, SC, STitle
-} from '@/constants/theme';
+import { Wallet, Save, Loader2, Search, CheckCircle2, XCircle, AlertTriangle, CalendarDays, Lock, Unlock, ArrowRightLeft, TrendingUp, TrendingDown, Scale } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, SEARCH_STYLE, focusIn, focusOut, LS, IS, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useTranslation } from '@/lib/i18n';
@@ -302,7 +297,7 @@ export default function OpeningBalancesPage() {
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                            <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.sub}</span>
                                         </div>
                                     </div>
@@ -372,7 +367,7 @@ export default function OpeningBalancesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.05)'}
                                                 onMouseLeave={e => e.currentTarget.style.background  = 'rgba(0,0,0,0.15)'}>
                                                 <td style={TABLE_STYLE.td(true)}>
-                                                    <span style={{ fontFamily: INTER, fontSize: '13px', color: natureColor, fontWeight: 800 }}>{account.code}</span>
+                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', color: natureColor, fontWeight: 800 }}>{account.code}</span>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(true)}>{account.name}</td>
                                                 <td style={TABLE_STYLE.td(false)}>
@@ -397,7 +392,7 @@ export default function OpeningBalancesPage() {
                                                             borderColor: hasDr ? `${C.success}50` : C.border, 
                                                             color: hasDr ? C.success : C.textPrimary, 
                                                             background: hasDr ? `${C.success}05` : 'transparent',
-                                                            borderRadius: '6px', fontFamily: INTER
+                                                            borderRadius: '6px', fontFamily: OUTFIT
                                                         }}
                                                         onFocus={focusIn} onBlur={focusOut} 
                                                     />
@@ -414,7 +409,7 @@ export default function OpeningBalancesPage() {
                                                             borderColor: hasCr ? `${C.danger}50` : C.border, 
                                                             color: hasCr ? C.danger : C.textPrimary, 
                                                             background: hasCr ? `${C.danger}05` : 'transparent',
-                                                            borderRadius: '6px', fontFamily: INTER
+                                                            borderRadius: '6px', fontFamily: OUTFIT
                                                         }}
                                                         onFocus={focusIn} onBlur={focusOut} 
                                                     />
@@ -426,15 +421,15 @@ export default function OpeningBalancesPage() {
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
                                         <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary,  fontFamily: CAIRO }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.success, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.danger, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalCredit)}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.success, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.danger, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
                                             <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 800, color: C.warning,  fontFamily: CAIRO }}>
                                                 <AlertTriangle size={14} style={{ display: 'inline', marginInlineStart: '6px' }} /> {t('يرجى مراجعة المدخلات - القيد غير متوازن')}
                                             </td>
-                                            <td colSpan={2} style={{ padding: '10px 20px',  fontSize: '14px', fontWeight: 900, color: C.warning, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(Math.abs(difference))}</td>
+                                            <td colSpan={2} style={{ padding: '10px 20px',  fontSize: '14px', fontWeight: 900, color: C.warning, direction: 'ltr', fontFamily: OUTFIT }}>{fmtDisplay(Math.abs(difference))}</td>
                                         </tr>
                                     )}
                                 </tfoot>

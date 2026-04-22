@@ -4,13 +4,9 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
-import {
-    TrendingUp, Search, Lock, Loader2,
-    Building2, Banknote, CheckCircle2, ArrowRight,
-    Printer, Receipt, UserPlus, Calendar, User, Phone
-} from 'lucide-react';
+import { TrendingUp, Search, Lock, Loader2, Building2, Banknote, CheckCircle2, ArrowRight, Printer, Receipt, UserPlus, Calendar, User, Phone } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC, STitle, BTN_PRIMARY, BTN_DANGER, BTN_SUCCESS } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC, STitle, BTN_PRIMARY, BTN_DANGER, BTN_SUCCESS } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -155,7 +151,7 @@ export default function NewPurchasePaymentPage() {
                                             background: 'rgba(59,130,246,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontFamily: INTER, fontWeight: 900,
+                                            fontFamily: OUTFIT, fontWeight: 900,
                                             fontSize: '14px', color: '#60a5fa',
                                             letterSpacing: '1px',
                                             boxSizing: 'border-box'

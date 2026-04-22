@@ -7,11 +7,7 @@ import { FileText, Plus, X, ChevronRight, CheckCircle2, Clock, ArrowUpRight, Arr
 import { generateReportHTML } from '@/lib/printInvoices';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
-import { 
-    C, CAIRO, INTER, IS, LS, focusIn, focusOut, 
-    TABLE_STYLE, SEARCH_STYLE, BTN_PRIMARY, PAGE_BASE,
-    SC, KPI_STYLE, KPI_ICON
-} from '@/constants/theme';
+import { C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE, BTN_PRIMARY, PAGE_BASE, SC, KPI_STYLE, KPI_ICON } from '@/constants/theme';
 import Pagination from '@/components/Pagination';
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
@@ -236,7 +232,7 @@ export default function JournalEntriesPage() {
                                 <div style={KPI_ICON(s.color)}>{s.icon}</div>
                                 <div style={{ textAlign: 'start' }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{s.label}</div>
-                                    <div style={{ fontSize: s.small ? '15px' : '20px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                    <div style={{ fontSize: s.small ? '15px' : '20px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                         {s.value} {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted }}>{s.suffix}</span>}
                                     </div>
                                 </div>
@@ -274,10 +270,10 @@ export default function JournalEntriesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, }}>
                                                     {formatEntryCode(entry.entryNumber)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '11px', color: C.textSecondary, fontFamily: INTER, }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '11px', color: C.textSecondary, fontFamily: OUTFIT, }}>
                                                     {new Date(entry.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), }}>
@@ -327,7 +323,7 @@ export default function JournalEntriesPage() {
                                                                         <tr key={lidx} style={{ borderBottom: `1px solid ${C.border}` }}>
                                                                             <td style={{ padding: '10px 12px' }}>
                                                                                 <div style={{ fontWeight: 700, fontSize: '13px' }}>{line.account.name}</div>
-                                                                                <div style={{ fontSize: '10px', color: C.primary, fontFamily: INTER }}>{line.account.code}</div>
+                                                                                <div style={{ fontSize: '10px', color: C.primary, fontFamily: OUTFIT }}>{line.account.code}</div>
                                                                             </td>
                                                                             <td style={{ padding: '10px 12px', fontSize: '12px', color: C.textSecondary }}>{line.costCenter?.name || '—'}</td>
                                                                             <td style={{  fontWeight: 900, color: C.success, fontFamily: CAIRO }}>{line.debit > 0 ? fMoney(line.debit) : '—'}</td>
@@ -364,7 +360,7 @@ export default function JournalEntriesPage() {
                                             background: 'rgba(59,130,244,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontFamily: INTER, fontWeight: 900,
+                                            fontFamily: OUTFIT, fontWeight: 900,
                                             fontSize: '14px', color: C.primary,
                                             letterSpacing: '1px'
                                         }}>

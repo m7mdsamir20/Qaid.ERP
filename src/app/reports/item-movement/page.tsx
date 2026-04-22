@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { Package, Activity, Search, Loader2, Warehouse } from 'lucide-react';
-import { C, CAIRO, PAGE_BASE, INTER } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, OUTFIT } from '@/constants/theme';
 
 interface Movement {
     id: string;
@@ -200,7 +200,7 @@ export default function ItemMovementReportPage() {
                                     <div>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{s.unit}</span>
                                         </div>
                                     </div>
@@ -212,7 +212,7 @@ export default function ItemMovementReportPage() {
                         <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <div className="no-print" style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)' }}>
                                 <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</h3>
-                                <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الحركات:')} <span style={{ color: C.primary, fontFamily: INTER }}>{movements.length}</span></div>
+                                <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الحركات:')} <span style={{ color: C.primary, fontFamily: OUTFIT }}>{movements.length}</span></div>
                             </div>
                             <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -235,7 +235,7 @@ export default function ItemMovementReportPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
                                                     {movementDate ? `${new Date(movementDate).toLocaleDateString('en-GB')} ${new Date(movementDate).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}` : '—'}
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
@@ -249,7 +249,7 @@ export default function ItemMovementReportPage() {
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse.name}</td>
                                                 <td style={{ padding: '14px 20px', }}>
-                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: meta.color, fontFamily: INTER }}>
+                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: meta.color, fontFamily: OUTFIT }}>
                                                         {meta.sign}{meta.quantity.toLocaleString('en-US')}
                                                     </span>
                                                 </td>
@@ -270,13 +270,13 @@ export default function ItemMovementReportPage() {
                                     </div>
                                     <div>
                                         <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{itemDetails.name}</div>
-                                        <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: INTER, fontWeight: 600 }}>{itemDetails.code}</div>
+                                        <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600 }}>{itemDetails.code}</div>
                                     </div>
                                 </div>
 
                                 <div style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))', border: '1px solid rgba(16,185,129,0.25)', borderRadius: '16px', padding: '20px', marginBottom: '24px', textAlign: 'start'}}>
                                     <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 800, marginBottom: '6px', fontFamily: CAIRO }}>{t('الرصيد الكلي المتوفر')}</div>
-                                    <div style={{ fontSize: '32px', fontWeight: 1000, color: '#10b981', fontFamily: INTER, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
+                                    <div style={{ fontSize: '32px', fontWeight: 1000, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '6px' }}>
                                         {itemDetails.totalStock.toLocaleString('en-US')}
                                         <span style={{ fontSize: '14px', fontWeight: 700, color: '#10b981', fontFamily: CAIRO }}>{t(itemDetails.unit)}</span>
                                     </div>
@@ -289,7 +289,7 @@ export default function ItemMovementReportPage() {
                                     {itemDetails.stockByWarehouse.map(sw => (
                                         <div key={sw.warehouse} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 14px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', fontSize: '13px' }}>
                                             <span style={{ color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{sw.warehouse}</span>
-                                            <span style={{ color: C.textPrimary, fontWeight: 900, fontFamily: INTER }}>{sw.quantity.toLocaleString('en-US')}</span>
+                                            <span style={{ color: C.textPrimary, fontWeight: 900, fontFamily: OUTFIT }}>{sw.quantity.toLocaleString('en-US')}</span>
                                         </div>
                                     ))}
                                 </div>

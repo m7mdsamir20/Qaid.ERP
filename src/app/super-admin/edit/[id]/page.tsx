@@ -4,12 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter, useParams } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
-import {
-    Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard,
-    Check, ChevronDown, ChevronUp, Loader2, CheckSquare,
-    Square, Key, Eye, EyeOff, X, Phone, Mail, UserCircle, Activity, Globe
-} from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
+import { Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard, Check, ChevronDown, ChevronUp, Loader2, CheckSquare, Square, Key, Eye, EyeOff, X, Phone, Mail, UserCircle, Activity, Globe } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
 import CustomSelect from '@/components/CustomSelect';
 
 const PLANS = {
@@ -412,15 +408,15 @@ export default function EditCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>الاسم بالإنجليزية</label>
-                                <input type="text" value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                <input type="text" value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>رقم هاتف الشركة</label>
-                                <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>البريد الإلكتروني للشركة</label>
-                                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>العنوان</label>
@@ -480,11 +476,11 @@ export default function EditCompanyPage() {
                             </div>
                             <div>
                                 <label style={LS}>البريد الإلكتروني للمدير</label>
-                                <input type="email" value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                <input type="email" value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))} onFocus={focusIn} onBlur={focusOut} spellCheck={false} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>رقم هاتف المدير</label>
-                                <input type="tel" value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="tel" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                <input type="tel" value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))} onFocus={focusIn} onBlur={focusOut} autoComplete="tel" style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
 
                             <div style={{ gridColumn: 'span 2', height: '1px', background: C.border, margin: '10px 0' }} />
@@ -498,7 +494,7 @@ export default function EditCompanyPage() {
                                         value={form.newPassword}
                                         onChange={e => setForm(f => ({ ...f, newPassword: e.target.value }))}
                                         onFocus={focusIn} onBlur={focusOut}
-                                        style={{ ...IS, paddingInlineStart: '44px', direction: 'ltr', textAlign: 'end', fontFamily: INTER }}
+                                        style={{ ...IS, paddingInlineStart: '44px', direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }}
                                     />
                                     <button type="button" onClick={() => setShowPassword(!showPassword)}
                                         style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted }}>
@@ -514,7 +510,7 @@ export default function EditCompanyPage() {
                                     value={form.newPasswordConfirm}
                                     onChange={e => setForm(f => ({ ...f, newPasswordConfirm: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER, borderColor: form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm ? C.danger : undefined }}
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT, borderColor: form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm ? C.danger : undefined }}
                                 />
                                 {form.newPasswordConfirm && form.newPassword !== form.newPasswordConfirm && (
                                     <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700 }}>كلمات المرور غير متطابقة</p>
@@ -564,19 +560,19 @@ export default function EditCompanyPage() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '24px', marginBottom: '24px' }}>
                             <div>
                                 <label style={LS}>تاريخ البداية</label>
-                                <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, colorScheme: 'dark', fontFamily: INTER }} />
+                                <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, colorScheme: 'dark', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>تاريخ الانتهاء</label>
-                                <input type="date" value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, colorScheme: 'dark', fontFamily: INTER }} />
+                                <input type="date" value={form.endDate} onChange={e => setForm(f => ({ ...f, endDate: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, colorScheme: 'dark', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>أقصى عدد مستخدمين</label>
-                                <input type="number" min="1" value={form.maxUsers} onChange={e => setForm(f => ({ ...f, maxUsers: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, fontFamily: INTER }} />
+                                <input type="number" min="1" value={form.maxUsers} onChange={e => setForm(f => ({ ...f, maxUsers: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>عدد الفروع المسموح</label>
-                                <input type="number" min="1" value={form.maxBranches} onChange={e => setForm(f => ({ ...f, maxBranches: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, fontFamily: INTER }} />
+                                <input type="number" min="1" value={form.maxBranches} onChange={e => setForm(f => ({ ...f, maxBranches: e.target.value }))} onFocus={focusIn} onBlur={focusOut} style={{ ...IS, fontFamily: OUTFIT }} />
                             </div>
                         </div>
 

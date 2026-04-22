@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { Clock, Loader2, AlertTriangle, X, Banknote, ChevronDown, Calendar, ArrowLeftCircle, ListFilter, Wallet, Check, Eye } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
-import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_SUCCESS, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_SUCCESS, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
@@ -117,7 +117,7 @@ export default function DuePage() {
                             </div>
                             <div>
                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>{t('إجمالي المستحق حالياً')}</div>
-                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                     {fmtN(totalDue)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
@@ -161,10 +161,10 @@ export default function DuePage() {
                                                 >
                                                     <td style={TABLE_STYLE.td(true)}>
                                                         <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>{inst.customer?.name}</div>
-                                                        <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{inst.customer?.phone}</div>
+                                                        <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{inst.customer?.phone}</div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
-                                                        <span style={{ color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
+                                                        <span style={{ color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         {inst.installmentNo}
@@ -257,7 +257,7 @@ export default function DuePage() {
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر سداده')}:</span>
-                                    <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: INTER }}>
+                                    <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>
                                         {fmtN(collectTarget.remaining || collectTarget.amount)} {cSymbol}
                                     </span>
                                 </div>
@@ -268,7 +268,7 @@ export default function DuePage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount}
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>

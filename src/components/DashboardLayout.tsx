@@ -6,7 +6,7 @@ import { Calendar, AlertTriangle, Loader2 } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
 import Header from '@/components/Header';
 import TrialBanner from '@/components/TrialBanner';
-import { THEME, C, CAIRO, INTER } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 
 export default function DashboardLayout({

@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { C, CAIRO, INTER } from '@/constants/theme';
+import { C, CAIRO, OUTFIT } from '@/constants/theme';
 
 interface PaginationProps {
     total: number;
@@ -25,7 +25,7 @@ export default function Pagination({ total, pageSize, currentPage, onPageChange 
         }}>
             {/* Info */}
             <div style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>
-                عرض <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary }}>{startIdx}</span> - <span style={{ fontFamily: INTER, fontWeight: 900, color: C.primary }}>{endIdx}</span> من أصل <span style={{ fontFamily: INTER, fontWeight: 900, color: C.textPrimary }}>{total}</span>
+                عرض <span style={{ fontFamily: OUTFIT, fontWeight: 900, color: C.primary }}>{startIdx}</span> - <span style={{ fontFamily: OUTFIT, fontWeight: 900, color: C.primary }}>{endIdx}</span> من أصل <span style={{ fontFamily: OUTFIT, fontWeight: 900, color: C.textPrimary }}>{total}</span>
             </div>
 
             {/* Controls */}
@@ -53,7 +53,7 @@ export default function Pagination({ total, pageSize, currentPage, onPageChange 
                         height: '36px', padding: '0 16px', borderRadius: '10px', 
                         background: C.primaryBg, border: `1px solid ${C.primaryBorder}`,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '14px', fontWeight: 900, color: C.primary, fontFamily: INTER
+                        fontSize: '14px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT
                     }}>
                         {currentPage}
                     </div>
@@ -61,7 +61,7 @@ export default function Pagination({ total, pageSize, currentPage, onPageChange 
                     <div style={{ 
                         height: '36px', border: `1px solid ${C.border}`, borderRadius: '10px', padding: '0 16px',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        fontSize: '14px', fontWeight: 800, color: C.textSecondary, fontFamily: INTER,
+                        fontSize: '14px', fontWeight: 800, color: C.textSecondary, fontFamily: OUTFIT,
                         background: 'rgba(255,255,255,0.02)'
                     }}>
                         {totalPages}

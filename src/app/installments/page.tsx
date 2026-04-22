@@ -4,15 +4,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import {
-    CreditCard, Plus, Search, Eye, Trash2, Loader2,
-    CheckCircle2, Clock, AlertTriangle, X, Check,
-    ChevronDown, User, Calendar, Banknote, Printer, UserPlus, Package, ArrowLeftCircle,
-    ShoppingCart, TrendingUp, DollarSign, Wallet, Info, Phone
-} from 'lucide-react';
+import { CreditCard, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, AlertTriangle, X, Check, ChevronDown, User, Calendar, Banknote, Printer, UserPlus, Package, ArrowLeftCircle, ShoppingCart, TrendingUp, DollarSign, Wallet, Info, Phone } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import AppModal from '@/components/AppModal';
-import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_DANGER, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_DANGER, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 
@@ -285,7 +280,7 @@ export default function InstallmentsPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{k.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{k.value}</span>
+                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
                                 </div>
                             </div>
@@ -336,7 +331,7 @@ export default function InstallmentsPage() {
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
                                                     <td style={TABLE_STYLE.td(true)}>
-                                                        <div style={{ fontWeight: 900, color: '#5286ed', fontFamily: INTER, fontSize: '13px' }}>PLAN-{String(p.planNumber || idx + 1).padStart(4, '0')}</div>
+                                                        <div style={{ fontWeight: 900, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px' }}>PLAN-{String(p.planNumber || idx + 1).padStart(4, '0')}</div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         {p.productName ? (
@@ -346,18 +341,18 @@ export default function InstallmentsPage() {
                                                             </div>
                                                         ) : <span style={{ color: C.textMuted }}>—</span>}
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', color: C.textSecondary, fontFamily: INTER, fontSize: '13px' }}>{p.customer?.phone || '—'}</td>
+                                                    <td style={{ padding: '12px 16px', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>{p.customer?.phone || '—'}</td>
                                                     <td style={{ padding: '12px 16px', fontWeight: 600, color: C.textPrimary }}>{p.customer?.name}</td>
-                                                    <td style={{ padding: '12px 16px',  fontWeight: 800, fontFamily: INTER }}>
+                                                    <td style={{ padding: '12px 16px',  fontWeight: 800, fontFamily: OUTFIT }}>
                                                         {fmtN(p.grandTotal)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px',  color: '#10b981', fontWeight: 700, fontFamily: INTER }}>
+                                                    <td style={{ padding: '12px 16px',  color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
                                                         {fmtN(p.downPayment)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px',  color: C.primary, fontWeight: 800, fontFamily: INTER }}>
+                                                    <td style={{ padding: '12px 16px',  color: C.primary, fontWeight: 800, fontFamily: OUTFIT }}>
                                                         {fmtN(p.installmentAmount)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px',  color: C.textSecondary, fontFamily: INTER, fontSize: '13px' }}>
+                                                    <td style={{ padding: '12px 16px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>
                                                         {paidCount} <span style={{ margin: '0 2px', opacity: 0.4 }}>/</span> {p.monthsCount}
                                                         <span style={{ fontSize: '10px', marginInlineStart: '4px' }}>{t('شهر')}</span>
                                                     </td>
@@ -596,7 +591,7 @@ export default function InstallmentsPage() {
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('تاريخ أول استحقاق')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <Calendar size={14} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
-                                    <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineEnd: '38px', colorScheme: 'dark', fontFamily: INTER, fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineEnd: '38px', colorScheme: 'dark', fontFamily: OUTFIT, fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
 
@@ -700,7 +695,7 @@ export default function InstallmentsPage() {
                                             border: `1px solid ${C.border}` 
                                         }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{inv_item.label}</div>
-                                            <div style={{ fontSize: '13.5px', fontWeight: inv_item.bold ? 800 : 700, color: inv_item.color, fontFamily: INTER }}>
+                                            <div style={{ fontSize: '13.5px', fontWeight: inv_item.bold ? 800 : 700, color: inv_item.color, fontFamily: OUTFIT }}>
                                                 {inv_item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
                                             </div>
                                         </div>

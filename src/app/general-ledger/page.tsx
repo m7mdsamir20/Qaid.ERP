@@ -3,7 +3,7 @@
 import DashboardLayout from '@/components/DashboardLayout';
 import { useEffect, useState } from 'react';
 import { ScrollText, Search, Loader2, ArrowUpRight, ArrowDownRight, ChevronDown, FileText, Trash2, Receipt } from 'lucide-react';
-import { C, CAIRO, INTER, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 
 /* ── Types ── */
@@ -287,13 +287,13 @@ export default function GeneralLedgerPage() {
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
                                             {/* Date */}
-                                            <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
                                                 {new Date(line.date).toLocaleDateString('en-GB')}
                                             </td>
 
                                             {/* Entry Number */}
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <span style={{ fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER }}>
+                                                <span style={{ fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
                                                     {line.entryNumber}
                                                 </span>
                                                 {line.reference && (

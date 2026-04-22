@@ -5,12 +5,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import {
-    ArrowRightLeft, Plus, Trash2, Lock, Loader2, Building2, Package, ArrowRight, Save, AlertCircle
-} from 'lucide-react';
-import {
-    C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut, LS, IS, SC
-} from '@/constants/theme';
+import { ArrowRightLeft, Plus, Trash2, Lock, Loader2, Building2, Package, ArrowRight, Save, AlertCircle } from 'lucide-react';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut, LS, IS, SC } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 
 interface Warehouse { id: string; name: string; }
@@ -162,7 +158,7 @@ export default function NewTransferPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type="text" readOnly disabled value={form.code} dir="ltr"
-                                        style={{ ...IS, paddingInlineStart: '36px', color: C.textMuted, opacity: 0.6, fontSize: '11px', fontFamily: INTER, fontWeight: 900 }}
+                                        style={{ ...IS, paddingInlineStart: '36px', color: C.textMuted, opacity: 0.6, fontSize: '11px', fontFamily: OUTFIT, fontWeight: 900 }}
                                     />
                                     <Lock size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
                                 </div>
@@ -249,7 +245,7 @@ export default function NewTransferPage() {
                                                     </td>
                                                     <td style={{ ...TABLE_STYLE.td(false), }}>
                                                         <div style={{ 
-                                                            fontSize: '12px', fontWeight: 800, fontFamily: INTER, 
+                                                            fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, 
                                                             color: available > 0 ? C.success : C.danger,
                                                             background: available > 0 ? 'rgba(74,222,128,0.05)' : 'rgba(251,113,133,0.05)',
                                                             padding: '4px 8px', borderRadius: '6px', display: 'inline-block'

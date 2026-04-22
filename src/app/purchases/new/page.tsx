@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Receipt, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus } from 'lucide-react';
 import { CompanyInfo } from '@/lib/printInvoices';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -438,7 +438,7 @@ export default function NewPurchasePage() {
                                         background: 'rgba(59,130,246,0.08)',
                                         border: `1px solid ${C.border}`,
                                         display: 'flex', alignItems: 'center', justifyItems: 'center', justifyContent: 'center',
-                                        fontFamily: INTER, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
+                                        fontFamily: OUTFIT, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '1px'
                                     }}>
                                         PUR-{String(nextNum).padStart(5, '0')}
                                     </div>
@@ -488,7 +488,7 @@ export default function NewPurchasePage() {
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('تاريخ الفاتورة')}</label>
                                     </div>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, textAlign: 'start', direction: 'ltr', fontSize: '13px', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
+                                        <input type="date" value={form.date} onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))} style={{ ...IS, color: C.textSecondary, textAlign: 'start', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
                             </div>
@@ -513,14 +513,14 @@ export default function NewPurchasePage() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <input ref={qtyRef} type="text" inputMode="decimal" value={entryQty === '' ? '1' : fmt(entryQty)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryQty(v === '' ? '' : v as any); clearError('entryQty'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
                                     </div>
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('التكلفة')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                        <input type="text" inputMode="decimal" value={entryPrice === '' ? '0.00' : fmt(entryPrice)} disabled={!entryItemId} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setEntryPrice(v === '' ? '' : v as any); clearError('entryPrice'); } }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryPrice" />
                                     </div>
                                 </div>
@@ -539,9 +539,9 @@ export default function NewPurchasePage() {
                                             <tr key={i} style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{l.itemName}</td>
                                                 <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{l.quantity}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{l.price.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{l.total.toLocaleString()}</td>
                                                 <td style={{ padding: '10px 12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -556,7 +556,7 @@ export default function NewPurchasePage() {
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
                                                 <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {t('الأصناف')}</td>
-                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{subtotal.toLocaleString()} {cSymbol}</td>
+                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>{subtotal.toLocaleString()} {cSymbol}</td>
                                                 <td />
                                             </tr>
                                         </tfoot>
@@ -650,7 +650,7 @@ export default function NewPurchasePage() {
                                 )}
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))', padding: '10px 14px', borderRadius: '12px', marginTop: '6px', border: `1px solid ${C.primaryBorder}`, boxShadow: '0 4px 12px rgba(37,106,244,0.08)' }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>{netTotal.toLocaleString()} {cSymbol}</span>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>{netTotal.toLocaleString()} {cSymbol}</span>
                                     <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
                             </div>
@@ -671,7 +671,7 @@ export default function NewPurchasePage() {
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المدفوع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.paidAmount)} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setForm((f: any) => ({ ...f, paidAmount: v })); clearError('paidAmount'); } }} style={{ ...IS, height: '48px', fontSize: '18px', fontWeight: 900, textAlign: 'center', paddingInlineEnd: '44px', color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary, fontFamily: INTER }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={fmt(form.paidAmount)} onChange={e => { const v = e.target.value.replace(/,/g, ''); if (v === '' || !isNaN(Number(v)) || v === '.') { setForm((f: any) => ({ ...f, paidAmount: v })); clearError('paidAmount'); } }} style={{ ...IS, height: '48px', fontSize: '18px', fontWeight: 900, textAlign: 'center', paddingInlineEnd: '44px', color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary, fontFamily: OUTFIT }} onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                             {form.paymentType === 'bank' ? <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} /> : <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />}
                                             <InlineError field="paidAmount" />
                                         </div>

@@ -7,7 +7,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useSession } from 'next-auth/react';
 import { Landmark, Scale, Sigma, TrendingUp, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
-import { C, CAIRO, INTER, PAGE_BASE } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE } from '@/constants/theme';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -213,17 +213,17 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                         {data.assets.map(a => (
                                             <div key={a.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px', border: `1px solid ${C.border}` }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                    <span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span>
+                                                    <span style={{ fontSize: '10px', fontFamily: OUTFIT, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span>
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{a.name}</span>
                                                 </div>
-                                                <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}><Currency amount={a.balance} /></span>
+                                                <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={a.balance} /></span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                                 <div style={{ padding: '20px 24px', background: 'rgba(59, 130, 246, 0.08)', borderTop: `2px solid #3b82f633`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إجمالي الأصول')}</span>
-                                    <span style={{ fontSize: '14px', fontWeight: 950, color: '#3b82f6', fontFamily: INTER }}><Currency amount={data.totalAssets} /></span>
+                                    <span style={{ fontSize: '14px', fontWeight: 950, color: '#3b82f6', fontFamily: OUTFIT }}><Currency amount={data.totalAssets} /></span>
                                 </div>
                             </div>
 
@@ -240,7 +240,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                             {data.liabilities.map(l => (
                                                 <div key={l.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{l.name}</span>
-                                                    <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}><Currency amount={l.balance} /></span>
+                                                    <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={l.balance} /></span>
                                                 </div>
                                             ))}
                                             {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'start', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
@@ -248,7 +248,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي الخصوم')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#fb7185', fontFamily: INTER }}><Currency amount={data.totalLiabilities} /></span>
+                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#fb7185', fontFamily: OUTFIT }}><Currency amount={data.totalLiabilities} /></span>
                                     </div>
                                 </div>
 
@@ -263,7 +263,7 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                             {data.equities.map(e => (
                                                 <div key={e.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{e.name}</span>
-                                                    <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{fmt(e.balance)}</span>
+                                                    <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(e.balance)}</span>
                                                 </div>
                                             ))}
                                             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 12px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '8px', border: '1px solid #3b82f633', marginTop: '4px' }}>
@@ -271,13 +271,13 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                                     <TrendingUp size={14} color="#3b82f6" />
                                                     <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي دخل الفترة')}</span>
                                                 </div>
-                                                <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}><Currency amount={data.netIncome} /></span>
+                                                <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={data.netIncome} /></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(16, 185, 129, 0.05)', borderTop: `1px solid #10b98133`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي حقوق الملكية')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}><Currency amount={data.totalEquities} /></span>
+                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalEquities} /></span>
                                     </div>
                                 </div>
                             </div>
@@ -295,11 +295,11 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                         }}>
                             <div>
                                 <p style={{ fontSize: '12px', color: C.textMuted, marginBottom: '4px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي الخصوم وحقوق الملكية')}</p>
-                                <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: INTER }}><Currency amount={data.totalLiabilitiesAndEquities} /></h2>
+                                <h2 style={{ margin: 0, fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalLiabilitiesAndEquities} /></h2>
                             </div>
                             <div className="no-print" style={{ textAlign: 'start'}}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '4px', fontFamily: CAIRO }}>{t('فرق التوازن')}</div>
-                                <div style={{ fontWeight: 800, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: INTER }}><Currency amount={Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities)} /></div>
+                                <div style={{ fontWeight: 800, color: isBalanced ? C.success : C.danger, fontSize: '13px', fontFamily: OUTFIT }}><Currency amount={Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities)} /></div>
                             </div>
                         </div>
 

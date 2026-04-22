@@ -2,16 +2,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    PieChart, Plus, Loader2, X, TrendingUp, CalendarDays,
-    CheckCircle2, ChevronDown, ChevronUp, History,
-    Percent, Banknote, Users, Info, DollarSign, Wallet
-} from 'lucide-react';
-import { 
-    C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, 
-    KPI_STYLE, KPI_ICON, focusIn, focusOut, 
-    PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER 
-} from '@/constants/theme';
+import { PieChart, Plus, Loader2, X, TrendingUp, CalendarDays, CheckCircle2, ChevronDown, ChevronUp, History, Percent, Banknote, Users, Info, DollarSign, Wallet } from 'lucide-react';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -127,7 +119,7 @@ export default function ProfitDistributionPage() {
                                 >
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                             <span>{typeof s.val === 'number' ? s.val.toLocaleString('en-US') : s.val}</span>
                                             {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                         </div>
@@ -150,7 +142,7 @@ export default function ProfitDistributionPage() {
                                 <div key={p.id} style={{ flex: 1, minWidth: '180px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '10px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
                                         <div style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{p.name}</div>
-                                        <div style={{ fontSize: '11px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{p.share}%</div>
+                                        <div style={{ fontSize: '11px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>{p.share}%</div>
                                     </div>
                                     <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden' }}>
                                         <div style={{ width: `${p.share}%`, height: '100%', background: `linear-gradient(90deg, ${C.primary}, #818cf8)`, borderRadius: '2px' }} />
@@ -201,13 +193,13 @@ export default function ProfitDistributionPage() {
                                             </div>
                                             <div style={{ textAlign: 'center' }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('تاريخ القيد')}</div>
-                                                <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: INTER }}>
+                                                <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: OUTFIT }}>
                                                     {new Date(d.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </div>
                                             <div style={{ textAlign: 'center' }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي التوزيع')}</div>
-                                                <div style={{ fontSize: '18px', fontWeight: 950, color: '#10b981', fontFamily: INTER }}>
+                                                <div style={{ fontSize: '18px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>
                                                     {d.totalAmount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                                 </div>
                                             </div>
@@ -231,10 +223,10 @@ export default function ProfitDistributionPage() {
                                                         <div key={i} style={{ background: `${C.blue}05`, border: `1px solid ${C.blue}15`, borderRadius: '12px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                             <div>
                                                                 <div style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px' }}>{l.partnerName}</div>
-                                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{t('نسبة الحصة')}: {l.share}%</div>
+                                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('نسبة الحصة')}: {l.share}%</div>
                                                             </div>
                                                             <div style={{ textAlign: 'end' }}>
-                                                                <div style={{ fontSize: '15px', fontWeight: 950, color: C.primary, fontFamily: INTER }}>{l.amount.toLocaleString('en-US')}</div>
+                                                                <div style={{ fontSize: '15px', fontWeight: 950, color: C.primary, fontFamily: OUTFIT }}>{l.amount.toLocaleString('en-US')}</div>
                                                                 <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>{t('ج.م')}</div>
                                                             </div>
                                                         </div>
@@ -287,11 +279,11 @@ export default function ProfitDistributionPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={LS}>{t('إجمالي الربح الموزع (ج.م) *')}</label>
-                                    <input required type="number" min="1" step="0.01" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 900, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                    <input required type="number" min="1" step="0.01" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 900, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
                                 </div>
                                 <div>
                                     <label style={LS}>{t('تاريخ التوزيع')}</label>
-                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
 
@@ -306,7 +298,7 @@ export default function ProfitDistributionPage() {
                                             <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
                                                 <span style={{ color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{p.name} <span style={{ fontSize: '10px', opacity: 0.6 }}>({p.share}%)</span></span>
                                                 <div style={{ flex: 1, borderBottom: `1px dotted ${C.border}`, margin: '0 10px' }} />
-                                                <span style={{ color: C.primary, fontWeight: 950, fontFamily: INTER }}>{p.gets.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                                                <span style={{ color: C.primary, fontWeight: 950, fontFamily: OUTFIT }}>{p.gets.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                                             </div>
                                         ))}
                                     </div>

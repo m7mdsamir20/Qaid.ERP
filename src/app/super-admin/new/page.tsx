@@ -4,12 +4,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { navSections } from '@/constants/navigation';
-import {
-    Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard,
-    Check, ChevronDown, ChevronUp, Loader2, CheckSquare, Square, CheckCircle,
-    Phone, Mail, Lock, UserCircle, Briefcase, Calendar, Globe, MapPin, X, Activity, Search
-} from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
+import { Shield, ArrowRight, ArrowLeft, Building2, User, CreditCard, Check, ChevronDown, ChevronUp, Loader2, CheckSquare, Square, CheckCircle, Phone, Mail, Lock, UserCircle, Briefcase, Calendar, Globe, MapPin, X, Activity, Search } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, BTN_PRIMARY } from '@/constants/theme';
 import CustomSelect from '@/components/CustomSelect';
 
 // We'll use theme constants instead of these local ones
@@ -322,21 +318,21 @@ export default function NewCompanyPage() {
                                 <input type="text" placeholder="Nile Trading Co."
                                     value={form.nameEn} onChange={e => setForm(f => ({ ...f, nameEn: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>رقم هاتف الشركة</label>
                                 <input type="tel" placeholder="01XXXXXXXXX"
                                     value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} autoComplete="new-phone"
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>البريد الإلكتروني للشركة</label>
                                 <input type="email" placeholder="info@company.com"
                                     value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>العنوان</label>
@@ -402,35 +398,35 @@ export default function NewCompanyPage() {
                                     value={form.adminUsername} onChange={e => setForm(f => ({ ...f, adminUsername: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
                                     autoComplete="username"
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>البريد الإلكتروني للمدير</label>
                                 <input type="email" placeholder="admin@company.com"
                                     value={form.adminEmail} onChange={e => setForm(f => ({ ...f, adminEmail: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} spellCheck={false}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>رقم هاتف المدير</label>
                                 <input type="tel" placeholder="01XXXXXXXXX"
                                     value={form.adminPhone} onChange={e => setForm(f => ({ ...f, adminPhone: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut} autoComplete="tel"
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>كلمة المرور <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="password" placeholder="••••••••"
                                     value={form.adminPassword} onChange={e => setForm(f => ({ ...f, adminPassword: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>تأكيد كلمة المرور <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="password" placeholder="••••••••"
                                     value={form.adminPasswordConfirm} onChange={e => setForm(f => ({ ...f, adminPasswordConfirm: e.target.value }))}
                                     onFocus={focusIn} onBlur={focusOut}
-                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER, borderColor: form.adminPasswordConfirm && form.adminPassword !== form.adminPasswordConfirm ? C.danger : undefined }} />
+                                    style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT, borderColor: form.adminPasswordConfirm && form.adminPassword !== form.adminPasswordConfirm ? C.danger : undefined }} />
                                 {form.adminPasswordConfirm && form.adminPassword !== form.adminPasswordConfirm && (
                                     <p style={{ margin: '6px 0 0', fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: CAIRO }}>كلمات المرور غير متطابقة</p>
                                 )}

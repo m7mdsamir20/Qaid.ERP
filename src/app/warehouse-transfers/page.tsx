@@ -3,12 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import {
-    ArrowRightLeft, Plus, Loader2, Building2, Package, History
-} from 'lucide-react';
-import {
-    C, CAIRO, INTER, PAGE_BASE, TABLE_STYLE, STitle
-} from '@/constants/theme';
+import { ArrowRightLeft, Plus, Loader2, Building2, Package, History } from 'lucide-react';
+import { C, CAIRO, OUTFIT, PAGE_BASE, TABLE_STYLE, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
 
@@ -93,7 +89,7 @@ export default function WarehouseTransfersPage() {
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                     >
                                         <td style={TABLE_STYLE.td(true)}>
-                                            <div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.8 }}>
+                                            <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.8 }}>
                                                 {tf.code || `TRF-${tf.transferNumber}`}
                                             </div>
                                         </td>

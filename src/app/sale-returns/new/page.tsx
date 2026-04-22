@@ -4,12 +4,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
-import {
-    RotateCcw, Printer, Lock, Info, Loader2,
-    Search, ChevronDown, ChevronUp, ArrowRight, Banknote,
-    Building2, UserCheck, FileText, Receipt, Package, CheckCircle2
-} from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import { RotateCcw, Printer, Lock, Info, Loader2, Search, ChevronDown, ChevronUp, ArrowRight, Banknote, Building2, UserCheck, FileText, Receipt, Package, CheckCircle2 } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useSession } from 'next-auth/react';
 import { CompanyInfo } from '@/lib/printInvoices';
@@ -390,7 +386,7 @@ export default function NewReturnPage() {
                                             background: 'rgba(59,130,246,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontFamily: INTER, fontWeight: 900,
+                                            fontFamily: OUTFIT, fontWeight: 900,
                                             fontSize: '14px', color: '#60a5fa',
                                             letterSpacing: '1px',
                                         }}>

@@ -7,7 +7,7 @@ const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
     return map[code] || code;
 };
-import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
@@ -193,7 +193,7 @@ export default function ClientsSuppliersBalancesPage() {
                                 }}>
                                     <span style={{ fontSize: '11.5px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{s.label}</span>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                        <span style={{ fontSize: '24px', fontWeight: 1000, color: s.color, fontFamily: INTER }}>{s.value.toLocaleString('en-US')}</span>
+                                        <span style={{ fontSize: '24px', fontWeight: 1000, color: s.color, fontFamily: OUTFIT }}>{s.value.toLocaleString('en-US')}</span>
                                         <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                     </div>
                                 </div>
@@ -251,14 +251,14 @@ export default function ClientsSuppliersBalancesPage() {
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{p.name}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textMuted, fontFamily: INTER, }}>{p.phone || '—'}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textMuted, fontFamily: OUTFIT, }}>{p.phone || '—'}</td>
                                                 
                                                 {filter === 'all' ? (
                                                     <>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
                                                             {maden > 0 ? <>{maden.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
                                                             {daen > 0 ? <>{daen.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                         </td>
                                                     </>
@@ -277,7 +277,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                                 </span>
                                                             )}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
                                                             {Math.abs(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                         </td>
                                                     </>

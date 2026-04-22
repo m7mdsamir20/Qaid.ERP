@@ -3,11 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import {
-    ChevronDown,
-    ChevronUp,
-    Loader2
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, Loader2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 import { navSections } from '@/constants/navigation';

@@ -1,9 +1,7 @@
 'use client';
 
 import { C, CAIRO } from '@/constants/theme';
-import {
-    CalendarDays, Calendar, CalendarCheck, Clock, AlertCircle, Lock as LockIcon, Loader2
-} from 'lucide-react';
+import { CalendarDays, Calendar, CalendarCheck, Clock, AlertCircle, Lock as LockIcon, Loader2 } from 'lucide-react';
 import { TabHeader } from './shared';
 import { useTranslation } from '@/lib/i18n';
 

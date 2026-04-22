@@ -3,19 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { 
-    BuildingIcon, 
-    BriefcaseIcon, 
-    Plus, 
-    Trash2, 
-    Pencil, 
-    Users, 
-    Loader2, 
-    Search,
-    X,
-    Save
-} from 'lucide-react';
-import { C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
+import { BuildingIcon, BriefcaseIcon, Plus, Trash2, Pencil, Users, Loader2, Search, X, Save } from 'lucide-react';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -165,7 +154,7 @@ export default function DepartmentsPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -218,7 +207,7 @@ export default function DepartmentsPage() {
                                             <div style={{ width: 24, height: 24, borderRadius: '6px', background: `${C.primary}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 <Users size={12} style={{ color: C.primary }} />
                                             </div>
-                                            <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 700, fontFamily: INTER }}>{dept._count.employees} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{t('موظف')}</span></span>
+                                            <span style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 700, fontFamily: OUTFIT }}>{dept._count.employees} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{t('موظف')}</span></span>
                                         </div>
                                     </div>
                                     <div style={{ display: 'flex', gap: '6px' }}>

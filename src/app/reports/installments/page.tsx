@@ -10,7 +10,7 @@ const getCurrencyName = (code: string) => {
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import { BarChart3, Printer, Loader2, Search, Calendar, User, FileText, CheckCircle2, AlertTriangle, TrendingUp, Info, Wallet, DollarSign, Package } from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_SUCCESS, BTN_PRIMARY, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import CustomSelect from '@/components/CustomSelect';
@@ -217,14 +217,14 @@ export default function InstallmentReportsPage() {
                                     <label style={LS}>{t('من تاريخ')}</label>
                                     <div style={{ position: 'relative' }}>
                                         
-                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                                 <div style={{ minWidth: '200px' }}>
                                     <label style={LS}>{t('إلى تاريخ')}</label>
                                     <div style={{ position: 'relative' }}>
                                         
-                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                             </>
@@ -305,14 +305,14 @@ export default function InstallmentReportsPage() {
                                             </div>
                                             <div>
                                                 <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 800, fontFamily: CAIRO }}>{t('إجمالي التحصيلات للفترة')}</div>
-                                                <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                                <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'start'}}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('عدد العمليات الصالحة')}</div>
-                                            <div style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: INTER }}>{data.installments?.length || 0}</div>
+                                            <div style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: OUTFIT }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
 
@@ -330,11 +330,11 @@ export default function InstallmentReportsPage() {
                                                 <tbody>
                                                     {data.installments?.map((inst, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
-                                                            <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
+                                                            <td style={{ padding: '16px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt, lang) : '—'}</td>
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط رقم')} {inst.installmentNo}</td>
-                                                            <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
-                                                            <td style={{ padding: '16px', color: '#10b981', fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                            <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
+                                                            <td style={{ padding: '16px', color: '#10b981', fontWeight: 900, fontFamily: OUTFIT }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -353,14 +353,14 @@ export default function InstallmentReportsPage() {
                                             </div>
                                             <div>
                                                 <div style={{ fontSize: '12px', color: C.danger, fontWeight: 800, fontFamily: CAIRO }}>{t('إجمالي المتأخرات القائمة')}</div>
-                                                <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                                <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'start'}}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي الأقساط المتعثرة')}</div>
-                                            <div style={{ fontSize: '12px', fontWeight: 800, color: C.danger, fontFamily: INTER }}>{data.installments?.length || 0}</div>
+                                            <div style={{ fontSize: '12px', fontWeight: 800, color: C.danger, fontFamily: OUTFIT }}>{data.installments?.length || 0}</div>
                                         </div>
                                     </div>
 
@@ -379,15 +379,15 @@ export default function InstallmentReportsPage() {
                                                     {data.installments?.map((inst, idx: number) => (
                                                         <tr key={inst.id} style={{ borderBottom: idx < (data.installments?.length || 0) - 1 ? `1px solid ${C.border}` : 'none' }}>
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
-                                                            <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: INTER }}>#{inst.plan?.planNumber}</td>
+                                                            <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
                                                             <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط')} {inst.installmentNo}</td>
-                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 800, fontFamily: INTER }}>{fmt(inst.dueDate, lang)}</td>
+                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 800, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
                                                             <td style={{ padding: '16px' }}>
                                                                 <div style={{ display: 'inline-flex', padding: '4px 10px', borderRadius: '20px', background: 'rgba(251,113,133,0.1)', color: C.danger, fontSize: '11px', fontWeight: 800, border: `1px solid ${C.danger}20`, fontFamily: CAIRO }}>
                                                                     {inst.daysOverdue} {t('يوم تأخير')}
                                                                 </div>
                                                             </td>
-                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 900, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 900, fontFamily: OUTFIT }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -413,7 +413,7 @@ export default function InstallmentReportsPage() {
                                                 </div>
                                                 <div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{s.label}</div>
-                                                    <div style={{ fontSize: '15px', fontWeight: 900, color: s.color, fontFamily: INTER }}>
+                                                    <div style={{ fontSize: '15px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }}>
                                                         {s.value} <span style={{ fontSize: '11px', opacity: 0.5, fontFamily: CAIRO }}>{s.suffix}</span>
                                                     </div>
                                                 </div>
@@ -427,13 +427,13 @@ export default function InstallmentReportsPage() {
                                             <div key={plan.id} style={{ ...SC, padding: 0, overflow: 'hidden' }}>
                                                 <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                                        <div style={{ fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>#{plan.planNumber}</div>
+                                                        <div style={{ fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>#{plan.planNumber}</div>
                                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
                                                             <Package size={14} /> {plan.productName || t('غير محدد')}
                                                         </div>
                                                         <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{plan.monthsCount} {t('شهر')}</div>
                                                     </div>
-                                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                         {fmtN(plan.grandTotal)} <span style={{ fontSize: '12px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                     </div>
                                                 </div>
@@ -449,11 +449,11 @@ export default function InstallmentReportsPage() {
                                                         <tbody>
                                                             {plan.installments?.map((inst, idx: number) => (
                                                                 <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: '0.2s' }}>
-                                                                    <td style={{ padding: '12px 24px', color: C.primary, fontWeight: 800, fontFamily: INTER }}>{inst.installmentNo}</td>
-                                                                    <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: INTER }}>{fmt(inst.dueDate, lang)}</td>
-                                                                    <td style={{ padding: '12px 24px', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.amount)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
-                                                                    <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: INTER }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
-                                                                    <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: INTER }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                                    <td style={{ padding: '12px 24px', color: C.primary, fontWeight: 800, fontFamily: OUTFIT }}>{inst.installmentNo}</td>
+                                                                    <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
+                                                                    <td style={{ padding: '12px 24px', fontWeight: 800, fontFamily: OUTFIT }}>{fmtN(inst.amount)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                                    <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                                    <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: OUTFIT }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
                                                                     <td style={{ padding: '12px 24px' }}>
                                                                         <div style={{
                                                                             display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 800,
