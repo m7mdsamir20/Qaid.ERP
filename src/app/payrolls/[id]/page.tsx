@@ -159,6 +159,97 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
         }
     };
 
+    const openPayrollPrint = () => {
+        const monthName = months.find(m => m.value === payroll?.month)?.label || '';
+        const reportTitle = `مسير رواتب شهر ${monthName} ${payroll?.year}`;
+        const now = new Date();
+        const printDate = now.toLocaleDateString('en-GB', { year: 'numeric', month: '2-digit', day: '2-digit' });
+        const printTime = now.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit', hour12: true });
+        const sym = formatCurrency(company?.currency || 'EGP');
+        const fmt = (n: number) => (n || 0).toLocaleString('en-US', { minimumFractionDigits: 2 });
+        const logoHtml = companyLogo
+            ? `<img src="${companyLogo}" style="max-height:60px;max-width:120px;object-fit:contain;" />`
+            : `<div style="font-size:16px;font-weight:900">${companyName}</div>`;
+
+        const cardsHtml = `<div style="display:flex;gap:8px;margin-bottom:14px">
+            ${[
+                { label: 'إجمالي الأساسي', val: payroll.totalSalaries },
+                { label: 'إجمالي البدلات', val: payroll.totalAllowances },
+                { label: 'السلف والخصومات', val: (payroll.totalAdvances || 0) + (payroll.totalDiscounts || 0) },
+                { label: 'صافي المنصرف', val: payroll.netTotal },
+            ].map(s => `<div style="flex:1;border:1px solid #bbb;border-radius:4px;padding:7px 10px;text-align:center;background:#f8f8f8">
+                <div style="font-size:8.5px;color:#555;font-weight:700;margin-bottom:4px">${s.label}</div>
+                <div style="font-size:11px;font-weight:900">${fmt(s.val)} ${sym}</div>
+            </div>`).join('')}
+        </div>`;
+
+        const rowsHtml = payroll.lines.map((line: any, i: number) => `
+            <tr style="background:${i % 2 === 0 ? '#fff' : '#fafafa'}">
+                <td style="text-align:center;font-weight:800">${line.employee?.code || ''}</td>
+                <td style="text-align:right;font-weight:800">${line.employee?.name || ''}<br/><span style="font-size:9px;color:#666">${line.employee?.position || 'موظف'}</span></td>
+                <td style="text-align:center">${fmt(line.basicSalary)}</td>
+                <td style="text-align:center;color:#166534">+${fmt(line.allowances)}</td>
+                <td style="text-align:center;color:#991b1b">-${fmt(line.advances)}</td>
+                <td style="text-align:center;color:#991b1b">-${fmt(line.discounts)}</td>
+                <td style="text-align:center;font-weight:900">${fmt(line.netSalary)}</td>
+            </tr>`).join('');
+
+        const tableHtml = `<div style="border:1px solid #bbb;border-radius:4px;overflow:hidden">
+            <table style="width:100%;border-collapse:collapse;font-size:11px">
+                <thead><tr style="background:#e0e0e0">
+                    <th style="padding:9px 8px;border:1px solid #bbb;text-align:center">كود</th>
+                    <th style="padding:9px 8px;border:1px solid #bbb;text-align:right">الموظف</th>
+                    <th style="padding:9px 8px;border:1px solid #bbb;text-align:center">الأساسي</th>
+                    <th style="padding:9px 8px;border:1px solid #bbb;text-align:center">البدلات</th>
+                    <th style="padding:9px 8px;border:1px solid #bbb;text-align:center">السلف</th>
+                    <th style="padding:9px 8px;border:1px solid #bbb;text-align:center">الخصومات</th>
+                    <th style="padding:9px 8px;border:1px solid #bbb;text-align:center">الصافي</th>
+                </tr></thead>
+                <tbody>${rowsHtml}</tbody>
+                <tfoot><tr style="background:#e0e0e0;font-weight:900">
+                    <td colspan="2" style="padding:9px 8px;border:1px solid #bbb;text-align:right">الإجمالي</td>
+                    <td style="padding:9px 8px;border:1px solid #bbb;text-align:center">${fmt(payroll.totalSalaries)}</td>
+                    <td style="padding:9px 8px;border:1px solid #bbb;text-align:center;color:#166534">+${fmt(payroll.totalAllowances)}</td>
+                    <td style="padding:9px 8px;border:1px solid #bbb;text-align:center;color:#991b1b">-${fmt(payroll.totalAdvances || 0)}</td>
+                    <td style="padding:9px 8px;border:1px solid #bbb;text-align:center;color:#991b1b">-${fmt(payroll.totalDiscounts || 0)}</td>
+                    <td style="padding:9px 8px;border:1px solid #bbb;text-align:center">${fmt(payroll.netTotal)}</td>
+                </tr></tfoot>
+            </table>
+        </div>`;
+
+        const metaItems = [
+            `<span>الشهر: <b>${monthName} ${payroll?.year}</b></span>`,
+            taxNumber ? `<span>الرقم الضريبي: <b>${taxNumber}</b></span>` : '',
+            `<span>طُبع: <b>${printDate} — ${printTime}</b></span>`,
+        ].filter(Boolean).join('');
+
+        const html = `<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"/><title>${reportTitle}</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;color:#000!important;background:#fff!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:'Cairo',sans-serif;direction:rtl;font-size:11px;line-height:1.5}
+.page{padding:8mm 12mm}
+.rpt-header{display:grid;grid-template-columns:130px 1fr 130px;align-items:center;padding-bottom:10px;border-bottom:2px solid #000;margin-bottom:14px;direction:ltr}
+.rpt-title{font-size:17px;font-weight:900;margin-bottom:6px;text-align:center;direction:rtl}
+.rpt-meta{font-size:10.5px;display:flex;justify-content:center;gap:20px;flex-wrap:wrap;direction:rtl}
+.rpt-meta b{font-weight:800}
+@media print{@page{size:A4;margin:6mm 10mm}.page{padding:0}}
+</style></head><body><div class="page">
+<div class="rpt-header">
+  <div>${logoHtml}</div>
+  <div><div class="rpt-title">${reportTitle}</div><div class="rpt-meta">${metaItems}</div></div>
+  <div></div>
+</div>
+${cardsHtml}
+${tableHtml}
+</div></body></html>`;
+
+        sessionStorage.setItem('print_report_html', html);
+        sessionStorage.setItem('print_report_title', reportTitle);
+        window.open('/print/report', '_blank');
+    };
+
     if (loading) return (
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '300px', flexDirection: 'column', gap: '12px' }}>
@@ -192,7 +283,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                         actions={[
                             <button 
                                 key="print"
-                                onClick={() => window.print()}
+                                onClick={openPayrollPrint}
                                 className="print-hide"
                                 style={{ 
                                     height: '40px', padding: '0 20px', borderRadius: '12px', 
