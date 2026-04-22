@@ -158,7 +158,7 @@ export default function NewTransferPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input
                                         type="text" readOnly disabled value={form.code} dir="ltr"
-                                        style={{ ...IS, paddingInlineStart: '36px', color: C.textMuted, opacity: 0.6, fontSize: '11px', fontFamily: OUTFIT, fontWeight: 900 }}
+                                        style={{ ...IS, paddingInlineStart: '36px', color: C.textMuted, opacity: 0.6, fontSize: '11px', fontFamily: OUTFIT, fontWeight: 600 }}
                                     />
                                     <Lock size={14} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', opacity: 0.3 }} />
                                 </div>
@@ -200,7 +200,7 @@ export default function NewTransferPage() {
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <Package size={18} style={{ color: C.primary }} />
-                                    <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الأصناف المحولة')}</h4>
+                                    <h4 style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الأصناف المحولة')}</h4>
                                 </div>
                                 <button
                                     type="button" onClick={addLine}
@@ -245,7 +245,7 @@ export default function NewTransferPage() {
                                                     </td>
                                                     <td style={{...TABLE_STYLE.td(false, true)}}>
                                                         <div style={{ 
-                                                            fontSize: '12px', fontWeight: 800, fontFamily: OUTFIT, 
+                                                            fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT, 
                                                             color: available > 0 ? C.success : C.danger,
                                                             background: available > 0 ? 'rgba(74,222,128,0.05)' : 'rgba(251,113,133,0.05)',
                                                             padding: '4px 8px', borderRadius: '6px', display: 'inline-block'
@@ -309,7 +309,7 @@ export default function NewTransferPage() {
                                 style={{ 
                                     ...BTN_PRIMARY(isSubmitting || lines.length === 0, isSubmitting), 
                                     height: '48px', 
-                                    fontSize: '14px',
+                                    fontSize: '13px',
                                     background: (isSubmitting || lines.length === 0) ? 'rgba(255,255,255,0.05)' : 'linear-gradient(135deg, #256af4, #1a56d6)',
                                     boxShadow: (isSubmitting || lines.length === 0) ? 'none' : '0 8px 24px rgba(37,106,244,0.2)'
                                 }}>

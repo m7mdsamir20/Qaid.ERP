@@ -154,7 +154,7 @@ export default function DepartmentsPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -186,12 +186,12 @@ export default function DepartmentsPage() {
                 {loading ? (
                     <div style={{ padding: '60px', color: '#64748b' }}>
                         <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', margin: '0 auto 16px', display: 'block' }} />
-                        <p style={{ fontSize: '13px', fontWeight: 800, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
+                        <p style={{ fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('جاري تحميل البيانات...')}</p>
                     </div>
                 ) : filteredDepartments.length === 0 ? (
                     <div style={{ padding: '60px 20px', background: 'rgba(255,255,255,0.02)', borderRadius: '16px', border: '1px dashed rgba(255,255,255,0.1)' }}>
                         <BuildingIcon size={40} style={{ color: '#475569', marginBottom: '12px', opacity: 0.3 }} />
-                        <h3 style={{ color: '#94a3b8', fontSize: '14px', margin: '0 0 6px', fontWeight: 800, fontFamily: CAIRO }}>{t('لا توجد أقسام مطابقة')}</h3>
+                        <h3 style={{ color: '#94a3b8', fontSize: '13px', margin: '0 0 6px', fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد أقسام مطابقة')}</h3>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '14px' }}>
@@ -202,7 +202,7 @@ export default function DepartmentsPage() {
                             >
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                                     <div>
-                                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 900, color: '#f1f5f9', fontFamily: CAIRO }}>{dept.name}</h3>
+                                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#f1f5f9', fontFamily: CAIRO }}>{dept.name}</h3>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
                                             <div style={{ width: 24, height: 24, borderRadius: '6px', background: `${C.primary}10`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                 <Users size={12} style={{ color: C.primary }} />
@@ -254,7 +254,7 @@ export default function DepartmentsPage() {
                                 {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Save size={18} />}
                                 <span style={{ marginInlineEnd: '8px' }}>{isSaving ? t('جاري الحفظ...') : (editDept ? t('تحديث البيانات') : t('حفظ القسم'))}</span>
                             </button>
-                            <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                            <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                 {t('إلغاء')}
                             </button>
                         </div>

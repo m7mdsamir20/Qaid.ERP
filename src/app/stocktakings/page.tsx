@@ -210,7 +210,7 @@ export default function StocktakingsPage() {
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
                                             <td style={{ ...TABLE_STYLE.td(true), width: '100px' }}>
-                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
+                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
                                                     STK-{st.stocktakingNum}
                                                 </div>
                                             </td>
@@ -218,20 +218,20 @@ export default function StocktakingsPage() {
                                                 {new Date(st.date).toLocaleDateString('en-GB')}
                                             </td>
                                             <td style={{...TABLE_STYLE.td(false)}}>
-                                                <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px' }}>{st.warehouse?.name || '—'}</div>
+                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{st.warehouse?.name || '—'}</div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                 {st.status === 'applied' ? (
                                                     <span style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
-                                                        background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', color: '#34d399', fontSize: '11px', fontWeight: 800 
+                                                        background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', color: '#34d399', fontSize: '11px', fontWeight: 600 
                                                     }}>
                                                         <CheckCircle2 size={12} /> {t('مُطبق')}
                                                     </span>
                                                 ) : (
                                                     <span style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
-                                                        background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#fbbf24', fontSize: '11px', fontWeight: 800 
+                                                        background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', color: '#fbbf24', fontSize: '11px', fontWeight: 600 
                                                     }}>
                                                         <FileText size={12} /> {t('مسودة')}
                                                     </span>
@@ -310,7 +310,7 @@ export default function StocktakingsPage() {
                             <AlertCircle size={32} />
                         </div>
                         <h3 style={{ margin: '0 0 8px', color: C.textPrimary }}>{t('هل أنت متأكد؟')}</h3>
-                        <p style={{ margin: 0, color: C.textSecondary, fontSize: '14px', lineHeight: 1.6 }}>
+                        <p style={{ margin: 0, color: C.textSecondary, fontSize: '13px', lineHeight: 1.6 }}>
                             {t('سيتم حذف مسودة الجرد رقم')} <strong>"STK-{deleteItem?.stocktakingNum}"</strong> {t('نهائياً. لا يمكن التراجع عن هذا الإجراء.')}
                         </p>
 

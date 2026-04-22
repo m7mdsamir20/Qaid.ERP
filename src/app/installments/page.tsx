@@ -285,7 +285,7 @@ export default function InstallmentsPage() {
                                         fMoneyJSX(parseFloat(k.value.replace(/,/g, '')))
                                     ) : (
                                         <>
-                                            <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
+                                            <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{k.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{k.suffix || k.subtitle}</span>
                                         </>
                                     )}
@@ -338,7 +338,7 @@ export default function InstallmentsPage() {
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
                                                     <td style={TABLE_STYLE.td(true, true)}>
-                                                        <div style={{ fontWeight: 900, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px' }}>PLAN-{String(p.planNumber || idx + 1).padStart(4, '0')}</div>
+                                                        <div style={{ fontWeight: 600, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px' }}>PLAN-{String(p.planNumber || idx + 1).padStart(4, '0')}</div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false, true)}>
                                                         {p.productName ? (
@@ -350,13 +350,13 @@ export default function InstallmentsPage() {
                                                     </td>
                                                     <td style={{ padding: '12px 16px', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>{p.customer?.phone || '—'}</td>
                                                     <td style={{ padding: '12px 16px', fontWeight: 600, color: C.textPrimary }}>{p.customer?.name}</td>
-                                                    <td style={{ padding: '12px 16px',  fontWeight: 800, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '12px 16px',  fontWeight: 600, fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(p.grandTotal)}
                                                     </td>
                                                     <td style={{ padding: '12px 16px',  color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(p.downPayment)}
                                                     </td>
-                                                    <td style={{ padding: '12px 16px',  color: C.primary, fontWeight: 800, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '12px 16px',  color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>
                                                         {fMoneyJSX(p.installmentAmount)}
                                                     </td>
                                                     <td style={{ padding: '12px 16px',  color: C.textSecondary, fontFamily: OUTFIT, fontSize: '13px' }}>
@@ -365,15 +365,15 @@ export default function InstallmentsPage() {
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false, true)}>
                                                         {overdueCount > 0 ? (
-                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 800, gap: '4px', alignItems: 'center' }}>
+                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
                                                                 <AlertTriangle size={10} /> {overdueCount} {t('متأخر')}
                                                             </span>
                                                         ) : p.status === 'completed' ? (
-                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 800, gap: '4px', alignItems: 'center' }}>
+                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
                                                                 <Check size={10} /> {t('انتهت')}
                                                             </span>
                                                         ) : (
-                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(74, 222, 128, 0.12)', color: '#4ade80', border: '1px solid rgba(74, 222, 128, 0.22)', fontSize: '10px', fontWeight: 800, gap: '4px', alignItems: 'center' }}>
+                                                            <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(74, 222, 128, 0.12)', color: '#4ade80', border: '1px solid rgba(74, 222, 128, 0.22)', fontSize: '10px', fontWeight: 600, gap: '4px', alignItems: 'center' }}>
                                                                 <Clock size={10} /> {t('نشطة')}
                                                             </span>
                                                         )}
@@ -419,7 +419,7 @@ export default function InstallmentsPage() {
                             {/* Section 1: Basic Contract Info */}
                             <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px', borderBottom: `1px solid ${C.border}`, paddingBottom: '6px' }}>
                                 <User size={14} color={C.primary} />
-                                <span style={{ fontSize: '12.5px', fontWeight: 800, color: C.primary }}>{t('بيانات التعاقد الأساسية')}</span>
+                                <span style={{ fontSize: '12.5px', fontWeight: 600, color: C.primary }}>{t('بيانات التعاقد الأساسية')}</span>
                             </div>
 
                             <div>
@@ -504,7 +504,7 @@ export default function InstallmentsPage() {
                                 <div style={{ gridColumn: 'span 2', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '16px', border: `1px solid ${C.border}`, marginTop: '5px' }}>
                                     <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                                         <Info size={14} color={C.primary} />
-                                        <span style={{ fontSize: '12px', fontWeight: 800, color: C.primary }}>{t('بيانات الضريبة')} ({taxSettings.type}) - {taxSettings.isInclusive ? t('شاملة') : t('صافي')}</span>
+                                        <span style={{ fontSize: '12px', fontWeight: 600, color: C.primary }}>{t('بيانات الضريبة')} ({taxSettings.type}) - {taxSettings.isInclusive ? t('شاملة') : t('صافي')}</span>
                                     </div>
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('نسبة الضريبة (%)')}</label>
@@ -520,7 +520,7 @@ export default function InstallmentsPage() {
                                                 }} 
                                                 style={{ ...IS, height: '34px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} 
                                             />
-                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.primary }}>%</span>
                                         </div>
                                     </div>
                                     <div>
@@ -536,7 +536,7 @@ export default function InstallmentsPage() {
                                                         setForm(f => ({ ...f, taxAmount: v, taxRate: String(r.toFixed(2)) }));
                                                     }
                                                 }}
-                                                style={{ ...IS, height: '34px', paddingInlineStart: '32px', fontWeight: 800, color: C.primary }} onFocus={focusIn} onBlur={focusOut} 
+                                                style={{ ...IS, height: '34px', paddingInlineStart: '32px', fontWeight: 600, color: C.primary }} onFocus={focusIn} onBlur={focusOut} 
                                             />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
                                         </div>
@@ -547,7 +547,7 @@ export default function InstallmentsPage() {
                             {/* Section 2: Financial Details */}
                             <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', marginBottom: '2px', borderBottom: `1px solid ${C.border}`, paddingBottom: '6px' }}>
                                 <DollarSign size={14} color={C.primary} />
-                                <span style={{ fontSize: '12.5px', fontWeight: 800, color: C.primary }}>{t('التفاصيل المالية والفوائد')}</span>
+                                <span style={{ fontSize: '12.5px', fontWeight: 600, color: C.primary }}>{t('التفاصيل المالية والفوائد')}</span>
                             </div>
 
                             <div>
@@ -562,7 +562,7 @@ export default function InstallmentsPage() {
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('فائدة سنوية %')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', paddingInlineStart: '28px' }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 900, color: C.primary }}>%</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.primary }}>%</span>
                                 </div>
                             </div>
 
@@ -583,7 +583,7 @@ export default function InstallmentsPage() {
                             {/* Section 3: Scheduling */}
                             <div style={{ gridColumn: 'span 2', display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px', marginBottom: '2px', borderBottom: `1px solid ${C.border}`, paddingBottom: '6px' }}>
                                 <Calendar size={14} color={C.primary} />
-                                <span style={{ fontSize: '12.5px', fontWeight: 800, color: C.primary }}>{t('جدولة الأقساط')}</span>
+                                <span style={{ fontSize: '12.5px', fontWeight: 600, color: C.primary }}>{t('جدولة الأقساط')}</span>
                             </div>
 
                             <div>
@@ -622,7 +622,7 @@ export default function InstallmentsPage() {
                                                 <t_sys.icon size={16} />
                                             </div>
                                             <div>
-                                                <div style={{ fontSize: '12px', fontWeight: 800, color: form.paymentType === t_sys.id ? C.primary : C.textSecondary }}>{t_sys.label}</div>
+                                                <div style={{ fontSize: '12px', fontWeight: 600, color: form.paymentType === t_sys.id ? C.primary : C.textSecondary }}>{t_sys.label}</div>
                                                 <div style={{ fontSize: '10px', color: C.textMuted }}>{t_sys.sub}</div>
                                             </div>
                                         </div>
@@ -632,7 +632,7 @@ export default function InstallmentsPage() {
 
                             {form.paymentType === 'seasonal' && (
                                 <div style={{ gridColumn: 'span 2', animation: 'fadeIn 0.3s', background: 'rgba(255,255,255,0.02)', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}` }}>
-                                    <label style={{ ...LS, fontSize: '11px', color: C.primary, marginBottom: '10px', display: 'block', fontWeight: 900 }}>{t('حدد الشهور النشطة للتحصيل:')}</label>
+                                    <label style={{ ...LS, fontSize: '11px', color: C.primary, marginBottom: '10px', display: 'block', fontWeight: 600 }}>{t('حدد الشهور النشطة للتحصيل:')}</label>
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '8px' }}>
                                         {['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'].map((m, i) => {
                                             const monthNum = i + 1;
@@ -711,7 +711,7 @@ export default function InstallmentsPage() {
                         )}
 
                         <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                            <button type="submit" disabled={submitting} style={{ ...BTN_PRIMARY(false, submitting), flex: 1.5, height: '48px', fontSize: '14px' }}>
+                            <button type="submit" disabled={submitting} style={{ ...BTN_PRIMARY(false, submitting), flex: 1.5, height: '48px', fontSize: '13px' }}>
                                 {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={16} /> {t('اعتماد وحفظ الخطة')}</>}
                             </button>
                             <button type="button" onClick={() => setShowNew(false)} style={{ 
@@ -743,11 +743,11 @@ export default function InstallmentsPage() {
                         variant="danger"
                     >
                         <div style={{ padding: '10px 0' }}>
-                            <p style={{ fontWeight: 700, fontSize: '16px', color: C.textPrimary }}>{t('هل أنت متأكد من حذف هذه الخطة نهائياً؟')}</p>
-                            <p style={{ color: C.textMuted, fontSize: '14px', marginTop: '8px', lineHeight: 1.6 }}>{t('سيتم حذف كافة الأقساط والتحصيلات المرتبطة بها. هذا الإجراء لا يمكن التراجع عنه.')}</p>
+                            <p style={{ fontWeight: 700, fontSize: '13px', color: C.textPrimary }}>{t('هل أنت متأكد من حذف هذه الخطة نهائياً؟')}</p>
+                            <p style={{ color: C.textMuted, fontSize: '13px', marginTop: '8px', lineHeight: 1.6 }}>{t('سيتم حذف كافة الأقساط والتحصيلات المرتبطة بها. هذا الإجراء لا يمكن التراجع عنه.')}</p>
                             <div style={{ display: 'flex', gap: '12px', marginTop: '24px' }}>
                                 <button onClick={() => setDeleteId(null)} style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 700, cursor: 'pointer' }}>{t('تراجع')}</button>
-                                <button onClick={handleDelete} disabled={submitting} style={{ flex: 1.5, height: '46px', borderRadius: '12px', background: C.danger, color: '#fff', border: 'none', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                <button onClick={handleDelete} disabled={submitting} style={{ flex: 1.5, height: '46px', borderRadius: '12px', background: C.danger, color: '#fff', border: 'none', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                                     {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('تأكيد الحذف النهائي')}
                                 </button>
                             </div>

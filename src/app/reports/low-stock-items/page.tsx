@@ -80,14 +80,14 @@ export default function LowStockReportPage() {
                                 />
                             </div>
                             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>
-                                {t('عدد النتائج:')} <span style={{ color: '#ef4444', fontWeight: 900, fontFamily: OUTFIT }}>{filtered.length}</span> {t('صنف')}
+                                {t('عدد النتائج:')} <span style={{ color: '#ef4444', fontWeight: 600, fontFamily: OUTFIT }}>{filtered.length}</span> {t('صنف')}
                             </div>
                         </div>
 
                         {error && (
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                                <span style={{ fontSize: '16px' }}>⚠️</span>{error}
-                                <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                                <span style={{ fontSize: '13px' }}>⚠️</span>{error}
+                                <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
                             </div>
                         )}
 
@@ -99,7 +99,7 @@ export default function LowStockReportPage() {
                         ) : filtered.length === 0 ? (
                             <div style={{ padding: '100px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                                 <Box size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                                <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد نواقص')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد نواقص')}</h3>
                                 <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('تبدو جميع أرصدة المخزون ضمن الحدود الآمنة حالياً.')}</p>
                             </div>
                         ) : (
@@ -110,7 +110,7 @@ export default function LowStockReportPage() {
                                             {[t('الصنف'), t('التصنيف'), t('الرصيد الحالي'), t('الحد الأدنى'), t('قيمة النقص')].map((h, i) => (
                                                 <th key={i} style={{ textAlign: i === 2 ? 'center' : 'start', padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
                                                     
-                                                    fontWeight: 800, fontFamily: CAIRO
+                                                    fontWeight: 600, fontFamily: CAIRO
                                                 }}>{h}</th>
                                             ))}
                                         </tr>
@@ -130,7 +130,7 @@ export default function LowStockReportPage() {
                                                     <span style={{
                                                         background: item.totalStock <= 0 ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
                                                         color: item.totalStock <= 0 ? '#ef4444' : '#f59e0b',
-                                                        padding: '4px 12px', borderRadius: '10px', fontWeight: 1000, fontSize: '12px', fontFamily: OUTFIT
+                                                        padding: '4px 12px', borderRadius: '10px', fontWeight: 600, fontSize: '12px', fontFamily: OUTFIT
                                                     }}>
                                                         {formatNumber(item.totalStock)}
                                                     </span>
@@ -138,7 +138,7 @@ export default function LowStockReportPage() {
                                                 <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
                                                     {formatNumber(item.minLimit)}
                                                 </td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {formatNumber(item.value)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                             </tr>
@@ -146,8 +146,8 @@ export default function LowStockReportPage() {
                                     </tbody>
                                     <tfoot>
                                         <tr style={{ background: 'rgba(16,185,129,0.05)', borderTop: `2px solid ${C.border}` }}>
-                                            <td colSpan={4} style={{ padding: '18px 24px',  fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
-                                            <td style={{ padding: '18px 20px',  fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }}>
+                                            <td colSpan={4} style={{ padding: '18px 24px',  fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجماليات النقص للفترة المختارة')}</td>
+                                            <td style={{ padding: '18px 20px',  fontWeight: 600, color: '#10b981', fontSize: '13px', fontFamily: OUTFIT }}>
                                                 {formatNumber(totalValue)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>
                                         </tr>
@@ -163,14 +163,14 @@ export default function LowStockReportPage() {
                                 <AlertTriangle size={24} />
                             </div>
                             <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي عدد النواقص')}</div>
-                            <div style={{ fontSize: '32px', fontWeight: 1000, color: '#ef4444', fontFamily: OUTFIT }}>
+                            <div style={{ fontSize: '32px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>
                                 {formatNumber(filtered.length)}
-                                <span style={{ fontSize: '14px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{t('صنف')}</span>
+                                <span style={{ fontSize: '13px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{t('صنف')}</span>
                             </div>
                         </div>
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px' }}>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
                                 <Activity size={18} color={C.primary} /> {t('دليل الإحصائيات')}
                             </div>
                             <ul style={{ margin: 0, paddingInlineEnd: '22px', display: 'flex', flexDirection: 'column', gap: '12px' }}>

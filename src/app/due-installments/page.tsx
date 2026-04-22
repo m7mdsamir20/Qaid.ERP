@@ -117,8 +117,8 @@ export default function DuePage() {
                                 <Wallet size={16} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>{t('إجمالي المستحق حالياً')}</div>
-                                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 600 }}>{t('إجمالي المستحق حالياً')}</div>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                     {fMoneyJSX(totalDue)}
                                 </div>
                             </div>
@@ -161,11 +161,11 @@ export default function DuePage() {
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
                                                     <td style={TABLE_STYLE.td(true)}>
-                                                        <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>{inst.customer?.name}</div>
+                                                        <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{inst.customer?.name}</div>
                                                         <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{inst.customer?.phone}</div>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false, true)}>
-                                                        <span style={{ color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
+                                                        <span style={{ color: '#5286ed', fontWeight: 600, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</span>
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false, true)}>
                                                         {inst.installmentNo}
@@ -182,7 +182,7 @@ export default function DuePage() {
                                                     <td style={TABLE_STYLE.td(false, true)}>
                                                         <div style={{
                                                             display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                            padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 800,
+                                                            padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600,
                                                             background: isOverdue ? 'rgba(239,68,68,0.12)' : 'rgba(245,158,11,0.12)',
                                                             color: isOverdue ? C.danger : C.warning, border: `1px solid ${isOverdue ? 'rgba(239,68,68,0.22)' : 'rgba(245,158,11,0.22)'}`
                                                         }}>
@@ -209,7 +209,7 @@ export default function DuePage() {
                                                                 style={{
                                                                     height: '32px', padding: '0 16px', borderRadius: '10px', border: 'none',
                                                                     background: isOverdue ? C.danger : C.primary, color: 'white',
-                                                                    fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: '0.2s',
+                                                                    fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: '0.2s',
                                                                     boxShadow: '0 2px 8px rgba(0,0,0,0.2)'
                                                                 }}
                                                                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
@@ -254,11 +254,11 @@ export default function DuePage() {
                             <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '16px', border: `1px solid ${C.border}`, marginBottom: '20px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('العميل')}:</span>
-                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800 }}>{collectTarget.customer?.name}</span>
+                                    <span style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600 }}>{collectTarget.customer?.name}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر سداده')}:</span>
-                                    <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>
+                                    <span style={{ fontSize: '13px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>
                                         {fMoneyJSX(collectTarget.remaining || collectTarget.amount)}
                                     </span>
                                 </div>
@@ -269,10 +269,10 @@ export default function DuePage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount}
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
-                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -303,7 +303,7 @@ export default function DuePage() {
                                                 <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: isSelectedType ? C.primary : 'rgba(255,255,255,0.05)', color: isSelectedType ? '#fff' : C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <t.icon size={14} />
                                                 </div>
-                                                <div style={{ fontSize: '11.5px', fontWeight: 800, color: isSelectedType ? C.primary : C.textSecondary }}>{t.label}</div>
+                                                <div style={{ fontSize: '11.5px', fontWeight: 600, color: isSelectedType ? C.primary : C.textSecondary }}>{t.label}</div>
                                             </div>
                                         );
                                     })}
@@ -344,14 +344,14 @@ export default function DuePage() {
 
                             <div style={{ display: 'flex', gap: '12px' }}>
                                 <button type="submit" disabled={collecting}
-                                    style={{ ...BTN_PRIMARY(false, collecting), flex: 1.5, height: '46px', borderRadius: '12px', fontSize: '14px' }}>
+                                    style={{ ...BTN_PRIMARY(false, collecting), flex: 1.5, height: '46px', borderRadius: '12px', fontSize: '13px' }}>
                                     {collecting ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Check size={20} /> {t('تأكيد التحصيل')}</>}
                                 </button>
                                 <button type="button" onClick={() => setCollectTarget(null)}
                                     style={{
                                         flex: 1, borderRadius: '12px', border: `1px solid ${C.border}`,
                                         background: 'rgba(255,255,255,0.03)', color: C.textSecondary,
-                                        fontWeight: 800, cursor: 'pointer', transition: '0.2s', fontSize: '14px'
+                                        fontWeight: 600, cursor: 'pointer', transition: '0.2s', fontSize: '13px'
                                     }}
                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
                                     onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}

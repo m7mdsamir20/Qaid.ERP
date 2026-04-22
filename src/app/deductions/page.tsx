@@ -184,7 +184,7 @@ export default function DeductionsPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>}
                                         <span>{formatNumber(s.val)}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
@@ -224,7 +224,7 @@ export default function DeductionsPage() {
                         <div style={{ padding: '100px 20px', color: '#475569' }}>
                             <ShieldAlert size={64} style={{ opacity: 0.1, display: 'block', margin: '0 auto 20px' }} />
                             <h3 style={{ fontSize: '18px', color: '#94a3b8', margin: '0 0 10px' }}>{t('لا توجد خصومات مسجلة')}</h3>
-                            <p style={{ fontSize: '14px', margin: 0 }}>{t('ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"')}</p>
+                            <p style={{ fontSize: '13px', margin: 0 }}>{t('ابدأ بإضافة أول خصم من زر "إضافة خصم جديد"')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
@@ -249,12 +249,12 @@ export default function DeductionsPage() {
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ }}>
-                                                    <div style={{ fontWeight: 800, color: '#f1f5f9', fontSize: '14px' }}>{ded.employee.name}</div>
+                                                    <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '13px' }}>{ded.employee.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px' }}>{ded.employee.code}</div>
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: '#f1f5f9', fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{formatNumber(ded.amount)}</span>
                                                 </div>
@@ -262,11 +262,11 @@ export default function DeductionsPage() {
                                             <td style={{ ...TABLE_STYLE.td(false, true),  color: '#94a3b8', fontSize: '13px' }}>{ded.reason || '—'}</td>
                                             <td style={TABLE_STYLE.td(false, true)}>
                                                 {ded.status === 'pending' ? (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
                                                         <Clock size={12} /> {t('قيد المراجعة')}
                                                     </span>
                                                 ) : (
-                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>
+                                                    <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
                                                         {t('تم الاعتماد')} <CheckCircle2 size={12} />
                                                     </span>
                                                 )}
@@ -343,7 +343,7 @@ export default function DeductionsPage() {
                             <button type="submit" disabled={isSaving} style={{ ...BTN_PRIMARY(false, isSaving), flex: 1, height: '46px' }}>
                                 {isSaving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : t('تسجيل الخصم والاعتماد')}
                             </button>
-                            <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                            <button type="button" onClick={() => setIsModalOpen(false)} style={{ height: '46px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                 {t('إلغاء')}
                             </button>
                         </div>

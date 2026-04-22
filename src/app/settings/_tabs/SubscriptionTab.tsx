@@ -27,7 +27,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                 if (!sub) return (
                     <div style={{ padding: '60px', background: 'rgba(239,68,68,0.05)', borderRadius: '12px', border: '1px solid rgba(239,68,68,0.1)' }}>
                         <AlertCircle size={40} style={{ color: '#ef4444', marginBottom: '12px', display: 'block', margin: '0 auto 12px' }} />
-                        <h3 style={{ color: '#ef4444', margin: '0 0 8px', fontSize: '16px' }}>{t('لا توجد بيانات اشتراك')}</h3>
+                        <h3 style={{ color: '#ef4444', margin: '0 0 8px', fontSize: '13px' }}>{t('لا توجد بيانات اشتراك')}</h3>
                         <p style={{ color: '#64748b', margin: 0, fontSize: '13px' }}>{t('تواصل مع المسؤول لتفعيل اشتراكك')}</p>
                     </div>
                 );
@@ -54,7 +54,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
 
                         {/* ── الاشتراك الحالي ── */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                 <CreditCard size={14} /> {t('الباقة الحالية')}
                             </div>
 
@@ -66,7 +66,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('الباقة الحالية')}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <span style={{ fontSize: '16px', fontWeight: 900, color: planColor, fontFamily: CAIRO }}>
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: planColor, fontFamily: CAIRO }}>
                                             {t('باقة')} {planLabels[sub.plan] || sub.plan}
                                         </span>
                                     </div>
@@ -79,7 +79,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('حالة الاشتراك')}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <span style={{ fontSize: '14px', fontWeight: 900, color: isExpired ? C.danger : '#10b981', fontFamily: CAIRO }}>
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: isExpired ? C.danger : '#10b981', fontFamily: CAIRO }}>
                                             {isExpired ? t('غير مفعّلة / منتهية') : t('مفعّلة ونشطة')}
                                             {isTrial && !isExpired && <span style={{ marginInlineEnd: '10px', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: 'rgba(37, 106, 244,0.1)', color: C.primary, border: `1px solid ${C.primary}30` }}>({t('نسخة تجريبية')})</span>}
                                         </span>
@@ -92,7 +92,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <div style={{ color: C.textMuted }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ البداية')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
                                         {new Date(sub.startDate).toLocaleDateString('en-GB')}
                                     </div>
                                 </div>
@@ -103,9 +103,9 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <div style={{ color: isExpired ? C.danger : C.textMuted }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ الانتهاء')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: isExpired ? C.danger : C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: isExpired ? C.danger : C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
                                         {new Date(sub.endDate).toLocaleDateString('en-GB')}
-                                        {isExpired && <span style={{ fontSize: '11px', color: C.danger, marginInlineEnd: '12px', padding: '2px 8px', borderRadius: '4px', background: `${C.danger}15`, fontWeight: 900, fontFamily: CAIRO }}>{t('انتهى الاشتراك')}</span>}
+                                        {isExpired && <span style={{ fontSize: '11px', color: C.danger, marginInlineEnd: '12px', padding: '2px 8px', borderRadius: '4px', background: `${C.danger}15`, fontWeight: 600, fontFamily: CAIRO }}>{t('انتهى الاشتراك')}</span>}
                                     </div>
                                 </div>
 
@@ -115,7 +115,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <div style={{ color: C.textMuted }}><Users size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('عدد المستخدمين')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                         {sub.maxUsers} {t('مستخدم مخصص')}
                                     </div>
                                 </div>
@@ -128,10 +128,10 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                     </div>
                                     <div style={{ flex: 1, padding: '16px 20px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>
-                                            <span style={{ color: barColor, fontWeight: 900 }}>
+                                            <span style={{ color: barColor, fontWeight: 600 }}>
                                                 {isExpired ? t('انتهت الصلاحية') : `${Math.max(0, daysLeft)} ${t('يوم متبقي')}`}
                                             </span>
-                                            <span style={{ fontWeight: 800 }}>{Math.round(pct)}%</span>
+                                            <span style={{ fontWeight: 600 }}>{Math.round(pct)}%</span>
                                         </div>
                                         <div style={{ height: '8px', background: 'rgba(255,255,255,0.04)', borderRadius: '4px', overflow: 'hidden' }}>
                                             <div style={{ width: `${pct}%`, height: '100%', background: barColor, borderRadius: '4px', transition: 'width 1s cubic-bezier(0.4, 0, 0.2, 1)', boxShadow: `0 0 12px ${barColor}50` }} />
@@ -152,7 +152,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
 
                         {/* ── ترقية الباقة ── */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                            <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                 <ArrowUpRight size={14} /> {t('طلب ترقية أو تجديد')}
                             </div>
 
@@ -160,7 +160,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                 <div style={{ width: 56, height: 56, background: `${C.primary}15`, borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, margin: '0 auto 20px', boxShadow: `0 8px 16px ${C.primary}20` }}>
                                     <ArrowUpRight size={24} />
                                 </div>
-                                <h4 style={{ margin: '0 0 10px', color: C.textPrimary, fontSize: '16px', fontWeight: 900, fontFamily: CAIRO }}>{t('ترقية أو تجديد الباقة')}</h4>
+                                <h4 style={{ margin: '0 0 10px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('ترقية أو تجديد الباقة')}</h4>
                                 <p style={{ fontSize: '13px', color: C.textSecondary, lineHeight: 1.7, marginBottom: '24px', fontFamily: CAIRO }}>
                                     {t('للوصول لمزيد من المميزات المتقدمة أو زيادة عدد المستخدمين المسموح بهم في النظام؛ يرجى التواصل مع فريق الدعم الفني والمبيعات مباشرة.')}
                                 </p>
@@ -168,7 +168,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                     {/* WhatsApp Row */}
                                     <a href="https://wa.me/201090943033" target="_blank" rel="noopener noreferrer"
-                                        style={{ textDecoration: 'none', width: '100%', height: '48px', borderRadius: '12px', background: 'rgba(37, 211, 102, 0.1)', border: '1px solid rgba(37, 211, 102, 0.2)', color: '#25D366', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontSize: '14px', transition: 'all 0.2s', fontFamily: CAIRO }}
+                                        style={{ textDecoration: 'none', width: '100%', height: '48px', borderRadius: '12px', background: 'rgba(37, 211, 102, 0.1)', border: '1px solid rgba(37, 211, 102, 0.2)', color: '#25D366', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontSize: '13px', transition: 'all 0.2s', fontFamily: CAIRO }}
                                         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37, 211, 102, 0.15)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
                                         onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37, 211, 102, 0.1)'; e.currentTarget.style.transform = 'translateY(0)'; }}>
                                         <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
@@ -188,7 +188,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                                 <div style={{ flex: 1, background: '#000' }} />
                                             </div>
                                         </div>
-                                        <a href="tel:+201090943033" style={{ textDecoration: 'none', color: C.textPrimary, fontSize: '14px', fontWeight: 900, fontFamily: 'monospace', letterSpacing: '0.5px', marginInlineStart: 'auto', direction: 'ltr' }}>
+                                        <a href="tel:+201090943033" style={{ textDecoration: 'none', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: 'monospace', letterSpacing: '0.5px', marginInlineStart: 'auto', direction: 'ltr' }}>
                                             +20 109 094 3033
                                         </a>
                                         <div style={{ padding: '6px', borderRadius: '8px', background: `${C.primary}15`, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

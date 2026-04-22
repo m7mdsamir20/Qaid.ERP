@@ -138,7 +138,7 @@ export default function DepreciationPage() {
                         }}>
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                     <span>{formatNumber(s.val)}</span>
                                     {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                 </div>
@@ -169,7 +169,7 @@ export default function DepreciationPage() {
                     </div>
                     <button onClick={handleCalculate} disabled={loading} style={{ 
                         height: THEME.button.height, padding: '0 24px', borderRadius: THEME.button.radius, border: 'none',
-                        background: loading ? 'rgba(37, 106, 244,0.3)' : C.primary, color: '#fff', fontSize: '14px', fontWeight: 900, 
+                        background: loading ? 'rgba(37, 106, 244,0.3)' : C.primary, color: '#fff', fontSize: '13px', fontWeight: 600, 
                         flexShrink: 0, opacity: loading ? 0.6 : 1, cursor: loading ? 'wait' : 'pointer',
                         display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
                         boxShadow: loading ? 'none' : `0 4px 12px ${C.primary}30`, transition: 'all 0.2s'
@@ -189,12 +189,12 @@ export default function DepreciationPage() {
 
                 {/* Feedback Alerts */}
                 {error && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 18px', borderRadius: '12px', background: `${C.danger}10`, border: `1px solid ${C.danger}30`, marginBottom: '16px', color: C.danger, fontSize: '14px', fontWeight: 800, fontFamily: CAIRO }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 18px', borderRadius: '12px', background: `${C.danger}10`, border: `1px solid ${C.danger}30`, marginBottom: '16px', color: C.danger, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
                         <AlertTriangle size={18} /> {error}
                     </div>
                 )}
                 {registered && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 18px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', marginBottom: '16px', color: '#10b981', fontSize: '14px', fontWeight: 800, fontFamily: CAIRO }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 18px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.3)', marginBottom: '16px', color: '#10b981', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
                         <CheckCircle2 size={18} /> {t('تم تسجيل كشوف الإهلاك والموافقة عليها بنجاح')}
                     </div>
                 )}
@@ -203,7 +203,7 @@ export default function DepreciationPage() {
                 {calculated && lines.length > 0 ? (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                         <div style={{ padding: '14px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
                             <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
                                 <span>{t('عدد الأصول')}: <b>{lines.length}</b></span>
                                 <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fmt(totalCalculatedDep)} {t('ج.م')}</b></span>
@@ -232,17 +232,17 @@ export default function DepreciationPage() {
                                     return (
                                         <tr key={l.asset.id} style={{ borderBottom: `1px solid ${C.border}`, background: l.alreadyDone ? 'rgba(16,185,129,0.02)' : 'transparent' }}>
                                             <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '12px', color: C.blue, fontWeight: 700 }}>{l.asset.code}</td>
-                                            <td style={{ padding: '12px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{l.asset.name}</td>
+                                            <td style={{ padding: '12px 16px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{l.asset.name}</td>
                                             <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}>{fmt(l.asset.purchaseCost)}</td>
                                             <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation)}</td>
-                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '14px', fontWeight: 900, color: C.danger }}>{fmt(l.depAmount)}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.danger }}>{fmt(l.depAmount)}</td>
                                             <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation + l.depAmount)}</td>
-                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '14px', fontWeight: 900, color: '#10b981' }}>{fmt(l.netBook)}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981' }}>{fmt(l.netBook)}</td>
                                             <td style={{ padding: '12px 16px' }}>
                                                 {l.alreadyDone ? (
-                                                    <span style={{ fontSize: '10px', fontWeight: 900, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ {t('تم الترحيل')}</span>
+                                                    <span style={{ fontSize: '10px', fontWeight: 600, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ {t('تم الترحيل')}</span>
                                                 ) : (
-                                                    <span style={{ fontSize: '10px', fontWeight: 900, color: '#f59e0b', padding: '2px 8px', borderRadius: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', fontFamily: CAIRO }}>{t('معاينة قيد')}</span>
+                                                    <span style={{ fontSize: '10px', fontWeight: 600, color: '#f59e0b', padding: '2px 8px', borderRadius: '12px', background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)', fontFamily: CAIRO }}>{t('معاينة قيد')}</span>
                                                 )}
                                             </td>
                                         </tr>
@@ -254,13 +254,13 @@ export default function DepreciationPage() {
                 ) : calculated ? (
                     <div style={{ padding: '80px', background: C.card, borderRadius: '16px', border: `1px solid ${C.border}` }}>
                         <CheckCircle2 size={48} style={{ color: '#10b981', opacity: 0.3, margin: '0 auto 16px' }} />
-                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
-                        <p style={{ color: C.textMuted, fontSize: '14px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
+                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد أصول تستوجب الإهلاك للفترة الحالية')}</h3>
+                        <p style={{ color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('تم ترحيل جميع القيود أو لا توجد أصول نشطة ذات أرصدة مدينة')}</p>
                     </div>
                 ) : (
                     <div style={{ padding: '80px', background: C.card, borderRadius: '20px', border: `1px dashed ${C.border}` }}>
                         <ArrowRightLeft size={48} style={{ color: C.border, margin: '0 auto 16px', opacity: 0.5 }} />
-                        <h2 style={{ fontSize: '15px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>{t('قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها')}</h2>
+                        <h2 style={{ fontSize: '15px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, margin: 0 }}>{t('قم باختيار السنة المالية والفترة المُراد احتساب الإهلاك لها')}</h2>
                         <p style={{ marginTop: '6px', color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO, opacity: 0.8 }}>{t('سيتم عرض النتائج هنا للمراجعة والموافقة قبل الترحيل لمجمع الإهلاك')}</p>
                     </div>
                 )}
@@ -271,15 +271,15 @@ export default function DepreciationPage() {
                         <div style={{ width: '60px', height: '60px', borderRadius: '16px', background: 'rgba(37, 106, 244,0.1)', color: C.blue, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
                             <Calculator size={32} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من تسجيل هذه القيود؟')}</h3>
+                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '12px' }}>{t('هل أنت متأكد من تسجيل هذه القيود؟')}</h3>
                         <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: `1px solid ${C.border}`, marginBottom: '24px', textAlign: 'start' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
                                 <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('عدد الأصول المشمولة')}:</span>
-                                <span style={{ color: C.textPrimary, fontWeight: 900 }}>{pendingCount} {t('أصل')}</span>
+                                <span style={{ color: C.textPrimary, fontWeight: 600 }}>{pendingCount} {t('أصل')}</span>
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
                                 <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي مبلغ مصروف الإهلاك')}:</span>
-                                <span style={{ color: C.danger, fontWeight: 900, fontFamily: OUTFIT }}>{fmt(lines.filter(l => !l.alreadyDone).reduce((s, d) => s + d.depAmount, 0))} {t('ج.م')}</span>
+                                <span style={{ color: C.danger, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(lines.filter(l => !l.alreadyDone).reduce((s, d) => s + d.depAmount, 0))} {t('ج.م')}</span>
                             </div>
                             <div style={{ fontSize: '11px', color: C.textMuted, borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '10px', direction: 'ltr' }}>
                                 DEBIT: Dep. Expense Account (5xxx) <br/>

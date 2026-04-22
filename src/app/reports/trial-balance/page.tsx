@@ -80,8 +80,8 @@ export default function TrialBalancePage() {
                         <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <FileBarChart2 size={40} style={{ opacity: 0.3, color: C.textMuted }} />
                         </div>
-                        <h3 style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات متاحة')}</h3>
-                        <p style={{ fontSize: '14px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('يجب ترحيل قيود يومية لظهور الحركات المحاسبية في الميزان المحاسبي')}</p>
+                        <h3 style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد بيانات متاحة')}</h3>
+                        <p style={{ fontSize: '13px', color: C.textMuted, maxWidth: '400px', lineHeight: 1.6, fontFamily: CAIRO }}>{t('يجب ترحيل قيود يومية لظهور الحركات المحاسبية في الميزان المحاسبي')}</p>
                     </div>
                 ) : (
                     <>
@@ -108,12 +108,12 @@ export default function TrialBalancePage() {
                             }}>
                                 {isBalanced ? <CheckCircle2 size={18} color={C.success} /> : <AlertCircle size={18} color={C.danger} />}
                                 <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{t('حالة اتزان الميزان:')}</span>
-                                <span style={{ color: isBalanced ? C.success : C.danger, fontWeight: 900, fontSize: '14px', fontFamily: CAIRO }}>
+                                <span style={{ color: isBalanced ? C.success : C.danger, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>
                                     {isBalanced ? t('متزن محـاسبياً (المجاميع متطابقة)') : t('غير متزن (يوجد خلل في الترحيل)')}
                                 </span>
                             </div>
                             <div style={{ fontSize: '12px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
-                                {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{report.length}</span>
+                                {t('إجمالي الحسابات المسجلة:')} <span style={{ color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{report.length}</span>
                             </div>
                         </div>
 
@@ -121,16 +121,16 @@ export default function TrialBalancePage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th rowSpan={2} style={{ padding: '16px',  fontSize: '12px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('رمز الحساب')}</th>
-                                        <th rowSpan={2} style={{ padding: '16px',  fontSize: '12px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('اسم الحساب')}</th>
-                                        <th colSpan={2} style={{ padding: '10px',  fontSize: '12px', fontWeight: 900, background: 'rgba(37, 106, 244, 0.05)', color: '#60a5fa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, borderInlineStart: `1px solid ${C.border}` }}>{t('بالمجاميع (المعاملات)')}</th>
-                                        <th colSpan={2} style={{ padding: '10px',  fontSize: '12px', fontWeight: 900, background: 'rgba(139, 92, 246, 0.05)', color: '#a78bfa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}` }}>{t('بالأرصدة (النهائي)')}</th>
+                                        <th rowSpan={2} style={{ padding: '16px',  fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('رمز الحساب')}</th>
+                                        <th rowSpan={2} style={{ padding: '16px',  fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('اسم الحساب')}</th>
+                                        <th colSpan={2} style={{ padding: '10px',  fontSize: '12px', fontWeight: 600, background: 'rgba(37, 106, 244, 0.05)', color: '#60a5fa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}`, borderInlineStart: `1px solid ${C.border}` }}>{t('بالمجاميع (المعاملات)')}</th>
+                                        <th colSpan={2} style={{ padding: '10px',  fontSize: '12px', fontWeight: 600, background: 'rgba(139, 92, 246, 0.05)', color: '#a78bfa', fontFamily: CAIRO, borderBottom: `1px solid ${C.border}` }}>{t('بالأرصدة (النهائي)')}</th>
                                     </tr>
                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('مدين')}</th>
-                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('دائن')}</th>
-                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('مدين')}</th>
-                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{t('دائن')}</th>
+                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('مدين')}</th>
+                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('دائن')}</th>
+                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('مدين')}</th>
+                                        <th style={{ padding: '10px',  fontSize: '12px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{t('دائن')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -140,20 +140,20 @@ export default function TrialBalancePage() {
                                                 <span style={{ padding: '4px 8px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}` }}>{line.code}</span>
                                             </td>
                                             <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{line.name}</td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', color: line.totalDebit > 0 ? C.textPrimary : C.textMuted, fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.totalDebit > 0 ? fmt(line.totalDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', color: line.totalCredit > 0 ? C.textPrimary : C.textMuted, fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.totalCredit > 0 ? fmt(line.totalCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: line.balanceDebit > 0 ? C.success : C.textMuted, background: 'rgba(16, 185, 129, 0.01)', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.balanceDebit > 0 ? fmt(line.balanceDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: line.balanceCredit > 0 ? C.danger : C.textMuted, background: 'rgba(239, 68, 68, 0.01)', fontFamily: OUTFIT }}>{line.balanceCredit > 0 ? fmt(line.balanceCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '13px', color: line.totalDebit > 0 ? C.textPrimary : C.textMuted, fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.totalDebit > 0 ? fmt(line.totalDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '13px', color: line.totalCredit > 0 ? C.textPrimary : C.textMuted, fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.totalCredit > 0 ? fmt(line.totalCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '13px', fontWeight: 600, color: line.balanceDebit > 0 ? C.success : C.textMuted, background: 'rgba(16, 185, 129, 0.01)', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}>{line.balanceDebit > 0 ? fmt(line.balanceDebit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 16px',  fontSize: '13px', fontWeight: 600, color: line.balanceCredit > 0 ? C.danger : C.textMuted, background: 'rgba(239, 68, 68, 0.01)', fontFamily: OUTFIT }}>{line.balanceCredit > 0 ? fmt(line.balanceCredit) : '0.00'} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(37, 106, 244, 0.05)', borderTop: `2px solid ${C.primary}44` }}>
                                     <tr>
-                                        <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950,  fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('الإجماليات الكلية للميزان')}</td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalDebit} /></td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalCredit} /></td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.success, fontSize: '14px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandBalanceDebit} /></td>
-                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.danger, fontSize: '14px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: OUTFIT }}><Currency amount={grandBalanceCredit} /></td>
+                                        <td colSpan={2} style={{ padding: '18px 24px', fontWeight: 950,  fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, borderInlineStart: `1px solid ${C.border}` }}>{t('الإجماليات الكلية للميزان')}</td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalDebit} /></td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandTotalCredit} /></td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.success, fontSize: '13px', background: 'rgba(16, 185, 129, 0.05)', fontFamily: OUTFIT, borderInlineStart: `1px solid ${C.border}` }}><Currency amount={grandBalanceDebit} /></td>
+                                        <td style={{ padding: '18px 16px',  fontWeight: 950, color: C.danger, fontSize: '13px', background: 'rgba(239, 68, 68, 0.05)', fontFamily: OUTFIT }}><Currency amount={grandBalanceCredit} /></td>
                                     </tr>
                                 </tfoot>
                             </table>

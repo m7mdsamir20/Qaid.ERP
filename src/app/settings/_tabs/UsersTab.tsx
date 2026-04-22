@@ -189,7 +189,7 @@ export default function UsersTab({
                     {/* تعيين الفروع المسموح بها */}
                     {branches.length > 1 && (
                         <div style={{ marginBottom: '20px' }}>
-                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 800, color: C.textMuted, marginBottom: '10px', fontFamily: CAIRO }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px', fontWeight: 600, color: C.textMuted, marginBottom: '10px', fontFamily: CAIRO }}>
                                 <Store size={13} style={{ color: C.primary }} />
                                 {t('الفروع المسموح بها')} <span style={{ color: C.textMuted, fontSize: '10px', fontWeight: 500 }}>({t('بلا اختيار = يرى كل الفروع')})</span>
                             </label>
@@ -252,12 +252,12 @@ export default function UsersTab({
                                 setEditingUserId(null);
                                 setNewUserForm({ name: '', username: '', email: '', phone: '', password: '', roleId: 'admin', status: 'active', avatar: 'm1', branchId: '', allowedBranches: [], customPermissions: {} });
                             }}
-                                style={{ height: '42px', padding: '0 20px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO }}>
+                                style={{ height: '42px', padding: '0 20px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
                                 {t('إلغاء')}
                             </button>
                         )}
                         <button onClick={(e: any) => handleCreateUser(e)} disabled={isSaving}
-                            style={{ flex: 1, height: '42px', borderRadius: '12px', border: 'none', background: isSaving ? `${C.primary}50` : `linear-gradient(135deg, ${C.primary}, #256af4)`, color: '#fff', fontSize: '13px', fontWeight: 900, cursor: isSaving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: `0 8px 20px -6px ${C.primary}40`, fontFamily: CAIRO }}>
+                            style={{ flex: 1, height: '42px', borderRadius: '12px', border: 'none', background: isSaving ? `${C.primary}50` : `linear-gradient(135deg, ${C.primary}, #256af4)`, color: '#fff', fontSize: '13px', fontWeight: 600, cursor: isSaving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: `0 8px 20px -6px ${C.primary}40`, fontFamily: CAIRO }}>
                             {isSaving ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الحفظ...')}</> : <>{editingUserId ? <RefreshCw size={16} /> : <UserPlus size={16} />} {editingUserId ? t('تحديث البيانات') : t('إضافة المستخدم')}</>}
                         </button>
                     </div>
@@ -291,7 +291,7 @@ export default function UsersTab({
 
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                         {/* Header */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`, fontSize: '11px', fontWeight: 900, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', position: 'sticky', top: 0, zIndex: 10, fontFamily: CAIRO }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', padding: '12px 20px', background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`, fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.5px', position: 'sticky', top: 0, zIndex: 10, fontFamily: CAIRO }}>
                             <div>{t('القائمة / الصفحة')}</div>
                             <div style={{ }}></div>
                         </div>
@@ -330,10 +330,10 @@ export default function UsersTab({
                                                 <div style={{ color: isExp ? C.primary : C.textMuted, transition: 'transform 0.2s', transform: isExp ? 'rotate(0)' : 'rotate(-90deg)' }}>
                                                     <ChevronDown size={16} />
                                                 </div>
-                                                <span style={{ fontSize: '13px', fontWeight: 800, color: allSel ? C.textPrimary : C.textSecondary, fontFamily: CAIRO }}>
+                                                <span style={{ fontSize: '13px', fontWeight: 600, color: allSel ? C.textPrimary : C.textSecondary, fontFamily: CAIRO }}>
                                                     {t(section.title)}
                                                 </span>
-                                                <span style={{ fontSize: '10px', padding: '2px 10px', borderRadius: '20px', background: activeCount > 0 ? `${C.primary}15` : C.inputBg, color: activeCount > 0 ? C.primary : C.textMuted, border: `1px solid ${activeCount > 0 ? `${C.primary}25` : C.border}`, fontWeight: 900, marginInlineEnd: '8px', fontFamily: CAIRO }}>
+                                                <span style={{ fontSize: '10px', padding: '2px 10px', borderRadius: '20px', background: activeCount > 0 ? `${C.primary}15` : C.inputBg, color: activeCount > 0 ? C.primary : C.textMuted, border: `1px solid ${activeCount > 0 ? `${C.primary}25` : C.border}`, fontWeight: 600, marginInlineEnd: '8px', fontFamily: CAIRO }}>
                                                     {activeCount > 0 ? `${activeCount} / ${section.links.length}` : `${section.links.length} ${t('صفحة')}`}
                                                 </span>
                                             </div>
@@ -341,7 +341,7 @@ export default function UsersTab({
                                             {/* Select all toggle */}
                                             <button type="button"
                                                 onClick={e => { e.stopPropagation(); toggleSection(!allSel); }}
-                                                style={{ height: '28px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${allSel || someSel ? `${C.primary}40` : C.border}`, background: allSel ? `${C.primary}15` : someSel ? `${C.primary}05` : 'transparent', color: allSel || someSel ? C.primary : C.textMuted, fontSize: '10px', fontWeight: 900, cursor: 'pointer', fontFamily: CAIRO }}>
+                                                style={{ height: '28px', padding: '0 12px', borderRadius: '8px', border: `1px solid ${allSel || someSel ? `${C.primary}40` : C.border}`, background: allSel ? `${C.primary}15` : someSel ? `${C.primary}05` : 'transparent', color: allSel || someSel ? C.primary : C.textMuted, fontSize: '10px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
                                                 {allSel ? t('إلغاء الكل') : someSel ? t('جزئي') : t('تحديد الكل')}
                                             </button>
                                         </div>
@@ -372,7 +372,7 @@ export default function UsersTab({
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
 
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                        <span style={{ fontSize: '12px', color: perms.view ? C.textSecondary : C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>
+                                                        <span style={{ fontSize: '12px', color: perms.view ? C.textSecondary : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                                             {t(page.label)}
                                                         </span>
                                                         {isAccessOnlySection && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 400, opacity: 0.6 }}>({t('وصول فقط')})</span>}
@@ -389,24 +389,24 @@ export default function UsersTab({
                                                                         return { ...prev, roleId: 'custom', customPermissions: up };
                                                                     });
                                                                 }}
-                                                                style={{ height: '32px', padding: '0 20px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : C.border}`, background: perms.view ? `${C.primary}15` : C.inputBg, color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '11px', fontWeight: 900 }}>
+                                                                style={{ height: '32px', padding: '0 20px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : C.border}`, background: perms.view ? `${C.primary}15` : C.inputBg, color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '11px', fontWeight: 600 }}>
                                                                 {perms.view ? <><Check size={14} /> {t('مفعّل')}</> : <><Shield size={13} style={{ opacity: 0.5 }} /> {t('معطّل')}</>}
                                                             </button>
                                                         </div>
                                                     ) : (
                                                         <div style={{ display: 'flex', justifyContent: 'center', gap: '6px' }}>
                                                             <button type="button" onClick={() => setP('view', !perms.view)}
-                                                                style={{ height: '32px', padding: '0 8px', minWidth: '75px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : C.border}`, background: perms.view ? `${C.primary}15` : C.inputBg, color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
+                                                                style={{ height: '32px', padding: '0 8px', minWidth: '75px', borderRadius: '10px', border: `1px solid ${perms.view ? `${C.primary}40` : C.border}`, background: perms.view ? `${C.primary}15` : C.inputBg, color: perms.view ? C.primary : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 600 }}>
                                                                 {perms.view ? <Check size={12} /> : <Eye size={12} style={{ opacity: 0.5 }} />}
                                                                 {t('مشاهدة')}
                                                             </button>
                                                             <button type="button" onClick={() => setP('create', !perms.create)}
-                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.create ? 'var(--c-success-border, rgba(16,185,129,0.4))' : C.border}`, background: perms.create ? 'var(--c-success-bg, rgba(16,185,129,0.15))' : C.inputBg, color: perms.create ? 'var(--c-success, #10b981)' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
+                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.create ? 'var(--c-success-border, rgba(16,185,129,0.4))' : C.border}`, background: perms.create ? 'var(--c-success-bg, rgba(16,185,129,0.15))' : C.inputBg, color: perms.create ? 'var(--c-success, #10b981)' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 600 }}>
                                                                 {perms.create ? <Check size={13} /> : <Plus size={12} style={{ opacity: 0.5 }} />}
                                                                 {t('إضافة')}
                                                             </button>
                                                             <button type="button" onClick={() => setP('editDelete', !perms.editDelete)}
-                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.editDelete ? 'var(--c-warning-border, rgba(245,158,11,0.4))' : C.border}`, background: perms.editDelete ? 'var(--c-warning-bg, rgba(245,158,11,0.15))' : C.inputBg, color: perms.editDelete ? 'var(--c-warning, #f59e0b)' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 800 }}>
+                                                                style={{ height: '32px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${perms.editDelete ? 'var(--c-warning-border, rgba(245,158,11,0.4))' : C.border}`, background: perms.editDelete ? 'var(--c-warning-bg, rgba(245,158,11,0.15))' : C.inputBg, color: perms.editDelete ? 'var(--c-warning, #f59e0b)' : C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', transition: 'all 0.15s', fontFamily: CAIRO, fontSize: '10px', fontWeight: 600 }}>
                                                                 {perms.editDelete ? <Check size={13} /> : <Trash2 size={12} style={{ opacity: 0.5 }} />}
                                                                 {t('تعديل')}
                                                             </button>
@@ -436,7 +436,7 @@ export default function UsersTab({
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                 {[t('المستخدم'), t('المعرف'), t('الدور'), t('الحالة'), ''].map((h, i) => (
-                                    <th key={i} style={{ textAlign: i === 3 ? 'center' : 'start', padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: C.textMuted,  fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
+                                    <th key={i} style={{ textAlign: i === 3 ? 'center' : 'start', padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: C.textMuted,  fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -446,19 +446,19 @@ export default function UsersTab({
                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                     <td style={{ padding: '14px 20px', }}>
-                                        <div style={{ fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{u.name}</div>
+                                        <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{u.name}</div>
                                         <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{u.email}</div>
                                     </td>
                                     <td style={{ padding: '14px 20px', fontFamily: OUTFIT, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
                                     <td style={{ padding: '14px 20px', }}>
-                                        <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}30`, fontWeight: 900, fontFamily: CAIRO }}>
+                                        <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}30`, fontWeight: 600, fontFamily: CAIRO }}>
                                             {roleLabels[u.role] || u.role}
                                         </span>
                                     </td>
                                     <td style={{ padding: '14px 20px', }}>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <button onClick={() => toggleUserStatus(u.id, u.status)}
-                                                style={{ height: '26px', padding: '0 12px', borderRadius: '20px', border: `1px solid ${u.status === 'active' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, background: u.status === 'active' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: u.status === 'active' ? '#10b981' : C.danger, fontSize: '11px', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
+                                                style={{ height: '26px', padding: '0 12px', borderRadius: '20px', border: `1px solid ${u.status === 'active' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, background: u.status === 'active' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: u.status === 'active' ? '#10b981' : C.danger, fontSize: '11px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
                                                 <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'currentColor' }} />
                                                 {u.status === 'active' ? t('نشط') : t('موقوف')}
                                             </button>

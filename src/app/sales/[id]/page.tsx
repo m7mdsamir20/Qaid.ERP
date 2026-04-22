@@ -215,7 +215,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('العميل / المستلم')}</p>
-                                    <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.customer?.name || invoice.supplier?.name || '—'}</p>
                                 </div>
                             </div>
 
@@ -225,7 +225,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('رقم الفاتورة')}</p>
-                                    <div style={{ color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{invNumFmt}</div>
+                                    <div style={{ color: C.primary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{invNumFmt}</div>
                                 </div>
                             </div>
 
@@ -236,7 +236,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                     </div>
                                     <div>
                                         <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('المستودع / المخزن')}</p>
-                                        <p style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
+                                        <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
                                     </div>
                                 </div>
                             )}
@@ -247,7 +247,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('حالة التحصيل')}</p>
-                                    <p style={{ fontSize: '13px', fontWeight: 800, color: status.color, margin: 0 }}>{status.label}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: status.color, margin: 0 }}>{status.label}</p>
                                 </div>
                             </div>
                         </div>
@@ -288,7 +288,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 {!isServices && (
                                                     <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{l.quantity}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
                                                 {(() => {
                                                     const invTaxRate = invoice.taxRate || 0;
@@ -303,7 +303,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     );
                                                     return null;
                                                 })()}
-                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: C.primary }}>{fmt(l.total)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -337,14 +337,14 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         {invoice.returnInvoices.map((ret, idx) => (
                                             <tr key={ret.id} style={TABLE_STYLE.row(idx === (invoice.returnInvoices?.length ?? 0) - 1)}>
                                                 <td style={TABLE_STYLE.td(true)}>
-                                                    <span style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#f87171', fontFamily: OUTFIT }}>
+                                                    <span style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 600, color: '#f87171', fontFamily: OUTFIT }}>
                                                         SRET-{String(ret.invoiceNumber).padStart(5, '0')}
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>
                                                     {new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 900, color: C.danger }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 600, color: C.danger }}>
                                                     {fMoneyJSX(ret.total)}
                                                 </td>
                                             </tr>
@@ -378,8 +378,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 )}
                                 <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
-                                    <span style={{ fontWeight: 800, fontSize: '12px' }}>{t('صافي الفاتورة')}</span>
-                                    <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.total)}</span>
+                                    <span style={{ fontWeight: 600, fontSize: '12px' }}>{t('صافي الفاتورة')}</span>
+                                    <span style={{ fontWeight: 600, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.total)}</span>
                                 </div>
                             </div>
                         </div>
@@ -389,17 +389,17 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('نوع البيع')}</span>
-                                    <span style={{ fontWeight: 800, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
+                                    <span style={{ fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
                                         {invoice.paymentMethod === 'cash' ? t('نقدي') : invoice.paymentMethod === 'bank' ? t('بنكي') : t('آجل')}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المقبوض فعلياً')}</span>
-                                    <span style={{ fontWeight: 800, color: C.success, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.paidAmount)}</span>
+                                    <span style={{ fontWeight: 600, color: C.success, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.paidAmount)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المتبقي (مدين)')}</span>
-                                    <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.remaining)}</span>
+                                    <span style={{ fontWeight: 600, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.remaining)}</span>
                                 </div>
                             </div>
                         </div>

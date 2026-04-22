@@ -104,8 +104,8 @@ function VerifyContent() {
                         <CheckCircle2 size={40} color={C.success} style={{ filter: `drop-shadow(0 0 10px ${C.success}40)` }} />
                         <div style={{ position: 'absolute', inset: -4, borderRadius: '26px', border: `1px solid ${C.success}20`, animation: 'ping 2s cubic-bezier(0, 0, 0.2, 1) infinite' }} />
                     </div>
-                    <h2 style={{ margin: '0 0 12px', color: C.textPrimary, fontSize: '24px', fontWeight: 900, fontFamily: CAIRO }}>{t('تم التحقق بنجاح!')}</h2>
-                    <p style={{ color: C.textSecondary, fontSize: '14px', lineHeight: 1.6, fontFamily: CAIRO }}>
+                    <h2 style={{ margin: '0 0 12px', color: C.textPrimary, fontSize: '24px', fontWeight: 600, fontFamily: CAIRO }}>{t('تم التحقق بنجاح!')}</h2>
+                    <p style={{ color: C.textSecondary, fontSize: '13px', lineHeight: 1.6, fontFamily: CAIRO }}>
                         {t('تمت عملية التحقق من هويتك بنجاح.')}<br />
                         <span style={{ color: C.primary, fontWeight: 700 }}>{t('جاري تحويلك لصفحة الدخول...')}</span>
                     </p>
@@ -116,10 +116,10 @@ function VerifyContent() {
                         <Mail size={32} color={C.primary} />
                     </div>
                     
-                    <h2 style={{ margin: '0 0 10px', color: C.textPrimary, fontSize: '22px', fontWeight: 900, fontFamily: CAIRO }}>{t('تفعيل الحساب')}</h2>
+                    <h2 style={{ margin: '0 0 10px', color: C.textPrimary, fontSize: '22px', fontWeight: 600, fontFamily: CAIRO }}>{t('تفعيل الحساب')}</h2>
                     <p style={{ color: C.textSecondary, fontSize: '13.5px', margin: '0 0 32px', lineHeight: 1.8, fontFamily: CAIRO }}>
                         {t('أهلاً بك! لقد أرسلنا رمز التحقق المكون من 6 أرقام إلى بريدك الإلكتروني:')}<br />
-                        <span style={{ color: C.primary, fontWeight: 800, fontSize: '14px', borderBottom: `1px dashed ${C.primary}50`, paddingBottom: '2px' }}>{email}</span>
+                        <span style={{ color: C.primary, fontWeight: 600, fontSize: '13px', borderBottom: `1px dashed ${C.primary}50`, paddingBottom: '2px' }}>{email}</span>
                     </p>
 
                     {error && (
@@ -141,7 +141,7 @@ function VerifyContent() {
                                 onBlur={focusOut}
                                 style={{ 
                                     width: '46px', height: '60px', fontSize: '24px', 
-                                    fontWeight: 900, fontFamily: OUTFIT, borderRadius: '14px', 
+                                    fontWeight: 600, fontFamily: OUTFIT, borderRadius: '14px', 
                                     border: `1px solid ${digit ? C.primary : C.border}`, 
                                     background: digit ? `${C.primary}05` : C.inputBg, 
                                     color: C.textPrimary, outline: 'none', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -155,7 +155,7 @@ function VerifyContent() {
                         style={{ 
                             width: '100%', height: '52px', borderRadius: '14px', border: 'none', 
                             background: loading ? C.primaryBg : `linear-gradient(135deg, ${C.primary}, ${C.primaryHover})`, 
-                            color: '#fff', fontSize: '15px', fontWeight: 800, cursor: loading ? 'not-allowed' : 'pointer', 
+                            color: '#fff', fontSize: '15px', fontWeight: 600, cursor: loading ? 'not-allowed' : 'pointer', 
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', 
                             fontFamily: CAIRO, boxShadow: loading ? 'none' : `0 8px 20px -6px ${C.primary}50`, 
                             opacity: otp.join('').length !== 6 ? 0.6 : 1, transition: 'all 0.3s' 
@@ -173,7 +173,7 @@ function VerifyContent() {
                             <span style={{ color: C.textSecondary, fontWeight: 700 }}>{t('إعادة الإرسال خلال')} {countdown} {t('ثانية')}</span>
                         ) : (
                             <button onClick={handleResend} disabled={resending}
-                                style={{ background: 'none', border: 'none', color: C.primary, cursor: 'pointer', fontWeight: 800, fontSize: '13.5px', fontFamily: CAIRO, display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', borderRadius: '8px', transition: 'all 0.2s' }}
+                                style={{ background: 'none', border: 'none', color: C.primary, cursor: 'pointer', fontWeight: 600, fontSize: '13.5px', fontFamily: CAIRO, display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 8px', borderRadius: '8px', transition: 'all 0.2s' }}
                                 onMouseEnter={e => { e.currentTarget.style.background = `${C.primary}10`; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'none'; }}
                             >
@@ -238,8 +238,8 @@ export default function VerifyPage() {
                 {/* تذييل الصفحة */}
                 <div style={{ marginTop: '32px' }}>
                     <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', opacity: 0.6 }}>
-                        <div style={{ width: 24, height: 24, borderRadius: '6px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 900, color: '#fff' }}>{t('ق')}</div>
-                        <span style={{ fontSize: '14px', fontWeight: 800, color: C.textSecondary, letterSpacing: '0.5px' }}>{t('قيد ERP — النظام المحاسبي المتكامل')}</span>
+                        <div style={{ width: 24, height: 24, borderRadius: '6px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600, color: '#fff' }}>{t('ق')}</div>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, letterSpacing: '0.5px' }}>{t('قيد ERP — النظام المحاسبي المتكامل')}</span>
                     </div>
                 </div>
             </div>

@@ -147,13 +147,13 @@ export default function OtherIncomePage() {
                                         <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px' }}>{new Date(e.date).toLocaleDateString('en-GB')}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), padding: '8px 12px' }}>
                                             <span style={{ 
-                                                fontFamily: OUTFIT, fontSize: '11px', fontWeight: 800, color: C.primary, opacity: 0.7
+                                                fontFamily: OUTFIT, fontSize: '11px', fontWeight: 600, color: C.primary, opacity: 0.7
                                             }}>
                                                 JV-{e.entryNumber.toString().padStart(5, '0')}
                                             </span>
                                         </td>
                                         <td style={TABLE_STYLE.td(false)}>
-                                            <div style={{ fontWeight: 800, color: C.textPrimary }}>{creditLine?.account?.name}</div>
+                                            <div style={{ fontWeight: 600, color: C.textPrimary }}>{creditLine?.account?.name}</div>
                                             <div style={{ fontSize: '10px', color: C.textMuted }}>{creditLine?.account?.code}</div>
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
@@ -163,7 +163,7 @@ export default function OtherIncomePage() {
                                                     {e.sourceName || debitLine?.account?.name || '—'}
                                                 </div>
                                                 <div style={{ 
-                                                    display: 'inline-flex', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 800,
+                                                    display: 'inline-flex', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600,
                                                     background: e.sourceType === 'bank' ? 'rgba(96, 165, 250, 0.1)' : 'rgba(52, 211, 153, 0.1)',
                                                     color: e.sourceType === 'bank' ? '#60a5fa' : '#34d399',
                                                     fontFamily: CAIRO
@@ -176,7 +176,7 @@ export default function OtherIncomePage() {
                                             {e.description || '—'}
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
-                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: OUTFIT }}>
+                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.success, fontFamily: OUTFIT }}>
                                                 {formatNumber(creditLine?.credit || 0)}
                                                 <small style={{ fontSize: '11px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
                                             </span>
@@ -231,20 +231,20 @@ export default function OtherIncomePage() {
                                     alignItems: 'center'
                                 }}
                             >
-                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 900, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
+                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
                                 <input 
                                     type="number" step="0.01" value={form.amount} 
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
                                     className="amount-input"
                                     style={{ 
                                         border: 'none', background: 'transparent', 
-                                        fontWeight: 900, color: C.primary, height: '100%', 
+                                        fontWeight: 600, color: C.primary, height: '100%', 
                                         fontSize: '17px', width: '100%', padding: '0 45px', 
                                         outline: 'none', fontFamily: OUTFIT 
                                     }} 
                                     onFocus={e => e.target.select()}
                                 />
-                                <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{currencySign}</span>
+                                <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{currencySign}</span>
                             </div>
                         </div>
 

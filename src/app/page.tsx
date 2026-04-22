@@ -100,7 +100,7 @@ function KpiCard({
       </div>
 
       <div style={{
-        fontSize: '15px', fontWeight: 800, color: C.textPrimary,
+        fontSize: '15px', fontWeight: 600, color: C.textPrimary,
         letterSpacing: '-0.2px', lineHeight: 1.1, marginBottom: '4px', fontFamily: OUTFIT,
         display: 'flex', alignItems: 'baseline', gap: '4px'
       }}>
@@ -284,13 +284,13 @@ export default function DashboardPage() {
           <AlertTriangle size={40} />
         </div>
         <div style={{ }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 900, color: '#fff', marginBottom: '8px', fontFamily: CAIRO }}>{t('فشل في تحميل الإحصائيات')}</h2>
-          <p style={{ color: C.textSecondary, fontSize: '14px', fontFamily: CAIRO, marginBottom: '24px' }}>{t('حدث خطأ أثناء جلب البيانات من الخادم، يرجى التحقق من الاتصال والمحاولة مرة أخرى.')}</p>
+          <h2 style={{ fontSize: '20px', fontWeight: 600, color: '#fff', marginBottom: '8px', fontFamily: CAIRO }}>{t('فشل في تحميل الإحصائيات')}</h2>
+          <p style={{ color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO, marginBottom: '24px' }}>{t('حدث خطأ أثناء جلب البيانات من الخادم، يرجى التحقق من الاتصال والمحاولة مرة أخرى.')}</p>
           <button
             onClick={() => loadStats(true)}
             style={{
               padding: '12px 32px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff',
-              fontSize: '14px', fontWeight: 800, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto'
+              fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto'
             }}
           >
             <RefreshCw size={18} /> {t('تحديث الصفحة')}
@@ -367,7 +367,7 @@ export default function DashboardPage() {
         {/* ── Header ── */}
         <div className="dashboard-page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px', animation: 'fadeUp 0.3s ease both', gap: '20px' }}>
           <div>
-            <h1 style={{ fontSize: '21px', fontWeight: 900, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h1 style={{ fontSize: '21px', fontWeight: 600, margin: 0, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
               {t(greetingKey)}{isRtl ? '،' : ','} <span style={{ color: C.primary }}>{session?.user?.name || t('مستخدم النظام')}</span>
             </h1>
             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginTop: '4px' }}>
@@ -442,7 +442,7 @@ export default function DashboardPage() {
         <div style={{ marginBottom: '28px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
             <LayoutDashboard size={16} color={C.primary} />
-            <h3 style={{ fontSize: '16px', fontWeight: 800, margin: 0, color: C.textPrimary }}>{t('الوصول السريع')}</h3>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, margin: 0, color: C.textPrimary }}>{t('الوصول السريع')}</h3>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '14px' }}>
             {visibleQuickActions.map((action, i) => (
@@ -517,7 +517,7 @@ export default function DashboardPage() {
 
           {hasPage('/treasuries', 'treasury') && (
             <SectionCard title={t("توزيع السيولة النقدية")} icon={Landmark}
-              action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 800, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} {t('حساب')}</span>}>
+              action={<span style={{ fontSize: '11px', color: '#fff', fontWeight: 600, background: C.success, padding: '3px 10px', borderRadius: '20px' }}>{stats.treasuryList?.length || 0} {t('حساب')}</span>}>
               <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {!stats.treasuryList || stats.treasuryList.length === 0 ? (
                   <div style={{ padding: '30px', color: C.textMuted, fontSize: '13px' }}>{t('لا توجد نقدية مسجلة حالياً')}</div>
@@ -533,7 +533,7 @@ export default function DashboardPage() {
                       onMouseLeave={e => e.currentTarget.style.borderColor = `${C.success}15`}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: C.success, boxShadow: `0 0 8px ${C.success}` }} />
-                        <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t.name}</span>
+                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t.name}</span>
                       </div>
                       {renderCurrency(t.balance)}
                     </div>
@@ -595,9 +595,9 @@ export default function DashboardPage() {
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
                               <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: OUTFIT }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '14px', }}>{renderCurrency(inv.total)}</td>
+                            <td style={{ padding: '14px 16px', fontSize: '13px', }}>{renderCurrency(inv.total)}</td>
                             <td style={{ padding: '14px 16px', }}>
-                              <span style={{ fontSize: '11px', fontWeight: 800, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO }}>{t(s.label)}</span>
+                              <span style={{ fontSize: '11px', fontWeight: 600, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO }}>{t(s.label)}</span>
                             </td>
                             <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT, }}>
                               {getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}

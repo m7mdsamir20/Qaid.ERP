@@ -78,7 +78,7 @@ export default function BranchesTab({
                                 <Store size={18} />
                             </div>
                             <div>
-                                <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                                     {b.name} {b.isMain && <span style={{ fontSize: '11px', background: C.primary + '20', color: C.primary, padding: '2px 8px', borderRadius: '20px', marginInlineEnd: '6px' }}>{t('رئيسي')}</span>}
                                 </div>
                                 <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>

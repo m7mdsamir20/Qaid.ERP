@@ -353,11 +353,11 @@ export default function EditCompanyPage() {
                         {isRtl ? <ArrowRight size={18} /> : <ArrowLeft size={18} />} العودة للوحة التحكم
                     </button>
                     <span style={{ color: C.border, height: '20px', width: '1px', background: C.border }} />
-                    <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary }}>تعديل حساب: {form.name}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>تعديل حساب: {form.name}</span>
                 </div>
 
                 <button onClick={() => setForm(f => ({ ...f, isActive: !f.isActive }))}
-                    style={{ display: 'flex', alignItems: 'center', gap: '10px', height: '38px', padding: '0 18px', borderRadius: '10px', border: `1px solid ${form.isActive ? C.success + '40' : C.danger + '40'}`, background: form.isActive ? C.success + '08' : C.danger + '08', color: form.isActive ? C.success : C.danger, fontSize: '12.5px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>
+                    style={{ display: 'flex', alignItems: 'center', gap: '10px', height: '38px', padding: '0 18px', borderRadius: '10px', border: `1px solid ${form.isActive ? C.success + '40' : C.danger + '40'}`, background: form.isActive ? C.success + '08' : C.danger + '08', color: form.isActive ? C.success : C.danger, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s' }}>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'currentColor', boxShadow: `0 0 10px ${form.isActive ? C.success : C.danger}` }} />
                     {form.isActive ? 'الحساب نشط' : 'الحساب معطّل'}
                 </button>
@@ -381,7 +381,7 @@ export default function EditCompanyPage() {
                                 }}>
                                     {step > s.num ? <Check size={20} strokeWidth={3} /> : React.cloneElement(s.icon as any, { size: 20 })}
                                 </div>
-                                <span style={{ fontSize: '14px', fontWeight: 800, color: step === s.num ? C.textPrimary : step > s.num ? C.success : C.textSecondary, transition: 'all 0.3s' }}>
+                                <span style={{ fontSize: '13px', fontWeight: 600, color: step === s.num ? C.textPrimary : step > s.num ? C.success : C.textSecondary, transition: 'all 0.3s' }}>
                                     {s.label}
                                 </span>
                             </div>
@@ -395,7 +395,7 @@ export default function EditCompanyPage() {
                 {/* ══ Step 1: بيانات الشركة ══ */}
                 {step === 1 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '36px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
-                        <h2 style={{ margin: '0 0 32px', fontSize: '19px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                        <h2 style={{ margin: '0 0 32px', fontSize: '19px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
                             <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.primary}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                 <Building2 size={24} />
                             </div>
@@ -459,7 +459,7 @@ export default function EditCompanyPage() {
                 {/* ══ Step 2: مدير النظام ══ */}
                 {step === 2 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '36px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
-                        <h2 style={{ margin: '0 0 10px', fontSize: '19px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                        <h2 style={{ margin: '0 0 10px', fontSize: '19px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
                             <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.blue}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
                                 <UserCircle size={24} />
                             </div>
@@ -519,7 +519,7 @@ export default function EditCompanyPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', marginTop: '36px' }}>
-                            <button onClick={() => setStep(1)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}>
+                            <button onClick={() => setStep(1)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s' }}>
                                 السابق
                             </button>
                             <button onClick={() => setStep(3)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
@@ -532,7 +532,7 @@ export default function EditCompanyPage() {
                 {/* ══ Step 3: الاشتراك ══ */}
                 {step === 3 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '36px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
-                        <h2 style={{ margin: '0 0 32px', fontSize: '19px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                        <h2 style={{ margin: '0 0 32px', fontSize: '19px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
                             <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.warning}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.warning }}>
                                 <CreditCard size={24} />
                             </div>
@@ -549,7 +549,7 @@ export default function EditCompanyPage() {
                                             : new Date(Date.now() + days * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
                                         setForm(f => ({ ...f, plan: key, endDate: end }));
                                     }}
-                                        style={{ height: '60px', borderRadius: '14px', border: `1px solid ${form.plan === key ? p.color + '60' : C.border}`, background: form.plan === key ? p.color + '12' : 'transparent', color: form.plan === key ? p.color : C.textSecondary, fontSize: '13.5px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
+                                        style={{ height: '60px', borderRadius: '14px', border: `1px solid ${form.plan === key ? p.color + '60' : C.border}`, background: form.plan === key ? p.color + '12' : 'transparent', color: form.plan === key ? p.color : C.textSecondary, fontSize: '13.5px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '2px' }}>
                                         {p.label}
                                         {p.days > 0 && <span style={{ fontSize: '10px', opacity: 0.7 }}>{p.days} يوم</span>}
                                     </button>
@@ -582,7 +582,7 @@ export default function EditCompanyPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start' }}>
-                            <button onClick={() => setStep(2)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>
+                            <button onClick={() => setStep(2)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>
                                 السابق
                             </button>
                             <button onClick={() => setStep(4)} style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 40px', height: '50px', borderRadius: '14px' }}>
@@ -597,7 +597,7 @@ export default function EditCompanyPage() {
                     <div>
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '36px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', marginBottom: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
-                                <h2 style={{ margin: 0, fontSize: '19px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <h2 style={{ margin: 0, fontSize: '19px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
                                     <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.primary}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                         <Shield size={24} />
                                     </div>
@@ -605,11 +605,11 @@ export default function EditCompanyPage() {
                                 </h2>
                                 <div style={{ display: 'flex', gap: '10px' }}>
                                     <button onClick={() => setForm(f => ({ ...f, features: buildAllFeatures() }))}
-                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.success}30`, background: `${C.success}10`, color: C.success, fontSize: '12.5px', fontWeight: 800, cursor: 'pointer' }}>
+                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.success}30`, background: `${C.success}10`, color: C.success, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
                                         تحديد الكل
                                     </button>
                                     <button onClick={() => setForm(f => ({ ...f, features: {} }))}
-                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.danger}30`, background: `${C.danger}10`, color: C.danger, fontSize: '12.5px', fontWeight: 800, cursor: 'pointer' }}>
+                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.danger}30`, background: `${C.danger}10`, color: C.danger, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
                                         إلغاء الكل
                                     </button>
                                 </div>
@@ -632,7 +632,7 @@ export default function EditCompanyPage() {
                                                 </button>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
                                                     <div style={{ color: isActive ? C.primary : C.textMuted }}><SectionIcon size={18} /></div>
-                                                    <span style={{ fontWeight: 800, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
+                                                    <span style={{ fontWeight: 600, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
                                                         {section.title}
                                                     </span>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
@@ -667,7 +667,7 @@ export default function EditCompanyPage() {
 
                         {/* ملخص سفلي للاختيارات */}
                         <div style={{ background: `${C.primary}05`, border: `1px solid ${C.primary}15`, borderRadius: '16px', padding: '20px 24px', marginBottom: '32px' }}>
-                            <div style={{ fontSize: '13px', color: C.primary, fontWeight: 800, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ fontSize: '13px', color: C.primary, fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <Activity size={16} /> الموديولات المفعلة حالياً
                             </div>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
@@ -675,7 +675,7 @@ export default function EditCompanyPage() {
                                     if (!pages || pages.length === 0) return null;
                                     const section = uniqueSections.find(s => s.featureKey === key);
                                     return (
-                                        <span key={key} style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}20`, fontWeight: 800 }}>
+                                        <span key={key} style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}20`, fontWeight: 600 }}>
                                             {section?.title} <span style={{ opacity: 0.6, marginInlineEnd: '4px' }}>({pages.length})</span>
                                         </span>
                                     );
@@ -687,7 +687,7 @@ export default function EditCompanyPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start' }}>
-                            <button onClick={() => setStep(3)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer' }}>
+                            <button onClick={() => setStep(3)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>
                                 السابق
                             </button>
                             <button onClick={handleSubmit} disabled={submitting}

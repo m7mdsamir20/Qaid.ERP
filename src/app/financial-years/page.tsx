@@ -38,7 +38,7 @@ function KpiCard({ icon: Icon, label, value, sub, color }: any) {
             </div>
             <div>
                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, marginBottom: '2px' }}>{label}</div>
-                <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{value}</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{value}</div>
                 {sub && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '1px' }}>{sub}</div>}
             </div>
         </div>
@@ -138,7 +138,7 @@ export default function FinancialYearsPage() {
     };
 
     const LS: React.CSSProperties = {
-        display: 'block', fontSize: '11px', fontWeight: 800,
+        display: 'block', fontSize: '11px', fontWeight: 600,
         color: C.textSecondary, marginBottom: '6px', fontFamily: CAIRO
     };
 
@@ -154,7 +154,7 @@ export default function FinancialYearsPage() {
                         color: '#fff', padding: '12px 24px', borderRadius: '10px',
                         boxShadow: '0 4px 16px rgba(0,0,0,0.2)', display: 'flex',
                         alignItems: 'center', gap: '10px', zIndex: 9999,
-                        fontSize: '14px', fontWeight: 600, fontFamily: CAIRO
+                        fontSize: '13px', fontWeight: 600, fontFamily: CAIRO
                     }}>
                         {toast.type === 'success' ? <Check size={18} /> : <AlertCircle size={18} />} {toast.msg}
                     </div>
@@ -182,7 +182,7 @@ export default function FinancialYearsPage() {
                         }}>
                             <PlusCircle size={36} />
                         </div>
-                        <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>
+                        <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
                             {t('تأسيس السنة المالية')}
                         </h3>
                         <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7 }}>
@@ -207,7 +207,7 @@ export default function FinancialYearsPage() {
                             if (new Date(createForm.endDate) <= new Date(createForm.startDate)) { showToast(t('تاريخ النهاية يجب أن يكون بعد البداية'), 'error'); return; }
                             await callApi('create_first', createForm);
                         }} disabled={isSaving}
-                            style={{ ...BTN_PRIMARY(false, isSaving), width: 'auto', height: '44px', padding: '0 32px', margin: '0 auto', fontSize: '14px' }}>
+                            style={{ ...BTN_PRIMARY(false, isSaving), width: 'auto', height: '44px', padding: '0 32px', margin: '0 auto', fontSize: '13px' }}>
                             {isSaving ? <Loader2 size={16} className="animate-spin" /> : <CalendarCheck size={16} />}
                             {t('تأسيس السنة المالية')}
                         </button>
@@ -240,20 +240,20 @@ export default function FinancialYearsPage() {
                                             }} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                                                 <input autoFocus value={editingName?.name ?? ''}
                                                     onChange={e => setEditingName(p => p ? { ...p, name: e.target.value } : null)}
-                                                    style={{ ...IS, height: '32px', width: '200px', fontSize: '14px', fontWeight: 900, fontFamily: CAIRO }} />
+                                                    style={{ ...IS, height: '32px', width: '200px', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }} />
                                                 <button type="submit" style={{ background: C.primary, border: 'none', borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#fff' }}><Check size={12} /></button>
                                                 <button type="button" onClick={() => setEditingName(null)} style={{ background: 'rgba(255,255,255,0.04)', border: `1px solid ${C.border}`, borderRadius: '6px', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: C.textMuted }}><X size={12} /></button>
                                             </form>
                                         ) : (
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                                <span style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{activeFY.name}</span>
+                                                <span style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{activeFY.name}</span>
                                                 <button onClick={() => setEditingName({ id: activeFY.id, name: activeFY.name })}
                                                     style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.textMuted, padding: '2px 4px', display: 'flex', alignItems: 'center', borderRadius: '4px' }}>
                                                     <Pencil size={11} />
                                                 </button>
                                             </div>
                                         )}
-                                        <span style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 900, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>{t('دورة نشطة')}</span>
+                                        <span style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>{t('دورة نشطة')}</span>
                                     </div>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
                                         {fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} — {fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
@@ -273,7 +273,7 @@ export default function FinancialYearsPage() {
                                                 style={{ transition: 'stroke-dashoffset 1.5s cubic-bezier(0.4,0,0.2,1)' }} />
                                         </svg>
                                         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-                                            <span style={{ fontSize: '22px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{Math.round(pct)}%</span>
+                                            <span style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{Math.round(pct)}%</span>
                                             <span style={{ fontSize: '9px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('مكتمل')}</span>
                                         </div>
                                     </div>
@@ -302,11 +302,11 @@ export default function FinancialYearsPage() {
                                         <div style={{ flex: 1 }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                                                 <LockIcon size={13} color={C.danger} />
-                                                <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إغلاق السنة وفتح دورة جديدة')}</span>
-                                                <span style={{ fontSize: '10px', color: C.danger, background: `${C.danger}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 800, fontFamily: CAIRO }}>{t('إجراء حساس')}</span>
+                                                <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('إغلاق السنة وفتح دورة جديدة')}</span>
+                                                <span style={{ fontSize: '10px', color: C.danger, background: `${C.danger}15`, padding: '2px 8px', borderRadius: '6px', fontWeight: 600, fontFamily: CAIRO }}>{t('إجراء حساس')}</span>
                                             </div>
                                             <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, lineHeight: 1.6 }}>
-                                                {t('ستُجمَّد جميع العمليات وتُفتح فترة جديدة تبدأ من')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: CAIRO }}>{fmt(nextStart, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</span>
+                                                {t('ستُجمَّد جميع العمليات وتُفتح فترة جديدة تبدأ من')} <span style={{ color: C.primary, fontWeight: 600, fontFamily: CAIRO }}>{fmt(nextStart, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</span>
                                             </p>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexShrink: 0 }}>
@@ -315,7 +315,7 @@ export default function FinancialYearsPage() {
                                                 <input ref={closeEndRef} type="date" min={nextStartStr} defaultValue={defaultCloseEnd} style={IS} />
                                             </div>
                                             <button onClick={() => setConfirmClose({ id: activeFY.id, name: activeFY.name })} disabled={isSaving}
-                                                style={{ height: '40px', padding: '0 20px', borderRadius: '10px', border: 'none', background: C.danger, color: '#fff', fontSize: '12px', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 6px 14px -4px ${C.danger}50`, fontFamily: CAIRO }}>
+                                                style={{ height: '40px', padding: '0 20px', borderRadius: '10px', border: 'none', background: C.danger, color: '#fff', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 6px 14px -4px ${C.danger}50`, fontFamily: CAIRO }}>
                                                 <LockIcon size={13} /> {t('إغلاق السنة')}
                                             </button>
                                         </div>
@@ -329,7 +329,7 @@ export default function FinancialYearsPage() {
                             <div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
                                     <LockIcon size={13} color={C.textMuted} />
-                                    <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                    <h3 style={{ margin: 0, fontSize: '11px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                         {t('الفترات المالية المغلقة')} · {closedYears.length}
                                     </h3>
                                 </div>
@@ -360,7 +360,7 @@ export default function FinancialYearsPage() {
                                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                         {/* الاسم */}
                                                         <td style={{ ...TABLE_STYLE.td(true) }}>
-                                                            <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</div>
+                                                            <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</div>
                                                         </td>
                                                         {/* من */}
                                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
@@ -396,7 +396,7 @@ export default function FinancialYearsPage() {
                                                         <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
                                                             {s ? (
                                                                 <div>
-                                                                    <div style={{ fontWeight: 800, color: profit >= 0 ? '#10b981' : C.danger, fontSize: '12px' }}>
+                                                                    <div style={{ fontWeight: 600, color: profit >= 0 ? '#10b981' : C.danger, fontSize: '12px' }}>
                                                                         {profit >= 0 ? '+' : '-'}{fmtMoney(Math.abs(profit))} {CURRENCY_AR[currency] || currency}
                                                                     </div>
                                                                     <div style={{ fontSize: '10px', color: C.textMuted }}>{profit >= 0 ? t('ربح') : t('خسارة')}</div>
@@ -412,7 +412,7 @@ export default function FinancialYearsPage() {
                                                             <span style={{
                                                                 fontSize: '10px', background: 'rgba(100,116,139,0.1)',
                                                                 color: '#94a3b8', padding: '4px 10px', borderRadius: '16px',
-                                                                fontWeight: 900, border: '1px solid rgba(100,116,139,0.15)',
+                                                                fontWeight: 600, border: '1px solid rgba(100,116,139,0.15)',
                                                                 display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: CAIRO
                                                             }}>
                                                                 <LockIcon size={10} /> {t('مغلقة')}

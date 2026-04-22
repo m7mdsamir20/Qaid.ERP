@@ -130,10 +130,10 @@ export default function AgingReportPage() {
                                 <div style={{ textAlign: 'start'}}>
                                     <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                     <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                        <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
                                         <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                     </div>
-                                    <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.count} {t('فاتورة')} | {s.sign}</div>
+                                    <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.count} {t('فاتورة')} | {s.sign}</div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
                                     {s.icon}
@@ -178,7 +178,7 @@ export default function AgingReportPage() {
                 ) : filtered.length === 0 ? (
                     <div style={{ padding: '120px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <FileText size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد فواتير مطابقة')}</h3>
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد فواتير مطابقة')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('لم يتم العثور على مديونيات متأخرة حالياً في النظام.')}</p>
                     </div>
                 ) : (
@@ -191,7 +191,7 @@ export default function AgingReportPage() {
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
                                                  
-                                                fontWeight: 800, fontFamily: CAIRO 
+                                                fontWeight: 600, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}
                                     </tr>
@@ -203,7 +203,7 @@ export default function AgingReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px', }}>
-                                                <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
+                                                <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(37, 106, 244,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
                                                     SAL-{String(inv.invoiceNumber).padStart(4, '0')}
                                                 </span>
                                             </td>
@@ -216,19 +216,19 @@ export default function AgingReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', }}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{inv.ageDays}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{inv.ageDays}</span>
                                                     <span style={{ fontSize: '10px', fontFamily: CAIRO, fontWeight: 700, color: C.textMuted }}>{t('يوم متأخر')}</span>
                                                 </div>
                                             </td>
                                             <td style={{ padding: '14px 20px', }}>
                                                 <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'baseline', gap: '4px' }}>
-                                                    <span style={{ fontWeight: 1000, color: '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(inv.remaining)}</span>
+                                                    <span style={{ fontWeight: 600, color: '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(inv.remaining)}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </div>
                                             </td>
                                             <td style={{ padding: '14px 20px', }}>
                                                 <span style={{
-                                                    padding: '5px 12px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 900, fontFamily: CAIRO,
+                                                    padding: '5px 12px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 600, fontFamily: CAIRO,
                                                     background: inv.ageDays > 90 ? 'rgba(239, 68, 68, 0.1)' : inv.ageDays > 60 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
                                                     color: inv.ageDays > 90 ? '#ef4444' : inv.ageDays > 60 ? '#f59e0b' : '#10b981',
                                                     border: `1px solid ${inv.ageDays > 90 ? '#ef444422' : inv.ageDays > 60 ? '#f59e0b22' : '#10b98122'}`
@@ -241,8 +241,8 @@ export default function AgingReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
-                                        <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 1000, fontFamily: OUTFIT }}>{formatNumber(filtered.reduce((s, i) => s + i.remaining, 0))} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
+                                        <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(filtered.reduce((s, i) => s + i.remaining, 0))} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         <td style={{ padding: '20px 24px' }}></td>
                                     </tr>
                                 </tfoot>

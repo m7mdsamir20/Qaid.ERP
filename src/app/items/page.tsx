@@ -295,7 +295,7 @@ export default function ItemsPage() {
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                             {s.id === 'value' ? fMoneyJSX(s.val) : (
                                                 <>
-                                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.val)}</span>
+                                                    <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.val)}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.unit}</span>
                                                 </>
                                             )}
@@ -396,13 +396,13 @@ export default function ItemsPage() {
                                         const totalCost = totalQty * avgCost;
                                         return (
                                             <tr key={item.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}>
-                                                <td style={{...TABLE_STYLE.td(true), textAlign: 'start'}}><div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
+                                                <td style={{...TABLE_STYLE.td(true), textAlign: 'start'}}><div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>{item.code}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                     <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
                                                 <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
                                                 {companyBusinessType !== 'SERVICES' && (
-                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 800, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
@@ -591,7 +591,7 @@ export default function ItemsPage() {
                         )}
 
                         <div style={{ display: 'flex', gap: '12px', borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '0px' }}>
-                            <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : 'linear-gradient(135deg,#256af4,#256af4)', color: '#fff', fontSize: '14px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
+                            <button type="submit" disabled={isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)} style={{ flex: 1, height: '44px', borderRadius: '10px', border: 'none', background: (isSubmitting || (companyBusinessType !== 'SERVICES' && form.initialQuantity > 0 && !form.warehouseId)) ? 'rgba(37, 106, 244,0.3)' : 'linear-gradient(135deg,#256af4,#256af4)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO }}>
                                 {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : (companyBusinessType === 'SERVICES' ? (form.id ? t('حفظ الخدمة') : t('إضافة الخدمة')) : (form.id ? t('حفظ التعديلات') : t('إضافة الصنف')))}
                             </button>
                             <button type="button" onClick={() => setShowModal(false)} style={{ width: '100px', height: '44px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('تراجع')}</button>

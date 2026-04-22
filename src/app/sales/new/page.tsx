@@ -455,7 +455,7 @@ function NewSalePageInner() {
         boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)',
     };
     const STitle: React.CSSProperties = {
-        fontSize: '13px', fontWeight: 800,
+        fontSize: '13px', fontWeight: 600,
         color: C.primary,
         marginBottom: '16px',
         display: 'flex', alignItems: 'center', gap: '8px',
@@ -471,7 +471,7 @@ function NewSalePageInner() {
                 insetInlineStart: '4px',  // من جهة اليسار بدلاً من اليمين لتجنب التصادم مع "الصنف" وغيرها
                 fontSize: '11px',
                 color: '#fff',
-                fontWeight: 800,
+                fontWeight: 600,
                 background: 'linear-gradient(135deg, #ef4444, #b91c1c)',
                 padding: '4px 10px',
                 borderRadius: '8px',
@@ -525,7 +525,7 @@ function NewSalePageInner() {
                     }}>
                         <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
                         <div>
-                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
                                 {t('يرجى تحديد فرع أولاً')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
@@ -547,7 +547,7 @@ function NewSalePageInner() {
                     }}>
                         <CheckCircle size={20} style={{ color: '#4ade80', flexShrink: 0 }} />
                         <div style={{ flex: 1 }}>
-                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#4ade80', marginBottom: '2px' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 700, color: '#4ade80', marginBottom: '2px' }}>
                                 {t('تحويل عرض السعر')} QUO-{String(fromQuotation.quotationNumber).padStart(5, '0')} {t('إلى فاتورة مبيعات')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
@@ -575,7 +575,7 @@ function NewSalePageInner() {
                                         background: 'rgba(37, 106, 244,0.08)',
                                         border: `1px solid ${C.border}`,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontFamily: OUTFIT, fontWeight: 900,
+                                        fontFamily: OUTFIT, fontWeight: 600,
                                         fontSize: '13px', color: '#60a5fa',
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
@@ -757,11 +757,11 @@ function NewSalePageInner() {
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
                                                 [t('الخدمة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             ) : (
                                                 [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 800, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                 ))
                                             )}
                                         </tr>
@@ -776,10 +776,10 @@ function NewSalePageInner() {
                                                 {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
                                                     <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 )}
-                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.quantity)}</td>
                                                 <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
 
-                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
                                                 <td style={{ padding: '10px 12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -795,10 +795,10 @@ function NewSalePageInner() {
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
-                                                <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
+                                                <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
-                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '12px',  fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>
                                                     {fMoneyJSX(subtotal)}
                                                 </td>
                                                 <td />
@@ -916,7 +916,7 @@ function NewSalePageInner() {
                                                 }}
                                                 style={{ ...IS, height: '34px', fontSize: '13px', paddingInlineStart: '28px' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -925,7 +925,7 @@ function NewSalePageInner() {
                                 {taxSettings?.enabled && (
                                     <div style={{ padding: '8px 12px', background: C.subtle, borderRadius: '10px', border: `1px dashed ${C.border}`, marginTop: '8px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-                                            <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 800 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
+                                            <span style={{ color: C.textSecondary, fontSize: '11px', fontWeight: 600 }}>{taxSettings.type} {taxSettings.isInclusive ? t('(مشمولة)') : t('(مضافة)')}</span>
                                         </div>
                                         <div style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '8px' }}>
                                             <div style={{ position: 'relative' }}>
@@ -933,7 +933,7 @@ function NewSalePageInner() {
                                                     onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
                                                     style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '22px' }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
+                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
                                                 <PriceInput 
@@ -945,7 +945,7 @@ function NewSalePageInner() {
                                                             taxRate: afterDisc > 0 ? (val / afterDisc) * 100 : f.taxRate
                                                         }));
                                                     }}
-                                                    style={{ height: '30px', fontSize: '12px', fontWeight: 800, color: C.primary }}
+                                                    style={{ height: '30px', fontSize: '12px', fontWeight: 600, color: C.primary }}
                                                     textAlign="right"
                                                 />
                                             </div>
@@ -961,10 +961,10 @@ function NewSalePageInner() {
                                     border: `1px solid ${C.primaryBorder}`,
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>
+                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>
                                         {fMoney(netTotal)}
                                     </span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
                             </div>
                         </div>
@@ -984,7 +984,7 @@ function NewSalePageInner() {
                                                     borderColor: form.paymentType === tType ? C.primary : C.border,
                                                     background: form.paymentType === tType ? C.primaryBg : 'transparent',
                                                     color: form.paymentType === tType ? C.primary : C.textSecondary,
-                                                    fontSize: '11px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s'
+                                                    fontSize: '11px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s'
                                                 }}>
                                                 {tType === 'cash' ? t('كاش') : tType === 'bank' ? t('بنكي') : t('آجل')}
                                             </button>
@@ -999,7 +999,7 @@ function NewSalePageInner() {
                                             <PriceInput 
                                                 value={form.paidAmount}
                                                 onChange={val => { setForm((f: any) => ({ ...f, paidAmount: val })); clearError('paidAmount'); }}
-                                                style={{ height: '44px', fontSize: '18px', fontWeight: 900, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
+                                                style={{ height: '44px', fontSize: '18px', fontWeight: 600, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
                                                 placeholder="0.00"
                                             />
                                             {form.paymentType === 'bank' ? (
@@ -1040,7 +1040,7 @@ function NewSalePageInner() {
                                         justifyContent: 'space-between',
                                         alignItems: 'center',
                                         fontSize: '13px',
-                                        fontWeight: 800,
+                                        fontWeight: 600,
                                         background: diff > 0
                                             ? 'rgba(239,68,68,0.07)'
                                             : diff < 0
@@ -1073,8 +1073,8 @@ function NewSalePageInner() {
                                 style={{
                                     width: '100%',
                                     height: '52px',
-                                    fontSize: '16px',
-                                    fontWeight: 900,
+                                    fontSize: '13px',
+                                    fontWeight: 600,
                                     gap: '12px',
                                     background: C.primary,
                                     boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)',
@@ -1149,8 +1149,8 @@ function NewSalePageInner() {
                     } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                 }}>
                     <div style={{ marginBottom: '16px', display: 'flex', background: C.subtle, borderRadius: '12px', padding: '4px' }}>
-                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
-                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
+                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
+                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
                     </div>
 
                     <div style={{ marginBottom: '16px' }}>
@@ -1171,7 +1171,7 @@ function NewSalePageInner() {
 
                     <div style={{ display: 'flex', gap: '10px' }}>
                         <button type="submit" disabled={submitting} style={{
-                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(37, 106, 244,0.5)' : C.primary, color: '#fff', fontWeight: 800, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
+                            flex: 1.5, height: '46px', borderRadius: '12px', border: 'none', background: submitting ? 'rgba(37, 106, 244,0.5)' : C.primary, color: '#fff', fontWeight: 600, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO
                         }}>
                             {submitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
                         </button>

@@ -110,7 +110,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>{t('المورد / الشريك')}</p>
-                                    <p style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.supplier?.name || invoice.customer?.name || '—'}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.supplier?.name || invoice.customer?.name || '—'}</p>
                                 </div>
                             </div>
 
@@ -120,7 +120,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>{t('مخزن الاستلام')}</p>
-                                    <p style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0 }}>{invoice.warehouse?.name || '—'}</p>
                                 </div>
                             </div>
 
@@ -130,7 +130,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '11px', color: C.textMuted, margin: 0 }}>{t('حالة السداد')}</p>
-                                    <p style={{ fontSize: '14px', fontWeight: 800, color: status.color, margin: 0 }}>{status.label}</p>
+                                    <p style={{ fontSize: '13px', fontWeight: 600, color: status.color, margin: 0 }}>{status.label}</p>
                                 </div>
                             </div>
                         </div>
@@ -159,9 +159,9 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT }}>{l.item.code}</div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{l.quantity}</td>
                                             <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 600, fontSize: '13px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -192,8 +192,8 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                 </div>
                                 <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
-                                    <span style={{ fontWeight: 800, fontSize: '12px' }}>{t('صافي المبلغ')}</span>
-                                    <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.total)}</span>
+                                    <span style={{ fontWeight: 600, fontSize: '12px' }}>{t('صافي المبلغ')}</span>
+                                    <span style={{ fontWeight: 600, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.total)}</span>
                                 </div>
                             </div>
                         </div>
@@ -203,17 +203,17 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('نوع الدفع')}</span>
-                                    <span style={{ fontWeight: 800, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
+                                    <span style={{ fontWeight: 600, padding: '2px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', fontSize: '11px' }}>
                                         {invoice.paymentMethod === 'cash' ? t('نقدي (كاش)') : invoice.paymentMethod === 'bank' ? t('بنكي') : t('آجل')}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المبلغ المدفوع')}</span>
-                                    <span style={{ fontWeight: 800, color: C.success, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.paidAmount)}</span>
+                                    <span style={{ fontWeight: 600, color: C.success, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.paidAmount)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المتبقي (آجل)')}</span>
-                                    <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.remaining)}</span>
+                                    <span style={{ fontWeight: 600, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.remaining)}</span>
                                 </div>
                             </div>
                         </div>

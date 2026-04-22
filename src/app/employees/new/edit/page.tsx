@@ -61,7 +61,7 @@ function FormSection({ label, icon: Icon, color, children, description }: {
                         <Icon size={20} />
                     </div>
                     <div>
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: '#f1f5f9' }}>{label}</h3>
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#f1f5f9' }}>{label}</h3>
                         {description && <p style={{ margin: '2px 0 0', fontSize: '12px', color: '#64748b' }}>{description}</p>}
                     </div>
                 </div>
@@ -115,7 +115,7 @@ function AttachmentUploader({ attachments, onAdd, onRemove }: {
                 onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(99,102,241,0.2)'; e.currentTarget.style.background = 'rgba(99,102,241,0.02)'; }}
             >
                 {uploading
-                    ? <><Loader2 size={28} color="#6366f1" style={{ animation: 'spin 1s linear infinite' }} /><span style={{ fontSize: '14px', color: '#6366f1', fontWeight: 600 }}>جاري الرفع...</span></>
+                    ? <><Loader2 size={28} color="#6366f1" style={{ animation: 'spin 1s linear infinite' }} /><span style={{ fontSize: '13px', color: '#6366f1', fontWeight: 600 }}>جاري الرفع...</span></>
                     : <><div style={{ width: '56px', height: '56px', borderRadius: '50%', background: 'rgba(99,102,241,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6366f1', marginBottom: '8px' }}><Upload size={24} /></div>
                         <span style={{ fontSize: '15px', color: '#cbd5e1', fontWeight: 600 }}>اسحب الملف هنا أو <span style={{ color: '#818cf8', textDecoration: 'underline' }}>اضغط للاختيار</span></span>
                         <span style={{ fontSize: '12px', color: '#64748b' }}>PDF · Word · صور — حتى 10MB</span></>
@@ -325,8 +325,8 @@ export default function EditEmployeePage() {
                             <FormSection label="الراتب والبدلات والخصومات" icon={CreditCard} color="#10b981" description="تفاصيل الراتب الشهري والحوافز والاستقطاعات">
                                 <Field label={`الراتب الأساسي الشهري (${cSymbol})`} required>
                                     <div style={{ position: 'relative' }}>
-                                        <input type="number" step="0.01" min="0" className="input" required value={form.basicSalary} onChange={e => set('basicSalary')(e.target.value)} placeholder="0.00" style={{ fontSize: '20px', fontWeight: 900, height: '56px', paddingInlineEnd: '16px', color: '#10b981', background: 'rgba(16,185,129,0.02)', borderColor: 'rgba(16,185,129,0.2)' }} />
-                                        <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontWeight: 800, color: '#64748b' }}>{cSymbol}</span>
+                                        <input type="number" step="0.01" min="0" className="input" required value={form.basicSalary} onChange={e => set('basicSalary')(e.target.value)} placeholder="0.00" style={{ fontSize: '20px', fontWeight: 600, height: '56px', paddingInlineEnd: '16px', color: '#10b981', background: 'rgba(16,185,129,0.02)', borderColor: 'rgba(16,185,129,0.2)' }} />
+                                        <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontWeight: 600, color: '#64748b' }}>{cSymbol}</span>
                                     </div>
                                 </Field>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -380,15 +380,15 @@ export default function EditEmployeePage() {
                             <div style={{ background: 'linear-gradient(135deg, #1e293b, #0f172a)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '20px', padding: '24px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
                                 <h4 style={{ margin: '0 0 16px', fontSize: '15px', fontWeight: 700, color: '#94a3b8' }}>ملخص الراتب</h4>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: '#64748b' }}>الأساسي:</span>
                                         <span style={{ color: '#f1f5f9', fontWeight: 600 }}>{formatNumber(+form.basicSalary || 0)} {cSymbol}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: '#10b981' }}>إجمالي البدلات:</span>
                                         <span style={{ color: '#10b981', fontWeight: 600 }}>+ {fMoneyJSX(allowances)}</span>
                                     </div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: '#ef4444' }}>إجمالي الخصومات:</span>
                                         <span style={{ color: '#ef4444', fontWeight: 600 }}>- {fMoneyJSX(deductions)}</span>
                                     </div>
@@ -419,7 +419,7 @@ export default function EditEmployeePage() {
                             <button
                                 type="submit"
                                 disabled={isSaving}
-                                style={{ width: '100%', height: '56px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #256af4, #256af4)', color: '#fff', fontSize: '16px', fontWeight: 800, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 20px rgba(37, 106, 244,0.2)', transition: 'all 0.2s', fontFamily: 'inherit' }}
+                                style={{ width: '100%', height: '56px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #256af4, #256af4)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 10px 20px rgba(37, 106, 244,0.2)', transition: 'all 0.2s', fontFamily: 'inherit' }}
                                 onMouseEnter={e => { if (!isSaving) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 12px 24px rgba(37, 106, 244,0.3)'; } }}
                                 onMouseLeave={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 10px 20px rgba(37, 106, 244,0.2)'; }}
                             >
@@ -428,7 +428,7 @@ export default function EditEmployeePage() {
                             <button
                                 type="button"
                                 onClick={() => router.push('/employees')}
-                                style={{ width: '100%', height: '48px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.05)', background: 'transparent', color: '#64748b', fontSize: '14px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'inherit' }}
+                                style={{ width: '100%', height: '48px', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.05)', background: 'transparent', color: '#64748b', fontSize: '13px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.2s', fontFamily: 'inherit' }}
                                 onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.02)'; e.currentTarget.style.color = '#94a3b8'; }}
                                 onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#64748b'; }}
                             >

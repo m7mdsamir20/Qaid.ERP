@@ -169,7 +169,7 @@ export default function NewFixedAssetPage() {
                             <div>
                                 <label style={LS}>{t('كود الأصل')}</label>
                                 <input readOnly value={generatedCode}
-                                    style={{ ...IS, background: 'rgba(255,255,255,0.01)', cursor: 'default', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 800 }}
+                                    style={{ ...IS, background: 'rgba(255,255,255,0.01)', cursor: 'default', color: '#94a3b8', fontFamily: 'monospace', fontWeight: 600 }}
                                     onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
@@ -242,7 +242,7 @@ export default function NewFixedAssetPage() {
                                             background: form.depreciationMethod === m.value
                                                 ? 'rgba(251,191,36,0.08)' : 'rgba(255,255,255,0.02)',
                                         }}>
-                                        <div style={{ fontSize: '14px', fontWeight: 800, color: form.depreciationMethod === m.value ? '#fbbf24' : '#64748b' }}>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, color: form.depreciationMethod === m.value ? '#fbbf24' : '#64748b' }}>
                                             {m.label}
                                         </div>
                                         <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>

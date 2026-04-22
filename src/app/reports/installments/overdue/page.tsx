@@ -115,7 +115,7 @@ export default function OverdueReportPage() {
                     <button onClick={fetchReport} disabled={loading} style={{
                         height: '42px', padding: '0 24px', borderRadius: '12px',
                         background: C.primary, color: '#fff', border: 'none',
-                        fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
+                        fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                         boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                     }}>
@@ -128,14 +128,14 @@ export default function OverdueReportPage() {
                     {loading && (
                         <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                             <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                            <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>جاري تحليل المبيعات المتأخرة...</p>
+                            <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>جاري تحليل المبيعات المتأخرة...</p>
                         </div>
                     )}
 
                     {!loading && !data && (
                         <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                             <AlertTriangle size={60} style={{ color: C.textMuted }} />
-                            <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>اضغط على زر استخراج التقرير لعرض المديونيات</p>
+                            <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>اضغط على زر استخراج التقرير لعرض المديونيات</p>
                         </div>
                     )}
 
@@ -144,11 +144,11 @@ export default function OverdueReportPage() {
                             <div className="print-only">
                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px', paddingBottom: '12px', borderBottom: '2px solid #000' }}>
                                     <div style={{ textAlign: 'start'}}>
-                                        <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
+                                        <h2 style={{ margin: '0 0 4px', fontSize: '22px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>{session?.user?.companyName || ''}</h2>
                                         {session?.user?.taxNumber && <div style={{ fontSize: '11px', color: '#333', margin: '2px 0', fontFamily: CAIRO }}>الرقم الضريبي: {session?.user?.taxNumber}</div>}
                                     </div>
                                     <div style={{ textAlign: 'start'}}>
-                                        <h3 style={{ margin: '0 0 6px', fontSize: '14px', fontWeight: 900, color: '#000', fontFamily: CAIRO }}>الأقساط المستحقة والمتأخرة</h3>
+                                        <h3 style={{ margin: '0 0 6px', fontSize: '13px', fontWeight: 600, color: '#000', fontFamily: CAIRO }}>الأقساط المستحقة والمتأخرة</h3>
                                     </div>
                                     <div style={{ maxWidth: '150px', textAlign: 'start'}}>
                                         {session?.user?.companyLogo && <img src={session?.user?.companyLogo} alt="logo" style={{ maxWidth: '150px', maxHeight: '70px', objectFit: 'contain' }} />}
@@ -170,7 +170,7 @@ export default function OverdueReportPage() {
                                         <div style={{ textAlign: 'start'}}>
                                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                                <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                                <span style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                                 {i === 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                             </div>
                                         </div>
@@ -209,12 +209,12 @@ export default function OverdueReportPage() {
                                                 <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
                                                 <td style={{ padding: '16px 20px', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 800, border: '1px solid rgba(239, 68, 68, 0.1)', fontFamily: CAIRO }}>
+                                                    <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 600, border: '1px solid rgba(239, 68, 68, 0.1)', fontFamily: CAIRO }}>
                                                         {inst.daysOverdue} يوم تأخير
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '14px', fontWeight: 900, color: '#f87171', fontFamily: OUTFIT }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#f87171', fontFamily: OUTFIT }}>
                                                         {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                     </div>
                                                 </td>

@@ -122,7 +122,7 @@ export default function NewAccountPage() {
     const IS: React.CSSProperties = {
         width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: isRtl ? 'rtl' : 'ltr',
         borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)',
-        background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '14px',
+        background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '13px',
         fontWeight: 500, outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s', boxSizing: 'border-box',
     };
 
@@ -211,7 +211,7 @@ export default function NewAccountPage() {
                                         background: form.type === opt.value ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
                                         cursor: 'pointer', transition: 'all 0.15s',
                                     }}>
-                                    <div style={{ fontSize: '14px', color: form.type === opt.value ? opt.color : '#64748b', fontWeight: 800 }}>{opt.label}</div>
+                                    <div style={{ fontSize: '13px', color: form.type === opt.value ? opt.color : '#64748b', fontWeight: 600 }}>{opt.label}</div>
                                     <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px', fontWeight: 600 }}>
                                         {opt.nature === 'debit' ? t('مدين') : t('دائن')}
                                     </div>
@@ -236,7 +236,7 @@ export default function NewAccountPage() {
                                             background: form.accountCategory === opt.val ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
                                             cursor: 'pointer', transition: 'all 0.15s',
                                         }}>
-                                        <div style={{ fontSize: '14px', color: form.accountCategory === opt.val ? opt.color : '#64748b', fontWeight: 800 }}>{opt.label}</div>
+                                        <div style={{ fontSize: '13px', color: form.accountCategory === opt.val ? opt.color : '#64748b', fontWeight: 600 }}>{opt.label}</div>
                                         <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>{opt.sub}</div>
                                     </button>
                                 ))}

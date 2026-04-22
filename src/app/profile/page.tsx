@@ -138,7 +138,7 @@ export default function ProfilePage() {
                             <Avatar id={form.avatar} size={80} />
                         </div>
 
-                        <h2 style={{ fontSize: '20px', fontWeight: 900, color: 'var(--c-text-primary)', margin: 0 }}>{session?.user?.name}</h2>
+                        <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--c-text-primary)', margin: 0 }}>{session?.user?.name}</h2>
                         
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginTop: '6px', color: 'var(--c-text-secondary)', fontSize: '12px', flexWrap: 'wrap' }}>
                             <span style={{ 
@@ -206,7 +206,7 @@ export default function ProfilePage() {
                                                 border: isEditMode ? '1px solid var(--c-primary-border)' : '1px solid transparent', 
                                                 borderRadius: '12px', 
                                                 color: 'var(--c-text-primary)', 
-                                                fontSize: '14px', 
+                                                fontSize: '13px', 
                                                 boxSizing: 'border-box', 
                                                 outline: 'none',
                                                 transition: 'all 0.2s'
@@ -232,7 +232,7 @@ export default function ProfilePage() {
                                                 border: isEditMode ? '1px solid var(--c-primary-border)' : '1px solid transparent', 
                                                 borderRadius: '12px', 
                                                 color: 'var(--c-text-primary)', 
-                                                fontSize: '14px', 
+                                                fontSize: '13px', 
                                                 boxSizing: 'border-box', 
                                                 outline: 'none',
                                                 transition: 'all 0.2s'
@@ -259,7 +259,7 @@ export default function ProfilePage() {
                                                 border: isEditMode ? '1px solid var(--c-primary-border)' : '1px solid transparent', 
                                                 borderRadius: '12px', 
                                                 color: 'var(--c-text-primary)', 
-                                                fontSize: '14px', 
+                                                fontSize: '13px', 
                                                 boxSizing: 'border-box', 
                                                 outline: 'none',
                                                 transition: 'all 0.2s'
@@ -271,7 +271,7 @@ export default function ProfilePage() {
 
                             {/* Avatar selector side */}
                             <div>
-                                <h3 style={{ fontSize: '14px', fontWeight: 700, color: 'var(--c-text-primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <h3 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--c-text-primary)', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <Grid size={16} color="var(--c-primary)" /> {t('اختر الأفاتار المفضل')}
                                 </h3>
 
@@ -338,7 +338,7 @@ export default function ProfilePage() {
                                         border: '1px solid var(--c-danger-border)', 
                                         borderRadius: '12px', 
                                         color: 'var(--c-danger)', 
-                                        fontSize: '14px', 
+                                        fontSize: '13px', 
                                         fontWeight: 700, 
                                         cursor: 'pointer' 
                                     }}>

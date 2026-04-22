@@ -109,7 +109,7 @@ export default function PrintReportPage() {
     );
 
     if (!html) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '13px' }}>
             {ui.empty}
         </div>
     );
@@ -117,7 +117,7 @@ export default function PrintReportPage() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1e1e2e' }}>
             <div style={toolbarStyle}>
-                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px', flex: 1 }}>
+                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '13px', flex: 1 }}>
                     {title}
                 </span>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>

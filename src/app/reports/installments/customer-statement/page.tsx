@@ -142,7 +142,7 @@ function CustomerStatementReportContent() {
                 <button onClick={fetchReport} disabled={loading || !selectedCustomer} style={{
                     height: '42px', padding: '0 24px', borderRadius: '12px',
                     background: C.primary, color: '#fff', border: 'none',
-                    fontSize: '13.5px', fontWeight: 800, cursor: !selectedCustomer ? 'not-allowed' : 'pointer',
+                    fontSize: '13.5px', fontWeight: 600, cursor: !selectedCustomer ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                     boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', opacity: !selectedCustomer ? 0.6 : 1
                 }}>
@@ -155,14 +155,14 @@ function CustomerStatementReportContent() {
                 {loading && (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px' }}>
                         <Loader2 size={40} className="animate-spin" style={{ color: C.primary }} />
-                        <p style={{ color: C.textSecondary, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>{t('جاري جلب البيانات وتحليلها...')}</p>
+                        <p style={{ color: C.textSecondary, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('جاري جلب البيانات وتحليلها...')}</p>
                     </div>
                 )}
 
                 {!loading && !data && (
                     <div style={{ padding: '100px', display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', gap: '16px', opacity: 0.5 }}>
                         <FileText size={60} style={{ color: C.textMuted }} />
-                        <p style={{ color: C.textMuted, fontSize: '14px', fontWeight: 500, fontFamily: CAIRO }}>{t('اختر العميل المعني لعرض تفاصيل حسابه')}</p>
+                        <p style={{ color: C.textMuted, fontSize: '13px', fontWeight: 500, fontFamily: CAIRO }}>{t('اختر العميل المعني لعرض تفاصيل حسابه')}</p>
                     </div>
                 )}
 
@@ -183,7 +183,7 @@ function CustomerStatementReportContent() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                            <span style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             {i !== 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
@@ -200,17 +200,17 @@ function CustomerStatementReportContent() {
                                 <div style={{ padding: '16px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '32px' }}>
                                     <div>
                                         <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('رقم الخطة')}</div>
-                                        <div style={{ fontSize: '14px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(plan.planNumber || 0).padStart(4, '0')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(plan.planNumber || 0).padStart(4, '0')}</div>
                                     </div>
                                     <div style={{ width: 1, height: 32, background: C.border }} />
                                     <div style={{ flex: 1 }}>
                                         <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('المنتج')}</div>
-                                        <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</div>
                                     </div>
                                     <div style={{ width: 1, height: 32, background: C.border }} />
                                     <div style={{ textAlign: 'start'}}>
                                         <div style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO, marginBottom: '4px' }}>{t('إجمالي الخطة')}</div>
-                                        <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                             {fmtN(plan.grandTotal)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
@@ -230,17 +230,17 @@ function CustomerStatementReportContent() {
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                 <td style={{ padding: '12px 16px', color: '#818cf8', fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{inst.installmentNo}</td>
                                                 <td style={{ padding: '12px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
-                                                <td style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '14px', fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '12px 16px', fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {fmtN(inst.amount)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '14px', fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '12px 16px', color: '#34d399', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '14px', fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '12px 16px', color: '#f59e0b', fontWeight: 700, fontSize: '13px', fontFamily: OUTFIT }}>
                                                     {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </td>
                                                 <td style={{ padding: '12px 16px' }}>
-                                                    <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 800, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
+                                                    <span style={{ fontSize: '10px', padding: '4px 10px', borderRadius: '20px', background: inst.status === 'paid' ? 'rgba(52,211,153,0.1)' : 'rgba(245,158,11,0.1)', color: inst.status === 'paid' ? '#34d399' : '#f59e0b', fontWeight: 600, fontFamily: CAIRO, border: inst.status === 'paid' ? '1px solid rgba(52,211,153,0.1)' : '1px solid rgba(245,158,11,0.1)' }}>
                                                         {inst.status === 'paid' ? t('مدفوع') : t('غير مسدد')}
                                                     </span>
                                                 </td>

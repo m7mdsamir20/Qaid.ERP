@@ -176,7 +176,7 @@ export default function CustomerStatementPage() {
                         <button onClick={() => fetchLedger()} disabled={loading} style={{
                             height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
+                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
                             boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}>
@@ -188,9 +188,9 @@ export default function CustomerStatementPage() {
 
                 {error && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                        <span style={{ fontSize: '16px' }}>⚠️</span>
+                        <span style={{ fontSize: '13px' }}>⚠️</span>
                         {error}
-                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
                     </div>
                 )}
 
@@ -202,7 +202,7 @@ export default function CustomerStatementPage() {
                 ) : !data ? (
                     <div style={{ padding: '120px', textAlign: 'start', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <UserCircle size={70} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار العميل')}</h3>
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('بانتظار اختيار العميل')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12.5px', color: C.textMuted, fontFamily: CAIRO }}>{t('يرجى اختيار العميل وتحديد الفترة الزمنية لعرض كشف الحساب التفصيلي.')}</p>
                     </div>
                 ) : (
@@ -222,10 +222,10 @@ export default function CustomerStatementPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
+                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.value)}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
-                                        <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
+                                        <div style={{ fontSize: '9px', fontWeight: 600, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
                                     </div>
                                     <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
                                         {s.icon}
@@ -255,13 +255,13 @@ export default function CustomerStatementPage() {
                                                     {dateFrom || (data.customer?.createdAt ? new Date(data.customer.createdAt).toLocaleDateString('en-GB') : '—')}
                                                 </td>
                                                 <td style={{ padding: '14px 20px', }}>
-                                                    <span style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, fontSize: '11px', fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد افتتاحي')}</span>
+                                                    <span style={{ padding: '3px 8px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', color: C.textSecondary, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO }}>{t('رصيد افتتاحي')}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO, }}>{t('رصيد ما قبل فترة التقرير')}</td>
-                                                <td style={{ padding: '14px 20px',  color: data.initialBalance > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{data.initialBalance > 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  color: data.initialBalance < 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{data.initialBalance < 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 900, color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
+                                                <td style={{ padding: '14px 20px',  color: data.initialBalance > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{data.initialBalance > 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  color: data.initialBalance < 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{data.initialBalance < 0 ? <>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: data.initialBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(data.initialBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
                                             </tr>
                                         )}
                                         {data.statement.map((row: StatementRow, i: number) => (
@@ -274,7 +274,7 @@ export default function CustomerStatementPage() {
                                                 </td>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{
-                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
+                                                        padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
                                                         background: row.type.includes('مبيعات') ? 'rgba(16,185,129,0.1)' : row.type.includes('قبض') ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
                                                         color: row.type.includes('مبيعات') ? '#10b981' : row.type.includes('قبض') ? '#ef4444' : C.textMuted
                                                     }}>
@@ -285,22 +285,22 @@ export default function CustomerStatementPage() {
                                                     <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{row.ref || '—'}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, }}>{row.description}</td>
-                                                <td style={{ padding: '14px 20px',  color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{row.debit > 0 ? <>{formatNumber(row.debit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT }}>{row.credit > 0 ? <>{formatNumber(row.credit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 900, color: row.balance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(row.balance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
+                                                <td style={{ padding: '14px 20px',  color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{row.debit > 0 ? <>{formatNumber(row.debit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{row.credit > 0 ? <>{formatNumber(row.credit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: row.balance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(row.balance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
-                                            <td style={{ padding: '20px 20px',  color: '#10b981', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT }}>
+                                            <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
+                                            <td style={{ padding: '20px 20px',  color: '#10b981', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>
                                                 {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
-                                            <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT }}>
+                                            <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>
                                                 {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
-                                            <td style={{ padding: '20px 24px',  color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>
+                                            <td style={{ padding: '20px 24px',  color: data.finalBalance >= 0 ? '#10b981' : '#ef4444', fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>
                                                 {formatNumber(Math.abs(data.finalBalance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{symbol}</span>
                                             </td>
                                         </tr>

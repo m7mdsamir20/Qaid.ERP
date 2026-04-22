@@ -99,7 +99,7 @@ function InstallmentReceiptContent() {
                     <div style={{ width: '30px', height: '30px', borderRadius: '8px', background: 'rgba(16,185,129,0.2)', border: '1px solid rgba(16,185,129,0.4)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
                         <Receipt size={16} />
                     </div>
-                    <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '14px' }}>
+                    <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '13px' }}>
                         سند قبض — <span style={{ color: '#10b981' }}>{planCode}</span> — قسط #{instNo}
                     </span>
                 </div>

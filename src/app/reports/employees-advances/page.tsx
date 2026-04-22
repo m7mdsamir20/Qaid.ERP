@@ -84,7 +84,7 @@ export default function EmployeesAdvancesPage() {
                         }}>
                             <div>
                                 <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <span style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textMuted }}>{getCurrencyName(currency)}</small></span>
+                                <span style={{ fontSize: '18px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value} <small style={{ fontSize: '10px', color: C.textMuted }}>{getCurrencyName(currency)}</small></span>
                             </div>
                             <div style={{ width: 40, height: 40, borderRadius: '10px', background: `${s.color}15`, color: s.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{s.icon}</div>
                         </div>
@@ -104,7 +104,7 @@ export default function EmployeesAdvancesPage() {
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                     {[t('الموظف'), t('مبلغ السلفة'), t('المسدد'), t('المتبقي'), t('نسبة السداد'), t('الحالة')].map((h, i) => (
-                                        <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '16px 20px', fontSize: '12px', fontWeight: 800, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
+                                        <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '16px 20px', fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -114,9 +114,9 @@ export default function EmployeesAdvancesPage() {
                                     return (
                                         <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.totalAmount} /></td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={r.paidAmount} /></td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={r.remainingAmount} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.totalAmount} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={r.paidAmount} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}><Currency amount={r.remainingAmount} /></td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <div style={{ width: '100px', height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', margin: '0 auto' }}>
                                                     <div style={{ width: `${pct}%`, height: '100%', background: pct === 100 ? '#10b981' : C.primary }} />
@@ -125,7 +125,7 @@ export default function EmployeesAdvancesPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{
-                                                    fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '8px', border: '1px solid currentColor',
+                                                    fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '8px', border: '1px solid currentColor',
                                                     color: r.status === 'paid' ? '#10b981' : r.status === 'partial' ? '#f59e0b' : '#256af4',
                                                     background: r.status === 'paid' ? 'rgba(16,185,129,0.1)' : r.status === 'partial' ? 'rgba(245,158,11,0.1)' : 'rgba(37, 106, 244,0.1)'
                                                 }}>

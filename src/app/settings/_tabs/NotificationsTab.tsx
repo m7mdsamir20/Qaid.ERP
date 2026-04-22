@@ -42,7 +42,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                 {/* ── إشعارات المخزون (فقط للأنشطة التجارية) ── */}
                 {!isServices && (
                     <>
-                        <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             <Package size={14} /> {t('إدارة تنبيهات المخزون')}
                         </div>
 
@@ -56,7 +56,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تنبيه انخفاض المخزون')}</span>
                                 </div>
                                 <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <span style={{ fontSize: '14px', color: notificationsForm.lowStock?.enabled ? '#f59e0b' : C.textMuted, fontWeight: 900, fontFamily: CAIRO }}>
+                                    <span style={{ fontSize: '13px', color: notificationsForm.lowStock?.enabled ? '#f59e0b' : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                         {notificationsForm.lowStock?.enabled ? t('مفعّل — نظام التتبع النشط') : t('معطّل')}
                                     </span>
                                     <Toggle
@@ -76,7 +76,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                     </div>
                                     <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                                         {!isEditMode ? (
-                                            <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, padding: '6px 0', fontFamily: CAIRO }}>
                                                 {notificationsForm.lowStock?.threshold || 10} {t('وحدة متوفرة')}
                                             </div>
                                         ) : (
@@ -85,7 +85,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                                     {[5, 10, 20, 50].map(v => (
                                                         <button key={v} type="button"
                                                             onClick={() => setNotificationsForm((p: any) => ({ ...p, lowStock: { ...p.lowStock, threshold: v } }))}
-                                                            style={{ height: '34px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${notificationsForm.lowStock?.threshold === v ? `${C.primary}40` : C.border}`, background: notificationsForm.lowStock?.threshold === v ? `${C.primary}15` : 'transparent', color: notificationsForm.lowStock?.threshold === v ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }}>
+                                                            style={{ height: '34px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${notificationsForm.lowStock?.threshold === v ? `${C.primary}40` : C.border}`, background: notificationsForm.lowStock?.threshold === v ? `${C.primary}15` : 'transparent', color: notificationsForm.lowStock?.threshold === v ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO, transition: 'all 0.2s' }}>
                                                             {notificationsForm.lowStock?.threshold === v && <Check size={12} />}
                                                             {v}
                                                         </button>
@@ -95,7 +95,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                                     <input type="number" min={1}
                                                         value={notificationsForm.lowStock?.threshold || 10}
                                                         onChange={e => setNotificationsForm((p: any) => ({ ...p, lowStock: { ...p.lowStock, threshold: +e.target.value } }))}
-                                                        style={{ width: '80px', height: '34px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.primary}30`, background: `${C.primary}05`, color: C.textPrimary, fontSize: '14px', fontWeight: 800, outline: 'none', fontFamily: CAIRO }} />
+                                                        style={{ width: '80px', height: '34px', padding: '0 12px', borderRadius: '10px', border: `1px solid ${C.primary}30`, background: `${C.primary}05`, color: C.textPrimary, fontSize: '13px', fontWeight: 600, outline: 'none', fontFamily: CAIRO }} />
                                                     <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{t('وحدة')}</span>
                                                 </div>
                                             </>
@@ -110,7 +110,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                 {/* ── إشعارات المدفوعات ── */}
                 {hasInstallmentsAccess && (
                     <>
-                        <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             <BellRing size={14} /> {t('المدفوعات والمديونيات')}
                         </div>
 
@@ -131,7 +131,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{item.label}</span>
                                     </div>
                                     <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                        <span style={{ fontSize: '14px', color: notificationsForm[item.key]?.enabled ? item.activeColor : C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>
+                                        <span style={{ fontSize: '13px', color: notificationsForm[item.key]?.enabled ? item.activeColor : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                             {notificationsForm[item.key]?.enabled ? `${t('مفعّل')} — ${item.desc}` : t('معطّل')}
                                         </span>
                                         <Toggle
@@ -149,7 +149,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                 {/* ── إشعارات أعمار الديون ── */}
                 {!isServices && (
                     <>
-                        <div style={{ fontSize: '12px', fontWeight: 900, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                             <AlertTriangle size={14} /> {t('أعمار الديون والمديونيات المتأخرة')}
                         </div>
 
@@ -162,7 +162,7 @@ export default function NotificationsTab(props: NotificationsTabProps) {
                                     <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تنبيه الديون المتأخرة')}</span>
                                 </div>
                                 <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                                    <span style={{ fontSize: '14px', color: notificationsForm.agingDebt?.enabled ? '#ef4444' : C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>
+                                    <span style={{ fontSize: '13px', color: notificationsForm.agingDebt?.enabled ? '#ef4444' : C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>
                                         {notificationsForm.agingDebt?.enabled
                                             ? t('مفعّل — تنبيه بالفواتير المتأخرة أكثر من 60 يوم')
                                             : t('معطّل')}

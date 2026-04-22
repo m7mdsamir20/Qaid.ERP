@@ -173,7 +173,7 @@ export default function FixedAssetsPage() {
                             }}>
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{formatNumber(s.val)}</span>
                                         {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                     </div>
@@ -206,7 +206,7 @@ export default function FixedAssetsPage() {
                             { id: 'disposed', label: t('مُستبعد'), color: C.danger },
                         ].map(f => (
                             <button key={f.id} onClick={() => setStatusFilter(f.id)} style={{
-                                padding: '0 14px', height: '100%', borderRadius: '8px', border: 'none', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
+                                padding: '0 14px', height: '100%', borderRadius: '8px', border: 'none', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
                                 cursor: 'pointer', transition: 'all 0.2s',
                                 background: statusFilter === f.id ? f.color : 'transparent',
                                 color: statusFilter === f.id ? '#fff' : C.textMuted,
@@ -245,26 +245,26 @@ export default function FixedAssetsPage() {
                             ) : filtered.length === 0 ? (
                                 <tr><td colSpan={9} style={{ padding: '80px',  color: C.textMuted }}>
                                     <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
-                                    <div style={{ fontWeight: 800, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
+                                    <div style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
                                 </td></tr>
                             ) : filtered.map((a, i) => {
                                 const st = STATUS_MAP[a.status];
                                 return (
                                     <tr key={a.id} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ padding: '14px 16px' }}>
-                                            <span style={{ fontSize: '12px', color: C.blue, fontWeight: 800, fontFamily: OUTFIT }}>{a.code}</span>
+                                            <span style={{ fontSize: '12px', color: C.blue, fontWeight: 600, fontFamily: OUTFIT }}>{a.code}</span>
                                         </td>
                                         <td style={{ padding: '14px 16px' }}>
-                                            <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{a.name}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{a.name}</div>
                                             {a.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>{a.notes}</div>}
                                         </td>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(a.purchaseCost)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }}>{fmt(a.accumulatedDepreciation)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(a.purchaseCost)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }}>{fmt(a.accumulatedDepreciation)}</td>
                                         <td style={{ padding: '14px 16px', fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>{fmt(a.netBookValue)}</td>
                                         <td style={{ padding: '14px 16px' }}>
-                                            <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 900, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
+                                            <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
                                                 {st.label}
                                             </span>
                                         </td>
@@ -327,7 +327,7 @@ export default function FixedAssetsPage() {
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Plus size={18} />}
                                 <span style={{ marginInlineEnd: '8px' }}>{t('حفظ التعديلات')}</span>
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ height: '48px', padding: '0 20px', background: 'transparent', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

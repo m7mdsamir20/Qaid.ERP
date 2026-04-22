@@ -130,7 +130,7 @@ export default function EditEmployeePage() {
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: C.textMuted }}>
                     <div style={{ }}>
                         <div style={{ width: '48px', height: '48px', border: `4px solid ${C.primaryBg}`, borderTopColor: C.primary, borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 20px' }} />
-                        <span style={{ fontSize: '15px', fontWeight: 800 }}>{t('جاري استرجاع بيانات الموظف...')}</span>
+                        <span style={{ fontSize: '15px', fontWeight: 600 }}>{t('جاري استرجاع بيانات الموظف...')}</span>
                     </div>
                 </div>
             </DashboardLayout>
@@ -161,16 +161,16 @@ export default function EditEmployeePage() {
                             <FormSection label={t("البيانات الشخصية والتعريفية")} icon={UsersIcon} color="#256af4">
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("كود الموظف")}>
-                                        <input type="text" readOnly value={form.code} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textMuted, fontSize: '14px', fontWeight: 800, padding: '0 16px', cursor: 'not-allowed', fontFamily: OUTFIT }} />
+                                        <input type="text" readOnly value={form.code} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textMuted, fontSize: '13px', fontWeight: 600, padding: '0 16px', cursor: 'not-allowed', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("الاسم الكامل")} required>
-                                        <input type="text" required value={form.name} onChange={e => set('name')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("أدخل اسم الموظف")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', outline: 'none' }} />
+                                        <input type="text" required value={form.name} onChange={e => set('name')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("أدخل اسم الموظف")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px', outline: 'none' }} />
                                     </Field>
                                     <Field label={t("الرقم القومي")}>
-                                        <input type="text" value={form.nationalId} onChange={e => set('nationalId')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("14 رقم")} maxLength={14} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
+                                        <input type="text" value={form.nationalId} onChange={e => set('nationalId')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("14 رقم")} maxLength={14} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 600, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("تاريخ الميلاد")}>
-                                        <input type="date" value={form.birthDate} onChange={e => set('birthDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'inherit' }} />
+                                        <input type="date" value={form.birthDate} onChange={e => set('birthDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px', direction: 'inherit' }} />
                                     </Field>
                                     <Field label={t("الجنس")}>
                                         <CustomSelect 
@@ -186,13 +186,13 @@ export default function EditEmployeePage() {
                                         />
                                     </Field>
                                     <Field label={t("رقم الهاتف")}>
-                                        <input type="text" value={form.phone} onChange={e => set('phone')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="01xxxxxxxxx" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
+                                        <input type="text" value={form.phone} onChange={e => set('phone')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="01xxxxxxxxx" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 600, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("البريد الإلكتروني")}>
-                                        <input type="email" value={form.email} onChange={e => set('email')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="name@company.com" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
+                                        <input type="email" value={form.email} onChange={e => set('email')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="name@company.com" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("العنوان السكني")}>
-                                        <input type="text" value={form.address} onChange={e => set('address')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("المدينة، الحي")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px' }} />
+                                        <input type="text" value={form.address} onChange={e => set('address')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("المدينة، الحي")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px' }} />
                                     </Field>
                                 </div>
                             </FormSection>
@@ -209,10 +209,10 @@ export default function EditEmployeePage() {
                                         </Field>
                                     )}
                                     <Field label={t("المسمى الوظيفي")}>
-                                        <input type="text" value={form.position} onChange={e => set('position')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("المسمى الوظيفي الحالي")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px' }} />
+                                        <input type="text" value={form.position} onChange={e => set('position')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("المسمى الوظيفي الحالي")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px' }} />
                                     </Field>
                                     <Field label={t("تاريخ التعيين")} required>
-                                        <input type="date" required value={form.hireDate} onChange={e => set('hireDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'inherit' }} />
+                                        <input type="date" required value={form.hireDate} onChange={e => set('hireDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px', direction: 'inherit' }} />
                                     </Field>
                                     <Field label={t("حالة الموظف")}>
                                         <CustomSelect 
@@ -246,10 +246,10 @@ export default function EditEmployeePage() {
                                             }} 
                                             onFocus={focusIn} onBlur={focusOut} 
                                             placeholder="0.00" 
-                                            style={{ height: '48px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: '#10b981', fontSize: '18px', fontWeight: 900, padding: '0 16px', fontFamily: OUTFIT }} 
+                                            style={{ height: '48px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: '#10b981', fontSize: '18px', fontWeight: 600, padding: '0 16px', fontFamily: OUTFIT }} 
                                         />
                                         <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
-                                        fontWeight: 800, color: C.textMuted, fontSize: '13px' }}>{cSymbol}</span>
+                                        fontWeight: 600, color: C.textMuted, fontSize: '13px' }}>{cSymbol}</span>
                                     </div>
                                 </Field>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginTop: '14px' }}>
@@ -297,10 +297,10 @@ export default function EditEmployeePage() {
                             <FormSection label={t("معلومات التحويل البنكي")} icon={Landmark} color="#f59e0b">
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("اسم البنك")}>
-                                        <input type="text" value={form.bankName} onChange={e => set('bankName')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px' }} />
+                                        <input type="text" value={form.bankName} onChange={e => set('bankName')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px' }} />
                                     </Field>
                                     <Field label={t("رقم الحساب / IBAN")}>
-                                        <input type="text" value={form.bankAccount} onChange={e => set('bankAccount')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
+                                        <input type="text" value={form.bankAccount} onChange={e => set('bankAccount')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 600, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                 </div>
                             </FormSection>
@@ -323,7 +323,7 @@ export default function EditEmployeePage() {
                                     position: 'relative',
                                     overflow: 'hidden'
                                 }}>
-                                    <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '6px' }}>{t('صافي الراتب المتوقع')}</div>
+                                    <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 600, marginBottom: '6px' }}>{t('صافي الراتب المتوقع')}</div>
                                     <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '8px' }} dir="ltr">
                                         <span style={{ fontSize: '15px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                         <span>{formatNumber(net)}</span>
@@ -347,7 +347,7 @@ export default function EditEmployeePage() {
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '16px' }}>
                                     <Paperclip size={18} style={{ color: C.blue }} />
-                                    <span style={{ fontSize: '14px', fontWeight: 900, color: '#fff' }}>{t('إدارة المرفقات')}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{t('إدارة المرفقات')}</span>
                                 </div>
                                 <AttachmentUploader
                                     attachments={attachments}
@@ -360,7 +360,7 @@ export default function EditEmployeePage() {
                                 <button
                                     type="submit"
                                     disabled={isSaving}
-                                    style={{ width: '100%', height: '52px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontSize: '15px', fontWeight: 800, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 8px 20px rgba(16,185,129,0.3)', transition: '0.2s' }}
+                                    style={{ width: '100%', height: '52px', borderRadius: '16px', border: 'none', background: 'linear-gradient(135deg, #10b981, #059669)', color: '#fff', fontSize: '15px', fontWeight: 600, cursor: isSaving ? 'wait' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', boxShadow: '0 8px 20px rgba(16,185,129,0.3)', transition: '0.2s' }}
                                     onMouseEnter={e => { if (!isSaving) e.currentTarget.style.transform = 'translateY(-2px)'; }}
                                     onMouseLeave={e => { e.currentTarget.style.transform = 'none'; }}
                                 >
@@ -370,7 +370,7 @@ export default function EditEmployeePage() {
                                 <button
                                     type="button"
                                     onClick={() => router.push('/employees')}
-                                    style={{ width: '100%', height: '48px', borderRadius: '16px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '14px', fontWeight: 800, cursor: 'pointer', transition: '0.2s' }}
+                                    style={{ width: '100%', height: '48px', borderRadius: '16px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '13px', fontWeight: 600, cursor: 'pointer', transition: '0.2s' }}
                                 >
                                     {t('إلغاء التعديلات')}
                                 </button>
@@ -398,7 +398,7 @@ function FormSection({ label, icon: Icon, color, children }: any) {
         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', boxShadow: '0 10px 30px -15px rgba(0,0,0,0.5)' }}>
             <div style={{ padding: '16px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <div style={{ color, display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '10px', background: `${color}10` }}><Icon size={16} /></div>
-                <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 900, color: '#fff' }}>{label}</h3>
+                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: '#fff' }}>{label}</h3>
             </div>
             <div style={{ padding: '24px' }}>{children}</div>
         </div>
@@ -418,7 +418,7 @@ function SummaryItem({ label, value, color, prefix = '', unit }: any) {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
             <span style={{ color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
-            <span style={{ color, fontWeight: 800, fontFamily: OUTFIT }}>
+            <span style={{ color, fontWeight: 600, fontFamily: OUTFIT }}>
                 {prefix} {formatNumber(+value || 0)} <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{unit}</span>
             </span>
         </div>

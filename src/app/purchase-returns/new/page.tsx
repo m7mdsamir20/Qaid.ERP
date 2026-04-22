@@ -287,7 +287,7 @@ export default function NewPurchaseReturnPage() {
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', color: '#475569', flexDirection: 'column', gap: '12px' }}>
                 <Loader2 size={36} className="spin" />
-                <span style={{ fontSize: '14px' }}>{t('جاري التحميل...')}</span>
+                <span style={{ fontSize: '13px' }}>{t('جاري التحميل...')}</span>
             </div>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}} .spin{animation:spin 1s linear infinite;}`}</style>
         </DashboardLayout>
@@ -297,7 +297,7 @@ export default function NewPurchaseReturnPage() {
         if (!fieldErrors[field]) return null;
         return (
             <div style={{
-                position: 'absolute', top: '-32px', insetInlineStart: '4px', fontSize: '11px', color: '#fff', fontWeight: 800,
+                position: 'absolute', top: '-32px', insetInlineStart: '4px', fontSize: '11px', color: '#fff', fontWeight: 600,
                 background: 'linear-gradient(135deg, #ef4444, #b91c1c)', padding: '4px 10px', borderRadius: '8px',
                 pointerEvents: 'none', zIndex: 100, boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
                 display: 'flex', alignItems: 'center', gap: '5px', whiteSpace: 'nowrap',
@@ -332,7 +332,7 @@ export default function NewPurchaseReturnPage() {
                     }}>
                         <AlertCircle size={20} style={{ color: '#fbbf24', flexShrink: 0 }} />
                         <div>
-                            <div style={{ fontSize: '14px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
+                            <div style={{ fontSize: '13px', fontWeight: 700, color: '#fbbf24', marginBottom: '2px' }}>
                                 {t('يرجى تحديد فرع أولاً')}
                             </div>
                             <div style={{ fontSize: '12px', color: '#94a3b8' }}>
@@ -347,7 +347,7 @@ export default function NewPurchaseReturnPage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 800, color: '#256af4', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#256af4', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                 <FileText size={16} /> {t('بيانات المرتجع الأساسية')}
                             </div>
 
@@ -361,8 +361,8 @@ export default function NewPurchaseReturnPage() {
                                             background: 'rgba(37, 106, 244,0.08)',
                                             border: `1px solid ${C.border}`,
                                             display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                            fontFamily: OUTFIT, fontWeight: 900,
-                                            fontSize: '14px', color: '#60a5fa',
+                                            fontFamily: OUTFIT, fontWeight: 600,
+                                            fontSize: '13px', color: '#60a5fa',
                                             letterSpacing: '1px',
                                         }}>
                                             RTN-{String(nextNum).padStart(5, '0')}
@@ -483,7 +483,7 @@ export default function NewPurchaseReturnPage() {
 
                         {selectedInvoice && (
                             <div style={{ background: 'rgba(37, 106, 244,0.04)', border: `1px solid ${C.primary}30`, borderRadius: '12px', padding: '16px' }}>
-                                <div style={{ fontSize: '13px', fontWeight: 800, color: '#256af4', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                <div style={{ fontSize: '13px', fontWeight: 600, color: '#256af4', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                     <Info size={16} /> {t('ملخص فاتورة الشراء الأصلية')}
                                 </div>
                                 <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px' }}>
@@ -505,7 +505,7 @@ export default function NewPurchaseReturnPage() {
                         {lines.length > 0 && (
                             <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
                                 <div style={{ padding: '12px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <div style={{ fontSize: '13px', fontWeight: 800, color: '#256af4', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: '#256af4', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                                         <RotateCcw size={16} /> {t('الأصناف المرتجعة')}
                                     </div>
                                     <div style={{ fontSize: '10px', color: C.textMuted }}>{lines.length} {t('صنف متاح')}</div>
@@ -553,7 +553,7 @@ export default function NewPurchaseReturnPage() {
                                                                             width: '100%', height: '32px',
                                                                             background: 'transparent', border: 'none',
                                                                             color: l.selected ? C.textPrimary : C.textMuted,
-                                                                            fontSize: '13px', fontWeight: 800, padding: 0
+                                                                            fontSize: '13px', fontWeight: 600, padding: 0
                                                                         }}
                                                                         onFocus={focusIn} onBlur={focusOut}
                                                                     />
@@ -600,7 +600,7 @@ export default function NewPurchaseReturnPage() {
                     {/* RIGHT Column - Sticky Summary */}
                     <div style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', minHeight: '400px' }}>
-                            <div style={{ fontSize: '13px', fontWeight: 800, color: '#256af4', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
+                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#256af4', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                 <Banknote size={16} /> {t('ملخص الحساب')}
                             </div>
 
@@ -617,11 +617,11 @@ export default function NewPurchaseReturnPage() {
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '4px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{t('قيمة المرتجع')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>{fMoneyJSX(returnSubtotal)}</span>
+                                        <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{fMoneyJSX(returnSubtotal)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{t('خصم مسترد (-)')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{fMoneyJSX(totalDiscountOnReturn)}</span>
+                                        <span style={{ fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{fMoneyJSX(totalDiscountOnReturn)}</span>
                                     </div>
                                 </div>
 
@@ -631,8 +631,8 @@ export default function NewPurchaseReturnPage() {
                                     background: 'rgba(37, 106, 244,0.05)', borderRadius: '12px',
                                     border: `1px solid ${C.primary}20`
                                 }}>
-                                    <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary }}>{t('صافي المرتجع')}</span>
-                                    <span style={{ fontSize: '20px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>{fMoneyJSX(netReturnTotal)}</span>
+                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.primary }}>{t('صافي المرتجع')}</span>
+                                    <span style={{ fontSize: '20px', fontWeight: 600, color: C.primary, fontFamily: CAIRO }}>{fMoneyJSX(netReturnTotal)}</span>
                                 </div>
 
                                 <div style={{ marginTop: '10px' }}>
@@ -670,7 +670,7 @@ export default function NewPurchaseReturnPage() {
                                                         ...IS,
                                                         height: '44px',
                                                         fontSize: '18px',
-                                                        fontWeight: 800,
+                                                        fontWeight: 600,
                                                         border: `1px solid ${C.primary}50`,
                                                         color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.primary,
                                                         background: 'rgba(37, 106, 244,0.03)',
@@ -705,7 +705,7 @@ export default function NewPurchaseReturnPage() {
                                         style={{
                                             width: '100%', height: '52px', borderRadius: '14px', border: 'none',
                                             background: submitting ? 'rgba(37, 106, 244,0.18)' : C.primary,
-                                            color: submitting ? C.textMuted : '#fff', fontWeight: 800, fontSize: '15px',
+                                            color: submitting ? C.textMuted : '#fff', fontWeight: 600, fontSize: '15px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                                             cursor: submitting ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
                                             boxShadow: submitting ? 'none' : '0 8px 16px -4px rgba(37,106,244,0.3)',
@@ -719,7 +719,7 @@ export default function NewPurchaseReturnPage() {
                                             width: '100%', height: '48px', borderRadius: '14px',
                                             border: '1px solid rgba(16,185,129,0.4)',
                                             background: 'rgba(16,185,129,0.1)',
-                                            color: '#10b981', fontWeight: 700, fontSize: '14px',
+                                            color: '#10b981', fontWeight: 700, fontSize: '13px',
                                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
                                             cursor: submitting ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
                                             opacity: submitting ? 0.6 : 1

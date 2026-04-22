@@ -28,7 +28,7 @@ export function formatMoney(amount: number, code: string = 'EGP', lang: 'ar' | '
     const symbol = getCurrencySymbol(code, lang);
     const absAmount = Math.abs(amount);
     const formattedNum = absAmount.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
+        minimumFractionDigits: 0,
         maximumFractionDigits: 2
     });
 
@@ -50,7 +50,7 @@ export function formatMoneyHTML(amount: number, code: string = 'EGP', lang: 'ar'
     const symbol = getCurrencySymbol(code, lang);
     const absAmount = Math.abs(amount);
     const formattedNum = absAmount.toLocaleString('en-US', { 
-        minimumFractionDigits: 2, 
+        minimumFractionDigits: 0, 
         maximumFractionDigits: 2 
     });
 
@@ -74,7 +74,7 @@ export function formatNumber(value: number | string | undefined | null, decimals
     if (isNaN(num)) return '';
     
     return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: decimals,
+        minimumFractionDigits: 0,
         maximumFractionDigits: decimals,
     }).format(num);
 }

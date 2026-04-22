@@ -253,13 +253,13 @@ export default function NewCompanyPage() {
                         {isRtl ? <ArrowRight size={16} /> : <ArrowLeft size={16} />} العودة للوحة التحكم
                     </button>
                     <span style={{ color: '#334155' }}>|</span>
-                    <span style={{ fontSize: '15px', fontWeight: 800, color: '#e2e8f0' }}>إنشاء حساب جديد</span>
+                    <span style={{ fontSize: '15px', fontWeight: 600, color: '#e2e8f0' }}>إنشاء حساب جديد</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <div style={{ width: 28, height: 28, borderRadius: '8px', background: 'linear-gradient(135deg,#6366f1,#4338ca)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Shield size={14} style={{ color: '#fff' }} />
                     </div>
-                    <span style={{ fontSize: '13px', fontWeight: 800, color: '#818cf8' }}>قيد — السوبر أدمن</span>
+                    <span style={{ fontSize: '13px', fontWeight: 600, color: '#818cf8' }}>قيد — السوبر أدمن</span>
                 </div>
             </div>
 
@@ -299,7 +299,7 @@ export default function NewCompanyPage() {
                 {/* ══ Step 1: بيانات الشركة ══ */}
                 {step === 1 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
-                        <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
+                        <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                 <Building2 size={22} />
                             </div>
@@ -378,7 +378,7 @@ export default function NewCompanyPage() {
                 {/* ══ Step 2: بيانات المدير ══ */}
                 {step === 2 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
-                        <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 900, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
+                        <h2 style={{ margin: '0 0 28px', fontSize: '18px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.blue}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
                                 <User size={22} />
                             </div>
@@ -434,7 +434,7 @@ export default function NewCompanyPage() {
                         </div>
                         <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start', marginTop: '32px' }}>
                             <button onClick={() => setStep(1)}
-                                style={{ height: '48px', padding: '0 28px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}>
+                                style={{ height: '48px', padding: '0 28px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}>
                                 السابق
                             </button>
                             <button onClick={() => { if (!form.adminName || !form.adminUsername || !form.adminPassword) { alert('كل الحقول المطلوبة يجب ملؤها'); return; } if (form.adminPassword !== form.adminPasswordConfirm) { alert('كلمات المرور غير متطابقة'); return; } setStep(3); }}
@@ -448,7 +448,7 @@ export default function NewCompanyPage() {
                 {/* ══ Step 3: الاشتراك ══ */}
                 {step === 3 && (
                     <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px' }}>
-                        <h2 style={{ margin: '0 0 24px', fontSize: '17px', fontWeight: 800, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <h2 style={{ margin: '0 0 24px', fontSize: '17px', fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <CreditCard size={20} style={{ color: '#818cf8' }} /> بيانات الاشتراك
                         </h2>
 
@@ -501,18 +501,18 @@ export default function NewCompanyPage() {
                                 ].map((item, i) => (
                                     <div key={i} style={{ }}>
                                         <div style={{ fontSize: '10px', color: '#64748b', marginBottom: '3px' }}>{item.label}</div>
-                                        <div style={{ fontSize: '14px', fontWeight: 800, color: '#e2e8f0' }}>{item.value}</div>
+                                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#e2e8f0' }}>{item.value}</div>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start' }}>
-                            <button onClick={() => setStep(2)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
+                            <button onClick={() => setStep(2)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
                                 السابق
                             </button>
                             <button onClick={() => setStep(4)}
-                                style={{ height: '44px', padding: '0 32px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                style={{ height: '44px', padding: '0 32px', borderRadius: '10px', border: 'none', background: 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 التالي — تحديد الصلاحيات {isRtl ? <ArrowLeft size={16} /> : <ArrowRight size={16} />}
                             </button>
                         </div>
@@ -524,7 +524,7 @@ export default function NewCompanyPage() {
                     <div>
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 800, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <Shield size={20} style={{ color: '#818cf8' }} /> تحديد الصلاحيات
                                 </h2>
                                 <div style={{ display: 'flex', gap: '8px' }}>
@@ -567,7 +567,7 @@ export default function NewCompanyPage() {
                                                 {/* Icon + Title */}
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
                                                     <SectionIcon size={16} style={{ color: isActive ? '#818cf8' : '#475569' }} />
-                                                    <span style={{ fontWeight: 700, fontSize: '14px', color: isActive ? '#e2e8f0' : '#94a3b8' }}>
+                                                    <span style={{ fontWeight: 700, fontSize: '13px', color: isActive ? '#e2e8f0' : '#94a3b8' }}>
                                                         {section.title}
                                                     </span>
                                                     <span style={{ fontSize: '11px', color: '#475569' }}>
@@ -620,11 +620,11 @@ export default function NewCompanyPage() {
                         </div>
 
                         <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start' }}>
-                            <button onClick={() => setStep(3)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '14px', fontWeight: 600, cursor: 'pointer' }}>
+                            <button onClick={() => setStep(3)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
                                 السابق
                             </button>
                             <button onClick={handleSubmit} disabled={submitting}
-                                style={{ height: '44px', padding: '0 40px', borderRadius: '10px', border: 'none', background: submitting ? 'rgba(99,102,241,0.4)' : 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(99,102,241,0.3)' }}>
+                                style={{ height: '44px', padding: '0 40px', borderRadius: '10px', border: 'none', background: submitting ? 'rgba(99,102,241,0.4)' : 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(99,102,241,0.3)' }}>
                                 {submitting ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> جاري الإنشاء...</> : <><Check size={16} /> إنشاء الحساب</>}
                             </button>
                         </div>

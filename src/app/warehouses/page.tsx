@@ -189,12 +189,12 @@ export default function WarehousesPage() {
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
+                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
                                                     {wh.code || '—'}
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '14px' }}>{wh.name}</div>
+                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{wh.name}</div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', color: C.textSecondary, fontSize: '13px' }}>
@@ -202,7 +202,7 @@ export default function WarehousesPage() {
                                                     {wh.address || t('غير محدد')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 800, color: C.purple, }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.purple, }}>
                                                 {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -287,7 +287,7 @@ export default function WarehousesPage() {
                             <button type="submit" disabled={isSubmitting} style={{ ...BTN_PRIMARY(false, isSubmitting), height: '48px' }}>
                                 {isSubmitting ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : editingId ? t('تعديل المخزن') : t('تأكيد الإضافة')}
                             </button>
-                            <button type="button" onClick={() => setShowModal(false)} style={{ borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontSize: '14px' }}>{t('إلغاء')}</button>
+                            <button type="button" onClick={() => setShowModal(false)} style={{ borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textSecondary, fontWeight: 700, cursor: 'pointer', fontSize: '13px' }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>

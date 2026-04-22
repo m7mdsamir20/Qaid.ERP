@@ -28,9 +28,9 @@ export function Currency({ amount, code: propCode, lang: propLang, className = '
 
     const amountEl = (
         <span style={{ 
-            fontWeight: 700, 
+            fontWeight: 600, 
             fontFamily: "'ERP-Numbers', 'Outfit', sans-serif", 
-            fontSize: '14px',
+            fontSize: '13px',
             color: 'inherit',
             letterSpacing: '0.2px' 
         }}>

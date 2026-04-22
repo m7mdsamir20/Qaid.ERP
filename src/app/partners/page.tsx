@@ -110,7 +110,7 @@ export default function PartnersPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{typeof s.val === 'number' ? s.val : s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -126,7 +126,7 @@ export default function PartnersPage() {
                 {!loading && partners.length > 0 && (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '20px', marginBottom: '20px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.2)' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                            <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 800, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px' }}>
                                 <PieChart size={16} style={{ color: C.primary }} />
                                 {t('توزيع الحصص الفعلي')}
                             </div>
@@ -158,12 +158,12 @@ export default function PartnersPage() {
                 {loading ? (
                     <div style={{ padding: '80px' }}>
                         <Loader2 size={40} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 800, fontFamily: CAIRO }}>{t('جاري استرجاع سجلات الشركاء...')}</p>
+                        <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('جاري استرجاع سجلات الشركاء...')}</p>
                     </div>
                 ) : partners.length === 0 ? (
                     <div style={{ padding: '80px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px' }}>
                         <Users size={48} style={{ opacity: 0.1, display: 'block', margin: '0 auto 16px', color: C.primary }} />
-                        <h3 style={{ color: C.textPrimary, fontSize: '16px', fontWeight: 900, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
+                        <h3 style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, marginBottom: '6px', fontFamily: CAIRO }}>{t('لا يوجد شركاء مسجلون')}</h3>
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح')}</p>
                     </div>
                 ) : (
@@ -188,17 +188,17 @@ export default function PartnersPage() {
                                     <div style={{ padding: '20px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${color}15`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 900, color, fontFamily: CAIRO }}>
+                                                <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${color}15`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 600, color, fontFamily: CAIRO }}>
                                                     {p.name.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px' }}>{p.name}</div>
+                                                    <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px' }}>{p.name}</div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, fontFamily: OUTFIT, display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                         <Phone size={10} /> {p.phone || '—'}
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div style={{ background: `${color}15`, color, borderRadius: '10px', padding: '4px 10px', fontSize: '12px', fontWeight: 900, fontFamily: OUTFIT, border: `1px solid ${color}20` }}>
+                                            <div style={{ background: `${color}15`, color, borderRadius: '10px', padding: '4px 10px', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT, border: `1px solid ${color}20` }}>
                                                 {p.share}%
                                             </div>
                                         </div>
@@ -206,11 +206,11 @@ export default function PartnersPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 900, color: C.blue, fontFamily: OUTFIT }}>{formatNumber(p.capital)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span></div>
+                                                <div style={{ fontSize: '15px', fontWeight: 600, color: C.blue, fontFamily: OUTFIT }}>{formatNumber(p.capital)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span></div>
                                             </div>
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
+                                                <div style={{ fontSize: '15px', fontWeight: 600, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
                                                     {(p.balance)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
                                                 </div>
                                             </div>
@@ -218,7 +218,7 @@ export default function PartnersPage() {
 
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             <button onClick={() => router.push('/partner-accounts')}
-                                                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '36px', borderRadius: '10px', border: `1px solid ${color}30`, background: `${color}10`, color, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
+                                                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '36px', borderRadius: '10px', border: `1px solid ${color}30`, background: `${color}10`, color, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
                                                 <ExternalLink size={13} />
                                                 {t('كشف الحساب')}
                                             </button>
@@ -259,7 +259,7 @@ export default function PartnersPage() {
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <label style={LS}>{t('النسبة المحسوبة (%)')}</label>
-                                <div style={{...IS, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT}}>
+                                <div style={{...IS, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT}}>
                                     {(() => {
                                         const cap = parseFloat(form.capital) || 0;
                                         const otherCap = partners
@@ -292,7 +292,7 @@ export default function PartnersPage() {
                                 {saving ? <Loader2 size={18} style={{ animation: 'spin 1.5s linear infinite' }} /> : <Save size={18} />}
                                 <span style={{ marginInlineEnd: '8px' }}>{modal === 'add' ? t('إضافة الشريك') : t('حفظ التعديلات')}</span>
                             </button>
-                            <button type="button" onClick={() => setModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
+                            <button type="button" onClick={() => setModal(null)} style={{ height: '48px', padding: '0 20px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '10px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>
                                 {t('إلغاء')}
                             </button>
                         </div>

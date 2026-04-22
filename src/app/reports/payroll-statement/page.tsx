@@ -87,7 +87,7 @@ export default function PayrollStatementPage() {
                             style={{
                                 ...IS, height: '42px', padding: '0 12px', textAlign: 'start',
                                 borderRadius: '12px', border: `1px solid ${C.border}`,
-                                background: C.card, color: C.textPrimary, fontSize: '14px',
+                                background: C.card, color: C.textPrimary, fontSize: '13px',
                                 fontWeight: 600, outline: 'none', fontFamily: OUTFIT
                             }}
                         />
@@ -99,7 +99,7 @@ export default function PayrollStatementPage() {
                 ) : !data || data.records.length === 0 ? (
                     <div style={{ textAlign: 'start', padding: '100px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
                         <DollarSign size={60} style={{ opacity: 0.1, color: C.primary, marginBottom: '20px' }} />
-                        <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مسيرات رواتب لهذا الشهر')}</h3>
+                        <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('لا توجد مسيرات رواتب لهذا الشهر')}</h3>
                         <p style={{ margin: '10px 0 0', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{t('تأكد من اختيار الشهر الصحيح أو ترحيل الرواتب أولاً.')}</p>
                     </div>
                 ) : (
@@ -118,7 +118,7 @@ export default function PayrollStatementPage() {
                                     <div>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '10px', color: C.textMuted }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
@@ -137,7 +137,7 @@ export default function PayrollStatementPage() {
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                         {[t('الموظف'), t('الراتب الأساسي'), t('البدلات'), t('الاستقطاعات'), t('الصافي')].map((h, i) => (
-                                            <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 800, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
+                                            <th key={i} style={{ padding: '16px 20px', fontSize: '12px', fontWeight: 600, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
@@ -145,20 +145,20 @@ export default function PayrollStatementPage() {
                                     {data.records.filter(r => r.employeeName.includes(q)).map((r) => (
                                         <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.basicSalary} /></td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={r.allowances} /></td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={r.deductions} /></td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}><Currency amount={r.netSalary} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}><Currency amount={r.basicSalary} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={r.allowances} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={r.deductions} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}><Currency amount={r.netSalary} /></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td style={{ padding: '16px 20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                        <td style={{ padding: '16px 20px',  fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.summary.totalSalaries} /></td>
-                                        <td style={{ padding: '16px 20px',  fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={data.summary.totalAllowances} /></td>
-                                        <td style={{ padding: '16px 20px',  fontWeight: 900, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={data.summary.totalDiscounts} /></td>
-                                        <td style={{ padding: '16px 20px',  fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}><Currency amount={data.summary.netTotal} /></td>
+                                        <td style={{ padding: '16px 20px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+                                        <td style={{ padding: '16px 20px',  fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.summary.totalSalaries} /></td>
+                                        <td style={{ padding: '16px 20px',  fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>+<Currency amount={data.summary.totalAllowances} /></td>
+                                        <td style={{ padding: '16px 20px',  fontWeight: 600, color: '#ef4444', fontFamily: OUTFIT }}>-<Currency amount={data.summary.totalDiscounts} /></td>
+                                        <td style={{ padding: '16px 20px',  fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}><Currency amount={data.summary.netTotal} /></td>
                                     </tr>
                                 </tfoot>
                             </table>

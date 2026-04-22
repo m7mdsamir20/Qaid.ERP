@@ -97,7 +97,7 @@ export default function ExpensesReportPage() {
                         style={{
                             height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
+                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
                             boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
                         }}
@@ -123,20 +123,20 @@ export default function ExpensesReportPage() {
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             <div style={{ background: `${DC}08`, border: `1px solid ${DC}33`, borderRadius: '12px', padding: '20px 24px' }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('إجمالي المصروفات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 900, color: DC, fontFamily: OUTFIT }}>
+                                <div style={{ fontSize: '22px', fontWeight: 600, color: DC, fontFamily: OUTFIT }}>
                                     {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '20px 24px' }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, marginBottom: '6px', fontFamily: CAIRO, fontWeight: 600 }}>{t('عدد العمليات')}</div>
-                                <div style={{ fontSize: '22px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{data.rows.length}</div>
+                                <div style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{data.rows.length}</div>
                             </div>
                         </div>
 
                         {/* Table */}
                         <div className="print-table-container" style={{ background: C.card, borderRadius: '18px', overflow: 'hidden', border: `1px solid ${C.border}`, boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)' }}>
                             <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
-                                <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل المصروفات')}</h3>
+                                <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل المصروفات')}</h3>
                             </div>
                             {data.rows.length === 0 ? (
                                 <div style={{ padding: '60px', textAlign: 'start', color: C.textMuted, fontFamily: CAIRO }}>
@@ -147,12 +147,12 @@ export default function ExpensesReportPage() {
                                     <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 800 }}>{t('رقم القيد')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 800 }}>{t('التاريخ')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 800 }}>{t('البيان')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 800 }}>{t('حساب المصروف')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 800 }}>{t('المصدر')}</th>
-                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: DC, fontFamily: CAIRO, fontWeight: 800 }}>{t('المبلغ')}</th>
+                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('رقم القيد')}</th>
+                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('التاريخ')}</th>
+                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('البيان')}</th>
+                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('حساب المصروف')}</th>
+                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: C.textSecondary, fontFamily: CAIRO, fontWeight: 600 }}>{t('المصدر')}</th>
+                                                <th style={{ padding: '14px 16px', fontSize: '12px',  color: DC, fontFamily: CAIRO, fontWeight: 600 }}>{t('المبلغ')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -176,7 +176,7 @@ export default function ExpensesReportPage() {
                                                             {row.sourceName}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: DC, fontFamily: OUTFIT }}>
+                                                    <td style={{ padding: '14px 16px',  fontSize: '13px', fontWeight: 600, color: DC, fontFamily: OUTFIT }}>
                                                         {formatNumber(Number(row.amount))}
                                                     </td>
                                                 </tr>
@@ -184,8 +184,8 @@ export default function ExpensesReportPage() {
                                         </tbody>
                                         <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                             <tr>
-                                                <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                                <td style={{ padding: '18px 16px',  fontWeight: 900, fontSize: '14px', color: DC, fontFamily: OUTFIT }}>
+                                                <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+                                                <td style={{ padding: '18px 16px',  fontWeight: 600, fontSize: '13px', color: DC, fontFamily: OUTFIT }}>
                                                     {formatNumber(Number(data.totalAmount))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>

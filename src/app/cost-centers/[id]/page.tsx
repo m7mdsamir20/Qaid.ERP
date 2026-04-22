@@ -72,7 +72,7 @@ export default function CostCenterDetails() {
             <DashboardLayout>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '40vh', flexDirection: 'column', gap: '12px', color: C.textMuted }}>
                     <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary }} />
-                    <span style={{ fontSize: '14px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
+                    <span style={{ fontSize: '13px', fontFamily: CAIRO }}>{t('جاري التحميل...')}</span>
                 </div>
             </DashboardLayout>
         );
@@ -177,7 +177,7 @@ export default function CostCenterDetails() {
                         </div>
                         <div>
                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{kpi.label}</div>
-                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
+                            <div style={{ fontSize: '20px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                 {kpi.isCount ? kpi.value.toLocaleString('en-US') : (kpi.value || 0)}
                                 {!kpi.isCount && <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>}
                             </div>
@@ -190,7 +190,7 @@ export default function CostCenterDetails() {
                 {/* Transactions Table */}
                 <div style={TABLE_STYLE.container}>
                     <div style={{ padding: '20px 24px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                        <h2 style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, margin: 0, display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
+                        <h2 style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, margin: 0, display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO }}>
                            <Activity size={18} style={{ color: AC }} /> {t('المعاملات المسجلة')}
                         </h2>
                     </div>
@@ -198,7 +198,7 @@ export default function CostCenterDetails() {
                     {(!data.journalLines || data.journalLines.length === 0) ? (
                         <div style={{ padding: '60px 20px', color: C.textMuted }}>
                             <Activity size={48} style={{ margin: '0 auto 16px', display: 'block', opacity: 0.1 }} />
-                            <p style={{ margin: 0, fontSize: '14px', fontFamily: CAIRO }}>{t('لا توجد معاملات مسجلة لهذا التصنيف')}</p>
+                            <p style={{ margin: 0, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد معاملات مسجلة لهذا التصنيف')}</p>
                         </div>
                     ) : (
                         <div style={{ overflowX: 'auto' }}>
@@ -223,7 +223,7 @@ export default function CostCenterDetails() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{line.description || line.journalEntry.description || '—'}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>
+                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}>
                                                 {formatNumber(line.debit)} <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
@@ -242,7 +242,7 @@ export default function CostCenterDetails() {
 
                 {/* Chart Card */}
                 <div style={{ ...TABLE_STYLE.container, padding: '24px', display: 'flex', flexDirection: 'column' }}>
-                    <h2 style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, margin: '0 0 24px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
+                    <h2 style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, margin: '0 0 24px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO }}>
                         <TrendingUp size={18} style={{ color: AC }} /> {t('مصروفات')} {selectedYear}
                     </h2>
                     
@@ -253,7 +253,7 @@ export default function CostCenterDetails() {
                                 <div key={idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }} className="group">
                                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'flex-end', position: 'relative' }}>
                                         {val > 0 && (
-                                            <div style={{ position: 'absolute', top: `calc(${100 - heightPercent}% - 24px)`, insetInlineStart: '50%', transform: 'translateX(-50%)', background: C.card, border: `1px solid ${C.border}`, padding: '4px 8px', borderRadius: '6px', fontSize: '10px', color: C.textPrimary, opacity: 0, transition: 'opacity 0.2s', pointerEvents: 'none', whiteSpace: 'nowrap', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.4)', fontWeight: 800, fontFamily: OUTFIT }} className="chart-tooltip">
+                                            <div style={{ position: 'absolute', top: `calc(${100 - heightPercent}% - 24px)`, insetInlineStart: '50%', transform: 'translateX(-50%)', background: C.card, border: `1px solid ${C.border}`, padding: '4px 8px', borderRadius: '6px', fontSize: '10px', color: C.textPrimary, opacity: 0, transition: 'opacity 0.2s', pointerEvents: 'none', whiteSpace: 'nowrap', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.4)', fontWeight: 600, fontFamily: OUTFIT }} className="chart-tooltip">
                                                 {new Intl.NumberFormat('en-US').format(val)}
                                             </div>
                                         )}

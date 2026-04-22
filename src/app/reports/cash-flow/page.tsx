@@ -79,8 +79,8 @@ export default function CashFlowReportPage() {
 
                 {error && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                        <span style={{ fontSize: '16px' }}>⚠️</span>{error}
-                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+                        <span style={{ fontSize: '13px' }}>⚠️</span>{error}
+                        <button onClick={() => setError('')} style={{ marginInlineStart: 'auto', background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '13px', lineHeight: 1 }}>×</button>
                     </div>
                 )}
 
@@ -107,7 +107,7 @@ export default function CashFlowReportPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
+                                            <span className="stat-value" style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             {i < 3 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
@@ -150,7 +150,7 @@ export default function CashFlowReportPage() {
                                             <th key={i} style={{
                                                 padding: '16px 20px',
                                                 fontSize: '12px',
-                                                fontWeight: 800,
+                                                fontWeight: 600,
                                                 color: C.textSecondary,
                                                 textAlign: i === 1 ? 'center' : 'start',
                                                 fontFamily: CAIRO,
@@ -170,7 +170,7 @@ export default function CashFlowReportPage() {
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', }}>
                                                 <span style={{
-                                                    padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
+                                                    padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 600, fontFamily: CAIRO,
                                                     background: v.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',
                                                     color: v.type === 'receipt' ? '#10b981' : '#fb7185'
                                                 }}>
@@ -180,7 +180,7 @@ export default function CashFlowReportPage() {
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, }}>{v.description || '—'}</td>
-                                            <td style={{ padding: '14px 20px',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '13px', fontFamily: OUTFIT }}>
                                                 <Currency amount={v.amount} /></td>
                                         </tr>
                                     ))}
