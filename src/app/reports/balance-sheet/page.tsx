@@ -213,16 +213,16 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                             <div key={a.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 14px', background: 'rgba(255,255,255,0.01)', borderRadius: '8px', border: `1px solid ${C.border}` }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                                     <span style={{ fontSize: '10px', fontFamily: INTER, color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 6px', borderRadius: '4px' }}>{a.code}</span>
-                                                    <span style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{a.name}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{a.name}</span>
                                                 </div>
-                                                <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(a.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
+                                                <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{fmt(a.balance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
                                 <div style={{ padding: '20px 24px', background: 'rgba(59, 130, 246, 0.08)', borderTop: `2px solid #3b82f633`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('إجمالي الأصول')}</span>
-                                    <span style={{ fontSize: '16px', fontWeight: 950, color: '#3b82f6', fontFamily: INTER }}>{fmt(data.totalAssets)} <small style={{fontSize: '10px', opacity: 0.7}}>{getCurrencyName(currency)}</small></span>
+                                    <span style={{ fontSize: '14px', fontWeight: 950, color: '#3b82f6', fontFamily: INTER }}>{fmt(data.totalAssets)} <small style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{getCurrencyName(currency)}</small></span>
                                 </div>
                             </div>
 
@@ -238,16 +238,16 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                             {data.liabilities.map(l => (
                                                 <div key={l.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
-                                                    <span style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{l.name}</span>
-                                                    <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(l.balance)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{l.name}</span>
+                                                    <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{fmt(l.balance)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></span>
                                                 </div>
                                             ))}
                                             {data.liabilities.length === 0 && <div style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '11px', fontFamily: CAIRO }}>{t('لا توجد التزامات')}</div>}
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(251, 113, 133, 0.05)', borderTop: `1px solid #fb718533`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي الخصوم')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#fb7185', fontFamily: INTER }}>{fmt(data.totalLiabilities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
+                                        <span style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي الخصوم')}</span>
+                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#fb7185', fontFamily: INTER }}>{fmt(data.totalLiabilities)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
 
@@ -261,22 +261,22 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                                             {data.equities.map(e => (
                                                 <div key={e.code} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
-                                                    <span style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{e.name}</span>
-                                                    <span style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(e.balance)}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>{e.name}</span>
+                                                    <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{fmt(e.balance)}</span>
                                                 </div>
                                             ))}
                                             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 12px', background: 'rgba(59, 130, 246, 0.05)', borderRadius: '8px', border: '1px solid #3b82f633', marginTop: '4px' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                     <TrendingUp size={14} color="#3b82f6" />
-                                                    <span style={{ fontWeight: 800, color: C.textPrimary, fontSize: '11px', fontFamily: CAIRO }}>{t('صافي دخل الفترة')}</span>
+                                                    <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي دخل الفترة')}</span>
                                                 </div>
-                                                <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '12px', fontFamily: INTER }}>{fmt(data.netIncome)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
+                                                <span style={{ fontWeight: 900, color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>{fmt(data.netIncome)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div style={{ padding: '14px 20px', background: 'rgba(16, 185, 129, 0.05)', borderTop: `1px solid #10b98133`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                        <span style={{ fontSize: '12px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي حقوق الملكية')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalEquities)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></span>
+                                        <span style={{ fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي حقوق الملكية')}</span>
+                                        <span style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalEquities)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></span>
                                     </div>
                                 </div>
                             </div>

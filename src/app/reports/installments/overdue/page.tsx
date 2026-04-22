@@ -193,7 +193,7 @@ export default function OverdueReportPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             {['العميل', 'رقم الخطة', 'القسط', 'موعد الاستحقاق', 'أيام التأخير', 'المبلغ المتبقي'].map((h, i) => (
-                                                <th key={i} style={{ padding: '20px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                <th key={i} style={{ padding: '20px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
@@ -203,13 +203,13 @@ export default function OverdueReportPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
-                                                <td style={{ padding: '16px 20px', color: '#f87171', fontSize: '13.5px', fontWeight: 700, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
+                                                <td style={{ padding: '16px 20px', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 800, border: '1px solid rgba(239, 68, 68, 0.1)', fontFamily: CAIRO }}>
                                                         {inst.daysOverdue} يوم تأخير

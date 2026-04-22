@@ -169,10 +169,10 @@ export default function ReturnsReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontSize: '12.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>
                                                 {r.type === 'sale_return' ? 'SLR-' : 'PUR-'}{String(r.invoiceNumber).padStart(4, '0')}
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{new Date(r.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px' }}>
                                                 <span style={{
                                                     padding: '4px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: 900, fontFamily: CAIRO,
@@ -183,10 +183,10 @@ export default function ReturnsReportPage() {
                                                     {r.type === 'sale_return' ? t('مرتجع مبيعات') : t('مرتجع مشتريات')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.textPrimary, fontSize: '13.5px', fontFamily: INTER }}>
-                                                {fmt(r.total)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'end', fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER }}>
+                                                {fmt(r.total)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                             </td>
                                         </tr>
                                     ))}

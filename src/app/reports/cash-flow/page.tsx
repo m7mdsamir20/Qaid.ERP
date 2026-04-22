@@ -175,7 +175,7 @@ export default function CashFlowReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
                                             onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontSize: '11.5px', color: C.textMuted, fontFamily: INTER, textAlign: 'start' }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, textAlign: 'start' }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                 <span style={{
                                                     padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
@@ -185,11 +185,11 @@ export default function CashFlowReportPage() {
                                                     {v.type === 'receipt' ? t('قبض +') : t('صرف -')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 750, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>{v.treasury}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{v.party}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, textAlign: 'center' }}>{v.description || '—'}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'center' }}>{v.treasury}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{v.party}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, textAlign: 'center' }}>{v.description || '—'}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>
-                                                {fmt(v.amount)} <span style={{ fontFamily: CAIRO, fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                                {fmt(v.amount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', marginInlineStart: '2px', color: C.textMuted }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
