@@ -219,7 +219,6 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
 
         const metaItems = [
             `<span>الشهر: <b>${monthName} ${payroll?.year}</b></span>`,
-            taxNumber ? `<span>الرقم الضريبي: <b>${taxNumber}</b></span>` : '',
             `<span>طُبع: <b>${printDate} — ${printTime}</b></span>`,
         ].filter(Boolean).join('');
 
