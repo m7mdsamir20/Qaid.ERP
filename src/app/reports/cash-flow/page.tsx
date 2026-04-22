@@ -153,7 +153,7 @@ export default function CashFlowReportPage() {
                                                 fontSize: '12px',
                                                 fontWeight: 800,
                                                 color: C.textSecondary,
-                                                textAlign: 'start',
+                                                textAlign: i === 1 ? 'center' : 'start',
                                                 fontFamily: CAIRO,
                                                 borderBottom: `1px solid ${C.border}`
                                             }}>{h}</th>
@@ -169,7 +169,7 @@ export default function CashFlowReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
                                             onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, textAlign: 'start'}}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center'}}>
                                                 <span style={{
                                                     padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
                                                     background: v.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',

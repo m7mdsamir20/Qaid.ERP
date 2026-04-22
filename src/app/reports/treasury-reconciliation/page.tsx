@@ -258,7 +258,7 @@ export default function TreasuryReconciliationPage() {
                                                             {sys.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span>
                                                         </td>
                                                         <td style={{ padding: '14px 20px', textAlign: 'start'}}>
-                                                            <div className="no-print" style={{ display: 'flex', justifyContent: 'center' }}>
+                                                            <div className="no-print" style={{ display: 'flex', justifyContent: 'flex-start' }}>
                                                                 <input type="number" placeholder={t("أدخل المبلغ...")}
                                                                     value={physicalBalances[tData.id] || ''}
                                                                     onChange={e => setPhysicalBalances(prev => ({ ...prev, [tData.id]: e.target.value }))}
