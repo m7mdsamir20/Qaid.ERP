@@ -160,13 +160,13 @@ export default function ExpensesReportPage() {
                                                     style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                     onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                     onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                    <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>#{row.entryNumber}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontFamily: INTER, direction: 'ltr' }}>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>#{row.entryNumber}</td>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, direction: 'ltr' }}>
                                                         {new Date(row.date).toLocaleDateString('en-GB')}
                                                     </td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textPrimary, fontFamily: CAIRO }}>{row.expenseAccountName}</td>
-                                                    <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.description}</td>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{row.expenseAccountName}</td>
+                                                    <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>
                                                         <span style={{
                                                             padding: '3px 8px', borderRadius: '6px', fontSize: '11px', fontWeight: 700,
                                                             background: row.sourceType === 'bank' ? 'rgba(59,130,246,0.1)' : 'rgba(16,185,129,0.1)',
@@ -175,7 +175,7 @@ export default function ExpensesReportPage() {
                                                             {row.sourceName}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '13px', fontWeight: 800, color: DC, fontFamily: INTER }}>
+                                                    <td style={{ padding: '14px 16px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: DC, fontFamily: INTER }}>
                                                         {Number(row.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                     </td>
                                                 </tr>
@@ -183,9 +183,9 @@ export default function ExpensesReportPage() {
                                         </tbody>
                                         <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                             <tr>
-                                                <td colSpan={5} style={{ padding: '18px 16px', textAlign: 'start', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                                <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, fontSize: '15px', color: DC, fontFamily: INTER }}>
-                                                    {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td colSpan={5} style={{ padding: '18px 16px', textAlign: 'start', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+                                                <td style={{ padding: '18px 16px', textAlign: 'center', fontWeight: 900, fontSize: '14px', color: DC, fontFamily: INTER }}>
+                                                    {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>
                                         </tfoot>

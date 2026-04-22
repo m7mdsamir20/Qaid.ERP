@@ -206,23 +206,23 @@ export default function AgingReportPage() {
                                                     SAL-{String(inv.invoiceNumber).padStart(4, '0')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '12.5px', color: C.textMuted, fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>
                                                 {new Date(inv.date).toLocaleDateString('en-GB')}
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
-                                                <div style={{ fontSize: '13.5px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inv.customer}</div>
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.customer}</div>
                                                 {inv.phone && <div style={{ fontSize: '11px', color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontFamily: INTER, marginTop: '2px' }}><Phone size={10} /> {inv.phone}</div>}
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <span style={{ fontSize: '13.5px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{inv.ageDays}</span>
+                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{inv.ageDays}</span>
                                                     <span style={{ fontSize: '10px', fontFamily: CAIRO, fontWeight: 700, color: C.textMuted }}>{t('يوم متأخر')}</span>
                                                 </div>
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
                                                 <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '4px' }}>
-                                                    <span style={{ fontWeight: 1000, color: '#ef4444', fontSize: '14.5px', fontFamily: INTER }}>{inv.remaining.toLocaleString('en-US')}</span>
-                                                    <span style={{ fontSize: '10.5px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                    <span style={{ fontWeight: 1000, color: '#ef4444', fontSize: '14px', fontFamily: INTER }}>{inv.remaining.toLocaleString('en-US')}</span>
+                                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </div>
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'center' }}>
@@ -241,7 +241,7 @@ export default function AgingReportPage() {
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'center', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
-                                        <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '16px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td style={{ padding: '20px 20px', textAlign: 'center', color: '#ef4444', fontSize: '14px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         <td style={{ padding: '20px 24px' }}></td>
                                     </tr>
                                 </tfoot>

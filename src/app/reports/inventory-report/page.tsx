@@ -150,12 +150,12 @@ export default function InventoryReportPage() {
                                                 <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>{st.item?.code || '-'}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
-                                                <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
+                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{st.item?.name || (isServices ? t('خدمة غير معرفة') : t('صنف غير معرف'))}</div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{st.item?.unit || '-'}</span></td>
                                             {!isServices && (
                                                 <>
-                                                    <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{st.warehouse?.name || t('مخزن غير معرف')}</span></td>
+                                                    <td style={TABLE_STYLE.td(false)}><span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{st.warehouse?.name || t('مخزن غير معرف')}</span></td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <span style={{
                                                             fontSize: '13px', fontWeight: 900, color: st.quantity <= 0 ? '#ef4444' : st.quantity <= 10 ? '#f59e0b' : '#10b981',

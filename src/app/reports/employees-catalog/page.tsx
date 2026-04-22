@@ -77,10 +77,10 @@ export default function EmployeesCatalogPage() {
                                         onMouseEnter={ev => ev.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                         onMouseLeave={ev => ev.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{e.name}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{e.department}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{e.position}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontFamily: INTER, textAlign: 'start' }}>{new Date(e.joinDate).toLocaleDateString('en-GB')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontFamily: INTER, textAlign: 'start' }}>{e.phone}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{e.department}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{e.position}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, textAlign: 'start' }}>{new Date(e.joinDate).toLocaleDateString('en-GB')}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, textAlign: 'start' }}>{e.phone}</td>
                                         <td style={{ padding: '14px 16px' }}>
                                             <span style={{
                                                 fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '8px',

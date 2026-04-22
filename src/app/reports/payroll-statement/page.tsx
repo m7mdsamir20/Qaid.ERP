@@ -143,20 +143,20 @@ export default function PayrollStatementPage() {
                                     {data.records.filter(r => r.employeeName.includes(q)).map((r) => (
                                         <tr key={r.id} style={{ borderBottom: `1px solid ${C.border}` }}>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.employeeName}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, fontFamily: INTER }}>{fmt(r.basicSalary)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, color: '#10b981', fontFamily: INTER }}>+{fmt(r.allowances)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 800, color: '#ef4444', fontFamily: INTER }}>-{fmt(r.deductions)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{fmt(r.netSalary)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 600, fontFamily: INTER }}>{fmt(r.basicSalary)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: INTER }}>+{fmt(r.allowances)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 600, color: '#ef4444', fontFamily: INTER }}>-{fmt(r.deductions)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{fmt(r.netSalary)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td style={{ padding: '16px 20px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.summary.totalSalaries)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>+{fmt(data.summary.totalAllowances)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: '#ef4444', fontFamily: INTER }}>-{fmt(data.summary.totalDiscounts)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
-                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{fmt(data.summary.netTotal)} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px' }}>{sym}</span></td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.summary.totalSalaries)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted }}>{sym}</span></td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>+{fmt(data.summary.totalAllowances)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted }}>{sym}</span></td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: '#ef4444', fontFamily: INTER }}>-{fmt(data.summary.totalDiscounts)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted }}>{sym}</span></td>
+                                        <td style={{ padding: '16px 20px', textAlign: 'center', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{fmt(data.summary.netTotal)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted }}>{sym}</span></td>
                                     </tr>
                                 </tfoot>
                             </table>
