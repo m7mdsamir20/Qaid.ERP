@@ -258,10 +258,10 @@ export default function ClientsSuppliersBalancesPage() {
                                                 {filter === 'all' ? (
                                                     <>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
-                                                            {fMoneyJSX(maden > 0 ? <>{maden)}</> : '—'}
+                                                            {maden > 0 ? fMoneyJSX(maden) : '—'}
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
-                                                            {fMoneyJSX(daen > 0 ? <>{daen)}</> : '—'}
+                                                            {daen > 0 ? fMoneyJSX(daen) : '—'}
                                                         </td>
                                                     </>
                                                 ) : (
@@ -311,4 +311,3 @@ export default function ClientsSuppliersBalancesPage() {
         </DashboardLayout>
     );
 }
-

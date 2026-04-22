@@ -30,7 +30,7 @@ export default function TreasuryReconciliationPage() {
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
-    const { fMoney } = useCurrency();
+    const { fMoney, fMoneyJSX } = useCurrency();
 
     const [tab, setTab] = useState<'new' | 'history'>('new');
     const [treasuries, setTreasuries] = useState<TreasuryItem[]>([]);
@@ -260,7 +260,7 @@ export default function TreasuryReconciliationPage() {
                                                                     style={{ width: '140px', height: '36px', textAlign: 'start', borderRadius: '8px', border: `1px solid ${hasActual ? C.primary : C.border}`, background: hasActual ? `${C.primary}08` : C.card, color: C.textPrimary, fontSize: '13px', fontWeight: 800, fontFamily: OUTFIT, outline: 'none' }} />
                                                             </div>
                                                             <div className="print-only" style={{ display: 'none', fontWeight: 900, fontFamily: OUTFIT, textAlign: 'start'}}>
-                                                                {fMoneyJSX(hasActual ? <>{act)}</> : '—'}
+                                                                {hasActual ? fMoneyJSX(act) : '—'}
                                                             </div>
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 1000, color: !hasActual ? C.textMuted : (diff > 0 ? SC : diff < 0 ? DC : C.primary), fontSize: '15px', fontFamily: OUTFIT }}>
