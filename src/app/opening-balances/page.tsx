@@ -243,7 +243,7 @@ export default function OpeningBalancesPage() {
                                      background: saved ? '#10b981' : C.primary, color: 'white', border: 'none',
                                      boxShadow: (saving || !filledCount) ? 'none' : '0 4px 12px rgba(37,106,244,0.25)',
                                      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', opacity: (saving || !filledCount) ? 0.6 : 1,
-                                     fontFamily: CAIRO
+                                     fontFamily: CAIRO, whiteSpace: 'nowrap'
                                  }}
                                  onMouseEnter={e => { if(!saving && filledCount) { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 6px 20px rgba(37,106,244,0.35)'; } }}
                                  onMouseLeave={e => { if(!saving && filledCount) { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 12px rgba(37,106,244,0.25)'; } }}
