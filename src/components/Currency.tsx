@@ -1,16 +1,24 @@
 import React from 'react';
 import { getCurrencySymbol } from '@/lib/currency';
+import { useTranslation } from '@/lib/i18n';
+import { useSession } from 'next-auth/react';
 
 interface CurrencyProps {
     amount: number;
-    code: string; 
-    lang: 'ar' | 'en';
+    code?: string; 
+    lang?: 'ar' | 'en';
     className?: string;
     showSymbol?: boolean;
     style?: React.CSSProperties;
 }
 
-export function Currency({ amount, code, lang, className = '', showSymbol = true, style = {} }: CurrencyProps) {
+export function Currency({ amount, code: propCode, lang: propLang, className = '', showSymbol = true, style = {} }: CurrencyProps) {
+    const { lang: contextLang } = useTranslation();
+    const { data: session } = useSession();
+    
+    const lang = propLang || contextLang;
+    const code = propCode || (session?.user as any)?.currency || 'EGP';
+
     const isRtl = lang === 'ar';
     const symbolText = getCurrencySymbol(code, lang);
     const absAmount = Math.abs(amount);
@@ -22,7 +30,9 @@ export function Currency({ amount, code, lang, className = '', showSymbol = true
     const amountEl = (
         <span style={{ 
             fontWeight: 700, 
-            fontFamily: 'inherit', 
+            fontFamily: "'Inter', sans-serif", 
+            fontSize: '14px',
+            color: 'inherit',
             letterSpacing: '0.2px' 
         }}>
             {amount < 0 ? '-' : ''}{fmt(absAmount)}
@@ -32,11 +42,11 @@ export function Currency({ amount, code, lang, className = '', showSymbol = true
     const symbolEl = showSymbol ? (
         <span style={{ 
             fontFamily: "'Cairo', sans-serif", 
-            fontSize: '0.85em', 
+            fontSize: '11px', 
             fontWeight: 600,
-            opacity: 0.8,
-            marginInlineStart: isRtl ? '4px' : '0',
-            marginInlineEnd: isRtl ? '0' : '4px',
+            color: '#94a3b8',
+            marginInlineStart: isRtl ? '3px' : '0',
+            marginInlineEnd: isRtl ? '0' : '3px',
             verticalAlign: 'baseline',
             display: 'inline-block'
         }}>

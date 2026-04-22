@@ -150,20 +150,20 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
                                         <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('التكلفة')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {invoice.lines.map((l, idx) => (
                                         <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
-                                            <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), }}>
                                                 <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER }}>{l.item.code}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                         </tr>
                                     ))}
                                 </tbody>

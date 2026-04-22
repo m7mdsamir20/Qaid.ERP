@@ -240,7 +240,7 @@ export default function PayrollsPage() {
                                         <th style={TABLE_STYLE.th(true)}>{t('الشهر / السنة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('تاريخ الإصدار')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('عدد الموظفين')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجمالي الصافي')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('إجمالي الصافي')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('العمليات')}</th>
                                     </tr>

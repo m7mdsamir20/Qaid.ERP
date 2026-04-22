@@ -230,7 +230,7 @@ export default function DepreciationPage() {
                                         t('الصافي الباقي'), 
                                         t('الحالة')
                                     ].map((h, i) => (
-                                        <th key={i} style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
+                                        <th key={i} style={{ padding: '12px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>

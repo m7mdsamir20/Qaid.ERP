@@ -184,15 +184,15 @@ export default function DisposalsPage() {
                                     t('نتيجة التخلص'), 
                                     t('ملاحظات')
                                 ].map((h, i) => (
-                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
+                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
                             {loadingList ? (
-                                <tr><td colSpan={7} style={{ padding: '80px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
+                                <tr><td colSpan={7} style={{ padding: '80px', }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={7} style={{ padding: '80px', textAlign: 'center', color: C.textMuted, fontFamily: CAIRO, fontWeight: 800 }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
+                                <tr><td colSpan={7} style={{ padding: '80px',  color: C.textMuted, fontFamily: CAIRO, fontWeight: 800 }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
                             ) : filtered.map((d, i) => {
                                 const isG = d.gainLoss > 0;
                                 return (

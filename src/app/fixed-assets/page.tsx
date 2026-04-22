@@ -240,17 +240,17 @@ export default function FixedAssetsPage() {
                                     t('الحالة'), 
                                     t('خيارات')
                                 ].map((h, i) => (
-                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
+                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={9} style={{ padding: '100px', textAlign: 'center' }}>
+                                <tr><td colSpan={9} style={{ padding: '100px', }}>
                                     <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
                                 </td></tr>
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={9} style={{ padding: '80px', textAlign: 'center', color: C.textMuted }}>
+                                <tr><td colSpan={9} style={{ padding: '80px',  color: C.textMuted }}>
                                     <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
                                     <div style={{ fontWeight: 800, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
                                 </td></tr>

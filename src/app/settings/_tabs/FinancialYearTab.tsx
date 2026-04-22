@@ -181,7 +181,7 @@ export default function FinancialYearTab({ financialYears, isSaving, saveSetting
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                         {[t('اسم السنة'), t('من'), t('إلى'), t('إجمالي الأيام'), t('الحالة')].map(h => (
-                                            <th key={h} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: C.textMuted, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
+                                            <th key={h} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: C.textMuted,  fontFamily: CAIRO }}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>

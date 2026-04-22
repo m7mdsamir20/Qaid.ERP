@@ -260,7 +260,7 @@ export default function InstallmentDetailPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                             {[t('رقم القسط'), t('تاريخ الاستحقاق'), t('المبلغ المستحق'), t('المدفوع'), t('المتبقي'), t('الحالة'), t('إجراء')].map((h, i) => (
-                                                <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted }}>{h}</th>
+                                                <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>

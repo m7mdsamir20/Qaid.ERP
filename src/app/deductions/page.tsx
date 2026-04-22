@@ -245,10 +245,10 @@ export default function DeductionsPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(false)}>{t('تاريخ الخصم')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('تاريخ الخصم')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('المبلغ')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('سبب الخصم')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('المبلغ')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('سبب الخصم')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
@@ -273,7 +273,7 @@ export default function DeductionsPage() {
                                                     <span>{ded.amount.toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>{ded.reason || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: '#94a3b8', fontSize: '13px' }}>{ded.reason || '—'}</td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 {ded.status === 'pending' ? (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>

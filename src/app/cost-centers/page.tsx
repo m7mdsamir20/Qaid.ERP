@@ -192,7 +192,7 @@ export default function CostCentersPage() {
                                     <th style={TABLE_STYLE.th(false)}>{t('اسم المركز التكاليفي')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('البيان / الملاحظات')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجمالي المصروفات')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('إجمالي المصروفات')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                 </tr>
                             </thead>
@@ -219,7 +219,7 @@ export default function CostCentersPage() {
                                                 {cc.isActive ? t('نشط') : t('موقوف')}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), }}>
                                             <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
                                                 {cc.totalExpenses ? cc.totalExpenses.toLocaleString('en-US') : '0.00'} 
                                                 <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>

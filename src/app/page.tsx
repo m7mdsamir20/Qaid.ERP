@@ -605,11 +605,11 @@ export default function DashboardPage() {
                               <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{inv.customer?.name || inv.supplier?.name || '—'}</div>
                               <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: INTER }}>{toEnDigits(new Date(inv.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US'))}</div>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '14px', textAlign: 'center' }}>{renderCurrency(inv.total)}</td>
-                            <td style={{ padding: '14px 16px', textAlign: 'center' }}>
+                            <td style={{ padding: '14px 16px', fontSize: '14px', }}>{renderCurrency(inv.total)}</td>
+                            <td style={{ padding: '14px 16px', }}>
                               <span style={{ fontSize: '11px', fontWeight: 800, color: s.color, background: s.bg, padding: '4px 12px', borderRadius: '30px', border: `1px solid ${s.color}20`, fontFamily: CAIRO }}>{t(s.label)}</span>
                             </td>
-                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: INTER, textAlign: 'center' }}>
+                            <td style={{ padding: '14px 16px', fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: INTER, }}>
                               {getInvoicePrefix(inv.type)}{String(inv.invoiceNumber).padStart(5, '0')}
                             </td>
                           </tr>

@@ -227,7 +227,7 @@ export default function SuperAdminPage() {
                                 return (
                                     <tr key={c.id} style={{ borderBottom: index === filtered.length - 1 ? 'none' : `1px solid ${C.border}`, background: 'transparent' }}>
                                         {/* Company Info */}
-                                        <td style={{ padding: '16px', textAlign: 'right' }}>
+                                        <td style={{ padding: '16px', }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', justifyContent: 'flex-start' }}>
                                                 <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 900, fontSize: '18px', flexShrink: 0 }}>
                                                     {c.name.charAt(0)}
@@ -240,14 +240,14 @@ export default function SuperAdminPage() {
                                         </td>
 
                                         {/* Activity/Business Type */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                                        <td style={{ padding: '16px', }}>
                                             <span style={{ fontSize: '12px', padding: '6px 14px', borderRadius: '24px', background: bType.bg, color: bType.color, fontWeight: 800, border: `1px solid ${bType.color}20`, display: 'inline-block' }}>
                                                 {bType.label}
                                             </span>
                                         </td>
 
                                         {/* Plan & Users */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                                        <td style={{ padding: '16px', }}>
                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px' }}>
                                                 <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '8px', background: plan.bg, color: plan.color, fontWeight: 800 }}>
                                                     {plan.label}
@@ -259,7 +259,7 @@ export default function SuperAdminPage() {
                                         </td>
 
                                         {/* Subscription End Date */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                                        <td style={{ padding: '16px', }}>
                                             {sub ? (
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                     <div style={{ fontSize: '14px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 900, fontFamily: INTER, marginBottom: '4px' }}>
@@ -275,7 +275,7 @@ export default function SuperAdminPage() {
                                         </td>
 
                                         {/* Status */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                                        <td style={{ padding: '16px', }}>
                                             <button onClick={() => handleToggle(c.id, c.isActive)}
                                                 style={{ margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${c.isActive ? C.success : C.danger}40`, background: c.isActive ? `${C.success}15` : `${C.danger}15`, color: c.isActive ? C.success : C.danger, fontSize: '12px', fontWeight: 800, cursor: 'pointer', transition: 'all 0.2s' }}>
                                                 {c.isActive ? <><CheckCircle2 size={16} /> مُفعل</> : <><X size={16} /> معطل</>}
@@ -283,7 +283,7 @@ export default function SuperAdminPage() {
                                         </td>
 
                                         {/* Actions */}
-                                        <td style={{ padding: '16px', textAlign: 'center' }}>
+                                        <td style={{ padding: '16px', }}>
                                             <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                                                 <button onClick={() => router.push(`/super-admin/edit/${c.id}`)}
                                                     style={{ width: '36px', height: '36px', borderRadius: '10px', background: `${C.primary}10`, color: C.primary, border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}>

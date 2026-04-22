@@ -348,20 +348,20 @@ export default function InstallmentsPage() {
                                                     </td>
                                                     <td style={{ padding: '12px 16px', color: C.textSecondary, fontFamily: INTER, fontSize: '13px' }}>{p.customer?.phone || '—'}</td>
                                                     <td style={{ padding: '12px 16px', fontWeight: 600, color: C.textPrimary }}>{p.customer?.name}</td>
-                                                    <td style={{ padding: '12px 16px', textAlign: 'center', fontWeight: 800, fontFamily: INTER }}>
+                                                    <td style={{ padding: '12px 16px',  fontWeight: 800, fontFamily: INTER }}>
                                                         {fmtN(p.grandTotal)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', textAlign: 'center', color: '#10b981', fontWeight: 700, fontFamily: INTER }}>
+                                                    <td style={{ padding: '12px 16px',  color: '#10b981', fontWeight: 700, fontFamily: INTER }}>
                                                         {fmtN(p.downPayment)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', textAlign: 'center', color: C.primary, fontWeight: 800, fontFamily: INTER }}>
+                                                    <td style={{ padding: '12px 16px',  color: C.primary, fontWeight: 800, fontFamily: INTER }}>
                                                         {fmtN(p.installmentAmount)} <span style={{ fontSize: '10px', opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', textAlign: 'center', color: C.textSecondary, fontFamily: INTER, fontSize: '13px' }}>
+                                                    <td style={{ padding: '12px 16px',  color: C.textSecondary, fontFamily: INTER, fontSize: '13px' }}>
                                                         {paidCount} <span style={{ margin: '0 2px', opacity: 0.4 }}>/</span> {p.monthsCount}
                                                         <span style={{ fontSize: '10px', marginInlineStart: '4px' }}>{t('شهر')}</span>
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', textAlign: 'center' }}>
+                                                    <td style={{ padding: '12px 16px', }}>
                                                         {overdueCount > 0 ? (
                                                             <span style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '30px', background: 'rgba(239, 68, 68, 0.12)', color: '#fb7185', border: '1px solid rgba(239, 68, 68, 0.22)', fontSize: '10px', fontWeight: 800, gap: '4px', alignItems: 'center' }}>
                                                                 <AlertTriangle size={10} /> {overdueCount} {t('متأخر')}
@@ -376,7 +376,7 @@ export default function InstallmentsPage() {
                                                             </span>
                                                         )}
                                                     </td>
-                                                    <td style={{ padding: '12px 16px', textAlign: 'center' }} onClick={e => e.stopPropagation()}>
+                                                    <td style={{ padding: '12px 16px', }} onClick={e => e.stopPropagation()}>
                                                         <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                                                             <button onClick={() => router.push(`/installments/${p.id}`)}
                                                                 style={{ width: 32, height: 32, borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer', transition: '0.2s' }}

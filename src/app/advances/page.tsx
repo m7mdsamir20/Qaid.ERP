@@ -265,7 +265,7 @@ export default function AdvancesPage() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(false)}>{t('تاريخ الصرف')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الموظف')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('إجمالي السلفة')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('إجمالي السلفة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الأقساط')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('القسط الشهري')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
@@ -302,7 +302,7 @@ export default function AdvancesPage() {
                                                     <span>{(adv.monthlyAmount || 0).toLocaleString('en-US')}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: '#94a3b8', fontSize: '13px' }}>{adv.notes || '—'}</td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 {adv.status === 'pending' ? (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 800 }}>

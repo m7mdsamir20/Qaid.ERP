@@ -263,7 +263,7 @@ export default function GeneralLedgerPage() {
                                         <th style={TABLE_STYLE.th(false)}>{t('مراكز التكلفة')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('مدين')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('دائن')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الرصيد')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -302,7 +302,7 @@ export default function GeneralLedgerPage() {
                                             </td>
 
                                             {/* Description */}
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start', fontSize: '13px', color: C.textSecondary, fontWeight: 500, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '13px', color: C.textSecondary, fontWeight: 500, maxWidth: '280px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {line.description}
                                             </td>
 

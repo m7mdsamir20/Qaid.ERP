@@ -131,16 +131,16 @@ export default function OtherIncomePage() {
                                 <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('رقم القيد')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('بند الإيراد')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الخزينة / البنك')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false), }}>{t('الخزينة / البنك')}</th>
                                 <th style={TABLE_STYLE.th(false)}>{t('البيان / التفاصيل')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center' }}><Loader2 size={32} className="animate-spin" style={{ color: C.primary, margin: '0 auto' }} /></td></tr>
+                                <tr><td colSpan={6} style={{ padding: '60px', }}><Loader2 size={32} className="animate-spin" style={{ color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filteredAll.length === 0 ? (
-                                <tr><td colSpan={6} style={{ padding: '80px', textAlign: 'center', color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد بيانات مسجلة مطابقة للبحث')}</td></tr>
+                                <tr><td colSpan={6} style={{ padding: '80px',  color: C.textMuted, fontWeight: 600, fontFamily: CAIRO }}>{t('لا توجد بيانات مسجلة مطابقة للبحث')}</td></tr>
                             ) : paginated.map((e, idx) => {
                                 const creditLine = e.lines.find((l: any) => l.credit > 0);
                                 const debitLine = e.lines.find((l: any) => l.debit > 0);
@@ -162,7 +162,7 @@ export default function OtherIncomePage() {
                                             <div style={{ fontWeight: 800, color: C.textPrimary }}>{creditLine?.account?.name}</div>
                                             <div style={{ fontSize: '10px', color: C.textMuted }}>{creditLine?.account?.code}</div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: C.textPrimary, fontWeight: 700, fontSize: '13px' }}>
                                                     <Banknote size={14} style={{ color: e.sourceType === 'bank' ? '#60a5fa' : C.success, opacity: 0.8 }} />
@@ -181,7 +181,7 @@ export default function OtherIncomePage() {
                                         <td style={{ ...TABLE_STYLE.td(false), maxWidth: '180px', color: C.textSecondary, fontSize: '12px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                             {e.description || '—'}
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), }}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: INTER }}>
                                                 {(creditLine?.credit || 0).toLocaleString('en-US')}
                                                 <small style={{ fontSize: '11px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>

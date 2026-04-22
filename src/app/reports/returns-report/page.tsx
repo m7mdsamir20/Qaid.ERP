@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
@@ -157,7 +158,7 @@ export default function ReturnsReportPage() {
                                         {[t('رقم الفاتورة'), t('التاريخ'), t('نوع المرتجع'), t('الطرف الآخر'), t('الأصناف'), t('القيمة الإجمالية')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
-                                                textAlign: 'start', 
+                                                 
                                                 fontWeight: 800, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}
@@ -184,9 +185,9 @@ export default function ReturnsReportPage() {
                                                 </span>
                                             </td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.party}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER }}>
-                                                {fmt(r.total)} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{r.itemCount} {t('صنف')}</td>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 900, color: C.textPrimary, fontSize: '14px', fontFamily: INTER }}>
+                                                <Currency amount={r.total} />
                                             </td>
                                         </tr>
                                     ))}

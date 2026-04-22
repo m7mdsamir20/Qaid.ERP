@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -203,7 +204,7 @@ export default function PurchasesReportPage() {
                                                 fontSize: '12px',
                                                 fontWeight: 600,
                                                 color: C.textSecondary,
-                                                textAlign: 'start',
+                                                
                                                 fontFamily: CAIRO,
                                                 borderBottom: `1px solid ${C.border}`
                                             }}>{h}</th>
@@ -226,29 +227,29 @@ export default function PurchasesReportPage() {
                                                     PUR-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, textAlign: 'start'}}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{inv.supplier?.name || inv.customer?.name || t('مورد نقدي')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '14px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? <>{fmt(inv.discount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: INTER }}>{fmt(inv.paidAmount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}><Currency amount={inv.total} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? <><Currency amount={inv.discount} /></> : '—'}</td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: INTER }}><Currency amount={inv.paidAmount} /></td>
+                                            <td style={{ padding: '14px 20px', }}>
                                                 <span style={{
                                                     fontSize: '14px', fontWeight: 600, fontFamily: INTER,
                                                     color: inv.remaining > 0 ? '#fb7185' : '#10b981',
                                                     background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
                                                     padding: '4px 12px', borderRadius: '10px', border: `1px solid ${inv.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
-                                                }}>{fmt(inv.remaining)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></span>
+                                                }}><Currency amount={inv.remaining} /></span>
                                             </td>
                                         </tr>
                                     ))}
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start'}}>{t('إجماليات المشتريات للفترة')}</td>
-                                        <td style={{ padding: '18px', textAlign: 'start', fontSize: '14px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}>{fmt(data.totalPurchases)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        <td style={{ padding: '18px', textAlign: 'start', fontSize: '14px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}>{fmt(data.totalDiscount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        <td style={{ padding: '18px', textAlign: 'start', fontSize: '14px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}>{fmt(data.totalPaid)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        <td style={{ padding: '18px', textAlign: 'start', fontSize: '14px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}>{fmt(data.totalRemaining)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, }}>{t('إجماليات المشتريات للفترة')}</td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}><Currency amount={data.totalPurchases} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}><Currency amount={data.totalDiscount} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}><Currency amount={data.totalPaid} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}><Currency amount={data.totalRemaining} /></td>
                                     </tr>
                                 </tfoot>
                             </table>

@@ -71,14 +71,14 @@ export default function WarehouseTransfersPage() {
                                     <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('من مخزن')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('إلى مخزن')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t('الأصناف المحولة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), }}>{t('الأصناف المحولة')}</th>
                                     <th style={TABLE_STYLE.th(false)}>{t('الملاحظات')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {transfers.length === 0 ? (
                                     <tr>
-                                        <td colSpan={6} style={{ padding: '80px 0', textAlign: 'center', color: C.textMuted }}>
+                                        <td colSpan={6} style={{ padding: '80px 0',  color: C.textMuted }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
                                                 <History size={48} style={{ opacity: 0.2 }} />
                                                 <div style={{ fontFamily: CAIRO, fontSize: '14px', fontWeight: 600 }}>{t('لا توجد عمليات تحويل مسجلة حالياً')}</div>
@@ -97,20 +97,20 @@ export default function WarehouseTransfersPage() {
                                                 {tf.code || `TRF-${tf.transferNumber}`}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
+                                        <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
                                             {new Date(tf.date).toLocaleDateString('en-GB')}
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), }}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(251,113,133,0.05)', color: '#fb7185', fontSize: '12px', fontWeight: 800 }}>
                                                 <Building2 size={12} /> {tf.fromWarehouse?.name || '—'}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), }}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '8px', background: 'rgba(52,211,153,0.05)', color: '#34d399', fontSize: '12px', fontWeight: 800 }}>
                                                 <Building2 size={12} /> {tf.toWarehouse?.name || '—'}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), }}>
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                                 {tf.lines.map((l, i) => (
                                                     <div key={i} style={{ 
@@ -123,7 +123,7 @@ export default function WarehouseTransfersPage() {
                                                 ))}
                                             </div>
                                         </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '11px', maxWidth: '150px' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '11px', maxWidth: '150px' }}>
                                             {tf.notes || '—'}
                                         </td>
                                     </tr>

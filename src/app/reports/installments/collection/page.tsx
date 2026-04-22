@@ -197,7 +197,7 @@ export default function CollectionReportPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             {['تاريخ التحصيل', 'العميل', 'رقم الخطة', 'القسط', 'المبلغ المحصّل'].map((h, i) => (
-                                                <th key={i} style={{ padding: '20px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                <th key={i} style={{ padding: '20px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>

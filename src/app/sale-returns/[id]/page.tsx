@@ -200,11 +200,11 @@ export default function SaleReturnDetailsPage() {
                             <table className="table" style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
-                                        <th style={{ padding: '12px 16px', textAlign: 'start', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الخدمة") : t("الصنف")}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الحالة/الوصف") : t("الوحدة")}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الكمية الملغاة") : t("الكمية المرتجعة")}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("سعر الخدمة") : t("سعر الوحدة")}</th>
-                                        <th style={{ padding: '12px 16px', textAlign: 'center', fontSize: '10px', color: 'var(--text-muted)' }}>{t('الإجمالي')}</th>
+                                        <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الخدمة") : t("الصنف")}</th>
+                                        <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الحالة/الوصف") : t("الوحدة")}</th>
+                                        <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الكمية الملغاة") : t("الكمية المرتجعة")}</th>
+                                        <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("سعر الخدمة") : t("سعر الوحدة")}</th>
+                                        <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{t('الإجمالي')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -214,10 +214,10 @@ export default function SaleReturnDetailsPage() {
                                                 <div style={{ fontWeight: 700, fontSize: '13px' }}>{l.item.name}</div>
                                                 <div style={{ fontSize: '10px', color: 'var(--text-muted)', marginTop: '2px' }}>{l.item.code || '—'}</div>
                                             </td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px' }}>{l.item.unit?.name || '—'}</td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: 700, color: '#f87171' }}>{l.quantity}</td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '12px' }}>{l.price.toLocaleString()}</td>
-                                            <td style={{ padding: '12px 16px', textAlign: 'center', fontSize: '13px', fontWeight: 800 }}>{l.total.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px',  fontSize: '12px' }}>{l.item.unit?.name || '—'}</td>
+                                            <td style={{ padding: '12px 16px',  fontSize: '13px', fontWeight: 700, color: '#f87171' }}>{l.quantity}</td>
+                                            <td style={{ padding: '12px 16px',  fontSize: '12px' }}>{l.price.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px',  fontSize: '13px', fontWeight: 800 }}>{l.total.toLocaleString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>

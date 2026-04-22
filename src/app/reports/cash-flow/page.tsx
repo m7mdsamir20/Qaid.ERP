@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -162,14 +163,14 @@ export default function CashFlowReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لم يتم العثور على حركات نقدية تطابق البحث')}</td></tr>
+                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لم يتم العثور على حركات نقدية تطابق البحث')}</td></tr>
                                     ) : filtered.map((v, i) => (
                                         <tr key={v.id} 
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
                                             onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, textAlign: 'start'}}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'center'}}>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', }}>
                                                 <span style={{
                                                     padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
                                                     background: v.type === 'receipt' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(251, 113, 133, 0.1)',
@@ -178,11 +179,11 @@ export default function CashFlowReportPage() {
                                                     {v.type === 'receipt' ? t('قبض +') : t('صرف -')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, textAlign: 'start'}}>{v.treasury}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, textAlign: 'start'}}>{v.party}</td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, textAlign: 'start'}}>{v.description || '—'}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>
-                                                {fmt(v.amount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', marginInlineStart: '2px', color: C.textMuted }}>{sym}</span></td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, }}>{v.description || '—'}</td>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>
+                                                <Currency amount={v.amount} /></td>
                                         </tr>
                                     ))}
                                 </tbody>

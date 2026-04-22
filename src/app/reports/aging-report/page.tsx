@@ -189,7 +189,7 @@ export default function AgingReportPage() {
                                         {[t('رقم الفاتورة'), t('تاريخ الإصدار'), t('العميل المستحق'), t('عمر الدين'), t('المبلغ المتبقي'), t('حالة التصنيف')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
-                                                textAlign: 'start', 
+                                                 
                                                 fontWeight: 800, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}
@@ -201,31 +201,31 @@ export default function AgingReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                            <td style={{ padding: '14px 20px', }}>
                                                 <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: INTER, background: 'rgba(37,99,235,0.08)', padding: '4px 10px', borderRadius: '6px' }}>
                                                     SAL-{String(inv.invoiceNumber).padStart(4, '0')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px',  fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>
                                                 {new Date(inv.date).toLocaleDateString('en-GB')}
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                            <td style={{ padding: '14px 20px', }}>
                                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.customer}</div>
                                                 {inv.phone && <div style={{ fontSize: '11px', color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '4px', fontFamily: INTER, marginTop: '2px' }}><Phone size={10} /> {inv.phone}</div>}
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                            <td style={{ padding: '14px 20px', }}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                                                     <span style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{inv.ageDays}</span>
                                                     <span style={{ fontSize: '10px', fontFamily: CAIRO, fontWeight: 700, color: C.textMuted }}>{t('يوم متأخر')}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                            <td style={{ padding: '14px 20px', }}>
                                                 <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'baseline', gap: '4px' }}>
                                                     <span style={{ fontWeight: 1000, color: '#ef4444', fontSize: '14px', fontFamily: INTER }}>{inv.remaining.toLocaleString('en-US')}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                            <td style={{ padding: '14px 20px', }}>
                                                 <span style={{
                                                     padding: '5px 12px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 900, fontFamily: CAIRO,
                                                     background: inv.ageDays > 90 ? 'rgba(239, 68, 68, 0.1)' : inv.ageDays > 60 ? 'rgba(245, 158, 11, 0.1)' : 'rgba(16, 185, 129, 0.1)',
@@ -240,8 +240,8 @@ export default function AgingReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={4} style={{ padding: '20px 24px', textAlign: 'start', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
-                                        <td style={{ padding: '20px 20px', textAlign: 'start', color: '#ef4444', fontSize: '14px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي المديونيات المتأخرة المستحقة')}</td>
+                                        <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 1000, fontFamily: INTER }}>{filtered.reduce((s, i) => s + i.remaining, 0).toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         <td style={{ padding: '20px 24px' }}></td>
                                     </tr>
                                 </tfoot>

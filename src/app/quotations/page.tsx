@@ -171,7 +171,7 @@ export default function QuotationsPage() {
                                         <th style={TABLE_STYLE.th(true)}>{t("رقم العرض")}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t("العميل")}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t("التاريخ")}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t("الإجمالي")}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t("الإجمالي")}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t("الحالة")}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t("إجراءات")}</th>
                                     </tr>
@@ -184,19 +184,19 @@ export default function QuotationsPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', }}>
                                                     QUO-{quo.quotationNumber.toString().padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
                                                     {quo.customer?.name || t('عميل نقدي')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: INTER, color: C.textSecondary, textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: INTER, color: C.textSecondary, }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     {fMoneyJSX(quo.total)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     <div style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,

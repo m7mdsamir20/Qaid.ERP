@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -149,7 +150,7 @@ export default function ReceiptVouchersPage() {
                                         <th style={TABLE_STYLE.th(false)}>{t('طريقة الدفع')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('المبلغ')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -185,8 +186,8 @@ export default function ReceiptVouchersPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {v.description || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.success, fontWeight: 700, fontFamily: CAIRO }}>
-                                                {fmt(v.amount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.success, fontWeight: 700, fontFamily: CAIRO }}>
+                                                <Currency amount={v.amount} />
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>

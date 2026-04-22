@@ -358,7 +358,7 @@ export default function OpeningBalancesPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={6} style={{ padding: '60px', textAlign: 'center', color: C.textMuted, fontSize: '15px', fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد نتائج مطابقة لعملية البحث')}</td></tr>
+                                        <tr><td colSpan={6} style={{ padding: '60px',  color: C.textMuted, fontSize: '15px', fontFamily: CAIRO, fontWeight: 700 }}>{t('لا توجد نتائج مطابقة لعملية البحث')}</td></tr>
                                     ) : filtered.map((account: Account, idx: number) => {
                                         const balance = balances.get(account.id) || { debit: 0, credit: 0 };
                                         const hasDr   = balance.debit  > 0;
@@ -425,16 +425,16 @@ export default function OpeningBalancesPage() {
                                 </tbody>
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
-                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.success, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px', textAlign: 'center', fontSize: '15px', fontWeight: 900, color: C.danger, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalCredit)}</td>
+                                        <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 800, color: C.textPrimary,  fontFamily: CAIRO }}>{t('إجمالي الأرصدة الختامية')}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.success, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '15px', fontWeight: 900, color: C.danger, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>
-                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 800, color: C.warning, textAlign: 'start', fontFamily: CAIRO }}>
+                                            <td colSpan={4} style={{ padding: '10px 20px', fontSize: '12px', fontWeight: 800, color: C.warning,  fontFamily: CAIRO }}>
                                                 <AlertTriangle size={14} style={{ display: 'inline', marginInlineStart: '6px' }} /> {t('يرجى مراجعة المدخلات - القيد غير متوازن')}
                                             </td>
-                                            <td colSpan={2} style={{ padding: '10px 20px', textAlign: 'center', fontSize: '14px', fontWeight: 900, color: C.warning, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(Math.abs(difference))}</td>
+                                            <td colSpan={2} style={{ padding: '10px 20px',  fontSize: '14px', fontWeight: 900, color: C.warning, direction: 'ltr', fontFamily: INTER }}>{fmtDisplay(Math.abs(difference))}</td>
                                         </tr>
                                     )}
                                 </tfoot>

@@ -204,19 +204,19 @@ export default function ClientsSuppliersBalancesPage() {
                             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('النوع')}</th>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('الاسم')}</th>
-                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('الهاتف')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('النوع')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الاسم')}</th>
+                                        <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الهاتف')}</th>
                                         
                                         {filter === 'all' ? (
                                             <>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('عليه (مدين)')}</th>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('له (دائن)')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('عليه (مدين)')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('له (دائن)')}</th>
                                             </>
                                         ) : (
                                             <>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('الوضع المالي')}</th>
-                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary, textAlign: 'start', fontWeight: 800, fontFamily: CAIRO }}>{t('صافي الرصيد')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('الوضع المالي')}</th>
+                                                <th style={{ padding: '16px 20px', fontSize: '12px', color: C.textSecondary,  fontWeight: 800, fontFamily: CAIRO }}>{t('صافي الرصيد')}</th>
                                             </>
                                         )}
                                     </tr>
@@ -241,7 +241,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                                <td style={{ padding: '14px 20px', }}>
                                                     <span style={{
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '10.5px', fontWeight: 900, fontFamily: CAIRO,
                                                         background: p.partnerType === 'customer' ? 'rgba(59,130,246,0.1)' : 'rgba(245,158,11,0.1)',
@@ -250,21 +250,21 @@ export default function ClientsSuppliersBalancesPage() {
                                                         {p.partnerType === 'customer' ? t('عميل') : t('مورد')}
                                                     </span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start'}}>{p.name}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textMuted, fontFamily: INTER, textAlign: 'start'}}>{p.phone || '—'}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{p.name}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textMuted, fontFamily: INTER, }}>{p.phone || '—'}</td>
                                                 
                                                 {filter === 'all' ? (
                                                     <>
-                                                        <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: maden > 0 ? '#ef4444' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
                                                             {maden > 0 ? <>{maden.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: daen > 0 ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
                                                             {daen > 0 ? <>{daen.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}
                                                         </td>
                                                     </>
                                                 ) : (
                                                     <>
-                                                        <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                                        <td style={{ padding: '14px 20px', }}>
                                                             {p.balance === 0 ? (
                                                                 <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{t('رصيد صفري')}</span>
                                                             ) : (
@@ -277,7 +277,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                                 </span>
                                                             )}
                                                         </td>
-                                                        <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
+                                                        <td style={{ padding: '14px 20px',  fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: INTER }}>
                                                             {Math.abs(p.balance).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                         </td>
                                                     </>
@@ -286,7 +286,7 @@ export default function ClientsSuppliersBalancesPage() {
                                         );
                                     })}
                                     {filteredData.length === 0 && (
-                                        <tr><td colSpan={5} style={{ textAlign: 'start', padding: '100px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد نتائج تطابق بحثك...')}</td></tr>
+                                        <tr><td colSpan={5} style={{  padding: '100px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد نتائج تطابق بحثك...')}</td></tr>
                                     )}
                                 </tbody>
                             </table>

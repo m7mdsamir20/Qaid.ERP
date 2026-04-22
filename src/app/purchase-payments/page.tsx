@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -245,7 +246,7 @@ export default function PurchasePaymentsPage() {
                                         <th style={TABLE_STYLE.th(false)}>طريقة الدفع</th>
                                         <th style={TABLE_STYLE.th(false)}>الخزينة / البنك</th>
                                         <th style={TABLE_STYLE.th(false)}>البيان</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>المبلغ</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>المبلغ</th>
                                         <th style={TABLE_STYLE.th(false)}>إجراءات</th>
                                     </tr>
                                 </thead>
@@ -281,8 +282,8 @@ export default function PurchasePaymentsPage() {
                                             <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                                                 {v.description || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}>
-                                                {fmt(v.amount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: '#fb7185', fontWeight: 700, fontFamily: CAIRO }}>
+                                                <Currency amount={v.amount} />
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
