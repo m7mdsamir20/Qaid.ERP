@@ -14,12 +14,24 @@ function getFiles(dir) {
     return files;
 }
 
-const reportsDir = 'src/app/reports';
-const files = getFiles(reportsDir);
+const appDir = 'src/app';
+const files = getFiles(appDir);
 
 for (const file of files) {
     const content = fs.readFileSync(file, 'utf8');
-    if (content.includes('fMoneyJSX') && !content.includes('fMoneyJSX } = useCurrency') && !content.includes(', fMoneyJSX } = useCurrency')) {
-        console.log(`Missing import in: ${file}`);
+    if (content.includes('fMoneyJSX')) {
+        // Check if useCurrency is used and if fMoneyJSX is destructured
+        const useCurrencyMatch = content.match(/const\s+\{([^}]+)\}\s*=\s*useCurrency\(\)/);
+        if (useCurrencyMatch) {
+            const destructured = useCurrencyMatch[1];
+            if (!destructured.includes('fMoneyJSX')) {
+                console.log(`Missing import in: ${file}`);
+            }
+        } else if (!content.includes('import { fMoneyJSX }')) {
+             // Maybe it's imported another way, but usually it's useCurrency
+             if (content.includes('useCurrency')) {
+                  console.log(`Potential issue in: ${file} (used fMoneyJSX but useCurrency destructuring not found or malformed)`);
+             }
+        }
     }
 }

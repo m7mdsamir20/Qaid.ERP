@@ -16,7 +16,7 @@ export default function QuotationViewPage() {
     const params = useParams();
     const router = useRouter();
     const { data: session } = useSession();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [quotation, setQuotation] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [converting, setConverting] = useState(false);

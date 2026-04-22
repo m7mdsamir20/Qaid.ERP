@@ -18,7 +18,7 @@ export default function DuePage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [installments, setInstallments] = useState<any[]>([]);
     const [treasuries, setTreasuries] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
