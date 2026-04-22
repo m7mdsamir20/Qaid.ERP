@@ -211,7 +211,7 @@ export default function AgingReportPage() {
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                 <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.customer}</div>
-                                                {inv.phone && <div style={{ fontSize: '11px', color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontFamily: INTER, marginTop: '2px' }}><Phone size={10} /> {inv.phone}</div>}
+                                                {inv.phone && <div style={{ fontSize: '11px', color: C.textMuted, display: 'flex', alignItems: 'center', justifyContent: 'flex-start', gap: '4px', fontFamily: INTER, marginTop: '2px' }}><Phone size={10} /> {inv.phone}</div>}
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'start'}}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -220,7 +220,7 @@ export default function AgingReportPage() {
                                                 </div>
                                             </td>
                                             <td style={{ padding: '14px 20px', textAlign: 'start'}}>
-                                                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '4px' }}>
+                                                <div style={{ display: 'flex', justifyContent: 'flex-start', alignItems: 'baseline', gap: '4px' }}>
                                                     <span style={{ fontWeight: 1000, color: '#ef4444', fontSize: '14px', fontFamily: INTER }}>{inv.remaining.toLocaleString('en-US')}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                 </div>
