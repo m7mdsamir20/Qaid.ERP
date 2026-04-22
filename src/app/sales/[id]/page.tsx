@@ -267,20 +267,20 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                             <th style={TABLE_STYLE.th(true)}>{isServices ? t('الخدمة') : t('الصنف')}</th>
                                             {!isServices && <th style={TABLE_STYLE.th(false)}>{t('الوحدة')}</th>}
                                             <th style={TABLE_STYLE.th(false)}>{t('الكمية')}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{isServices ? t('سعر الخدمة') : t('سعر البيع')}</th>
                                             {(invoice.taxRate || 0) > 0 ? (
                                                 <>
-                                                    <th style={TABLE_STYLE.th(false)}>{t('نسبة الضريبة')}</th>
-                                                    <th style={TABLE_STYLE.th(false)}>{t('قيمة الضريبة')}</th>
+                                                    <th style={TABLE_STYLE.th(false, true)}>{t('نسبة الضريبة')}</th>
+                                                    <th style={TABLE_STYLE.th(false, true)}>{t('قيمة الضريبة')}</th>
                                                 </>
                                             ) : null}
-                                            <th style={TABLE_STYLE.th(false)}>{t('الإجمالي')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {invoice.lines.map((l, idx) => (
                                             <tr key={l.id} style={TABLE_STYLE.row(idx === invoice.lines.length - 1)}>
-                                                <td style={{ ...TABLE_STYLE.td(true), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), }}>
                                                     <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                     {l.description
                                                         ? <div style={{ fontSize: '12px', color: C.textMuted, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>
@@ -288,10 +288,10 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     }
                                                 </td>
                                                 {!isServices && (
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
                                                 {(() => {
                                                     const invTaxRate = invoice.taxRate || 0;
                                                     const lineTaxRate = l.taxRate || invTaxRate;
@@ -299,13 +299,13 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     const lineTaxAmt = l.taxAmount || (lineTaxRate > 0 ? parseFloat((lineBase * lineTaxRate / 100).toFixed(2)) : 0);
                                                     if (invTaxRate > 0) return (
                                                         <>
-                                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{lineTaxRate}%</td>
-                                                            <td style={{ padding: '10px 12px', textAlign: 'center', color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>{lineTaxAmt.toLocaleString()}</td>
+                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{lineTaxRate}%</td>
+                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>{lineTaxAmt.toLocaleString()}</td>
                                                         </>
                                                     );
                                                     return null;
                                                 })()}
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -332,7 +332,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         <tr style={TABLE_STYLE.thead}>
                                             <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
                                             <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                            <th style={TABLE_STYLE.th(false)}>{t('قيمة المرتجع')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t('قيمة المرتجع')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>

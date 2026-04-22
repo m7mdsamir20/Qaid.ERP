@@ -162,14 +162,14 @@ export default function SalesPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={{ ...TABLE_STYLE.th(true), textAlign: 'start' }}>{t("رقم الفاتورة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("التاريخ")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("العميل")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("الإجمالي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("المدفوع")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("المتبقي")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>{t("الحالة")}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(true), }}>{t("رقم الفاتورة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), }}>{t("التاريخ")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), }}>{t("العميل")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("الإجمالي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), }}>{t("المدفوع")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), }}>{t("المتبقي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), }}>{t("الحالة")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false), }}>{t("إجراءات")}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -181,21 +181,21 @@ export default function SalesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', }}>
                                                     {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER, textAlign: 'start' }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>{inv.customer ? inv.customer.name : t("عميل نقدي")}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: INTER, }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{inv.customer ? inv.customer.name : t("عميل نقدي")}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     {fMoneyJSX(inv.total)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     {fMoneyJSX(inv.paidAmount, '', { color: C.success })}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     {fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'start' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     <div style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px', 
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,

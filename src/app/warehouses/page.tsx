@@ -205,7 +205,7 @@ export default function WarehousesPage() {
                                                     {wh.address || t('غير محدد')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.purple, textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.purple, }}>
                                                 {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>

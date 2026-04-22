@@ -263,7 +263,7 @@ export default function BankStatementPage() {
                                             {[t('التاريخ'), t('بيان العملية / التحويل'), t('الرصيد قبل'), t('إيداع (+)'), t('سحب (-)'), t('الرصيد بعد')].map((h, i) => (
                                                 <th key={i} style={{
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary,
-                                                    textAlign: 'start',
+                                                    
                                                     fontWeight: 700, fontFamily: CAIRO
                                                 }}>{h}</th>
                                             ))}
@@ -271,37 +271,37 @@ export default function BankStatementPage() {
                                     </thead>
                                     <tbody>
                                         <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                            <td colSpan={2} style={{ padding: '14px 20px', textAlign: 'start', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد منقول (قبل الفترة المستعرضة)')}</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted }}>—</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted }}>—</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted }}>—</td>
-                                            <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 900, color: data.openingBalance >= 0 ? SC : DC, fontSize: '14px', fontFamily: INTER }}>{data.openingBalance.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td colSpan={2} style={{ padding: '14px 20px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('رصيد منقول (قبل الفترة المستعرضة)')}</td>
+                                            <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
+                                            <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
+                                            <td style={{ padding: '14px 20px',  color: C.textMuted }}>—</td>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 900, color: data.openingBalance >= 0 ? SC : DC, fontSize: '14px', fontFamily: INTER }}>{data.openingBalance.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                         {movements.map((m, i: number) => (
                                             <tr key={m.id + i} 
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px',  color: C.textMuted, fontSize: '13px', fontFamily: INTER }}>
                                                     {new Date(m.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start'}}>{m.party}</div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, textAlign: 'start', fontFamily: CAIRO, marginTop: '2px' }}>{m.description}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: C.textMuted, fontSize: '14px', fontFamily: INTER }}>{m.balanceBefore.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{m.type === 'receipt' ? <>{m.amount.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start', color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{m.type === 'payment' ? <>{m.amount.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start', fontWeight: 900, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '14px', fontFamily: INTER, background: 'rgba(255,255,255,0.01)' }}>{m.balanceAfter.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px',  color: C.textMuted, fontSize: '14px', fontFamily: INTER }}>{m.balanceBefore.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px',  color: m.type === 'receipt' ? SC : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{m.type === 'receipt' ? <>{m.amount.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  color: m.type === 'payment' ? DC : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{m.type === 'payment' ? <>{m.amount.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 900, color: m.balanceAfter >= 0 ? SC : DC, fontSize: '14px', fontFamily: INTER, background: 'rgba(255,255,255,0.01)' }}>{m.balanceAfter.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
-                                            <td colSpan={3} style={{ padding: '20px 24px', textAlign: 'start', fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('تحليل الحركة البنكية الكلية')}</td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'start', color: SC, fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>+{totalReceipts.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '20px 20px', textAlign: 'start', color: DC, fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>-{totalPayments.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '20px 24px', textAlign: 'start', color: C.textPrimary, fontSize: '14px', fontWeight: 900, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>{data.currentBalance.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td colSpan={3} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('تحليل الحركة البنكية الكلية')}</td>
+                                            <td style={{ padding: '20px 20px',  color: SC, fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>+{totalReceipts.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '20px 20px',  color: DC, fontSize: '14px', fontWeight: 900, fontFamily: INTER }}>-{totalPayments.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '20px 24px',  color: C.textPrimary, fontSize: '14px', fontWeight: 900, fontFamily: INTER, background: 'rgba(255,255,255,0.02)' }}>{data.currentBalance.toLocaleString('en-US')} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     </tfoot>
                                 </table>

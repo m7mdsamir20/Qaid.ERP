@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -136,7 +137,7 @@ export default function PurchaseReturnsListPage() {
                                         <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
                                         <th style={TABLE_STYLE.th(false)}>التاريخ</th>
                                         <th style={TABLE_STYLE.th(false)}>المورد</th>
-                                        <th style={TABLE_STYLE.th(false)}>الإجمالي</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>الإجمالي</th>
                                         <th style={TABLE_STYLE.th(false)}>المدفوع</th>
                                         <th style={TABLE_STYLE.th(false)}>المتبقي</th>
                                         <th style={TABLE_STYLE.th(false)}>الحالة</th>
@@ -158,13 +159,13 @@ export default function PurchaseReturnsListPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.supplier?.name || '—'}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                                                    {fmt(inv.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    <Currency amount={inv.total} />
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
-                                                    {fmt(inv.paidAmount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    <Currency amount={inv.paidAmount} />
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: CAIRO }}>
-                                                    {fmt(inv.remaining)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    <Currency amount={inv.remaining} />
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{

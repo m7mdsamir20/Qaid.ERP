@@ -221,7 +221,7 @@ export default function NewTransferPage() {
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
                                             <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>{t('الصنف')}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '120px' }}>{t('الرصيد المتاح')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '120px' }}>{t('الرصيد المتاح')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '150px' }}>{t('الكمية المحولة')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px', width: '60px' }}>{t('إجراء')}</th>
                                         </tr>
@@ -229,7 +229,7 @@ export default function NewTransferPage() {
                                     <tbody>
                                         {lines.length === 0 ? (
                                             <tr>
-                                                <td colSpan={4} style={{ padding: '40px', textAlign: 'center', color: C.textMuted }}>
+                                                <td colSpan={4} style={{ padding: '40px',  color: C.textMuted }}>
                                                     <p style={{ fontSize: '12px', fontWeight: 600 }}>{t('لم يتم إضافة أصناف بعد. اضغط على أضف صنف للبدء.')}</p>
                                                 </td>
                                             </tr>
@@ -247,7 +247,7 @@ export default function NewTransferPage() {
                                                             options={items.map(i => ({ value: i.id, label: i.name }))}
                                                         />
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false), }}>
                                                         <div style={{ 
                                                             fontSize: '12px', fontWeight: 800, fontFamily: INTER, 
                                                             color: available > 0 ? C.success : C.danger,
@@ -276,7 +276,7 @@ export default function NewTransferPage() {
                                                             )}
                                                         </div>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false), }}>
                                                         <button
                                                             type="button" onClick={() => removeLine(index)}
                                                             style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(251,113,133,0.05)', border: '1px solid rgba(251,113,133,0.1)', color: C.danger, borderRadius: '8px', cursor: 'pointer', transition: '0.2s' }}

@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -231,7 +232,7 @@ export default function FixedAssetsReportPage() {
                                                 fontSize: '12px',
                                                 fontWeight: 800,
                                                 color: C.textSecondary,
-                                                textAlign: 'start',
+                                                
                                                 fontFamily: CAIRO,
                                                 borderBottom: `1px solid ${C.border}`
                                             }}>{h}</th>
@@ -240,7 +241,7 @@ export default function FixedAssetsReportPage() {
                                 </thead>
                                 <tbody>
                                     {filtered.length === 0 ? (
-                                        <tr><td colSpan={10} style={{ padding: '60px', textAlign: 'start', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
+                                        <tr><td colSpan={10} style={{ padding: '60px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد بيانات تطابق البحث حالياً')}</td></tr>
                                     ) : filtered.map((a, i) => {
                                         const st = STATUS_MAP[a.status];
                                         const depPctRow = a.purchaseCost > 0
@@ -257,12 +258,12 @@ export default function FixedAssetsReportPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{a.name}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{t(a.category)}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{a.purchaseDate?.split('T')[0]}</td>
-                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: C.textPrimary, fontWeight: 600, fontFamily: INTER, textAlign: 'start'}}>{fmt(a.purchaseCost)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
-                                                    <div style={{ fontSize: '14px', color: '#fb7185', fontWeight: 600, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></div>
+                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: C.textPrimary, fontWeight: 600, fontFamily: INTER, }}><Currency amount={a.purchaseCost} /></td>
+                                                <td style={{ padding: '14px 20px', }}>
+                                                    <div style={{ fontSize: '14px', color: '#fb7185', fontWeight: 600, fontFamily: INTER }}><Currency amount={a.accumulatedDepreciation} /></div>
                                                     <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontFamily: CAIRO }}>{depPctRow}% {t('مستهلك')}</div>
                                                 </td>
-                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: '#10b981', fontWeight: 600, fontFamily: INTER, textAlign: 'start'}}>{fmt(a.netBookValue)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px', fontSize: '14px', color: '#10b981', fontWeight: 600, fontFamily: INTER, }}><Currency amount={a.netBookValue} /></td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: '#f59e0b', fontWeight: 600, fontFamily: INTER }}>{a.depreciationRate}%</td>
                                                 <td style={{ padding: '14px 20px' }}>
                                                     <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 12px', borderRadius: '8px', background: st.bg, color: st.color, border: `1px solid ${st.color}33`, whiteSpace: 'nowrap', fontFamily: CAIRO }}>
@@ -275,10 +276,10 @@ export default function FixedAssetsReportPage() {
                                 </tbody>
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
-                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: C.textPrimary, textAlign: 'start', fontFamily: INTER }}>{fmt(totalCost)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: '#fb7185', textAlign: 'start', fontFamily: INTER }}>{fmt(totalAccum)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
-                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: '#10b981', textAlign: 'start', fontFamily: INTER }}>{fmt(totalNet)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                        <td colSpan={4} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary,  fontFamily: CAIRO }}>{t('إجمالي الأصول المفلترة')} ({filtered.length})</td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: C.textPrimary,  fontFamily: INTER }}><Currency amount={totalCost} /></td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: '#fb7185',  fontFamily: INTER }}><Currency amount={totalAccum} /></td>
+                                        <td style={{ padding: '18px 20px', fontSize: '14px', fontWeight: 900, color: '#10b981',  fontFamily: INTER }}><Currency amount={totalNet} /></td>
                                         <td colSpan={2} />
                                     </tr>
                                 </tfoot>

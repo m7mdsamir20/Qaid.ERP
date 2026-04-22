@@ -467,13 +467,13 @@ function DetailTable({ title, accounts, color, t }: any) {
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{acc.name}</div>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, fontWeight: 600 }}>{acc.code}</div>
                                 </td>
-                                <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 900, color, direction: 'ltr', fontFamily: INTER }}>
+                                <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 900, color, direction: 'ltr', fontFamily: INTER }}>
                                     {fmt(acc.balance)}
                                 </td>
                             </tr>
                         )) : (
                             <tr>
-                                <td colSpan={2} style={{ padding: '40px', textAlign: 'center', color: C.textMuted, fontSize: '12px' }}>{t('لا توجد أرصدة حالياً')}</td>
+                                <td colSpan={2} style={{ padding: '40px',  color: C.textMuted, fontSize: '12px' }}>{t('لا توجد أرصدة حالياً')}</td>
                             </tr>
                         )}
                     </tbody>

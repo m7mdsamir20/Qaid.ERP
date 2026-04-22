@@ -282,8 +282,8 @@ export default function NewStocktakingPage() {
                                     <thead>
                                         <tr style={TABLE_STYLE.thead}>
                                             <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>{t('الصنف')}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>{t('الرصيد الدفتري')}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>{t('الرصيد الفعلي')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px' }}>{t('الرصيد الدفتري')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px' }}>{t('الرصيد الفعلي')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false), fontSize: '11px' }}>{t('الفارق')}</th>
                                         </tr>
                                     </thead>
@@ -293,7 +293,7 @@ export default function NewStocktakingPage() {
                                             return (
                                                 <tr key={index} style={TABLE_STYLE.row(index === lines.length - 1)}>
                                                     <td style={{ ...TABLE_STYLE.td(true), fontWeight: 700, color: C.textPrimary, fontSize: '12px' }}>{itemName}</td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 700, color: C.textSecondary, fontSize: '12px' }}>{line.systemQuantity}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, fontWeight: 700, color: C.textSecondary, fontSize: '12px' }}>{line.systemQuantity}</td>
                                                     <td style={{ ...TABLE_STYLE.td(false), padding: '8px 12px', width: '150px' }}>
                                                         <input 
                                                             type="number" step="0.01" 
@@ -305,7 +305,7 @@ export default function NewStocktakingPage() {
                                                             onFocus={focusIn} onBlur={focusOut}
                                                         />
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, fontWeight: 900, color: line.difference > 0 ? '#34d399' : (line.difference < 0 ? '#f87171' : C.textMuted), fontSize: '13px' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, fontWeight: 900, color: line.difference > 0 ? '#34d399' : (line.difference < 0 ? '#f87171' : C.textMuted), fontSize: '13px' }}>
                                                         {line.difference > 0 ? '+' : ''}{line.difference}
                                                     </td>
                                                 </tr>

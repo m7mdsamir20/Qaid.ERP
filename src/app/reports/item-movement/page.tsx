@@ -221,7 +221,7 @@ export default function ItemMovementReportPage() {
                                             {[t('التاريخ والوقت'), t('نوع الحركة'), t('المخزن'), t('الكمية'), t('البيان')].map((h, i) => (
                                                 <th key={i} style={{ 
                                                     padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
-                                                    textAlign: 'start', fontWeight: 800, fontFamily: CAIRO 
+                                                     fontWeight: 800, fontFamily: CAIRO 
                                                 }}>{h}</th>
                                             ))}
                                         </tr>
@@ -248,7 +248,7 @@ export default function ItemMovementReportPage() {
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse.name}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'start'}}>
+                                                <td style={{ padding: '14px 20px', }}>
                                                     <span style={{ fontSize: '14px', fontWeight: 900, color: meta.color, fontFamily: INTER }}>
                                                         {meta.sign}{meta.quantity.toLocaleString('en-US')}
                                                     </span>

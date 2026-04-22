@@ -193,7 +193,7 @@ export default function OverdueReportPage() {
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                             {['العميل', 'رقم الخطة', 'القسط', 'موعد الاستحقاق', 'أيام التأخير', 'المبلغ المتبقي'].map((h, i) => (
-                                                <th key={i} style={{ padding: '20px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
+                                                <th key={i} style={{ padding: '20px',  fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>

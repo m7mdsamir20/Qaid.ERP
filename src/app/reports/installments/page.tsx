@@ -323,7 +323,7 @@ export default function InstallmentReportsPage() {
                                                 <thead>
                                                     <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
                                                         {[t('تاريخ العملية'), t('العميل'), t('البيان'), t('رقم الخطة'), t('المبلغ المحصّل')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
@@ -371,7 +371,7 @@ export default function InstallmentReportsPage() {
                                                 <thead>
                                                     <tr style={{ background: 'rgba(251,113,133,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                         {[t('العميل'), t('رقم الخطة'), t('القسط'), t('موعد الاستحقاق'), t('أيام التأخير'), t('المبلغ المتبقي')].map((h, i) => (
-                                                            <th key={i} style={{ padding: '16px', textAlign: 'start', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                            <th key={i} style={{ padding: '16px',  fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                         ))}
                                                     </tr>
                                                 </thead>
@@ -442,7 +442,7 @@ export default function InstallmentReportsPage() {
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
                                                                 {[t('م'), t('تاريخ الاستحقاق'), t('مبلغ القسط'), t('القيمة المحصلة'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                                    <th key={i} style={{ padding: '12px 24px', textAlign: 'start', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                                    <th key={i} style={{ padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                                 ))}
                                                             </tr>
                                                         </thead>

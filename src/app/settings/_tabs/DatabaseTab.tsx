@@ -298,20 +298,20 @@ export default function DatabaseTab({
                                         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                                             <thead style={{ background: 'rgba(255,255,255,0.04)', position: 'sticky', top: 0, zIndex: 5 }}>
                                                 <tr>
-                                                    <th style={{ padding: '12px 14px', textAlign: 'start', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>{t('الاسم')}</th>
-                                                    <th style={{ padding: '12px 14px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>
+                                                    <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>{t('الاسم')}</th>
+                                                    <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>
                                                         {importType === 'items' ? t('الوحدة') : t('الهاتف')}
                                                     </th>
                                                     {importType === 'items' ? (
                                                         <>
-                                                            <th style={{ padding: '12px 14px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>{t('الكمية')}</th>
-                                                            <th style={{ padding: '12px 14px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.primary, fontWeight: 900, fontSize: '12px' }}>{t('سعر التكلفة')}</th>
-                                                            <th style={{ padding: '12px 14px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#f59e0b', fontWeight: 900, fontSize: '12px', background: 'rgba(245,158,11,0.04)' }}>{t('إجمالي التكلفة')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.textSecondary, fontWeight: 900, fontSize: '12px' }}>{t('الكمية')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: C.primary, fontWeight: 900, fontSize: '12px' }}>{t('سعر التكلفة')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#f59e0b', fontWeight: 900, fontSize: '12px', background: 'rgba(245,158,11,0.04)' }}>{t('إجمالي التكلفة')}</th>
                                                         </>
                                                     ) : (
                                                         <>
-                                                            <th style={{ padding: '12px 14px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#ef4444', fontWeight: 900, fontSize: '12px', background: 'rgba(239,68,68,0.04)' }}>{t('مدين (عليه)')}</th>
-                                                            <th style={{ padding: '12px 14px', textAlign: 'center', borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#10b981', fontWeight: 900, fontSize: '12px', background: 'rgba(16,185,129,0.04)' }}>{t('دائن (له)')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#ef4444', fontWeight: 900, fontSize: '12px', background: 'rgba(239,68,68,0.04)' }}>{t('مدين (عليه)')}</th>
+                                                            <th style={{ padding: '12px 14px',  borderBottom: `1px solid ${C.border}`, fontFamily: CAIRO, color: '#10b981', fontWeight: 900, fontSize: '12px', background: 'rgba(16,185,129,0.04)' }}>{t('دائن (له)')}</th>
                                                         </>
                                                     )}
                                                 </tr>
@@ -372,31 +372,31 @@ export default function DatabaseTab({
                                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
                                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                                             <td style={{ padding: '11px 14px', fontFamily: CAIRO, fontWeight: 700, color: C.textPrimary }}>{String(name || String(Object.values(row)[0] || ''))}</td>
-                                                            <td style={{ padding: '11px 14px', textAlign: 'center', color: C.textMuted, fontSize: '12px' }}>
+                                                            <td style={{ padding: '11px 14px',  color: C.textMuted, fontSize: '12px' }}>
                                                                 {importType === 'items'
                                                                     ? findT(['وحدة القياس', 'الوحدة', 'وحده', 'القياس', 'unit', 'measure', 'uom'])
                                                                     : findT(['هاتف', 'جوال', 'موبايل', 'phone', 'mobile'])}
                                                             </td>
                                                             {importType === 'items' ? (
                                                                 <>
-                                                                    <td style={{ padding: '11px 14px', textAlign: 'center', fontWeight: 800, color: C.textSecondary, fontFamily: 'monospace' }}>
+                                                                    <td style={{ padding: '11px 14px',  fontWeight: 800, color: C.textSecondary, fontFamily: 'monospace' }}>
                                                                         {findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']).toLocaleString('en-US')}
                                                                     </td>
-                                                                    <td style={{ padding: '11px 14px', textAlign: 'center', fontWeight: 800, color: C.primary, fontFamily: 'monospace' }}>
+                                                                    <td style={{ padding: '11px 14px',  fontWeight: 800, color: C.primary, fontFamily: 'monospace' }}>
                                                                         {findV(['تكلفة', 'cost']).toLocaleString('en-US')}
                                                                     </td>
-                                                                    <td style={{ padding: '11px 14px', textAlign: 'center', fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace', background: 'rgba(245,158,11,0.03)' }}>
+                                                                    <td style={{ padding: '11px 14px',  fontWeight: 900, color: '#f59e0b', fontFamily: 'monospace', background: 'rgba(245,158,11,0.03)' }}>
                                                                         {(findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity']) * findV(['تكلفة', 'cost'])).toLocaleString('en-US')}
                                                                     </td>
                                                                 </>
                                                             ) : (
                                                                 <>
-                                                                    <td style={{ padding: '11px 14px', textAlign: 'center', background: 'rgba(239,68,68,0.03)' }}>
+                                                                    <td style={{ padding: '11px 14px',  background: 'rgba(239,68,68,0.03)' }}>
                                                                         {previewDebit > 0
                                                                             ? <span style={{ fontWeight: 900, color: '#ef4444', fontFamily: 'monospace' }}>{previewDebit.toLocaleString('en-US')}</span>
                                                                             : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>—</span>}
                                                                     </td>
-                                                                    <td style={{ padding: '11px 14px', textAlign: 'center', background: 'rgba(16,185,129,0.03)' }}>
+                                                                    <td style={{ padding: '11px 14px',  background: 'rgba(16,185,129,0.03)' }}>
                                                                         {previewCredit > 0
                                                                             ? <span style={{ fontWeight: 900, color: '#10b981', fontFamily: 'monospace' }}>{previewCredit.toLocaleString('en-US')}</span>
                                                                             : <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: '16px' }}>—</span>}

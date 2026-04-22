@@ -546,7 +546,7 @@ export default function NewReturnPage() {
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '10px', width: '30px' }}>✓</th>
-                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</th>
+                                                <th style={{ padding: '10px',  color: C.textMuted, fontSize: '10px' }}>{isServices ? t('اسم الخدمة') : t('اسم الصنف')}</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('الوصف') : t('الوحدة')}</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('الكمية') : t('الكمية المباعة')}</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{isServices ? t('سابق الإلغاء') : t('سابق الإرجاع')}</th>
@@ -565,7 +565,7 @@ export default function NewReturnPage() {
                                                         <td style={{ padding: '8px 10px' }}>
                                                             {!fullyReturned && <input type="checkbox" checked={l.selected} onChange={() => toggleLine(i)} style={{ width: 14, height: 14, cursor: 'pointer', accentColor: C.primary }} />}
                                                         </td>
-                                                        <td style={{ padding: '8px 10px', textAlign: 'start' }}>
+                                                        <td style={{ padding: '8px 10px', }}>
                                                             <div style={{ fontWeight: 600, color: C.textPrimary }}>{l.itemName}</div>
                                                         </td>
                                                         <td style={{ padding: '8px 10px', color: C.textSecondary }}>{l.unit}</td>

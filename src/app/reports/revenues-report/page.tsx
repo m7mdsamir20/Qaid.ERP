@@ -131,7 +131,7 @@ export default function RevenuesReportPage() {
                                         <thead>
                                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
                                                 {[t('رقم القيد'), t('التاريخ'), t('البيان'), t('حساب الإيراد'), t('المصدر'), t('المبلغ')].map((h, i) => (
-                                                    <th key={i} style={{ padding: '14px 16px', fontSize: '12px', textAlign: 'start', color: i === 5 ? SC : C.textSecondary, fontFamily: CAIRO, fontWeight: 700 }}>{h}</th>
+                                                    <th key={i} style={{ padding: '14px 16px', fontSize: '12px',  color: i === 5 ? SC : C.textSecondary, fontFamily: CAIRO, fontWeight: 700 }}>{h}</th>
                                                 ))}
                                             </tr>
                                         </thead>
@@ -150,7 +150,7 @@ export default function RevenuesReportPage() {
                                                             {row.sourceName}
                                                         </span>
                                                     </td>
-                                                    <td style={{ padding: '14px 16px', textAlign: 'start', fontSize: '14px', fontWeight: 600, color: SC, fontFamily: INTER }}>
+                                                    <td style={{ padding: '14px 16px',  fontSize: '14px', fontWeight: 600, color: SC, fontFamily: INTER }}>
                                                         {Number(row.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                                     </td>
                                                 </tr>
@@ -158,8 +158,8 @@ export default function RevenuesReportPage() {
                                         </tbody>
                                         <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                             <tr>
-                                                <td colSpan={5} style={{ padding: '18px 16px', textAlign: 'start', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
-                                                <td style={{ padding: '18px 16px', textAlign: 'start', fontWeight: 900, fontSize: '14px', color: SC, fontFamily: INTER }}>
+                                                <td colSpan={5} style={{ padding: '18px 16px',  fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإجمالي')}</td>
+                                                <td style={{ padding: '18px 16px',  fontWeight: 900, fontSize: '14px', color: SC, fontFamily: INTER }}>
                                                     {Number(data.totalAmount).toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                             </tr>

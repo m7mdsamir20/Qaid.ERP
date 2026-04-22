@@ -209,7 +209,7 @@ export default function CostCenterDetails() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false), textAlign: 'end' }}>{t('المبلغ')}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true), }}>{t('المبلغ')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('المصدر')}</th>
                                     </tr>
                                 </thead>
@@ -225,7 +225,7 @@ export default function CostCenterDetails() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{line.description || line.journalEntry.description || '—'}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'end', fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>
+                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>
                                                 {line.debit.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>

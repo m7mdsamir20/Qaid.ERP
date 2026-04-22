@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -265,7 +266,7 @@ export default function SuppliersPage() {
                                         <th style={TABLE_STYLE.th(true)}>{t('المورد')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('العنوان')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('الرصيد الحالي')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الرصيد الحالي')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -291,9 +292,9 @@ export default function SuppliersPage() {
                                                         </Link>
                                                     </div>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     <span style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '3px 12px', borderRadius: '30px', fontSize: '10px', fontWeight: 600,
                                                         background: isCredit ? 'rgba(239, 68, 68, 0.12)' : (isDebit ? 'rgba(74,222,128,0.12)' : 'rgba(255,255,255,0.06)'),
@@ -301,7 +302,7 @@ export default function SuppliersPage() {
                                                         border: `1px solid ${isCredit ? 'rgba(239, 68, 68, 0.22)' : (isDebit ? 'rgba(74,222,128,0.22)' : C.border)}`,
                                                     }}>
                                                         <span style={{ fontFamily: CAIRO }}>{isCredit ? t('له عندنا') : (isDebit ? t('عليه لنا') : t('متزن'))}</span>
-                                                        <span style={{ fontFamily: INTER, fontSize: '13px', fontWeight: 800 }}>{fmt(Math.abs(c.balance))} <span style={{ fontFamily: CAIRO, fontSize: '10px', opacity: 0.8 }}>{cSymbol}</span></span>
+                                                        <span style={{ fontFamily: INTER, fontSize: '13px', fontWeight: 800 }}><Currency amount={Math.abs(c.balance)} /></span>
                                                     </span>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>

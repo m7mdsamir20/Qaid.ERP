@@ -439,7 +439,7 @@ export default function UsersTab({
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
                                 {[t('المستخدم'), t('المعرف'), t('الدور'), t('الحالة'), ''].map((h, i) => (
-                                    <th key={i} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: C.textMuted, textAlign: 'center', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
+                                    <th key={i} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 900, color: C.textMuted,  fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -448,17 +448,17 @@ export default function UsersTab({
                                 <tr key={u.id} style={{ borderBottom: idx < users.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.2s' }}
                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                    <td style={{ padding: '14px 20px', }}>
                                         <div style={{ fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{u.name}</div>
                                         <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{u.email}</div>
                                     </td>
-                                    <td style={{ padding: '14px 20px', fontFamily: INTER, fontSize: '12px', color: C.textSecondary, textAlign: 'center' }}>@{u.username}</td>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                    <td style={{ padding: '14px 20px', fontFamily: INTER, fontSize: '12px', color: C.textSecondary, }}>@{u.username}</td>
+                                    <td style={{ padding: '14px 20px', }}>
                                         <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}30`, fontWeight: 900, fontFamily: CAIRO }}>
                                             {roleLabels[u.role] || u.role}
                                         </span>
                                     </td>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                    <td style={{ padding: '14px 20px', }}>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <button onClick={() => toggleUserStatus(u.id, u.status)}
                                                 style={{ height: '26px', padding: '0 12px', borderRadius: '20px', border: `1px solid ${u.status === 'active' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`, background: u.status === 'active' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)', color: u.status === 'active' ? '#10b981' : C.danger, fontSize: '11px', fontWeight: 900, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontFamily: CAIRO }}>
@@ -467,7 +467,7 @@ export default function UsersTab({
                                             </button>
                                         </div>
                                     </td>
-                                    <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                    <td style={{ padding: '14px 20px', }}>
                                         <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
                                             {u.id !== session?.user?.id && (
                                                 <button onClick={() => editUser(u)}

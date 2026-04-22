@@ -518,7 +518,7 @@ export default function NewPurchaseReturnPage() {
                                         <thead>
                                             <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                                                 <th style={{ padding: '10px', width: '30px' }}>✓</th>
-                                                <th style={{ padding: '10px', textAlign: 'start', color: C.textMuted, fontSize: '10px' }}>{t('اسم الصنف')}</th>
+                                                <th style={{ padding: '10px',  color: C.textMuted, fontSize: '10px' }}>{t('اسم الصنف')}</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('الوحدة')}</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('الكمية المشتراة')}</th>
                                                 <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('سابق الإرجاع')}</th>
@@ -535,7 +535,7 @@ export default function NewPurchaseReturnPage() {
                                                         <td style={{ padding: '8px 10px' }}>
                                                             {!fullyReturned && <input type="checkbox" checked={l.selected} onChange={() => toggleLine(i)} style={{ width: 14, height: 14, cursor: 'pointer', accentColor: C.primary }} />}
                                                         </td>
-                                                        <td style={{ padding: '8px 10px', textAlign: 'start' }}>
+                                                        <td style={{ padding: '8px 10px', }}>
                                                             <div style={{ fontWeight: 600, color: C.textPrimary }}>{l.itemName}</div>
                                                         </td>
                                                         <td style={{ padding: '8px 10px', color: C.textSecondary }}>{l.unit}</td>

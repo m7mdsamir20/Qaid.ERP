@@ -1,4 +1,5 @@
 'use client';
+import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -320,10 +321,10 @@ export default function NewQuotationPage() {
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
                                         <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
-                                            <th style={{ padding: '12px', textAlign: 'start', fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 800 }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 800 }}>{t('السعر')}</th>
-                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 800 }}>{t('الإجمالي')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, fontWeight: 800 }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 800 }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 800 }}>{t('السعر')}</th>
+                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 800 }}>{t('الإجمالي')}</th>
                                             <th style={{ padding: '12px', width: '80px' }}></th>
                                         </tr>
                                     </thead>
@@ -333,10 +334,10 @@ export default function NewQuotationPage() {
                                                 <td style={{ padding: '12px' }}>
                                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
                                                 </td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: INTER, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontWeight: 900, fontFamily: INTER, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center' }}>
+                                                <td style={{ padding: '12px',  fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ padding: '12px',  fontFamily: INTER, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                                <td style={{ padding: '12px',  fontWeight: 900, fontFamily: INTER, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
+                                                <td style={{ padding: '12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
                                                         <button type="button" onClick={() => removeLine(idx)} style={{ color: C.danger, border: 'none', background: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
@@ -345,7 +346,7 @@ export default function NewQuotationPage() {
                                             </tr>
                                         ))}
                                         {lines.length === 0 && (
-                                            <tr><td colSpan={5} style={{ padding: '40px', textAlign: 'center', color: C.textMuted, fontSize: '13px' }}>{t('لم يتم إضافة أصناف بعد')}</td></tr>
+                                            <tr><td colSpan={5} style={{ padding: '40px',  color: C.textMuted, fontSize: '13px' }}>{t('لم يتم إضافة أصناف بعد')}</td></tr>
                                         )}
                                     </tbody>
                                 </table>
@@ -369,7 +370,7 @@ export default function NewQuotationPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
                                     <span style={{ color: '#64748b' }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
-                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: '#e2e8f0' }}>{fmt(subtotal)} <small style={{ fontFamily: CAIRO, fontSize: '10px' }}>{cSymbol}</small> </span>
+                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: '#e2e8f0' }}><Currency amount={subtotal} /> </span>
                                 </div>
 
                                 {/* Discount Section */}
@@ -431,8 +432,7 @@ export default function NewQuotationPage() {
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                                 fontFamily: INTER, fontSize: '13px', fontWeight: 800, position: 'relative'
                                             }}>
-                                                {fmt(taxAmount)}
-                                                <small style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '9px', fontWeight: 400, color: '#64748b' }}>{cSymbol}</small>
+                                                <Currency amount={taxAmount} />
                                             </div>
                                             <div style={{ position: 'relative' }}>
                                                 <input type="text" inputMode="decimal" value={form.taxRate === 0 ? '' : fmt(form.taxRate)}
@@ -456,7 +456,7 @@ export default function NewQuotationPage() {
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
                                     <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
-                                        {fmt(finalTotal)} <small style={{ fontWeight: 700 }}>{cSymbol}</small>
+                                        <Currency amount={finalTotal} />
                                     </span>
                                     <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
                                 </div>

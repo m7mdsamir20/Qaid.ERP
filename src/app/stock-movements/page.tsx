@@ -160,7 +160,7 @@ export default function StockMovementsPage() {
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{m.item?.name || '—'}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse?.name || '—'}</td>
-                                                <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                                <td style={{ padding: '14px 20px', }}>
                                                     <span style={{ fontSize: '14px', fontWeight: 900, color: typeConfig.color, fontFamily: INTER }}>
                                                         {m.quantity > 0 ? '+' : ''}{m.quantity.toLocaleString('en-US')}
                                                     </span>

@@ -538,11 +538,11 @@ export default function NewPurchasePage() {
                                         {lines.map((l, i) => (
                                             <tr key={i} style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                                 <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{l.itemName}</td>
-                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
-                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
-                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
-                                                <td style={{ padding: '10px 12px', textAlign: 'center', color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
-                                                <td style={{ padding: '10px 12px', textAlign: 'center' }}>
+                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
                                                         <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
@@ -550,13 +550,13 @@ export default function NewPurchasePage() {
                                                 </td>
                                             </tr>
                                         ))}
-                                        {lines.length === 0 && <tr><td colSpan={6} style={{ padding: '40px', textAlign: 'center', color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>}
+                                        {lines.length === 0 && <tr><td colSpan={6} style={{ padding: '40px',  color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>}
                                     </tbody>
                                     {lines.length > 0 && (
                                         <tfoot>
                                             <tr style={{ background: 'rgba(37,106,244,0.04)', borderTop: `1px solid ${C.primaryBorder}` }}>
                                                 <td colSpan={4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي')} {lines.length} {t('الأصناف')}</td>
-                                                <td style={{ padding: '12px', textAlign: 'center', fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{subtotal.toLocaleString()} {cSymbol}</td>
+                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>{subtotal.toLocaleString()} {cSymbol}</td>
                                                 <td />
                                             </tr>
                                         </tfoot>

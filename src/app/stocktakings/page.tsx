@@ -218,13 +218,13 @@ export default function StocktakingsPage() {
                                                     STK-{st.stocktakingNum}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
+                                            <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px', fontWeight: 600 }}>
                                                 {new Date(st.date).toLocaleDateString('en-GB')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), }}>
                                                 <div style={{ fontWeight: 800, color: C.textPrimary, fontSize: '13px' }}>{st.warehouse?.name || '—'}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), }}>
                                                 {st.status === 'applied' ? (
                                                     <span style={{ 
                                                         display: 'inline-flex', alignItems: 'center', gap: '4px', padding: '4px 10px', borderRadius: '20px', 
@@ -241,7 +241,7 @@ export default function StocktakingsPage() {
                                                     </span>
                                                 )}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), }}>
                                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                                                     {st.lines.filter(l => l.difference !== 0).length > 0 ? st.lines.filter(l => l.difference !== 0).map((l, i) => (
                                                         <div key={i} style={{ 

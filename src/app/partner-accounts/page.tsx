@@ -218,7 +218,7 @@ export default function PartnerAccountsPage() {
                                                             <tr style={{ ...TABLE_STYLE.thead, background: 'rgba(255,255,255,0.02)' }}>
                                                                 <th style={{ ...TABLE_STYLE.th(true), padding: '12px 16px' }}>{t('التاريخ')}</th>
                                                                 <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>{t('نوع العملية')}</th>
-                                                                <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>{t('المبلغ')}</th>
+                                                                <th style={{ ...TABLE_STYLE.th(false, true), padding: '12px 16px' }}>{t('المبلغ')}</th>
                                                                 <th style={{ ...TABLE_STYLE.th(false), padding: '12px 16px' }}>{t('البيان والملاحظات')}</th>
                                                             </tr>
                                                         </thead>
