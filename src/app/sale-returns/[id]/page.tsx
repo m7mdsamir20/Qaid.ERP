@@ -198,7 +198,7 @@ export default function SaleReturnDetailsPage() {
                                 <thead>
                                     <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
                                         <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الخدمة") : t("الصنف")}</th>
-                                        <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الحالة/الوصف") : t("الوحدة")}</th>
+                                        <th style={{ textAlign: 'center', padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الحالة/الوصف") : t("الوحدة")}</th>
                                         <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("الكمية الملغاة") : t("الكمية المرتجعة")}</th>
                                         <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{isServices ? t("سعر الخدمة") : t("سعر الوحدة")}</th>
                                         <th style={{ padding: '12px 16px',  fontSize: '10px', color: 'var(--text-muted)' }}>{t('الإجمالي')}</th>

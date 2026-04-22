@@ -442,7 +442,7 @@ export default function InstallmentReportsPage() {
                                                         <thead>
                                                             <tr style={{ background: 'rgba(255,255,255,0.01)' }}>
                                                                 {[t('م'), t('تاريخ الاستحقاق'), t('مبلغ القسط'), t('القيمة المحصلة'), t('المتبقي'), t('الحالة')].map((h, i) => (
-                                                                    <th key={i} style={{ padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                                    <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', padding: '12px 24px',  fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
                                                                 ))}
                                                             </tr>
                                                         </thead>

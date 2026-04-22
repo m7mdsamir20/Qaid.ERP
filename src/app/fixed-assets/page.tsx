@@ -232,7 +232,7 @@ export default function FixedAssetsPage() {
                                     t('الحالة'), 
                                     t('خيارات')
                                 ].map((h, i) => (
-                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
+                                    <th key={i} style={{ textAlign: i === 7 ? 'center' : 'start', padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>

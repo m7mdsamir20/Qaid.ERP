@@ -140,8 +140,8 @@ export default function PurchaseReturnsListPage() {
                                         <th style={TABLE_STYLE.th(false, true)}>الإجمالي</th>
                                         <th style={TABLE_STYLE.th(false)}>المدفوع</th>
                                         <th style={TABLE_STYLE.th(false)}>المتبقي</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>الحالة</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>

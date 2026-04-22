@@ -144,8 +144,8 @@ export default function SaleReturnsListPage() {
                                         <th style={TABLE_STYLE.th(false, true)}>الإجمالي</th>
                                         <th style={TABLE_STYLE.th(false)}>تم رده</th>
                                         <th style={TABLE_STYLE.th(false)}>المتبقي</th>
-                                        <th style={TABLE_STYLE.th(false)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>الحالة</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>

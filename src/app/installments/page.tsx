@@ -336,10 +336,10 @@ export default function InstallmentsPage() {
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
-                                                    <td style={TABLE_STYLE.td(true)}>
+                                                    <td style={TABLE_STYLE.td(true, true)}>
                                                         <div style={{ fontWeight: 900, color: '#5286ed', fontFamily: OUTFIT, fontSize: '13px' }}>PLAN-{String(p.planNumber || idx + 1).padStart(4, '0')}</div>
                                                     </td>
-                                                    <td style={TABLE_STYLE.td(false)}>
+                                                    <td style={TABLE_STYLE.td(false, true)}>
                                                         {p.productName ? (
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                                                 <Package size={14} style={{ opacity: 0.5 }} />

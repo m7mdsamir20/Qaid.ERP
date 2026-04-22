@@ -373,7 +373,7 @@ export default function ComprehensiveSettlementPage() {
                                                     { label: t('المبلغ'), width: '14%' },
                                                     { label: t('إجراء'), width: '6%' }
                                                 ].map((h, i) => (
-                                                    <th key={i} style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
+                                                    <th key={i} style={{ textAlign: i === 12 ? 'center' : 'start', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
                                                 ))}
                                             </tr>
                                         </thead>

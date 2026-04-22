@@ -143,7 +143,7 @@ export default function ReceiptVouchersPage() {
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t('رقم السند')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('التاريخ')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('العميل')}</th>
-                                        <th style={TABLE_STYLE.th(false)}>{t('طريقة الدفع')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('طريقة الدفع')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('الخزينة / البنك')}</th>
                                         <th style={TABLE_STYLE.th(false)}>{t('البيان')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المبلغ')}</th>
