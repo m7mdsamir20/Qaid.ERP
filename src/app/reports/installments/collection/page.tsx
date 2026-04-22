@@ -93,51 +93,38 @@ export default function CollectionReportPage() {
                     title="تقرير تحصيل الأقساط"
                     subtitle="متابعة المبالغ التي تم تحصيلها من العملاء خلال فترة زمنية"
                     backTab="installments"
-                    
+                    printTitle={data && (data.installments?.length || 0) > 0 ? "تقرير تحصيل الأقساط" : undefined}
+                    printDate={`${form.from} — ${form.to}`}
+                    printLabel="الفترة:"
                 />
 
-                <div className="no-print" style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: '1fr 1fr 160px', 
-                    gap: '14px', 
-                    marginBottom: '24px', 
-                    width: '100%',
-                    alignItems: 'end'
-                }}>
-                    <div style={{ position: 'relative' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>من تاريخ:</label>
-                        <input type="date" value={form.from}
-                            onChange={e => setForm(f => ({ ...f, from: e.target.value }))}
-                            style={{ 
-                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
-                                borderRadius: '12px', border: `1px solid ${C.border}`,
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                fontWeight: 600, outline: 'none', fontFamily: INTER
-                            }}
-                        />
-                    </div>
-                    
-                    <div style={{ position: 'relative' }}>
-                        <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>إلى تاريخ:</label>
-                        <input type="date" value={form.to}
-                            onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
-                            style={{ 
-                                ...IS, width: '100%', height: '42.5px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
-                                borderRadius: '12px', border: `1px solid ${C.border}`,
-                                background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                fontWeight: 600, outline: 'none', fontFamily: INTER
-                            }}
-                        />
-                    </div>
-                    
-                    <button onClick={fetchReport} disabled={loading} style={{ 
-                        height: '42.5px', padding: '0 24px', borderRadius: '12px', 
+                <div className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
+                    <input type="date" value={form.from}
+                        onChange={e => setForm(f => ({ ...f, from: e.target.value }))}
+                        style={{
+                            height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
+                            background: C.card, color: C.textPrimary, fontSize: '13px',
+                            fontWeight: 600, outline: 'none', fontFamily: INTER, width: '170px'
+                        }}
+                    />
+                    <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
+                    <input type="date" value={form.to}
+                        onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
+                        style={{
+                            height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
+                            background: C.card, color: C.textPrimary, fontSize: '13px',
+                            fontWeight: 600, outline: 'none', fontFamily: INTER, width: '170px'
+                        }}
+                    />
+                    <button onClick={fetchReport} disabled={loading} style={{
+                        height: '42px', padding: '0 24px', borderRadius: '12px',
                         background: C.primary, color: '#fff', border: 'none',
                         fontSize: '13.5px', fontWeight: 800, cursor: 'pointer',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                         boxShadow: '0 4px 12px rgba(37,99,235,0.2)'
                     }}>
-                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} style={{ color: C.primary }} />} 
+                        {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                         عرض التقرير
                     </button>
                 </div>
@@ -176,7 +163,7 @@ export default function CollectionReportPage() {
                             </div>
 
                             {/* ── KPI Cards (Fixed Assets Style) ── */}
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '14px', marginBottom: '24px' }}>
+                            <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '14px', marginBottom: '24px' }}>
                                 {[
                                     { label: 'إجمالي المحصل', value: fmtN(data.total || 0), color: '#10b981', icon: <CheckCircle2 size={18} /> },
                                     { label: 'عدد الأقساط', value: data.installments?.length || 0, color: '#3b82f6', icon: <Calendar size={18} /> },
@@ -201,8 +188,8 @@ export default function CollectionReportPage() {
                             </div>
 
                             {/* Table */}
-                            <div style={{ 
-                                background: 'rgba(255, 255, 255, 0.01)', borderRadius: '24px', 
+                            <div className="print-table-container" style={{
+                                background: 'rgba(255, 255, 255, 0.01)', borderRadius: '24px',
                                 border: `1px solid ${C.border}`, overflow: 'hidden',
                                 boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)'
                             }}>
@@ -224,7 +211,7 @@ export default function CollectionReportPage() {
                                                     <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>#{inst.plan?.planNumber}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 0).padStart(4, '0')}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
                                                 <td style={{ padding: '16px 20px' }}>

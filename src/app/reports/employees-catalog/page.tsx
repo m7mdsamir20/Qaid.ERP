@@ -6,7 +6,7 @@ import { C, CAIRO, PAGE_BASE, INTER, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
-import { Users, Search, Activity, Loader2, MapPin, Phone, Briefcase, Calendar } from 'lucide-react';
+import { Search, Loader2 } from 'lucide-react';
 
 interface Employee {
     id: string;
@@ -50,7 +50,7 @@ export default function EmployeesCatalogPage() {
                     title={t("دليل بيانات الموظفين")}
                     subtitle={t("كشف تفصيلي ببيانات الموظفين، المسميات الوظيفية، الأقسام، وحالة العمل الحالية.")}
                     backTab="hr"
-                    
+                    printTitle={t("دليل بيانات الموظفين")}
                 />
 
                 <div className="no-print" style={{ position: 'relative', marginBottom: '24px' }}>
@@ -61,43 +61,40 @@ export default function EmployeesCatalogPage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}><Loader2 size={40} className="animate-spin" style={{ color: C.primary }} /></div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
-                        {data?.filter(e => e.name.includes(q) || e.department.includes(q) || e.position.includes(q)).map((e) => (
-                            <div key={e.id} style={{
-                                background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px',
-                                boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)', transition: 'all 0.2s'
-                            }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
-                                    <div>
-                                        <h3 style={{ margin: 0, fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{e.name}</h3>
-                                        <span style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>#{e.id}</span>
-                                    </div>
-                                    <span style={{
-                                        fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '10px',
-                                        background: e.status === 'active' ? 'rgba(16,185,129,0.1)' : e.status === 'on_vacation' ? 'rgba(59,130,246,0.1)' : 'rgba(100,116,139,0.1)',
-                                        color: e.status === 'active' ? '#10b981' : e.status === 'on_vacation' ? '#3b82f6' : '#64748b',
-                                        fontFamily: CAIRO
-                                    }}>
-                                        {e.status === 'active' ? t('نـشط') : e.status === 'on_vacation' ? t('في إجازة') : t('غـير نشط')}
-                                    </span>
-                                </div>
-
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    {[
-                                        { icon: <Briefcase size={14} />, label: t('القسم'), val: e.department },
-                                        { icon: <Activity size={14} />, label: t('المسمى الوظيفي'), val: e.position },
-                                        { icon: <Calendar size={14} />, label: t('تاريخ التعيين'), val: new Date(e.joinDate).toLocaleDateString('en-GB') },
-                                        { icon: <Phone size={14} />, label: t('الهاتف'), val: e.phone },
-                                    ].map((item, i) => (
-                                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                            <div style={{ color: C.primary, opacity: 0.8 }}>{item.icon}</div>
-                                            <div style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, width: '90px' }}>{item.label}:</div>
-                                            <div style={{ fontSize: '12px', color: C.textPrimary, fontWeight: 800, fontFamily: CAIRO }}>{item.val}</div>
-                                        </div>
+                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                            <thead>
+                                <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
+                                    {[t('الموظف'), t('القسم'), t('المسمى الوظيفي'), t('تاريخ التعيين'), t('الهاتف'), t('الحالة')].map((h, i) => (
+                                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', fontWeight: 800, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{h}</th>
                                     ))}
-                                </div>
-                            </div>
-                        ))}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data?.filter(e => e.name.includes(q) || e.department.includes(q) || e.position.includes(q)).map((e, idx) => (
+                                    <tr key={e.id}
+                                        style={{ borderBottom: `1px solid ${C.border}`, background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
+                                        onMouseEnter={ev => ev.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
+                                        onMouseLeave={ev => ev.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
+                                        <td style={{ padding: '14px 16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{e.name}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{e.department}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{e.position}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontFamily: INTER, direction: 'ltr' }}>{new Date(e.joinDate).toLocaleDateString('en-GB')}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontFamily: INTER, direction: 'ltr' }}>{e.phone}</td>
+                                        <td style={{ padding: '14px 16px' }}>
+                                            <span style={{
+                                                fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '8px',
+                                                background: e.status === 'active' ? 'rgba(16,185,129,0.1)' : e.status === 'on_vacation' ? 'rgba(59,130,246,0.1)' : 'rgba(100,116,139,0.1)',
+                                                color: e.status === 'active' ? '#10b981' : e.status === 'on_vacation' ? '#3b82f6' : '#64748b',
+                                                fontFamily: CAIRO, border: '1px solid currentColor'
+                                            }}>
+                                                {e.status === 'active' ? t('نشط') : e.status === 'on_vacation' ? t('في إجازة') : t('غير نشط')}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
             </div>

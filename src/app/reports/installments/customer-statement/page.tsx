@@ -111,59 +111,44 @@ function CustomerStatementReportContent() {
     };
 
     return (
+        <DashboardLayout>
         <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
             <style>{`
-                .print-only { display: none; }
-                @media print {
-                    .print-only { display: block !important; }
-                    .no-print { display: none !important; }
-                    div { background: #fff !important; border-color: #e2e8f0 !important; }
-                    div, span, h2, h3, p { color: #000 !important; }
-                    th, td { font-size: 10px !important; padding: 6px 10px !important; border: 1px solid #e2e8f0 !important; }
-                    body { background: white !important; color: black !important; }
-                }
+                input[type='date']::-webkit-calendar-picker-indicator { filter: brightness(0) saturate(100%) invert(67%) sepia(43%) saturate(1042%) hue-rotate(186deg) brightness(103%) contrast(97%); cursor: pointer; }
                 @keyframes spin { to { transform: rotate(360deg); } }
             `}</style>
-            
+
             <ReportHeader
                 title={t("كشف حساب أقساط عميل")}
                 subtitle={t("تقرير تفصيلي بجميع خطط التقسيط، الدفعات المسددة، والمبالغ المتبقية لعميل محدد")}
                 backTab="installments"
-                
+                printTitle={data && (data.plans?.length || 0) > 0 ? t("كشف حساب أقساط عميل") : undefined}
             />
 
-            <div className="no-print" style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'minmax(250px, 3fr) 1fr', 
-                gap: '14px', 
-                marginBottom: '24px', 
-                width: '100%',
-                alignItems: 'end'
-            }}>
-                <div style={{ position: 'relative' }}>
-                    <label style={{ display: 'block', marginBottom: '8px', fontSize: '11px', fontWeight: 700, color: C.textSecondary, textAlign: 'start', fontFamily: CAIRO }}>{t('اختر العميل المطلوب:')}</label>
-                    <CustomSelect 
-                        value={selectedCustomer} 
+            <div className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t('اختر العميل:')}</span>
+                <div style={{ flex: '1', minWidth: '220px', maxWidth: '420px' }}>
+                    <CustomSelect
+                        value={selectedCustomer}
                         onChange={setSelectedCustomer}
                         options={[{ value: '', label: `-- ${t('اختر العميل الباحث عنه')} --` }, ...customers.map(c => ({ value: c.id, label: c.name }))]}
                         placeholder={t("ابحث عن العميل...")}
-                        style={{ 
-                            width: '100%', height: '42.5px', padding: '0 15px', 
-                            borderRadius: '12px', border: `1px solid ${C.border}`, 
-                            background: C.card, color: C.textPrimary, fontSize: '13.5px', 
-                            fontFamily: CAIRO, fontWeight: 500 
+                        style={{
+                            width: '100%', height: '42px', padding: '0 15px',
+                            borderRadius: '12px', border: `1px solid ${C.border}`,
+                            background: C.card, color: C.textPrimary, fontSize: '13px',
+                            fontFamily: CAIRO, fontWeight: 500
                         }}
                     />
                 </div>
-                
-                <button onClick={fetchReport} disabled={loading || !selectedCustomer} style={{ 
-                    height: '42.5px', padding: '0 24px', borderRadius: '12px', 
+                <button onClick={fetchReport} disabled={loading || !selectedCustomer} style={{
+                    height: '42px', padding: '0 24px', borderRadius: '12px',
                     background: C.primary, color: '#fff', border: 'none',
                     fontSize: '13.5px', fontWeight: 800, cursor: !selectedCustomer ? 'not-allowed' : 'pointer',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', fontFamily: CAIRO,
                     boxShadow: '0 4px 12px rgba(37,99,235,0.2)', opacity: !selectedCustomer ? 0.6 : 1
                 }}>
-                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />} 
+                    {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                     {t('عرض كشف الحساب')}
                 </button>
             </div>
@@ -201,7 +186,7 @@ function CustomerStatementReportContent() {
                         </div>
 
                         {/* ── KPI Cards (Fixed Assets Style) ── */}
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('عدد خطط التقسيط'), value: data.summary?.totalPlans, icon: <FileText size={18} />, color: '#818cf8' },
                                 { label: t('إجمالي التعاقدات'), value: fmtN(data.summary?.totalAmount || 0), icon: <BarChart3 size={18} />, color: '#6366f1' },
@@ -226,11 +211,12 @@ function CustomerStatementReportContent() {
                             ))}
                         </div>
 
+                        <div className="print-table-container">
                         {(data.plans || []).map((plan) => (
                             <div key={plan.id} style={{ background: 'rgba(255, 255, 255, 0.01)', border: `1px solid ${C.border}`, borderRadius: '24px', marginBottom: '24px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
                                 <div style={{ padding: '16px 20px', background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>#{plan.planNumber}</span>
+                                        <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>PLAN-{String(plan.planNumber || 0).padStart(4, '0')}</span>
                                         <div style={{ width: 1, height: 14, background: C.border }}></div>
                                         <span style={{ fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{plan.productName || t('منتج عام')}</span>
                                     </div>
@@ -273,10 +259,12 @@ function CustomerStatementReportContent() {
                                 </table>
                             </div>
                         ))}
+                        </div>
                     </div>
                 )}
             </div>
         </div>
+        </DashboardLayout>
     );
 }
 

@@ -67,10 +67,10 @@ export default function EmployeesAdvancesPage() {
                     title={t("تقرير سلف ومديونيات الموظفين")}
                     subtitle={t("متابعة دقيقة لجميع السلف الممنوحة للموظفين، المبالغ المسددة، والأرصدة القائمة.")}
                     backTab="hr"
-                    
+                    printTitle={t("تقرير سلف ومديونيات الموظفين")}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
                         { label: t('إجمالي السلف الممنوحة'), value: fmt(data?.totalAdvances || 0), color: C.primary, icon: <Wallet size={18} /> },
                         { label: t('إجمالي المبالغ المستردة'), value: fmt(data?.totalRecovered || 0), color: '#10b981', icon: <ArrowUpRight size={18} /> },
@@ -97,7 +97,7 @@ export default function EmployeesAdvancesPage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '100px' }}><Loader2 size={40} className="animate-spin" style={{ color: C.primary }} /></div>
                 ) : (
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
+                    <div className="print-table-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
