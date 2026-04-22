@@ -28,7 +28,7 @@ export default function InstallmentDetailPage() {
     const router   = useRouter();
     const params   = useParams();
     const id       = params.id as string;
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
 
     const [plan, setPlan]           = useState<any>(null);
     const [loading, setLoading]     = useState(true);

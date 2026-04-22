@@ -152,7 +152,7 @@ function AttachmentUploader({ attachments, onAdd, onRemove }: {
 export default function EditEmployeePage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const router = useRouter();
     const { id } = useParams();
     const [departments, setDepartments] = useState<Department[]>([]);

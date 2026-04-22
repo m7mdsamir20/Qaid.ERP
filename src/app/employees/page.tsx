@@ -35,7 +35,7 @@ export default function EmployeesPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
-    const { symbol: currencySymbol } = useCurrency();
+    const { symbol: currencySymbol, fMoneyJSX } = useCurrency();
     const [employees, setEmployees] = useState<Employee[]>([]);
     const [departments, setDepartments] = useState<Department[]>([]);
     const [loading, setLoading] = useState(true);

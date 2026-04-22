@@ -38,7 +38,7 @@ export default function PurchaseDetailPage(props: { params: Promise<{ id: string
     const isRtl = lang === 'ar';
     const params = use(props.params);
     const router = useRouter();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const { data: session } = useSession();
     const [invoice, setInvoice] = useState<PurchaseInvoice | null>(null);
     const [loading, setLoading] = useState(true);

@@ -207,7 +207,7 @@ export default function SuperAdminPage() {
                         <thead style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
                             <tr>
                                 {['معلومات الشركة', 'النشاط', 'الباقة والمستخدمين', 'تاريخ الانتهاء', 'حالة الحساب', 'إجراءات'].map((h, i) => (
-                                    <th key={i} style={{ textAlign: i === 5 ? 'center' : 'start', ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, textAlign: i === 0 ? 'right' : 'center' }}>{h}</th>
+                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, textAlign: i === 0 ? 'right' : (i === 5 ? 'center' : 'start') }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>

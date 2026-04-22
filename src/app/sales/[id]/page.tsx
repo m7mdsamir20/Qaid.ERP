@@ -52,7 +52,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
     const isRtl = lang === 'ar';
     const params = use(props.params);
     const router = useRouter();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const { data: session } = useSession();
     const [invoice, setInvoice] = useState<SaleInvoice | null>(null);
     const [company, setCompany] = useState<CompanyInfo>({});

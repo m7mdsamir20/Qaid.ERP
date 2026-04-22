@@ -72,7 +72,7 @@ export default function NewPurchaseReturnPage() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const clearError = (field: string) => {
