@@ -168,9 +168,9 @@ export default function InventoryReportPage() {
                                                     <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(st.item?.costPrice || 0)}</td>
                                                 </>
                                             )}
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: isServices ? 'center' : 'inherit' }}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
                                             {!isServices && (
-                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: isRtl ? 'left' : 'right' }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'end' }}>
                                                     {fMoneyJSX(st.quantity * (st.item?.costPrice || 0), '', { fontWeight: 900, color: C.primary })}
                                                 </td>
                                             )}

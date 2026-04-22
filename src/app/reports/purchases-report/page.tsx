@@ -226,7 +226,7 @@ export default function PurchasesReportPage() {
                                                     PUR-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, textAlign: 'center' }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{inv.supplier?.name || inv.customer?.name || t('مورد نقدي')}</td>
                                             <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{fmt(inv.total)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                             <td style={{ padding: '14px 20px', textAlign: 'end', fontSize: '14px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? <>{fmt(inv.discount)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
