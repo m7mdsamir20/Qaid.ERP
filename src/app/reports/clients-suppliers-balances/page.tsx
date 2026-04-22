@@ -281,7 +281,7 @@ export default function ClientsSuppliersBalancesPage() {
                                                             )}
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 600, color: owesUs ? '#ef4444' : weOweThem ? '#10b981' : C.textMuted, fontSize: '14px', fontFamily: OUTFIT }}>
-                                                            {Math.abs(p.balance))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                                            {formatNumber(Math.abs(p.balance))} <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                         </td>
                                                     </>
                                                 )}

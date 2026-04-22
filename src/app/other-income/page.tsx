@@ -177,7 +177,7 @@ export default function OtherIncomePage() {
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <span style={{ fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: OUTFIT }}>
-                                                {(creditLine?.credit || 0))}
+                                                {formatNumber(creditLine?.credit || 0)}
                                                 <small style={{ fontSize: '11px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
                                             </span>
                                         </td>

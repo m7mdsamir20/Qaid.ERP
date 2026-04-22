@@ -227,7 +227,7 @@ export default function JournalEntriesPage() {
                             { label: t('إجمالي القيود'), value: entries.length, color: C.blue, icon: <FileText size={18} /> },
                             { label: t('قيود مرحّلة'), value: postedCount, color: C.success, icon: <CheckCircle2 size={18} /> },
                             { label: t('مسودات'), value: draftCount, color: C.warning, icon: <Clock size={18} /> },
-                            { label: t('إجمالي المبالغ'), value: totalAmt), color: C.purple, icon: <Send size={18} />, small: true, suffix: currencySymbol },
+                            { label: t('إجمالي المبالغ'), value: formatNumber(totalAmt), color: C.purple, icon: <Send size={18} />, small: true, suffix: currencySymbol },
                         ].map((s, i) => (
                             <div key={i} style={{ ...SC, ...KPI_STYLE(s.color), padding: '16px 20px', justifyContent: 'flex-start' }}>
                                 <div style={KPI_ICON(s.color)}>{s.icon}</div>

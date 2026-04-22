@@ -280,7 +280,7 @@ export default function SupplierStatementPage() {
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textSecondary, fontWeight: 600, fontFamily: CAIRO, }}>{row.description}</td>
                                                 <td style={{ padding: '14px 20px',  color: row.debit > 0 ? '#10b981' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{row.debit > 0 ? <>{formatNumber(row.debit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
                                                 <td style={{ padding: '14px 20px',  color: row.credit > 0 ? '#ef4444' : C.textMuted, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{row.credit > 0 ? <>{formatNumber(row.credit)} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></> : '—'}</td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 1000, color: row.balance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: OUTFIT }}>{(Math.abs(row.balance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 1000, color: row.balance >= 0 ? '#ef4444' : '#10b981', fontSize: '14px', fontFamily: OUTFIT }}>{formatNumber(Math.abs(row.balance))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span></td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -288,7 +288,7 @@ export default function SupplierStatementPage() {
                                         <tr>
                                             <td colSpan={4} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي كامل الحساب')}</td>
                                             <td style={{ padding: '20px 20px',  color: '#10b981', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT }}>
-                                                {((data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance < 0   ? formatNumber(formatNumber(Math.abs(data.initialBalance) : 0)))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
+                                                {formatNumber(data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0) + (data.initialBalance < 0 ? Math.abs(data.initialBalance) : 0))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                             </td>
                                             <td style={{ padding: '20px 20px',  color: '#ef4444', fontSize: '14px', fontWeight: 900, fontFamily: OUTFIT }}>
                                                 {formatNumber((data.statement.reduce((s: number, l: StatementRow) => s + l.credit, 0) + (data.initialBalance > 0 ? data.initialBalance : 0)))} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>

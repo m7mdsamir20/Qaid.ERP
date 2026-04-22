@@ -84,7 +84,7 @@ export default function ReturnsReportPage() {
                     {[
                         { label: t('إجمالي مرتجع البيع'), value: fmt(stats.totalSaleReturns), color: '#ef4444', icon: <TrendingDown size={20} /> },
                         { label: t('إجمالي مرتجع الشراء'), value: fmt(stats.totalPurchaseReturns), color: '#256af4', icon: <TrendingUp size={20} /> },
-                        { label: t('إجمالي عدد الفواتير'), value: data.length), color: '#a78bfa', icon: <FileText size={20} /> },
+                        { label: t('إجمالي عدد الفواتير'), value: data.length, color: '#a78bfa', icon: <FileText size={20} /> },
                         { label: t('متوسط قيمة العملية'), value: fmt(data.length ? (stats.totalSaleReturns + stats.totalPurchaseReturns) / data.length : 0), color: '#10b981', icon: <Activity size={20} /> },
                     ].map((s, i) => (
                         <div key={i} style={{

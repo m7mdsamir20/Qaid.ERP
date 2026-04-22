@@ -188,7 +188,7 @@ export default function TreasuryReconciliationPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.isPercent ? (s.value as number).toFixed(0) : (s.value as number))}</span>
+                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.isPercent ? (s.value as number).toFixed(0) : formatNumber(s.value as number)}</span>
                                             <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.isPercent ? '%' : sym}</span>
                                         </div>
                                         <div style={{ fontSize: '9px', fontWeight: 800, color: s.color, fontFamily: CAIRO, marginTop: '2px' }}>{s.sign}</div>
@@ -265,7 +265,7 @@ export default function TreasuryReconciliationPage() {
                                                             </div>
                                                         </td>
                                                         <td style={{ padding: '14px 20px',  fontWeight: 1000, color: !hasActual ? C.textMuted : (diff > 0 ? SC : diff < 0 ? DC : C.primary), fontSize: '15px', fontFamily: OUTFIT }}>
-                                                            {hasActual ? <>{diff > 0 ? `+${formatNumber(diff)}` : diff)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
+                                                            {hasActual ? <>{diff > 0 ? `+${formatNumber(diff)}` : formatNumber(diff)} <span style={{ fontFamily: CAIRO, fontSize: '10px' }}>{sym}</span></> : '—'}
                                                         </td>
                                                         <td style={{ padding: '14px 20px', }}>
                                                             {hasActual
