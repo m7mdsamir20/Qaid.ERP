@@ -118,7 +118,7 @@ export default function DuePage() {
                             <div>
                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 800 }}>{t('إجمالي المستحق حالياً')}</div>
                                 <div style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                    {fmtN(totalDue)} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted }}>{cSymbol}</span>
+                                    {fMoneyJSX(totalDue)}
                                 </div>
                             </div>
                         </div>
@@ -173,10 +173,10 @@ export default function DuePage() {
                                                         {fmt(inst.dueDate, lang)}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
-                                                        {fmtN(inst.amount)} <span style={{ fontSize: '10px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(inst.amount)}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
-                                                        {fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(inst.remaining || 0)}
                                                     </td>
                                                     <td style={TABLE_STYLE.td(false)}>
                                                         <div style={{
@@ -258,7 +258,7 @@ export default function DuePage() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر سداده')}:</span>
                                     <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>
-                                        {fmtN(collectTarget.remaining || collectTarget.amount)} {cSymbol}
+                                        {fMoneyJSX(collectTarget.remaining || collectTarget.amount)}
                                     </span>
                                 </div>
                             </div>

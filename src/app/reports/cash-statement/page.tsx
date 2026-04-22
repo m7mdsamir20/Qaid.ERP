@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { useCurrency } from '@/hooks/useCurrency';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
@@ -56,6 +57,7 @@ interface SummaryCard {
 }
 
 export default function CashStatementPage() {
+    const { fMoney, fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const { data: session } = useSession();
@@ -296,8 +298,8 @@ export default function CashStatementPage() {
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `2px solid ${C.border}` }}>
                                         <tr>
                                             <td colSpan={3} style={{ padding: '20px 24px',  fontSize: '13px', color: C.textPrimary, fontWeight: 900, fontFamily: CAIRO }}>{t('إجمالي حركة التداول والتحويلات')}</td>
-                                            <td style={{ padding: '20px 20px',  color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT }}>+{totalReceipts.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
-                                            <td style={{ padding: '20px 20px',  color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT }}>-{totalPayments.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
+                                            <td style={{ padding: '20px 20px',  color: SC, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT }}>+{fMoneyJSX(totalReceipts)}</td>
+                                            <td style={{ padding: '20px 20px',  color: DC, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT }}>-{fMoneyJSX(totalPayments)}</td>
                                             <td style={{ padding: '20px 24px',  color: C.textPrimary, fontSize: '16px', fontWeight: 1000, fontFamily: OUTFIT, background: 'rgba(255,255,255,0.02)' }}>{data.currentBalance.toLocaleString('en-US')} <span style={{ fontFamily: "'Cairo', sans-serif", fontSize: '10px', marginInlineStart: '2px' }}>{sym}</span></td>
                                         </tr>
                                     </tfoot>

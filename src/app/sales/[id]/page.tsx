@@ -344,7 +344,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     {new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 900, color: C.danger }}>
-                                                    {fmt(ret.total)} {cSymbol}
+                                                    {fMoneyJSX(ret.total)}
                                                 </td>
                                             </tr>
                                         ))}
@@ -363,22 +363,22 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('إجمالي القيمة')}</span>
-                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT }}>{fmt(invoice.subtotal)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.subtotal)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('إجمالي الخصم')}</span>
-                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.danger }}>- {fmt(invoice.discount)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.danger }}>- {fMoneyJSX(invoice.discount)}</span>
                                 </div>
                                 {(invoice.taxAmount || 0) > 0 && (
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: C.textSecondary }}>{t('إجمالي الضريبة')}</span>
-                                        <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: '#f87171' }}>+ {fmt(invoice.taxAmount || 0)} {cSymbol}</span>
+                                        <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: '#f87171' }}>+ {fMoneyJSX(invoice.taxAmount || 0)}</span>
                                     </div>
                                 )}
                                 <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
                                     <span style={{ fontWeight: 800, fontSize: '12px' }}>{t('صافي الفاتورة')}</span>
-                                    <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fmt(invoice.total)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.total)}</span>
                                 </div>
                             </div>
                         </div>
@@ -394,11 +394,11 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المقبوض فعلياً')}</span>
-                                    <span style={{ fontWeight: 800, color: C.success, fontFamily: OUTFIT }}>{fmt(invoice.paidAmount)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 800, color: C.success, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.paidAmount)}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المتبقي (مدين)')}</span>
-                                    <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fmt(invoice.remaining)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fMoneyJSX(invoice.remaining)}</span>
                                 </div>
                             </div>
                         </div>

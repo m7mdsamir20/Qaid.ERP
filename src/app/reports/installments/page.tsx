@@ -72,7 +72,7 @@ export default function InstallmentReportsPage() {
     const { data: session } = useSession();
     const currency = session?.user?.currency || 'EGP';
 
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
     const [activeTab, setActiveTab] = useState<InstallmentTab>('collection');
     const [customers, setCustomers] = useState<CustomerOption[]>([]);
     const [data, setData] = useState<InstallmentReportData | null>(null);
@@ -306,7 +306,7 @@ export default function InstallmentReportsPage() {
                                             <div>
                                                 <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 800, fontFamily: CAIRO }}>{t('إجمالي التحصيلات للفترة')}</div>
                                                 <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    {fMoneyJSX(data.total || 0)}
                                                 </div>
                                             </div>
                                         </div>
@@ -334,7 +334,7 @@ export default function InstallmentReportsPage() {
                                                             <td style={{ padding: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</td>
                                                             <td style={{ padding: '16px', color: C.textMuted }}>{t('قسط رقم')} {inst.installmentNo}</td>
                                                             <td style={{ padding: '16px', color: '#5286ed', fontWeight: 900, fontFamily: OUTFIT }}>#{inst.plan?.planNumber}</td>
-                                                            <td style={{ padding: '16px', color: '#10b981', fontWeight: 900, fontFamily: OUTFIT }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                            <td style={{ padding: '16px', color: '#10b981', fontWeight: 900, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -354,7 +354,7 @@ export default function InstallmentReportsPage() {
                                             <div>
                                                 <div style={{ fontSize: '12px', color: C.danger, fontWeight: 800, fontFamily: CAIRO }}>{t('إجمالي المتأخرات القائمة')}</div>
                                                 <div style={{ fontSize: '26px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {fmtN(data.total || 0)} <span style={{ fontSize: '12px', fontWeight: 600, opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                    {fMoneyJSX(data.total || 0)}
                                                 </div>
                                             </div>
                                         </div>
@@ -387,7 +387,7 @@ export default function InstallmentReportsPage() {
                                                                     {inst.daysOverdue} {t('يوم تأخير')}
                                                                 </div>
                                                             </td>
-                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 900, fontFamily: OUTFIT }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                            <td style={{ padding: '16px', color: C.danger, fontWeight: 900, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
                                                         </tr>
                                                     ))}
                                                 </tbody>
@@ -434,7 +434,7 @@ export default function InstallmentReportsPage() {
                                                         <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>{plan.monthsCount} {t('شهر')}</div>
                                                     </div>
                                                     <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                        {fmtN(plan.grandTotal)} <span style={{ fontSize: '12px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                        {fMoneyJSX(plan.grandTotal)}
                                                     </div>
                                                 </div>
                                                 <div style={{ overflowX: 'auto' }}>
@@ -451,9 +451,9 @@ export default function InstallmentReportsPage() {
                                                                 <tr key={inst.id} style={{ borderTop: `1px solid ${C.border}`, transition: '0.2s' }}>
                                                                     <td style={{ padding: '12px 24px', color: C.primary, fontWeight: 800, fontFamily: OUTFIT }}>{inst.installmentNo}</td>
                                                                     <td style={{ padding: '12px 24px', color: C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>{fmt(inst.dueDate, lang)}</td>
-                                                                    <td style={{ padding: '12px 24px', fontWeight: 800, fontFamily: OUTFIT }}>{fmtN(inst.amount)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
-                                                                    <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>{fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
-                                                                    <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: OUTFIT }}>{fmtN(inst.remaining || 0)} <span style={{ fontSize: '10px', opacity: 0.5, fontFamily: CAIRO }}>{cSymbol}</span></td>
+                                                                    <td style={{ padding: '12px 24px', fontWeight: 800, fontFamily: OUTFIT }}>{fMoneyJSX(inst.amount)}</td>
+                                                                    <td style={{ padding: '12px 24px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>{fMoneyJSX(inst.paidAmount || 0)}</td>
+                                                                    <td style={{ padding: '12px 24px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: OUTFIT }}>{fMoneyJSX(inst.remaining || 0)}</td>
                                                                     <td style={{ padding: '12px 24px' }}>
                                                                         <div style={{
                                                                             display: 'inline-flex', padding: '3px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 800,

@@ -276,13 +276,13 @@ export default function InstallmentDetailPage() {
                                                         {fmt(inst.dueDate, lang)}
                                                     </td>
                                                     <td style={{ padding: '16px', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                        {fmtN(inst.amount)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(inst.amount)}
                                                     </td>
                                                     <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
-                                                        {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(inst.paidAmount || 0)}
                                                     </td>
                                                     <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: OUTFIT }}>
-                                                        {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
+                                                        {fMoneyJSX(inst.remaining || 0)}
                                                     </td>
                                                     <td style={{ padding: '16px' }}>
                                                         <div style={{ 
@@ -372,7 +372,7 @@ export default function InstallmentDetailPage() {
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('القسط الشهري :')}</span>
                                     <span style={{ color: C.primary, fontWeight: 900, fontSize: '14.5px', fontFamily: OUTFIT }}>
-                                        {fmtN(plan.installmentAmount)} {cSymbol}
+                                        {fMoneyJSX(plan.installmentAmount)}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -439,7 +439,7 @@ export default function InstallmentDetailPage() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر تحصيله:')}</span>
                                     <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>
-                                        {fmtN(collectTarget.remaining || collectTarget.amount)} <span style={{ fontSize: '10px', fontWeight: 400 }}>{cSymbol}</span>
+                                        {fMoneyJSX(collectTarget.remaining || collectTarget.amount)}
                                     </span>
                                 </div>
                             </div>
@@ -553,7 +553,7 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '14px', marginBottom: '24px' }}>
                                 <div>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('المبلغ المحصّل')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fmtN(lastCollected.amount)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(lastCollected.amount)}</div>
                                 </div>
                                 <div>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('العميل')}</div>
@@ -610,11 +610,11 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}`, marginBottom: '20px', background: C.subtle }}>
                                 <div style={{ }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الأصل المتبقي')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fmtN(remPrincipal)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fMoneyJSX(remPrincipal)}</div>
                                 </div>
                                 <div style={{ }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الفوائد المتبقية (يُعفى منها)')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textMuted, fontFamily: OUTFIT, textDecoration: 'line-through' }}>{fmtN(remInterest)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textMuted, fontFamily: OUTFIT, textDecoration: 'line-through' }}>{fMoneyJSX(remInterest)}</div>
                                 </div>
                             </div>
 
@@ -624,7 +624,7 @@ export default function InstallmentDetailPage() {
                                     <span>{t('رسوم السداد المعجل')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 400 }}>({t('اختياري')})</span></span>
                                     {feeRate > 0 && (
                                         <span style={{ fontSize: '11px', fontWeight: 800, color: '#f59e0b', fontFamily: OUTFIT }}>
-                                            + {fmtN(feeAmount)} {cSymbol}
+                                            + {fMoneyJSX(feeAmount)}
                                         </span>
                                     )}
                                 </label>
@@ -652,7 +652,7 @@ export default function InstallmentDetailPage() {
                                 </div>
                                 {feeRate > 0 && (
                                     <div style={{ marginTop: '8px', fontSize: '11px', color: '#f59e0b', fontWeight: 600 }}>
-                                        ⚠️ {fmtN(remPrincipal)} + {fmtN(feeAmount)} {t('رسوم')} = {t('الإجمالي')} {fmtN(totalDue)} {cSymbol}
+                                        ⚠️ {fmtN(remPrincipal)} + {fmtN(feeAmount)} {t('رسوم')} = {t('الإجمالي')} {fMoneyJSX(totalDue)}
                                     </div>
                                 )}
                             </div>
@@ -741,7 +741,7 @@ export default function InstallmentDetailPage() {
                     <form onSubmit={handleCancel}>
                         {totalPaid > 0 ? (
                             <div style={{ marginBottom: '20px' }}>
-                                <label style={LS}>{t('جهة رد المبالغ المحصّلة')} ({fmtN(totalPaid)} {cSymbol})</label>
+                                <label style={LS}>{t('جهة رد المبالغ المحصّلة')} ({fMoneyJSX(totalPaid)})</label>
                                 <CustomSelect 
                                     value={cancelForm.refundTreasuryId} 
                                     onChange={v => setCancelForm(f => ({ ...f, refundTreasuryId: v }))}

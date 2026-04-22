@@ -616,11 +616,11 @@ export default function NewPurchaseReturnPage() {
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '4px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{t('قيمة المرتجع')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>{returnSubtotal.toLocaleString()} {cSymbol}</span>
+                                        <span style={{ fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>{fMoneyJSX(returnSubtotal)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{t('خصم مسترد (-)')}</span>
-                                        <span style={{ fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{totalDiscountOnReturn.toLocaleString()} {cSymbol}</span>
+                                        <span style={{ fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{fMoneyJSX(totalDiscountOnReturn)}</span>
                                     </div>
                                 </div>
 
@@ -631,7 +631,7 @@ export default function NewPurchaseReturnPage() {
                                     border: `1px solid ${C.primary}20`
                                 }}>
                                     <span style={{ fontSize: '13px', fontWeight: 800, color: C.primary }}>{t('صافي المرتجع')}</span>
-                                    <span style={{ fontSize: '20px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>{netReturnTotal.toLocaleString()} {cSymbol}</span>
+                                    <span style={{ fontSize: '20px', fontWeight: 900, color: C.primary, fontFamily: CAIRO }}>{fMoneyJSX(netReturnTotal)}</span>
                                 </div>
 
                                 <div style={{ marginTop: '10px' }}>

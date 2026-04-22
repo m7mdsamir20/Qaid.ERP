@@ -235,8 +235,8 @@ export default function TreasuryBankReportPage() {
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: '2px solid rgba(255,255,255,0.1)' }}>
                                     <tr style={{ fontWeight: 950 , fontFamily: CAIRO}}>
                                         <td colSpan={4} style={{ padding: '20px', }}>{t('إجماليات الحركات المحددة')}</td>
-                                        <td style={{ padding: '20px',  color: SC }}>{totalReceipts.toLocaleString('en-US')} {cSymbol}</td>
-                                        <td style={{ padding: '20px',  color: DC }}>{totalPayments.toLocaleString('en-US')} {cSymbol}</td>
+                                        <td style={{ padding: '20px',  color: SC }}>{fMoneyJSX(totalReceipts)}</td>
+                                        <td style={{ padding: '20px',  color: DC }}>{fMoneyJSX(totalPayments)}</td>
                                         <td style={{ padding: '20px',  color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{data.currentBalance.toLocaleString('en-US')} {cSymbol}</td>
                                     </tr>
                                 </tfoot>

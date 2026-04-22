@@ -249,7 +249,7 @@ export default function EmployeesPage() {
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ fontWeight: 900, color: '#10b981', fontSize: '16px', fontFamily: OUTFIT }}>
-                                                        {empNet.toLocaleString('en-US')} <span style={{ fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
+                                                        {fMoneyJSX(empNet)}
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
