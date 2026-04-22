@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from '@/lib/i18n';
 
-import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
@@ -81,7 +81,7 @@ export default function TopSellingReportPage() {
                                 />
                             </div>
                             <div style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>
-                                {t('تم العثور على:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: INTER }}>{filtered.length}</span> {isServices ? t("خدمة") : t("صنف")}
+                                {t('تم العثور على:')} <span style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>{filtered.length}</span> {isServices ? t("خدمة") : t("صنف")}
                             </div>
                         </div>
 
@@ -121,23 +121,23 @@ export default function TopSellingReportPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: INTER }}>{idx + 1}</td>
+                                                <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontWeight: 600, fontFamily: OUTFIT }}>{idx + 1}</td>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{item.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '3px', fontFamily: INTER }}>{item.code} — {item.category}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '3px', fontFamily: OUTFIT }}>{item.code} — {item.category}</div>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', }}>
-                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}>{item.totalQuantity.toLocaleString('en-US')}</span>
+                                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{item.totalQuantity.toLocaleString('en-US')}</span>
                                                     <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px', fontFamily: CAIRO }}>{lang === 'ar' ? item.unit : t(item.unit)}</span>
                                                 </td>
-                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.primary, fontSize: '14px', fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px',  fontWeight: 600, color: C.primary, fontSize: '14px', fontFamily: OUTFIT }}>
                                                     {item.totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', }}>
                                                     <span style={{
                                                         color: '#10b981', background: 'rgba(16,185,129,0.08)',
                                                         padding: '4px 10px', borderRadius: '10px', border: '1px solid rgba(16,185,129,0.2)',
-                                                        fontWeight: 600, fontSize: '14px', fontFamily: INTER
+                                                        fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT
                                                     }}>
                                                         {item.totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2 })} <span style={{ fontFamily: CAIRO, fontSize: '11px', color: C.textMuted, marginInlineStart: '2px' }}>{sym}</span>
                                                     </span>
@@ -156,7 +156,7 @@ export default function TopSellingReportPage() {
                                 <TrendingUp size={24} />
                             </div>
                             <div style={{ fontSize: '11.5px', color: C.textMuted, fontWeight: 700, marginBottom: '6px', fontFamily: CAIRO }}>{isServices ? t("إجمالي قيمة الخدمات") : t("إجمالي القيمة البيعية")}</div>
-                            <div style={{ fontSize: '20px', fontWeight: 1000, color: '#60a5fa', fontFamily: INTER, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                            <div style={{ fontSize: '20px', fontWeight: 1000, color: '#60a5fa', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '6px' }}>
                                 {totalSales.toLocaleString('en-US', { minimumFractionDigits: 2 })}
                                 <span style={{ fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                             </div>
@@ -169,7 +169,7 @@ export default function TopSellingReportPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                                 {filtered.slice(0, 5).map((item, idx) => (
                                     <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                        <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 900, color: idx < 3 ? '#000' : C.textMuted, fontFamily: INTER }}>{idx + 1}</div>
+                                        <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: idx === 0 ? '#fbbf24' : idx === 1 ? '#94a3b8' : idx === 2 ? '#b45309' : 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: 900, color: idx < 3 ? '#000' : C.textMuted, fontFamily: OUTFIT }}>{idx + 1}</div>
                                         <div style={{ flex: 1, minWidth: 0 }}>
                                             <div style={{ fontSize: '12px', color: C.textPrimary, fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', fontFamily: CAIRO }}>{item.name}</div>
                                             <div style={{ width: '100%', height: '5px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', marginTop: '6px' }}>

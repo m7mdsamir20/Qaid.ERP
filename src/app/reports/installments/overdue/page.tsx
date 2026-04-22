@@ -11,12 +11,9 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useRouter } from 'next/navigation';
-import { 
-    BarChart3, Printer, Loader2, Search, User, 
-    AlertTriangle, ArrowRight, TrendingDown, Calendar
-} from 'lucide-react';
+import { BarChart3, Printer, Loader2, Search, User, AlertTriangle, ArrowRight, TrendingDown, Calendar } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
-import { THEME, C, PAGE_BASE, CAIRO, INTER } from '@/constants/theme';
+import { THEME, C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -172,7 +169,7 @@ export default function OverdueReportPage() {
                                         <div style={{ textAlign: 'start'}}>
                                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                                <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                                <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                                 {i === 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                             </div>
                                         </div>
@@ -206,17 +203,17 @@ export default function OverdueReportPage() {
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 1).padStart(4, '0')}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
-                                                <td style={{ padding: '16px 20px', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: INTER }}>{fmt(inst.dueDate)}</td>
+                                                <td style={{ padding: '16px 20px', color: '#f87171', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>{fmt(inst.dueDate)}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <span style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(239, 68, 68, 0.1)', color: '#f87171', fontWeight: 800, border: '1px solid rgba(239, 68, 68, 0.1)', fontFamily: CAIRO }}>
                                                         {inst.daysOverdue} يوم تأخير
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '14px', fontWeight: 900, color: '#f87171', fontFamily: INTER }}>
+                                                    <div style={{ fontSize: '14px', fontWeight: 900, color: '#f87171', fontFamily: OUTFIT }}>
                                                         {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                     </div>
                                                 </td>

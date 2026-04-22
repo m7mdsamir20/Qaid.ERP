@@ -5,23 +5,8 @@ import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { 
-    Banknote, 
-    CheckCircle2, 
-    Clock, 
-    UsersIcon, 
-    Plus, 
-    Search, 
-    Loader2, 
-    X,
-    TrendingUp,
-    Calendar,
-    ArrowUpRight,
-    Trash2,
-    Filter,
-    AlertTriangle
-} from 'lucide-react';
-import { C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
+import { Banknote, CheckCircle2, Clock, UsersIcon, Plus, Search, Loader2, X, TrendingUp, Calendar, ArrowUpRight, Trash2, Filter, AlertTriangle } from 'lucide-react';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -216,7 +201,7 @@ export default function AdvancesPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>}
                                         <span>{s.val.toLocaleString('en-US')}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
@@ -277,7 +262,7 @@ export default function AdvancesPage() {
                                     {filteredAdvances.map((adv, idx) => (
                                         <tr key={adv.id} style={TABLE_STYLE.row(idx === filteredAdvances.length - 1)}>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: INTER }} dir="ltr">
+                                                <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
                                                     {new Date(adv.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </td>
@@ -288,7 +273,7 @@ export default function AdvancesPage() {
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: INTER }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{adv.amount.toLocaleString('en-US')}</span>
                                                 </div>
@@ -297,7 +282,7 @@ export default function AdvancesPage() {
                                                 <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>{adv.installmentCount}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: C.danger, fontSize: '14px', fontFamily: INTER }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: C.danger, fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{(adv.monthlyAmount || 0).toLocaleString('en-US')}</span>
                                                 </div>
@@ -390,7 +375,7 @@ export default function AdvancesPage() {
                                     <label style={LS}>{t('إجمالي مبلغ السلفة')}</label>
                                     <div style={{ position: 'relative', background: C.inputBg, borderRadius: '10px', border: `1px solid ${C.border}`, height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                                         {!formData.amount && (
-                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: INTER }}>
+                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
                                                 0.00
                                             </div>
                                         )}
@@ -408,7 +393,7 @@ export default function AdvancesPage() {
                                                     monthlyAmount: inst > 0 ? (Number(val) / inst).toString() : '0'
                                                 });
                                             }}
-                                            style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary }}
                                             onFocus={focusIn}
                                             onBlur={focusOut}
                                         />
@@ -430,7 +415,7 @@ export default function AdvancesPage() {
                                     <label style={LS}>{t('مبلغ القسط الشهري')}</label>
                                     <div style={{ position: 'relative', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: `1px solid ${C.border}`, height: '42px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
                                         {!formData.monthlyAmount && (
-                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: INTER }}>
+                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
                                                 0.00
                                             </div>
                                         )}
@@ -438,7 +423,7 @@ export default function AdvancesPage() {
                                             type="text" 
                                             readOnly
                                             value={formatWithCommas(formData.monthlyAmount)}
-                                            style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: INTER, fontWeight: 800, color: C.success }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 800, color: C.success }}
                                         />
                                     </div>
                                 </div>

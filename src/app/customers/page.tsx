@@ -4,11 +4,8 @@ import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    Users, Plus, Trash2, Search, Phone, MapPin, Edit3,
-    Loader2, UserPlus, UserX, TrendingUp, TrendingDown, ShieldCheck, AlertTriangle
-} from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { Users, Plus, Trash2, Search, Phone, MapPin, Edit3, Loader2, UserPlus, UserX, TrendingUp, TrendingDown, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
@@ -238,7 +235,7 @@ export default function CustomersPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.value)}</span>
+                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.value)}</span>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
                                 </div>
                             </div>
@@ -322,7 +319,7 @@ export default function CustomersPage() {
                                         >
                                             <td style={TABLE_STYLE.td(true)}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{c.name.charAt(0)}</div>
+                                                    <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{c.name.charAt(0)}</div>
                                                     <Link
                                                         href={`/reports/customer-statement?customerId=${c.id}`}
                                                         style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textDecoration: 'none', transition: 'all 0.2s' }}
@@ -333,7 +330,7 @@ export default function CustomersPage() {
                                                     </Link>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), }}>
                                                 <span style={{
@@ -343,7 +340,7 @@ export default function CustomersPage() {
                                                     border: `1px solid ${c.balance < 0 ? 'rgba(239, 68, 68, 0.22)' : (c.balance > 0 ? 'rgba(74,222,128,0.22)' : C.border)}`,
                                                 }}>
                                                     <span style={{ fontFamily: CAIRO }}>{c.balance < 0 ? t('له عندنا') : (c.balance > 0 ? t('عليه لنا') : t('متزن'))}</span>
-                                                    <span style={{ fontFamily: INTER, fontSize: '13px', fontWeight: 800 }}><Currency amount={Math.abs(c.balance)} /></span>
+                                                    <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 800 }}><Currency amount={Math.abs(c.balance)} /></span>
                                                 </span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
@@ -429,11 +426,11 @@ export default function CustomersPage() {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
                                     <div>
                                         <label style={LS}>{t('الرقم الضريبي')}</label>
-                                        <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
+                                        <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
                                     </div>
                                     <div>
                                         <label style={LS}>{t('السجل التجاري')}</label>
-                                        <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
+                                        <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
                                     </div>
                                 </div>
                             )}
@@ -442,7 +439,7 @@ export default function CustomersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.phone} />
                                 </div>
                                 {form.type === 'company' && (
                                     <div>
@@ -456,7 +453,7 @@ export default function CustomersPage() {
                                 <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                     {/* Digital Zero Watermark */}
                                     {!form.creditLimit && (
-                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: INTER }}>
+                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
                                             0.00
                                         </div>
                                     )}
@@ -485,7 +482,7 @@ export default function CustomersPage() {
                                     <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                         {/* Digital Zero Watermark */}
                                         {!form.openingBalance && (
-                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: INTER }}>
+                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
                                                 0.00
                                             </div>
                                         )}

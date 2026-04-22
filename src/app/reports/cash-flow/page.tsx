@@ -6,11 +6,8 @@ import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import { 
-    TrendingUp, TrendingDown, Activity, Search, 
-    Loader2, DollarSign 
-} from 'lucide-react';
-import { C, CAIRO, INTER, PAGE_BASE, IS } from '@/constants/theme';
+import { TrendingUp, TrendingDown, Activity, Search, Loader2, DollarSign } from 'lucide-react';
+import { C, CAIRO, OUTFIT, PAGE_BASE, IS } from '@/constants/theme';
 
 interface MoneyLog {
     id: string;
@@ -109,7 +106,7 @@ export default function CashFlowReportPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             {i < 3 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                         </div>
                                     </div>
@@ -169,7 +166,7 @@ export default function CashFlowReportPage() {
                                             style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.2s', background: i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }} 
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'} 
                                             onMouseLeave={e => e.currentTarget.style.background = i % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{new Date(v.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', }}>
                                                 <span style={{
                                                     padding: '3px 12px', borderRadius: '8px', fontSize: '10px', fontWeight: 900, fontFamily: CAIRO,
@@ -182,7 +179,7 @@ export default function CashFlowReportPage() {
                                             <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, }}>{v.treasury}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO, fontWeight: 600, }}>{v.party}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: CAIRO, }}>{v.description || '—'}</td>
-                                            <td style={{ padding: '14px 20px',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: INTER }}>
+                                            <td style={{ padding: '14px 20px',  fontWeight: 950, color: v.type === 'receipt' ? '#10b981' : '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}>
                                                 <Currency amount={v.amount} /></td>
                                         </tr>
                                     ))}

@@ -3,11 +3,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    FileText, Plus, Search, Eye, Trash2, Loader2,
-    CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer, Send
-} from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { FileText, Plus, Search, Eye, Trash2, Loader2, CheckCircle2, Clock, AlertCircle, ShoppingCart, Printer, Send } from 'lucide-react';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useRouter } from 'next/navigation';
@@ -126,11 +123,11 @@ export default function QuotationsPage() {
                     <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
                         <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }} />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
                         </div>
                         <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
                         <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: INTER, background: C.card, color: C.textSecondary }} />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
                         </div>
                     </div>
 
@@ -184,13 +181,13 @@ export default function QuotationsPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER, width: '120px', }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
                                                     QUO-{quo.quotationNumber.toString().padStart(5, '0')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>
                                                     {quo.customer?.name || t('عميل نقدي')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: INTER, color: C.textSecondary, }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), }}>

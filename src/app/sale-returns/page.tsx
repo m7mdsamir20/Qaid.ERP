@@ -7,7 +7,7 @@ import { RotateCcw, Plus, Printer, Loader2, Search, ChevronDown, Package, Trash2
 
 import { useSession } from 'next-auth/react';
 
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 

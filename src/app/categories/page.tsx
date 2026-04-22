@@ -5,15 +5,8 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import AppModal from '@/components/AppModal';
 import PageHeader from '@/components/PageHeader';
-import {
-    Plus, Loader2, Search,
-    Pencil, Info, Trash2, Layers, FolderTree
-} from 'lucide-react';
-import { 
-    C, CAIRO, INTER, IS, LS, PAGE_BASE, 
-    BTN_PRIMARY, focusIn, focusOut, 
-    TABLE_STYLE 
-} from '@/constants/theme';
+import { Plus, Loader2, Search, Pencil, Info, Trash2, Layers, FolderTree } from 'lucide-react';
+import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, BTN_PRIMARY, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 
 interface Category {
@@ -171,7 +164,7 @@ export default function CategoriesPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ color: C.textMuted, fontWeight: 900, fontFamily: INTER, fontSize: '12px' }}>
+                                                <div style={{ color: C.textMuted, fontWeight: 900, fontFamily: OUTFIT, fontSize: '12px' }}>
                                                     #{idx + 1}
                                                 </div>
                                             </td>
@@ -181,7 +174,7 @@ export default function CategoriesPage() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
-                                                    padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 900, fontFamily: INTER,
+                                                    padding: '2px 8px', borderRadius: '12px', fontSize: '12px', fontWeight: 900, fontFamily: OUTFIT,
                                                     background: 'rgba(56,189,248,0.1)', color: '#38bdf8'
                                                 }}>
                                                     {cat._count?.items || 0} {isServices ? t('خدمة') : t('صنف')}

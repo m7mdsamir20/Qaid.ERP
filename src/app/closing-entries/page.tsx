@@ -4,30 +4,9 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
-import { 
-    BookMarked, 
-    Loader2, 
-    CheckCircle2, 
-    AlertTriangle, 
-    ArrowUpRight, 
-    ArrowDownRight, 
-    Play, 
-    History as HistoryIcon, 
-    Calendar, 
-    FileCheck, 
-    ArrowLeftRight,
-    Info,
-    X,
-    RotateCcw,
-    Printer,
-    Search,
-    ChevronDown,
-    Settings,
-    TrendingUp,
-    ShieldCheck
-} from 'lucide-react';
+import { BookMarked, Loader2, CheckCircle2, AlertTriangle, ArrowUpRight, ArrowDownRight, Play, History as HistoryIcon, Calendar, FileCheck, ArrowLeftRight, Info, X, RotateCcw, Printer, Search, ChevronDown, Settings, TrendingUp, ShieldCheck } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
-import { THEME, C, CAIRO, INTER, TABLE_STYLE, PAGE_BASE } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, TABLE_STYLE, PAGE_BASE } from '@/constants/theme';
 
 /* ── Types ── */
 interface FinancialYear { id: string; name: string; isOpen: boolean; startDate: string; endDate: string; }
@@ -440,7 +419,7 @@ function StatCard({ label, value, color, icon: Icon, compact }: any) {
                 <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 800 }}>{label}</span>
                 {Icon && <div style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px' }}><Icon size={16} style={{ color, opacity: 0.8 }} /></div>}
             </div>
-            <div style={{ fontSize: compact ? '22px' : '26px', fontWeight: 900, color, fontFamily: INTER, direction: 'ltr', textAlign: 'start' }}>{fmt(value)}</div>
+            <div style={{ fontSize: compact ? '22px' : '26px', fontWeight: 900, color, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>{fmt(value)}</div>
             <div style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.03 }}>
                 {Icon && <Icon size={80} />}
             </div>
@@ -465,9 +444,9 @@ function DetailTable({ title, accounts, color, t }: any) {
                             >
                                 <td style={{ padding: '14px 20px' }}>
                                     <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{acc.name}</div>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, fontWeight: 600 }}>{acc.code}</div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600 }}>{acc.code}</div>
                                 </td>
-                                <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 900, color, direction: 'ltr', fontFamily: INTER }}>
+                                <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 900, color, direction: 'ltr', fontFamily: OUTFIT }}>
                                     {fmt(acc.balance)}
                                 </td>
                             </tr>

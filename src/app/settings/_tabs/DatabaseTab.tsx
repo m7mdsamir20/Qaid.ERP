@@ -1,11 +1,8 @@
 'use client';
  
 import { useTranslation } from '@/lib/i18n';
-import { C, CAIRO, INTER } from '@/constants/theme';
-import {
-    Database, Download, FileSpreadsheet, UploadCloud, Users, Truck, Package,
-    Plus, Save, Loader2, Check, X, Layers, MapPin
-} from 'lucide-react';
+import { C, CAIRO, OUTFIT } from '@/constants/theme';
+import { Database, Download, FileSpreadsheet, UploadCloud, Users, Truck, Package, Plus, Save, Loader2, Check, X, Layers, MapPin } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 import { TabHeader } from './shared';
 

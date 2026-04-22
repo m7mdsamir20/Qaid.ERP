@@ -7,7 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Receipt, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus } from 'lucide-react';
 import { CompanyInfo } from '@/lib/printInvoices';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -580,7 +580,7 @@ function NewSalePageInner() {
                                         background: 'rgba(59,130,246,0.08)',
                                         border: `1px solid ${C.border}`,
                                         display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                        fontFamily: INTER, fontWeight: 900,
+                                        fontFamily: OUTFIT, fontWeight: 900,
                                         fontSize: '13px', color: '#60a5fa',
                                         letterSpacing: '1px',
                                         boxSizing: 'border-box'
@@ -638,7 +638,7 @@ function NewSalePageInner() {
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: INTER }}
+                                            style={{ ...IS, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }}
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
@@ -649,7 +649,7 @@ function NewSalePageInner() {
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.dueDate || ''}
                                             onChange={e => setForm((f: any) => ({ ...f, dueDate: e.target.value }))}
-                                            style={{ ...IS, color: '#fbbf24', textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: INTER, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
+                                            style={{ ...IS, color: '#fbbf24', textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
                                             onFocus={focusIn} onBlur={focusOut} className="gold-date-icon" />
                                     </div>
                                 </div>
@@ -717,7 +717,7 @@ function NewSalePageInner() {
                                                 }
                                             }}
                                             onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()}
-                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryQty" />
                                     </div>
@@ -736,7 +736,7 @@ function NewSalePageInner() {
                                                 }
                                             }}
                                             onKeyDown={e => e.key === 'Enter' && addLine()}
-                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: INTER }}
+                                            style={{ ...IS, height: '38px', textAlign: 'center', opacity: !entryItemId ? 0.5 : 1, fontFamily: OUTFIT }}
                                             onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut} />
                                         <InlineError field="entryPrice" />
                                     </div>
@@ -792,10 +792,10 @@ function NewSalePageInner() {
                                                 {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
                                                     <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 )}
-                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{l.quantity}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: INTER }}>{l.price.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{l.quantity}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{l.price.toLocaleString()}</td>
 
-                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{l.total.toLocaleString()}</td>
+                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{l.total.toLocaleString()}</td>
                                                 <td style={{ padding: '10px 12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -814,7 +814,7 @@ function NewSalePageInner() {
                                                 <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 800, color: C.textSecondary, fontFamily: CAIRO }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
-                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: INTER }}>
+                                                <td style={{ padding: '12px',  fontSize: '16px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT }}>
                                                     {subtotal.toLocaleString()} {cSymbol}
                                                 </td>
                                                 <td />
@@ -984,7 +984,7 @@ function NewSalePageInner() {
                                     border: `1px solid ${C.primaryBorder}`,
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>
                                         {fMoney(netTotal)}
                                     </span>
                                     <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
@@ -1039,7 +1039,7 @@ function NewSalePageInner() {
                                                     textAlign: 'center',
                                                     paddingInlineEnd: '44px',
                                                     color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary,
-                                                    fontFamily: INTER,
+                                                    fontFamily: OUTFIT,
                                                     background: 'rgba(255,255,255,0.02)'
                                                 }}
                                                 onFocus={e => { focusIn(e); e.target.select(); }}

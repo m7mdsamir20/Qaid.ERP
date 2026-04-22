@@ -8,10 +8,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import { useParams, useRouter } from 'next/navigation';
 import CustomSelect from '@/components/CustomSelect';
 
-import {
-    C, CAIRO, INTER, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut,
-    TABLE_STYLE, KPI_STYLE, KPI_ICON, BTN_PRIMARY
-} from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABLE_STYLE, KPI_STYLE, KPI_ICON, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
 
@@ -179,7 +176,7 @@ export default function CostCenterDetails() {
                         </div>
                         <div>
                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '2px' }}>{kpi.label}</div>
-                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                            <div style={{ fontSize: '20px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                 {kpi.isCount ? kpi.value.toLocaleString('en-US') : (kpi.value || 0).toLocaleString('en-US')}
                                 {!kpi.isCount && <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>}
                             </div>
@@ -219,13 +216,13 @@ export default function CostCenterDetails() {
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'rgba(0,0,0,0.12)'}
                                         >
-                                            <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textSecondary, fontFamily: INTER }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>
                                                 {new Date(line.journalEntry.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{line.description || line.journalEntry.description || '—'}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>
+                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>
                                                 {line.debit.toLocaleString('en-US')} <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
@@ -255,7 +252,7 @@ export default function CostCenterDetails() {
                                 <div key={idx} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }} className="group">
                                     <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'flex-end', position: 'relative' }}>
                                         {val > 0 && (
-                                            <div style={{ position: 'absolute', top: `calc(${100 - heightPercent}% - 24px)`, insetInlineStart: '50%', transform: 'translateX(-50%)', background: C.card, border: `1px solid ${C.border}`, padding: '4px 8px', borderRadius: '6px', fontSize: '10px', color: C.textPrimary, opacity: 0, transition: 'opacity 0.2s', pointerEvents: 'none', whiteSpace: 'nowrap', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.4)', fontWeight: 800, fontFamily: INTER }} className="chart-tooltip">
+                                            <div style={{ position: 'absolute', top: `calc(${100 - heightPercent}% - 24px)`, insetInlineStart: '50%', transform: 'translateX(-50%)', background: C.card, border: `1px solid ${C.border}`, padding: '4px 8px', borderRadius: '6px', fontSize: '10px', color: C.textPrimary, opacity: 0, transition: 'opacity 0.2s', pointerEvents: 'none', whiteSpace: 'nowrap', zIndex: 10, boxShadow: '0 4px 12px rgba(0,0,0,0.4)', fontWeight: 800, fontFamily: OUTFIT }} className="chart-tooltip">
                                                 {new Intl.NumberFormat('en-US').format(val)}
                                             </div>
                                         )}

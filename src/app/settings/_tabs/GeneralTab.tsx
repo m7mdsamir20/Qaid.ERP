@@ -2,7 +2,7 @@
  
 import { useTranslation } from '@/lib/i18n';
 import { useState } from 'react';
-import { C, CAIRO, INTER } from '@/constants/theme';
+import { C, CAIRO, OUTFIT } from '@/constants/theme';
 import { Globe, Coins, Calendar, Clock, ChevronDown, Check, Search, MapPin } from 'lucide-react';
 import { TabHeader } from './shared';
 
@@ -150,7 +150,7 @@ export default function GeneralTab({
                                                                 <span>{opt.name}</span>
                                                             </div>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                                                <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: INTER }}>{opt.code}</span>
+                                                                <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{opt.code}</span>
                                                                 {selected && <Check size={14} style={{ color: C.primary }} />}
                                                             </div>
                                                         </button>
@@ -244,7 +244,7 @@ export default function GeneralTab({
                                                             }}
                                                             style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', textAlign: 'start', fontFamily: CAIRO }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                                                <span style={{ fontSize: '11px', color: selected ? C.primary : C.textMuted, fontFamily: INTER, opacity: 0.7 }}>{opt.code}</span>
+                                                                <span style={{ fontSize: '11px', color: selected ? C.primary : C.textMuted, fontFamily: OUTFIT, opacity: 0.7 }}>{opt.code}</span>
                                                                 <span>{opt.label}</span>
                                                             </div>
                                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -281,7 +281,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', position: 'relative' }} className="custom-dropdown">
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', textAlign: 'start', fontFamily: INTER }}>
+                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', textAlign: 'start', fontFamily: OUTFIT }}>
                                     {generalForm.timezone}
                                 </div>
                             ) : (
@@ -300,7 +300,7 @@ export default function GeneralTab({
                                                     return (
                                                         <button key={tz} type="button"
                                                             onClick={() => { setGeneralForm((p: any) => ({ ...p, timezone: tz })); setOpenDropdown(null); }}
-                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', direction: 'ltr', textAlign: 'end', fontFamily: INTER }}>
+                                                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', border: 'none', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none', background: selected ? `${C.primary}15` : 'transparent', color: selected ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: selected ? 800 : 600, cursor: 'pointer', direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }}>
                                                             <Check size={14} style={{ color: C.primary, opacity: selected ? 1 : 0 }} />
                                                             <span>{tz}</span>
                                                         </button>
@@ -348,7 +348,7 @@ export default function GeneralTab({
                         </div>
                         <div style={{ flex: 1, padding: '12px 20px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
                             {!isEditMode ? (
-                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', fontFamily: INTER }}>
+                                <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, padding: '6px 0', direction: 'ltr', fontFamily: OUTFIT }}>
                                     {generalForm.dateFormat}
                                 </div>
                             ) : (
@@ -357,13 +357,13 @@ export default function GeneralTab({
                                         {['DD/MM/YYYY', 'MM/DD/YYYY', 'YYYY-MM-DD'].map(fmt => (
                                             <button key={fmt} type="button"
                                                 onClick={() => setGeneralForm((p: any) => ({ ...p, dateFormat: fmt }))}
-                                                style={{ height: '36px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${generalForm.dateFormat === fmt ? `${C.primary}40` : C.border}`, background: generalForm.dateFormat === fmt ? `${C.primary}15` : 'transparent', color: generalForm.dateFormat === fmt ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', fontFamily: INTER, direction: 'ltr', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
+                                                style={{ height: '36px', padding: '0 14px', borderRadius: '10px', border: `1px solid ${generalForm.dateFormat === fmt ? `${C.primary}40` : C.border}`, background: generalForm.dateFormat === fmt ? `${C.primary}15` : 'transparent', color: generalForm.dateFormat === fmt ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 800, cursor: 'pointer', fontFamily: OUTFIT, direction: 'ltr', display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s' }}>
                                                 {generalForm.dateFormat === fmt && <Check size={14} />}
                                                 {fmt}
                                             </button>
                                         ))}
                                     </div>
-                                    <span style={{ fontSize: '11px', color: C.primary, fontFamily: INTER, direction: 'ltr', background: `${C.primary}10`, padding: '6px 12px', borderRadius: '8px', fontWeight: 700 }}>
+                                    <span style={{ fontSize: '11px', color: C.primary, fontFamily: OUTFIT, direction: 'ltr', background: `${C.primary}10`, padding: '6px 12px', borderRadius: '8px', fontWeight: 700 }}>
                                         {{ 'DD/MM/YYYY': '15/03/2026', 'MM/DD/YYYY': '03/15/2026', 'YYYY-MM-DD': '2026-03-15' }[generalForm.dateFormat]}
                                     </span>
                                 </>

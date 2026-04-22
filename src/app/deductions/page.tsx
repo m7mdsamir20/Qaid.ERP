@@ -5,23 +5,8 @@ import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { 
-    AlertTriangle, 
-    CheckCircle2, 
-    Clock, 
-    UsersIcon, 
-    Plus, 
-    Search, 
-    Filter, 
-    ShieldAlert,
-    Loader2, 
-    X,
-    TrendingUp,
-    Calendar,
-    ArrowUpRight,
-    Trash2
-} from 'lucide-react';
-import { C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
+import { AlertTriangle, CheckCircle2, Clock, UsersIcon, Plus, Search, Filter, ShieldAlert, Loader2, X, TrendingUp, Calendar, ArrowUpRight, Trash2 } from 'lucide-react';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -198,7 +183,7 @@ export default function DeductionsPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         {!s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>}
                                         <span>{s.val.toLocaleString('en-US')}</span>
                                         {s.suffix && <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
@@ -257,7 +242,7 @@ export default function DeductionsPage() {
                                     {filteredDeductions.map((ded, idx) => (
                                         <tr key={ded.id} style={TABLE_STYLE.row(idx === filteredDeductions.length - 1)}>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: INTER }} dir="ltr">
+                                                <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
                                                     {new Date(ded.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </td>
@@ -268,7 +253,7 @@ export default function DeductionsPage() {
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: INTER }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 800, color: '#f1f5f9', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{ded.amount.toLocaleString('en-US')}</span>
                                                 </div>

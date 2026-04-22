@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Cairo, Outfit } from "next/font/google";
-import { Providers } from "@/components/Providers";
+import { Cairo, Outfit } from 'next/font/google';
+import { Providers } from '@/components/Providers';
 import "./globals.css";
 
 const cairo = Cairo({
@@ -56,7 +56,7 @@ export const viewport = {
   maximumScale: 1,
 };
 
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default function RootLayout({
   children,

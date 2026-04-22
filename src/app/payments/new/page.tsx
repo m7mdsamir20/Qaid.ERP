@@ -4,13 +4,9 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
-import {
-    TrendingUp, Search, Lock, Loader2,
-    Building2, Banknote, CheckCircle2, ArrowRight,
-    Printer, Receipt, Save, AlertCircle
-} from 'lucide-react';
+import { TrendingUp, Search, Lock, Loader2, Building2, Banknote, CheckCircle2, ArrowRight, Printer, Receipt, Save, AlertCircle } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC, STitle, BTN_PRIMARY, BTN_SUCCESS } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, GRID, SC, STitle, BTN_PRIMARY, BTN_SUCCESS } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 
 /* ── Types ── */

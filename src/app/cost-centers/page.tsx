@@ -17,10 +17,7 @@ interface CostCenter {
     transactionCount?: number;
 }
 
-import { 
-    C, CAIRO, INTER, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, 
-    TABLE_STYLE, SEARCH_STYLE, BTN_PRIMARY, KPI_STYLE, KPI_ICON 
-} from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE, BTN_PRIMARY, KPI_STYLE, KPI_ICON } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
@@ -202,7 +199,7 @@ export default function CostCentersPage() {
                                         onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                         onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                     >
-                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: INTER }}>
+                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT }}>
                                             {cc.code}
                                         </td>
                                         <td style={TABLE_STYLE.td(false)}>
@@ -220,7 +217,7 @@ export default function CostCentersPage() {
                                             </div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), }}>
-                                            <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                            <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {cc.totalExpenses ? cc.totalExpenses.toLocaleString('en-US') : '0.00'} 
                                                 <span style={{ fontSize: '10px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
                                             </div>

@@ -6,14 +6,8 @@ import { navSections } from '@/constants/navigation';
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import {
-    Settings as SettingsIcon, Building2, Globe, Bell,
-    Shield, Database, AlertCircle, FileText,
-    CreditCard, CheckCircle2, Percent, Loader2, Store
-} from 'lucide-react';
-import {
-    C, CAIRO, PAGE_BASE
-} from '@/constants/theme';
+import { Settings as SettingsIcon, Building2, Globe, Bell, Shield, Database, AlertCircle, FileText, CreditCard, CheckCircle2, Percent, Loader2, Store } from 'lucide-react';
+import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import * as XLSX from 'xlsx';

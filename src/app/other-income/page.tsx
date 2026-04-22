@@ -7,15 +7,10 @@ import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
-import {
-    TrendingUp, Plus, Search, Loader2,
-    Calendar, Building2, Banknote, X, Tag, Activity, ArrowUpRight, History
-} from 'lucide-react';
+import { TrendingUp, Plus, Search, Loader2, Calendar, Building2, Banknote, X, Tag, Activity, ArrowUpRight, History } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
-import { 
-    C, CAIRO, INTER, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABLE_STYLE, BTN_PRIMARY, SEARCH_STYLE 
-} from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABLE_STYLE, BTN_PRIMARY, SEARCH_STYLE } from '@/constants/theme';
 
 export default function OtherIncomePage() {
     const { lang, t } = useTranslation();
@@ -151,7 +146,7 @@ export default function OtherIncomePage() {
                                         <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px' }}>{new Date(e.date).toLocaleDateString('en-GB')}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), padding: '8px 12px' }}>
                                             <span style={{ 
-                                                fontFamily: INTER, fontSize: '10px', fontWeight: 900, color: '#fff',
+                                                fontFamily: OUTFIT, fontSize: '10px', fontWeight: 900, color: '#fff',
                                                 background: 'linear-gradient(135deg, #475569 0%, #1e293b 100%)',
                                                 padding: '4px 10px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)'
                                             }}>
@@ -182,7 +177,7 @@ export default function OtherIncomePage() {
                                             {e.description || '—'}
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: INTER }}>
+                                            <span style={{ fontSize: '16px', fontWeight: 900, color: C.success, fontFamily: OUTFIT }}>
                                                 {(creditLine?.credit || 0).toLocaleString('en-US')}
                                                 <small style={{ fontSize: '11px', marginInlineEnd: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
                                             </span>
@@ -237,7 +232,7 @@ export default function OtherIncomePage() {
                                     alignItems: 'center'
                                 }}
                             >
-                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 900, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: INTER }}>0.00</div>}
+                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 900, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
                                 <input 
                                     type="number" step="0.01" value={form.amount} 
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
@@ -246,7 +241,7 @@ export default function OtherIncomePage() {
                                         border: 'none', background: 'transparent', textAlign: 'center', 
                                         fontWeight: 900, color: C.primary, height: '100%', 
                                         fontSize: '17px', width: '100%', padding: '0 45px', 
-                                        outline: 'none', fontFamily: INTER 
+                                        outline: 'none', fontFamily: OUTFIT 
                                     }} 
                                     onFocus={e => e.target.select()}
                                 />

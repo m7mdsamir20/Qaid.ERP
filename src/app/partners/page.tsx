@@ -3,13 +3,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import {
-    Users, Plus, X, Loader2, Pencil, Trash2,
-    Phone, StickyNote, TrendingUp, ArrowUpDown,
-    PieChart, DollarSign, CheckCircle2, AlertTriangle, Save,
-    MoreVertical, ExternalLink
-} from 'lucide-react';
-import { C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
+import { Users, Plus, X, Loader2, Pencil, Trash2, Phone, StickyNote, TrendingUp, ArrowUpDown, PieChart, DollarSign, CheckCircle2, AlertTriangle, Save, MoreVertical, ExternalLink } from 'lucide-react';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -114,7 +109,7 @@ export default function PartnersPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{typeof s.val === 'number' ? s.val.toLocaleString('en-US') : s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -134,7 +129,7 @@ export default function PartnersPage() {
                                 <PieChart size={16} style={{ color: C.primary }} />
                                 {t('توزيع الحصص الفعلي')}
                             </div>
-                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{t('الإجمالي')}: 100%</div>
+                            <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('الإجمالي')}: 100%</div>
                         </div>
                         
                         <div style={{ display: 'flex', height: '14px', borderRadius: '7px', overflow: 'hidden', gap: '2px', background: 'rgba(255,255,255,0.03)' }}>
@@ -152,7 +147,7 @@ export default function PartnersPage() {
                             {partners.map((p, i) => (
                                 <div key={p.id} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>
                                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: PARTNER_COLORS[i % PARTNER_COLORS.length] }} />
-                                    {p.name} <span style={{ fontFamily: INTER, opacity: 0.8, fontSize: '11px' }}>({p.share}%)</span>
+                                    {p.name} <span style={{ fontFamily: OUTFIT, opacity: 0.8, fontSize: '11px' }}>({p.share}%)</span>
                                 </div>
                             ))}
                         </div>
@@ -197,12 +192,12 @@ export default function PartnersPage() {
                                                 </div>
                                                 <div>
                                                     <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px' }}>{p.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, fontFamily: INTER, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, fontFamily: OUTFIT, display: 'flex', alignItems: 'center', gap: '4px' }}>
                                                         <Phone size={10} /> {p.phone || '—'}
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div style={{ background: `${color}15`, color, borderRadius: '10px', padding: '4px 10px', fontSize: '12px', fontWeight: 900, fontFamily: INTER, border: `1px solid ${color}20` }}>
+                                            <div style={{ background: `${color}15`, color, borderRadius: '10px', padding: '4px 10px', fontSize: '12px', fontWeight: 900, fontFamily: OUTFIT, border: `1px solid ${color}20` }}>
                                                 {p.share}%
                                             </div>
                                         </div>
@@ -210,11 +205,11 @@ export default function PartnersPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
                                             <div style={{ textAlign: 'center' }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 900, color: C.blue, fontFamily: INTER }}>{p.capital.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span></div>
+                                                <div style={{ fontSize: '15px', fontWeight: 900, color: C.blue, fontFamily: OUTFIT }}>{p.capital.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span></div>
                                             </div>
                                             <div style={{ textAlign: 'center' }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: INTER }}>
+                                                <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
                                                     {p.balance.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
                                                 </div>
                                             </div>
@@ -259,11 +254,11 @@ export default function PartnersPage() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
                                 <label style={LS}>{t('رأس المال (ج.م)')} <span style={{ color: C.danger }}>*</span></label>
-                                <input required type="number" min="0" step="0.01" value={form.capital} onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} style={{...IS, color: '#10b981', fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
+                                <input required type="number" min="0" step="0.01" value={form.capital} onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} style={{...IS, color: '#10b981', fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <label style={LS}>{t('النسبة المحسوبة (%)')}</label>
-                                <div style={{...IS, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: INTER}}>
+                                <div style={{...IS, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 900, color: C.primary, fontFamily: OUTFIT}}>
                                     {(() => {
                                         const cap = parseFloat(form.capital) || 0;
                                         const otherCap = partners
@@ -281,7 +276,7 @@ export default function PartnersPage() {
 
                         <div style={{ marginBottom: '16px' }}>
                             <label style={LS}>{t('رقم الهاتف')}</label>
-                            <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder="05xxxxxxxx" />
+                            <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder="05xxxxxxxx" />
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>

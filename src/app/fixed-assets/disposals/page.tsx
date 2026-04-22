@@ -3,17 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import {
-    ArrowRightLeft, Building2, AlertTriangle, Loader2, CheckCircle2,
-    TrendingUp, TrendingDown, Info, Plus, Search, X, 
-    Calendar, History, ShieldAlert, PieChart, Briefcase, MinusCircle, ArrowDownCircle, ArrowUpCircle
-} from 'lucide-react';
+import { ArrowRightLeft, Building2, AlertTriangle, Loader2, CheckCircle2, TrendingUp, TrendingDown, Info, Plus, Search, X, Calendar, History, ShieldAlert, PieChart, Briefcase, MinusCircle, ArrowDownCircle, ArrowUpCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { 
-    C, CAIRO, INTER, THEME, TABLE_STYLE, SEARCH_STYLE, 
-    KPI_STYLE, focusIn, focusOut, 
-    PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER 
-} from '@/constants/theme';
+import { C, CAIRO, OUTFIT, THEME, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -133,7 +125,7 @@ export default function DisposalsPage() {
                             }}>
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{s.val.toLocaleString('en-US')}</span>
                                         {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                     </div>
@@ -199,20 +191,20 @@ export default function DisposalsPage() {
                                     <tr key={d.id} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.10s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ padding: '14px 16px' }}>
                                             <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{d.assetName}</div>
-                                            <div style={{ fontSize: '10px', color: C.blue, fontFamily: INTER, fontWeight: 700, marginTop: '2px' }}>{d.assetCode}</div>
+                                            <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px' }}>{d.assetCode}</div>
                                         </td>
                                         <td style={{ padding: '11px 14px' }}>
                                             <span style={{ fontSize: '10px', fontWeight: 900, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
                                                 {REASON_LABELS[d.reason] || d.reason}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: INTER }}>{fmt(d.salePrice)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textSecondary, fontFamily: INTER }}>{fmt(d.netBookValue)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(d.salePrice)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}>{fmt(d.netBookValue)}</td>
                                         <td style={{ padding: '14px 16px' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
                                                 {d.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
-                                                <span style={{ fontFamily: INTER }}>{fmt(Math.abs(d.gainLoss))}</span>
+                                                <span style={{ fontFamily: OUTFIT }}>{fmt(Math.abs(d.gainLoss))}</span>
                                             </div>
                                         </td>
                                         <td style={{ padding: '14px 16px', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{d.notes || '—'}</td>
@@ -240,12 +232,12 @@ export default function DisposalsPage() {
                                 </div>
                                 <div>
                                     <label style={LS}>{t('تاريخ العملية')}</label>
-                                    <input type="date" value={saleDate} onChange={e => setSaleDate(e.target.value)} style={{ ...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="date" value={saleDate} onChange={e => setSaleDate(e.target.value)} style={{ ...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
                             <div style={{ marginTop: '16px' }}>
                                 <label style={LS}>{t('مبلغ الاستلام / سعر البيع (ج.م)')}</label>
-                                <input type="number" step="0.01" value={salePrice} onChange={e => setSalePrice(e.target.value)} placeholder="0.00" style={{...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="number" step="0.01" value={salePrice} onChange={e => setSalePrice(e.target.value)} placeholder="0.00" style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 
@@ -258,7 +250,7 @@ export default function DisposalsPage() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div style={{ textAlign: 'start' }}>
                                         <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{isGain ? t('أرباح رأسمالية مٌحققة') : isLoss ? t('خسائر رأسمالية ناتجة') : t('تعادل دفتري')}</div>
-                                        <div style={{ fontSize: '22px', fontWeight: 950, color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted, direction: 'ltr', fontFamily: INTER }}>{isLoss ? '-' : '+'}{fmt(Math.abs(gainLoss))} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{t('ج.م')}</span></div>
+                                        <div style={{ fontSize: '22px', fontWeight: 950, color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted, direction: 'ltr', fontFamily: OUTFIT }}>{isLoss ? '-' : '+'}{fmt(Math.abs(gainLoss))} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{t('ج.م')}</span></div>
                                     </div>
                                     <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: isGain ? '#10b98115' : isLoss ? `${C.danger}15` : 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted }}>
                                         {isGain ? <ArrowUpCircle size={28} /> : isLoss ? <ArrowDownCircle size={28} /> : <MinusCircle size={28} />}

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { Users, TrendingUp, TrendingDown, ArrowUpDown, Plus, X, Loader2, ChevronDown, ChevronUp, Banknote, CalendarDays, Wallet, AlertCircle, FileText } from 'lucide-react';
-import { C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useTranslation } from '@/lib/i18n';
@@ -102,7 +102,7 @@ export default function PartnerAccountsPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{s.val.toLocaleString('en-US')}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -163,27 +163,27 @@ export default function PartnerAccountsPage() {
                                             </div>
                                             <div>
                                                 <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
-                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{t('نسبة المساهمة')}: {p.share}%</div>
+                                                 <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('نسبة المساهمة')}: {p.share}%</div>
                                             </div>
                                         </div>
 
                                         <div style={{ textAlign: 'center' }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                            <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: INTER }}>{p.capital.toLocaleString('en-US')}</div>
+                                            <div style={{ fontSize: '14px', fontWeight: 800, color: '#f1f5f9', fontFamily: OUTFIT }}>{p.capital.toLocaleString('en-US')}</div>
                                         </div>
 
                                          <div style={{ textAlign: 'center' }}>
                                              <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '2px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
-                                             <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: INTER, direction: 'ltr' }}>
+                                             <div style={{ fontSize: '15px', fontWeight: 900, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT, direction: 'ltr' }}>
                                                  {p.balance.toLocaleString('en-US')}
                                              </div>
                                          </div>
 
                                         <div style={{ display: 'flex', gap: '6px', justifyContent: 'center' }}>
-                                            <div title={t("إجمالي الإيداعات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.2)', fontFamily: INTER }}>
+                                            <div title={t("إجمالي الإيداعات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(16,185,129,0.1)', color: '#34d399', border: '1px solid rgba(16,185,129,0.2)', fontFamily: OUTFIT }}>
                                                 ↑ {deposits.toLocaleString('en-US')}
                                             </div>
-                                            <div title={t("إجمالي المسحوبات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontFamily: INTER }}>
+                                            <div title={t("إجمالي المسحوبات")} style={{ padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 900, background: 'rgba(239,68,68,0.1)', color: '#f87171', border: '1px solid rgba(239,68,68,0.2)', fontFamily: OUTFIT }}>
                                                 ↓ {withdrawals.toLocaleString('en-US')}
                                             </div>
                                         </div>
@@ -227,7 +227,7 @@ export default function PartnerAccountsPage() {
                                                                 const meta = TX_LABELS[tx.type] || { label: tx.type, color: '#94a3b8', bg: 'rgba(255,255,255,0.05)', icon: Banknote };
                                                                 return (
                                                                     <tr key={tx.id} style={{ ...TABLE_STYLE.row(idx === txs.length - 1), background: 'transparent' }}>
-                                                                        <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>
+                                                                        <td style={{ ...TABLE_STYLE.td(true), fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
                                                                             {new Date(tx.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
                                                                         </td>
                                                                         <td style={TABLE_STYLE.td(false)}>
@@ -240,7 +240,7 @@ export default function PartnerAccountsPage() {
                                                                                 {t(meta.label)}
                                                                             </span>
                                                                         </td>
-                                                                        <td style={{ ...TABLE_STYLE.td(false), fontWeight: 900, color: meta.color, fontFamily: INTER, fontSize: '14px' }}>
+                                                                        <td style={{ ...TABLE_STYLE.td(false), fontWeight: 900, color: meta.color, fontFamily: OUTFIT, fontSize: '14px' }}>
                                                                             {tx.amount.toLocaleString('en-US')} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                                                         </td>
                                                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
@@ -276,7 +276,7 @@ export default function PartnerAccountsPage() {
                                 borderRadius: '12px', padding: '12px', marginBottom: '20px', textAlign: 'center' 
                             }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري حالياً')}</div>
-                                <div style={{ fontSize: '20px', fontWeight: 950, color: showModal.balance >= 0 ? '#10b981' : C.danger, fontFamily: INTER }}>
+                                <div style={{ fontSize: '20px', fontWeight: 950, color: showModal.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
                                     {showModal.balance.toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                                 </div>
                             </div>
@@ -325,11 +325,11 @@ export default function PartnerAccountsPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
                                     <label style={LS}>{t('المبلغ (ج.م) *')}</label>
-                                    <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 900, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                    <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 900, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
                                 </div>
                                 <div>
                                     <label style={LS}>{t('التاريخ')}</label>
-                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
 

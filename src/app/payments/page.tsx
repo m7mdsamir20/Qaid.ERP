@@ -6,10 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { Printer, X, Info, Receipt, TrendingDown, Plus, Search, ChevronDown, Lock, Loader2, UserCheck, Building2, Banknote, CheckCircle2, ArrowRight, Trash2, Eye } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { 
-    THEME, C, CAIRO, INTER, IS, focusIn, focusOut, PAGE_BASE, SC, STitle, 
-    TABLE_STYLE, SEARCH_STYLE 
-} from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, PAGE_BASE, SC, STitle, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import { useCurrency } from '@/hooks/useCurrency';

@@ -3,12 +3,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    Warehouse, Plus, Trash2, Search, Pencil, Loader2, MapPin, Building2, Boxes, ShieldCheck, AlertTriangle
-} from 'lucide-react';
-import {
-    C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, focusIn, focusOut, LS, IS
-} from '@/constants/theme';
+import { Warehouse, Plus, Trash2, Search, Pencil, Loader2, MapPin, Building2, Boxes, ShieldCheck, AlertTriangle } from 'lucide-react';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, focusIn, focusOut, LS, IS } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
@@ -192,7 +188,7 @@ export default function WarehousesPage() {
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
                                             <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>
+                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
                                                     {wh.code || '—'}
                                                 </div>
                                             </td>
@@ -205,7 +201,7 @@ export default function WarehousesPage() {
                                                     {wh.address || t('غير محدد')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 800, color: C.purple, }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 800, color: C.purple, }}>
                                                 {wh._count.stocks} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{t('أصناف')}</span>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>

@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, CheckCircle2, RefreshCw, Mail, ArrowRight, ArrowLeft, ShieldCheck } from 'lucide-react';
 import Link from 'next/link';
-import { C, CAIRO, INTER, THEME, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, THEME, IS, LS, focusIn, focusOut } from '@/constants/theme';
 
 function VerifyContent() {
     const { lang, t } = useTranslation();
@@ -141,7 +141,7 @@ function VerifyContent() {
                                 onBlur={focusOut}
                                 style={{ 
                                     width: '46px', height: '60px', textAlign: 'center', fontSize: '24px', 
-                                    fontWeight: 900, fontFamily: INTER, borderRadius: '14px', 
+                                    fontWeight: 900, fontFamily: OUTFIT, borderRadius: '14px', 
                                     border: `1px solid ${digit ? C.primary : C.border}`, 
                                     background: digit ? `${C.primary}05` : C.inputBg, 
                                     color: C.textPrimary, outline: 'none', transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',

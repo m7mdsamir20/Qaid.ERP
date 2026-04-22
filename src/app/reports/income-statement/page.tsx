@@ -7,7 +7,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useSession } from 'next-auth/react';
 import { PieChart, TrendingUp, TrendingDown, DollarSign, Loader2 } from 'lucide-react';
-import { C, CAIRO, INTER, PAGE_BASE } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE } from '@/constants/theme';
 
 const getCurrencyName = (code: string) => {
     const map: Record<string, string> = { 'EGP': 'ج.م', 'SAR': 'ر.س', 'AED': 'د.إ', 'USD': '$', 'KWD': 'د.ك', 'QAR': 'ر.ق', 'BHD': 'د.ب', 'OMR': 'ر.ع', 'JOD': 'د.أ' };
@@ -99,7 +99,7 @@ export default function IncomeStatementPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
@@ -122,9 +122,9 @@ export default function IncomeStatementPage() {
                                 <tbody>
                                     {data.revenues.map(rev => (
                                         <tr key={rev.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: INTER, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{rev.code}</span></td>
+                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{rev.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 600, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{rev.name}</td>
-                                            <td style={{ padding: '14px 24px',  fontWeight: 600, color: '#10b981', fontSize: '14px', fontFamily: INTER }}><Currency amount={rev.balance} /></td>
+                                            <td style={{ padding: '14px 24px',  fontWeight: 600, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={rev.balance} /></td>
                                         </tr>
                                     ))}
                                     {data.revenues.length === 0 && <tr><td colSpan={3} style={{ padding: '24px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات إيرادات مسجلة')}</td></tr>}
@@ -140,9 +140,9 @@ export default function IncomeStatementPage() {
                                 <tbody>
                                     {data.expenses.map(exp => (
                                         <tr key={exp.code} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: INTER, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{exp.code}</span></td>
+                                            <td style={{ padding: '14px 24px', width: '150px' }}><span style={{ fontFamily: OUTFIT, fontSize: '11px', padding: '4px 10px', background: 'rgba(255,255,255,0.03)', borderRadius: '6px', border: `1px solid ${C.border}`, color: C.textMuted }}>{exp.code}</span></td>
                                             <td style={{ padding: '14px 24px', fontWeight: 600, color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{exp.name}</td>
-                                            <td style={{ padding: '14px 24px',  fontWeight: 600, color: '#fb7185', fontSize: '14px', fontFamily: INTER }}><Currency amount={exp.balance} /></td>
+                                            <td style={{ padding: '14px 24px',  fontWeight: 600, color: '#fb7185', fontSize: '14px', fontFamily: OUTFIT }}><Currency amount={exp.balance} /></td>
                                         </tr>
                                     ))}
                                     {data.expenses.length === 0 && <tr><td colSpan={3} style={{ padding: '24px',  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{t('لا توجد حركات مصروفات مسجلة')}</td></tr>}
@@ -153,7 +153,7 @@ export default function IncomeStatementPage() {
                                         <td colSpan={2} style={{ padding: '16px 24px', fontWeight: 950, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>
                                             {t('نتيجة النشاط:')} <span style={{ color: data.netIncome >= 0 ? '#10b981' : '#fb7185' }}>{data.netIncome >= 0 ? t('صافي الربح') : t('صافي الخسارة')}</span>
                                         </td>
-                                        <td style={{ padding: '16px 24px',  fontWeight: 950, fontSize: '14px', color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontFamily: INTER }}>
+                                        <td style={{ padding: '16px 24px',  fontWeight: 950, fontSize: '14px', color: data.netIncome >= 0 ? '#10b981' : '#fb7185', fontFamily: OUTFIT }}>
                                             <Currency amount={data.netIncome} />
                                         </td>
                                     </tr>

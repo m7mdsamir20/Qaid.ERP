@@ -5,27 +5,10 @@ import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
 import { useSession } from 'next-auth/react';
-import { 
-    Printer, 
-    CheckCircle, 
-    Calculator, 
-    Wallet, 
-    Loader2, 
-    AlertCircle, 
-    User, 
-    ChevronRight,
-    Search,
-    Landmark,
-    X,
-    FileText,
-    ClipboardList,
-    PieChart,
-    Banknote,
-    RefreshCw
-} from 'lucide-react';
+import { Printer, CheckCircle, Calculator, Wallet, Loader2, AlertCircle, User, ChevronRight, Search, Landmark, X, FileText, ClipboardList, PieChart, Banknote, RefreshCw } from 'lucide-react';
 import { use } from 'react';
 import Link from 'next/link';
-import { C, CAIRO, INTER, TABLE_STYLE, KPI_STYLE, KPI_ICON } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, KPI_STYLE, KPI_ICON } from '@/constants/theme';
 import AppModal from '@/components/AppModal';
 import PageHeader from '@/components/PageHeader';
 
@@ -355,7 +338,7 @@ ${tableHtml}
                         >
                              <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800, color: stat.color, fontFamily: INTER }} dir="ltr">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 800, color: stat.color, fontFamily: OUTFIT }} dir="ltr">
                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
                                     <span>{stat.val.toLocaleString('en-US')}</span>
                                 </div>
@@ -439,7 +422,7 @@ ${tableHtml}
                             {payroll.lines.map((line: any, idx: number) => (
                                 <tr key={line.id} style={TABLE_STYLE.row(idx === payroll.lines.length - 1)}>
                                     <td style={TABLE_STYLE.td(true)}>
-                                        <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: INTER }}>{line.employee.code}</span>
+                                        <span style={{ fontSize: '12px', color: C.primary, fontWeight: 800, fontFamily: OUTFIT }}>{line.employee.code}</span>
                                     </td>
                                     <td style={TABLE_STYLE.td(false)}>
                                         <div style={{ textAlign: 'start' }}>
@@ -447,19 +430,19 @@ ${tableHtml}
                                             <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{line.employee.position || 'موظف'}</div>
                                         </div>
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: INTER }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }} dir="ltr">
                                         {line.basicSalary.toLocaleString('en-US')}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: INTER }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT }} dir="ltr">
                                         +{line.allowances.toLocaleString('en-US')}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: INTER }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }} dir="ltr">
                                         -{line.advances.toLocaleString('en-US')}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: INTER }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }} dir="ltr">
                                         -{line.discounts.toLocaleString('en-US')}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: INTER }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 900, color: C.success, fontFamily: OUTFIT }} dir="ltr">
                                         {line.netSalary.toLocaleString('en-US')}
                                     </td>
                                 </tr>
@@ -478,7 +461,7 @@ ${tableHtml}
                     <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
                         سيتم إغلاق المسير وتوليد قيود محاسبية تلقائية، وخصم السلف المستحقة من أرصدة الموظفين.
                         <br/><br/>
-                        <strong style={{ color: '#fff' }}>المبلغ المطلوب:</strong> <span style={{ color: C.success, fontWeight: 800, fontSize: '16px', fontFamily: INTER }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{payroll.netTotal.toLocaleString('en-US')}</span></div></span>
+                        <strong style={{ color: '#fff' }}>المبلغ المطلوب:</strong> <span style={{ color: C.success, fontWeight: 800, fontSize: '16px', fontFamily: OUTFIT }} dir="ltr"><div style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}><span style={{ fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span> <span>{payroll.netTotal.toLocaleString('en-US')}</span></div></span>
                     </div>
 
                     <div style={{ marginBottom: '24px' }}>

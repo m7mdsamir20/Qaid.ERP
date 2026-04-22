@@ -4,16 +4,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import {
-    ArrowRightLeft, Plus, Search, ChevronDown, Loader2,
-    UserCheck, UserMinus, UserPlus, CheckCircle2,
-    ArrowRight, Info, History, DollarSign, Calendar,
-    Building2, Banknote, Users, X, Wallet, RefreshCw,
-    ShieldAlert, FileText, ArrowLeftRight, TrendingUp,
-    TrendingDown
-} from 'lucide-react';
+import { ArrowRightLeft, Plus, Search, ChevronDown, Loader2, UserCheck, UserMinus, UserPlus, CheckCircle2, ArrowRight, Info, History, DollarSign, Calendar, Building2, Banknote, Users, X, Wallet, RefreshCw, ShieldAlert, FileText, ArrowLeftRight, TrendingUp, TrendingDown } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut } from '@/constants/theme';
 
 
 
@@ -72,7 +65,7 @@ function SearchableSelect({ options, value, onChange, placeholder, disabled, lab
                                     onMouseLeave={e => opt.id !== value && (e.currentTarget.style.background = 'transparent')}>
                                     <div style={{ textAlign: 'start' }}>
                                         <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }}>{opt.label}</div>
-                                        {opt.sub && <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 600, fontFamily: INTER }}>{opt.sub}</div>}
+                                        {opt.sub && <div style={{ fontSize: '11px', color: C.textSecondary, marginTop: '2px', fontWeight: 600, fontFamily: OUTFIT }}>{opt.sub}</div>}
                                     </div>
                                 </div>
                             ))
@@ -299,7 +292,7 @@ export default function ComprehensiveSettlementPage() {
                                                                 const formatted = parts.join('.');
                                                                 setForm(f => ({ ...f, amount: formatted }));
                                                             }}
-                                                            style={{ ...IS, paddingInlineStart: '44px', fontFamily: INTER, fontWeight: 400 }}
+                                                            style={{ ...IS, paddingInlineStart: '44px', fontFamily: OUTFIT, fontWeight: 400 }}
                                                             onFocus={focusIn} onBlur={focusOut} placeholder="0.00"
                                                         />
                                                         <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{currencySign}</span>
@@ -387,11 +380,11 @@ export default function ComprehensiveSettlementPage() {
                                         <tbody>
                                             {filteredSettlements.map((s: any, idx) => (
                                                 <tr key={s.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < filteredSettlements.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                    <td style={{ padding: '11px 16px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: INTER }}>
+                                                    <td style={{ padding: '11px 16px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT }}>
                                                         {new Date(s.date).toLocaleDateString('en-GB')}
                                                     </td>
                                                     <td style={{ padding: '11px 16px', }}>
-                                                        <span style={{ padding: '2px 8px', borderRadius: '6px', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 700, fontSize: '11px', fontFamily: INTER }}>
+                                                        <span style={{ padding: '2px 8px', borderRadius: '6px', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 700, fontSize: '11px', fontFamily: OUTFIT }}>
                                                             {String(s.entryNumber).padStart(4, '0')}
                                                         </span>
                                                     </td>
@@ -409,7 +402,7 @@ export default function ComprehensiveSettlementPage() {
                                                     </td>
                                                     <td style={{ padding: '11px 16px',  fontSize: '13px', color: C.textSecondary, fontWeight: 500, fontFamily: CAIRO }}>{s.notes || '-'}</td>
                                                     <td style={{ padding: '11px 16px', }}>
-                                                        <div style={{ fontSize: '14px', fontWeight: 700, color: C.success, fontFamily: INTER }}>
+                                                        <div style={{ fontSize: '14px', fontWeight: 700, color: C.success, fontFamily: OUTFIT }}>
                                                             {s.amount.toLocaleString()} <span style={{ fontSize: '10px' }}>{currencySign}</span>
                                                         </div>
                                                     </td>
@@ -449,11 +442,11 @@ export default function ComprehensiveSettlementPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px', marginBottom: '22px' }}>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>{t('تاريخ التسجيل')}</div>
-                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: INTER }}>{new Date(detailsModal.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { dateStyle: 'full' })}</div>
+                                    <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT }}>{new Date(detailsModal.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { dateStyle: 'full' })}</div>
                                 </div>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>{t('إجمالي القيد')}</div>
-                                    <div style={{ fontSize: '18px', color: C.success, fontWeight: 900, fontFamily: INTER }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.7 }}>{currencySign}</span></div>
+                                    <div style={{ fontSize: '18px', color: C.success, fontWeight: 900, fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '11px', fontWeight: 600, opacity: 0.7 }}>{currencySign}</span></div>
                                 </div>
                             </div>
 
@@ -472,16 +465,16 @@ export default function ComprehensiveSettlementPage() {
                                                 <td style={{ padding: '12px 16px' }}>
                                                     <div style={{ color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{line.accountName}</div>
                                                 </td>
-                                                <td style={{ padding: '12px 16px', color: C.success, fontSize: '14px', fontWeight: 700,  fontFamily: INTER }}>{line.debit > 0 ? line.debit.toLocaleString() : '-'}</td>
-                                                <td style={{ padding: '12px 16px', color: C.danger, fontSize: '14px', fontWeight: 700,  fontFamily: INTER }}>{line.credit > 0 ? line.credit.toLocaleString() : '-'}</td>
+                                                <td style={{ padding: '12px 16px', color: C.success, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT }}>{line.debit > 0 ? line.debit.toLocaleString() : '-'}</td>
+                                                <td style={{ padding: '12px 16px', color: C.danger, fontSize: '14px', fontWeight: 700,  fontFamily: OUTFIT }}>{line.credit > 0 ? line.credit.toLocaleString() : '-'}</td>
                                             </tr>
                                         ))}
                                     </tbody>
                                     <tfoot style={{ background: 'rgba(255,255,255,0.02)', borderTop: `1px solid ${C.border}` }}>
                                         <tr>
                                             <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي القيد')}</td>
-                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: INTER }}>{detailsModal.amount.toLocaleString()}</td>
-                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: INTER }}>{detailsModal.amount.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()}</td>
+                                            <td style={{ padding: '12px 16px', color: C.textPrimary, fontSize: '15px', fontWeight: 800,  fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()}</td>
                                         </tr>
                                     </tfoot>
                                 </table>

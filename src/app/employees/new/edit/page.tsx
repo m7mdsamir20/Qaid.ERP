@@ -6,12 +6,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { useCurrency } from '@/hooks/useCurrency';
-import {
-    UsersIcon, Briefcase, Building2,
-    CreditCard, Paperclip, X, Upload,
-    Eye, Trash2, Loader2, ChevronDown,
-    ArrowRight, ArrowLeft, Save
-} from 'lucide-react';
+import { UsersIcon, Briefcase, Building2, CreditCard, Paperclip, X, Upload, Eye, Trash2, Loader2, ChevronDown, ArrowRight, ArrowLeft, Save } from 'lucide-react';
 
 /* ══════════════════════════════════════════
    TYPES

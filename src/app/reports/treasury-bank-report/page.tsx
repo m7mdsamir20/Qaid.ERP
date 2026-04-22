@@ -11,10 +11,7 @@ import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
-import {
-    Calendar, Search, Printer, Download, Landmark, Wallet,
-    ArrowUpRight, ArrowDownRight, Activity, FileText, ChevronDown, Loader2
-} from 'lucide-react';
+import { Calendar, Search, Printer, Download, Landmark, Wallet, ArrowUpRight, ArrowDownRight, Activity, FileText, ChevronDown, Loader2 } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 
 const PC = '#4f46e5';

@@ -7,7 +7,7 @@ import CustomSelect from '@/components/CustomSelect';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { FileText, Plus, Trash2, Package, Printer, Info, Loader2, Search, X, ArrowRight, Pencil, Banknote, Building2, Camera, CheckCircle, AlertCircle, ShoppingCart, User, Phone, UserPlus, Percent } from 'lucide-react';
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, SC, STitle } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SC, STitle } from '@/constants/theme';
 import { CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -242,7 +242,7 @@ export default function NewQuotationPage() {
                             <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '100px 1fr 160px', gap: '10px' }}>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('رقم العرض')}</label>
-                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: INTER, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
+                                    <div style={{ height: '42px', borderRadius: '10px', background: 'rgba(59,130,246,0.08)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: OUTFIT, fontWeight: 900, fontSize: '13px', color: '#60a5fa', letterSpacing: '0.5px' }}>
                                         QUO-{String(nextNum).padStart(5, '0')}
                                     </div>
                                 </div>
@@ -258,7 +258,7 @@ export default function NewQuotationPage() {
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ العرض')}</label>
-                                    <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} style={{ ...IS, fontFamily: INTER, fontSize: '13px', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
+                                    <input type="date" value={form.date} onChange={e => setForm({ ...form, date: e.target.value })} style={{ ...IS, fontFamily: OUTFIT, fontSize: '13px', textAlign: 'end' }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
                         </div>
@@ -303,14 +303,14 @@ export default function NewQuotationPage() {
                                     <input ref={qtyRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryQty === '' ? '1' : fmt(entryQty)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryQty(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: INTER, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
+                                    }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px', textAlign: 'center' }}>{t('السعر')}</label>
                                     <input ref={priceRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryPrice === '' ? '0' : fmt(entryPrice)} onChange={e => {
                                         const v = e.target.value.replace(/,/g, '');
                                         if (v === '' || !isNaN(Number(v)) || v === '.') setEntryPrice(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: INTER, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
+                                    }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, textAlign: 'center', height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 <button type="button" onClick={addLine} disabled={!entryItemId} style={{ height: '42px', width: '60px', borderRadius: '10px', background: !entryItemId ? 'rgba(59,130,246,0.3)' : C.primary, color: '#fff', border: 'none', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Plus size={22} />
@@ -334,9 +334,9 @@ export default function NewQuotationPage() {
                                                 <td style={{ padding: '12px' }}>
                                                     <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.itemName}</div>
                                                 </td>
-                                                <td style={{ padding: '12px',  fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
-                                                <td style={{ padding: '12px',  fontFamily: INTER, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                                <td style={{ padding: '12px',  fontWeight: 900, fontFamily: INTER, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
+                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                                <td style={{ padding: '12px',  fontWeight: 900, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                         <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
@@ -370,7 +370,7 @@ export default function NewQuotationPage() {
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
                                     <span style={{ color: '#64748b' }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
-                                    <span style={{ fontWeight: 800, fontFamily: INTER, color: '#e2e8f0' }}><Currency amount={subtotal} /> </span>
+                                    <span style={{ fontWeight: 800, fontFamily: OUTFIT, color: '#e2e8f0' }}><Currency amount={subtotal} /> </span>
                                 </div>
 
                                 {/* Discount Section */}
@@ -390,7 +390,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 placeholder="0.00"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
@@ -401,7 +401,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
                                                 }}
-                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 placeholder="0"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
@@ -430,7 +430,7 @@ export default function NewQuotationPage() {
                                                 height: '34px', borderRadius: '8px', border: `1px solid ${C.border}`,
                                                 background: C.card, color: '#60a5fa',
                                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                                fontFamily: INTER, fontSize: '13px', fontWeight: 800, position: 'relative'
+                                                fontFamily: OUTFIT, fontSize: '13px', fontWeight: 800, position: 'relative'
                                             }}>
                                                 <Currency amount={taxAmount} />
                                             </div>
@@ -440,7 +440,7 @@ export default function NewQuotationPage() {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }}
-                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: INTER, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                    style={{ ...IS, height: '34px', textAlign: 'center', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
                                                 />
                                                 <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 900 }}>%</span>
                                             </div>
@@ -455,7 +455,7 @@ export default function NewQuotationPage() {
                                     border: `1px solid ${C.primaryBorder}`,
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: INTER }}>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '17px', fontFamily: OUTFIT }}>
                                         <Currency amount={finalTotal} />
                                     </span>
                                     <span style={{ color: C.textSecondary, fontWeight: 800, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>

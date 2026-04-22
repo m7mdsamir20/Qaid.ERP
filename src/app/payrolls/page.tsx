@@ -4,22 +4,9 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
-import { 
-    FileDown, 
-    Calendar, 
-    Plus, 
-    Loader2, 
-    Filter,
-    Trash2,
-    X,
-    Search,
-    ClipboardList,
-    PieChart,
-    Banknote,
-    ChevronDown
-} from 'lucide-react';
+import { FileDown, Calendar, Plus, Loader2, Filter, Trash2, X, Search, ClipboardList, PieChart, Banknote, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
-import { C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -259,7 +246,7 @@ export default function PayrollsPage() {
                                                     </span>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontSize: '12px', color: '#94a3b8' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '12px', color: '#94a3b8' }}>
                                                 {new Date(pr.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
@@ -268,7 +255,7 @@ export default function PayrollsPage() {
                                                 </span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false) }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: INTER }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 900, color: '#10b981', fontSize: '14px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '11px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{pr.netTotal.toLocaleString('en-US')}</span>
                                                 </div>

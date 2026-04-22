@@ -2,16 +2,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { 
-    DollarSign, Plus, Loader2, X, TrendingUp, TrendingDown, 
-    ChevronDown, ChevronUp, History, Info, AlertCircle, Save,
-    Banknote, Users, CheckCircle2, ArrowUpRight, ArrowDownRight
-} from 'lucide-react';
-import { 
-    C, CAIRO, INTER, TABLE_STYLE, SEARCH_STYLE, 
-    KPI_STYLE, KPI_ICON, focusIn, focusOut, 
-    PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER 
-} from '@/constants/theme';
+import { DollarSign, Plus, Loader2, X, TrendingUp, TrendingDown, ChevronDown, ChevronUp, History, Info, AlertCircle, Save, Banknote, Users, CheckCircle2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -122,7 +114,7 @@ export default function CapitalPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{typeof s.val === 'number' ? s.val.toLocaleString('en-US') : s.val}</span>
                                         {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
                                     </div>
@@ -169,7 +161,7 @@ export default function CapitalPage() {
                                                 </div>
                                                 <div>
                                                     <div style={{ fontSize: '15px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: INTER }}>{t('الحصة')}: {p.share}%</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('الحصة')}: {p.share}%</div>
                                                 </div>
                                             </div>
                                             <button onClick={() => setExpanded(isExpanded ? null : p.id)} style={{ padding: '6px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textMuted, cursor: 'pointer', transition: '0.2s' }}>
@@ -180,7 +172,7 @@ export default function CapitalPage() {
                                         {/* Main Value */}
                                         <div style={{ background: 'rgba(0,0,0,0.15)', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px', marginBottom: '18px', textAlign: 'center' }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي القيمة الرأسمالية')}</div>
-                                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: INTER }}>
+                                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: OUTFIT }}>
                                                 {p.capital.toLocaleString('en-US')} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
                                             </div>
                                         </div>
@@ -189,11 +181,11 @@ export default function CapitalPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
                                             <div style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '12px', padding: '10px' }}>
                                                 <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('زيادات')}</div>
-                                                <div style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{increased.toLocaleString('en-US')}</div>
+                                                <div style={{ fontSize: '14px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{increased.toLocaleString('en-US')}</div>
                                             </div>
                                             <div style={{ background: `${C.danger}05`, border: `1px solid ${C.danger}10`, borderRadius: '12px', padding: '10px' }}>
                                                 <div style={{ fontSize: '10px', color: C.danger, fontWeight: 800, marginBottom: '2px', fontFamily: CAIRO }}>{t('تخفيضات')}</div>
-                                                <div style={{ fontSize: '14px', fontWeight: 900, color: C.danger, fontFamily: INTER }}>{decreased.toLocaleString('en-US')}</div>
+                                                <div style={{ fontSize: '14px', fontWeight: 900, color: C.danger, fontFamily: OUTFIT }}>{decreased.toLocaleString('en-US')}</div>
                                             </div>
                                         </div>
 
@@ -229,10 +221,10 @@ export default function CapitalPage() {
                                                                     <div style={{ fontSize: '12px', fontWeight: 800, color: c.type === 'increase' ? '#10b981' : C.danger, fontFamily: CAIRO }}>
                                                                         {c.type === 'increase' ? t('زيادة') : t('تخفيض')}
                                                                     </div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: INTER }}>{new Date(c.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}</div>
+                                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(c.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}</div>
                                                                 </div>
                                                                 <div style={{ textAlign: 'end' }}>
-                                                                    <div style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>
+                                                                    <div style={{ fontSize: '13px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                                         {c.type === 'increase' ? '+' : '-'}{c.amount.toLocaleString()}
                                                                     </div>
                                                                     <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>{t('ج.م')}</div>
@@ -260,7 +252,7 @@ export default function CapitalPage() {
                     <form onSubmit={handleSave}>
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
                             <div style={{ fontSize: '11px', fontWeight: 900, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>{t('القيمة الرأسمالية الحالية')}</div>
-                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: INTER }}>
+                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: OUTFIT }}>
                                 {showModal?.capital.toLocaleString() || 0} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
                             </div>
                         </div>
@@ -289,11 +281,11 @@ export default function CapitalPage() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                             <div>
                                 <label style={LS}>{t('المبلغ')} <span style={{ color: C.danger }}>*</span></label>
-                                <input required type="number" min="1" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: form.type === 'increase' ? '#10b981' : C.danger, fontWeight: 900, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                <input required type="number" min="1" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: form.type === 'increase' ? '#10b981' : C.danger, fontWeight: 900, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
                             </div>
                             <div>
                                 <label style={LS}>{t('تاريخ الحركة')}</label>
-                                <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 

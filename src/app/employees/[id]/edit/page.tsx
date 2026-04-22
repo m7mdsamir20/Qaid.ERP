@@ -5,15 +5,10 @@ import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import {
-    UsersIcon, Briefcase, Building2,
-    CreditCard, Paperclip, X, Upload,
-    Eye, Trash2, Loader2, ChevronDown,
-    ArrowRight, Save, Landmark, FileText, CheckCircle2, Info
-} from 'lucide-react';
+import { UsersIcon, Briefcase, Building2, CreditCard, Paperclip, X, Upload, Eye, Trash2, Loader2, ChevronDown, ArrowRight, Save, Landmark, FileText, CheckCircle2, Info } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 import PageHeader from '@/components/PageHeader';
-import { THEME, C, CAIRO, INTER, PAGE_BASE, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, focusIn, focusOut } from '@/constants/theme';
 
 /* ── Types ── */
 interface Department { id: string; name: string; }
@@ -165,13 +160,13 @@ export default function EditEmployeePage() {
                             <FormSection label={t("البيانات الشخصية والتعريفية")} icon={UsersIcon} color="#3b82f6">
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("كود الموظف")}>
-                                        <input type="text" readOnly value={form.code} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textMuted, fontSize: '14px', fontWeight: 800, padding: '0 16px', cursor: 'not-allowed', fontFamily: INTER }} />
+                                        <input type="text" readOnly value={form.code} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textMuted, fontSize: '14px', fontWeight: 800, padding: '0 16px', cursor: 'not-allowed', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("الاسم الكامل")} required>
                                         <input type="text" required value={form.name} onChange={e => set('name')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("أدخل اسم الموظف")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', outline: 'none' }} />
                                     </Field>
                                     <Field label={t("الرقم القومي")}>
-                                        <input type="text" value={form.nationalId} onChange={e => set('nationalId')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("14 رقم")} maxLength={14} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: INTER }} />
+                                        <input type="text" value={form.nationalId} onChange={e => set('nationalId')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("14 رقم")} maxLength={14} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("تاريخ الميلاد")}>
                                         <input type="date" value={form.birthDate} onChange={e => set('birthDate')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'inherit' }} />
@@ -190,10 +185,10 @@ export default function EditEmployeePage() {
                                         />
                                     </Field>
                                     <Field label={t("رقم الهاتف")}>
-                                        <input type="text" value={form.phone} onChange={e => set('phone')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="01xxxxxxxxx" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: INTER }} />
+                                        <input type="text" value={form.phone} onChange={e => set('phone')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="01xxxxxxxxx" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("البريد الإلكتروني")}>
-                                        <input type="email" value={form.email} onChange={e => set('email')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="name@company.com" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'ltr', fontFamily: INTER }} />
+                                        <input type="email" value={form.email} onChange={e => set('email')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder="name@company.com" style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                     <Field label={t("العنوان السكني")}>
                                         <input type="text" value={form.address} onChange={e => set('address')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("المدينة، الحي")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px' }} />
@@ -250,7 +245,7 @@ export default function EditEmployeePage() {
                                             }} 
                                             onFocus={focusIn} onBlur={focusOut} 
                                             placeholder="0.00" 
-                                            style={{ height: '48px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: '#10b981', fontSize: '18px', fontWeight: 900, padding: '0 16px', textAlign: 'center', fontFamily: INTER }} 
+                                            style={{ height: '48px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: '#10b981', fontSize: '18px', fontWeight: 900, padding: '0 16px', textAlign: 'center', fontFamily: OUTFIT }} 
                                         />
                                         <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                         fontWeight: 800, color: C.textMuted, fontSize: '13px' }}>{cSymbol}</span>
@@ -259,21 +254,21 @@ export default function EditEmployeePage() {
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', marginTop: '14px' }}>
                                     <Field label={t("بدل سكن")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.housingAllowance)} onChange={e => set('housingAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: INTER }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.housingAllowance)} onChange={e => set('housingAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textMuted, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
                                     </Field>
                                     <Field label={t("بدل مواصلات")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.transportAllowance)} onChange={e => set('transportAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: INTER }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.transportAllowance)} onChange={e => set('transportAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textMuted, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
                                     </Field>
                                     <Field label={t("بدل غذاء")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.foodAllowance)} onChange={e => set('foodAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: INTER }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.foodAllowance)} onChange={e => set('foodAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textMuted, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
@@ -282,14 +277,14 @@ export default function EditEmployeePage() {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '10px' }}>
                                     <Field label={t("خصم التأمينات")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.insuranceDeduction)} onChange={e => set('insuranceDeduction')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: THEME.colors.danger, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: INTER }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.insuranceDeduction)} onChange={e => set('insuranceDeduction')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: THEME.colors.danger, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textMuted, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
                                     </Field>
                                     <Field label={t("خصم الضرائب")}>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.taxDeduction)} onChange={e => set('taxDeduction')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: THEME.colors.danger, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: INTER }} />
+                                            <input type="text" inputMode="decimal" value={formatWithCommas(form.taxDeduction)} onChange={e => set('taxDeduction')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: THEME.colors.danger, fontSize: '13px', paddingInlineStart: '32px', textAlign: 'center', fontFamily: OUTFIT }} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontFamily: CAIRO, 
                                             fontWeight: 700, color: C.textMuted, fontSize: '10px' }}>{cSymbol}</span>
                                         </div>
@@ -304,7 +299,7 @@ export default function EditEmployeePage() {
                                         <input type="text" value={form.bankName} onChange={e => set('bankName')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 700, padding: '0 16px' }} />
                                     </Field>
                                     <Field label={t("رقم الحساب / IBAN")}>
-                                        <input type="text" value={form.bankAccount} onChange={e => set('bankAccount')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: INTER }} />
+                                        <input type="text" value={form.bankAccount} onChange={e => set('bankAccount')(e.target.value)} onFocus={focusIn} onBlur={focusOut} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '14px', fontWeight: 800, padding: '0 16px', direction: 'ltr', fontFamily: OUTFIT }} />
                                     </Field>
                                 </div>
                             </FormSection>
@@ -328,7 +323,7 @@ export default function EditEmployeePage() {
                                     overflow: 'hidden'
                                 }}>
                                     <div style={{ fontSize: '12px', color: '#10b981', fontWeight: 900, marginBottom: '6px' }}>{t('صافي الراتب المتوقع')}</div>
-                                    <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: INTER, display: 'flex', alignItems: 'baseline', gap: '8px' }} dir="ltr">
+                                    <div style={{ fontSize: '24px', fontWeight: 950, color: '#fff', fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '8px' }} dir="ltr">
                                         <span style={{ fontSize: '15px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                         <span>{net.toLocaleString('en-US', { minimumFractionDigits: 2 })}</span>
                                     </div>
@@ -422,7 +417,7 @@ function SummaryItem({ label, value, color, prefix = '', unit }: any) {
     return (
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
             <span style={{ color: C.textSecondary, fontWeight: 700 }}>{label}:</span>
-            <span style={{ color, fontWeight: 800, fontFamily: INTER }}>
+            <span style={{ color, fontWeight: 800, fontFamily: OUTFIT }}>
                 {prefix} {(+value || 0).toLocaleString('en-US')} <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{unit}</span>
             </span>
         </div>

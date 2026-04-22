@@ -2,10 +2,7 @@
 
 import { useTranslation } from '@/lib/i18n';
 import { BTN_DANGER, C, CAIRO } from '@/constants/theme';
-import {
-    AlignRight, Building2, FileText, Globe, Loader2, Mail, MapPin, Percent, Phone, Shield, Trash2,
-    UploadCloud
-} from 'lucide-react';
+import { AlignRight, Building2, FileText, Globe, Loader2, Mail, MapPin, Percent, Phone, Shield, Trash2, UploadCloud } from 'lucide-react';
 import { TabHeader } from './shared';
 import { getCountryPlaceholders } from '@/lib/placeholders';
 import { getAddressConfig } from '@/lib/addressConfig';

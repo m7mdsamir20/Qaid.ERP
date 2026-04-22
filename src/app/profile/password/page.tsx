@@ -3,10 +3,7 @@
 import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    KeyRound, Lock, Eye, EyeOff, Save, Loader2,
-    CheckCircle2, AlertCircle, ShieldCheck
-} from 'lucide-react';
+import { KeyRound, Lock, Eye, EyeOff, Save, Loader2, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
 

@@ -7,11 +7,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
-import {
-    Calendar, RefreshCw, ShoppingCart, ArrowDownRight,
-    ArrowUpRight, Activity, Landmark, Wallet, Loader2, BarChart3
-} from 'lucide-react';
-import { C, CAIRO, PAGE_BASE, INTER, SEARCH_STYLE } from '@/constants/theme';
+import { Calendar, RefreshCw, ShoppingCart, ArrowDownRight, ArrowUpRight, Activity, Landmark, Wallet, Loader2, BarChart3 } from 'lucide-react';
+import { C, CAIRO, PAGE_BASE, OUTFIT, SEARCH_STYLE } from '@/constants/theme';
 import { CompanyInfo } from '@/lib/printInvoices';
 
 const getCurrencyName = (code: string) => {
@@ -248,7 +245,7 @@ table{width:100%;border-collapse:collapse}
                                     width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '8px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textSecondary, fontSize: '13px',
-                                    fontWeight: 500, outline: 'none', fontFamily: INTER
+                                    fontWeight: 500, outline: 'none', fontFamily: OUTFIT
                                 }}
                             />
                         </div>
@@ -302,7 +299,7 @@ table{width:100%;border-collapse:collapse}
                                     <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 6px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'center' }}>
-                                            <span style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
@@ -322,15 +319,15 @@ table{width:100%;border-collapse:collapse}
                                             <tbody>
                                                 <tr>
                                                     <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO,  borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المبيعات')}</td>
-                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: INTER,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.totalSales} /></td>
+                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.totalSales} /></td>
                                                 </tr>
                                                 <tr>
                                                     <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO,  borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الواردة')} (-)</td>
-                                                    <td style={{ padding: '12px 0', color: '#fb7185', fontWeight: 600, fontSize: '14px', fontFamily: INTER,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.saleReturnsTotal} /></td>
+                                                    <td style={{ padding: '12px 0', color: '#fb7185', fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.saleReturnsTotal} /></td>
                                                 </tr>
                                                 <tr>
                                                     <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, }}>{t('صافي المبيعات')}</td>
-                                                    <td style={{ padding: '15px 0', color: '#3b82f6', fontWeight: 900, fontSize: '14px', fontFamily: INTER, }}><Currency amount={data.totalSales - data.saleReturnsTotal} /></td>
+                                                    <td style={{ padding: '15px 0', color: '#3b82f6', fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT, }}><Currency amount={data.totalSales - data.saleReturnsTotal} /></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -338,15 +335,15 @@ table{width:100%;border-collapse:collapse}
                                             <tbody>
                                                 <tr>
                                                     <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO,  borderBottom: `1px solid ${C.border}44` }}>{t('إجمالي قيمة المشتريات')}</td>
-                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: INTER,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.totalPurchases} /></td>
+                                                    <td style={{ padding: '12px 0', color: C.textPrimary, fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.totalPurchases} /></td>
                                                 </tr>
                                                 <tr>
                                                     <td style={{ padding: '12px 0', color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO,  borderBottom: `1px solid ${C.border}44` }}>{t('المرتجعات الصادرة')} (-)</td>
-                                                    <td style={{ padding: '12px 0', color: '#10b981', fontWeight: 600, fontSize: '14px', fontFamily: INTER,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.purchaseReturnsTotal} /></td>
+                                                    <td style={{ padding: '12px 0', color: '#10b981', fontWeight: 600, fontSize: '14px', fontFamily: OUTFIT,  borderBottom: `1px solid ${C.border}44` }}><Currency amount={data.purchaseReturnsTotal} /></td>
                                                 </tr>
                                                 <tr>
                                                     <td style={{ padding: '15px 0', color: C.textPrimary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO, }}>{t('صافي المشتريات')}</td>
-                                                    <td style={{ padding: '15px 0', color: '#f59e0b', fontWeight: 900, fontSize: '14px', fontFamily: INTER, }}><Currency amount={data.totalPurchases - data.purchaseReturnsTotal} /></td>
+                                                    <td style={{ padding: '15px 0', color: '#f59e0b', fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT, }}><Currency amount={data.totalPurchases - data.purchaseReturnsTotal} /></td>
                                                 </tr>
                                             </tbody>
                                         </table>
@@ -367,7 +364,7 @@ table{width:100%;border-collapse:collapse}
                                                     </div>
                                                     <span style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{tArr.name}</span>
                                                 </div>
-                                                <div style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}><Currency amount={tArr.balance} /></div>
+                                                <div style={{ fontSize: '18px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={tArr.balance} /></div>
                                             </div>
                                         ))}
                                     </div>
@@ -378,16 +375,16 @@ table{width:100%;border-collapse:collapse}
                                 <div style={{ padding: '24px', background: 'linear-gradient(145deg, #1e1b4b, #312e81)', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                                     <h4 style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px', fontWeight: 800, marginBottom: '20px', fontFamily: CAIRO }}>{t('إجمالي السيولة النقدية المتاحة')}</h4>
                                     <div style={{ marginBottom: '20px' }}>
-                                        <div style={{ fontSize: '28px', fontWeight: 950, color: '#fff', fontFamily: INTER }}><Currency amount={data.totalCashBalance + data.totalBankBalance} /></div>
+                                        <div style={{ fontSize: '28px', fontWeight: 950, color: '#fff', fontFamily: OUTFIT }}><Currency amount={data.totalCashBalance + data.totalBankBalance} /></div>
                                     </div>
                                     <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span style={{ color: '#c7d2fe', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('النقدية في الخزائن')}</span>
-                                            <span style={{ color: '#fff', fontWeight: 800, fontSize: '12px', fontFamily: INTER }}>{fmt(data.totalCashBalance)}</span>
+                                            <span style={{ color: '#fff', fontWeight: 800, fontSize: '12px', fontFamily: OUTFIT }}>{fmt(data.totalCashBalance)}</span>
                                         </div>
                                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span style={{ color: '#c7d2fe', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO }}>{t('الأرصدة البنكية')}</span>
-                                            <span style={{ color: '#fff', fontWeight: 800, fontSize: '12px', fontFamily: INTER }}>{fmt(data.totalBankBalance)}</span>
+                                            <span style={{ color: '#fff', fontWeight: 800, fontSize: '12px', fontFamily: OUTFIT }}>{fmt(data.totalBankBalance)}</span>
                                         </div>
                                     </div>
                                 </div>

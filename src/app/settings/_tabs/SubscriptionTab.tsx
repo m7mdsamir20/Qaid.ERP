@@ -1,10 +1,8 @@
 'use client';
  
 import { useTranslation } from '@/lib/i18n';
-import { C, CAIRO, INTER } from '@/constants/theme';
-import {
-    CreditCard, AlertCircle, Calendar, Users, Clock, ArrowUpRight, Phone
-} from 'lucide-react';
+import { C, CAIRO, OUTFIT } from '@/constants/theme';
+import { CreditCard, AlertCircle, Calendar, Users, Clock, ArrowUpRight, Phone } from 'lucide-react';
 import { TabHeader } from './shared';
 
 interface SubscriptionTabProps {
@@ -94,7 +92,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <div style={{ color: C.textMuted }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ البداية')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER, direction: 'ltr', textAlign: 'start' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
                                         {new Date(sub.startDate).toLocaleDateString('en-GB')}
                                     </div>
                                 </div>
@@ -105,7 +103,7 @@ export default function SubscriptionTab({ company, session }: SubscriptionTabPro
                                         <div style={{ color: isExpired ? C.danger : C.textMuted }}><Calendar size={15} /></div>
                                         <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تاريخ الانتهاء')}</span>
                                     </div>
-                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: isExpired ? C.danger : C.textPrimary, fontFamily: INTER, direction: 'ltr', textAlign: 'start' }}>
+                                    <div style={{ flex: 1, padding: '16px 20px', fontSize: '14px', fontWeight: 800, color: isExpired ? C.danger : C.textPrimary, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start' }}>
                                         {new Date(sub.endDate).toLocaleDateString('en-GB')}
                                         {isExpired && <span style={{ fontSize: '11px', color: C.danger, marginInlineEnd: '12px', padding: '2px 8px', borderRadius: '4px', background: `${C.danger}15`, fontWeight: 900, fontFamily: CAIRO }}>{t('انتهى الاشتراك')}</span>}
                                     </div>

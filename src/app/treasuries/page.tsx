@@ -1,17 +1,12 @@
 'use client';
-import {
-    THEME, C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, IS, LS, focusIn, focusOut, TABLE_STYLE
-} from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import AppModal from '@/components/AppModal';
-import {
-    Landmark, Plus, Banknote, Building2, Pencil, Trash2,
-    Loader2, X, TrendingUp, TrendingDown, Wallet, AlertTriangle, Building, CreditCard, ShieldCheck, CheckCircle2
-} from 'lucide-react';
+import { Landmark, Plus, Banknote, Building2, Pencil, Trash2, Loader2, X, TrendingUp, TrendingDown, Wallet, AlertTriangle, Building, CreditCard, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { getListCache, setListCache } from '@/lib/listCache';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -131,7 +126,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                             {/* Background Zeros Layer (Only visible when empty) */}
                             {!form.balance && (
-                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', fontWeight: 900, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: INTER, letterSpacing: '2px' }}>
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', fontWeight: 900, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
                                     0.00
                                 </div>
                             )}
@@ -320,7 +315,7 @@ export default function TreasuriesPage() {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', padding: '0 4px' }}>
                                     <Banknote size={20} style={{ color: C.success }} />
                                     <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الخزن النقدية')}</span>
-                                    <span style={{ fontSize: '11px', color: C.success, background: `${C.success}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.success}20`, fontFamily: INTER }}>{cashList.length}</span>
+                                    <span style={{ fontSize: '11px', color: C.success, background: `${C.success}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.success}20`, fontFamily: OUTFIT }}>{cashList.length}</span>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
                                     {cashList.map(t => (
@@ -334,7 +329,7 @@ export default function TreasuriesPage() {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', padding: '0 4px' }}>
                                     <Building size={20} style={{ color: C.primary }} />
                                     <span style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{t('الحسابات البنكية')}</span>
-                                    <span style={{ fontSize: '11px', color: C.primary, background: `${C.primary}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.primary}20`, fontFamily: INTER }}>{bankList.length}</span>
+                                    <span style={{ fontSize: '11px', color: C.primary, background: `${C.primary}10`, padding: '2px 10px', borderRadius: '20px', fontWeight: 800, border: `1px solid ${C.primary}20`, fontFamily: OUTFIT }}>{bankList.length}</span>
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
                                     {bankList.map(t => (
@@ -423,11 +418,11 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
             {/* Balance Row (Applied Modal Style) */}
             <div style={{ position: 'relative', background: C.inputBg, borderRadius: '12px', padding: '14px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                 {/* Digital Watermark */}
-                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 900, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: INTER, letterSpacing: '2px', opacity: 0.1 }}>
+                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 900, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px', opacity: 0.1 }}>
                     0.00
                 </div>
                 <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-                    <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: INTER, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
+                    <div style={{ fontSize: '22px', fontWeight: 900, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
                         {item.balance.toLocaleString('en-US')}
                         <span style={{ fontSize: '11px', color: accentColor, fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>

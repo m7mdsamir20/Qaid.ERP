@@ -4,12 +4,8 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import {
-    Shield, Plus, Loader2, CheckCircle2,
-    Building2, Users, Search, AlertTriangle,
-    Clock, Check, Trash2, X, FileText, Pencil, Globe, RefreshCcw
-} from 'lucide-react';
-import { C, CAIRO, INTER, IS, focusIn, focusOut, TABLE_STYLE, KPI_STYLE, KPI_ICON } from '@/constants/theme';
+import { Shield, Plus, Loader2, CheckCircle2, Building2, Users, Search, AlertTriangle, Clock, Check, Trash2, X, FileText, Pencil, Globe, RefreshCcw } from 'lucide-react';
+import { C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, KPI_STYLE, KPI_ICON } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 
 const PLANS: Record<string, { label: string; color: string; bg: string }> = {
@@ -164,7 +160,7 @@ export default function SuperAdminPage() {
                          <div style={{ textAlign: 'start' }}>
                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                 <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
                             </div>
                         </div>
@@ -234,7 +230,7 @@ export default function SuperAdminPage() {
                                                 </div>
                                                 <div style={{ textAlign: 'right' }}>
                                                     <div style={{ fontWeight: 900, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
-                                                    <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: INTER }}>{c.email || '—'}</div>
+                                                    <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{c.email || '—'}</div>
                                                 </div>
                                             </div>
                                         </td>
@@ -252,7 +248,7 @@ export default function SuperAdminPage() {
                                                 <span style={{ fontSize: '12px', padding: '4px 10px', borderRadius: '8px', background: plan.bg, color: plan.color, fontWeight: 800 }}>
                                                     {plan.label}
                                                 </span>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '13px', fontWeight: 700, fontFamily: INTER }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }}>
                                                     <Users size={14} /> {c._count?.users || 0}/{sub?.maxUsers || c.maxUsers}
                                                 </div>
                                             </div>
@@ -262,7 +258,7 @@ export default function SuperAdminPage() {
                                         <td style={{ padding: '16px', }}>
                                             {sub ? (
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                                    <div style={{ fontSize: '14px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 900, fontFamily: INTER, marginBottom: '4px' }}>
+                                                    <div style={{ fontSize: '14px', color: isExpired ? C.danger : isWarn ? C.warning : C.success, fontWeight: 900, fontFamily: OUTFIT, marginBottom: '4px' }}>
                                                         {isExpired ? `موقوف (${Math.abs(days)} يوم)` : days === 0 ? 'ينتهي اليوم ⚠️' : `${days} يوم`}
                                                     </div>
                                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>

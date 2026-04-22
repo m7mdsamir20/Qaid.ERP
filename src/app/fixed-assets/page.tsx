@@ -4,17 +4,9 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
-import {
-    Briefcase, Plus, Pencil, Trash2, Search, X,
-    TrendingDown, DollarSign, Building2, Loader2, AlertTriangle,
-    Calendar, ShieldCheck, History, Info, ExternalLink, Filter
-} from 'lucide-react';
+import { Briefcase, Plus, Pencil, Trash2, Search, X, TrendingDown, DollarSign, Building2, Loader2, AlertTriangle, Calendar, ShieldCheck, History, Info, ExternalLink, Filter } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { 
-    C, CAIRO, INTER, THEME, TABLE_STYLE, SEARCH_STYLE, 
-    KPI_STYLE, focusIn, focusOut, 
-    PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER 
-} from '@/constants/theme';
+import { C, CAIRO, OUTFIT, THEME, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -180,7 +172,7 @@ export default function FixedAssetsPage() {
                             }}>
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{s.val.toLocaleString('en-US')}</span>
                                         {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                     </div>
@@ -259,17 +251,17 @@ export default function FixedAssetsPage() {
                                 return (
                                     <tr key={a.id} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                         <td style={{ padding: '14px 16px' }}>
-                                            <span style={{ fontSize: '12px', color: C.blue, fontWeight: 800, fontFamily: INTER }}>{a.code}</span>
+                                            <span style={{ fontSize: '12px', color: C.blue, fontWeight: 800, fontFamily: OUTFIT }}>{a.code}</span>
                                         </td>
                                         <td style={{ padding: '14px 16px' }}>
                                             <div style={{ fontSize: '14px', fontWeight: 900, color: C.textPrimary, fontFamily: CAIRO }}>{a.name}</div>
                                             {a.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>{a.notes}</div>}
                                         </td>
                                         <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: INTER }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: INTER }}>{fmt(a.purchaseCost)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: INTER }}>{fmt(a.accumulatedDepreciation)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: INTER }}>{fmt(a.netBookValue)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(a.purchaseCost)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '14px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }}>{fmt(a.accumulatedDepreciation)}</td>
+                                        <td style={{ padding: '14px 16px', fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>{fmt(a.netBookValue)}</td>
                                         <td style={{ padding: '14px 16px' }}>
                                             <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 900, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
                                                 {st.label}
@@ -294,7 +286,7 @@ export default function FixedAssetsPage() {
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
                                 <label style={LS}>{t('كود الأصل')}</label>
-                                <input readOnly value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', color: C.textMuted, fontFamily: INTER }} />
+                                <input readOnly value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', color: C.textMuted, fontFamily: OUTFIT }} />
                             </div>
                             <div>
                                 <label style={LS}>{t('اسم الأصل')} *</label>
@@ -308,21 +300,21 @@ export default function FixedAssetsPage() {
                             </div>
                             <div>
                                 <label style={LS}>{t('تاريخ الشراء')} *</label>
-                                <input required type="date" value={form.purchaseDate} onChange={e => setForm(f => ({ ...f, purchaseDate: e.target.value }))} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} />
+                                <input required type="date" value={form.purchaseDate} onChange={e => setForm(f => ({ ...f, purchaseDate: e.target.value }))} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '20px' }}>
                             <div>
                                 <label style={LS}>{t('تكلفة الشراء')}</label>
-                                <input type="number" step="0.01" value={form.purchaseCost} onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} style={{...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="number" step="0.01" value={form.purchaseCost} onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
                                 <label style={LS}>{t('قيمة الخردة')}</label>
-                                <input type="number" step="0.01" value={form.salvageValue} onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} style={{...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="number" step="0.01" value={form.salvageValue} onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                             <div>
                                 <label style={LS}>{t('معدل الإهلاك')} %</label>
-                                <input type="number" step="0.01" value={form.depreciationRate} onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))} style={{...IS, fontFamily: INTER}} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="number" step="0.01" value={form.depreciationRate} onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))} style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
                         <div style={{ marginBottom: '24px' }}>

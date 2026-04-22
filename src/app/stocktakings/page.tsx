@@ -4,12 +4,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    ClipboardList, Plus, Printer, Trash2, Loader2, ListChecks, CheckCircle2, FileText, AlertCircle
-} from 'lucide-react';
-import {
-    C, CAIRO, INTER, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut
-} from '@/constants/theme';
+import { ClipboardList, Plus, Printer, Trash2, Loader2, ListChecks, CheckCircle2, FileText, AlertCircle } from 'lucide-react';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, TABLE_STYLE, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -214,7 +210,7 @@ export default function StocktakingsPage() {
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                         >
                                             <td style={{ ...TABLE_STYLE.td(true), width: '100px' }}>
-                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: INTER, fontSize: '11px', opacity: 0.75 }}>
+                                                <div style={{ color: C.primary, fontWeight: 900, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.75 }}>
                                                     STK-{st.stocktakingNum}
                                                 </div>
                                             </td>

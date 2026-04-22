@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, LucideIcon, Trash2, AlertTriangle, Loader2 } from 'lucide-react';
-import { THEME, C, CAIRO, INTER } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
 
 interface AppModalProps {

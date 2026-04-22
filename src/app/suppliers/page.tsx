@@ -4,13 +4,10 @@ import { Currency } from '@/components/Currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    Truck, Plus, Phone, MapPin, X, Edit3, Trash2, Search,
-    Loader2, TrendingUp, TrendingDown, ShieldCheck, UserX, Wallet
-} from 'lucide-react';
+import { Truck, Plus, Phone, MapPin, X, Edit3, Trash2, Search, Loader2, TrendingUp, TrendingDown, ShieldCheck, UserX, Wallet } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
-import { THEME, C, CAIRO, INTER, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
@@ -217,7 +214,7 @@ export default function SuppliersPage() {
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{fmt(s.value as number)}</span>
+                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(s.value as number)}</span>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>
                                 </div>
                             </div>
@@ -281,7 +278,7 @@ export default function SuppliersPage() {
                                             >
                                                 <td style={TABLE_STYLE.td(true)}>
                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
-                                                        <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{c.name.charAt(0)}</div>
+                                                        <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{c.name.charAt(0)}</div>
                                                         <Link
                                                             href={`/reports/supplier-statement?supplierId=${c.id}`}
                                                             style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textDecoration: 'none', transition: '0.2s' }}
@@ -292,7 +289,7 @@ export default function SuppliersPage() {
                                                         </Link>
                                                     </div>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{c.phone || '—'}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false),  color: C.textMuted, fontSize: '13px', fontFamily: CAIRO }}>{formatAddress(c) || '—'}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), }}>
                                                     <span style={{
@@ -302,7 +299,7 @@ export default function SuppliersPage() {
                                                         border: `1px solid ${isCredit ? 'rgba(239, 68, 68, 0.22)' : (isDebit ? 'rgba(74,222,128,0.22)' : C.border)}`,
                                                     }}>
                                                         <span style={{ fontFamily: CAIRO }}>{isCredit ? t('له عندنا') : (isDebit ? t('عليه لنا') : t('متزن'))}</span>
-                                                        <span style={{ fontFamily: INTER, fontSize: '13px', fontWeight: 800 }}><Currency amount={Math.abs(c.balance)} /></span>
+                                                        <span style={{ fontFamily: OUTFIT, fontSize: '13px', fontWeight: 800 }}><Currency amount={Math.abs(c.balance)} /></span>
                                                     </span>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
@@ -388,11 +385,11 @@ export default function SuppliersPage() {
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', animation: 'fadeUp 0.3s ease both' }}>
                                     <div>
                                         <label style={LS}>{t('الرقم الضريبي')}</label>
-                                        <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
+                                        <input value={form.taxNumber} onChange={e => setForm({ ...form, taxNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.taxNumber} />
                                     </div>
                                     <div>
                                         <label style={LS}>{t('السجل التجاري')}</label>
-                                        <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: INTER }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
+                                        <input value={form.crNumber} onChange={e => setForm({ ...form, crNumber: e.target.value })} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} placeholder={ph.cr} />
                                     </div>
                                 </div>
                             )}
@@ -401,7 +398,7 @@ export default function SuppliersPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                                 <div>
                                     <label style={LS}>{t('رقم الهاتف')}</label>
-                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: INTER }} placeholder={ph.phone} onFocus={focusIn} onBlur={focusOut} />
+                                    <input value={form.phone} onChange={e => setForm({ ...form, phone: e.target.value })} style={{ ...IS, textAlign: 'start', direction: 'ltr', fontFamily: OUTFIT }} placeholder={ph.phone} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                                 {form.type === 'company' && (
                                     <div>
@@ -420,7 +417,7 @@ export default function SuppliersPage() {
                                     </div>
                                     <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
                                         {!form.openingBalance && (
-                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: INTER }}>
+                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
                                                 0.00
                                             </div>
                                         )}
@@ -433,7 +430,7 @@ export default function SuppliersPage() {
                                                 if ((v.match(/\./g) || []).length > 1) return;
                                                 setForm({ ...form, openingBalance: v });
                                             }}
-                                            style={{ ...IS, width: '100%', border: 'none', background: 'transparent', textAlign: 'center', fontFamily: INTER, fontWeight: 700 }}
+                                            style={{ ...IS, width: '100%', border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700 }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
                                         <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{cSymbol}</span>

@@ -4,13 +4,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
-import {
-    ArrowRight, CreditCard, CheckCircle2, Clock,
-    AlertTriangle, Loader2, X, Banknote, Printer, ChevronDown,
-    Calendar, TrendingUp, Info, Wallet, DollarSign, Check, Package
-} from 'lucide-react';
+import { ArrowRight, CreditCard, CheckCircle2, Clock, AlertTriangle, Loader2, X, Banknote, Printer, ChevronDown, Calendar, TrendingUp, Info, Wallet, DollarSign, Check, Package } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
-import { THEME, C, CAIRO, INTER, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_SUCCESS, BTN_DANGER, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, SC, STitle, PAGE_BASE, BTN_PRIMARY, BTN_SUCCESS, BTN_DANGER, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import AppModal from '@/components/AppModal';
@@ -233,7 +229,7 @@ export default function InstallmentDetailPage() {
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: C.primary, fontWeight: 800, fontSize: '14px' }}>
                                         <TrendingUp size={16} /> {t('مؤشر تقدم التحصيل')}
                                     </div>
-                                    <div style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: INTER }}>
+                                    <div style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: OUTFIT }}>
                                         <span style={{ color: C.textPrimary }}>{paidCount}</span> / <span style={{ color: C.textMuted }}>{plan.monthsCount}</span> {t('قسط مدفوع')}
                                     </div>
                                 </div>
@@ -273,19 +269,19 @@ export default function InstallmentDetailPage() {
                                                     onMouseEnter={e => inst.status !== 'cancelled' && (e.currentTarget.style.background = C.hover)}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
-                                                    <td style={{ padding: '16px', fontWeight: 800, color: C.primary, fontFamily: INTER }}>
+                                                    <td style={{ padding: '16px', fontWeight: 800, color: C.primary, fontFamily: OUTFIT }}>
                                                         {inst.installmentNo}
                                                     </td>
-                                                    <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: INTER }}>
+                                                    <td style={{ padding: '16px', color: isOverdue ? C.danger : C.textSecondary, fontWeight: 600, fontFamily: OUTFIT }}>
                                                         {fmt(inst.dueDate, lang)}
                                                     </td>
-                                                    <td style={{ padding: '16px', fontWeight: 700, fontFamily: INTER }}>
+                                                    <td style={{ padding: '16px', fontWeight: 700, fontFamily: OUTFIT }}>
                                                         {fmtN(inst.amount)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: INTER }}>
+                                                    <td style={{ padding: '16px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
                                                         {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
-                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: INTER }}>
+                                                    <td style={{ padding: '16px', color: (inst.remaining || 0) > 0 ? C.warning : '#10b981', fontWeight: 800, fontFamily: OUTFIT }}>
                                                         {fmtN(inst.remaining || 0)} <span style={{ fontSize: '11px', fontWeight: 400, opacity: 0.6 }}>{cSymbol}</span>
                                                     </td>
                                                     <td style={{ padding: '16px' }}>
@@ -365,7 +361,7 @@ export default function InstallmentDetailPage() {
                                     </div>
                                     <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                         <span style={{ color: C.textMuted }}>{t('تاريخ البداية :')}</span>
-                                        <span style={{ color: C.textPrimary, fontWeight: 700, fontFamily: INTER }}>{fmt(plan.startDate, lang)}</span>
+                                        <span style={{ color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT }}>{fmt(plan.startDate, lang)}</span>
                                     </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('المنتج :')}</span>
@@ -375,13 +371,13 @@ export default function InstallmentDetailPage() {
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('القسط الشهري :')}</span>
-                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '14.5px', fontFamily: INTER }}>
+                                    <span style={{ color: C.primary, fontWeight: 900, fontSize: '14.5px', fontFamily: OUTFIT }}>
                                         {fmtN(plan.installmentAmount)} {cSymbol}
                                     </span>
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
                                     <span style={{ color: C.textMuted }}>{t('نسبة الفائدة :')}</span>
-                                    <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: INTER }}>{plan.interestRate || 0}%</span>
+                                    <span style={{ color: C.textPrimary, fontWeight: 800, fontFamily: OUTFIT }}>{plan.interestRate || 0}%</span>
                                 </div>
                                 {plan.notes && (
                                     <div style={{ marginTop: '8px', padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}`, fontSize: '11.5px', color: C.textSecondary, lineHeight: 1.5 }}>
@@ -414,7 +410,7 @@ export default function InstallmentDetailPage() {
                                             </div>
                                             <span style={{ fontSize: '11.5px', color: C.textSecondary, fontWeight: 700 }}>{s.label}</span>
                                         </div>
-                                        <div style={{ fontSize: '14px', fontWeight: 800, color: s.color, fontFamily: INTER }}>
+                                        <div style={{ fontSize: '14px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }}>
                                             {typeof s.value === 'number' ? fmtN(s.value) : s.value} 
                                             <span style={{ fontSize: '9px', fontWeight: 600, opacity: 0.6, marginInlineEnd: '3px' }}>{s.unit || cSymbol}</span>
                                         </div>
@@ -442,7 +438,7 @@ export default function InstallmentDetailPage() {
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700 }}>{t('المقرر تحصيله:')}</span>
-                                    <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: INTER }}>
+                                    <span style={{ fontSize: '14px', color: C.primary, fontWeight: 900, fontFamily: OUTFIT }}>
                                         {fmtN(collectTarget.remaining || collectTarget.amount)} <span style={{ fontSize: '10px', fontWeight: 400 }}>{cSymbol}</span>
                                     </span>
                                 </div>
@@ -453,7 +449,7 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={collectForm.amount} 
                                         onChange={e => setCollectForm(f => ({ ...f, amount: e.target.value }))} 
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: INTER }} 
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '16px', fontWeight: 800, fontFamily: OUTFIT }} 
                                         onFocus={focusIn} onBlur={focusOut} 
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 800, color: C.textMuted }}>{cSymbol}</span>
@@ -557,7 +553,7 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '14px', padding: '14px', marginBottom: '24px' }}>
                                 <div>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('المبلغ المحصّل')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmtN(lastCollected.amount)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fmtN(lastCollected.amount)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
                                 </div>
                                 <div>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '3px' }}>{t('العميل')}</div>
@@ -614,11 +610,11 @@ export default function InstallmentDetailPage() {
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', padding: '15px', borderRadius: '15px', border: `1px solid ${C.border}`, marginBottom: '20px', background: C.subtle }}>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الأصل المتبقي')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: INTER }}>{fmtN(remPrincipal)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: '#10b981', fontFamily: OUTFIT }}>{fmtN(remPrincipal)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
                                 </div>
                                 <div style={{ textAlign: 'center' }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{t('الفوائد المتبقية (يُعفى منها)')}</div>
-                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textMuted, fontFamily: INTER, textDecoration: 'line-through' }}>{fmtN(remInterest)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
+                                    <div style={{ fontSize: '15px', fontWeight: 900, color: C.textMuted, fontFamily: OUTFIT, textDecoration: 'line-through' }}>{fmtN(remInterest)} <span style={{ fontSize: '10px' }}>{cSymbol}</span></div>
                                 </div>
                             </div>
 
@@ -627,7 +623,7 @@ export default function InstallmentDetailPage() {
                                 <label style={{ ...LS, display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                                     <span>{t('رسوم السداد المعجل')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 400 }}>({t('اختياري')})</span></span>
                                     {feeRate > 0 && (
-                                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#f59e0b', fontFamily: INTER }}>
+                                        <span style={{ fontSize: '11px', fontWeight: 800, color: '#f59e0b', fontFamily: OUTFIT }}>
                                             + {fmtN(feeAmount)} {cSymbol}
                                         </span>
                                     )}
@@ -641,7 +637,7 @@ export default function InstallmentDetailPage() {
                                                 const newFee = (remPrincipal * (parseFloat(rate) || 0)) / 100;
                                                 setSettleForm(f => ({ ...f, earlyFeeRate: rate, amount: (remPrincipal + newFee).toFixed(2) }));
                                             }}
-                                            style={{ ...IS, paddingInlineEnd: '40px', fontFamily: INTER, fontWeight: 700 }}
+                                            style={{ ...IS, paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
                                         <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontWeight: 800, color: C.textMuted, fontSize: '14px' }}>%</span>
@@ -667,7 +663,7 @@ export default function InstallmentDetailPage() {
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" step="any" required value={settleForm.amount}
                                         onChange={e => setSettleForm(f => ({ ...f, amount: e.target.value }))}
-                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: INTER, textAlign: 'center', color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
+                                        style={{ ...IS, paddingInlineStart: '45px', fontSize: '18px', fontWeight: 900, fontFamily: OUTFIT, textAlign: 'center', color: feeRate > 0 ? '#f59e0b' : C.textPrimary }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
                                     <span style={{ position: 'absolute', insetInlineStart: '15px', top: '50%', transform: 'translateY(-50%)', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
@@ -736,7 +732,7 @@ export default function InstallmentDetailPage() {
                             ].map((item, i) => (
                                 <div key={i} style={{ padding: '10px', background: C.card, borderRadius: '12px', textAlign: 'center', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: '4px' }}>{item.label}</div>
-                                    <div style={{ fontSize: '14px', fontWeight: 800, color: item.color, fontFamily: INTER }}>{item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{item.unit || cSymbol}</span></div>
+                                    <div style={{ fontSize: '14px', fontWeight: 800, color: item.color, fontFamily: OUTFIT }}>{item.value} <span style={{ fontSize: '9px', fontWeight: 400, opacity: 0.6 }}>{item.unit || cSymbol}</span></div>
                                 </div>
                             ))}
                         </div>

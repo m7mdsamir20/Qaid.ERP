@@ -4,12 +4,9 @@ import React, { useState, useEffect, useCallback, use } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import {
-    Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart,
-    Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet, RotateCcw
-} from 'lucide-react';
+import { Receipt, Package, Printer, Loader2, ArrowRight, User, ShoppingCart, Calendar, Building2, Banknote, CreditCard, Info, CheckCircle2, AlertCircle, Clock, Wallet, RotateCcw } from 'lucide-react';
 import { CompanyInfo } from '@/lib/printInvoices';
-import { THEME, C, CAIRO, INTER, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, SC, STitle } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 import { useSession } from 'next-auth/react';
@@ -227,7 +224,7 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <div>
                                     <p style={{ fontSize: '10px', color: C.textMuted, margin: 0 }}>{t('رقم الفاتورة')}</p>
-                                    <div style={{ color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: INTER }}>{invNumFmt}</div>
+                                    <div style={{ color: C.primary, fontWeight: 900, fontSize: '14px', fontFamily: OUTFIT }}>{invNumFmt}</div>
                                 </div>
                             </div>
 
@@ -284,14 +281,14 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     <div style={{ color: C.textPrimary, fontWeight: 700 }}>{l.item.name}</div>
                                                     {l.description
                                                         ? <div style={{ fontSize: '12px', color: C.textMuted, marginTop: '2px', fontWeight: 600 }}>{l.description}</div>
-                                                        : <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: INTER, opacity: 0.5 }}>{l.item.code}</div>
+                                                        : <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, opacity: 0.5 }}>{l.item.code}</div>
                                                     }
                                                 </td>
                                                 {!isServices && (
                                                     <td style={{ ...TABLE_STYLE.td(false),  color: C.textSecondary, fontSize: '12px' }}>{l.item.unit?.name || t('حبة')}</td>
                                                 )}
-                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: INTER, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: INTER, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false),  fontFamily: OUTFIT, fontWeight: 800, color: C.textPrimary }}>{l.quantity}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 700, color: C.textSecondary }}>{fmt(l.price)}</td>
                                                 {(() => {
                                                     const invTaxRate = invoice.taxRate || 0;
                                                     const lineTaxRate = l.taxRate || invTaxRate;
@@ -299,13 +296,13 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                     const lineTaxAmt = l.taxAmount || (lineTaxRate > 0 ? parseFloat((lineBase * lineTaxRate / 100).toFixed(2)) : 0);
                                                     if (invTaxRate > 0) return (
                                                         <>
-                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: INTER }}>{lineTaxRate}%</td>
-                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: INTER }}>{lineTaxAmt.toLocaleString()}</td>
+                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{lineTaxRate}%</td>
+                                                            <td style={{ padding: '10px 12px',  color: '#fb7185', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT }}>{lineTaxAmt.toLocaleString()}</td>
                                                         </>
                                                     );
                                                     return null;
                                                 })()}
-                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: INTER, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true),  fontFamily: OUTFIT, fontWeight: 900, fontSize: '14px', color: C.primary }}>{fmt(l.total)}</td>
                                             </tr>
                                         ))}
                                     </tbody>
@@ -339,14 +336,14 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                         {invoice.returnInvoices.map((ret, idx) => (
                                             <tr key={ret.id} style={TABLE_STYLE.row(idx === (invoice.returnInvoices?.length ?? 0) - 1)}>
                                                 <td style={TABLE_STYLE.td(true)}>
-                                                    <span style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#f87171', fontFamily: INTER }}>
+                                                    <span style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11px', fontWeight: 900, color: '#f87171', fontFamily: OUTFIT }}>
                                                         SRET-{String(ret.invoiceNumber).padStart(5, '0')}
                                                     </span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>
                                                     {new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: INTER, fontWeight: 900, color: C.danger }}>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 900, color: C.danger }}>
                                                     {fmt(ret.total)} {cSymbol}
                                                 </td>
                                             </tr>
@@ -366,22 +363,22 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('إجمالي القيمة')}</span>
-                                    <span style={{ fontWeight: 700, fontFamily: INTER }}>{fmt(invoice.subtotal)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT }}>{fmt(invoice.subtotal)} {cSymbol}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('إجمالي الخصم')}</span>
-                                    <span style={{ fontWeight: 700, fontFamily: INTER, color: C.danger }}>- {fmt(invoice.discount)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.danger }}>- {fmt(invoice.discount)} {cSymbol}</span>
                                 </div>
                                 {(invoice.taxAmount || 0) > 0 && (
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: C.textSecondary }}>{t('إجمالي الضريبة')}</span>
-                                        <span style={{ fontWeight: 700, fontFamily: INTER, color: '#f87171' }}>+ {fmt(invoice.taxAmount || 0)} {cSymbol}</span>
+                                        <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: '#f87171' }}>+ {fmt(invoice.taxAmount || 0)} {cSymbol}</span>
                                     </div>
                                 )}
                                 <div style={{ height: '1px', background: C.border, margin: '5px 0' }} />
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', borderRadius: '10px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}` }}>
                                     <span style={{ fontWeight: 800, fontSize: '12px' }}>{t('صافي الفاتورة')}</span>
-                                    <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: INTER }}>{fmt(invoice.total)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 900, fontSize: '18px', color: C.primary, fontFamily: OUTFIT }}>{fmt(invoice.total)} {cSymbol}</span>
                                 </div>
                             </div>
                         </div>
@@ -397,11 +394,11 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المقبوض فعلياً')}</span>
-                                    <span style={{ fontWeight: 800, color: C.success, fontFamily: INTER }}>{fmt(invoice.paidAmount)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 800, color: C.success, fontFamily: OUTFIT }}>{fmt(invoice.paidAmount)} {cSymbol}</span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                     <span style={{ color: C.textSecondary }}>{t('المتبقي (مدين)')}</span>
-                                    <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: INTER }}>{fmt(invoice.remaining)} {cSymbol}</span>
+                                    <span style={{ fontWeight: 800, color: invoice.remaining > 0 ? C.danger : C.textMuted, fontFamily: OUTFIT }}>{fmt(invoice.remaining)} {cSymbol}</span>
                                 </div>
                             </div>
                         </div>

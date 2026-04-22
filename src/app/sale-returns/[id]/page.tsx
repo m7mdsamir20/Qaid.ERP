@@ -3,11 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter, useParams } from 'next/navigation';
-import {
-    ChevronRight, Printer, Package,
-    Calendar, User, CreditCard, FileText, Loader2,
-    RotateCcw, AlertCircle, ShoppingBag, ArrowLeftRight, Phone, ArrowRight, ArrowLeft
-} from 'lucide-react';
+import { ChevronRight, Printer, Package, Calendar, User, CreditCard, FileText, Loader2, RotateCcw, AlertCircle, ShoppingBag, ArrowLeftRight, Phone, ArrowRight, ArrowLeft } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 interface ReturnInvoice {

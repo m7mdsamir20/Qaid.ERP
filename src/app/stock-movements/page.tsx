@@ -3,10 +3,8 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    Activity, ArrowDownRight, ArrowUpRight, Search, FileText, Loader2, Filter, ArrowRightLeft, Package, Warehouse
-} from 'lucide-react';
-import { C, CAIRO, PAGE_BASE, IS, INTER } from '@/constants/theme';
+import { Activity, ArrowDownRight, ArrowUpRight, Search, FileText, Loader2, Filter, ArrowRightLeft, Package, Warehouse } from 'lucide-react';
+import { C, CAIRO, PAGE_BASE, IS, OUTFIT } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 
@@ -141,7 +139,7 @@ export default function StockMovementsPage() {
                                                 style={{ borderBottom: `1px solid ${C.border}`, transition: 'all 0.1s', background: idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
-                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: INTER }}>
+                                                <td style={{ padding: '14px 20px', fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
                                                     {new Date(m.date).toLocaleDateString('en-GB')} {new Date(m.date).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
@@ -156,12 +154,12 @@ export default function StockMovementsPage() {
                                                     </span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px' }}>
-                                                    <span style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: C.textSecondary, fontFamily: INTER }}>{m.reference || '—'}</span>
+                                                    <span style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{m.reference || '—'}</span>
                                                 </td>
                                                 <td style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{m.item?.name || '—'}</td>
                                                 <td style={{ padding: '14px 20px', fontSize: '12.5px', color: C.textSecondary, fontFamily: CAIRO }}>{m.warehouse?.name || '—'}</td>
                                                 <td style={{ padding: '14px 20px', }}>
-                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: typeConfig.color, fontFamily: INTER }}>
+                                                    <span style={{ fontSize: '14px', fontWeight: 900, color: typeConfig.color, fontFamily: OUTFIT }}>
                                                         {m.quantity > 0 ? '+' : ''}{m.quantity.toLocaleString('en-US')}
                                                     </span>
                                                 </td>

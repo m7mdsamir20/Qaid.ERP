@@ -4,9 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import {
-    BookOpen, Plus, X, ArrowRight, ArrowLeft, Lock, Loader2, FolderOpen
-} from 'lucide-react';
+import { BookOpen, Plus, X, ArrowRight, ArrowLeft, Lock, Loader2, FolderOpen } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 
 interface Account {

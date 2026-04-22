@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
-import { seedDefaultAccounts } from "@/app/api/accounts/seed/route";
+import { seedDefaultAccounts } from '@/app/api/accounts/seed/route';
 import { withProtection } from '@/lib/apiHandler';
 
 export const POST = withProtection(async (request, session, body) => {

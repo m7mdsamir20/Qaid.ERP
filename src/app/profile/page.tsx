@@ -3,13 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
-import {
-    User, Mail, Phone, Shield, Calendar,
-    Edit3, Save, X, Loader2, CheckCircle2,
-    AlertCircle, Camera, Building2, MapPin,
-    Grid,
-    Check
-} from 'lucide-react';
+import { User, Mail, Phone, Shield, Calendar, Edit3, Save, X, Loader2, CheckCircle2, AlertCircle, Camera, Building2, MapPin, Grid, Check } from 'lucide-react';
 import { Avatar, AVATAR_OPTIONS } from '@/components/UserAvatar';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';

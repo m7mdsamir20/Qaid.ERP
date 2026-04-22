@@ -5,13 +5,11 @@ import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCurrency } from '@/hooks/useCurrency';
-import {
-    UsersIcon, Paperclip, Loader2, Plus, Search, Filter, Trash2, Pencil, Eye, Building2, Briefcase, ChevronDown, UserPlus, TrendingUp
-} from 'lucide-react';
+import { UsersIcon, Paperclip, Loader2, Plus, Search, Filter, Trash2, Pencil, Eye, Building2, Briefcase, ChevronDown, UserPlus, TrendingUp } from 'lucide-react';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
-import { THEME, C, CAIRO, INTER, TABLE_STYLE, PAGE_BASE, SC, IS, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, TABLE_STYLE, PAGE_BASE, SC, IS, focusIn, focusOut } from '@/constants/theme';
 
 /* ── Types ── */
 interface Department { id: string; name: string; }
@@ -131,7 +129,7 @@ export default function EmployeesPage() {
                              <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                    <span style={{ fontSize: '18px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                     <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>
@@ -231,12 +229,12 @@ export default function EmployeesPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, color: C.primary, opacity: 0.65, fontFamily: INTER, fontSize: '12px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 800, color: C.primary, opacity: 0.65, fontFamily: OUTFIT, fontSize: '12px' }}>
                                                     {emp.code}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '14px' }}>{emp.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginTop: '4px', fontFamily: INTER }}>{emp.email || '—'}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT }}>{emp.email || '—'}</div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
                                                     <div style={{ fontSize: '13px', fontWeight: 800, color: C.textPrimary }}>{emp.position || '—'}</div>
@@ -250,7 +248,7 @@ export default function EmployeesPage() {
                                                     </div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontWeight: 900, color: '#10b981', fontSize: '16px', fontFamily: INTER }}>
+                                                    <div style={{ fontWeight: 900, color: '#10b981', fontSize: '16px', fontFamily: OUTFIT }}>
                                                         {empNet.toLocaleString('en-US')} <span style={{ fontSize: '11px', fontWeight: 800, fontFamily: CAIRO }}>{currencySymbol}</span>
                                                     </div>
                                                 </td>

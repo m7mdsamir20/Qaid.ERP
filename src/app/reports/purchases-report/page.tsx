@@ -3,7 +3,7 @@ import { Currency } from '@/components/Currency';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
-import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, INTER, IS } from '@/constants/theme';
+import { C, CAIRO, PAGE_BASE, SEARCH_STYLE, OUTFIT, IS } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import ReportHeader from '@/components/ReportHeader';
 import { useEffect, useState } from 'react';
@@ -100,7 +100,7 @@ export default function PurchasesReportPage() {
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                    fontWeight: 600, outline: 'none', fontFamily: INTER
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
                                 }}
                             />
                         </div>
@@ -111,7 +111,7 @@ export default function PurchasesReportPage() {
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
                                     borderRadius: '12px', border: `1px solid ${C.border}`,
                                     background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                    fontWeight: 600, outline: 'none', fontFamily: INTER
+                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
                                 }}
                             />
                         </div>
@@ -170,7 +170,7 @@ export default function PurchasesReportPage() {
                                     <div style={{ textAlign: 'start'}}>
                                         <p className="stat-label" style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                            <span className="stat-value" style={{ fontSize: '16px', fontWeight: 900, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                             <span style={{ fontSize: '10.5px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                         </div>
                                     </div>
@@ -223,18 +223,18 @@ export default function PurchasesReportPage() {
                                             onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
                                             onMouseLeave={e => e.currentTarget.style.background = idx % 2 === 1 ? 'rgba(255,255,255,0.01)' : 'transparent'}>
                                             <td style={{ padding: '14px 20px' }}>
-                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 900, color: '#60a5fa', fontFamily: INTER }}>
+                                                <span style={{ background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)', borderRadius: '8px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 900, color: '#60a5fa', fontFamily: OUTFIT }}>
                                                     PUR-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: INTER, }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
+                                            <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT, }}>{new Date(inv.date).toLocaleDateString('en-GB')}</td>
                                             <td style={{ padding: '14px 20px', fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{inv.supplier?.name || inv.customer?.name || t('مورد نقدي')}</td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: INTER }}><Currency amount={inv.total} /></td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: INTER }}>{inv.discount > 0 ? <><Currency amount={inv.discount} /></> : '—'}</td>
-                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: INTER }}><Currency amount={inv.paidAmount} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={inv.total} /></td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: inv.discount > 0 ? '#fb923c' : C.textMuted, fontFamily: OUTFIT }}>{inv.discount > 0 ? <><Currency amount={inv.discount} /></> : '—'}</td>
+                                            <td style={{ padding: '14px 20px',  fontSize: '14px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={inv.paidAmount} /></td>
                                             <td style={{ padding: '14px 20px', }}>
                                                 <span style={{
-                                                    fontSize: '14px', fontWeight: 600, fontFamily: INTER,
+                                                    fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT,
                                                     color: inv.remaining > 0 ? '#fb7185' : '#10b981',
                                                     background: inv.remaining > 0 ? 'rgba(251,113,133,0.1)' : 'rgba(16,185,129,0.1)',
                                                     padding: '4px 12px', borderRadius: '10px', border: `1px solid ${inv.remaining > 0 ? 'rgba(251,113,133,0.2)' : 'rgba(16,185,129,0.2)'}`
@@ -246,10 +246,10 @@ export default function PurchasesReportPage() {
                                 <tfoot style={{ background: 'rgba(255,255,255,0.03)', borderTop: `2px solid ${C.border}` }}>
                                     <tr>
                                         <td colSpan={3} style={{ padding: '18px 24px', fontSize: '13px', fontWeight: 900, color: C.textSecondary, fontFamily: CAIRO, }}>{t('إجماليات المشتريات للفترة')}</td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: C.textPrimary, fontFamily: INTER }}><Currency amount={data.totalPurchases} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#fb923c', fontFamily: INTER }}><Currency amount={data.totalDiscount} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#10b981', fontFamily: INTER }}><Currency amount={data.totalPaid} /></td>
-                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: INTER }}><Currency amount={data.totalRemaining} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={data.totalPurchases} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#fb923c', fontFamily: OUTFIT }}><Currency amount={data.totalDiscount} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={data.totalPaid} /></td>
+                                        <td style={{ padding: '18px',  fontSize: '14px', fontWeight: 1000, color: data.totalRemaining > 0 ? '#fb7185' : '#10b981', background: 'rgba(255,255,255,0.02)', fontFamily: OUTFIT }}><Currency amount={data.totalRemaining} /></td>
                                     </tr>
                                 </tfoot>
                             </table>

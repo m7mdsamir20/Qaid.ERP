@@ -1,8 +1,8 @@
 "use client";
 
-import { SessionProvider } from "next-auth/react";
-import { createContext, useContext, useEffect, useState } from "react";
-import { LanguageProvider } from "@/lib/i18n";
+import { SessionProvider } from 'next-auth/react';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { LanguageProvider } from '@/lib/i18n';
 
 const ThemeContext = createContext({
     theme: 'dark',

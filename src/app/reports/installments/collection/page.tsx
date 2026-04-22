@@ -11,11 +11,8 @@ import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import { useRouter } from 'next/navigation';
-import { 
-    BarChart3, Printer, Loader2, Search, Calendar, 
-    CheckCircle2, ArrowRight 
-} from 'lucide-react';
-import { THEME, C, PAGE_BASE, CAIRO, INTER } from '@/constants/theme';
+import { BarChart3, Printer, Loader2, Search, Calendar, CheckCircle2, ArrowRight } from 'lucide-react';
+import { THEME, C, PAGE_BASE, CAIRO, OUTFIT } from '@/constants/theme';
 
 const fmt  = (d: string) => new Date(d).toLocaleDateString('en-GB');
 const fmtN = (n: number) => n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -105,7 +102,7 @@ export default function CollectionReportPage() {
                         style={{
                             height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
                             background: C.card, color: C.textPrimary, fontSize: '13px',
-                            fontWeight: 600, outline: 'none', fontFamily: INTER, width: '170px'
+                            fontWeight: 600, outline: 'none', fontFamily: OUTFIT, width: '170px'
                         }}
                     />
                     <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
@@ -114,7 +111,7 @@ export default function CollectionReportPage() {
                         style={{
                             height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
                             background: C.card, color: C.textPrimary, fontSize: '13px',
-                            fontWeight: 600, outline: 'none', fontFamily: INTER, width: '170px'
+                            fontWeight: 600, outline: 'none', fontFamily: OUTFIT, width: '170px'
                         }}
                     />
                     <button onClick={fetchReport} disabled={loading} style={{
@@ -176,7 +173,7 @@ export default function CollectionReportPage() {
                                         <div style={{ textAlign: 'start'}}>
                                             <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                                                <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: INTER }}>{s.value}</span>
+                                                <span style={{ fontSize: '15px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
                                                 {i === 0 && <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>}
                                             </div>
                                         </div>
@@ -206,16 +203,16 @@ export default function CollectionReportPage() {
                                             <tr key={inst.id} style={{ borderBottom: idx === ((data.installments?.length || 0) - 1) ? 'none' : `1px solid ${C.border}`, transition: 'background 0.2s' }}
                                                 onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.015)'}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: INTER }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
+                                                <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{inst.paidAt ? fmt(inst.paidAt) : '—'}</td>
                                                 <td style={{ padding: '16px 20px' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inst.plan?.customer?.name}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: INTER }}>PLAN-{String(inst.plan?.planNumber || 0).padStart(4, '0')}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>PLAN-{String(inst.plan?.planNumber || 0).padStart(4, '0')}</div>
                                                 </td>
                                                 <td style={{ padding: '16px 20px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>قسط رقم {inst.installmentNo}</td>
                                                 <td style={{ padding: '16px 20px' }}>
-                                                    <div style={{ fontSize: '14px', fontWeight: 900, color: '#34d399', fontFamily: INTER }}>
+                                                    <div style={{ fontSize: '14px', fontWeight: 900, color: '#34d399', fontFamily: OUTFIT }}>
                                                         {fmtN(inst.paidAmount || 0)} <span style={{ fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
                                                     </div>
                                                 </td>

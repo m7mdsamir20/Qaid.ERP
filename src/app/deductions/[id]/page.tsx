@@ -4,12 +4,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import { useEffect, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import {
-    Calendar, User, Banknote, 
-    ArrowRight, ArrowLeft, Loader2, Trash2,
-    CheckCircle2, Clock, FileText,
-    ShieldAlert, AlertTriangle
-} from 'lucide-react';
+import { Calendar, User, Banknote, ArrowRight, ArrowLeft, Loader2, Trash2, CheckCircle2, Clock, FileText, ShieldAlert, AlertTriangle } from 'lucide-react';
 import AppModal from '@/components/AppModal';
 
 interface Employee { id: string; name: string; code: string; }

@@ -3,17 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import {
-    TrendingDown, Calendar, Calculator, FileText,
-    AlertCircle, CheckCircle2, Loader2, AlertTriangle, Info,
-    ArrowRightLeft, Briefcase, Activity, ShieldCheck, PieChart,
-    ChevronDown, ChevronUp, History, Info as InfoIcon
-} from 'lucide-react';
-import { 
-    C, CAIRO, INTER, THEME, TABLE_STYLE, SEARCH_STYLE, 
-    KPI_STYLE, focusIn, focusOut, 
-    PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER 
-} from '@/constants/theme';
+import { TrendingDown, Calendar, Calculator, FileText, AlertCircle, CheckCircle2, Loader2, AlertTriangle, Info, ArrowRightLeft, Briefcase, Activity, ShieldCheck, PieChart, ChevronDown, ChevronUp, History, Info as InfoIcon } from 'lucide-react';
+import { C, CAIRO, OUTFIT, THEME, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 
@@ -146,7 +137,7 @@ export default function DepreciationPage() {
                         }}>
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: INTER }} dir="ltr">
+                                <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 900, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                     <span>{s.val.toLocaleString('en-US')}</span>
                                     {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
                                 </div>
@@ -214,7 +205,7 @@ export default function DepreciationPage() {
                             <div style={{ fontSize: '14px', fontWeight: 800, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
                             <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
                                 <span>{t('عدد الأصول')}: <b>{lines.length}</b></span>
-                                <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: INTER }}>{fmt(totalCalculatedDep)} {t('ج.م')}</b></span>
+                                <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fmt(totalCalculatedDep)} {t('ج.م')}</b></span>
                             </div>
                         </div>
                         <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
@@ -239,13 +230,13 @@ export default function DepreciationPage() {
                                     const netBefore = l.asset.purchaseCost - l.asset.accumulatedDepreciation;
                                     return (
                                         <tr key={l.asset.id} style={{ borderBottom: `1px solid ${C.border}`, background: l.alreadyDone ? 'rgba(16,185,129,0.02)' : 'transparent' }}>
-                                            <td style={{ padding: '12px 16px', fontFamily: INTER, fontSize: '12px', color: C.blue, fontWeight: 700 }}>{l.asset.code}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '12px', color: C.blue, fontWeight: 700 }}>{l.asset.code}</td>
                                             <td style={{ padding: '12px 16px', fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{l.asset.name}</td>
-                                            <td style={{ padding: '12px 16px', fontFamily: INTER, fontSize: '13px', color: C.textSecondary }}>{fmt(l.asset.purchaseCost)}</td>
-                                            <td style={{ padding: '12px 16px', fontFamily: INTER, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation)}</td>
-                                            <td style={{ padding: '12px 16px', fontFamily: INTER, fontSize: '14px', fontWeight: 900, color: C.danger }}>{fmt(l.depAmount)}</td>
-                                            <td style={{ padding: '12px 16px', fontFamily: INTER, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation + l.depAmount)}</td>
-                                            <td style={{ padding: '12px 16px', fontFamily: INTER, fontSize: '14px', fontWeight: 900, color: '#10b981' }}>{fmt(l.netBook)}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}>{fmt(l.asset.purchaseCost)}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation)}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '14px', fontWeight: 900, color: C.danger }}>{fmt(l.depAmount)}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation + l.depAmount)}</td>
+                                            <td style={{ padding: '12px 16px', fontFamily: OUTFIT, fontSize: '14px', fontWeight: 900, color: '#10b981' }}>{fmt(l.netBook)}</td>
                                             <td style={{ padding: '12px 16px' }}>
                                                 {l.alreadyDone ? (
                                                     <span style={{ fontSize: '10px', fontWeight: 900, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ {t('تم الترحيل')}</span>
@@ -287,7 +278,7 @@ export default function DepreciationPage() {
                             </div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', fontSize: '13px' }}>
                                 <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{t('إجمالي مبلغ مصروف الإهلاك')}:</span>
-                                <span style={{ color: C.danger, fontWeight: 900, fontFamily: INTER }}>{fmt(lines.filter(l => !l.alreadyDone).reduce((s, d) => s + d.depAmount, 0))} {t('ج.م')}</span>
+                                <span style={{ color: C.danger, fontWeight: 900, fontFamily: OUTFIT }}>{fmt(lines.filter(l => !l.alreadyDone).reduce((s, d) => s + d.depAmount, 0))} {t('ج.م')}</span>
                             </div>
                             <div style={{ fontSize: '11px', color: C.textMuted, borderTop: `1px solid ${C.border}`, paddingTop: '10px', marginTop: '10px', direction: 'ltr' }}>
                                 DEBIT: Dep. Expense Account (5xxx) <br/>

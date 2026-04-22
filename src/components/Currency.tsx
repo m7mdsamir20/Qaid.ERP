@@ -30,7 +30,7 @@ export function Currency({ amount, code: propCode, lang: propLang, className = '
     const amountEl = (
         <span style={{ 
             fontWeight: 700, 
-            fontFamily: "'Inter', sans-serif", 
+            fontFamily: "'ERP-Numbers', 'Outfit', sans-serif", 
             fontSize: '14px',
             color: 'inherit',
             letterSpacing: '0.2px' 

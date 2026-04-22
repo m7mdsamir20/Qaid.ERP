@@ -4,13 +4,9 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import {
-    Plus, Search, Loader2,
-    Building2, Banknote,
-    Printer, Receipt, Trash2, TrendingUp
-} from 'lucide-react';
+import { Plus, Search, Loader2, Building2, Banknote, Printer, Receipt, Trash2, TrendingUp } from 'lucide-react';
 
-import { THEME, C, CAIRO, INTER, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
