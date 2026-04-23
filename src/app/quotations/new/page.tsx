@@ -320,33 +320,37 @@ export default function NewQuotationPage() {
                             <div className="scroll-table" style={{ marginTop: '10px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                     <thead>
-                                        <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 600 }}>{t('الكمية')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 600 }}>{t('السعر')}</th>
-                                            <th style={{ padding: '12px',  fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 600 }}>{t('الإجمالي')}</th>
+                                        <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
+                                            <th style={{ padding: '12px', textAlign: 'start', fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{isServices ? t('الخدمة') : t('الصنف')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '90px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('السعر')}</th>
+                                            <th style={{ padding: '12px', textAlign: 'center', fontSize: '12px', color: C.textMuted, width: '120px', fontWeight: 700, fontFamily: CAIRO }}>{t('الإجمالي')}</th>
                                             <th style={{ padding: '12px', width: '80px' }}></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {lines.map((l, idx) => (
-                                            <tr key={idx} style={{ borderBottom: `1px solid ${C.border}44`, background: 'rgba(255,255,255,0.02)' }}>
+                                            <tr key={idx} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                            >
                                                 <td style={{ padding: '12px' }}>
-                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px' }}>{l.itemName}</div>
+                                                    <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{l.itemName}</div>
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 400, marginTop: '2px' }}>{l.description}</div>}
                                                 </td>
-                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}>{l.quantity}</td>
-                                                <td style={{ padding: '12px',  fontFamily: OUTFIT, color: C.textSecondary }}>{fmt(l.price)}</td>
-                                                <td style={{ padding: '12px',  fontWeight: 600, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{l.quantity}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontFamily: OUTFIT, color: C.textSecondary, fontSize: '14px', fontWeight: 600 }}>{fmt(l.price)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, fontFamily: OUTFIT, color: C.primary, fontSize: '15px' }}>{fmt(l.total)}</td>
                                                 <td style={{ padding: '12px', }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
-                                                        <button type="button" onClick={() => removeLine(idx)} style={{ color: C.danger, border: 'none', background: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
+                                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                                                        <button type="button" onClick={() => editLine(idx)} style={{ color: C.primary, border: 'none', background: 'none', cursor: 'pointer', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Pencil size={15} /></button>
+                                                        <button type="button" onClick={() => removeLine(idx)} style={{ color: C.danger, border: 'none', background: 'none', cursor: 'pointer', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Trash2 size={16} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
                                         ))}
                                         {lines.length === 0 && (
-                                            <tr><td colSpan={5} style={{ padding: '40px',  color: C.textMuted, fontSize: '13px' }}>{t('لم يتم إضافة أصناف بعد')}</td></tr>
+                                            <tr><td colSpan={5} style={{ padding: '40px',  color: C.textMuted, fontSize: '13px', textAlign: 'center' }}>{t('لم يتم إضافة أصناف بعد')}</td></tr>
                                         )}
                                     </tbody>
                                 </table>
@@ -390,7 +394,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'amt');
                                                 }}
-                                                style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px', textAlign: 'center' }}
                                                 placeholder="0.00"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
@@ -401,7 +405,7 @@ export default function NewQuotationPage() {
                                                     const v = e.target.value.replace(/,/g, '');
                                                     if (v === '' || !isNaN(Number(v)) || v === '.') updateDiscount(v === '' ? 0 : Number(v), 'pct');
                                                 }}
-                                                style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px', textAlign: 'center' }}
                                                 placeholder="0"
                                             />
                                             <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
@@ -440,7 +444,7 @@ export default function NewQuotationPage() {
                                                         const v = e.target.value.replace(/,/g, '');
                                                         if (v === '' || !isNaN(Number(v)) || v === '.') setForm((f: any) => ({ ...f, taxRate: v === '' ? 0 : Number(v) }));
                                                     }}
-                                                    style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px' }}
+                                                    style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px', textAlign: 'center' }}
                                                 />
                                                 <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>

@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
+import { formatNumber } from '@/lib/currency';
 
 interface ReturnInvoice {
     id: string; invoiceNumber: number; date: string;
@@ -132,14 +133,14 @@ export default function SaleReturnsListPage() {
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>العميل</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>الإجمالي</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>تم رده</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>المتبقي</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('العميل')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('تم رده')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('المتبقي')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -151,19 +152,19 @@ export default function SaleReturnsListPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '13px', color: C.primary, opacity: 0.8, fontFamily: OUTFIT, width: '120px' }}>
                                                     RET-{String(r.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
-                                                    {r.total.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                    {formatNumber(r.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
-                                                    {r.paidAmount.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, fontSize: '14px', color: C.success, fontFamily: OUTFIT }}>
+                                                    {formatNumber(r.paidAmount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: (r.remaining > 0) ? C.danger : C.textMuted, fontFamily: CAIRO }}>
-                                                    {r.remaining.toLocaleString()} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, fontSize: '14px', color: (r.remaining > 0) ? C.danger : C.textMuted, fontFamily: OUTFIT }}>
+                                                    {formatNumber(r.remaining)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{

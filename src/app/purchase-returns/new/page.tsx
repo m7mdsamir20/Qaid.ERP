@@ -513,36 +513,39 @@ export default function NewPurchaseReturnPage() {
                                 <div className="scroll-table" style={{ overflowX: 'auto' }}>
                                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '11px' }}>
                                         <thead>
-                                            <tr style={{ borderBottom: `1px solid ${C.border}` }}>
-                                                <th style={{ padding: '10px', width: '30px' }}>✓</th>
-                                                <th style={{ padding: '10px',  color: C.textMuted, fontSize: '10px' }}>{t('اسم الصنف')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('الوحدة')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('الكمية المشتراة')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('سابق الإرجاع')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('كمية الإرجاع')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('سعر التكلفة')}</th>
-                                                <th style={{ padding: '10px', color: C.textMuted, fontSize: '10px' }}>{t('إجمالي المرتجع')}</th>
+                                            <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
+                                                <th style={{ padding: '12px', width: '30px', textAlign: 'center' }}>✓</th>
+                                                <th style={{ padding: '12px', textAlign: 'start', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('اسم الصنف')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الوحدة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('الكمية المشتراة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سابق الإرجاع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('كمية الإرجاع')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('سعر التكلفة')}</th>
+                                                <th style={{ padding: '12px', textAlign: 'center', color: C.textMuted, fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }}>{t('إجمالي المرتجع')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {lines.map((l, i) => {
                                                 const fullyReturned = l.availableQty === 0;
                                                 return (
-                                                    <tr key={i} style={{ borderBottom: i < lines.length - 1 ? `1px solid ${C.border}` : 'none', opacity: fullyReturned ? 0.5 : 1, background: l.selected ? `${C.primary}04` : 'transparent' }}>
-                                                        <td style={{ padding: '8px 10px' }}>
+                                                    <tr key={i} style={{ borderBottom: `1px solid ${C.border}`, opacity: fullyReturned ? 0.5 : 1, background: l.selected ? `${C.primary}04` : 'transparent', transition: 'background 0.2s' }}
+                                                        onMouseEnter={e => !fullyReturned && (e.currentTarget.style.background = 'rgba(255,255,255,0.02)')}
+                                                        onMouseLeave={e => !fullyReturned && (e.currentTarget.style.background = l.selected ? `${C.primary}04` : 'transparent')}
+                                                    >
+                                                        <td style={{ padding: '12px', textAlign: 'center' }}>
                                                             {!fullyReturned && <input type="checkbox" checked={l.selected} onChange={() => toggleLine(i)} style={{ width: 14, height: 14, cursor: 'pointer', accentColor: C.primary }} />}
                                                         </td>
-                                                        <td style={{ padding: '8px 10px', }}>
-                                                            <div style={{ fontWeight: 600, color: C.textPrimary }}>{l.itemName}</div>
+                                                        <td style={{ padding: '12px' }}>
+                                                            <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{l.itemName}</div>
                                                         </td>
-                                                        <td style={{ padding: '8px 10px', color: C.textSecondary }}>{l.unit}</td>
-                                                        <td style={{ padding: '8px 10px', color: C.textSecondary }}>{l.originalQty}</td>
-                                                        <td style={{ padding: '8px 10px', color: C.danger }}>{l.alreadyReturned}</td>
-                                                        <td style={{ padding: '8px 10px' }}>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>{l.unit}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px' }}>{l.originalQty}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.danger, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{l.alreadyReturned}</td>
+                                                        <td style={{ padding: '12px' }}>
                                                             <div style={{
                                                                 display: 'flex', alignItems: 'center',
                                                                 borderRadius: '8px', border: `1px solid ${l.selected ? C.primary : C.border}`,
-                                                                width: '85px', margin: '0 auto', overflow: 'hidden'
+                                                                width: '85px', margin: '0 auto', overflow: 'hidden', background: C.inputBg
                                                             }}>
                                                                 <div style={{ flex: 1 }}>
                                                                     <input
@@ -553,31 +556,15 @@ export default function NewPurchaseReturnPage() {
                                                                             width: '100%', height: '32px',
                                                                             background: 'transparent', border: 'none',
                                                                             color: l.selected ? C.textPrimary : C.textMuted,
-                                                                            fontSize: '13px', fontWeight: 600, padding: 0
+                                                                            fontSize: '13px', fontWeight: 700, padding: 0, textAlign: 'center', fontFamily: OUTFIT
                                                                         }}
                                                                         onFocus={focusIn} onBlur={focusOut}
                                                                     />
                                                                 </div>
-                                                                <div style={{ display: 'flex', flexDirection: 'column', borderInlineStart: `1px solid ${C.border}` }}>
-                                                                    <button
-                                                                        type="button" disabled={!l.selected || l.returnQty >= l.availableQty}
-                                                                        onClick={() => updateReturnQty(i, (l.returnQty || 0) + 1)}
-                                                                        style={{ width: '24px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'transparent', cursor: 'pointer', color: C.textSecondary }}
-                                                                    >
-                                                                        <ChevronUp size={12} />
-                                                                    </button>
-                                                                    <button
-                                                                        type="button" disabled={!l.selected || (l.returnQty || 0) <= 0}
-                                                                        onClick={() => updateReturnQty(i, (l.returnQty || 0) - 1)}
-                                                                        style={{ width: '24px', height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', background: 'transparent', borderTop: `1px solid ${C.border}`, cursor: 'pointer', color: C.textSecondary }}
-                                                                    >
-                                                                        <ChevronDown size={12} />
-                                                                    </button>
-                                                                </div>
                                                             </div>
                                                         </td>
-                                                        <td style={{ padding: '8px 10px', color: C.textSecondary, fontFamily: CAIRO }}>{l.price.toLocaleString()}</td>
-                                                        <td style={{ padding: '8px 10px', fontWeight: 700, color: l.selected ? '#10b981' : C.textMuted, fontFamily: CAIRO }}>{l.returnTotal.toLocaleString()}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontFamily: OUTFIT, fontSize: '14px', fontWeight: 600 }}>{formatNumber(l.price)}</td>
+                                                        <td style={{ padding: '12px', textAlign: 'center', fontWeight: 700, color: l.selected ? C.primary : C.textMuted, fontFamily: OUTFIT, fontSize: '15px' }}>{formatNumber(l.returnTotal)}</td>
                                                     </tr>
                                                 );
                                             })}
