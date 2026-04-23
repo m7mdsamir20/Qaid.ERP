@@ -214,7 +214,53 @@ export default function CapitalPage() {
                                                                 <History size={14} style={{ color: C.primary }} />
                                                                 <div style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل حركات رأس المال')}</div>
                                                             </div>
-                        })}
+                                                            {changes.length === 0 ? (
+                                                                <div style={{ padding: '10px', color: C.textMuted, fontSize: '12px', textAlign: 'center', fontFamily: CAIRO }}>{t('لا توجد حركات مسجلة لهذا الشريك')}</div>
+                                                            ) : (
+                                                                <table style={{ ...TABLE_STYLE.table, background: 'transparent', minWidth: '100%' }}>
+                                                                    <thead>
+                                                                        <tr style={{ ...TABLE_STYLE.thead, background: 'rgba(255,255,255,0.02)' }}>
+                                                                            <th style={{ ...TABLE_STYLE.th(true), padding: '10px 16px' }}>{t('التاريخ')}</th>
+                                                                            <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('نوع العملية')}</th>
+                                                                            <th style={{ ...TABLE_STYLE.th(false, true), padding: '10px 16px' }}>{t('المبلغ')}</th>
+                                                                            <th style={{ ...TABLE_STYLE.th(false), padding: '10px 16px' }}>{t('البيان والملاحظات')}</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        {changes.map((c, cIdx) => (
+                                                                            <tr key={cIdx} style={{ ...TABLE_STYLE.row(cIdx === changes.length - 1), background: 'transparent' }}>
+                                                                                <td style={{ ...TABLE_STYLE.td(true), padding: '10px 16px', fontSize: '12px', color: C.textMuted, fontFamily: OUTFIT }}>
+                                                                                    {new Date(c.date).toLocaleDateString('ar-EG-u-nu-latn', { year: 'numeric', month: 'short', day: 'numeric' })}
+                                                                                </td>
+                                                                                <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px' }}>
+                                                                                    <span style={{ 
+                                                                                        display: 'inline-flex', padding: '2px 10px', borderRadius: '12px', fontSize: '11px', 
+                                                                                        fontWeight: 600, 
+                                                                                        background: c.type === 'increase' ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)',
+                                                                                        color: c.type === 'increase' ? '#10b981' : C.danger,
+                                                                                        fontFamily: CAIRO
+                                                                                    }}>{c.type === 'increase' ? t('زيادة') : t('تخفيض')}</span>
+                                                                                </td>
+                                                                                <td style={{ ...TABLE_STYLE.td(false, true), padding: '10px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                                                    {formatNumber(c.amount)}
+                                                                                </td>
+                                                                                <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
+                                                                                    {c.notes || '—'}
+                                                                                </td>
+                                                                            </tr>
+                                                                        ))}
+                                                                    </tbody>
+                                                                </table>
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
                     </div>
                 )}
 
