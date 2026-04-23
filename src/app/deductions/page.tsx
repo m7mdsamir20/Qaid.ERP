@@ -243,23 +243,23 @@ export default function DeductionsPage() {
                                     {filteredDeductions.map((ded, idx) => (
                                         <tr key={ded.id} style={TABLE_STYLE.row(idx === filteredDeductions.length - 1)}>
                                             <td style={TABLE_STYLE.td(false, true)}>
-                                                <div style={{ fontSize: '13px', color: '#94a3b8', fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }} dir="ltr">
                                                     {new Date(ded.date).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ }}>
-                                                    <div style={{ fontWeight: 600, color: '#f1f5f9', fontSize: '13px' }}>{ded.employee.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px' }}>{ded.employee.code}</div>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{ded.employee.name}</div>
+                                                    <div style={{ fontSize: '11px', color: C.primary, fontWeight: 700, marginTop: '2px', fontFamily: OUTFIT }}>{ded.employee.code}</div>
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: '#f1f5f9', fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{formatNumber(ded.amount)}</span>
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: '#94a3b8', fontSize: '13px' }}>{ded.reason || '—'}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: C.textSecondary, fontSize: '13px' }}>{ded.reason || '—'}</td>
                                             <td style={TABLE_STYLE.td(false, true)}>
                                                 {ded.status === 'pending' ? (
                                                     <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: 'rgba(245,158,11,0.1)', color: '#f59e0b', borderRadius: '20px', fontSize: '11px', fontWeight: 600 }}>
@@ -330,7 +330,7 @@ export default function DeductionsPage() {
                             </div>
                             <div>
                                 <label style={LS}>{t('المبلغ')}</label>
-                                <input type="number" step="0.01" style={IS} required value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
+                                <input type="number" step="0.01" style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT }} required value={formData.amount} onChange={e => setFormData({ ...formData, amount: e.target.value })} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
 

@@ -562,7 +562,7 @@ export default function InstallmentsPage() {
                                 <label style={{ ...LS, fontSize: '11.5px' }}>{t('فائدة سنوية %')}</label>
                                 <div style={{ position: 'relative' }}>
                                     <input type="number" min="0" placeholder="0" value={form.interestRate} onChange={e => setForm(f => ({ ...f, interestRate: e.target.value }))} style={{ ...IS, height: '38px', textAlign: 'center', paddingInlineStart: '32px', paddingInlineEnd: '32px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 600, color: C.primary }}>%</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', fontWeight: 700, color: C.textMuted }}>%</span>
                                 </div>
                             </div>
 

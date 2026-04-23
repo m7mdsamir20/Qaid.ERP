@@ -274,16 +274,16 @@ export default function AdvancesPage() {
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: '#f1f5f9', fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{formatNumber(adv.amount)}</span>
                                                 </div>
                                             </td>
                                             <td style={TABLE_STYLE.td(false, true)}>
-                                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 700 }}>{adv.installmentCount}</span>
+                                                <span style={{ padding: '4px 10px', background: 'rgba(255,255,255,0.05)', borderRadius: '6px', fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>{adv.installmentCount}</span>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.danger, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px', fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: OUTFIT }} dir="ltr">
                                                     <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency, t)}</span>
                                                     <span>{formatNumber(adv.monthlyAmount || 0)}</span>
                                                 </div>
@@ -394,7 +394,7 @@ export default function AdvancesPage() {
                                                     monthlyAmount: inst > 0 ? (Number(val) / inst).toString() : '0'
                                                 });
                                             }}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}
                                             onFocus={focusIn}
                                             onBlur={focusOut}
                                         />
@@ -402,7 +402,7 @@ export default function AdvancesPage() {
                                 </div>
                                 <div>
                                     <label style={LS}>{t('عدد الأقساط')}</label>
-                                    <input type="number" min="1" style={{ ...IS }} required value={formData.installmentCount} onChange={e => {
+                                    <input type="number" min="1" style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT }} required value={formData.installmentCount} onChange={e => {
                                         const inst = e.target.value;
                                         const amt = formData.amount;
                                         setFormData({ 
@@ -424,7 +424,7 @@ export default function AdvancesPage() {
                                             type="text" 
                                             readOnly
                                             value={formatWithCommas(formData.monthlyAmount)}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.success }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary, textAlign: 'center' }}
                                         />
                                     </div>
                                 </div>

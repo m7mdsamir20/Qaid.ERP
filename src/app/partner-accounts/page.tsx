@@ -8,6 +8,7 @@ import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focus
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useTranslation } from '@/lib/i18n';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface Partner { id: string; name: string; share: number; capital: number; balance: number; }
 interface Transaction { id: string; type: string; amount: number; date: string; notes?: string; }
@@ -22,6 +23,7 @@ const TX_LABELS: Record<string, { label: string; color: string; bg: string; icon
 
 export default function PartnerAccountsPage() {
     const { lang, t } = useTranslation();
+    const { symbol: cSymbol } = useCurrency();
     const isRtl = lang === 'ar';
     const [partners, setPartners] = useState<Partner[]>([]);
     const [treasuries, setTreasuries] = useState<any[]>([]);
@@ -89,9 +91,9 @@ export default function PartnerAccountsPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: t('إجمالي الأرصدة المستحقة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: Wallet, suffix: t('ج.م') },
+                            { label: t('إجمالي الأرصدة المستحقة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: Wallet, suffix: cSymbol },
                             { label: t('عدد الشركاء'), val: partners.length, color: C.blue, icon: Users, suffix: t('شريك') },
-                            { label: t('إجمالي رأس المال العام'), val: partners.reduce((s, p) => s + p.capital, 0), color: '#818cf8', icon: Banknote, suffix: t('ج.م') },
+                            { label: t('إجمالي رأس المال العام'), val: partners.reduce((s, p) => s + p.capital, 0), color: '#818cf8', icon: Banknote, suffix: cSymbol },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -103,9 +105,9 @@ export default function PartnerAccountsPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
                                         <span>{formatNumber(s.val)}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -170,12 +172,12 @@ export default function PartnerAccountsPage() {
 
                                         <div style={{ }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#f1f5f9', fontFamily: OUTFIT }}>{formatNumber(p.capital)}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(p.capital)}</div>
                                         </div>
 
                                          <div style={{ }}>
                                              <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '2px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
-                                             <div style={{ fontSize: '15px', fontWeight: 600, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                             <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, direction: 'ltr' }}>
                                                  {formatNumber(p.balance)}
                                              </div>
                                          </div>
@@ -241,8 +243,8 @@ export default function PartnerAccountsPage() {
                                                                                 {t(meta.label)}
                                                                             </span>
                                                                         </td>
-                                                                        <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: meta.color, fontFamily: OUTFIT, fontSize: '13px' }}>
-                                                                            {formatNumber(tx.amount)} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                                                                        <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, fontSize: '13px' }}>
+                                                                            {formatNumber(tx.amount)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
                                                                         </td>
                                                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                                             {tx.notes || '—'}
@@ -277,8 +279,8 @@ export default function PartnerAccountsPage() {
                                 borderRadius: '12px', padding: '12px', marginBottom: '20px' 
                             }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري حالياً')}</div>
-                                <div style={{ fontSize: '20px', fontWeight: 950, color: showModal.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
-                                    {formatNumber(showModal.balance)} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                                <div style={{ fontSize: '20px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                    {formatNumber(showModal.balance)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
                                 </div>
                             </div>
 
@@ -317,7 +319,7 @@ export default function PartnerAccountsPage() {
                                         onChange={v => setForm(f => ({ ...f, treasuryId: v }))}
                                         icon={Wallet}
                                         placeholder={t("اختر الخزينة...")}
-                                        options={treasuries.map(t_ => ({ value: t_.id, label: `${t_.name} (${formatNumber(t_.balance)} ${t('ج.م')})` }))}
+                                        options={treasuries.map(t_ => ({ value: t_.id, label: `${t_.name} (${formatNumber(t_.balance)} ${cSymbol})` }))}
                                     />
                                 </div>
                             )}
@@ -325,8 +327,16 @@ export default function PartnerAccountsPage() {
                             {/* Amount + Date Row */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
-                                    <label style={LS}>{t('المبلغ (ج.م) *')}</label>
-                                    <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                    <label style={LS}>{t('المبلغ')} <span style={{ color: C.danger }}>*</span></label>
+                                    <div style={{ position: 'relative' }}>
+                                        {!form.amount && (
+                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                                0.00
+                                            </div>
+                                        )}
+                                        <input required type="number" min="0.01" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, textAlign: 'center', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={LS}>{t('التاريخ')}</label>

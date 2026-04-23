@@ -23,7 +23,7 @@ interface Treasury {
 function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | null, onClose: () => void, onSaved: () => void }) {
     const { t } = useTranslation();
     const isEdit = !!initial;
-    const [currencySymbol, setCurrencySymbol] = useState(t('ج.م'));
+    const { symbol: cSymbol } = useCurrency();
     const [saving, setSaving] = useState(false);
     const [form, setForm] = useState({
         name: initial?.name || '',
@@ -34,15 +34,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
         accountId: initial?.accountId || '',
     });
 
-    useEffect(() => {
-        fetch('/api/settings').then(r => r.json()).then(data => {
-            const cur = data?.company?.currency;
-            if (cur) {
-                const maps: any = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'USD': t('دولار'), 'AED': t('د.إ') };
-                setCurrencySymbol(maps[cur] || cur);
-            }
-        }).catch(() => { });
-    }, []);
+    // Removed manual settings fetch, using useCurrency hook instead.
 
     const formatWithCommas = (val: string) => {
         if (!val) return '';
@@ -134,7 +126,7 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                                     setForm(f => ({ ...f, balance: val }));
                                 }}
                                 style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 700, color: C.textPrimary, height: '46px', fontSize: '18px', width: '100%', padding: '0 45px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
-                            <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
+                            <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700, pointerEvents: 'none', fontFamily: CAIRO }}>{cSymbol}</span>
                         </div>
                     </div>
                 )}
@@ -180,7 +172,7 @@ export default function TreasuriesPage() {
     const [editItem, setEditItem] = useState<Treasury | null>(null);
     const [deleteItem, setDeleteItem] = useState<Treasury | null>(null);
     const [submitting, setSubmitting] = useState(false);
-    const [currencySymbol, setCurrencySymbol] = useState(t('ج.م'));
+    const { symbol: cSymbol } = useCurrency();
 
     const isAdmin = session?.user?.role === 'admin';
     const perms = (session?.user as any)?.permissions || {};
@@ -201,11 +193,7 @@ export default function TreasuriesPage() {
             setTreasuries(trList);
             setListCache('treasuries', trList);
 
-            const cur = sData?.company?.currency;
-            if (cur) {
-                const maps: any = { 'EGP': t('ج.م'), 'SAR': t('ر.س'), 'USD': t('دولار') };
-                setCurrencySymbol(maps[cur] || cur);
-            }
+            // Removed manual symbol mapping, using useCurrency hook instead.
         } catch { setTreasuries([]); }
         finally { setLoading(false); }
     }, []);
@@ -262,9 +250,9 @@ export default function TreasuriesPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: t('إجمالي السيولة'), val: totalAll, color: C.primary, icon: Wallet, unit: currencySymbol },
-                        { label: t('إجمالي الخزن'), val: totalCash, color: C.success, icon: Banknote, unit: currencySymbol },
-                        { label: t('إجمالي البنوك'), val: totalBank, color: C.blue, icon: Building2, unit: currencySymbol },
+                        { label: t('إجمالي السيولة'), val: totalAll, color: C.primary, icon: Wallet, unit: cSymbol },
+                        { label: t('إجمالي الخزن'), val: totalCash, color: C.success, icon: Banknote, unit: cSymbol },
+                        { label: t('إجمالي البنوك'), val: totalBank, color: C.blue, icon: Building2, unit: cSymbol },
                     ].map((s, idx) => (
                         <div key={idx} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -272,8 +260,9 @@ export default function TreasuriesPage() {
                         }}>
                             <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                                    {fMoneyJSX(s.val)}
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                    <span>{formatNumber(s.val)}</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>
                             <div style={{
@@ -310,7 +299,7 @@ export default function TreasuriesPage() {
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
                                     {cashList.map(t => (
-                                        <TreasuryCard key={t.id} item={t} currencySymbol={currencySymbol} canEdit={canEdit} canDelete={canDelete} onEdit={() => { setEditItem(t); setShowModal(true); }} onDelete={() => setDeleteItem(t)} />
+                                        <TreasuryCard key={t.id} item={t} currencySymbol={cSymbol} canEdit={canEdit} canDelete={canDelete} onEdit={() => { setEditItem(t); setShowModal(true); }} onDelete={() => setDeleteItem(t)} />
                                     ))}
                                 </div>
                             </div>
@@ -324,7 +313,7 @@ export default function TreasuriesPage() {
                                 </div>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(260px,1fr))', gap: '16px' }}>
                                     {bankList.map(t => (
-                                        <TreasuryCard key={t.id} item={t} currencySymbol={currencySymbol} canEdit={canEdit} canDelete={canDelete} onEdit={() => { setEditItem(t); setShowModal(true); }} onDelete={() => setDeleteItem(t)} />
+                                        <TreasuryCard key={t.id} item={t} currencySymbol={cSymbol} canEdit={canEdit} canDelete={canDelete} onEdit={() => { setEditItem(t); setShowModal(true); }} onDelete={() => setDeleteItem(t)} />
                                     ))}
                                 </div>
                             </div>

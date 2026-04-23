@@ -7,6 +7,7 @@ import { PieChart, Plus, Loader2, X, TrendingUp, CalendarDays, CheckCircle2, Che
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface Partner { id: string; name: string; share: number; capital: number; balance: number; }
 interface Distribution { id: string; date: string; totalAmount: number; period: string; notes?: string; paidFromTreasury?: boolean; lines: { partnerName: string; amount: number; share: number }[]; }
@@ -14,6 +15,7 @@ interface Treasury { id: string; name: string; type: string; balance: number; }
 
 export default function ProfitDistributionPage() {
     const { lang, t } = useTranslation();
+    const { symbol: cSymbol } = useCurrency();
 
     const PERIOD_LABELS: Record<string, string> = {
         monthly: t('شهري'),
@@ -106,7 +108,7 @@ export default function ProfitDistributionPage() {
                     {!loading && (
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[
-                                { label: t('إجمالي الأرباح الموزعة'), val: totalDistributed, color: '#10b981', icon: TrendingUp, suffix: t('ج.م') },
+                                { label: t('إجمالي الأرباح الموزعة'), val: totalDistributed, color: '#10b981', icon: TrendingUp, suffix: cSymbol },
                                 { label: t('عدد عمليات التوزيع'), val: distributions.length, color: C.blue, icon: History, suffix: t('عملية') },
                                 { label: t('إجمالي الحصص الرأسمالية'), val: totalShares, color: '#818cf8', icon: Percent, suffix: '%' },
                             ].map((s, i) => (
@@ -120,9 +122,9 @@ export default function ProfitDistributionPage() {
                                 >
                                     <div style={{ textAlign: 'start' }}>
                                         <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                            <span>{typeof s.val === 'number' ? s.val : s.val}</span>
-                                            {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                            <span>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
+                                            {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.suffix}</span>}
                                         </div>
                                     </div>
                                     <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -194,14 +196,14 @@ export default function ProfitDistributionPage() {
                                             </div>
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('تاريخ القيد')}</div>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: '#f1f5f9', fontFamily: OUTFIT }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     {new Date(d.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                                 </div>
                                             </div>
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي التوزيع')}</div>
-                                                <div style={{ fontSize: '18px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>
-                                                    {formatNumber(d.totalAmount)} <span style={{ fontSize: '10px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                                                <div style={{ fontSize: '18px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                    {formatNumber(d.totalAmount)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
@@ -227,8 +229,8 @@ export default function ProfitDistributionPage() {
                                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('نسبة الحصة')}: {l.share}%</div>
                                                             </div>
                                                             <div style={{ textAlign: 'end' }}>
-                                                                <div style={{ fontSize: '15px', fontWeight: 950, color: C.primary, fontFamily: OUTFIT }}>{formatNumber(l.amount)}</div>
-                                                                <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>{t('ج.م')}</div>
+                                                                <div style={{ fontSize: '15px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(l.amount)}</div>
+                                                                <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</div>
                                                             </div>
                                                         </div>
                                                     ))}
@@ -279,8 +281,16 @@ export default function ProfitDistributionPage() {
                             {/* Amount + Date */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                                 <div>
-                                    <label style={LS}>{t('إجمالي الربح الموزع (ج.م) *')}</label>
-                                    <input required type="number" min="1" step="0.01" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{...IS, color: '#10b981', fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
+                                    <label style={LS}>{t('إجمالي الربح الموزع')} <span style={{ color: C.danger }}>*</span></label>
+                                    <div style={{ position: 'relative' }}>
+                                        {!form.totalAmount && (
+                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                                0.00
+                                            </div>
+                                        )}
+                                        <input required type="number" min="1" step="0.01" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{...IS, textAlign: 'center', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={LS}>{t('تاريخ التوزيع')}</label>
@@ -299,7 +309,7 @@ export default function ProfitDistributionPage() {
                                             <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px' }}>
                                                 <span style={{ color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO }}>{p.name} <span style={{ fontSize: '10px', opacity: 0.6 }}>({p.share}%)</span></span>
                                                 <div style={{ flex: 1, borderBottom: `1px dotted ${C.border}`, margin: '0 10px' }} />
-                                                <span style={{ color: C.primary, fontWeight: 950, fontFamily: OUTFIT }}>{formatNumber(p.gets)}</span>
+                                                <span style={{ color: C.textPrimary, fontWeight: 950, fontFamily: OUTFIT }}>{formatNumber(p.gets)}</span>
                                             </div>
                                         ))}
                                     </div>
