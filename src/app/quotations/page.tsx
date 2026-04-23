@@ -64,7 +64,7 @@ export default function QuotationsPage() {
 
         const quoDate = new Date(quo.date);
         const matchesFrom = dateFrom ? quoDate >= new Date(dateFrom) : true;
-        const matchesTo = dateTo ? quoDate <= new Date(dateTo) : true;
+        const matchesTo = dateTo ? quoDate <= new Date(dateTo + 'T23:59:59') : true;
 
         return matchesSearch && matchesFrom && matchesTo;
     });
@@ -110,7 +110,7 @@ export default function QuotationsPage() {
                     }}
                 />
 
-                {/* Filters Section - Matched with Sales Invoice */}
+                {/* Filters Section */}
                 <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
@@ -121,14 +121,16 @@ export default function QuotationsPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '42px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
+                    
+                    {/* Date Filters */}
+                    <div className="mobile-flex-row mobile-gap-sm" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '42px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
                     </div>
 
@@ -137,7 +139,7 @@ export default function QuotationsPage() {
                             className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
                             style={{
-                                display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
                                 background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
@@ -227,16 +229,12 @@ export default function QuotationsPage() {
                         </div>
                     )}
 
-                    {filteredAll.length > pageSize && (
-                        <div style={{ padding: '15px', borderTop: `1px solid ${C.border}` }}>
-                            <Pagination
-                                currentPage={currentPage}
-                                total={filteredAll.length}
-                                pageSize={pageSize}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
-                    )}
+                    <Pagination
+                        currentPage={currentPage}
+                        total={filteredAll.length}
+                        pageSize={pageSize}
+                        onPageChange={setCurrentPage}
+                    />
                 </div>
             </div>
         </DashboardLayout>

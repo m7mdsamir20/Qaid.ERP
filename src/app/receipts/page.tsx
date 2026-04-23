@@ -5,7 +5,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
-import { Plus, Search, Loader2, Building2, Banknote, Printer, Receipt, Trash2, TrendingUp } from 'lucide-react';
+import { Plus, Search, Loader2, Building2, Banknote, Printer, Receipt, Trash2, TrendingUp, Eye } from 'lucide-react';
 
 import { THEME, C, CAIRO, OUTFIT, IS, focusIn, focusOut, TABLE_STYLE, SEARCH_STYLE } from '@/constants/theme';
 import { useSession } from 'next-auth/react';
@@ -64,8 +64,6 @@ export default function ReceiptVouchersPage() {
         return matchSearch && matchFrom && matchTo;
     });
 
-    const fmt = (num: number) => formatNumber(num);
-
     const handlePrint = (v: Voucher) => {
         window.open(`/print/voucher/${v.id}`, '_blank');
     };
@@ -73,7 +71,7 @@ export default function ReceiptVouchersPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
                     title={t("سندات القبض")}
                     subtitle={t("إدارة المتحصلات النقدية والبنكية من العملاء — تتبع التوريدات للخزينة والبنوك")}
@@ -97,14 +95,16 @@ export default function ReceiptVouchersPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
+                    
+                    {/* Date Filters */}
+                    <div className="mobile-flex-row mobile-gap-sm" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
                     </div>
 
@@ -113,7 +113,7 @@ export default function ReceiptVouchersPage() {
                             className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
                             style={{
-                                display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
                                 background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
@@ -157,16 +157,16 @@ export default function ReceiptVouchersPage() {
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
+                                            <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
                                                 RCP-{String(v.voucherNumber).padStart(5, '0')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
                                                 {new Date(v.date).toLocaleDateString('en-GB')}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>
                                                 {v.customer?.name || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                                 <div style={{
                                                     display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                     padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
@@ -177,13 +177,13 @@ export default function ReceiptVouchersPage() {
                                                     {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
                                                 </div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                 {v.treasury?.name || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted, maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontFamily: CAIRO }}>
                                                 {v.description || '—'}
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: C.success, fontWeight: 700, fontFamily: CAIRO }}>
+                                            <td style={{ ...TABLE_STYLE.td(false, true),  color: C.success, fontWeight: 700, fontFamily: OUTFIT }}>
                                                 <Currency amount={v.amount} />
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -193,6 +193,12 @@ export default function ReceiptVouchersPage() {
                                                         style={TABLE_STYLE.actionBtn()}
                                                         title={t("طباعة")}>
                                                         <Printer size={TABLE_STYLE.actionIconSize} />
+                                                    </button>
+                                                    <button
+                                                        onClick={(e) => { e.stopPropagation(); router.push(`/receipts/${v.id}`); }}
+                                                        style={TABLE_STYLE.actionBtn()}
+                                                        title={t("عرض")}>
+                                                        <Eye size={TABLE_STYLE.actionIconSize} />
                                                     </button>
                                                 </div>
                                             </td>

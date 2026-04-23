@@ -54,12 +54,10 @@ export default function PurchaseReturnsListPage() {
         return matchSearch && matchFrom && matchTo;
     });
 
-    const fmt = (num: number) => formatNumber(num);
-
     const getStatusStyle = (total: number, paid: number) => {
-        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: 'مدفوعة', icon: CheckCircle2 };
-        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: 'جزئي', icon: Clock };
-        return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: 'غير مدفوعة', icon: AlertCircle };
+        if (paid >= total && total > 0) return { bg: 'rgba(74,222,128,0.1)', color: '#4ade80', text: t('مدفوعة'), icon: CheckCircle2 };
+        if (paid > 0) return { bg: 'rgba(251,191,36,0.1)', color: '#fbbf24', text: t('جزئي'), icon: Clock };
+        return { bg: 'rgba(251,113,133,0.1)', color: '#fb7185', text: t('غير مدفوعة'), icon: AlertCircle };
     };
 
     const handlePrint = (inv: PurchaseReturn) => {
@@ -70,11 +68,11 @@ export default function PurchaseReturnsListPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title="مرتجعات المشتريات"
-                    subtitle="إدارة المرتجعات للموردين — رد الأصناف المشتراة وتسوية المديونيات"
+                    title={t("مرتجعات المشتريات")}
+                    subtitle={t("إدارة المرتجعات للموردين — رد الأصناف المشتراة وتسوية المديونيات")}
                     icon={RotateCcw}
                     primaryButton={canCreate ? {
-                        label: 'مرتجع جديد',
+                        label: t('مرتجع جديد'),
                         onClick: () => router.push('/purchase-returns/new'),
                         icon: Plus
                     } : undefined}
@@ -84,20 +82,22 @@ export default function PurchaseReturnsListPage() {
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input
-                            placeholder="رقم المرتجع أو اسم المورد..."
+                            placeholder={t("رقم المرتجع أو اسم المورد...")}
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("من")}</span>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, borderRadius: '8px', fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1 }} />
+                    
+                    {/* Date Filters */}
+                    <div className="mobile-flex-row mobile-gap-sm" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                            <span style={{ color: C.textMuted, fontSize: '12px', whiteSpace: 'nowrap' }}>{t("إلى")}</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, borderRadius: '8px', fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1 }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
                     </div>
 
@@ -106,7 +106,7 @@ export default function PurchaseReturnsListPage() {
                             className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
                             style={{
-                                display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '42px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
                                 background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
@@ -126,21 +126,21 @@ export default function PurchaseReturnsListPage() {
                     ) : filtered.length === 0 ? (
                         <div style={{ padding: '70px' }}>
                             <RotateCcw size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>لا توجد مرتجعات مشتريات</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج بحث مطابقة') : t('لا توجد مرتجعات مشتريات')}</p>
                         </div>
                     ) : (
                         <div className="scroll-table">
                             <table style={TABLE_STYLE.table}>
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
-                                        <th style={TABLE_STYLE.th(true)}>رقم المرتجع</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>التاريخ</th>
-                                        <th style={TABLE_STYLE.th(false)}>المورد</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>الإجمالي</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>المدفوع</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>المتبقي</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>الحالة</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>إجراءات</th>
+                                        <th style={TABLE_STYLE.th(true)}>{t('رقم المرتجع')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('التاريخ')}</th>
+                                        <th style={TABLE_STYLE.th(false)}>{t('المورد')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الإجمالي')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('المدفوع')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('المتبقي')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('الحالة')}</th>
+                                        <th style={TABLE_STYLE.th(false, true)}>{t('إجراءات')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -152,18 +152,18 @@ export default function PurchaseReturnsListPage() {
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                             >
-                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: CAIRO, width: '120px' }}>
+                                                <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
                                                     RTN-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{inv.supplier?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     <Currency amount={inv.total} />
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.success, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: C.success, fontFamily: OUTFIT }}>
                                                     <Currency amount={inv.paidAmount} />
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: CAIRO }}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 600, color: (inv.remaining > 0) ? C.danger : C.textMuted, fontFamily: OUTFIT }}>
                                                     <Currency amount={inv.remaining} />
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -177,11 +177,11 @@ export default function PurchaseReturnsListPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => window.open(`/print/invoice/${inv.id}`, '_blank')} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="طباعة">
-                                                            <Printer size={16} />
+                                                        <button onClick={() => handlePrint(inv)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
+                                                            <Printer size={TABLE_STYLE.actionIconSize} />
                                                         </button>
-                                                        <button onClick={() => router.push(`/purchase-returns/${inv.id}`)} style={{ background: 'transparent', border: 'none', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: '0.2s' }} onMouseEnter={e => e.currentTarget.style.color = C.primary} onMouseLeave={e => e.currentTarget.style.color = '#64748b'} title="عرض">
-                                                            <Eye size={16} />
+                                                        <button onClick={() => router.push(`/purchase-returns/${inv.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
+                                                            <Eye size={TABLE_STYLE.actionIconSize} />
                                                         </button>
                                                     </div>
                                                 </td>
