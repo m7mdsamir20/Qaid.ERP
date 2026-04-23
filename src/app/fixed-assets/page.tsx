@@ -4,6 +4,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 
 
 import React, { useState, useEffect, useCallback } from 'react';
+import { Currency } from '@/components/Currency';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -266,13 +267,13 @@ export default function FixedAssetsPage() {
                                         <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(a.purchaseCost)}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={a.purchaseCost} /></div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}>{fmt(a.accumulatedDepreciation)}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>{fmt(a.netBookValue)}</div>
+                                            <div style={{ fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={a.netBookValue} /></div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                             <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>

@@ -3,6 +3,7 @@ import { formatNumber } from '@/lib/currency';
 import { useCurrency } from '@/hooks/useCurrency';
 
 import React, { useState, useEffect } from 'react';
+import { Currency } from '@/components/Currency';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -204,15 +205,15 @@ export default function DisposalsPage() {
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(d.salePrice)}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={d.salePrice} /></div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}>{fmt(d.netBookValue)}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}><Currency amount={d.netBookValue} /></div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
                                                 {d.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
-                                                <span style={{ fontFamily: OUTFIT }}>{fmt(Math.abs(d.gainLoss))}</span>
+                                                <Currency amount={Math.abs(d.gainLoss)} />
                                             </div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{d.notes || '—'}</td>

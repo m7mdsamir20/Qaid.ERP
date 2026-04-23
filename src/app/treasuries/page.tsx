@@ -4,6 +4,7 @@ import { THEME, C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, IS, LS, focusIn, focus
 import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
 import React, { useState, useEffect, useCallback } from 'react';
+import { Currency } from '@/components/Currency';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import AppModal from '@/components/AppModal';
@@ -334,8 +335,7 @@ export default function TreasuriesPage() {
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                                 <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {formatNumber(tr.balance)}
-                                                    <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                    <Currency amount={tr.balance} />
                                                 </div>
                                             </td>
                                             <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>

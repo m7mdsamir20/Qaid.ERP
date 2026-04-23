@@ -1,6 +1,7 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Currency } from '@/components/Currency';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { DollarSign, Plus, Loader2, X, TrendingUp, TrendingDown, ChevronDown, ChevronUp, History, Info, AlertCircle, Save, Banknote, Users, CheckCircle2, ArrowUpRight, ArrowDownRight } from 'lucide-react';
@@ -178,15 +179,20 @@ export default function CapitalPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                        {formatNumber(p.capital)}
-                                                        <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                        <Currency amount={p.capital} />
                                                     </div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>+{formatNumber(increased)}</div>
+                                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>
+                                                            <span style={{ marginInlineEnd: '2px' }}>+</span>
+                                                            <Currency amount={increased} showSymbol={false} />
+                                                        </div>
                                                         <div style={{ width: 1, height: 12, background: C.border }} />
-                                                        <div style={{ fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>-{formatNumber(decreased)}</div>
+                                                        <div style={{ fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>
+                                                            <span style={{ marginInlineEnd: '2px' }}>-</span>
+                                                            <Currency amount={decreased} showSymbol={false} />
+                                                        </div>
                                                     </div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
@@ -242,7 +248,7 @@ export default function CapitalPage() {
                                                                                     }}>{c.type === 'increase' ? t('زيادة') : t('تخفيض')}</span>
                                                                                 </td>
                                                                                 <td style={{ ...TABLE_STYLE.td(false, true), padding: '10px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                                                    {formatNumber(c.amount)}
+                                                                                    <Currency amount={c.amount} />
                                                                                 </td>
                                                                                 <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                                                     {c.notes || '—'}

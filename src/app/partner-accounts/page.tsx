@@ -1,6 +1,7 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
+import { Currency } from '@/components/Currency';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { Users, TrendingUp, TrendingDown, ArrowUpDown, Plus, X, Loader2, ChevronDown, ChevronUp, Banknote, CalendarDays, Wallet, AlertCircle, FileText, History } from 'lucide-react';
@@ -167,19 +168,18 @@ export default function PartnerAccountsPage() {
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{p.share}%</div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(p.capital)}</div>
+                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={p.capital} /></div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                        {formatNumber(p.balance)}
-                                                        <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                        <Currency amount={p.balance} />
                                                     </div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>↑ {formatNumber(deposits)}</div>
+                                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>↑ <Currency amount={deposits} showSymbol={false} /></div>
                                                         <div style={{ width: 1, height: 12, background: C.border }} />
-                                                        <div style={{ fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>↓ {formatNumber(withdrawals)}</div>
+                                                        <div style={{ fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>↓ <Currency amount={withdrawals} showSymbol={false} /></div>
                                                     </div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
@@ -232,7 +232,7 @@ export default function PartnerAccountsPage() {
                                                                                         }}>{t(meta.label)}</span>
                                                                                     </td>
                                                                                     <td style={{ ...TABLE_STYLE.td(false, true), padding: '10px 16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                                                        {formatNumber(tx.amount)}
+                                                                                        <Currency amount={tx.amount} />
                                                                                     </td>
                                                                                     <td style={{ ...TABLE_STYLE.td(false), padding: '10px 16px', fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                                                         {tx.notes || '—'}

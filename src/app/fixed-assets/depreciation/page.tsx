@@ -3,6 +3,7 @@ import { formatNumber } from '@/lib/currency';
 import { useCurrency } from '@/hooks/useCurrency';
 
 import React, { useState, useEffect } from 'react';
+import { Currency } from '@/components/Currency';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -213,7 +214,7 @@ export default function DepreciationPage() {
                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل احتساب الإهلاك المالي')}</div>
                             <div style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO, display: 'flex', gap: '12px' }}>
                                 <span>{t('عدد الأصول')}: <b style={{ fontFamily: OUTFIT }}>{lines.length}</b></span>
-                                <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fmt(totalCalculatedDep)} {cSymbol}</b></span>
+                                <span>{t('القيمة المخططة')}: <b style={{ color: C.danger, fontFamily: OUTFIT }}><Currency amount={totalCalculatedDep} /></b></span>
                             </div>
                         </div>
                         <table style={TABLE_STYLE.table}>
@@ -234,11 +235,11 @@ export default function DepreciationPage() {
                                     <tr key={l.asset.id} style={TABLE_STYLE.row(i === lines.length - 1)}>
                                         <td style={{ ...TABLE_STYLE.td(true), fontFamily: OUTFIT, fontSize: '12px', color: C.blue, fontWeight: 700 }}>{l.asset.code}</td>
                                         <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{l.asset.name}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}>{fmt(l.asset.purchaseCost)}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation)}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.danger }}>{fmt(l.depAmount)}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}>{fmt(l.asset.accumulatedDepreciation + l.depAmount)}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981' }}>{fmt(l.netBook)}</td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textSecondary }}><Currency amount={l.asset.purchaseCost} /></td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}><Currency amount={l.asset.accumulatedDepreciation} /></td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: C.danger }}><Currency amount={l.depAmount} /></td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', color: C.textMuted }}><Currency amount={l.asset.accumulatedDepreciation + l.depAmount} /></td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontSize: '13px', fontWeight: 600, color: '#10b981' }}><Currency amount={l.netBook} /></td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                             {l.alreadyDone ? (
                                                 <span style={{ fontSize: '10px', fontWeight: 600, color: '#10b981', padding: '2px 8px', borderRadius: '12px', background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>✓ {t('تم الترحيل')}</span>

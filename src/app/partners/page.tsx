@@ -1,6 +1,7 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
+import { Currency } from '@/components/Currency';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
@@ -204,14 +205,12 @@ export default function PartnersPage() {
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                             <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {formatNumber(p.capital)}
-                                                <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                <Currency amount={p.capital} />
                                             </div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                             <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {formatNumber(p.balance)}
-                                                <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                <Currency amount={p.balance} />
                                             </div>
                                         </td>
                                         <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>

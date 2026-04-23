@@ -60,9 +60,8 @@ export function Currency({ amount, code: propCode, lang: propLang, className = '
             style={{ 
                 display: 'inline-flex', 
                 alignItems: 'baseline', 
-                gap: '2px', 
+                gap: '4px', 
                 whiteSpace: 'nowrap',
-                direction: 'ltr',
                 ...style 
             }}
         >
