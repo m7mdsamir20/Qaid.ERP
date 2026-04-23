@@ -209,7 +209,7 @@ export default function SaleReturnsListPage() {
                         gap: 8px;
                         background: rgba(255,255,255,0.03);
                         padding: 4px 10px;
-                        borderRadius: 10px;
+                        border-radius: 10px;
                         border: 1px solid ${C.border};
                     }
                     .date-label-mobile { 

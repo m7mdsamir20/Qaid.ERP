@@ -65,7 +65,7 @@ export default function SalesPage() {
 
         const invDate = new Date(inv.date);
         const matchesFrom = dateFrom ? invDate >= new Date(dateFrom) : true;
-        const matchesTo = dateTo ? invDate <= new Date(dateTo) : true;
+        const matchesTo = dateTo ? invDate <= new Date(dateTo + 'T23:59:59') : true;
 
         return matchesSearch && matchesFrom && matchesTo;
     });
@@ -115,15 +115,17 @@ export default function SalesPage() {
                         />
                     </div>
                     
-                    {/* Date Filters */}
-                    <div className="mobile-flex-row mobile-gap-sm" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("من")}</span>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
+                    {/* Responsive Date Filters */}
+                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
+                        <div className="date-input-wrapper">
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("إلى")}</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
+                        <div className="date-input-wrapper">
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
                     </div>
                     
@@ -227,7 +229,38 @@ export default function SalesPage() {
                     )}
                 </div>
             </div>
-            
+            <style dangerouslySetInnerHTML={{ __html: `
+                @media (max-width: 768px) {
+                    .date-filter-row { width: 100%; gap: 8px !important; }
+                    .date-label-desktop { display: none !important; }
+                    .date-input-wrapper {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: rgba(255,255,255,0.03);
+                        padding: 4px 10px;
+                        border-radius: 10px;
+                        border: 1px solid ${C.border};
+                    }
+                    .date-label-mobile { 
+                        display: block !important; 
+                        color: ${C.textMuted}; 
+                        font-size: 11px; 
+                        font-weight: 600; 
+                        white-space: nowrap; 
+                        font-family: ${CAIRO};
+                    }
+                    .date-input-wrapper input {
+                        width: 100% !important;
+                        background: transparent !important;
+                        border: none !important;
+                        height: 34px !important;
+                        padding: 0 !important;
+                        font-size: 12px !important;
+                    }
+                }
+            ` }} />
         </DashboardLayout>
     );
 }
