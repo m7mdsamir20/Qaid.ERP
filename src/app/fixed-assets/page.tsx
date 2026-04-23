@@ -176,13 +176,13 @@ export default function FixedAssetsPage() {
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
                                 padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                             }}>
-                                <div style={{ textAlign: 'start' }}>
-                                    <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{formatNumber(s.val)}</span>
-                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{cSymbol}</span>}
+                                    <div style={{ textAlign: 'start' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                            <span>{formatNumber(s.val)}</span>
+                                            {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{cSymbol}</span>}
+                                        </div>
                                     </div>
-                                </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
                                     <s.icon size={20} />
                                 </div>
