@@ -169,76 +169,69 @@ export default function PartnersPage() {
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('ابدأ بإضافة أول شريك للشركة لإدارة الحصص والأرباح')}</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '16px' }}>
-                        {partners.map((p, i) => {
-                            const color = PARTNER_COLORS[i % PARTNER_COLORS.length];
-                            return (
-                                <div key={p.id} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '18px', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', overflow: 'hidden', position: 'relative', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
-                                     onMouseEnter={e => { 
-                                         e.currentTarget.style.borderColor = `${color}60`; 
-                                         e.currentTarget.style.transform = 'translateY(-4px) scale(1.01)'; 
-                                         e.currentTarget.style.background = `linear-gradient(135deg, ${C.card}, ${color}05)`; 
-                                         e.currentTarget.style.boxShadow = `0 20px 35px -12px ${color}30`; 
-                                     }}
-                                     onMouseLeave={e => { 
-                                         e.currentTarget.style.borderColor = C.border; 
-                                         e.currentTarget.style.transform = 'none'; 
-                                         e.currentTarget.style.background = C.card; 
-                                         e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)'; 
-                                     }}>
-                                    
-                                    <div style={{ padding: '20px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '18px' }}>
+                    <div style={TABLE_STYLE.container}>
+                        <table style={TABLE_STYLE.table}>
+                            <thead>
+                                <tr style={TABLE_STYLE.thead}>
+                                    <th style={TABLE_STYLE.th(true)}>{t('الشريك')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('نسبة الحصة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('رأس المال')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الرصيد الجاري')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الإجراءات')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {partners.map((p, idx) => (
+                                    <tr key={p.id} style={TABLE_STYLE.row(idx === partners.length - 1)}
+                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                        <td style={TABLE_STYLE.td(true)}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${color}15`, border: `1px solid ${color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 600, color, fontFamily: CAIRO }}>
+                                                <div style={{ width: 36, height: 36, borderRadius: '10px', background: `${PARTNER_COLORS[idx % PARTNER_COLORS.length]}15`, color: PARTNER_COLORS[idx % PARTNER_COLORS.length], display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: OUTFIT }}>
                                                     {p.name.charAt(0)}
                                                 </div>
-                                                <div>
-                                                    <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px' }}>{p.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, fontFamily: OUTFIT, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                        <Phone size={10} /> {p.phone || '—'}
-                                                    </div>
-                                                </div>
+                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
                                             </div>
-                                            <div style={{ background: `${color}15`, color, borderRadius: '10px', padding: '4px 10px', fontSize: '12px', fontWeight: 600, fontFamily: OUTFIT, border: `1px solid ${color}20` }}>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
+                                            {p.phone || '—'}
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <div style={{ display: 'inline-flex', padding: '2px 10px', borderRadius: '8px', background: `${PARTNER_COLORS[idx % PARTNER_COLORS.length]}10`, color: PARTNER_COLORS[idx % PARTNER_COLORS.length], border: `1px solid ${PARTNER_COLORS[idx % PARTNER_COLORS.length]}20`, fontSize: '11px', fontWeight: 600, fontFamily: OUTFIT }}>
                                                 {p.share}%
                                             </div>
-                                        </div>
-
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
-                                            <div style={{ }}>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(p.capital)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span></div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                {formatNumber(p.capital)}
+                                                <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
                                             </div>
-                                            <div style={{ }}>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {formatNumber(p.balance)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
-                                                </div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <div style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                {formatNumber(p.balance)}
+                                                <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
                                             </div>
-                                        </div>
-
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button onClick={() => router.push('/partner-accounts')}
-                                                style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', height: '36px', borderRadius: '10px', border: `1px solid ${color}30`, background: `${color}10`, color, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
-                                                <ExternalLink size={13} />
-                                                {t('كشف الحساب')}
-                                            </button>
-                                            <button onClick={() => openEdit(p)} style={{ ...TABLE_STYLE.actionBtn(), width: '36px', height: '36px' }} title={t("تعديل")}>
-                                                <Pencil size={15} />
-                                            </button>
-                                            <button onClick={() => setDeleteTarget(p)} style={{ ...TABLE_STYLE.actionBtn(C.danger), width: '36px', height: '36px' }} title={t("حذف")}>
-                                                <Trash2 size={15} />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div style={{ position: 'absolute', bottom: 0, insetInlineEnd: 0, insetInlineStart: 0, height: '3px', background: 'rgba(255,255,255,0.03)' }}>
-                                        <div style={{ height: '100%', width: `${p.share}%`, background: color, transition: 'width 1s ease-out' }} />
-                                    </div>
-                                </div>
-                            );
-                        })}
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                                <button onClick={() => router.push('/partner-accounts')}
+                                                    style={TABLE_STYLE.actionBtn(C.primary)} title={t("كشف الحساب")}>
+                                                    <ExternalLink size={14} />
+                                                </button>
+                                                <button onClick={() => openEdit(p)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
+                                                    <Pencil size={14} />
+                                                </button>
+                                                <button onClick={() => setDeleteTarget(p)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
 
@@ -254,35 +247,39 @@ export default function PartnersPage() {
                             <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("أدخل اسم الشريك الكامل...")} />
                         </div>
                         
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                            <div>
-                                <label style={LS}>{t('رأس المال')} <span style={{ color: C.danger }}>*</span></label>
-                                <div style={{ position: 'relative' }}>
-                                    {!form.capital && (
-                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
-                                            0.00
-                                        </div>
-                                    )}
-                                    <input required type="number" min="0" step="0.01" value={form.capital} onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} style={{...IS, textAlign: 'center', color: C.textPrimary, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                        <div style={{ position: 'relative', marginBottom: '24px' }}>
+                            <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('المساهمة الرأسمالية')}</label>
+                            <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
+                                    0.00
                                 </div>
+                                <input 
+                                    type="number" step="any" required 
+                                    value={form.capital} 
+                                    onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} 
+                                    style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                    onFocus={focusIn} onBlur={focusOut} 
+                                    placeholder=""
+                                />
+                                <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
                             </div>
-                            <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                <label style={LS}>{t('النسبة المحسوبة (%)')}</label>
-                                <div style={{...IS, background: 'rgba(255,255,255,0.02)', border: `1px dashed ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT}}>
-                                    {(() => {
-                                        const cap = parseFloat(form.capital) || 0;
-                                        const otherCap = partners
-                                            .filter(pInfo => {
-                                                if (!modal || modal === 'add') return true;
-                                                return pInfo.id !== (modal as any).id;
-                                            })
-                                            .reduce((s, pInfo) => s + pInfo.capital, 0);
-                                        const total = otherCap + cap;
-                                        return total > 0 ? ((cap / total) * 100).toFixed(2) : '0.00';
-                                    })()}%
-                                </div>
-                            </div>
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: `1px dashed ${C.border}` }}>
+                             <div style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginInlineEnd: '8px' }}>{t('النسبة المحسوبة:')}</div>
+                             <div style={{ fontSize: '18px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
+                                {(() => {
+                                    const cap = parseFloat(form.capital) || 0;
+                                    const otherCap = partners
+                                        .filter(pInfo => {
+                                            if (!modal || modal === 'add') return true;
+                                            return pInfo.id !== (modal as any).id;
+                                        })
+                                        .reduce((s, pInfo) => s + pInfo.capital, 0);
+                                    const total = otherCap + cap;
+                                    return total > 0 ? ((cap / total) * 100).toFixed(2) : '0.00';
+                                })()}%
+                             </div>
                         </div>
 
                         <div style={{ marginBottom: '16px' }}>

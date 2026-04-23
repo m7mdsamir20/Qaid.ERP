@@ -360,63 +360,6 @@ export default function ComprehensiveSettlementPage() {
                                 <p style={{ color: C.textSecondary, fontSize: '13px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>
                             </div>
                         ) : (
-                            <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '8px', overflow: 'hidden' }}>
-                                <div style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'start', fontSize: '13px' }}>
-                                        <thead>
-                                            <tr style={{ background: 'rgba(255,255,255,0.01)', borderBottom: `1px solid ${C.border}` }}>
-                                                {[
-                                                    { label: t('التاريخ'), width: '12%' },
-                                                    { label: t('رقم القيد'), width: '10%' },
-                                                    { label: t('المصدر (من)'), width: '22%' },
-                                                    { label: t('المستلم (إليه)'), width: '22%' },
-                                                    { label: t('البيان'), width: 'auto' },
-                                                    { label: t('المبلغ'), width: '14%' },
-                                                    { label: t('إجراء'), width: '6%' }
-                                                ].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 600, color: C.textMuted,  width: h.width, fontFamily: CAIRO }}>{h.label}</th>
-                                                ))}
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {filteredSettlements.map((s: any, idx) => (
-                                                <tr key={s.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < filteredSettlements.length - 1 ? `1px solid ${C.border}` : 'none', transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                    <td style={{ padding: '11px 16px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500, fontFamily: OUTFIT, textAlign: 'center' }}>
-                                                        {new Date(s.date).toLocaleDateString('en-GB')}
-                                                    </td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'center' }}>
-                                                        <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(37,106,244,0.08)', border: `1px solid ${C.primaryBorder}`, color: C.primary, fontWeight: 600, fontSize: '11px', fontFamily: OUTFIT }}>
-                                                            {String(s.entryNumber).padStart(4, '0')}
-                                                        </span>
-                                                    </td>
-                                                    <td style={{ padding: '11px 16px' }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'center' }}>
-                                                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.dangerBg, color: C.danger, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserMinus size={12} /></div>
-                                                            <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.fromConfig?.name}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ padding: '11px 16px' }}>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '9px', justifyContent: 'center' }}>
-                                                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: C.successBg, color: C.success, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 700, flexShrink: 0 }}><UserPlus size={12} /></div>
-                                                            <span style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', whiteSpace: 'nowrap' }}>{s.toConfig?.name}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ padding: '11px 16px',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, textAlign: 'center' }}>{s.notes || '-'}</td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'center' }}>
-                                                        <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                                                            {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700, opacity: 0.7 }}>{currencySign}</span>
-                                                        </div>
-                                                    </td>
-                                                    <td style={{ padding: '11px 16px', textAlign: 'center' }}>
-                                                        <button onClick={() => setDetailsModal(s)}
-                                                            style={{ width: '32px', height: '32px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', margin: '0 auto' }}
-                                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                            <History size={14} />
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            ))}
                                         </tbody>
                                     </table>
                                 </div>
