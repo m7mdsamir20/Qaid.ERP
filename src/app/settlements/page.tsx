@@ -6,7 +6,8 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { ArrowRightLeft, Plus, Search, ChevronDown, Loader2, UserCheck, UserMinus, UserPlus, CheckCircle2, ArrowRight, Info, History, DollarSign, Calendar, Building2, Banknote, Users, X, Wallet, RefreshCw, ShieldAlert, FileText, ArrowLeftRight, TrendingUp, TrendingDown } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
-import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
+
 
 
 
@@ -360,9 +361,45 @@ export default function ComprehensiveSettlementPage() {
                                 <p style={{ color: C.textSecondary, fontSize: '13px', maxWidth: '400px', margin: '0 auto', lineHeight: 1.6, fontFamily: CAIRO }}>{t('بإمكانك البدء الآن في تسوية أرصدة حسابات العملاء والموردين أو البنوك بكل سهولة من خلال زر الإضافة.')}</p>
                             </div>
                         ) : (
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <div style={TABLE_STYLE.container}>
+                                <table style={TABLE_STYLE.table}>
+                                    <thead>
+                                        <tr style={TABLE_STYLE.thead}>
+                                            <th style={TABLE_STYLE.th(true)}>{t('رقم القيد')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('من حساب')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('إلى حساب')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t('المبلغ')}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t('الإجراءات')}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {filteredSettlements.map((s, idx) => (
+                                            <tr key={s.id} style={TABLE_STYLE.row(idx === filteredSettlements.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                <td style={{ ...TABLE_STYLE.td(true), color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>#{s.entryNumber}</td>
+                                                <td style={TABLE_STYLE.td(false)}>
+                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.fromName}</div>
+                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t(s.fromType)}</div>
+                                                </td>
+                                                <td style={TABLE_STYLE.td(false)}>
+                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.toName}</div>
+                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t(s.toType)}</div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                    {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{currencySign}</span>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: OUTFIT }}>
+                                                    {new Date(s.date).toLocaleDateString('ar-EG-u-nu-latn')}
+                                                </td>
+                                                <td style={TABLE_STYLE.td(false, true)}>
+                                                    <button onClick={() => setDetailsModal(s)} style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}10` }}>
+                                                        <FileText size={14} />
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         )}
                     </>
