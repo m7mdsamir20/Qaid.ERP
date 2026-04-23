@@ -272,7 +272,11 @@ export default function NewQuotationPage() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{isServices ? t("اسم الخدمة") : t("اسم الصنف")}</label>
                                     <CustomSelect
                                         ref={itemSelectRef}
-                                        options={items.map(it => ({ value: it.id, label: it.name, sub: it.code }))}
+                                        options={items.map(it => ({ 
+                                            value: it.id, 
+                                            label: it.name, 
+                                            sub: it.code ? `${t('كود:')} ${it.code}` : undefined 
+                                        }))}
                                         placeholder={isServices ? t("ابحث باسم الخدمة...") : t("ابحث باسم الصنف أو الكود...")}
                                         value={entryItemId}
                                         onChange={(val: any) => {
@@ -317,7 +321,13 @@ export default function NewQuotationPage() {
                                         disabled={!entryItemId} 
                                         value={entryPrice} 
                                         onChange={val => { setEntryPrice(val); }} 
-                                        onKeyDown={(e) => { if (e.key === 'Enter') addLine(); }}
+                                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => { focusIn(e); e.target.select(); }}
+                                        onKeyDown={(e) => { 
+                                            if (e.key === 'Enter') {
+                                                addLine();
+                                                setTimeout(() => itemSelectRef.current?.focus(), 50);
+                                            }
+                                        }}
                                         style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
                                     />
                                 </div>

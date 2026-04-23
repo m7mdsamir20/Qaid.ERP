@@ -676,7 +676,11 @@ function NewSalePageInner() {
                                         <CustomSelect
                                             ref={itemSelectRef}
                                             value={entryItemId}
-                                            onChange={v => { setEntryItemId(v); clearError('entryItemId'); }}
+                                            onChange={v => { 
+                                                setEntryItemId(v); 
+                                                clearError('entryItemId'); 
+                                                setTimeout(() => qtyRef.current?.focus(), 50);
+                                            }}
                                             icon={Search}
                                             placeholder={isServices ? t("اختر الخدمة...") : t("اختر الصنف...")}
                                             onCreate={isServices ? (val) => {
@@ -729,7 +733,12 @@ function NewSalePageInner() {
                                             onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
                                             disabled={!entryItemId}
                                             onFocus={(e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.select(); }}
-                                            onKeyDown={(e) => { if (e.key === 'Enter') addLine(); }}
+                                            onKeyDown={(e) => { 
+                                                if (e.key === 'Enter') {
+                                                    addLine();
+                                                    setTimeout(() => itemSelectRef.current?.focus(), 50);
+                                                }
+                                            }}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '16px', fontWeight: 600 }}
                                         />
                                         <InlineError field="entryPrice" />
