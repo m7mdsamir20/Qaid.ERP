@@ -417,7 +417,7 @@ export default function NewQuotationPage() {
                                                 style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px', textAlign: 'center' }}
                                                 placeholder="0"
                                             />
-                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
+                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -455,7 +455,7 @@ export default function NewQuotationPage() {
                                                     }}
                                                     style={{ ...IS, height: '34px', fontFamily: OUTFIT, fontSize: '13px', background: C.card, borderRadius: '8px', textAlign: 'center' }}
                                                 />
-                                                <span style={{ position: 'absolute', bottom: '9px', insetInlineStart: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
+                                                <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>
                                         </div>
                                     </div>

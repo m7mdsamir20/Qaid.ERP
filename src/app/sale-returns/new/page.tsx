@@ -84,7 +84,7 @@ export default function NewReturnPage() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
     const clearError = (field: string) => {
@@ -622,15 +622,6 @@ export default function NewReturnPage() {
                                     <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.length} {t('بند')}</span>
                                 </div>
 
-                                <div style={{
-                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                    marginTop: '10px', padding: '14px',
-                                    background: 'rgba(37, 106, 244,0.05)', borderRadius: '12px',
-                                    border: `1px solid ${C.primary}20`
-                                }}>
-                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.primary }}>{t('المبلغ')}</span>
-                                    <span style={{ fontSize: '20px', fontWeight: 600, color: C.primary, fontFamily: CAIRO }}>{formatNumber(netReturnTotal)} {cSymbol}</span>
-                                </div>
 
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '14px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
@@ -641,6 +632,19 @@ export default function NewReturnPage() {
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{t('خصم مسترد (-)')}</span>
                                         <span style={{ fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{formatNumber(totalDiscountOnReturn)} {cSymbol}</span>
                                     </div>
+                                </div>
+
+                                <div style={{
+                                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                                    background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
+                                    padding: '10px 14px', borderRadius: '12px', marginTop: '10px',
+                                    border: `1px solid ${C.primaryBorder}`,
+                                    boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
+                                }}>
+                                    <span style={{ color: C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي المرتجع')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 700, fontSize: '18px' }}>
+                                        {fMoneyJSX(netReturnTotal, '', { fontSize: '18px', fontWeight: 700 })}
+                                    </span>
                                 </div>
 
                                 <div style={{ marginTop: '10px' }}>
