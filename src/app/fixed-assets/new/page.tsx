@@ -10,8 +10,6 @@ import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SC, STitle, BTN_PRI
 import PageHeader from '@/components/PageHeader';
 import { useCurrency } from '@/hooks/useCurrency';
 
-
-
 interface Account {
     id: string; code: string; name: string;
     type: string; accountCategory: string; isParent: boolean;
@@ -22,7 +20,6 @@ export default function NewFixedAssetPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { symbol: cSymbol } = useCurrency();
-
 
     const CATEGORIES = [
         t('مركبات'), t('أجهزة وحاسبات'), t('أراضي ومباني'),
@@ -54,9 +51,7 @@ export default function NewFixedAssetPage() {
         notes: '',
     });
 
-    /* ── Load accounts + generate code ── */
     useEffect(() => {
-        // Generate next code
         fetch('/api/fixed-assets')
             .then(r => r.json())
             .then((data: any[]) => {
@@ -73,7 +68,6 @@ export default function NewFixedAssetPage() {
             })
             .catch(() => setGeneratedCode('FA-001'));
 
-        // Load accounts
         fetch('/api/accounts')
             .then(r => r.json())
             .then((data: Account[]) => {
@@ -89,12 +83,10 @@ export default function NewFixedAssetPage() {
     const set = (k: string) => (v: string) =>
         setForm(f => ({ ...f, [k]: v }));
 
-    /* ── Submit ── */
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
 
-        // Validation
         if (!form.name || !form.category || !form.purchaseDate ||
             !form.purchaseCost || !form.depreciationRate) {
             setError(t('يرجى تعبئة جميع الحقول المطلوبة')); return;
@@ -139,7 +131,6 @@ export default function NewFixedAssetPage() {
         setSaving(false);
     };
 
-    // Account dropdowns
     const assetAccounts = accounts.filter(a => a.type === 'asset');
     const expenseAccounts = accounts.filter(a => a.type === 'expense');
     const toOpts = (list: Account[]) =>
@@ -156,7 +147,6 @@ export default function NewFixedAssetPage() {
                     backUrl="/fixed-assets"
                 />
 
-                {/* ── Error ── */}
                 {error && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '12px 16px', borderRadius: '10px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', marginBottom: '16px', fontSize: '13px', color: '#f87171', fontWeight: 600 }}>
                         <AlertTriangle size={15} /> {error}
@@ -170,7 +160,7 @@ export default function NewFixedAssetPage() {
                         <div style={STitle}>
                             <Briefcase size={16} /> {t('البيانات الأساسية')}
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                        <div className="fields-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
                                 <label style={LS}>{t('كود الأصل')}</label>
                                 <input readOnly value={generatedCode}
@@ -185,7 +175,7 @@ export default function NewFixedAssetPage() {
                                     style={IS} onFocus={focusIn} onBlur={focusOut} autoFocus />
                             </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                        <div className="fields-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                             <div>
                                 <label style={LS}>{t('الفئة')} <span style={{ color: C.danger }}>*</span></label>
                                 <CustomSelect value={form.category} onChange={set('category')}
@@ -207,7 +197,7 @@ export default function NewFixedAssetPage() {
                         <div style={STitle}>
                             <TrendingDown size={16} /> {t('التكلفة والإهلاك')}
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
+                        <div className="cost-salvage-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
                             <div style={{ position: 'relative' }}>
                                 <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('تكلفة الشراء')}</label>
                                 <div style={{ position: 'relative' }}>
@@ -255,7 +245,7 @@ export default function NewFixedAssetPage() {
                         {/* طريقة الإهلاك */}
                         <div>
                             <label style={LS}>{t('طريقة الإهلاك')} <span style={{ color: '#f87171' }}>*</span></label>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                            <div className="dep-methods-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                 {DEP_METHODS.map(m => (
                                     <button key={m.value} type="button"
                                         onClick={() => setForm(f => ({ ...f, depreciationMethod: m.value as any }))}
@@ -284,7 +274,7 @@ export default function NewFixedAssetPage() {
                     <div style={{ ...SC, marginBottom: '20px' }}>
                         <div style={STitle}>
                             <Building2 size={16} /> {t('الحسابات المحاسبية')}
-                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginInlineEnd: 'auto' }}>
+                            <span className="hide-mobile" style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginInlineEnd: 'auto' }}>
                                 {t('مطلوبة لإنشاء القيود تلقائياً')}
                             </span>
                         </div>
@@ -295,7 +285,7 @@ export default function NewFixedAssetPage() {
                                     icon={Building2}
                                     placeholder={t("اختر حساب الأصل (1xxx)...")}
                                     options={toOpts(assetAccounts)} />
-                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'start' }}>
                                     {t('من حسابات الأصول الثابتة')}
                                 </p>
                             </div>
@@ -305,7 +295,7 @@ export default function NewFixedAssetPage() {
                                     icon={TrendingDown}
                                     placeholder={t("اختر حساب المصروف (5xxx)...")}
                                     options={toOpts(expenseAccounts)} />
-                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'start' }}>
                                     {t('مدين عند تسجيل الإهلاك')}
                                 </p>
                             </div>
@@ -315,7 +305,7 @@ export default function NewFixedAssetPage() {
                                     icon={TrendingDown}
                                     placeholder={t("اختر حساب مجمع الإهلاك...")}
                                     options={toOpts(assetAccounts)} />
-                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0' }}>
+                                <p style={{ fontSize: '11px', color: '#475569', margin: '4px 0 0', textAlign: 'start' }}>
                                     {t('دائن عند تسجيل الإهلاك — حساب مقابل للأصل')}
                                 </p>
                             </div>
@@ -333,8 +323,8 @@ export default function NewFixedAssetPage() {
                     </div>
 
                     {/* ══ Buttons ══ */}
-                    <div style={{ display: 'flex', gap: '16px', marginTop: '20px' }}>
-                        <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), width: 'auto', flex: 3 }}>
+                    <div className="action-buttons-responsive" style={{ display: 'flex', gap: '16px', marginTop: '20px' }}>
+                        <button type="submit" disabled={saving} style={{ ...BTN_PRIMARY(false, saving), width: 'auto', flex: 3, height: '52px' }}>
                             {saving ? <Loader2 size={20} className="animate-spin" /> : <Save size={20} />}
                             {saving ? t('جاري الحفظ...') : t('إضافة الأصل للسجل')}
                         </button>
@@ -345,8 +335,21 @@ export default function NewFixedAssetPage() {
                     </div>
 
                 </form>
+
+                <style dangerouslySetInnerHTML={{ __html: `
+                    @keyframes spin { to { transform: rotate(360deg); } }
+                    .animate-spin { animation: spin 1s linear infinite; }
+                    
+                    @media (max-width: 768px) {
+                        .fields-grid-responsive { grid-template-columns: 1fr !important; }
+                        .cost-salvage-grid-responsive { grid-template-columns: 1fr !important; gap: 24px !important; }
+                        .dep-methods-grid-responsive { grid-template-columns: 1fr !important; }
+                        .action-buttons-responsive { flex-direction: column; }
+                        .action-buttons-responsive button { width: 100% !important; flex: none !important; }
+                        .hide-mobile { display: none !important; }
+                    }
+                ` }} />
             </div>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </DashboardLayout>
     );
 }

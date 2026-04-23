@@ -117,7 +117,7 @@ export default function DisposalsPage() {
 
                 {/* KPI Section */}
                 {!loadingList && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+                    <div className="stats-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
                             { label: t('إجمالي عمليات الاستبعاد'), val: disposals.length, color: C.blue, icon: <ArrowRightLeft size={18} />, isCount: true },
                             { label: t('إجمالي عوائد المبيعات'), val: totalSales, color: '#10b981', icon: <TrendingUp size={18} /> },
@@ -148,7 +148,7 @@ export default function DisposalsPage() {
                 )}
 
                 {/* Filters Row */}
-                <div style={{ ...SEARCH_STYLE.container, marginBottom: '16px' }}>
+                <div className="filters-row-responsive" style={{ ...SEARCH_STYLE.container, marginBottom: '16px' }}>
                     <div style={{ ...SEARCH_STYLE.wrapper, flex: 1 }}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.textMuted)} />
                         <input value={search} onChange={e => setSearch(e.target.value)} 
@@ -157,11 +157,11 @@ export default function DisposalsPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', background: THEME.colors.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}`, height: SEARCH_STYLE.input.height, boxSizing: 'border-box', alignItems: 'center' }}>
+                    <div className="reason-filter-scroll" style={{ display: 'flex', gap: '8px', background: THEME.colors.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}`, height: SEARCH_STYLE.input.height, boxSizing: 'border-box', alignItems: 'center', overflowX: 'auto' }}>
                         {['all', ...Object.keys(REASON_LABELS)].map(r => (
                             <button key={r} onClick={() => setReasonFilter(r)} style={{
                                 padding: '0 14px', height: '100%', borderRadius: '8px', border: 'none', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
-                                cursor: 'pointer', transition: 'all 0.2s',
+                                cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap',
                                 background: reasonFilter === r ? (REASON_COLORS[r] || C.blue) : 'transparent',
                                 color: reasonFilter === r ? '#fff' : C.textMuted,
                             }}>
@@ -173,55 +173,57 @@ export default function DisposalsPage() {
 
                 {/* Table */}
                 <div style={TABLE_STYLE.container}>
-                    <table style={TABLE_STYLE.table}>
-                        <thead>
-                            <tr style={TABLE_STYLE.thead}>
-                                <th style={TABLE_STYLE.th(true)}>{t('الأصل الثابت')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('السبب')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('تاريخ الاستبعاد')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('العائد / البيع')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('القيمة الدفترية')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('نتيجة التخلص')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('ملاحظات')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loadingList ? (
-                                <tr><td colSpan={7} style={{ padding: '80px', }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
-                            ) : filtered.length === 0 ? (
-                                <tr><td colSpan={7} style={{ padding: '80px',  color: C.textMuted, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
-                            ) : filtered.map((d, i) => {
-                                const isG = d.gainLoss > 0;
-                                return (
-                                    <tr key={d.id} style={TABLE_STYLE.row(i === filtered.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <td style={TABLE_STYLE.td(true)}>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{d.assetName}</div>
-                                            <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px' }}>{d.assetCode}</div>
-                                        </td>
-                                        <td style={TABLE_STYLE.td(false)}>
-                                            <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
-                                                {REASON_LABELS[d.reason] || d.reason}
-                                            </span>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={d.salePrice} /></div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}><Currency amount={d.netBookValue} /></div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
-                                                {d.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
-                                                <Currency amount={Math.abs(d.gainLoss)} />
-                                            </div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{d.notes || '—'}</td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={TABLE_STYLE.table}>
+                            <thead>
+                                <tr style={TABLE_STYLE.thead}>
+                                    <th style={TABLE_STYLE.th(true)}>{t('الأصل الثابت')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('السبب')}</th>
+                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('تاريخ الاستبعاد')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('العائد / البيع')}</th>
+                                    <th className="hide-mobile" style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('القيمة الدفترية')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('نتيجة التخلص')}</th>
+                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('ملاحظات')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loadingList ? (
+                                    <tr><td colSpan={7} style={{ padding: '80px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
+                                ) : filtered.length === 0 ? (
+                                    <tr><td colSpan={7} style={{ padding: '80px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
+                                ) : filtered.map((d, i) => {
+                                    const isG = d.gainLoss > 0;
+                                    return (
+                                        <tr key={d.id} style={TABLE_STYLE.row(i === filtered.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                            <td style={TABLE_STYLE.td(true)}>
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>{d.assetName}</div>
+                                                <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px', textAlign: 'start' }}>{d.assetCode}</div>
+                                            </td>
+                                            <td style={TABLE_STYLE.td(false)}>
+                                                <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
+                                                    {REASON_LABELS[d.reason] || d.reason}
+                                                </span>
+                                            </td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={d.salePrice} /></div>
+                                            </td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}><Currency amount={d.netBookValue} /></div>
+                                            </td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
+                                                    {d.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
+                                                    <Currency amount={Math.abs(d.gainLoss)} />
+                                                </div>
+                                            </td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textMuted, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{d.notes || '—'}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 {/* Disposal Modal */}
@@ -234,7 +236,7 @@ export default function DisposalsPage() {
                                 <label style={LS}>{t('اختر الأصل الثابت من النشط')}</label>
                                 <CustomSelect value={selectedId} onChange={setSelectedId} icon={Briefcase} placeholder={t("-- اختر الأصل --")} options={assets.map(a => ({ value: a.id, label: `${a.code} — ${a.name}` }))} />
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                            <div className="modal-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                                 <div>
                                     <label style={LS}>{t('سبب التخلص')}</label>
                                     <CustomSelect value={reason} onChange={setReason} options={Object.entries(REASON_LABELS).map(([v, l]) => ({ value: v, label: l }))} />
@@ -297,8 +299,18 @@ export default function DisposalsPage() {
                     </form>
                 </AppModal>
 
+                <style dangerouslySetInnerHTML={{ __html: `
+                    @keyframes spin { to { transform: rotate(360deg); } }
+                    
+                    @media (max-width: 768px) {
+                        .stats-grid-responsive { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+                        .filters-row-responsive { flex-direction: column; align-items: stretch !important; gap: 12px !important; }
+                        .reason-filter-scroll { width: 100%; padding: 6px !important; }
+                        .hide-mobile { display: none !important; }
+                        .modal-grid-responsive { grid-template-columns: 1fr !important; }
+                    }
+                ` }} />
             </div>
-            <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { to { transform: rotate(360deg); } }` }} />
         </DashboardLayout>
     );
 }

@@ -116,7 +116,7 @@ export default function EmployeesPage() {
                 />
 
                 {/* KPI Summary Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '16px' }}>
+                <div className="stats-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '16px' }}>
                     {stats.map((s, i) => (
                         <div key={i} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -141,7 +141,7 @@ export default function EmployeesPage() {
                 </div>
 
                 {/* Toolbar - Search & Filters */}
-                <div style={{ 
+                <div className="toolbar-responsive" style={{ 
                     display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px'
                 }}>
                     <div style={{ flex: 1, position: 'relative' }}>
@@ -160,7 +160,7 @@ export default function EmployeesPage() {
                         />
                     </div>
                     
-                    <div style={{ width: '220px' }}>
+                    <div className="select-container-responsive" style={{ width: '220px' }}>
                         <CustomSelect 
                             value={selectedDept}
                             onChange={setSelectedDept}
@@ -174,7 +174,7 @@ export default function EmployeesPage() {
                         />
                     </div>
                     
-                    <div style={{ width: '180px' }}>
+                    <div className="select-container-responsive" style={{ width: '180px' }}>
                         <CustomSelect 
                             value={selectedStatus}
                             onChange={setSelectedStatus}
@@ -193,12 +193,12 @@ export default function EmployeesPage() {
                 {/* Table Section */}
                 <div style={TABLE_STYLE.container}>
                     {loading ? (
-                        <div style={{ padding: '80px' }}>
+                        <div style={{ padding: '80px', textAlign: 'center' }}>
                             <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
                             <p style={{ margin: 0, color: C.textMuted, fontWeight: 600 }}>{t('جاري استرجاع السجلات...')}</p>
                         </div>
                     ) : filteredEmployees.length === 0 ? (
-                        <div style={{ padding: '100px 20px' }}>
+                        <div style={{ padding: '100px 20px', textAlign: 'center' }}>
                             <div style={{ width: 80, height: 80, borderRadius: '24px', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                 <UsersIcon size={40} style={{ color: C.textMuted }} />
                             </div>
@@ -213,9 +213,9 @@ export default function EmployeesPage() {
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t('الكود')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false) }}>{t('الموظف')}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('المنصب والقسم')}</th>
-                                        <th style={TABLE_STYLE.th(false, true)}>{t('تاريخ التعيين')}</th>
+                                        <th className="hide-mobile" style={TABLE_STYLE.th(false, true)}>{t('تاريخ التعيين')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('صافي الراتب')}</th>
-                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
+                                        <th className="hide-mobile" style={{ ...TABLE_STYLE.th(false, true) }}>{t('الحالة')}</th>
                                         <th style={TABLE_STYLE.th(false, true)}>{t('الإجراءات')}</th>
                                     </tr>
                                 </thead>
@@ -233,8 +233,8 @@ export default function EmployeesPage() {
                                                     {emp.code}
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px' }}>{emp.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT }}>{emp.email || '—'}</div>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', textAlign: 'start' }}>{emp.name}</div>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginTop: '4px', fontFamily: OUTFIT, textAlign: 'start' }}>{emp.email || '—'}</div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{emp.position || '—'}</div>
@@ -242,7 +242,7 @@ export default function EmployeesPage() {
                                                         <Building2 size={12} /> {emp.department?.name || t('غير مصنف')}
                                                     </div>
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
+                                                <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     <div style={{ fontSize: '13px', color: C.textPrimary, fontWeight: 700, fontFamily: CAIRO }} dir={isRtl ? 'rtl' : 'ltr'}>
                                                         {new Date(emp.hireDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}
                                                     </div>
@@ -252,7 +252,7 @@ export default function EmployeesPage() {
                                                         {fMoneyJSX(empNet)}
                                                     </div>
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false, true)}>
+                                                <td className="hide-mobile" style={TABLE_STYLE.td(false, true)}>
                                                     <div style={{
                                                         display: 'inline-flex', alignItems: 'center', gap: '6px',
                                                         padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: 600,
@@ -297,6 +297,18 @@ export default function EmployeesPage() {
                         </div>
                     )}
                 </div>
+
+                <style dangerouslySetInnerHTML={{ __html: `
+                    @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                    
+                    @media (max-width: 768px) {
+                        .stats-grid-responsive { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+                        .toolbar-responsive { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
+                        .select-container-responsive { width: 100% !important; }
+                        .hide-mobile { display: none !important; }
+                    }
+                ` }} />
             </div>
 
             <AppModal
@@ -308,11 +320,6 @@ export default function EmployeesPage() {
                 isDelete={true}
                 isSubmitting={isDeleting}
             />
-            
-            <style jsx global>{`
-                @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-                @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-            `}</style>
         </DashboardLayout>
     );
 }

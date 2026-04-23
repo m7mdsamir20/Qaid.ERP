@@ -281,9 +281,9 @@ export default function AccountsPage() {
                         marginLeft: (!isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
                         marginRight: (isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
                         borderRadius: '8px', marginBottom: '2px'
-                    }} className="account-row-hover">
+                    }} className="account-row-hover account-row-responsive">
 
-                    <div style={{ width: '32px', display: 'flex', justifyContent: 'center' }}>
+                    <div className="expand-cell" style={{ width: '32px', display: 'flex', justifyContent: 'center' }}>
                         {hasChildren && !isTableMode ? (
                             <button onClick={(e) => toggleExpand(acc.id, e)} style={{
                                 background: 'transparent', border: 'none', color: C.textMuted,
@@ -297,19 +297,22 @@ export default function AccountsPage() {
                         )}
                     </div>
 
-                    <div style={{ width: '100px', fontFamily: OUTFIT, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'start' }}>{acc.code}</div>
+                    <div className="code-cell" style={{ width: '100px', fontFamily: OUTFIT, fontSize: '12px', fontWeight: 700, color: C.textMuted, opacity: 0.8, textAlign: 'start' }}>{acc.code}</div>
 
-                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
-                        <div style={{
+                    <div className="name-cell" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-start' }}>
+                        <div className="type-icon" style={{
                             width: '32px', height: '32px', borderRadius: '8px',
                             background: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: color
                         }}>
                             {acc.accountCategory === 'summary' ? <FolderOpen size={16} /> : <FileText size={16} />}
                         </div>
-                        <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{acc.name}</span>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <span style={{ fontWeight: acc.accountCategory === 'summary' ? 800 : 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{acc.name}</span>
+                            <span className="mobile-code" style={{ display: 'none', fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{acc.code}</span>
+                        </div>
                     </div>
 
-                    <div style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', textAlign: 'center' }}>
+                    <div className="type-cell" style={{ width: '120px', display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', textAlign: 'center' }}>
                         <span style={{
                             fontSize: '11px', padding: '3px 10px', borderRadius: '8px', fontWeight: 600, fontFamily: CAIRO,
                             background: `${color}15`, color: color, width: 'fit-content'
@@ -336,11 +339,11 @@ export default function AccountsPage() {
                         </div>
                     </div>
 
-                    <div style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 600, color: (acc.balance || 0) < 0 ? C.danger : C.success, textAlign: 'center' }}>
+                    <div className="balance-cell" style={{ width: '150px', fontFamily: OUTFIT, fontWeight: 600, color: (acc.balance || 0) < 0 ? C.danger : C.success, textAlign: 'center' }}>
                         {acc.balance !== undefined ? (acc.balance).toLocaleString() : '0'} <span style={{ fontSize: '10px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>
 
-                    <div style={{ width: '100px', display: 'flex', justifyContent: 'center', gap: '6px' }}>
+                    <div className="actions-cell" style={{ width: '100px', display: 'flex', justifyContent: 'center', gap: '6px' }}>
                         <button onClick={(e) => { e.stopPropagation(); handleEdit(acc); }} style={TABLE_STYLE.actionBtn()} title={t('تعديل')}>
                             <Pencil size={14} />
                         </button>
@@ -383,14 +386,14 @@ export default function AccountsPage() {
                 />
 
                 {/* Summary Cards */}
-                <div style={{ 
+                <div className="stats-grid" style={{ 
                     display: 'grid', 
                     gridTemplateColumns: 'repeat(7, 1fr)', 
                     gap: '12px', 
                     marginBottom: '20px' 
                 }}>
                     {stats.map((s, i) => (
-                        <div key={i} style={{
+                        <div key={i} className="stat-card" style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}22`, borderRadius: '12px',
                             padding: '12px 14px', display: 'flex', alignItems: 'center', gap: '10px',
                             transition: 'all 0.2s', position: 'relative'
@@ -413,7 +416,7 @@ export default function AccountsPage() {
                     ))}
                 </div>
 
-                <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+                <div className="filter-bar-responsive" style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
                     <div style={{ flex: 1, position: 'relative' }}>
                         <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
@@ -428,11 +431,11 @@ export default function AccountsPage() {
                         />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}` }}>
+                    <div className="type-filters" style={{ display: 'flex', gap: '6px', background: C.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}`, overflowX: 'auto' }}>
                         <button onClick={() => setTypeFilter('all')} style={{
                             padding: '0 12px', height: '32px', borderRadius: '8px', border: 'none',
                             background: typeFilter === 'all' ? C.primary : 'transparent', color: typeFilter === 'all' ? '#fff' : C.textMuted,
-                            cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
+                            cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap'
                         }}>
                             {t('الكل')}
                         </button>
@@ -440,48 +443,48 @@ export default function AccountsPage() {
                             <button key={type.value} onClick={() => setTypeFilter(type.value)} style={{
                                 padding: '0 12px', height: '32px', borderRadius: '8px', border: 'none',
                                 background: typeFilter === type.value ? C.primary : 'transparent', color: typeFilter === type.value ? '#fff' : C.textMuted,
-                                cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
+                                cursor: 'pointer', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap'
                             }}>
                                 {type.label}
                             </button>
                         ))}
                     </div>
 
-                    <div style={{ display: 'flex', background: C.card, borderRadius: '12px', padding: '4px', border: `1px solid ${C.border}` }}>
+                    <div className="view-mode-toggle" style={{ display: 'flex', background: C.card, borderRadius: '12px', padding: '4px', border: `1px solid ${C.border}` }}>
                         <button onClick={() => setViewMode('tree')} style={{
                             padding: '6px 12px', borderRadius: '8px', border: 'none',
                             background: viewMode === 'tree' ? C.primary : 'transparent', color: viewMode === 'tree' ? '#fff' : C.textMuted,
                             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
                         }}>
-                            <RefreshCcw size={14} /> {t('شجرة')}
+                            <RefreshCcw size={14} /> <span className="hide-mobile-text">{t('شجرة')}</span>
                         </button>
                         <button onClick={() => setViewMode('table')} style={{
                             padding: '6px 12px', borderRadius: '8px', border: 'none',
                             background: viewMode === 'table' ? C.primary : 'transparent', color: viewMode === 'table' ? '#fff' : C.textMuted,
                             cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', fontWeight: 600, fontFamily: CAIRO
                         }}>
-                            <LayoutGrid size={14} /> {t('جدول')}
+                            <LayoutGrid size={14} /> <span className="hide-mobile-text">{t('جدول')}</span>
                         </button>
                     </div>
                 </div>
 
                 {loading ? (
-                    <div style={{ padding: '80px', color: C.textMuted }}>
+                    <div style={{ padding: '80px', color: C.textMuted, textAlign: 'center' }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: C.primary, margin: '0 auto 16px' }} />
-                        <p style={{ fontWeight: 700 }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
+                        <p style={{ fontWeight: 700, fontFamily: CAIRO }}>{t('جاري تحميل الدليل المحاسبي...')}</p>
                     </div>
                 ) : (
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.1)' }}>
                         {/* Table Header */}
-                        <div style={{
+                        <div className="table-header-responsive" style={{
                             display: 'flex', alignItems: 'center', padding: '14px 16px',
                             background: 'rgba(255,255,255,0.03)', borderBottom: `2px solid ${C.border}`,
                             fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '1px'
                         }}>
                             <div style={{ width: '32px' }}></div>
-                            <div style={{ width: '100px', textAlign: 'start' }}>{t('الكود')}</div>
+                            <div className="code-header" style={{ width: '100px', textAlign: 'start' }}>{t('الكود')}</div>
                             <div style={{ flex: 1, textAlign: 'start' }}>{t('اسم الحساب')}</div>
-                            <div style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
+                            <div className="type-header" style={{ width: '120px', textAlign: 'center' }}>{t('النوع')}</div>
                             <div style={{ width: '150px', textAlign: 'center' }}>{t('الرصيد الحالي')}</div>
                             <div style={{ width: '100px', textAlign: 'center' }}>{t('إجراءات')}</div>
                         </div>
@@ -494,9 +497,9 @@ export default function AccountsPage() {
                                     effectiveAccounts.map(acc => renderAccountRow(acc, 0))
                                 )
                             ) : (
-                                <div style={{ padding: '60px', color: C.textMuted }}>
+                                <div style={{ padding: '60px', color: C.textMuted, textAlign: 'center' }}>
                                     <AlertTriangle size={48} style={{ margin: '0 auto 16px', opacity: 0.1 }} />
-                                    <p style={{ fontWeight: 700 }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
+                                    <p style={{ fontWeight: 700, fontFamily: CAIRO }}>{t('لم نجد أي حسابات بهذا الاسم')}</p>
                                 </div>
                             )}
                         </div>
@@ -569,8 +572,8 @@ export default function AccountsPage() {
                     <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(239,68,68,0.1)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                         <AlertTriangle size={32} />
                     </div>
-                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#fff', marginBottom: '12px', fontFamily: CAIRO }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
-                    <p style={{ fontSize: '13px', color: C.textMuted, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#fff', marginBottom: '12px', fontFamily: CAIRO, textAlign: 'center' }}>{t('هل أنت متأكد من إعادة التهيئة؟')}</h3>
+                    <p style={{ fontSize: '13px', color: C.textMuted, lineHeight: 1.6, fontFamily: CAIRO, marginBottom: '24px', textAlign: 'center' }}>
                         {t('سيتم حذف شجرة الحسابات الحالية بالكامل وإعادة بناء الشجرة الافتتاحية الأساسية للنظام.')}
                         <br />
                         <span style={{ color: '#ef4444', fontWeight: 600 }}>{t('تنبيه: لا يمكن التراجع عن هذه الخطوة، وستفشل العملية إذا كان هناك قيود مالية مسجلة.')}</span>
@@ -599,10 +602,34 @@ export default function AccountsPage() {
                 </div>
             </AppModal>
 
-            <style jsx global>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 .account-row-hover:hover { background: rgba(37, 106, 244,0.05) !important; }
                 @keyframes spin { to { transform: rotate(360deg); } }
-            `}</style>
+                
+                @media (max-width: 768px) {
+                    .stats-grid { grid-template-columns: repeat(2, 1fr) !important; }
+                    .filter-bar-responsive { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
+                    .type-filters { width: 100%; padding: 6px !important; }
+                    .view-mode-toggle { width: 100%; }
+                    .view-mode-toggle button { flex: 1; justify-content: center; }
+                    .hide-mobile-text { display: none; }
+                    
+                    .table-header-responsive .code-header, 
+                    .table-header-responsive .type-header { display: none; }
+                    
+                    .account-row-responsive { padding: 12px 10px !important; }
+                    .account-row-responsive .code-cell,
+                    .account-row-responsive .type-cell { display: none; }
+                    .account-row-responsive .mobile-code { display: block !important; }
+                    .account-row-responsive .balance-cell { width: 80px !important; font-size: 11px !important; }
+                    .account-row-responsive .actions-cell { width: 70px !important; }
+                    .account-row-responsive .type-icon { width: 28px !important; height: 28px !important; }
+                    .account-row-responsive .type-icon svg { width: 14px !important; height: 14px !important; }
+                    
+                    /* Adjust indentation on mobile to save space */
+                    .account-row-responsive { margin-left: 0 !important; margin-right: 0 !important; }
+                }
+            ` }} />
         </DashboardLayout>
     );
 }

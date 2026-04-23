@@ -131,8 +131,8 @@ export default function CustomerStatementPage() {
                     printDate={dateFrom || dateTo ? `${dateFrom ? `من ${dateFrom}` : ''} ${dateTo ? `إلى ${dateTo}` : ''}`.trim() : undefined}
                 />
 
-                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0 }}>
-                    <div style={{ flex: 2, position: 'relative' }}>
+                <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', width: '100%', padding: 0, flexWrap: 'wrap' }}>
+                    <div className="account-select-wrapper" style={{ flex: 2, position: 'relative', minWidth: '250px' }}>
                         <CustomSelect
                             value={selectedId}
                             onChange={val => { setSelectedId(val); if (val) fetchLedger(val); else setData(null); }}
@@ -150,9 +150,10 @@ export default function CustomerStatementPage() {
                         />
                     </div>
 
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
-                        <div style={{ width: '170px' }}>
+                    <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '170px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
                             <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
                                 style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
@@ -162,8 +163,9 @@ export default function CustomerStatementPage() {
                                 }}
                             />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
-                        <div style={{ width: '170px' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '170px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
                                 style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
@@ -173,12 +175,12 @@ export default function CustomerStatementPage() {
                                 }}
                             />
                         </div>
-                        <button onClick={() => fetchLedger()} disabled={loading} style={{
+                        <button className="update-btn" onClick={() => fetchLedger()} disabled={loading} style={{
                             height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
+                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
                         }}>
                             {loading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
                             {t('تحديث البيانات')}
@@ -207,7 +209,7 @@ export default function CustomerStatementPage() {
                     </div>
                 ) : (
                     <>
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('رصيد سابق (منقول)'), value: Math.abs(data.initialBalance), sign: data.initialBalance > 0 ? t('عليه (مدين)') : t('له (دائن)'), color: data.initialBalance > 0 ? '#ef4444' : '#10b981', icon: <History size={20} /> },
                                 { label: t('إجمالي المبيعات (عليه)'), value: data.statement.reduce((s: number, l: StatementRow) => s + l.debit, 0), sign: t('فواتير مبيعات'), color: '#ef4444', icon: <TrendingDown size={20} /> },
@@ -311,11 +313,43 @@ export default function CustomerStatementPage() {
                     </>
                 )}
             </div>
-            
+            <style dangerouslySetInnerHTML={{ __html: `
+                @media (max-width: 768px) {
+                    .report-filter-bar { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
+                    .account-select-wrapper { width: 100% !important; min-width: 100% !important; }
+                    .date-filter-row { width: 100%; gap: 8px !important; flex-wrap: wrap; }
+                    .date-label-desktop { display: none !important; }
+                    .date-input-wrapper {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: rgba(255,255,255,0.03);
+                        padding: 4px 10px;
+                        border-radius: 10px;
+                        border: 1px solid ${C.border};
+                        min-width: 45%;
+                    }
+                    .date-label-mobile { 
+                        display: block !important; 
+                        color: ${C.textMuted}; 
+                        font-size: 11px; 
+                        font-weight: 600; 
+                        white-space: nowrap; 
+                        font-family: ${CAIRO};
+                    }
+                    .date-input-wrapper input {
+                        width: 100% !important;
+                        background: transparent !important;
+                        border: none !important;
+                        height: 34px !important;
+                        padding: 0 !important;
+                        font-size: 12px !important;
+                    }
+                    .update-btn { width: 100%; justify-content: center; margin-top: 5px; }
+                    .stats-grid { grid-template-columns: 1fr 1fr !important; }
+                }
+            ` }} />
         </DashboardLayout>
     );
 }
-
-
-
-
