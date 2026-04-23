@@ -945,7 +945,7 @@ function NewSalePageInner() {
                                                 }}
                                                 style={{ ...IS, height: '34px', fontSize: '13px', textAlign: 'center' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
+                                            <span style={{ position: 'absolute', insetInlineEnd: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
                                     </div>
                                 </div>
@@ -962,7 +962,7 @@ function NewSalePageInner() {
                                                     onChange={e => setForm((f: any) => ({ ...f, taxRate: parseFloat(e.target.value) || 0 }))}
                                                     style={{ ...IS, height: '30px', fontSize: '12px', paddingInlineStart: '22px' }}
                                                     onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', insetInlineStart: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
+                                                <span style={{ position: 'absolute', insetInlineEnd: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
                                                 <PriceInput 

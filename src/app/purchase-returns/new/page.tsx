@@ -593,12 +593,8 @@ export default function NewPurchaseReturnPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted }}>{t('عدد الأصناف المرتجعة')}</span>
+                                            <span style={{ fontSize: '12px', color: C.textMuted }}>{t('عدد الأصناف المرتجعة')}</span>
                                     <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.length} {t('صنف')}</span>
-                                </div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '12px', color: C.textMuted }}>{t('إجمالي كمية المرتجع')}</span>
-                                    <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{selectedLines.reduce((acc, l) => acc + l.returnQty, 0)} {t('وحدة')}</span>
                                 </div>
 
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '4px' }}>
@@ -614,12 +610,15 @@ export default function NewPurchaseReturnPage() {
 
                                 <div style={{
                                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                                    marginTop: '10px', padding: '14px',
-                                    background: 'rgba(37, 106, 244,0.05)', borderRadius: '12px',
-                                    border: `1px solid ${C.primary}20`
+                                    background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))',
+                                    padding: '10px 14px', borderRadius: '12px', marginTop: '10px',
+                                    border: `1px solid ${C.primaryBorder || C.primary}`,
+                                    boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ fontSize: '13px', fontWeight: 600, color: C.primary }}>{t('صافي المرتجع')}</span>
-                                    <span style={{ fontSize: '20px', fontWeight: 600, color: C.primary, fontFamily: CAIRO }}>{fMoneyJSX(netReturnTotal)}</span>
+                                    <span style={{ color: C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي المرتجع')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 700, fontSize: '18px' }}>
+                                        {fMoneyJSX(netReturnTotal, '', { fontSize: '18px', fontWeight: 700 })}
+                                    </span>
                                 </div>
 
                                 <div style={{ marginTop: '10px' }}>
