@@ -1,6 +1,7 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
+import { Currency } from '@/components/Currency';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import { PieChart, Plus, Loader2, X, TrendingUp, CalendarDays, CheckCircle2, ChevronDown, ChevronUp, History, Percent, Banknote, Users, Info, DollarSign, Wallet } from 'lucide-react';
@@ -201,8 +202,7 @@ export default function ProfitDistributionPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                        {formatNumber(d.totalAmount)}
-                                                        <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                        <Currency amount={d.totalAmount} />
                                                     </div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>
@@ -233,8 +233,7 @@ export default function ProfitDistributionPage() {
                                                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{l.share}%</div>
                                                                         </div>
                                                                         <div style={{ textAlign: 'end' }}>
-                                                                            <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(l.amount)}</div>
-                                                                            <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</div>
+                                                                            <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={l.amount} /></div>
                                                                         </div>
                                                                     </div>
                                                                 ))}
