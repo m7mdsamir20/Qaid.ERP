@@ -430,10 +430,10 @@ export default function SuppliersPage() {
                                                 if ((v.match(/\./g) || []).length > 1) return;
                                                 setForm({ ...form, openingBalance: v });
                                             }}
-                                            style={{ ...IS, width: '100%', border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 700 }}
+                                            style={{ ...IS, width: '100%', border: 'none', background: 'transparent', fontFamily: OUTFIT, fontWeight: 700, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
-                                        <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{cSymbol}</span>
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             )}

@@ -406,7 +406,7 @@ export default function OpeningBalancesPage() {
                                                         disabled={hasCr || isReadlyOnly}
                                                         style={{ 
                                                             borderColor: hasDr ? `${C.success}50` : C.border, 
-                                                            color: hasDr ? C.success : C.textPrimary, 
+                                                            color: C.textPrimary, 
                                                             background: hasDr ? `${C.success}05` : 'transparent',
                                                         }}
                                                     />
@@ -418,7 +418,7 @@ export default function OpeningBalancesPage() {
                                                         disabled={hasDr || isReadlyOnly}
                                                         style={{ 
                                                             borderColor: hasCr ? `${C.danger}50` : C.border, 
-                                                            color: hasCr ? C.danger : C.textPrimary, 
+                                                            color: C.textPrimary, 
                                                             background: hasCr ? `${C.danger}05` : 'transparent',
                                                         }}
                                                     />
@@ -430,8 +430,8 @@ export default function OpeningBalancesPage() {
                                 <tfoot>
                                     <tr style={{ background: 'rgba(255,255,255,0.03)', borderTop: `1px solid ${C.border}` }}>
                                         <td colSpan={4} style={{ padding: '14px 20px', fontSize: '13px', fontWeight: 600, color: C.textPrimary,  fontFamily: CAIRO, textAlign: 'center' }}>{t('إجمالي الأرصدة الختامية')}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.success, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
-                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.danger, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalDebit)}</td>
+                                        <td style={{ padding: '14px 20px',  fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'center', fontFamily: OUTFIT }}>{fmtDisplay(totalCredit)}</td>
                                     </tr>
                                     {!isBalanced && filledCount > 0 && (
                                         <tr style={{ background: `${C.warning}10` }}>

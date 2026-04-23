@@ -423,7 +423,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].credit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 600, color: C.success }} 
+                                                            style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }} 
                                                         />
                                                     </td>
                                                     <td style={{ width: '130px', padding: '0 4px' }}>
@@ -435,7 +435,7 @@ export default function JournalEntriesPage() {
                                                                 if (val > 0) newLines[idx].debit = 0;
                                                                 setForm({ ...form, lines: newLines });
                                                             }}
-                                                            style={{ ...IS, fontFamily: CAIRO, fontWeight: 600, color: C.danger }} 
+                                                            style={{ ...IS, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }} 
                                                         />
                                                     </td>
                                                     <td style={{ padding: '0 4px' }}>
@@ -472,23 +472,23 @@ export default function JournalEntriesPage() {
                                     <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي المدين')}</div>
-                                            <div style={{ fontSize: '16px', fontWeight: 600, color: C.success, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.debit || 0), 0))}
-                                                <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textMuted }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي الدائن')}</div>
-                                            <div style={{ fontSize: '16px', fontWeight: 600, color: C.danger, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(form.lines.reduce((s, l) => s + (l.credit || 0), 0))}
-                                                <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textMuted }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                         <div style={{ borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '40px' }}>
                                             <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 600, marginBottom: '4px', fontFamily: CAIRO }}>{t('الفارق (التوازن)')}</div>
-                                            <div style={{ fontSize: '16px', fontWeight: 600, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: CAIRO, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: 600, color: Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)) < 0.01 ? C.success : C.warning, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                                 {formatNumber(Math.abs(form.lines.reduce((s, l) => s + (l.debit || 0), 0) - form.lines.reduce((s, l) => s + (l.credit || 0), 0)))}
-                                                <span style={{ fontSize: '10px', opacity: 0.8 }}>{currencySymbol}</span>
+                                                <span style={{ fontSize: '10px', color: C.textMuted }}>{currencySymbol}</span>
                                             </div>
                                         </div>
                                     </div>

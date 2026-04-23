@@ -218,7 +218,7 @@ export default function NewTransferPage() {
                                         <tr style={TABLE_STYLE.thead}>
                                             <th style={{ ...TABLE_STYLE.th(true), fontSize: '11px' }}>{t('الصنف')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '120px' }}>{t('الرصيد المتاح')}</th>
-                                            <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '150px' }}>{t('الكمية المحولة')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '80px' }}>{t('الكمية المحولة')}</th>
                                             <th style={{ ...TABLE_STYLE.th(false, true), fontSize: '11px', width: '60px' }}>{t('إجراء')}</th>
                                         </tr>
                                     </thead>
@@ -260,7 +260,7 @@ export default function NewTransferPage() {
                                                                 value={line.quantity || ''} 
                                                                 onChange={e => updateLine(index, 'quantity', parseFloat(e.target.value))}
                                                                 style={{ 
-                                                                    ...IS, height: '34px', fontSize: '12px',
+                                                                    ...IS, height: '34px', fontSize: '12px', textAlign: 'center',
                                                                     borderColor: isOverstock ? C.danger : C.border,
                                                                     background: isOverstock ? 'rgba(251,113,133,0.03)' : 'rgba(255,255,255,0.01)'
                                                                 }}
@@ -272,15 +272,17 @@ export default function NewTransferPage() {
                                                             )}
                                                         </div>
                                                     </td>
-                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                        <button
-                                                            type="button" onClick={() => removeLine(index)}
-                                                            style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(251,113,133,0.05)', border: '1px solid rgba(251,113,133,0.1)', color: C.danger, borderRadius: '8px', cursor: 'pointer', transition: '0.2s' }}
-                                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(251,113,133,0.1)'}
-                                                            onMouseLeave={e => e.currentTarget.style.background = 'rgba(251,113,133,0.05)'}
-                                                        >
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                            <button
+                                                                type="button" onClick={() => removeLine(index)}
+                                                                style={{ width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(251,113,133,0.05)', border: '1px solid rgba(251,113,133,0.1)', color: C.danger, borderRadius: '8px', cursor: 'pointer', transition: '0.2s' }}
+                                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(251,113,133,0.1)'}
+                                                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(251,113,133,0.05)'}
+                                                            >
+                                                                <Trash2 size={14} />
+                                                            </button>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             );

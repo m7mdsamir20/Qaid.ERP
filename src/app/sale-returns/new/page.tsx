@@ -683,18 +683,19 @@ export default function NewReturnPage() {
                                                         height: '44px',
                                                         fontSize: '16px', fontWeight: 600,
                                                         border: `1px solid ${C.primary}50`,
-                                                        color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.primary,
+                                                        color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary,
                                                         background: 'rgba(37, 106, 244,0.03)',
                                                         paddingInlineEnd: '40px',
-                                                        fontFamily: CAIRO
+                                                        fontFamily: OUTFIT,
+                                                        textAlign: 'center'
                                                     }}
                                                     onFocus={e => { focusIn(e); e.target.select(); }} onBlur={focusOut}
                                                 />
                                                 <InlineError field="paidAmount" />
                                                 {form.refundType === 'cash' ? (
-                                                    <Banknote size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                                    <Banknote size={20} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                                 ) : (
-                                                    <Building2 size={20} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
+                                                    <Building2 size={20} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary }} />
                                                 )}
                                             </div>
                                         </div>

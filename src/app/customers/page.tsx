@@ -467,10 +467,10 @@ export default function CustomersPage() {
                                             if ((v.match(/\./g) || []).length > 1) return;
                                             setForm({ ...form, creditLimit: v });
                                         }}
-                                        style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
+                                        style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
                                         onFocus={focusIn} onBlur={focusOut}
                                     />
-                                    <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                             {!editingId && (
@@ -496,10 +496,10 @@ export default function CustomersPage() {
                                                 if ((v.match(/\./g) || []).length > 1) return;
                                                 setForm({ ...form, openingBalance: v });
                                             }}
-                                            style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0' }}
+                                            style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '42px', fontSize: '15px', width: '100%', padding: '0', textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px' }}
                                             onFocus={focusIn} onBlur={focusOut}
                                         />
-                                        <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                     </div>
                                 </div>
                             )}
