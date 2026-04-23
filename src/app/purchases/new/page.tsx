@@ -51,6 +51,7 @@ export default function NewPurchasePage() {
 
     const itemSelectRef = useRef<any>(null);
     const qtyRef = useRef<HTMLInputElement>(null);
+    const priceRef = useRef<HTMLInputElement>(null);
     const [entryItemId, setEntryItemId] = useState('');
     const [entryQty, setEntryQty] = useState<number | ''>(1);
     const [entryPrice, setEntryPrice] = useState<number | ''>('');
