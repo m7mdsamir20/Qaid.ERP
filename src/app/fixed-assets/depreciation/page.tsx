@@ -130,24 +130,28 @@ export default function DepreciationPage() {
                 {/* KPI Section */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                     {[
-                        { label: t('الأصول النشطة حاليّاً'), val: assets.length, color: C.blue, icon: Briefcase, isCount: true },
-                        { label: t('إجمالي قيمة الأصول'), val: totalCurrentAssetsCost, color: '#10b981', icon: Activity },
-                        { label: t('مجمع الإهلاك الكلي'), val: totalAccumDepAssets, color: '#f59e0b', icon: PieChart },
-                        { label: t('الإهلاك المحتسب حاليّاً'), val: calculated ? totalCalculatedDep : 0, color: C.danger, icon: TrendingDown },
+                        { label: t('الأصول النشطة حاليّاً'), val: assets.length, color: C.blue, icon: <Briefcase size={18} />, isCount: true },
+                        { label: t('إجمالي قيمة الأصول'), val: totalCurrentAssetsCost, color: '#10b981', icon: <Activity size={18} /> },
+                        { label: t('مجمع الإهلاك الكلي'), val: totalAccumDepAssets, color: '#f59e0b', icon: <PieChart size={18} /> },
+                        { label: t('الإهلاك المحتسب حاليّاً'), val: calculated ? totalCalculatedDep : 0, color: C.danger, icon: <TrendingDown size={18} /> },
                     ].map((s, i) => (
                         <div key={i} style={{ 
-                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-                        }}>
+                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
+                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            transition: 'all 0.2s', position: 'relative'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                        onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
+                        >
                             <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
-                                    <span>{formatNumber(s.val)}</span>
-                                    {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{cSymbol}</span>}
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.val)}</span>
+                                    {!s.isCount && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{cSymbol}</span>}
                                 </div>
                             </div>
-                            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                <s.icon size={20} />
+                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                {s.icon}
                             </div>
                         </div>
                     ))}

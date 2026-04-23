@@ -251,26 +251,30 @@ export default function TreasuriesPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: t('إجمالي السيولة'), val: totalAll, color: C.primary, icon: Wallet, unit: cSymbol },
-                        { label: t('إجمالي الخزن'), val: totalCash, color: C.success, icon: Banknote, unit: cSymbol },
-                        { label: t('إجمالي البنوك'), val: totalBank, color: C.blue, icon: Building2, unit: cSymbol },
+                        { label: t('إجمالي السيولة'), val: totalAll, color: C.primary, icon: <Wallet size={18} />, unit: cSymbol },
+                        { label: t('إجمالي الخزن'), val: totalCash, color: C.success, icon: <Banknote size={18} />, unit: cSymbol },
+                        { label: t('إجمالي البنوك'), val: totalBank, color: C.blue, icon: <Building2 size={18} />, unit: cSymbol },
                     ].map((s, idx) => (
                         <div key={idx} style={{
                             background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
-                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
-                        }}>
+                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            transition: 'all 0.2s', position: 'relative'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                        onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
+                        >
                             <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
-                                    <span>{formatNumber(s.val)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{s.unit}</span>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(s.val)}</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.unit}</span>
                                 </div>
                             </div>
                             <div style={{
                                 width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`,
                                 border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color
                             }}>
-                                <s.icon size={18} />
+                                {s.icon}
                             </div>
                         </div>
                     ))}

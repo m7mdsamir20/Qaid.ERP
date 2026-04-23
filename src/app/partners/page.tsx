@@ -98,27 +98,27 @@ export default function PartnersPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: t('إجمالي رأس المال'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: cSymbol },
-                            { label: t('إجمالي الحصص'), val: totalShare.toFixed(1), color: '#818cf8', icon: PieChart, suffix: '%' },
-                            { label: t('إجمالي الأرصدة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: TrendingUp, suffix: cSymbol },
+                            { label: t('إجمالي رأس المال'), val: totalCapital, color: C.blue, icon: <DollarSign size={18} />, suffix: cSymbol },
+                            { label: t('إجمالي الحصص'), val: totalShare.toFixed(1), color: '#818cf8', icon: <PieChart size={18} />, suffix: '%' },
+                            { label: t('إجمالي الأرصدة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: <TrendingUp size={18} />, suffix: cSymbol },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
                                 padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                 transition: 'all 0.2s', position: 'relative'
                             }}
-                            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                            onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                            onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                             >
                                 <div style={{ textAlign: 'start' }}>
-                                    <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
-                                        <span>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{s.suffix}</span>}
+                                    <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                        <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                    <s.icon size={20} />
+                                    {s.icon}
                                 </div>
                             </div>
                         ))}
