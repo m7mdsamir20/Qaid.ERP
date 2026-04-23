@@ -173,74 +173,82 @@ export default function ProfitDistributionPage() {
                             <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('سجّل أول عملية توزيع أرباح لزيادة أرصدة الشركاء بناءً على حصصهم')}</p>
                         </div>
                     ) : (
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            {distributions.map(d => {
-                                 const isExpanded = expanded === d.id;
-                                 return (
-                                    <div key={d.id} style={{ 
-                                        background: isExpanded ? C.hover : C.card, 
-                                        border: `1px solid ${isExpanded ? `${C.primary}40` : C.border}`, 
-                                        borderRadius: '16px', overflow: 'hidden', 
-                                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' 
-                                    }}>
-                                        <div style={{ display: 'grid', gridTemplateColumns: 'minmax(250px, 1.5fr) 140px 180px 100px 50px', gap: '20px', alignItems: 'center', padding: '14px 20px', cursor: 'pointer' }}
-                                            onClick={() => setExpanded(isExpanded ? null : d.id)}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                                <div style={{ width: 40, height: 40, borderRadius: '12px', background: `${C.blue}15`, border: `1px solid ${C.blue}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
-                                                    <CalendarDays size={20} />
-                                                </div>
-                                                <div>
-                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('توزيع أرباح')} {PERIOD_LABELS[d.period] || d.period}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{d.notes || t('لا يوجد بيان')}</div>
-                                                </div>
-                                            </div>
-                                            <div style={{ }}>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('تاريخ القيد')}</div>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
+                    <div style={TABLE_STYLE.container}>
+                        <table style={TABLE_STYLE.table}>
+                            <thead>
+                                <tr style={TABLE_STYLE.thead}>
+                                    <th style={TABLE_STYLE.th(true)}>{t('التاريخ')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('دورة التوزيع')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجمالي المبلغ')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('البيان / الملاحظات')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('التفاصيل')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {distributions.map((d, idx) => {
+                                    const isExpanded = expanded === d.id;
+                                    return (
+                                        <React.Fragment key={d.id}>
+                                            <tr style={TABLE_STYLE.row(idx === distributions.length - 1 && !isExpanded)}
+                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                <td style={{ ...TABLE_STYLE.td(true), color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT }}>
                                                     {new Date(d.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                                </div>
-                                            </div>
-                                            <div style={{ }}>
-                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('إجمالي التوزيع')}</div>
-                                                <div style={{ fontSize: '18px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {formatNumber(d.totalAmount)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
-                                                </div>
-                                            </div>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center' }}>
-                                                <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
-                                                <span style={{ fontSize: '11px', color: '#10b981', fontWeight: 600, fontFamily: CAIRO }}>{t('مُعتمد')}</span>
-                                            </div>
-                                            <div style={{ display: 'flex', justifyContent: 'center', color: C.textMuted }}>
-                                                {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
-                                            </div>
-                                        </div>
-
-                                        {isExpanded && (
-                                            <div style={{ borderTop: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.15)', padding: '18px 20px', animation: 'slideDown 0.3s ease-out' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-                                                    <History size={14} style={{ color: C.primary }} />
-                                                    <div style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('تفاصيل توزيع حصص الشركاء')}</div>
-                                                </div>
-                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '10px' }}>
-                                                    {d.lines?.map((l, i) => (
-                                                        <div key={i} style={{ background: `${C.blue}05`, border: `1px solid ${C.blue}15`, borderRadius: '12px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                            <div>
-                                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, marginBottom: '2px' }}>{l.partnerName}</div>
-                                                                <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('نسبة الحصة')}: {l.share}%</div>
-                                                            </div>
-                                                            <div style={{ textAlign: 'end' }}>
-                                                                <div style={{ fontSize: '15px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(l.amount)}</div>
-                                                                <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</div>
+                                                </td>
+                                                <td style={TABLE_STYLE.td(false)}>
+                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{PERIOD_LABELS[d.period] || d.period}</div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                        {formatNumber(d.totalAmount)}
+                                                        <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                    </div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center', color: C.textSecondary, fontSize: '12px' }}>
+                                                    {d.notes || '—'}
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 10px', borderRadius: '20px', background: `${C.success}10`, color: C.success, border: `1px solid ${C.success}20`, fontSize: '11px', fontWeight: 600 }}>
+                                                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: C.success }} />
+                                                        {t('مُعتمد')}
+                                                    </div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                    <button onClick={() => setExpanded(isExpanded ? null : d.id)}
+                                                        style={{ ...TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textSecondary), margin: '0 auto' }}>
+                                                        {isExpanded ? <ChevronUp size={14} /> : <History size={14} />}
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {isExpanded && (
+                                                <tr>
+                                                    <td colSpan={6} style={{ padding: '0', background: 'rgba(37, 106, 244, 0.02)' }}>
+                                                        <div style={{ padding: '20px', borderBottom: `1px solid ${C.border}`, animation: 'fadeIn 0.3s ease' }}>
+                                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px' }}>
+                                                                {d.lines?.map((l, i) => (
+                                                                    <div key={i} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                                                        <div>
+                                                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{l.partnerName}</div>
+                                                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{l.share}%</div>
+                                                                        </div>
+                                                                        <div style={{ textAlign: 'end' }}>
+                                                                            <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(l.amount)}</div>
+                                                                            <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</div>
+                                                                        </div>
+                                                                    </div>
+                                                                ))}
                                                             </div>
                                                         </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                 );
-                            })}
-                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                     )}
 
                     {/* MODAL: New Distribution */}
@@ -280,16 +288,21 @@ export default function ProfitDistributionPage() {
 
                             {/* Amount + Date */}
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div>
-                                    <label style={LS}>{t('إجمالي الربح الموزع')} <span style={{ color: C.danger }}>*</span></label>
+                                <div style={{ position: 'relative', marginBottom: '24px' }}>
+                                    <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('إجمالي المبلغ المراد توزيعه')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        {!form.totalAmount && (
-                                            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
-                                                0.00
-                                            </div>
-                                        )}
-                                        <input required type="number" min="1" step="0.01" value={form.totalAmount} onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} style={{...IS, textAlign: 'center', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
-                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
+                                            0.00
+                                        </div>
+                                        <input 
+                                            type="number" step="any" required 
+                                            value={form.totalAmount} 
+                                            onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} 
+                                            style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                            onFocus={focusIn} onBlur={focusOut} 
+                                            placeholder=""
+                                        />
+                                        <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
                                     </div>
                                 </div>
                                 <div>

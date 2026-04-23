@@ -142,105 +142,78 @@ export default function CapitalPage() {
                         <p style={{ margin: 0, fontSize: '13px', color: C.textMuted, fontFamily: CAIRO }}>{t('قم بإضافة الشركاء أولاً من صفحة البيانات الأساسية')}</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
-                        {data.map(p => {
-                            const changes = p.changes || [];
-                            const increased = changes.filter(c => c.type === 'increase').reduce((s, c) => s + c.amount, 0);
-                            const decreased = changes.filter(c => c.type === 'decrease').reduce((s, c) => s + c.amount, 0);
-                            const isExpanded = expanded === p.id;
+                    <div style={TABLE_STYLE.container}>
+                        <table style={TABLE_STYLE.table}>
+                            <thead>
+                                <tr style={TABLE_STYLE.thead}>
+                                    <th style={TABLE_STYLE.th(true)}>{t('الشريك')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('نسبة الحصة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجمالي رأس المال')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الزيادات / التخفيضات')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الإجراءات')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {data.map((p, idx) => {
+                                    const changes = p.changes || [];
+                                    const increased = changes.filter(c => c.type === 'increase').reduce((s, c) => s + c.amount, 0);
+                                    const decreased = changes.filter(c => c.type === 'decrease').reduce((s, c) => s + c.amount, 0);
+                                    const isExpanded = expanded === p.id;
 
-                            return (
-                                <div key={p.id} style={{ 
-                                    background: C.card, border: `1px solid ${isExpanded ? C.primary : C.border}`, borderRadius: '18px', 
-                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)', overflow: 'hidden', position: 'relative' 
-                                }}>
-                                    
-                                    <div style={{ padding: '20px' }}>
-                                        {/* Header */}
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.blue}15`, border: `1px solid ${C.blue}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 600, color: C.blue, fontFamily: CAIRO }}>
-                                                    {p.name?.charAt(0) || '?'}
-                                                </div>
-                                                <div>
-                                                    <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
-                                                    <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, fontFamily: OUTFIT }}>{t('الحصة')}: {p.share}%</div>
-                                                </div>
-                                            </div>
-                                            <button onClick={() => setExpanded(isExpanded ? null : p.id)} style={{ padding: '6px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.03)', color: C.textMuted, cursor: 'pointer', transition: '0.2s' }}>
-                                                {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                                            </button>
-                                        </div>
-
-                                        {/* Main Value */}
-                                        <div style={{ background: 'rgba(0,0,0,0.15)', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px', marginBottom: '18px' }}>
-                                            <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي القيمة الرأسمالية')}</div>
-                                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {formatNumber(p.capital)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
-                                            </div>
-                                        </div>
-
-                                        {/* Stats Row */}
-                                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
-                                            <div style={{ background: 'rgba(16,185,129,0.05)', border: '1px solid rgba(16,185,129,0.1)', borderRadius: '12px', padding: '10px' }}>
-                                                <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 600, marginBottom: '2px', fontFamily: CAIRO }}>{t('زيادات')}</div>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT }}>{formatNumber(increased)}</div>
-                                            </div>
-                                            <div style={{ background: `${C.danger}05`, border: `1px solid ${C.danger}10`, borderRadius: '12px', padding: '10px' }}>
-                                                <div style={{ fontSize: '10px', color: C.danger, fontWeight: 600, marginBottom: '2px', fontFamily: CAIRO }}>{t('تخفيضات')}</div>
-                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}>{formatNumber(decreased)}</div>
-                                            </div>
-                                        </div>
-
-                                        {/* Actions */}
-                                        <div style={{ display: 'flex', gap: '8px' }}>
-                                            <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'increase' })); }}
-                                                style={{ flex: 1, height: '38px', borderRadius: '10px', border: 'none', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontFamily: CAIRO }}>
-                                                <TrendingUp size={14} /> {t('زيادة')}
-                                            </button>
-                                            <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'decrease' })); }}
-                                                style={{ flex: 1, height: '38px', borderRadius: '10px', border: 'none', background: `${C.danger}15`, color: C.danger, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontFamily: CAIRO }}>
-                                                <TrendingDown size={14} /> {t('تخفيض')}
-                                            </button>
-                                        </div>
-
-                                        {/* Expanded History */}
-                                        {isExpanded && (
-                                            <div style={{ marginTop: '18px', paddingTop: '16px', borderTop: `1px dashed ${C.border}`, animation: 'slideDown 0.3s ease-out' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                                                    <History size={14} style={{ color: C.textMuted }} />
-                                                    <div style={{ fontSize: '11px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل الحركات')}</div>
-                                                </div>
-                                                
-                                                {changes.length === 0 ? (
-                                                    <div style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}` }}>
-                                                        <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('لا توجد حركات سابقة')}</div>
+                                    return (
+                                        <React.Fragment key={p.id}>
+                                            <tr style={TABLE_STYLE.row(idx === data.length - 1 && !isExpanded)}
+                                                onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                <td style={TABLE_STYLE.td(true)}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                        <div style={{ width: 36, height: 36, borderRadius: '10px', background: `${C.primary}10`, color: C.primary, display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontFamily: OUTFIT }}>
+                                                            {p.name?.charAt(0)}
+                                                        </div>
+                                                        <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{p.name}</div>
                                                     </div>
-                                                ) : (
-                                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                                        {changes.map((c, i) => (
-                                                            <div key={i} style={{ padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '10px', border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                                <div>
-                                                                    <div style={{ fontSize: '12px', fontWeight: 600, color: c.type === 'increase' ? '#10b981' : C.danger, fontFamily: CAIRO }}>
-                                                                        {c.type === 'increase' ? t('زيادة') : t('تخفيض')}
-                                                                    </div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(c.date).toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB')}</div>
-                                                                </div>
-                                                                <div style={{ textAlign: 'end' }}>
-                                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                                        {c.type === 'increase' ? '+' : '-'}{c.amount.toLocaleString()}
-                                                                    </div>
-                                                                    <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</div>
-                                                                </div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: OUTFIT }}>{p.share}%</div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                        {formatNumber(p.capital)}
+                                                        <small style={{ fontSize: '10px', marginInlineStart: '4px', opacity: 0.7, fontFamily: CAIRO }}>{cSymbol}</small>
+                                                    </div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                                        <div style={{ fontSize: '11px', color: '#10b981', fontWeight: 700, fontFamily: OUTFIT }}>+{formatNumber(increased)}</div>
+                                                        <div style={{ width: 1, height: 12, background: C.border }} />
+                                                        <div style={{ fontSize: '11px', color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>-{formatNumber(decreased)}</div>
+                                                    </div>
+                                                </td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                                                        <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'increase' })); }}
+                                                            style={{ ...TABLE_STYLE.actionBtn('#10b981'), background: 'rgba(16,185,129,0.1)' }} title={t("زيادة")}>
+                                                            <TrendingUp size={14} />
+                                                        </button>
+                                                        <button onClick={() => { setShowModal(p); setForm(f => ({ ...f, type: 'decrease' })); }}
+                                                            style={{ ...TABLE_STYLE.actionBtn(C.danger), background: `${C.danger}10` }} title={t("تخفيض")}>
+                                                            <TrendingDown size={14} />
+                                                        </button>
+                                                        <button onClick={() => setExpanded(isExpanded ? null : p.id)}
+                                                            style={{ ...TABLE_STYLE.actionBtn(isExpanded ? C.primary : C.textSecondary) }}>
+                                                            {isExpanded ? <ChevronUp size={14} /> : <History size={14} />}
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {isExpanded && (
+                                                <tr>
+                                                    <td colSpan={5} style={{ padding: '0', background: 'rgba(37, 106, 244, 0.02)' }}>
+                                                        <div style={{ padding: '20px', borderBottom: `1px solid ${C.border}`, animation: 'fadeIn 0.3s ease' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
+                                                                <History size={14} style={{ color: C.primary }} />
+                                                                <div style={{ fontSize: '12px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{t('سجل حركات رأس المال')}</div>
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            );
                         })}
                     </div>
                 )}
@@ -281,23 +254,27 @@ export default function CapitalPage() {
                             </button>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                             <div>
-                                 <label style={LS}>{t('المبلغ')} <span style={{ color: C.danger }}>*</span></label>
-                                 <div style={{ position: 'relative' }}>
-                                     {!form.amount && (
-                                         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
-                                             0.00
-                                         </div>
-                                     )}
-                                     <input required type="number" min="1" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, textAlign: 'center', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
-                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
-                                 </div>
-                             </div>
-                            <div>
-                                <label style={LS}>{t('تاريخ الحركة')}</label>
-                                <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                        <div style={{ position: 'relative', marginBottom: '24px' }}>
+                            <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('المبلغ المراد تعديله')}</label>
+                            <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
+                                    0.00
+                                </div>
+                                <input 
+                                    type="number" step="any" required 
+                                    value={form.amount} 
+                                    onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
+                                    style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                    onFocus={focusIn} onBlur={focusOut} 
+                                    placeholder=""
+                                />
+                                <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
                             </div>
+                        </div>
+
+                        <div style={{ marginBottom: '20px' }}>
+                            <label style={LS}>{t('تاريخ الحركة')}</label>
+                            <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                         </div>
 
                         <div style={{ marginBottom: '24px' }}>

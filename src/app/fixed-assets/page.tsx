@@ -1,5 +1,8 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
+import { useCurrency } from '@/hooks/useCurrency';
+
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -28,6 +31,8 @@ export default function FixedAssetsPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
+    const { symbol: cSymbol } = useCurrency();
+    
     const isAdmin = (session?.user as any)?.role === 'admin';
     const canEdit   = isAdmin || (session?.user as any)?.permissions?.['/fixed-assets']?.edit;
     const canDelete = isAdmin || (session?.user as any)?.permissions?.['/fixed-assets']?.delete;
@@ -173,9 +178,9 @@ export default function FixedAssetsPage() {
                             }}>
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{formatNumber(s.val)}</span>
-                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
+                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{cSymbol}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -218,58 +223,60 @@ export default function FixedAssetsPage() {
                 </div>
 
                 {/* Main Table */}
-                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
+                <div style={TABLE_STYLE.container}>
+                    <table style={TABLE_STYLE.table}>
                         <thead>
-                            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                {[
-                                    t('كود الأصل'), 
-                                    t('اسم الأصل'), 
-                                    t('الفئة الضريبية'), 
-                                    t('تاريخ الاقتناء'), 
-                                    t('تكلفة الشراء'), 
-                                    t('مجمع الإهلاك'), 
-                                    t('الصافي الدفتري'), 
-                                    t('الحالة'), 
-                                    t('خيارات')
-                                ].map((h, i) => (
-                                    <th key={i} style={{ textAlign: i === 7 ? 'center' : 'start', padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
-                                ))}
+                            <tr style={TABLE_STYLE.thead}>
+                                <th style={TABLE_STYLE.th(true)}>{t('كود الأصل')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('اسم الأصل')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('الفئة الضريبية')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('تاريخ الاقتناء')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('تكلفة الشراء')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('مجمع الإهلاك')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الصافي الدفتري')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('خيارات')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loading ? (
-                                <tr><td colSpan={9} style={{ padding: '100px', }}>
-                                    <Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} />
-                                </td></tr>
+                                <tr><td colSpan={9} style={{ padding: '100px', }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={9} style={{ padding: '80px',  color: C.textMuted }}>
+                                <tr><td colSpan={9} style={{ padding: '80px',  color: C.textMuted, textAlign: 'center' }}>
                                     <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
                                     <div style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
                                 </td></tr>
                             ) : filtered.map((a, i) => {
                                 const st = STATUS_MAP[a.status];
                                 return (
-                                    <tr key={a.id} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.1s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <td style={{ padding: '14px 16px' }}>
-                                            <span style={{ fontSize: '12px', color: C.blue, fontWeight: 600, fontFamily: OUTFIT }}>{a.code}</span>
+                                    <tr key={a.id} style={TABLE_STYLE.row(i === filtered.length - 1)}
+                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                        <td style={TABLE_STYLE.td(true)}>
+                                            <span style={{ fontSize: '12px', color: C.blue, fontWeight: 700, fontFamily: OUTFIT }}>{a.code}</span>
                                         </td>
-                                        <td style={{ padding: '14px 16px' }}>
+                                        <td style={TABLE_STYLE.td(false)}>
                                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{a.name}</div>
                                             {a.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>{a.notes}</div>}
                                         </td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(a.purchaseCost)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }}>{fmt(a.accumulatedDepreciation)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>{fmt(a.netBookValue)}</td>
-                                        <td style={{ padding: '14px 16px' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
+                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(a.purchaseCost)}</div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}>{fmt(a.accumulatedDepreciation)}</div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}>{fmt(a.netBookValue)}</div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                             <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
                                                 {st.label}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '14px 16px' }}>
-                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
                                                 {canEdit && <button onClick={() => openEdit(a)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}><Pencil size={15} /></button>}
                                                 {canDelete && <button onClick={() => setDeleteItem(a)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}><Trash2 size={15} /></button>}
                                             </div>
@@ -304,20 +311,39 @@ export default function FixedAssetsPage() {
                                 <input required type="date" value={form.purchaseDate} onChange={e => setForm(f => ({ ...f, purchaseDate: e.target.value }))} style={{ ...IS, fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={LS}>{t('تكلفة الشراء')}</label>
-                                <input type="number" step="0.01" value={form.purchaseCost} onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                        
+                        <div style={{ position: 'relative', marginBottom: '24px' }}>
+                            <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('تكلفة الشراء')}</label>
+                            <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
+                                    0.00
+                                </div>
+                                <input 
+                                    type="number" step="0.01" 
+                                    value={form.purchaseCost} 
+                                    onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} 
+                                    style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                    onFocus={focusIn} onBlur={focusOut} 
+                                    placeholder=""
+                                />
+                                <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
                             </div>
+                        </div>
+
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                             <div>
                                 <label style={LS}>{t('قيمة الخردة')}</label>
-                                <input type="number" step="0.01" value={form.salvageValue} onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                                <div style={{ position: 'relative' }}>
+                                    <input type="number" step="0.01" value={form.salvageValue} onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} style={{...IS, paddingInlineEnd: '45px', fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                </div>
                             </div>
                             <div>
                                 <label style={LS}>{t('معدل الإهلاك')} %</label>
                                 <input type="number" step="0.01" value={form.depreciationRate} onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))} style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
+
                         <div style={{ marginBottom: '24px' }}>
                             <label style={LS}>{t('ملاحظات')}</label>
                             <textarea value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} rows={2} style={{ ...IS, height: 'auto', padding: '10px' } as any} onFocus={focusIn} onBlur={focusOut} />

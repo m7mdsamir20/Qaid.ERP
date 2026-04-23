@@ -8,6 +8,9 @@ import CustomSelect from '@/components/CustomSelect';
 import { Briefcase, Plus, ArrowRight, TrendingDown, Building2, AlertTriangle, Loader2, Save } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, SC, STitle, BTN_PRIMARY } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
+import { useCurrency } from '@/hooks/useCurrency';
+
+
 
 interface Account {
     id: string; code: string; name: string;
@@ -18,6 +21,8 @@ export default function NewFixedAssetPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
     const router = useRouter();
+    const { symbol: cSymbol } = useCurrency();
+
 
     const CATEGORIES = [
         t('مركبات'), t('أجهزة وحاسبات'), t('أراضي ومباني'),
@@ -202,28 +207,49 @@ export default function NewFixedAssetPage() {
                         <div style={STitle}>
                             <TrendingDown size={16} /> {t('التكلفة والإهلاك')}
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                            <div>
-                                <label style={LS}>{t('تكلفة الشراء (ج.م)')} <span style={{ color: C.danger }}>*</span></label>
-                                <input required type="number" step="0.01" min="0"
-                                    value={form.purchaseCost}
-                                    onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))}
-                                    placeholder="0.00" style={IS} onFocus={focusIn} onBlur={focusOut} />
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
+                            <div style={{ position: 'relative' }}>
+                                <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('تكلفة الشراء')}</label>
+                                <div style={{ position: 'relative' }}>
+                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '1px' }}>
+                                        0.00
+                                    </div>
+                                    <input 
+                                        type="number" step="0.01" required
+                                        value={form.purchaseCost} 
+                                        onChange={e => setForm(f => ({ ...f, purchaseCost: e.target.value }))} 
+                                        style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '28px', height: '70px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                        onFocus={focusIn} onBlur={focusOut} 
+                                        placeholder=""
+                                    />
+                                    <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '10px', fontSize: '11px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
+                                </div>
                             </div>
-                            <div>
-                                <label style={LS}>{t('قيمة الخردة (ج.م)')}</label>
-                                <input type="number" step="0.01" min="0"
-                                    value={form.salvageValue}
-                                    onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))}
-                                    placeholder="0.00" style={IS} onFocus={focusIn} onBlur={focusOut} />
+                            <div style={{ position: 'relative' }}>
+                                <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('قيمة الخردة')}</label>
+                                <div style={{ position: 'relative' }}>
+                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '28px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '1px' }}>
+                                        0.00
+                                    </div>
+                                    <input 
+                                        type="number" step="0.01"
+                                        value={form.salvageValue} 
+                                        onChange={e => setForm(f => ({ ...f, salvageValue: e.target.value }))} 
+                                        style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '28px', height: '70px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.border}`, borderRadius: 0 }} 
+                                        onFocus={focusIn} onBlur={focusOut} 
+                                        placeholder=""
+                                    />
+                                    <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '10px', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
+                                </div>
                             </div>
-                            <div>
-                                <label style={LS}>{t('معدل الإهلاك')} % <span style={{ color: C.danger }}>*</span></label>
-                                <input required type="number" step="0.01" min="0" max="100"
-                                    value={form.depreciationRate}
-                                    onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))}
-                                    placeholder={t("مثال: 20")} style={IS} onFocus={focusIn} onBlur={focusOut} />
-                            </div>
+                        </div>
+
+                        <div style={{ marginBottom: '16px' }}>
+                            <label style={LS}>{t('معدل الإهلاك')} % <span style={{ color: C.danger }}>*</span></label>
+                            <input required type="number" step="0.01" min="0" max="100"
+                                value={form.depreciationRate}
+                                onChange={e => setForm(f => ({ ...f, depreciationRate: e.target.value }))}
+                                placeholder={t("مثال: 20")} style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                         </div>
 
                         {/* طريقة الإهلاك */}

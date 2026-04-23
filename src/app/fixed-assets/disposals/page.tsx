@@ -1,5 +1,7 @@
 'use client';
 import { formatNumber } from '@/lib/currency';
+import { useCurrency } from '@/hooks/useCurrency';
+
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
@@ -31,6 +33,7 @@ const REASON_COLORS: Record<string, string> = {
 export default function DisposalsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
+    const { symbol: cSymbol } = useCurrency();
 
     const REASON_LABELS: Record<string, string> = {
         'sale': t('بيع'),
@@ -126,9 +129,9 @@ export default function DisposalsPage() {
                             }}>
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
                                         <span>{formatNumber(s.val)}</span>
-                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{t('ج.م')}</span>}
+                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{cSymbol}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -164,51 +167,51 @@ export default function DisposalsPage() {
                 </div>
 
                 {/* Table */}
-                <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit' }}>
+                <div style={TABLE_STYLE.container}>
+                    <table style={TABLE_STYLE.table}>
                         <thead>
-                            <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `1px solid ${C.border}` }}>
-                                {[
-                                    t('الأصل الثابت'), 
-                                    t('السبب'), 
-                                    t('تاريخ الاستبعاد'), 
-                                    t('العائد / البيع'), 
-                                    t('القيمة الدفترية'), 
-                                    t('نتيجة التخلص'), 
-                                    t('ملاحظات')
-                                ].map((h, i) => (
-                                    <th key={i} style={{ padding: '14px 16px', fontSize: '11px', fontWeight: 700, color: C.textSecondary,  fontFamily: CAIRO }}>{h}</th>
-                                ))}
+                            <tr style={TABLE_STYLE.thead}>
+                                <th style={TABLE_STYLE.th(true)}>{t('الأصل الثابت')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('السبب')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('تاريخ الاستبعاد')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('العائد / البيع')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('القيمة الدفترية')}</th>
+                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('نتيجة التخلص')}</th>
+                                <th style={TABLE_STYLE.th(false)}>{t('ملاحظات')}</th>
                             </tr>
                         </thead>
                         <tbody>
                             {loadingList ? (
                                 <tr><td colSpan={7} style={{ padding: '80px', }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
                             ) : filtered.length === 0 ? (
-                                <tr><td colSpan={7} style={{ padding: '80px',  color: C.textMuted, fontFamily: CAIRO, fontWeight: 600 }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
+                                <tr><td colSpan={7} style={{ padding: '80px',  color: C.textMuted, fontFamily: CAIRO, fontWeight: 600, textAlign: 'center' }}>{t('لا توجد عمليات مبيعات أو استبعاد مسجلة حاليّاً')}</td></tr>
                             ) : filtered.map((d, i) => {
                                 const isG = d.gainLoss > 0;
                                 return (
-                                    <tr key={d.id} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.10s' }} onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.01)'} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <td style={{ padding: '14px 16px' }}>
+                                    <tr key={d.id} style={TABLE_STYLE.row(i === filtered.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                        <td style={TABLE_STYLE.td(true)}>
                                             <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{d.assetName}</div>
                                             <div style={{ fontSize: '10px', color: C.blue, fontFamily: OUTFIT, fontWeight: 700, marginTop: '2px' }}>{d.assetCode}</div>
                                         </td>
-                                        <td style={{ padding: '11px 14px' }}>
+                                        <td style={TABLE_STYLE.td(false)}>
                                             <span style={{ fontSize: '10px', fontWeight: 600, padding: '4px 10px', borderRadius: '12px', background: `${REASON_COLORS[d.reason] || '#64748b'}15`, color: REASON_COLORS[d.reason] || '#64748b', border: `1px solid ${REASON_COLORS[d.reason] || '#64748b'}25`, fontFamily: CAIRO }}>
                                                 {REASON_LABELS[d.reason] || d.reason}
                                             </span>
                                         </td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(d.salePrice)}</td>
-                                        <td style={{ padding: '14px 16px', fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}>{fmt(d.netBookValue)}</td>
-                                        <td style={{ padding: '14px 16px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
+                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(d.disposalDate).toLocaleDateString('ar-EG-u-nu-latn')}</td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>{fmt(d.salePrice)}</div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textSecondary, fontFamily: OUTFIT }}>{fmt(d.netBookValue)}</div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 950, color: d.gainLoss >= 0 ? '#10b981' : C.danger }}>
                                                 {d.gainLoss >= 0 ? <ArrowUpCircle size={14} /> : <ArrowDownCircle size={14} />}
                                                 <span style={{ fontFamily: OUTFIT }}>{fmt(Math.abs(d.gainLoss))}</span>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '14px 16px', fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }}>{d.notes || '—'}</td>
+                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, maxWidth: '180px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden', fontFamily: CAIRO }}>{d.notes || '—'}</td>
                                     </tr>
                                 );
                             })}
@@ -236,9 +239,23 @@ export default function DisposalsPage() {
                                     <input type="date" value={saleDate} onChange={e => setSaleDate(e.target.value)} style={{ ...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
                                 </div>
                             </div>
-                            <div style={{ marginTop: '16px' }}>
-                                <label style={LS}>{t('مبلغ الاستلام / سعر البيع (ج.م)')}</label>
-                                <input type="number" step="0.01" value={salePrice} onChange={e => setSalePrice(e.target.value)} placeholder="0.00" style={{...IS, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                            
+                            <div style={{ position: 'relative', marginTop: '24px' }}>
+                                <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('مبلغ الاستلام / سعر البيع')}</label>
+                                <div style={{ position: 'relative' }}>
+                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
+                                        0.00
+                                    </div>
+                                    <input 
+                                        type="number" step="0.01" 
+                                        value={salePrice} 
+                                        onChange={e => setSalePrice(e.target.value)} 
+                                        style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                        onFocus={focusIn} onBlur={focusOut} 
+                                        placeholder=""
+                                    />
+                                    <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -246,12 +263,12 @@ export default function DisposalsPage() {
                             <div style={{ padding: '16px', background: isGain ? '#10b98108' : isLoss ? `${C.danger}08` : 'rgba(255,255,255,0.02)', borderRadius: '16px', border: `1px solid ${isGain ? '#10b98133' : isLoss ? `${C.danger}33` : C.border}`, marginBottom: '24px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '14px' }}>
                                     <h5 style={{ margin: 0, fontSize: '13px', color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{t('معاينة نتائج الاستبعاد')}:</h5>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('الصافي الدفتري الحالي')}: <b>{fmt(selectedAsset.netBookValue)}</b></span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{t('الصافي الدفتري الحالي')}: <b style={{ fontFamily: OUTFIT }}>{fmt(selectedAsset.netBookValue)}</b></span>
                                 </div>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                     <div style={{ textAlign: 'start' }}>
                                         <div style={{ fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>{isGain ? t('أرباح رأسمالية مٌحققة') : isLoss ? t('خسائر رأسمالية ناتجة') : t('تعادل دفتري')}</div>
-                                        <div style={{ fontSize: '22px', fontWeight: 950, color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted, direction: 'ltr', fontFamily: OUTFIT }}>{isLoss ? '-' : '+'}{fmt(Math.abs(gainLoss))} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{t('ج.م')}</span></div>
+                                        <div style={{ fontSize: '22px', fontWeight: 950, color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted, direction: 'ltr', fontFamily: OUTFIT }}>{isLoss ? '-' : '+'}{fmt(Math.abs(gainLoss))} <span style={{ fontSize: '11px', fontFamily: CAIRO }}>{cSymbol}</span></div>
                                     </div>
                                     <div style={{ width: '50px', height: '50px', borderRadius: '14px', background: isGain ? '#10b98115' : isLoss ? `${C.danger}15` : 'rgba(255,255,255,0.03)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: isGain ? '#10b981' : isLoss ? C.danger : C.textMuted }}>
                                         {isGain ? <ArrowUpCircle size={28} /> : isLoss ? <ArrowDownCircle size={28} /> : <MinusCircle size={28} />}
