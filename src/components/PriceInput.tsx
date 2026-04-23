@@ -15,7 +15,7 @@ interface PriceInputProps {
     textAlign?: 'left' | 'center' | 'right';
 }
 
-export default function PriceInput({ 
+export default React.forwardRef<HTMLInputElement, PriceInputProps>(function PriceInput({ 
     value, 
     onChange, 
     placeholder = '0.00', 
@@ -24,7 +24,7 @@ export default function PriceInput({
     className = '', 
     decimals = 2,
     textAlign = 'center'
-}: PriceInputProps) {
+}, ref) {
     const [displayValue, setDisplayValue] = useState('');
 
     useEffect(() => {
@@ -65,6 +65,7 @@ export default function PriceInput({
 
     return (
         <input
+            ref={ref}
             type="text"
             value={displayValue}
             onChange={handleInputChange}
@@ -76,12 +77,12 @@ export default function PriceInput({
             style={{ 
                 ...IS, 
                 height: '38px', 
-                fontSize: '15px', 
-                fontWeight: 900, 
+                fontSize: '16px', 
+                fontWeight: 600, 
                 fontFamily: OUTFIT,
                 textAlign: textAlign,
                 ...style 
             }}
         />
     );
-}
+});

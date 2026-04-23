@@ -704,11 +704,12 @@ function NewSalePageInner() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <PriceInput 
+                                            ref={qtyRef}
                                             value={entryQty} 
                                             onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
                                             disabled={!entryItemId}
                                             decimals={2}
-                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1 }}
+                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '16px', fontWeight: 600 }}
                                         />
                                         <InlineError field="entryQty" />
                                     </div>
@@ -717,10 +718,11 @@ function NewSalePageInner() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <PriceInput 
+                                            ref={priceRef}
                                             value={entryPrice} 
                                             onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
                                             disabled={!entryItemId}
-                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1 }}
+                                            style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '16px', fontWeight: 600 }}
                                         />
                                         <InlineError field="entryPrice" />
                                     </div>
@@ -757,33 +759,42 @@ function NewSalePageInner() {
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
                                                 [t('الخدمة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                    <th key={i} style={{ 
+                                                        textAlign: i === 0 ? 'start' : (i === 4 ? 'center' : 'center'), 
+                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO 
+                                                    }}>{h}</th>
                                                 ))
                                             ) : (
                                                 [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ textAlign: i === 0 ? 'start' : 'center', padding: '12px', fontSize: '11px', fontWeight: 600, color: C.textMuted, fontFamily: CAIRO }}>{h}</th>
+                                                    <th key={i} style={{ 
+                                                        textAlign: i === 0 ? 'start' : (i === 5 ? 'center' : 'center'), 
+                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO 
+                                                    }}>{h}</th>
                                                 ))
                                             )}
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {lines.map((l, i) => (
-                                            <tr key={i} style={{ borderBottom: `1px solid ${C.border}` }}>
-                                                <td style={{ padding: '10px 12px', color: C.textPrimary, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                                                    <div>{l.itemName}</div>
-                                                    {l.description && <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '2px', fontWeight: 400 }}>{l.description}</div>}
+                                            <tr key={i} style={{ borderBottom: `1px solid ${C.border}`, transition: 'background 0.2s' }}
+                                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.02)'}
+                                                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                            >
+                                                <td style={{ padding: '12px', color: C.textPrimary, fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>
+                                                    <div style={{ marginBottom: '2px' }}>{l.itemName}</div>
+                                                    {l.description && <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 400 }}>{l.description}</div>}
                                                 </td>
                                                 {(session?.user as any)?.businessType?.toUpperCase() !== 'SERVICES' && (
-                                                    <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
+                                                    <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '12px', fontWeight: 500 }}>{l.unit}</td>
                                                 )}
-                                                <td style={{ padding: '10px 12px',  color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.quantity)}</td>
-                                                <td style={{ padding: '10px 12px',  color: C.textSecondary, fontSize: '13px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textPrimary, fontWeight: 700, fontFamily: OUTFIT, fontSize: '14px' }}>{formatNumber(l.quantity)}</td>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.textSecondary, fontSize: '14px', fontWeight: 600, fontFamily: OUTFIT }}>{formatNumber(l.price)}</td>
 
-                                                <td style={{ padding: '10px 12px',  color: C.primary, fontWeight: 600, fontSize: '13px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
-                                                <td style={{ padding: '10px 12px', }}>
-                                                    <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                        <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer' }}><Pencil size={15} /></button>
-                                                        <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer' }}><Trash2 size={16} /></button>
+                                                <td style={{ padding: '12px', textAlign: 'center', color: C.primary, fontWeight: 700, fontSize: '15px', fontFamily: OUTFIT }}>{formatNumber(l.total)}</td>
+                                                <td style={{ padding: '12px', }}>
+                                                    <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                                                        <button onClick={() => editLine(i)} style={{ color: C.primary, background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Pencil size={15} /></button>
+                                                        <button onClick={() => removeLine(i)} style={{ color: '#ef4444', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'transform 0.2s' }} onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}><Trash2 size={16} /></button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -900,7 +911,7 @@ function NewSalePageInner() {
                                                     }));
                                                 }}
                                                 style={{ height: '34px', fontSize: '13px' }}
-                                                textAlign="right"
+                                                textAlign="center"
                                             />
                                         </div>
                                         <div style={{ position: 'relative' }}>
@@ -914,7 +925,7 @@ function NewSalePageInner() {
                                                         discountAmt: parseFloat(((subtotal * pct) / 100).toFixed(2)),
                                                     }));
                                                 }}
-                                                style={{ ...IS, height: '34px', fontSize: '13px', paddingInlineStart: '28px' }}
+                                                style={{ ...IS, height: '34px', fontSize: '13px', textAlign: 'center' }}
                                                 onFocus={focusIn} onBlur={focusOut} />
                                             <span style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', fontSize: '13px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                         </div>
@@ -946,7 +957,7 @@ function NewSalePageInner() {
                                                         }));
                                                     }}
                                                     style={{ height: '30px', fontSize: '12px', fontWeight: 600, color: C.primary }}
-                                                    textAlign="right"
+                                                    textAlign="center"
                                                 />
                                             </div>
                                         </div>
@@ -961,10 +972,10 @@ function NewSalePageInner() {
                                     border: `1px solid ${C.primaryBorder}`,
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>
-                                        {fMoney(netTotal)}
+                                    <span style={{ color: C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 700, fontSize: '18px' }}>
+                                        {fMoneyJSX(netTotal, '', { fontSize: '18px', fontWeight: 700 })}
                                     </span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
                                 </div>
                             </div>
                         </div>
