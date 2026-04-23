@@ -124,7 +124,7 @@ export default function ProfitDistributionPage() {
                                         <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
                                             <span>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
-                                            {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.suffix}</span>}
+                                            {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{s.suffix}</span>}
                                         </div>
                                     </div>
                                     <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -287,22 +287,19 @@ export default function ProfitDistributionPage() {
                             </div>
 
                             {/* Amount + Date */}
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                                <div style={{ position: 'relative', marginBottom: '24px' }}>
-                                    <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('إجمالي المبلغ المراد توزيعه')}</label>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                                <div>
+                                    <label style={LS}>{t('إجمالي المبلغ المراد توزيعه')} <span style={{ color: C.danger }}>*</span></label>
                                     <div style={{ position: 'relative' }}>
-                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
-                                            0.00
-                                        </div>
                                         <input 
                                             type="number" step="any" required 
                                             value={form.totalAmount} 
                                             onChange={e => setForm(f => ({ ...f, totalAmount: e.target.value }))} 
-                                            style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                            style={{ ...IS, paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} 
                                             onFocus={focusIn} onBlur={focusOut} 
-                                            placeholder=""
+                                            placeholder="0.00"
                                         />
-                                        <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
+                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                     </div>
                                 </div>
                                 <div>

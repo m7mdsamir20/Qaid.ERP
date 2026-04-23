@@ -260,10 +260,10 @@ export default function TreasuriesPage() {
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between'
                         }}>
                             <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
+                                <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
                                     <span>{formatNumber(s.val)}</span>
-                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.unit}</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{s.unit}</span>
                                 </div>
                             </div>
                             <div style={{

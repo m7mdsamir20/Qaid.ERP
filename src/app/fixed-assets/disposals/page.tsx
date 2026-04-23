@@ -129,9 +129,9 @@ export default function DisposalsPage() {
                             }}>
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
                                         <span>{formatNumber(s.val)}</span>
-                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{cSymbol}</span>}
+                                        {!s.isCount && <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{cSymbol}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: `${s.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -240,21 +240,18 @@ export default function DisposalsPage() {
                                 </div>
                             </div>
                             
-                            <div style={{ position: 'relative', marginTop: '24px' }}>
-                                <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px' }}>{t('مبلغ الاستلام / سعر البيع')}</label>
+                            <div style={{ position: 'relative', marginTop: '16px' }}>
+                                <label style={LS}>{t('مبلغ الاستلام / سعر البيع')}</label>
                                 <div style={{ position: 'relative' }}>
-                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
-                                        0.00
-                                    </div>
                                     <input 
                                         type="number" step="0.01" 
                                         value={salePrice} 
                                         onChange={e => setSalePrice(e.target.value)} 
-                                        style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
+                                        style={{ ...IS, paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} 
                                         onFocus={focusIn} onBlur={focusOut} 
-                                        placeholder=""
+                                        placeholder="0.00"
                                     />
-                                    <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
                             </div>
                         </div>

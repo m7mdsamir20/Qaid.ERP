@@ -62,19 +62,12 @@ export function Currency({ amount, code: propCode, lang: propLang, className = '
                 alignItems: 'baseline', 
                 gap: '2px', 
                 whiteSpace: 'nowrap',
-                direction: isRtl ? 'rtl' : 'ltr',
+                direction: 'ltr',
                 ...style 
             }}
         >
-            {isRtl ? (
-                <>
-                    {amountEl} {symbolEl}
-                </>
-            ) : (
-                <>
-                    {symbolEl} {amountEl}
-                </>
-            )}
+            {amountEl}
+            {symbolEl}
         </span>
     );
 }

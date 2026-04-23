@@ -112,9 +112,9 @@ export default function PartnersPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
                                         <span>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.suffix}</span>}
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -247,39 +247,41 @@ export default function PartnersPage() {
                             <input required type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} placeholder={t("أدخل اسم الشريك الكامل...")} />
                         </div>
                         
-                        <div style={{ position: 'relative', marginBottom: '24px' }}>
-                            <label style={{ ...LS, textAlign: 'center', display: 'block', marginBottom: '12px', fontSize: '13px' }}>{t('المساهمة الرأسمالية')}</label>
-                            <div style={{ position: 'relative' }}>
-                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
-                                    0.00
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+                            <div>
+                                <label style={LS}>{t('المساهمة الرأسمالية')} <span style={{ color: C.danger }}>*</span></label>
+                                <div style={{ position: 'relative' }}>
+                                    <input 
+                                        type="number" step="any" required 
+                                        value={form.capital} 
+                                        onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} 
+                                        style={{ ...IS, paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 600 }} 
+                                        onFocus={focusIn} onBlur={focusOut} 
+                                        placeholder="0.00"
+                                    />
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{cSymbol}</span>
                                 </div>
-                                <input 
-                                    type="number" step="any" required 
-                                    value={form.capital} 
-                                    onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} 
-                                    style={{ ...IS, background: 'transparent', textAlign: 'center', fontSize: '32px', height: '80px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT, border: 'none', borderBottom: `2px solid ${C.primary}30`, borderRadius: 0 }} 
-                                    onFocus={focusIn} onBlur={focusOut} 
-                                    placeholder=""
-                                />
-                                <span style={{ position: 'absolute', insetInlineEnd: '0', bottom: '12px', fontSize: '12px', fontWeight: 700, color: C.primary, fontFamily: CAIRO }}>{cSymbol}</span>
                             </div>
-                        </div>
-
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px', padding: '10px', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: `1px dashed ${C.border}` }}>
-                             <div style={{ fontSize: '12px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO, marginInlineEnd: '8px' }}>{t('النسبة المحسوبة:')}</div>
-                             <div style={{ fontSize: '18px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
-                                {(() => {
-                                    const cap = parseFloat(form.capital) || 0;
-                                    const otherCap = partners
-                                        .filter(pInfo => {
-                                            if (!modal || modal === 'add') return true;
-                                            return pInfo.id !== (modal as any).id;
-                                        })
-                                        .reduce((s, pInfo) => s + pInfo.capital, 0);
-                                    const total = otherCap + cap;
-                                    return total > 0 ? ((cap / total) * 100).toFixed(2) : '0.00';
-                                })()}%
-                             </div>
+                            <div>
+                                <label style={LS}>{t('النسبة المحسوبة')}</label>
+                                <div style={{ 
+                                    ...IS, background: 'rgba(255,255,255,0.02)', borderStyle: 'dashed', 
+                                    display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                    fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px' 
+                                }}>
+                                    {(() => {
+                                        const cap = parseFloat(form.capital) || 0;
+                                        const otherCap = partners
+                                            .filter(pInfo => {
+                                                if (!modal || modal === 'add') return true;
+                                                return pInfo.id !== (modal as any).id;
+                                            })
+                                            .reduce((s, pInfo) => s + pInfo.capital, 0);
+                                        const total = otherCap + cap;
+                                        return total > 0 ? ((cap / total) * 100).toFixed(2) : '0.00';
+                                    })()}%
+                                </div>
+                            </div>
                         </div>
 
                         <div style={{ marginBottom: '16px' }}>
