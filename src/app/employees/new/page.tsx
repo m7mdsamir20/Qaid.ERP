@@ -96,14 +96,14 @@ export default function NewEmployeePage() {
                 />
 
                 <form onSubmit={submit}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 340px', gap: '24px', alignItems: 'start' }}>
+                    <div className="employee-form-layout" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 340px', gap: '24px', alignItems: 'start' }}>
 
                         {/* Main Content Area */}
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             
                             {/* ① البيانات الشخصية */}
                             <FormSection label={t("البيانات الشخصية والتعريفية")} icon={UsersIcon} color="#256af4">
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                <div className="fields-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("كود الموظف")}>
                                         <input type="text" readOnly value={form.code} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textMuted, fontSize: '13px', fontWeight: 600, padding: '0 16px', cursor: 'not-allowed', fontFamily: OUTFIT }} />
                                     </Field>
@@ -143,7 +143,7 @@ export default function NewEmployeePage() {
 
                             {/* ② البيانات الوظيفية */}
                             <FormSection label={t("البيانات الوظيفية والتعاقدية")} icon={Briefcase} color="#8b5cf6">
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                <div className="fields-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("القسم الإداري")}>
                                         <CustomSelect value={form.departmentId} onChange={set('departmentId')} icon={Building2} placeholder={t("اختر القسم أو الإدارة")} style={{ background: C.inputBg, border: `1px solid ${C.border}` }} options={departments.map(d => ({ value: d.id, label: d.name }))} />
                                     </Field>
@@ -198,7 +198,7 @@ export default function NewEmployeePage() {
                                         </div>
                                     </Field>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                                <div className="allowances-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
                                     <Field label={t("بدل سكن")}>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={formatWithCommas(form.housingAllowance)} onChange={e => set('housingAllowance')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px', textAlign: 'center', fontFamily: OUTFIT }} />
@@ -221,7 +221,7 @@ export default function NewEmployeePage() {
                                         </div>
                                     </Field>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '10px' }}>
+                                <div className="deductions-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginTop: '10px' }}>
                                     <Field label={t("خصم التأمينات")}>
                                         <div style={{ position: 'relative' }}>
                                             <input type="text" inputMode="decimal" value={formatWithCommas(form.insuranceDeduction)} onChange={e => set('insuranceDeduction')(e.target.value.replace(/[^0-9.]/g, ''))} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" style={{ height: '40px', width: '100%', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textPrimary, fontSize: '13px', padding: '0 16px', textAlign: 'center', fontFamily: OUTFIT }} />
@@ -241,7 +241,7 @@ export default function NewEmployeePage() {
 
                             {/* ④ البيانات البنكية */}
                             <FormSection label={t("معلومات التحويل البنكي")} icon={Landmark} color="#f59e0b">
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                <div className="fields-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                     <Field label={t("اسم البنك")}>
                                         <input type="text" value={form.bankName} onChange={e => set('bankName')(e.target.value)} onFocus={focusIn} onBlur={focusOut} placeholder={t("اسم البنك المعتمد")} style={{ height: '44px', width: '100%', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, color: C.textSecondary, fontSize: '13px', fontWeight: 700, padding: '0 16px' }} />
                                     </Field>
@@ -253,7 +253,7 @@ export default function NewEmployeePage() {
                         </div>
 
                         {/* Sidebar */}
-                        <aside style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                        <aside className="form-sidebar" style={{ position: 'sticky', top: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                             
                             {/* Live Salary Counter Card */}
                             <div style={{ 
@@ -330,7 +330,7 @@ export default function NewEmployeePage() {
                     </div>
                 </form>
             </div>
-            <style jsx global>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 .animate-spin { animation: spin 1s linear infinite; }
                 input::placeholder, textarea::placeholder {
@@ -338,7 +338,15 @@ export default function NewEmployeePage() {
                     font-size: 13px !important;
                     opacity: 0.5 !important;
                 }
-            `}</style>
+                
+                @media (max-width: 768px) {
+                    .employee-form-layout { grid-template-columns: 1fr !important; }
+                    .form-sidebar { position: static !important; order: 2; }
+                    .fields-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                    .allowances-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                    .deductions-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                }
+            ` }} />
         </DashboardLayout>
     );
 }
@@ -359,7 +367,7 @@ function FormSection({ label, icon: Icon, color, children }: any) {
 function Field({ label, required, children }: any) {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <label style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginInlineEnd: '4px' }}>{label}{required && <span style={{ color: THEME.colors.danger }}> *</span>}</label>
+            <label style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, marginInlineEnd: '4px', textAlign: 'start' }}>{label}{required && <span style={{ color: THEME.colors.danger }}> *</span>}</label>
             {children}
         </div>
     );

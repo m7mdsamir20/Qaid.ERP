@@ -28,7 +28,7 @@ const CURRENCY_AR: Record<string, string> = {
 /* ── KPI card matching system design ── */
 function KpiCard({ icon: Icon, label, value, sub, color }: any) {
     return (
-        <div style={KPI_STYLE(color)}>
+        <div style={KPI_STYLE(color)} className="kpi-card-responsive">
             <div style={{
                 width: '36px', height: '36px', borderRadius: '10px',
                 background: `${color}20`, display: 'flex', alignItems: 'center',
@@ -182,13 +182,13 @@ export default function FinancialYearsPage() {
                         }}>
                             <PlusCircle size={36} />
                         </div>
-                        <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                        <h3 style={{ margin: '0 0 10px', fontSize: '20px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'center' }}>
                             {t('تأسيس السنة المالية')}
                         </h3>
-                        <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7 }}>
+                        <p style={{ margin: '0 0 32px', fontSize: '13px', color: C.textMuted, maxWidth: '460px', marginInline: 'auto', fontFamily: CAIRO, lineHeight: 1.7, textAlign: 'center' }}>
                             {t('حدد تواريخ السنة المالية الأولى للبدء في استخدام النظام وتسجيل القيود المحاسبية.')}
                         </p>
-                        <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '28px' }}>
+                        <div className="setup-fields" style={{ display: 'flex', justifyContent: 'center', gap: '20px', marginBottom: '28px' }}>
                             {[
                                 { label: t('تاريخ البداية'), key: 'startDate' },
                                 { label: t('تاريخ النهاية'), key: 'endDate' },
@@ -220,10 +220,11 @@ export default function FinancialYearsPage() {
                             <div style={{
                                 background: C.card, border: `1px solid ${C.border}`,
                                 borderRadius: '20px', overflow: 'hidden',
-                                boxShadow: '0 4px 24px -10px rgba(0,0,0,0.4)'
+                                boxShadow: '0 4px 24px -10px rgba(0,0,0,0.4)',
+                                marginBottom: '24px'
                             }}>
                                 {/* Header strip */}
-                                <div style={{
+                                <div className="active-fy-header" style={{
                                     background: `linear-gradient(135deg, ${C.primary}18, ${C.primary}08)`,
                                     borderBottom: `1px solid ${C.primary}20`,
                                     padding: '14px 28px',
@@ -255,15 +256,15 @@ export default function FinancialYearsPage() {
                                         )}
                                         <span style={{ background: 'rgba(16,185,129,0.12)', color: '#10b981', padding: '2px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, border: '1px solid rgba(16,185,129,0.2)', fontFamily: CAIRO }}>{t('دورة نشطة')}</span>
                                     </div>
-                                    <span style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
+                                    <span className="fy-dates" style={{ fontSize: '12px', color: C.textMuted, fontFamily: CAIRO }}>
                                         {fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} — {fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
                                     </span>
                                 </div>
 
                                 {/* Body */}
-                                <div style={{ padding: '24px 28px', display: 'flex', gap: '32px', alignItems: 'center' }}>
+                                <div className="active-fy-body" style={{ padding: '24px 28px', display: 'flex', gap: '32px', alignItems: 'center' }}>
                                     {/* Circle Progress */}
-                                    <div style={{ position: 'relative', width: '120px', height: '120px', flexShrink: 0 }}>
+                                    <div className="progress-container" style={{ position: 'relative', width: '120px', height: '120px', flexShrink: 0 }}>
                                         <svg width="120" height="120" viewBox="0 0 128 128" style={{ transform: 'rotate(-90deg)' }}>
                                             <circle cx="64" cy="64" r={R} fill="none" stroke="rgba(255,255,255,0.04)" strokeWidth="10" />
                                             <circle cx="64" cy="64" r={R} fill="none"
@@ -279,7 +280,7 @@ export default function FinancialYearsPage() {
                                     </div>
 
                                     {/* KPI Cards */}
-                                    <div style={{ flex: 1, display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                    <div className="fy-stats-grid" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
                                         <KpiCard icon={Calendar} label={t("تاريخ البداية")} value={fmt(activeFY.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color={C.primary} />
                                         <KpiCard icon={CalendarCheck} label={t("تاريخ الانتهاء")} value={fmt(activeFY.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')} color="#8b5cf6" />
                                         <KpiCard icon={Clock} label={t("الأيام المتبقية")} value={`${formatNumber(remaining)} ${t('يوم')}`} color={remaining < 30 ? C.danger : '#f59e0b'}
@@ -297,8 +298,8 @@ export default function FinancialYearsPage() {
                                 </div>
 
                                 {/* Close Section */}
-                                <div style={{ margin: '0 28px 24px', background: `${C.danger}08`, border: `1px solid ${C.danger}20`, borderRadius: '12px', padding: '18px 22px' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px' }}>
+                                <div className="fy-close-section" style={{ margin: '0 28px 24px', background: `${C.danger}08`, border: `1px solid ${C.danger}20`, borderRadius: '12px', padding: '18px 22px' }}>
+                                    <div className="close-inner" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '24px' }}>
                                         <div style={{ flex: 1 }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
                                                 <LockIcon size={13} color={C.danger} />
@@ -309,13 +310,13 @@ export default function FinancialYearsPage() {
                                                 {t('ستُجمَّد جميع العمليات وتُفتح فترة جديدة تبدأ من')} <span style={{ color: C.primary, fontWeight: 600, fontFamily: CAIRO }}>{fmt(nextStart, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</span>
                                             </p>
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexShrink: 0 }}>
+                                        <div className="close-actions" style={{ display: 'flex', alignItems: 'flex-end', gap: '10px', flexShrink: 0 }}>
                                             <div>
                                                 <label style={{ display: 'block', fontSize: '10px', color: C.textSecondary, marginBottom: '5px', fontFamily: CAIRO, fontWeight: 700 }}>{t('نهاية الفترة الجديدة')}</label>
                                                 <input ref={closeEndRef} type="date" min={nextStartStr} defaultValue={defaultCloseEnd} style={IS} />
                                             </div>
                                             <button onClick={() => setConfirmClose({ id: activeFY.id, name: activeFY.name })} disabled={isSaving}
-                                                style={{ height: '40px', padding: '0 20px', borderRadius: '10px', border: 'none', background: C.danger, color: '#fff', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 6px 14px -4px ${C.danger}50`, fontFamily: CAIRO }}>
+                                                style={{ height: '40px', padding: '0 20px', borderRadius: '10px', border: 'none', background: C.danger, color: '#fff', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: `0 6px 14px -4px ${C.danger}50`, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>
                                                 <LockIcon size={13} /> {t('إغلاق السنة')}
                                             </button>
                                         </div>
@@ -335,94 +336,96 @@ export default function FinancialYearsPage() {
                                 </div>
 
                                 <div style={TABLE_STYLE.container}>
-                                    <table style={TABLE_STYLE.table}>
-                                        <thead>
-                                            <tr style={TABLE_STYLE.thead}>
-                                                <th style={{ ...TABLE_STYLE.th(true) }}>{t('السنة المالية')}</th>
-                                                <th style={{ ...TABLE_STYLE.th(false) }}>{t('من')}</th>
-                                                <th style={{ ...TABLE_STYLE.th(false) }}>{t('إلى')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('الأيام')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('المبيعات')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('المشتريات')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('صافي الفترة')}</th>
-                                                <th style={TABLE_STYLE.th(false)}>{t('قيود')}</th>
-                                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {closedYears.map((fy, idx) => {
-                                                const s = fy.stats;
-                                                const profit = s ? s.salesTotal - s.purchasesTotal : 0;
-                                                const isLast = idx === closedYears.length - 1;
-                                                return (
-                                                    <tr key={fy.id} style={TABLE_STYLE.row(isLast)}
-                                                        onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.025)'}
-                                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                        {/* الاسم */}
-                                                        <td style={{ ...TABLE_STYLE.td(true) }}>
-                                                            <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</div>
-                                                        </td>
-                                                        {/* من */}
-                                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
-                                                            {fmt(fy.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                                        </td>
-                                                        {/* إلى */}
-                                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
-                                                            {fmt(fy.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
-                                                        </td>
-                                                        {/* الأيام */}
-                                                        <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted }}>
-                                                            {formatNumber(calcDays(fy.startDate, fy.endDate))}
-                                                        </td>
-                                                        {/* المبيعات */}
-                                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
-                                                            {s ? (
-                                                                <div>
-                                                                    <div style={{ fontWeight: 700, color: '#10b981', fontSize: '12px' }}>{fmtMoney(s.salesTotal)} {CURRENCY_AR[currency] || currency}</div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{s.salesCount} {t('فاتورة')}</div>
-                                                                </div>
-                                                            ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
-                                                        </td>
-                                                        {/* المشتريات */}
-                                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
-                                                            {s ? (
-                                                                <div>
-                                                                    <div style={{ fontWeight: 700, color: C.danger, fontSize: '12px' }}>{fmtMoney(s.purchasesTotal)} {CURRENCY_AR[currency] || currency}</div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{s.purchasesCount} {t('فاتورة')}</div>
-                                                                </div>
-                                                            ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
-                                                        </td>
-                                                        {/* صافي */}
-                                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
-                                                            {s ? (
-                                                                <div>
-                                                                    <div style={{ fontWeight: 600, color: profit >= 0 ? '#10b981' : C.danger, fontSize: '12px' }}>
-                                                                        {profit >= 0 ? '+' : '-'}{fmtMoney(Math.abs(profit))} {CURRENCY_AR[currency] || currency}
+                                    <div style={{ overflowX: 'auto' }}>
+                                        <table style={TABLE_STYLE.table}>
+                                            <thead>
+                                                <tr style={TABLE_STYLE.thead}>
+                                                    <th style={{ ...TABLE_STYLE.th(true) }}>{t('السنة المالية')}</th>
+                                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('من')}</th>
+                                                    <th style={{ ...TABLE_STYLE.th(false) }}>{t('إلى')}</th>
+                                                    <th style={TABLE_STYLE.th(false)}>{t('الأيام')}</th>
+                                                    <th style={TABLE_STYLE.th(false)}>{t('المبيعات')}</th>
+                                                    <th style={TABLE_STYLE.th(false)}>{t('المشتريات')}</th>
+                                                    <th style={TABLE_STYLE.th(false)}>{t('صافي الفترة')}</th>
+                                                    <th style={TABLE_STYLE.th(false)}>{t('قيود')}</th>
+                                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('الحالة')}</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {closedYears.map((fy, idx) => {
+                                                    const s = fy.stats;
+                                                    const profit = s ? s.salesTotal - s.purchasesTotal : 0;
+                                                    const isLast = idx === closedYears.length - 1;
+                                                    return (
+                                                        <tr key={fy.id} style={TABLE_STYLE.row(isLast)}
+                                                            onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.025)'}
+                                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                                            {/* الاسم */}
+                                                            <td style={{ ...TABLE_STYLE.td(true) }}>
+                                                                <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{fy.name}</div>
+                                                            </td>
+                                                            {/* من */}
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
+                                                                {fmt(fy.startDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                                            </td>
+                                                            {/* إلى */}
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
+                                                                {fmt(fy.endDate, lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}
+                                                            </td>
+                                                            {/* الأيام */}
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textMuted }}>
+                                                                {formatNumber(calcDays(fy.startDate, fy.endDate))}
+                                                            </td>
+                                                            {/* المبيعات */}
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
+                                                                {s ? (
+                                                                    <div>
+                                                                        <div style={{ fontWeight: 700, color: '#10b981', fontSize: '12px' }}>{fmtMoney(s.salesTotal)} {CURRENCY_AR[currency] || currency}</div>
+                                                                        <div style={{ fontSize: '10px', color: C.textMuted }}>{s.salesCount} {t('فاتورة')}</div>
                                                                     </div>
-                                                                    <div style={{ fontSize: '10px', color: C.textMuted }}>{profit >= 0 ? t('ربح') : t('خسارة')}</div>
-                                                                </div>
-                                                            ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
-                                                        </td>
-                                                        {/* قيود */}
-                                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
-                                                            {s ? formatNumber(s.journalEntries) : '—'}
-                                                        </td>
-                                                        {/* الحالة */}
-                                                        <td style={TABLE_STYLE.td(false)}>
-                                                            <span style={{
-                                                                fontSize: '10px', background: 'rgba(100,116,139,0.1)',
-                                                                color: '#94a3b8', padding: '4px 10px', borderRadius: '16px',
-                                                                fontWeight: 600, border: '1px solid rgba(100,116,139,0.15)',
-                                                                display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: CAIRO
-                                                            }}>
-                                                                <LockIcon size={10} /> {t('مغلقة')}
-                                                            </span>
-                                                        </td>
-                                                    </tr>
-                                                );
-                                            })}
-                                        </tbody>
-                                    </table>
+                                                                ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
+                                                            </td>
+                                                            {/* المشتريات */}
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
+                                                                {s ? (
+                                                                    <div>
+                                                                        <div style={{ fontWeight: 700, color: C.danger, fontSize: '12px' }}>{fmtMoney(s.purchasesTotal)} {CURRENCY_AR[currency] || currency}</div>
+                                                                        <div style={{ fontSize: '10px', color: C.textMuted }}>{s.purchasesCount} {t('فاتورة')}</div>
+                                                                    </div>
+                                                                ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
+                                                            </td>
+                                                            {/* صافي */}
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO }}>
+                                                                {s ? (
+                                                                    <div>
+                                                                        <div style={{ fontWeight: 600, color: profit >= 0 ? '#10b981' : C.danger, fontSize: '12px' }}>
+                                                                            {profit >= 0 ? '+' : '-'}{fmtMoney(Math.abs(profit))} {CURRENCY_AR[currency] || currency}
+                                                                        </div>
+                                                                        <div style={{ fontSize: '10px', color: C.textMuted }}>{profit >= 0 ? t('ربح') : t('خسارة')}</div>
+                                                                    </div>
+                                                                ) : <span style={{ color: C.textMuted, fontSize: '11px' }}>—</span>}
+                                                            </td>
+                                                            {/* قيود */}
+                                                            <td style={{ ...TABLE_STYLE.td(false), fontFamily: CAIRO, fontSize: '12px', color: C.textSecondary }}>
+                                                                {s ? formatNumber(s.journalEntries) : '—'}
+                                                            </td>
+                                                            {/* الحالة */}
+                                                            <td style={TABLE_STYLE.td(false)}>
+                                                                <span style={{
+                                                                    fontSize: '10px', background: 'rgba(100,116,139,0.1)',
+                                                                    color: '#94a3b8', padding: '4px 10px', borderRadius: '16px',
+                                                                    fontWeight: 600, border: '1px solid rgba(100,116,139,0.15)',
+                                                                    display: 'inline-flex', alignItems: 'center', gap: '4px', fontFamily: CAIRO
+                                                                }}>
+                                                                    <LockIcon size={10} /> {t('مغلقة')}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                    );
+                                                })}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -448,9 +451,29 @@ export default function FinancialYearsPage() {
                     }}
                 />
 
-                <style jsx global>{`
+                <style dangerouslySetInnerHTML={{ __html: `
                     @keyframes spin { to { transform: rotate(360deg); } }
-                `}</style>
+                    
+                    @media (max-width: 768px) {
+                        .setup-fields { flex-direction: column; gap: 12px !important; }
+                        .setup-fields input { width: 100% !important; text-align: start !important; }
+                        
+                        .active-fy-header { flex-direction: column; align-items: flex-start !important; gap: 8px !important; padding: 14px 20px !important; }
+                        .fy-dates { font-size: 11px !important; opacity: 0.8; }
+                        
+                        .active-fy-body { flex-direction: column; gap: 20px !important; padding: 20px !important; }
+                        .progress-container { margin: 0 auto; }
+                        .fy-stats-grid { grid-template-columns: 1fr 1fr !important; width: 100%; }
+                        
+                        .fy-close-section { margin: 0 15px 20px !important; padding: 15px !important; }
+                        .close-inner { flex-direction: column; gap: 15px !important; align-items: stretch !important; }
+                        .close-actions { flex-direction: column; align-items: stretch !important; }
+                        .close-actions input { width: 100% !important; text-align: start !important; }
+                        .close-actions button { width: 100%; justify-content: center; }
+                        
+                        .kpi-card-responsive { padding: 10px !important; }
+                    }
+                ` }} />
             </div>
         </DashboardLayout>
     );

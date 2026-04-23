@@ -92,10 +92,11 @@ export default function PurchasesReportPage() {
                     printDate={(from || to) ? `${from ? t('من: ') + from : ''} ${to ? t(' إلى: ') + to : ''}` : undefined}
                 />
 
-                <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
-                        <div style={{ width: '170px' }}>
+                <div className="no-print report-filter-bar" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div className="date-filter-row" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '170px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('من:')}</span>
                             <input type="date" value={from} onChange={e => setFrom(e.target.value)}
                                 style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
@@ -105,8 +106,9 @@ export default function PurchasesReportPage() {
                                 }}
                             />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
-                        <div style={{ width: '170px' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
+                        <div className="date-input-wrapper" style={{ width: '170px' }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('إلى:')}</span>
                             <input type="date" value={to} onChange={e => setTo(e.target.value)}
                                 style={{
                                     ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
@@ -116,8 +118,11 @@ export default function PurchasesReportPage() {
                                 }}
                             />
                         </div>
+                    </div>
+
+                    <div className="branch-filter-wrapper" style={{ display: 'flex', gap: '10px', alignItems: 'center', flex: 1 }}>
                         {branches.length > 1 && (
-                            <div style={{ minWidth: '180px' }}>
+                            <div style={{ minWidth: '180px', flex: 1 }}>
                                 <CustomSelect
                                     value={branchId}
                                     onChange={v => setBranchId(v)}
@@ -131,12 +136,12 @@ export default function PurchasesReportPage() {
                                 />
                             </div>
                         )}
-                        <button onClick={fetchReport} style={{
+                        <button className="update-btn" onClick={fetchReport} style={{
                             height: '42px', padding: '0 24px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '10px', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)'
+                            boxShadow: '0 4px 12px rgba(37, 106, 244,0.2)', whiteSpace: 'nowrap'
                         }}>
                             <Search size={16} /> {t('تحديث البيانات')}
                         </button>
@@ -156,7 +161,7 @@ export default function PurchasesReportPage() {
                     </div>
                 ) : (
                     <>
-                        <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                        <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
                                 { label: t('إجمالي المشتريات'), value: fmt(data.totalPurchases), color: '#256af4', icon: <ShoppingCart size={18} /> },
                                 { label: t('إجمالي الخصومات'), value: fmt(data.totalDiscount), color: '#fb923c', icon: <ArrowDownRight size={18} /> },
@@ -258,7 +263,44 @@ export default function PurchasesReportPage() {
                     </>
                 )}
             </div>
-            
+            <style dangerouslySetInnerHTML={{ __html: `
+                @media (max-width: 768px) {
+                    .report-filter-bar { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
+                    .date-filter-row { width: 100%; gap: 8px !important; }
+                    .date-label-desktop { display: none !important; }
+                    .date-input-wrapper {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: rgba(255,255,255,0.03);
+                        padding: 4px 10px;
+                        border-radius: 10px;
+                        border: 1px solid ${C.border};
+                        width: 100% !important;
+                    }
+                    .date-label-mobile { 
+                        display: block !important; 
+                        color: ${C.textMuted}; 
+                        font-size: 11px; 
+                        font-weight: 600; 
+                        white-space: nowrap; 
+                        font-family: ${CAIRO};
+                    }
+                    .date-input-wrapper input {
+                        width: 100% !important;
+                        background: transparent !important;
+                        border: none !important;
+                        height: 34px !important;
+                        padding: 0 !important;
+                        font-size: 12px !important;
+                    }
+                    .branch-filter-wrapper { width: 100%; flex-direction: column; }
+                    .branch-filter-wrapper > div { width: 100% !important; }
+                    .update-btn { width: 100%; justify-content: center; }
+                    .stats-grid { grid-template-columns: 1fr 1fr !important; }
+                }
+            ` }} />
         </DashboardLayout>
     );
 }

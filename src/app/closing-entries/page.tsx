@@ -173,7 +173,7 @@ export default function ClosingEntriesPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, fontFamily: CAIRO }} className="closing-page-container">
                 
                 {/* Custom Confirmation Modal */}
                 {showConfirm && (
@@ -183,8 +183,8 @@ export default function ClosingEntriesPage() {
                             <div style={{ width: '64px', height: '64px', background: 'rgba(37, 106, 244,0.15)', color: '#256af4', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <ShieldCheck size={32} />
                             </div>
-                            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '12px', color: C.textPrimary }}>{t('تأكيد تنفيذ الإقفال المحاسبي')}</h2>
-                            <p style={{ fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, marginBottom: '24px' }}>
+                            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '12px', color: C.textPrimary, textAlign: 'center' }}>{t('تأكيد تنفيذ الإقفال المحاسبي')}</h2>
+                            <p style={{ fontSize: '13px', color: C.textSecondary, lineHeight: 1.6, marginBottom: '24px', textAlign: 'center' }}>
                                 {t('هل أنت متأكد من تصفير حسابات السنة الحالية وترحيل الأرصدة الختامية؟ لا يمكن التراجع عن هذه العملية بمجرد البدء.')}
                             </p>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -202,8 +202,8 @@ export default function ClosingEntriesPage() {
                             <div style={{ width: '64px', height: '64px', background: 'rgba(239,68,68,0.15)', color: '#ef4444', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <RotateCcw size={32} />
                             </div>
-                            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '12px', color: '#fff' }}>{t('إلغاء الإقفال المحاسبي')}</h2>
-                            <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
+                            <h2 style={{ fontSize: '20px', fontWeight: 600, marginBottom: '12px', color: '#fff', textAlign: 'center' }}>{t('إلغاء الإقفال المحاسبي')}</h2>
+                            <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px', textAlign: 'center' }}>
                                 {t('هل أنت متأكد من رغبتك في التراجع عن الإقفال؟ سيتم حذف قيد الإقفال وإعادة فتح السنة المالية للتعديل.')}
                             </p>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -221,8 +221,8 @@ export default function ClosingEntriesPage() {
                             <div style={{ width: '64px', height: '64px', background: 'rgba(239,68,68,0.1)', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
                                 <AlertTriangle size={32} style={{ color: '#ef4444' }} />
                             </div>
-                            <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#ef4444' }}>{t('تنبيه: قيود غير مرحلة')}</h2>
-                            <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
+                            <h2 style={{ fontSize: '16px', fontWeight: 600, marginBottom: '12px', color: '#ef4444', textAlign: 'center' }}>{t('تنبيه: قيود غير مرحلة')}</h2>
+                            <p style={{ fontSize: '13px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px', textAlign: 'center' }}>
                                 {t('يوجد عدد')} <strong style={{ color: '#fff' }}>{draftCount}</strong> {t('قيود في حالة "مسودة". يرجى ترحيل كافة القيود قبل إقفال السنة المالية لضمان دقة النتائج.')}
                             </p>
                             <button onClick={() => setShowDraftWarning(false)} style={{ width: '100%', height: '48px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: '12px', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>{t('حسناً')}</button>
@@ -236,13 +236,13 @@ export default function ClosingEntriesPage() {
                     icon={BookMarked}
                 />
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px' }}>
+                <div className="closing-layout-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: '24px' }}>
                     
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         
                         {/* Selector Box */}
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '20px', alignItems: 'flex-end' }}>
+                            <div className="selector-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '20px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ display: 'block', fontSize: '12px', color: C.textMuted, fontWeight: 600, marginBottom: '8px' }}>{t('السنة المالية المراد إقفالها')}</label>
                                     <CustomSelect
@@ -270,6 +270,7 @@ export default function ClosingEntriesPage() {
                                         type="button" 
                                         onClick={handleExecuteStart}
                                         disabled={executing}
+                                        className="start-closing-btn"
                                         style={{ 
                                             display: 'flex', alignItems: 'center', gap: '8px', height: '48px', padding: '0 28px', borderRadius: '14px', border: 'none', 
                                             background: 'linear-gradient(135deg, #256af4, #256af4)', color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
@@ -287,7 +288,7 @@ export default function ClosingEntriesPage() {
 
                         {/* Rendering Areas */}
                         {!selectedYear ? (
-                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textMuted }}>
+                            <div style={{ padding: '100px 20px', background: 'rgba(255,255,255,0.01)', border: `1px dashed ${C.border}`, borderRadius: '20px', color: C.textMuted, textAlign: 'center' }}>
                                 <Info size={48} style={{ opacity: 0.1, margin: '0 auto 20px' }} />
                                 <h3 style={{ fontSize: '13px', fontWeight: 700 }}>{t('يرجى اختيار السنة المالية للمعاينة')}</h3>
                                 <p style={{ fontSize: '13px', marginTop: '4px' }}>{t('سيتم سحب كافة حسابات الإيرادات والمصروفات لموسم المختارة')}</p>
@@ -298,7 +299,7 @@ export default function ClosingEntriesPage() {
                                 <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 700 }}>{t('جاري تحليل البيانات المحاسبية...')}</span>
                             </div>
                         ) : alreadyClosed ? (
-                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px' }}>
+                            <div style={{ padding: '60px', background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', textAlign: 'center' }}>
                                 <div style={{ width: '96px', height: '96px', background: 'rgba(16,185,129,0.1)', color: '#10b981', borderRadius: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
                                     <CheckCircle2 size={48} />
                                 </div>
@@ -308,7 +309,7 @@ export default function ClosingEntriesPage() {
                                     {closingInfo?.date && <span style={{ color: '#5286ed', fontWeight: 600, marginInlineEnd: '8px' }}>#{new Date(closingInfo.date).toLocaleDateString('en-GB')}</span>}
                                 </p>
                                 
-                                <div style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
+                                <div className="done-actions" style={{ display: 'flex', justifyContent: 'center', gap: '20px' }}>
                                     <button 
                                         onClick={handlePrint}
                                         style={{ display: 'flex', alignItems: 'center', gap: '10px', height: '52px', padding: '0 32px', borderRadius: '16px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, color: '#fff', fontWeight: 600, cursor: 'pointer', transition: '0.2s' }}
@@ -338,7 +339,7 @@ export default function ClosingEntriesPage() {
                                         <p style={{ fontSize: '13px', color: C.textMuted, margin: '4px 0 0' }}>{t('تم توليد قيد التصفير وترحيل الأرباح إلى الحساب الختامي.')}</p>
                                     </div>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+                                <div className="result-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
                                     <StatCard label={t("إجمالي الإيرادات")} value={result.revenueTotal} color="#256af4" compact currencySign={currencySign} />
                                     <StatCard label={t("إجمالي المصروفات")} value={result.expenseTotal} color="#ef4444" compact currencySign={currencySign} />
                                     <StatCard label={result.isProfit ? t("صافي أرباح العام") : t("صافي خسائر العام")} value={Math.abs(result.netIncome)} color={result.isProfit ? '#10b981' : '#f59e0b'} compact currencySign={currencySign} />
@@ -346,7 +347,7 @@ export default function ClosingEntriesPage() {
                             </div>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+                                <div className="preview-stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
                                     <StatCard label={t("رصيد الإيرادات")} value={totalRev} color="#3b82f6" icon={ArrowUpRight} currencySign={currencySign} />
                                     <StatCard label={t("رصيد المصروفات")} value={totalExp} color="#f87171" icon={ArrowDownRight} currencySign={currencySign} />
                                     <StatCard label={isProfitValue ? t("الأرباح المتوقعة") : t("الخسائر المتوقعة")} value={Math.abs(netIncomeValue)} color={isProfitValue ? '#34d399' : '#fb923c'} icon={TrendingUp} currencySign={currencySign} />
@@ -359,7 +360,7 @@ export default function ClosingEntriesPage() {
                                     </div>
                                 )}
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
+                                <div className="tables-responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '24px' }}>
                                     <DetailTable title={t("حسابات الإيرادات")} accounts={revenues} color="#3b82f6" t={t} currencySign={currencySign} />
                                     <DetailTable title={t("حسابات المصروفات")} accounts={expenses} color="#f87171" t={t} currencySign={currencySign} />
                                 </div>
@@ -368,7 +369,7 @@ export default function ClosingEntriesPage() {
                     </div>
 
                     {/* Sidebar */}
-                    <aside style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    <aside className="closing-sidebar" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                         
                         <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '24px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '14px' }}>
@@ -386,8 +387,8 @@ export default function ClosingEntriesPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div style={{ padding: '20px 0', opacity: 0.5 }}>
-                                        <HistoryIcon size={32} style={{ marginBottom: '8px', opacity: 0.2 }} />
+                                    <div style={{ padding: '20px 0', opacity: 0.5, textAlign: 'center' }}>
+                                        <HistoryIcon size={32} style={{ marginBottom: '8px', opacity: 0.2, margin: '0 auto' }} />
                                         <p style={{ color: C.textMuted, fontSize: '12px' }}>{t('لا توجد سنوات مقفلة بعد')}</p>
                                     </div>
                                 )}
@@ -404,13 +405,24 @@ export default function ClosingEntriesPage() {
                 </div>
             </div>
             
-            <style jsx global>{`
+            <style dangerouslySetInnerHTML={{ __html: `
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                 .animate-spin { animation: spin 1s linear infinite; }
                 ::-webkit-scrollbar { width: 6px; }
                 ::-webkit-scrollbar-track { background: transparent; }
                 ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 10px; }
-            `}</style>
+                
+                @media (max-width: 768px) {
+                    .closing-layout-grid { grid-template-columns: 1fr !important; }
+                    .selector-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                    .start-closing-btn { width: 100%; justify-content: center; }
+                    .preview-stats-grid, .result-stats-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                    .tables-responsive-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+                    .closing-sidebar { order: 2; }
+                    .done-actions { flex-direction: column; gap: 12px !important; }
+                    .done-actions button { width: 100%; justify-content: center; }
+                }
+            ` }} />
         </DashboardLayout>
     );
 }
@@ -449,8 +461,8 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                             >
                                 <td style={{ padding: '14px 20px' }}>
-                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary }}>{acc.name}</div>
-                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6 }}>{acc.code}</div>
+                                    <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, textAlign: 'start' }}>{acc.name}</div>
+                                    <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6, textAlign: 'start' }}>{acc.code}</div>
                                 </td>
                                 <td style={{ padding: '14px 20px', textAlign: 'end' }}>
                                     <div style={{ fontSize: '15px', fontWeight: 600, color, direction: 'ltr', fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>

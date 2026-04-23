@@ -237,10 +237,11 @@ table{width:100%;border-collapse:collapse}
                     onPrint={handlePrint}
                 />
 
-                <div className="no-print mobile-stack" style={{ ...SEARCH_STYLE.container, marginBottom: '24px', alignItems: 'center' }}>
-                    <div className="mobile-stack mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap', width: '100%' }}>
-                        <span className="mobile-hide" style={{ color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>{t('التاريخ')}</span>
-                        <div className="mobile-full" style={{ width: '180px' }}>
+                <div className="no-print report-filter-bar" style={{ ...SEARCH_STYLE.container, marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <div className="date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 1, minWidth: '200px' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px', fontFamily: CAIRO }}>{t('التاريخ')}</span>
+                        <div className="date-input-wrapper" style={{ flex: 1 }}>
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t('التاريخ')}</span>
                             <input type="date" value={date} onChange={e => setDate(e.target.value)}
                                 style={{
                                     width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
@@ -250,8 +251,11 @@ table{width:100%;border-collapse:collapse}
                                 }}
                             />
                         </div>
+                    </div>
+                    
+                    <div className="branch-filter-wrapper" style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 2, flexWrap: 'wrap' }}>
                         {branches.length > 1 && (
-                            <div className="mobile-full" style={{ width: '180px' }}>
+                            <div style={{ flex: 1, minWidth: '150px' }}>
                                 <CustomSelect
                                     value={branchId}
                                     onChange={v => setBranchId(v)}
@@ -264,12 +268,12 @@ table{width:100%;border-collapse:collapse}
                                 />
                             </div>
                         )}
-                        <button onClick={fetchReport} className="mobile-full" style={{
+                        <button onClick={fetchReport} className="update-btn" style={{
                             height: '36px', padding: '0 20px', borderRadius: '8px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13px', fontWeight: 700, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
-                            justifyContent: 'center'
+                            justifyContent: 'center', whiteSpace: 'nowrap'
                         }}>
                             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} /> {t('تحديث العرض')}
                         </button>
@@ -315,7 +319,7 @@ table{width:100%;border-collapse:collapse}
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('التحليل التجاري التفصيلي')}
                                     </h3>
-                                    <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
+                                    <div className="inner-report-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                                             <tbody>
                                                 <tr>
@@ -356,7 +360,7 @@ table{width:100%;border-collapse:collapse}
                                     <h3 style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, marginBottom: '20px', borderBottom: `1px solid ${C.border}`, paddingBottom: '12px', fontFamily: CAIRO }}>
                                         {t('أرصدة السيولة الحالية (الخزائن والبنوك)')}
                                     </h3>
-                                    <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                                    <div className="inner-report-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                                         {(data?.treasuries || []).map((tArr: any, i: number) => (
                                             <div key={i} style={{ padding: '16px', borderRadius: '10px', border: `1px solid ${C.border}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -372,7 +376,7 @@ table{width:100%;border-collapse:collapse}
                                 </div>
                             </div>
 
-                            <div className="no-print" style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <div className="sidebar-report no-print" style={{ position: 'sticky', top: '20px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 <div style={{ padding: '24px', background: 'linear-gradient(145deg, #1e1b4b, #312e81)', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                                     <h4 style={{ color: 'rgba(255,255,255,0.6)', fontSize: '11px', fontWeight: 600, marginBottom: '20px', fontFamily: CAIRO }}>{t('إجمالي السيولة النقدية المتاحة')}</h4>
                                     <div style={{ marginBottom: '20px' }}>
@@ -404,8 +408,45 @@ table{width:100%;border-collapse:collapse}
                     </>
                 )}
             </div>
-
-            
+            <style dangerouslySetInnerHTML={{ __html: `
+                @media (max-width: 768px) {
+                    .report-filter-bar { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
+                    .date-filter-row { width: 100%; gap: 8px !important; }
+                    .date-label-desktop { display: none !important; }
+                    .date-input-wrapper {
+                        flex: 1;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        background: rgba(255,255,255,0.03);
+                        padding: 4px 10px;
+                        border-radius: 10px;
+                        border: 1px solid ${C.border};
+                    }
+                    .date-label-mobile { 
+                        display: block !important; 
+                        color: ${C.textMuted}; 
+                        font-size: 11px; 
+                        font-weight: 600; 
+                        white-space: nowrap; 
+                        font-family: ${CAIRO};
+                    }
+                    .date-input-wrapper input {
+                        width: 100% !important;
+                        background: transparent !important;
+                        border: none !important;
+                        height: 34px !important;
+                        padding: 0 !important;
+                        font-size: 12px !important;
+                    }
+                    .branch-filter-wrapper { width: 100%; flex-direction: column; }
+                    .update-btn { width: 100%; justify-content: center; }
+                    .stats-grid { grid-template-columns: 1fr 1fr !important; }
+                    .report-grid { grid-template-columns: 1fr !important; }
+                    .sidebar-report { position: static !important; }
+                    .inner-report-grid { grid-template-columns: 1fr !important; gap: 20px !important; }
+                }
+            ` }} />
         </DashboardLayout>
     );
 }

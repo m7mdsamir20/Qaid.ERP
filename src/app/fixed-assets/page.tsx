@@ -166,7 +166,7 @@ export default function FixedAssetsPage() {
 
                 {/* KPI Section */}
                 {!loading && (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
+                    <div className="stats-grid-responsive" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
                             { label: t('إجمالي تكلفة الأصول'), val: totalCost, color: C.blue, icon: <DollarSign size={18} /> },
                             { label: t('مجمع الإهلاك المتراكم'), val: totalAccum, color: C.danger, icon: <TrendingDown size={18} /> },
@@ -197,7 +197,7 @@ export default function FixedAssetsPage() {
                 )}
 
                 {/* Filters Row */}
-                <div style={{ ...SEARCH_STYLE.container, marginBottom: '16px' }}>
+                <div className="filters-row-responsive" style={{ ...SEARCH_STYLE.container, marginBottom: '16px' }}>
                     <div style={{ ...SEARCH_STYLE.wrapper, flex: 1 }}>
                         <Search size={SEARCH_STYLE.iconSize} style={SEARCH_STYLE.icon(C.textMuted)} />
                         <input 
@@ -208,7 +208,7 @@ export default function FixedAssetsPage() {
                         />
                     </div>
                     
-                    <div style={{ display: 'flex', gap: '8px', background: THEME.colors.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}`, height: SEARCH_STYLE.input.height, boxSizing: 'border-box', alignItems: 'center' }}>
+                    <div className="status-filter-scroll" style={{ display: 'flex', gap: '8px', background: THEME.colors.card, padding: '4px', borderRadius: '12px', border: `1px solid ${C.border}`, height: SEARCH_STYLE.input.height, boxSizing: 'border-box', alignItems: 'center', overflowX: 'auto' }}>
                         {[
                             { id: 'all', label: t('الكل'), color: C.blue },
                             { id: 'active', label: t('نشط'), color: '#10b981' },
@@ -217,7 +217,7 @@ export default function FixedAssetsPage() {
                         ].map(f => (
                             <button key={f.id} onClick={() => setStatusFilter(f.id)} style={{
                                 padding: '0 14px', height: '100%', borderRadius: '8px', border: 'none', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
-                                cursor: 'pointer', transition: 'all 0.2s',
+                                cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap',
                                 background: statusFilter === f.id ? f.color : 'transparent',
                                 color: statusFilter === f.id ? '#fff' : C.textMuted,
                             }}>
@@ -229,74 +229,76 @@ export default function FixedAssetsPage() {
 
                 {/* Main Table */}
                 <div style={TABLE_STYLE.container}>
-                    <table style={TABLE_STYLE.table}>
-                        <thead>
-                            <tr style={TABLE_STYLE.thead}>
-                                <th style={TABLE_STYLE.th(true)}>{t('كود الأصل')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('اسم الأصل')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('الفئة الضريبية')}</th>
-                                <th style={TABLE_STYLE.th(false)}>{t('تاريخ الاقتناء')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('تكلفة الشراء')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('مجمع الإهلاك')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الصافي الدفتري')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
-                                <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('خيارات')}</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {loading ? (
-                                <tr><td colSpan={9} style={{ padding: '100px', }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
-                            ) : filtered.length === 0 ? (
-                                <tr><td colSpan={9} style={{ padding: '80px',  color: C.textMuted, textAlign: 'center' }}>
-                                    <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
-                                    <div style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
-                                </td></tr>
-                            ) : filtered.map((a, i) => {
-                                const st = STATUS_MAP[a.status];
-                                return (
-                                    <tr key={a.id} style={TABLE_STYLE.row(i === filtered.length - 1)}
-                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                        <td style={TABLE_STYLE.td(true)}>
-                                            <span style={{ fontSize: '12px', color: C.blue, fontWeight: 700, fontFamily: OUTFIT }}>{a.code}</span>
-                                        </td>
-                                        <td style={TABLE_STYLE.td(false)}>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{a.name}</div>
-                                            {a.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px' }}>{a.notes}</div>}
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={a.purchaseCost} /></div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={a.netBookValue} /></div>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
-                                                {st.label}
-                                            </span>
-                                        </td>
-                                        <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                {canEdit && <button onClick={() => openEdit(a)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}><Pencil size={15} /></button>}
-                                                {canDelete && <button onClick={() => setDeleteItem(a)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}><Trash2 size={15} /></button>}
-                                            </div>
-                                        </td>
-                                    </tr>
-                                );
-                            })}
-                        </tbody>
-                    </table>
+                    <div style={{ overflowX: 'auto' }}>
+                        <table style={TABLE_STYLE.table}>
+                            <thead>
+                                <tr style={TABLE_STYLE.thead}>
+                                    <th style={TABLE_STYLE.th(true)}>{t('كود الأصل')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('اسم الأصل')}</th>
+                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('الفئة الضريبية')}</th>
+                                    <th className="hide-mobile" style={TABLE_STYLE.th(false)}>{t('تاريخ الاقتناء')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('تكلفة الشراء')}</th>
+                                    <th className="hide-mobile" style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('مجمع الإهلاك')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الصافي الدفتري')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الحالة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('خيارات')}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {loading ? (
+                                    <tr><td colSpan={9} style={{ padding: '100px', textAlign: 'center' }}><Loader2 size={32} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, margin: '0 auto' }} /></td></tr>
+                                ) : filtered.length === 0 ? (
+                                    <tr><td colSpan={9} style={{ padding: '80px', color: C.textMuted, textAlign: 'center' }}>
+                                        <Info size={40} style={{ opacity: 0.1, margin: '0 auto 12px', display: 'block' }} />
+                                        <div style={{ fontWeight: 600, fontFamily: CAIRO }}>{t('لم يتم العثور على أصول مطابقة للبحث')}</div>
+                                    </td></tr>
+                                ) : filtered.map((a, i) => {
+                                    const st = STATUS_MAP[a.status];
+                                    return (
+                                        <tr key={a.id} style={TABLE_STYLE.row(i === filtered.length - 1)}
+                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                                            <td style={TABLE_STYLE.td(true)}>
+                                                <span style={{ fontSize: '12px', color: C.blue, fontWeight: 700, fontFamily: OUTFIT }}>{a.code}</span>
+                                            </td>
+                                            <td style={TABLE_STYLE.td(false)}>
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, textAlign: 'start' }}>{a.name}</div>
+                                                {a.notes && <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, marginTop: '2px', textAlign: 'start' }}>{a.notes}</div>}
+                                            </td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: CAIRO }}>{a.category}</td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontFamily: OUTFIT }}>{new Date(a.purchaseDate).toLocaleDateString(lang === 'ar' ? 'ar-EG-u-nu-latn' : 'en-GB')}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}><Currency amount={a.purchaseCost} /></div>
+                                            </td>
+                                            <td className="hide-mobile" style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <div style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}><Currency amount={a.accumulatedDepreciation} /></div>
+                                            </td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <div style={{ fontSize: '15px', fontWeight: 950, color: '#10b981', fontFamily: OUTFIT }}><Currency amount={a.netBookValue} /></div>
+                                            </td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <span style={{ padding: '4px 10px', borderRadius: '20px', fontSize: '10px', fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.color}20`, fontFamily: CAIRO }}>
+                                                    {st.label}
+                                                </span>
+                                            </td>
+                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                                    {canEdit && <button onClick={() => openEdit(a)} style={TABLE_STYLE.actionBtn()} title={t("تعديل")}><Pencil size={15} /></button>}
+                                                    {canDelete && <button onClick={() => setDeleteItem(a)} style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}><Trash2 size={15} /></button>}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 {/* Edit Modal */}
                 <AppModal show={showModal} onClose={() => setShowModal(false)} title={t("تعديل بيانات الأصل الثابت")} icon={Briefcase}>
                     <form onSubmit={handleSave}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                        <div className="modal-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
                                 <label style={LS}>{t('كود الأصل')}</label>
                                 <input readOnly value={form.code} style={{ ...IS, background: 'rgba(255,255,255,0.02)', color: C.textMuted, fontFamily: OUTFIT }} />
@@ -306,7 +308,7 @@ export default function FixedAssetsPage() {
                                 <input required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+                        <div className="modal-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
                                 <label style={LS}>{t('الفئة الضريبية')} *</label>
                                 <CustomSelect value={form.category} onChange={v => setForm(f => ({ ...f, category: v }))} options={CATEGORIES.map(c => ({ value: c, label: c }))} />
@@ -335,7 +337,7 @@ export default function FixedAssetsPage() {
                             </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                        <div className="modal-grid-responsive" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                             <div>
                                 <label style={LS}>{t('قيمة الخردة')}</label>
                                 <div style={{ position: 'relative' }}>
@@ -374,8 +376,19 @@ export default function FixedAssetsPage() {
                     isSubmitting={deleting}
                 />
 
+                <style dangerouslySetInnerHTML={{ __html: `
+                    @keyframes spin { to { transform: rotate(360deg); } }
+                    
+                    @media (max-width: 768px) {
+                        .stats-grid-responsive { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+                        .filters-row-responsive { flex-direction: column; align-items: stretch !important; gap: 12px !important; }
+                        .status-filter-scroll { width: 100%; padding: 6px !important; }
+                        .hide-mobile { display: none !important; }
+                        .modal-grid-responsive { grid-template-columns: 1fr !important; }
+                    }
+                ` }} />
+
             </div>
-            <style dangerouslySetInnerHTML={{ __html: `@keyframes spin { to { transform: rotate(360deg); } }` }} />
         </DashboardLayout>
     );
 }
