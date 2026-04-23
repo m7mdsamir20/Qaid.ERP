@@ -708,6 +708,7 @@ function NewSalePageInner() {
                                             value={entryQty} 
                                             onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
                                             disabled={!entryItemId}
+                                            onFocus={(e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.select(); }}
                                             decimals={2}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '16px', fontWeight: 600 }}
                                         />
@@ -722,6 +723,7 @@ function NewSalePageInner() {
                                             value={entryPrice} 
                                             onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
                                             disabled={!entryItemId}
+                                            onFocus={(e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.select(); }}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, fontSize: '16px', fontWeight: 600 }}
                                         />
                                         <InlineError field="entryPrice" />
@@ -885,8 +887,8 @@ function NewSalePageInner() {
 
                                 {/* إجمالي الأصناف */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
+                                    <span style={{ color: C.textSecondary, fontWeight: 600 }}>{t('إجمالي الأصناف')}</span>
                                     <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
-                                    <span style={{ color: C.textSecondary }}>{t('إجمالي الأصناف')}</span>
                                 </div>
 
                                 {/* الخصم */}
@@ -913,6 +915,7 @@ function NewSalePageInner() {
                                                 style={{ height: '34px', fontSize: '13px' }}
                                                 textAlign="center"
                                             />
+                                            <span style={{ position: 'absolute', bottom: '9px', insetInlineEnd: '10px', fontSize: '10px', color: '#64748b' }}>{cSymbol}</span>
                                         </div>
                                         <div style={{ position: 'relative' }}>
                                             <input type="number" min="0" max="100" placeholder="0"

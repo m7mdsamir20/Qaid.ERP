@@ -4,13 +4,9 @@ import React, { useState, useEffect } from 'react';
 import { formatNumber, parseNumber } from '@/lib/currency';
 import { IS, focusIn, focusOut, OUTFIT } from '@/constants/theme';
 
-interface PriceInputProps {
+interface PriceInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'value' | 'onChange'> {
     value: number | string;
     onChange: (val: number) => void;
-    placeholder?: string;
-    disabled?: boolean;
-    style?: React.CSSProperties;
-    className?: string;
     decimals?: number;
     textAlign?: 'left' | 'center' | 'right';
 }
@@ -23,13 +19,16 @@ export default React.forwardRef<HTMLInputElement, PriceInputProps>(function Pric
     style = {}, 
     className = '', 
     decimals = 2,
-    textAlign = 'center'
+    textAlign = 'center',
+    onFocus,
+    onBlur,
+    ...rest
 }, ref) {
     const [displayValue, setDisplayValue] = useState('');
 
     useEffect(() => {
         if (value === 0 || value === '0') {
-             setDisplayValue('0.00');
+             setDisplayValue('');
              return;
         }
         if (!value) {
@@ -53,6 +52,7 @@ export default React.forwardRef<HTMLInputElement, PriceInputProps>(function Pric
 
     const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
         focusOut(e);
+        if (onBlur) onBlur(e);
         // Format on blur to ensure thousand separators and fixed decimals
         if (displayValue === '' || isNaN(parseNumber(displayValue))) {
             setDisplayValue('');
@@ -70,10 +70,14 @@ export default React.forwardRef<HTMLInputElement, PriceInputProps>(function Pric
             value={displayValue}
             onChange={handleInputChange}
             onBlur={handleBlur}
-            onFocus={focusIn}
+            onFocus={(e) => {
+                focusIn(e);
+                if (onFocus) onFocus(e);
+            }}
             placeholder={placeholder}
             disabled={disabled}
             className={className}
+            {...rest}
             style={{ 
                 ...IS, 
                 height: '38px', 
