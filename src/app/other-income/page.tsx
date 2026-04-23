@@ -176,7 +176,7 @@ export default function OtherIncomePage() {
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {formatNumber(creditLine?.credit || 0)}
-                                                <small style={{ fontSize: '11px', marginInlineStart: '6px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
+                                                <small style={{ fontSize: '11px', marginInlineStart: '6px', fontWeight: 700, fontFamily: CAIRO, opacity: 0.7 }}>{currencySign}</small>
                                             </span>
                                         </td>
                                     </tr>
@@ -228,7 +228,7 @@ export default function OtherIncomePage() {
                                     alignItems: 'center'
                                 }}
                             >
-                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
+                                {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
                                 <input 
                                     type="number" step="0.01" value={form.amount} 
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
@@ -239,7 +239,7 @@ export default function OtherIncomePage() {
                                         fontSize: '18px', width: '100%', padding: '0 45px', 
                                         outline: 'none', fontFamily: OUTFIT 
                                     }} 
-                                    onFocus={e => e.target.select()}
+                                    onFocus={focusIn} onBlur={focusOut}
                                 />
                                 <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700 }}>{currencySign}</span>
                             </div>

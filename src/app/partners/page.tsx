@@ -8,6 +8,7 @@ import { Users, Plus, X, Loader2, Pencil, Trash2, Phone, StickyNote, TrendingUp,
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface Partner {
     id: string; name: string; share: number; capital: number;
@@ -20,6 +21,7 @@ const PARTNER_COLORS = ['#6366f1', '#a78bfa', '#34d399', '#60a5fa', '#f97316', '
 
 export default function PartnersPage() {
     const { lang, t } = useTranslation();
+    const { symbol: cSymbol } = useCurrency();
     const isRtl = lang === 'ar';
     const router = useRouter();
     const [partners, setPartners] = useState<Partner[]>([]);
@@ -96,9 +98,9 @@ export default function PartnersPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: t('إجمالي رأس المال'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: t('ج.م') },
+                            { label: t('إجمالي رأس المال'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: cSymbol },
                             { label: t('إجمالي الحصص'), val: totalShare.toFixed(1), color: '#818cf8', icon: PieChart, suffix: '%' },
-                            { label: t('إجمالي الأرصدة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: TrendingUp, suffix: t('ج.م') },
+                            { label: t('إجمالي الأرصدة'), val: totalBalance, color: totalBalance >= 0 ? '#10b981' : C.danger, icon: TrendingUp, suffix: cSymbol },
                         ].map((s, i) => (
                             <div key={i} style={{
                                 background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
@@ -110,9 +112,9 @@ export default function PartnersPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{typeof s.val === 'number' ? s.val : s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                        <span>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -206,12 +208,12 @@ export default function PartnersPage() {
                                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '18px' }}>
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('رأس المال')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 600, color: C.blue, fontFamily: OUTFIT }}>{formatNumber(p.capital)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span></div>
+                                                <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(p.capital)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span></div>
                                             </div>
                                             <div style={{ }}>
                                                 <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري')}</div>
-                                                <div style={{ fontSize: '15px', fontWeight: 600, color: p.balance >= 0 ? '#10b981' : C.danger, fontFamily: OUTFIT }}>
-                                                    {(p.balance)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
+                                                <div style={{ fontSize: '15px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                    {formatNumber(p.balance)} <span style={{ fontSize: '10px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,8 +256,16 @@ export default function PartnersPage() {
                         
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
                             <div>
-                                <label style={LS}>{t('رأس المال (ج.م)')} <span style={{ color: C.danger }}>*</span></label>
-                                <input required type="number" min="0" step="0.01" value={form.capital} onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} style={{...IS, color: '#10b981', fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                                <label style={LS}>{t('رأس المال')} <span style={{ color: C.danger }}>*</span></label>
+                                <div style={{ position: 'relative' }}>
+                                    {!form.capital && (
+                                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                            0.00
+                                        </div>
+                                    )}
+                                    <input required type="number" min="0" step="0.01" value={form.capital} onChange={e => setForm(f => ({ ...f, capital: e.target.value }))} style={{...IS, textAlign: 'center', color: C.textPrimary, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                                    <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                </div>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column' }}>
                                 <label style={LS}>{t('النسبة المحسوبة (%)')}</label>

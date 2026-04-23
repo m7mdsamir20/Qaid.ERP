@@ -281,6 +281,7 @@ export default function ComprehensiveSettlementPage() {
                                                 <div>
                                                     <label style={LS}>{t('المبلغ المراد تسويته')}</label>
                                                     <div style={{ position: 'relative' }}>
+                                                        {!form.amount && <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>0.00</div>}
                                                         <input
                                                             type="text"
                                                             value={form.amount}
@@ -292,10 +293,10 @@ export default function ComprehensiveSettlementPage() {
                                                                 const formatted = parts.join('.');
                                                                 setForm(f => ({ ...f, amount: formatted }));
                                                             }}
-                                                            style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 600 }}
-                                                            onFocus={focusIn} onBlur={focusOut} placeholder="0.00"
+                                                            style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 600, color: C.textPrimary }}
+                                                            onFocus={focusIn} onBlur={focusOut}
                                                         />
-                                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{currencySign}</span>
+                                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700 }}>{currencySign}</span>
                                                     </div>
                                                 </div>
                                             </div>
@@ -402,8 +403,8 @@ export default function ComprehensiveSettlementPage() {
                                                     </td>
                                                     <td style={{ padding: '11px 16px',  fontSize: '13px', color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, textAlign: 'center' }}>{s.notes || '-'}</td>
                                                     <td style={{ padding: '11px 16px', textAlign: 'center' }}>
-                                                        <div style={{ fontSize: '13px', fontWeight: 600, color: '#10b981', fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
-                                                            {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700 }}>{currencySign}</span>
+                                                        <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                                                            {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 700, opacity: 0.7 }}>{currencySign}</span>
                                                         </div>
                                                     </td>
                                                     <td style={{ padding: '11px 16px', textAlign: 'center' }}>
@@ -446,7 +447,7 @@ export default function ComprehensiveSettlementPage() {
                                 </div>
                                 <div style={{ background: 'rgba(255,255,255,0.02)', padding: '14px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, marginBottom: '4px' }}>{t('إجمالي القيد')}</div>
-                                    <div style={{ fontSize: '20px', color: '#10b981', fontWeight: 600, fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO }}>{currencySign}</span></div>
+                                    <div style={{ fontSize: '20px', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT }}>{detailsModal.amount.toLocaleString()} <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{currencySign}</span></div>
                                 </div>
                             </div>
 

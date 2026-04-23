@@ -7,6 +7,7 @@ import { DollarSign, Plus, Loader2, X, TrendingUp, TrendingDown, ChevronDown, Ch
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut, PAGE_BASE, IS, LS, BTN_PRIMARY, BTN_DANGER } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface CapitalChange { 
     id: string; 
@@ -27,6 +28,7 @@ interface Partner {
 
 export default function CapitalPage() {
     const { lang, t } = useTranslation();
+    const { symbol: cSymbol } = useCurrency();
     const isRtl = lang === 'ar';
     const [data, setData] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
@@ -101,7 +103,7 @@ export default function CapitalPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: t('إجمالي رأس المال العام'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: t('ج.م') },
+                            { label: t('إجمالي رأس المال العام'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: cSymbol },
                             { label: t('عدد المساهمين'), val: data.length, color: '#818cf8', icon: Users, suffix: t('شريك') },
                             { label: t('آخر تحديث لرأس المال'), val: data.length > 0 ? new Date().toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB') : '-', color: '#10b981', icon: History, suffix: '' },
                         ].map((s, i) => (
@@ -115,9 +117,9 @@ export default function CapitalPage() {
                             >
                                 <div style={{ textAlign: 'start' }}>
                                     <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT }} dir="ltr">
-                                        <span>{typeof s.val === 'number' ? s.val : s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '4px' }}>{s.suffix}</span>}
+                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
+                                        <span>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
+                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO }}>{s.suffix}</span>}
                                     </div>
                                 </div>
                                 <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
@@ -173,8 +175,8 @@ export default function CapitalPage() {
                                         {/* Main Value */}
                                         <div style={{ background: 'rgba(0,0,0,0.15)', border: `1px solid ${C.border}`, borderRadius: '14px', padding: '16px', marginBottom: '18px' }}>
                                             <div style={{ fontSize: '10px', color: C.textMuted, fontWeight: 750, marginBottom: '6px', fontFamily: CAIRO }}>{t('إجمالي القيمة الرأسمالية')}</div>
-                                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: OUTFIT }}>
-                                                {formatNumber(p.capital)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{t('ج.م')}</span>
+                                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                                {formatNumber(p.capital)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
                                             </div>
                                         </div>
 
@@ -228,7 +230,7 @@ export default function CapitalPage() {
                                                                     <div style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                                         {c.type === 'increase' ? '+' : '-'}{c.amount.toLocaleString()}
                                                                     </div>
-                                                                    <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO }}>{t('ج.م')}</div>
+                                                                    <div style={{ fontSize: '9px', color: C.textMuted, fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</div>
                                                                 </div>
                                                             </div>
                                                         ))}
@@ -253,8 +255,8 @@ export default function CapitalPage() {
                     <form onSubmit={handleSave}>
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
                             <div style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>{t('القيمة الرأسمالية الحالية')}</div>
-                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.blue, fontFamily: OUTFIT }}>
-                                {showModal?.capital.toLocaleString() || 0} <span style={{ fontSize: '12px', fontFamily: CAIRO }}>{t('ج.م')}</span>
+                            <div style={{ fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
+                                {formatNumber(showModal?.capital || 0)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
                             </div>
                         </div>
 
@@ -280,10 +282,18 @@ export default function CapitalPage() {
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '20px' }}>
-                            <div>
-                                <label style={LS}>{t('المبلغ')} <span style={{ color: C.danger }}>*</span></label>
-                                <input required type="number" min="1" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, color: form.type === 'increase' ? '#10b981' : C.danger, fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} placeholder="0.00" />
-                            </div>
+                             <div>
+                                 <label style={LS}>{t('المبلغ')} <span style={{ color: C.danger }}>*</span></label>
+                                 <div style={{ position: 'relative' }}>
+                                     {!form.amount && (
+                                         <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.4)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                             0.00
+                                         </div>
+                                     )}
+                                     <input required type="number" min="1" step="0.01" value={form.amount} onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} style={{...IS, textAlign: 'center', color: C.textPrimary, fontWeight: 600, fontFamily: OUTFIT}} onFocus={focusIn} onBlur={focusOut} />
+                                     <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', fontWeight: 700, color: C.textMuted }}>{cSymbol}</span>
+                                 </div>
+                             </div>
                             <div>
                                 <label style={LS}>{t('تاريخ الحركة')}</label>
                                 <input type="date" value={form.date} onChange={e => setForm(f => ({ ...f, date: e.target.value }))} style={{ ...IS, direction: 'ltr', textAlign: 'end', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
