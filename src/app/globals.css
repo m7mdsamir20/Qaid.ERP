@@ -1164,11 +1164,21 @@ select:-webkit-autofill:focus {
     gap: 10px !important;
   }
 
-  form [style*="display: flex"] > *,
-  [style*="display: flex"][style*="align-items: flex-end"] > *,
-  [style*="display: flex"][style*="align-items:flex-end"] > * {
+  form [style*="display: flex"] > *:not(svg):not([style*="width:"]),
+  [style*="display: flex"][style*="align-items: flex-end"] > *:not(svg):not([style*="width:"]),
+  [style*="display: flex"][style*="align-items:flex-end"] > *:not(svg):not([style*="width:"]) {
     flex: 1 1 100% !important;
     min-width: 0 !important;
+  }
+
+  .mobile-flex-row {
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+  }
+  .mobile-flex-row > * {
+    flex: 1 !important;
+    width: auto !important;
   }
 
   input,
