@@ -81,38 +81,36 @@ export default function PaymentVouchersPage() {
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title="سندات الصرف"
-                    subtitle="إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك"
+                    title={t("سندات الصرف")}
+                    subtitle={t("إدارة المدفوعات النقدية والبنكية للموردين — تتبع المنصرف من الخزينة والبنوك")}
                     icon={TrendingDown}
                     primaryButton={canCreate ? {
-                        label: 'سند صرف جديد',
+                        label: t('سند صرف جديد'),
                         onClick: () => router.push('/payments/new'),
                         icon: Plus
                     } : undefined}
-                    backButton={{ label: 'العودة للرئيسية', onClick: () => router.push('/') }}
                 />
 
-                {/* Filters Section */}
-                {/* ── Search & Filter ── */}
-                {/* ── Search & Filter ── */}
                 <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
-                            placeholder="رقم السند أو اسم المورد..." 
+                            placeholder={t("رقم السند أو اسم المورد...")} 
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
                             style={SEARCH_STYLE.input} 
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>من</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
+                    
+                    {/* Date Filters */}
+                    <div className="mobile-flex-row mobile-gap-sm" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>إلى</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: CAIRO, background: C.card, color: C.textSecondary }} />
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
                         </div>
                     </div>
 
@@ -121,66 +119,60 @@ export default function PaymentVouchersPage() {
                             className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
                             style={{
-                                display: 'flex', alignItems: 'center', gap: '6px', padding: '0 12px', height: '36px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
                                 background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                         >
-                            <Trash2 size={14} /> مسح
+                            <Trash2 size={14} /> {t("مسح")}
                         </button>
                     )}
                 </div>
 
                 {/* Table Section */}
-                <div style={{
-                    background: C.card,
-                    borderRadius: '16px',
-                    border: `1px solid ${C.border}`,
-                    overflow: 'hidden',
-                    boxShadow: '0 4px 20px rgba(0,0,0,0.05)'
-                }}>
+                <div style={TABLE_STYLE.container}>
                     {loading ? (
                         <div style={{ padding: '80px' }}>
                             <Loader2 size={36} style={{ animation: 'spin 1.5s linear infinite', color: C.primary, display: 'block', margin: '0 auto 10px' }} />
-                            <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>جاري تحميل البيانات...</span>
+                            <span style={{ fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>{t("جاري تحميل البيانات...")}</span>
                         </div>
                     ) : filteredAll.length === 0 ? (
                         <div style={{ padding: '70px' }}>
                             <Receipt size={36} style={{ color: C.textMuted, opacity: 0.3, display: 'block', margin: '0 auto 10px' }} />
-                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? 'لا توجد نتائج' : 'لا توجد سندات صرف'}</p>
+                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0 }}>{searchTerm || dateFrom || dateTo ? t('لا توجد نتائج') : t('لا توجد سندات صرف')}</p>
                         </div>
                     ) : (
                         <>
                             <div className="scroll-table">
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px', minWidth: '1000px' }}>
+                                <table style={TABLE_STYLE.table}>
                                     <thead>
-                                        <tr style={{ background: C.card, borderBottom: `1px solid ${C.border}` }}>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO, width: '120px' }}>رقم السند</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>التاريخ</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO }}>المورد</th>
-                                            <th style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>طريقة الدفع</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO }}>الخزينة / البنك</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted,  fontFamily: CAIRO }}>البيان</th>
-                                            <th style={{ padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>المبلغ</th>
-                                            <th style={{ textAlign: 'center', padding: '11px 16px', fontSize: '12px', fontWeight: 500, color: C.textMuted, fontFamily: CAIRO }}>إجراءات</th>
+                                        <tr style={TABLE_STYLE.thead}>
+                                            <th style={{ ...TABLE_STYLE.th(true) }}>{t("رقم السند")}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t("المورد")}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t("طريقة الدفع")}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t("الخزينة / البنك")}</th>
+                                            <th style={TABLE_STYLE.th(false)}>{t("البيان")}</th>
+                                            <th style={TABLE_STYLE.th(false, true)}>{t("المبلغ")}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {paginated.map((v, idx) => {
                                             const dateStr = new Date(v.date).toLocaleDateString('en-GB');
                                             return (
-                                                <tr key={v.id} style={{ background: 'rgba(0,0,0,0.15)', borderBottom: idx < paginated.length - 1 ? `1px solid ${C.border}` : 'none' }}
+                                                <tr key={v.id} style={TABLE_STYLE.row(idx === paginated.length - 1)}
                                                     onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                     onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
                                                 >
-                                                    <td style={{ padding: '11px 16px',  fontWeight: 500, fontSize: '11px', color: 'rgba(37, 106, 244, 0.65)', fontFamily: CAIRO, width: '120px' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px' }}>
                                                         PMT-{String(v.voucherNumber).padStart(5, '0')}
                                                     </td>
-                                                    <td style={{ padding: '11px 16px', color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{dateStr}</td>
-                                                    <td style={{ padding: '11px 16px',  color: 'rgba(255,255,255,0.92)', fontFamily: CAIRO }}>{v.supplier?.name || '—'}</td>
-                                                    <td style={{ padding: '11px 16px' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{v.supplier?.name || '—'}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
                                                         <div style={{
                                                             display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                             padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
@@ -188,20 +180,20 @@ export default function PaymentVouchersPage() {
                                                             color: v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399',
                                                             border: `1px solid ${v.treasury?.type === 'bank' ? '#60a5fa' : '#34d399'}30`, fontFamily: CAIRO
                                                         }}>
-                                                            {v.treasury?.type === 'bank' ? 'بنكي' : 'نقدي'}
+                                                            {v.treasury?.type === 'bank' ? t('بنكي') : t('نقدي')}
                                                         </div>
                                                     </td>
-                                                    <td style={{ padding: '11px 16px',  color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{v.treasury?.name || '—'}</td>
-                                                    <td style={{ padding: '11px 16px',  color: C.textMuted, fontSize: '12px', fontFamily: CAIRO, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.description || '—'}</td>
-                                                    <td style={{ padding: '11px 16px', fontWeight: 500, color: '#fb7185', fontFamily: CAIRO }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '13px', fontFamily: CAIRO }}>{v.treasury?.name || '—'}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false), color: C.textMuted, fontSize: '12px', fontFamily: CAIRO, maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{v.description || '—'}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false, true), color: C.danger, fontWeight: 700, fontFamily: OUTFIT }}>
                                                         <Currency amount={v.amount} />
                                                     </td>
-                                                    <td style={{ padding: '11px 16px' }}>
+                                                    <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                         <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
-                                                            <button onClick={() => handlePrint(v)} style={TABLE_STYLE.actionBtn()} title="طباعة">
+                                                            <button onClick={() => handlePrint(v)} style={TABLE_STYLE.actionBtn()} title={t("طباعة")}>
                                                                 <Printer size={TABLE_STYLE.actionIconSize} />
                                                             </button>
-<button onClick={() => router.push(`/payments/${v.id}`)} style={TABLE_STYLE.actionBtn()} title="عرض">
+                                                            <button onClick={() => router.push(`/payments/${v.id}`)} style={TABLE_STYLE.actionBtn()} title={t("عرض")}>
                                                                 <Eye size={TABLE_STYLE.actionIconSize} />
                                                             </button>
                                                         </div>

@@ -8,7 +8,7 @@ import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import PageHeader from '@/components/PageHeader';
 import Pagination from '@/components/Pagination';
-import { TrendingDown, Plus, Search, Loader2, Calendar, Building2, Banknote, X, Tag, Activity, ArrowUpRight, History, Layers } from 'lucide-react';
+import { TrendingDown, Plus, Search, Loader2, Calendar, Building2, Banknote, X, Tag, Activity, ArrowUpRight, History, Layers, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABLE_STYLE, BTN_PRIMARY, SEARCH_STYLE } from '@/constants/theme';
@@ -26,6 +26,8 @@ export default function ExpensesPage() {
     const [showForm, setShowForm] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [dateFrom, setDateFrom] = useState('');
+    const [dateTo, setDateTo] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 15;
 
@@ -81,14 +83,20 @@ export default function ExpensesPage() {
         finally { setSubmitting(false); }
     };
 
-    const filteredAll = entries.filter(e => 
-        (e.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-        e.lines.some((l: any) => l.account?.name.toLowerCase().includes(searchQuery.toLowerCase()))
-    );
+    const filteredAll = entries.filter(e => {
+        const matchSearch = (e.description || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+            e.lines.some((l: any) => l.account?.name.toLowerCase().includes(searchQuery.toLowerCase()));
+        
+        const entryDate = new Date(e.date);
+        const matchFrom = !dateFrom || entryDate >= new Date(dateFrom);
+        const matchTo = !dateTo || entryDate <= new Date(dateTo + 'T23:59:59');
+        
+        return matchSearch && matchFrom && matchTo;
+    });
 
     const paginated = filteredAll.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
-    useEffect(() => { setCurrentPage(1); }, [searchQuery]);
+    useEffect(() => { setCurrentPage(1); }, [searchQuery, dateFrom, dateTo]);
 
     return (
         <DashboardLayout>
@@ -115,10 +123,37 @@ export default function ExpensesPage() {
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
+                    
+                    {/* Date Filters */}
+                    <div className="mobile-flex-row mobile-gap-sm" style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("من")}</span>
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, background: 'rgba(255,255,255,0.03)', padding: '4px 10px', borderRadius: '10px', border: `1px solid ${C.border}` }}>
+                            <span style={{ color: C.textMuted, fontSize: '11px', fontWeight: 600, fontFamily: CAIRO, whiteSpace: 'nowrap' }}>{t("إلى")}</span>
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, background: 'transparent', border: 'none', height: '34px', fontSize: '12px', fontFamily: OUTFIT, color: C.textSecondary, flex: 1, padding: 0, minHeight: 'auto' }} />
+                        </div>
+                    </div>
+
+                    {(searchQuery || dateFrom || dateTo) && (
+                        <button 
+                            className="mobile-full"
+                            onClick={() => { setSearchQuery(''); setDateFrom(''); setDateTo(''); }}
+                            style={{ 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
+                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
+                                borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
+                            }}
+                        >
+                            <Trash2 size={14} /> {t("مسح")}
+                        </button>
+                    )}
                 </div>
 
                 <div style={TABLE_STYLE.container}>
-                    <table style={TABLE_STYLE.table}>
+                    <div className="scroll-table">
+                        <table style={TABLE_STYLE.table}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
                                 <th style={{ ...TABLE_STYLE.th(true, true), textAlign: 'center' }}>{t('التاريخ')}</th>
@@ -184,6 +219,7 @@ export default function ExpensesPage() {
                             })}
                         </tbody>
                     </table>
+                    </div>
                     <Pagination 
                         total={filteredAll.length}
                         pageSize={pageSize}
