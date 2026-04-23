@@ -4,8 +4,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import { BookOpen, Plus, X, ArrowRight, ArrowLeft, Lock, Loader2, FolderOpen } from 'lucide-react';
+import { BookOpen, Plus, Lock, Loader2, FolderOpen } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY, LS, IS, SC, focusIn, focusOut } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
 
 interface Account {
     id: string;
@@ -75,7 +77,6 @@ export default function NewAccountPage() {
                 const data = await res.json();
                 const accs = Array.isArray(data) ? data : [];
                 setAccounts(accs);
-                // Initial code generation
                 setForm(f => ({ ...f, code: generateNextCode('', 'asset', accs) }));
             }
         } catch { } finally { setLoading(false); }
@@ -116,22 +117,12 @@ export default function NewAccountPage() {
         }
     };
 
-    const LS: React.CSSProperties = {
-        display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600, color: '#94a3b8', textAlign: 'start',
-    };
-    const IS: React.CSSProperties = {
-        width: '100%', height: '42px', padding: '0 14px', textAlign: 'start', direction: isRtl ? 'rtl' : 'ltr',
-        borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)',
-        background: 'rgba(255,255,255,0.04)', color: '#e2e8f0', fontSize: '13px',
-        fontWeight: 500, outline: 'none', transition: 'border-color 0.15s, box-shadow 0.15s', boxSizing: 'border-box',
-    };
-
     if (loading) {
         return (
             <DashboardLayout>
-                <div style={{ padding: '60px', color: '#475569' }}>
-                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', margin: '0 auto 12px', display: 'block' }} />
-                    {t('جاري التحميل...')}
+                <div style={{ padding: '100px 0', color: C.textMuted, textAlign: 'center' }}>
+                    <Loader2 size={40} style={{ animation: 'spin 1s linear infinite', marginBottom: '16px' }} />
+                    <p style={{ fontFamily: CAIRO, fontWeight: 600 }}>{t('جاري التحميل...')}</p>
                 </div>
             </DashboardLayout>
         );
@@ -139,163 +130,137 @@ export default function NewAccountPage() {
 
     return (
         <DashboardLayout>
-            {/* Header */}
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <div style={{
-                        width: '36px', height: '36px', borderRadius: '10px', background: 'rgba(37, 106, 244,0.1)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#256af4'
-                    }}>
-                        <BookOpen size={20} />
-                    </div>
-                    <div>
-                        <h1 className="page-title">{t('إضافة حساب جديد')}</h1>
-                        <p className="page-subtitle">{t('إنشاء حساب جديد في الدليل المحاسبي')}</p>
-                    </div>
-                </div>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+                <PageHeader 
+                    title={t('إضافة حساب جديد')} 
+                    subtitle={t('إنشاء حساب جديد في الدليل المحاسبي — حدد التبويب والنوع والموقع بدقة')} 
+                    icon={BookOpen} 
+                    backUrl="/accounts"
+                />
 
-                <button
-                    onClick={() => router.push('/accounts')}
-                    style={{
-                        paddingInlineStart: '16px', paddingInlineEnd: '16px',
-                        display: 'flex', alignItems: 'center', gap: '8px',
-                        background: 'transparent', border: '1px solid rgba(255,255,255,0.1)',
-                        color: '#94a3b8', height: '38px', borderRadius: '8px',
-                        fontSize: '13px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.15s',
-                    }}
-                    onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#e2e8f0'; }}
-                    onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#94a3b8'; }}
-                >
-                    {isRtl ? <ArrowRight size={16} /> : <ArrowLeft size={16} />} {t('العودة')}
-                </button>
-            </div>
-
-            <div style={{ background: 'linear-gradient(145deg,#0f1c2e 0%,#0d1625 100%)', border: '1px solid rgba(99,179,237,0.12)', borderRadius: '16px', padding: '32px', boxShadow: '0 24px 64px rgba(0,0,0,0.2)', maxWidth: '800px', margin: '0 auto' }}>
-                <form onSubmit={handleSubmit} dir={isRtl ? 'rtl' : 'ltr'}>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
-                        <div>
-                            <label style={LS}>{t('كود الحساب')} <span style={{ color: '#f87171' }}>*</span></label>
-                            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
-                                <input
-                                    type="text" readOnly disabled value={form.code} dir="ltr"
-                                    style={{ ...IS, paddingInlineStart: '42px', color: '#475569', cursor: 'not-allowed', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', fontFamily: 'monospace', fontWeight: 700 }}
-                                />
-                                <Lock size={15} style={{ position: 'absolute', insetInlineStart: '14px', color: '#334155', pointerEvents: 'none' }} />
+                <div style={{ ...SC, background: C.card, borderRadius: '20px', padding: '32px', boxShadow: '0 4px 24px rgba(0,0,0,0.2)', maxWidth: '800px', margin: '0 auto' }}>
+                    <form onSubmit={handleSubmit}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '24px' }}>
+                            <div>
+                                <label style={LS}>{t('كود الحساب')} <span style={{ color: C.danger }}>*</span></label>
+                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <input
+                                        type="text" readOnly disabled value={form.code} dir="ltr"
+                                        style={{ ...IS, paddingInlineStart: '42px', color: C.textMuted, cursor: 'not-allowed', background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, fontFamily: OUTFIT, fontWeight: 700 }}
+                                    />
+                                    <Lock size={15} style={{ position: 'absolute', insetInlineStart: '14px', color: C.textMuted, opacity: 0.5, pointerEvents: 'none' }} />
+                                </div>
+                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '6px' }}>{t('يتم توليد الكود تلقائياً بناءً على الحساب الأب ونوع الحساب')}</p>
                             </div>
-                            <p style={{ fontSize: '11px', color: '#475569', marginTop: '6px' }}>{t('يتم توليد الكود تلقائياً بناءً على الحساب الأب ونوع الحساب')}</p>
+
+                            <div>
+                                <label style={LS}>{t('اسم الحساب')} <span style={{ color: C.danger }}>*</span></label>
+                                <input
+                                    required type="text"
+                                    placeholder={t('مثال: النقدية، البنك الأهلي، العملاء...')}
+                                    value={form.name}
+                                    onChange={e => setForm({ ...form, name: e.target.value })}
+                                    style={IS}
+                                    onFocus={focusIn} onBlur={focusOut}
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <label style={LS}>{t('اسم الحساب')} <span style={{ color: '#f87171' }}>*</span></label>
-                            <input
-                                required type="text"
-                                placeholder={t('مثال: النقدية، البنك الأهلي، العملاء...')}
-                                value={form.name}
-                                onChange={e => setForm({ ...form, name: e.target.value })}
-                                style={IS}
-                                onFocus={e => { e.currentTarget.style.borderColor = 'rgba(37, 106, 244,0.6)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(37, 106, 244,0.12)'; }}
-                                onBlur={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'; e.currentTarget.style.boxShadow = 'none'; }}
-                            />
-                        </div>
-                    </div>
-
-                    <div style={{ marginBottom: '24px' }}>
-                        <label style={LS}>{t('تصنيف نوع الحساب')} <span style={{ color: '#f87171' }}>*</span></label>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px' }}>
-                            {accountTypes.map(opt => (
-                                <button key={opt.value} type="button"
-                                    onClick={() => setForm(f => ({ ...f, type: opt.value }))}
-                                    style={{
-                                        padding: '12px 6px', borderRadius: '12px', border: '1px solid',
-                                        borderColor: form.type === opt.value ? `${opt.color}50` : 'rgba(255,255,255,0.07)',
-                                        background: form.type === opt.value ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
-                                        cursor: 'pointer', transition: 'all 0.15s',
-                                    }}>
-                                    <div style={{ fontSize: '13px', color: form.type === opt.value ? opt.color : '#64748b', fontWeight: 600 }}>{opt.label}</div>
-                                    <div style={{ fontSize: '11px', color: '#475569', marginTop: '4px', fontWeight: 600 }}>
-                                        {opt.nature === 'debit' ? t('مدين') : t('دائن')}
-                                    </div>
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
-                        <div>
-                            <label style={LS}>{t('نوع التصنيف المحاسبي')}</label>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                {[
-                                    { val: 'summary', label: t('حساب إجمالي'), sub: t('للتجميع والتقارير'), color: '#a78bfa' },
-                                    { val: 'detail', label: t('حساب تحليلي'), sub: t('يقبل قيود يومية'), color: '#10b981' },
-                                ].map(opt => (
-                                    <button key={opt.val} type="button"
-                                        onClick={() => setForm(f => ({ ...f, accountCategory: opt.val as any }))}
+                        <div style={{ marginBottom: '24px' }}>
+                            <label style={LS}>{t('تصنيف نوع الحساب')} <span style={{ color: C.danger }}>*</span></label>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px' }}>
+                                {accountTypes.map(opt => (
+                                    <button key={opt.value} type="button"
+                                        onClick={() => setForm(f => ({ ...f, type: opt.value }))}
                                         style={{
-                                            padding: '12px', borderRadius: '12px', border: '1px solid',
-                                            borderColor: form.accountCategory === opt.val ? `${opt.color}50` : 'rgba(255,255,255,0.07)',
-                                            background: form.accountCategory === opt.val ? `${opt.color}12` : 'rgba(255,255,255,0.02)',
+                                            padding: '12px 6px', borderRadius: '12px', border: '1px solid',
+                                            borderColor: form.type === opt.value ? `${opt.color}80` : C.border,
+                                            background: form.type === opt.value ? `${opt.color}15` : 'rgba(255,255,255,0.02)',
                                             cursor: 'pointer', transition: 'all 0.15s',
                                         }}>
-                                        <div style={{ fontSize: '13px', color: form.accountCategory === opt.val ? opt.color : '#64748b', fontWeight: 600 }}>{opt.label}</div>
-                                        <div style={{ fontSize: '11px', color: '#475569', marginTop: '3px' }}>{opt.sub}</div>
+                                        <div style={{ fontSize: '13px', color: form.type === opt.value ? opt.color : C.textSecondary, fontWeight: 700 }}>{opt.label}</div>
+                                        <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '4px', fontWeight: 600 }}>
+                                            {opt.nature === 'debit' ? t('مدين') : t('دائن')}
+                                        </div>
                                     </button>
                                 ))}
                             </div>
                         </div>
 
-                        <div>
-                            <label style={LS}>{t('الحساب الرئيسي (الأب)')}</label>
-                            <CustomSelect
-                                value={form.parentId}
-                                onChange={v => setForm(f => ({ ...f, parentId: v }))}
-                                icon={FolderOpen}
-                                placeholder={t('-- حساب رئيسي (مستوى 1) --')}
-                                options={accounts
-                                    .filter(a => a.accountCategory !== 'detail')
-                                    .map(a => ({
-                                        value: a.id,
-                                        label: `${a.code} — ${a.name}`,
-                                        style: { paddingInlineEnd: `${(a.level || 0) * 16 + 12}px` }
-                                    }))}
-                                style={{ minWidth: '100%' }}
-                            />
-                            <p style={{ fontSize: '11px', color: '#475569', marginTop: '6px' }}>{t('اتركه فارغاً لإنشاء حساب رئيسي في المستوى الأول')}</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginBottom: '32px' }}>
+                            <div>
+                                <label style={LS}>{t('نوع التصنيف المحاسبي')}</label>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                    {[
+                                        { val: 'summary', label: t('حساب إجمالي'), sub: t('للتجميع والتقارير'), color: '#a78bfa' },
+                                        { val: 'detail', label: t('حساب تحليلي'), sub: t('يقبل قيود يومية'), color: '#10b981' },
+                                    ].map(opt => (
+                                        <button key={opt.val} type="button"
+                                            onClick={() => setForm(f => ({ ...f, accountCategory: opt.val as any }))}
+                                            style={{
+                                                padding: '12px', borderRadius: '12px', border: '1px solid',
+                                                borderColor: form.accountCategory === opt.val ? `${opt.color}80` : C.border,
+                                                background: form.accountCategory === opt.val ? `${opt.color}15` : 'rgba(255,255,255,0.02)',
+                                                cursor: 'pointer', transition: 'all 0.15s',
+                                            }}>
+                                            <div style={{ fontSize: '13px', color: form.accountCategory === opt.val ? opt.color : C.textSecondary, fontWeight: 700 }}>{opt.label}</div>
+                                            <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '3px', fontWeight: 500 }}>{opt.sub}</div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label style={LS}>{t('الحساب الرئيسي (الأب)')}</label>
+                                <CustomSelect
+                                    value={form.parentId}
+                                    onChange={v => setForm(f => ({ ...f, parentId: v }))}
+                                    icon={FolderOpen}
+                                    placeholder={t('-- حساب رئيسي (مستوى 1) --')}
+                                    options={accounts
+                                        .filter(a => a.accountCategory !== 'detail')
+                                        .map(a => ({
+                                            value: a.id,
+                                            label: `${a.code} — ${a.name}`,
+                                            style: { paddingInlineEnd: `${(a.level || 0) * 16 + 12}px` }
+                                        }))}
+                                    style={{ minWidth: '100%', height: '42px' }}
+                                />
+                                <p style={{ fontSize: '11px', color: C.textMuted, marginTop: '6px' }}>{t('اتركه فارغاً لإنشاء حساب رئيسي في المستوى الأول')}</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div style={{ display: 'flex', flexDirection: isRtl ? 'row' : 'row-reverse', gap: '12px', paddingTop: '24px', borderTop: '1px solid rgba(255,255,255,0.06)' }}>
-                        <button
-                            type="submit"
-                            disabled={saving}
-                            style={{
-                                flex: 2, height: '48px', borderRadius: '12px', border: 'none',
-                                background: saving ? 'rgba(37, 106, 244,0.25)' : 'linear-gradient(135deg,#256af4,#256af4)',
-                                color: '#fff', fontSize: '15px', fontWeight: 700,
-                                cursor: saving ? 'not-allowed' : 'pointer',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                                boxShadow: saving ? 'none' : '0 4px 14px rgba(37, 106, 244,0.3)', transition: 'all 0.15s'
-                            }}
-                        >
-                            {saving ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={18} /> {t('إضافة الحساب للدليل')}</>}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => router.push('/accounts')}
-                            style={{
-                                flex: 1, height: '48px', borderRadius: '12px',
-                                border: '1px solid rgba(255,255,255,0.08)', background: 'transparent',
-                                color: '#94a3b8', fontSize: '15px', fontWeight: 600, cursor: 'pointer'
-                            }}
-                        >
-                            {t('إلغاء')}
-                        </button>
-                    </div>
-                </form>
+                        <div style={{ display: 'flex', gap: '12px', paddingTop: '24px', borderTop: `1px solid ${C.border}` }}>
+                            <button
+                                type="submit"
+                                disabled={saving}
+                                style={{
+                                    ...BTN_PRIMARY(saving, saving),
+                                    flex: 2, height: '48px', fontSize: '14px',
+                                }}
+                            >
+                                {saving ? <Loader2 size={20} style={{ animation: 'spin 1s linear infinite' }} /> : <><Plus size={18} /> {t('إضافة الحساب للدليل')}</>}
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => router.push('/accounts')}
+                                style={{
+                                    flex: 1, height: '48px', borderRadius: '12px',
+                                    border: `1px solid ${C.border}`, background: 'transparent',
+                                    color: C.textSecondary, fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO
+                                }}
+                                onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = C.textPrimary; }}
+                                onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = C.textSecondary; }}
+                            >
+                                {t('إلغاء')}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div style={{ height: '200px' }}></div>
             </div>
-
-            {/* Spacer for dropdown */}
-            <div style={{ height: '300px' }}></div>
-            <style jsx>{`@keyframes spin { to { transform:rotate(360deg); } }`}</style>
+            <style jsx global>{`@keyframes spin { to { transform:rotate(360deg); } }`}</style>
         </DashboardLayout>
     );
 }

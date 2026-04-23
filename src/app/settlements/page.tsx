@@ -292,10 +292,10 @@ export default function ComprehensiveSettlementPage() {
                                                                 const formatted = parts.join('.');
                                                                 setForm(f => ({ ...f, amount: formatted }));
                                                             }}
-                                                            style={{ ...IS, paddingInlineStart: '44px', fontFamily: OUTFIT, fontWeight: 400 }}
+                                                            style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 600 }}
                                                             onFocus={focusIn} onBlur={focusOut} placeholder="0.00"
                                                         />
-                                                        <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{currencySign}</span>
+                                                        <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted }}>{currencySign}</span>
                                                     </div>
                                                 </div>
                                             </div>

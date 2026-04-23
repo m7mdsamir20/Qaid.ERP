@@ -7,7 +7,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import AppModal from '@/components/AppModal';
-import { Landmark, Plus, Banknote, Building2, Pencil, Trash2, Loader2, X, TrendingUp, TrendingDown, Wallet, AlertTriangle, Building, CreditCard, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { Landmark, Plus, Banknote, Building2, Pencil, Trash2, Loader2, CheckCircle2, Wallet, Building, Tag } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { getListCache, setListCache } from '@/lib/listCache';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -19,7 +19,7 @@ interface Treasury {
     accountId?: string;
 }
 
-/* ── Treasury Modal (Same design as Customer Modal) ── */
+/* ── Treasury Modal ── */
 function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | null, onClose: () => void, onSaved: () => void }) {
     const { t } = useTranslation();
     const isEdit = !!initial;
@@ -78,7 +78,6 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                         placeholder={t("مثال: الخزينة الرئيسية، بنك CIB")} style={{ ...IS, fontSize: '13px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                 </div>
 
-                {/* Type Toggle */}
                 <div>
                     <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>{t('نوع السيولة')} <span style={{ color: C.danger }}>*</span></label>
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
@@ -104,7 +103,6 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                     </div>
                 </div>
 
-                {/* Bank fields */}
                 {form.type === 'bank' && (
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '16px', background: 'rgba(37, 106, 244,0.02)', border: `1px solid rgba(37, 106, 244,0.1)`, borderRadius: '16px', padding: '16px', animation: 'fadeIn 0.2s ease', borderInlineStart: `3px solid ${C.primary}` }}>
                         <div>
@@ -120,12 +118,10 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                     </div>
                 )}
 
-                {/* Opening Balance */}
                 {!isEdit && (
                     <div>
                         <label style={{ ...LS, fontSize: '11px', marginBottom: '8px', color: C.textSecondary }}>{t('الرصيد الافتتاحي (عند الإنشاء)')}</label>
                         <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                            {/* Background Zeros Layer (Only visible when empty) */}
                             {!form.balance && (
                                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px', fontWeight: 600, color: 'rgba(255,255,255,0.03)', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px' }}>
                                     0.00
@@ -134,18 +130,15 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
                             <input type="text" inputMode="decimal" value={formatWithCommas(form.balance)}
                                 onChange={e => {
                                     const val = e.target.value.replace(/[^0-9.]/g, '');
-                                    // منع تكرار النقطة العشرية
                                     if ((val.match(/\./g) || []).length > 1) return;
                                     setForm(f => ({ ...f, balance: val }));
                                 }}
-                                style={{ ...IS, border: 'none', background: 'transparent', fontWeight: 600, color: C.textPrimary, height: '46px', fontSize: '17px', width: '100%', padding: '0' }} onFocus={focusIn} onBlur={focusOut} />
-                            <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 600, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
+                                style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontWeight: 700, color: C.textPrimary, height: '46px', fontSize: '18px', width: '100%', padding: '0 45px', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                            <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700, pointerEvents: 'none', fontFamily: CAIRO }}>{currencySymbol}</span>
                         </div>
                     </div>
                 )}
 
-
-                {/* Buttons - Swapped Order Solid Footer */}
                 <div style={{
                     display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '10px',
                     padding: '24px 22px', borderTop: `1px solid ${C.border}`,
@@ -174,7 +167,6 @@ function TreasuryModal({ initial, onClose, onSaved }: { initial?: Treasury | nul
         </AppModal>
     );
 }
-
 
 /* ── Main Page ── */
 export default function TreasuriesPage() {
@@ -223,7 +215,7 @@ export default function TreasuriesPage() {
         if (cached) {
             setTreasuries(cached);
             setLoading(false);
-            fetchData(false); // تحديث صامت
+            fetchData(false);
         } else {
             fetchData(true);
         }
@@ -254,8 +246,6 @@ export default function TreasuriesPage() {
     const totalCash = cashList.reduce((s, t) => s + t.balance, 0);
     const totalBank = bankList.reduce((s, t) => s + t.balance, 0);
     const totalAll = totalCash + totalBank;
-
-    const fmt = (num: number) => formatNumber(num);
 
     return (
         <DashboardLayout>
@@ -416,14 +406,12 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                 </div>
             </div>
 
-            {/* Balance Row (Applied Modal Style) */}
             <div style={{ position: 'relative', background: C.inputBg, borderRadius: '12px', padding: '14px', border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                {/* Digital Watermark */}
                 <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px', fontWeight: 600, color: 'var(--c-border, rgba(255,255,255,0.03))', pointerEvents: 'none', fontFamily: OUTFIT, letterSpacing: '2px', opacity: 0.1 }}>
                     0.00
                 </div>
                 <div style={{ position: 'relative', zIndex: 1 }}>
-                    <div style={{ fontSize: '22px', fontWeight: 600, color: item.balance >= 0 ? C.textPrimary : C.danger, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
+                    <div style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
                         {formatNumber(item.balance)}
                         <span style={{ fontSize: '11px', color: accentColor, fontWeight: 600, fontFamily: CAIRO }}>{currencySymbol}</span>
                     </div>

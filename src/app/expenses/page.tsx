@@ -104,7 +104,6 @@ export default function ExpensesPage() {
                     }}
                 />
 
-                {/* ── Search ── */}
                 <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
                     <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
@@ -118,7 +117,6 @@ export default function ExpensesPage() {
                     </div>
                 </div>
 
-                {/* ── List ── */}
                 <div style={TABLE_STYLE.container}>
                     <table style={TABLE_STYLE.table}>
                         <thead>
@@ -176,7 +174,7 @@ export default function ExpensesPage() {
                                             {e.description || '—'}
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true), textAlign: 'center'}}>
-                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}>
+                                            <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                 {formatNumber(debitLine?.debit || 0)}
                                                 <small style={{ fontSize: '11px', marginInlineStart: '4px', fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</small>
                                             </span>
@@ -194,7 +192,6 @@ export default function ExpensesPage() {
                     />
                 </div>
 
-                {/* ── Create Modal ── */}
                 <AppModal 
                     show={showForm} 
                     onClose={() => setShowForm(false)} 
@@ -237,13 +234,13 @@ export default function ExpensesPage() {
                                     onChange={e => setForm(f => ({ ...f, amount: e.target.value }))} 
                                     className="amount-input"
                                     style={{ 
-                                        border: 'none', background: 'transparent', 
-                                        fontWeight: 600, color: C.danger, height: '100%', 
-                                        fontSize: '17px', width: '100%', padding: '0 45px', 
+                                        border: 'none', background: 'transparent', textAlign: 'center',
+                                        fontWeight: 700, color: C.textPrimary, height: '100%', 
+                                        fontSize: '18px', width: '100%', padding: '0 45px', 
                                         outline: 'none', fontFamily: OUTFIT 
                                     }} 
                                 />
-                                <span style={{ position: 'absolute', insetInlineStart: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>{currencySign}</span>
+                                <span style={{ position: 'absolute', insetInlineEnd: '16px', top: '50%', transform: 'translateY(-50%)', fontSize: '11px', color: C.textMuted, fontWeight: 700 }}>{currencySign}</span>
                             </div>
                         </div>
 
@@ -283,4 +280,3 @@ export default function ExpensesPage() {
         </DashboardLayout>
     );
 }
-

@@ -549,15 +549,15 @@ export default function ItemsPage() {
                                     <div>
                                         <label style={LS}>{t('سعر التكلفة')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                     <div>
                                         <label style={LS}>{t('سعر البيع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, paddingInlineStart: '34px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -571,7 +571,7 @@ export default function ItemsPage() {
                                                     0
                                                 </div>
                                             )}
-                                            <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', fontFamily: CAIRO, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
+                                            <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
                                             <AlertTriangle size={12} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.warning, opacity: 0.6 }} />
                                         </div>
                                     </div>
@@ -594,7 +594,7 @@ export default function ItemsPage() {
                                                             0
                                                         </div>
                                                     )}
-                                                    <input type="text" inputMode="decimal" value={form.initialQuantity === 0 ? '' : form.initialQuantity} onChange={e => setForm({ ...form, initialQuantity: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', fontFamily: CAIRO, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
+                                                    <input type="text" inputMode="decimal" value={form.initialQuantity === 0 ? '' : form.initialQuantity} onChange={e => setForm({ ...form, initialQuantity: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
                                                 </div>
                                             </div>
                                         </div>
