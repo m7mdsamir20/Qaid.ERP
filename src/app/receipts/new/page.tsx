@@ -313,28 +313,16 @@ export default function NewReceiptPage() {
 
                             <div style={{ marginBottom: '24px' }}>
                                 <label style={{ ...LS, fontSize: '11px' }}>المبلغ المحصَّل <span style={{ color: C.danger }}>*</span></label>
-                                <div style={{
-                                    display: 'flex', alignItems: 'center',
-                                    background: 'rgba(255,255,255,0.05)',
-                                    borderRadius: '12px', border: `1px solid ${C.primary}`,
-                                    overflow: 'visible', position: 'relative'
-                                }}>
-                                    <div style={{ flex: 1, position: 'relative' }}>
-                                        <PriceInput 
-                                            value={form.amount}
-                                            onChange={val => { setForm((f: any) => ({ ...f, amount: val })); clearError('amount'); }}
-                                            style={{
-                                                width: '100%', height: '52px', background: 'transparent',
-                                                border: 'none', color: C.primary, fontWeight: 600,
-                                                fontSize: '22px', paddingInlineEnd: '44px',
-                                                fontFamily: CAIRO, outline: 'none'
-                                            }}
-                                            placeholder="0.00"
-                                        />
-                                        <InlineError field="amount" top="-42px" />
-                                        <div style={{ position: 'absolute', insetInlineEnd: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, opacity: 0.6, pointerEvents: 'none' }}>
-                                            {form.paymentType === 'cash' ? <Banknote size={20} /> : <Building2 size={20} />}
-                                        </div>
+                                <div style={{ position: 'relative' }}>
+                                    <PriceInput 
+                                        value={form.amount}
+                                        onChange={val => { setForm((f: any) => ({ ...f, amount: val })); clearError('amount'); }}
+                                        style={{ height: '44px', fontSize: '16px', fontWeight: 600, color: (form.amount === '' || form.amount === 0) ? C.textMuted : C.textPrimary }}
+                                        placeholder="0.00"
+                                    />
+                                    <InlineError field="amount" />
+                                    <div style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }}>
+                                        {form.paymentType === 'cash' ? <Banknote size={20} /> : <Building2 size={20} />}
                                     </div>
                                 </div>
                             </div>

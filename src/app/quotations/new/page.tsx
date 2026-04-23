@@ -317,6 +317,7 @@ export default function NewQuotationPage() {
                                         disabled={!entryItemId} 
                                         value={entryPrice} 
                                         onChange={val => { setEntryPrice(val); }} 
+                                        onKeyDown={(e) => { if (e.key === 'Enter') addLine(); }}
                                         style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
                                     />
                                 </div>
