@@ -103,31 +103,31 @@ export default function CapitalPage() {
                 {!loading && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { label: t('إجمالي رأس المال العام'), val: totalCapital, color: C.blue, icon: DollarSign, suffix: cSymbol },
-                            { label: t('عدد المساهمين'), val: data.length, color: '#818cf8', icon: Users, suffix: t('شريك') },
-                            { label: t('آخر تحديث لرأس المال'), val: data.length > 0 ? new Date().toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB') : '-', color: '#10b981', icon: History, suffix: '' },
-                        ].map((s, i) => (
-                            <div key={i} style={{
-                                background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
-                                padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                                transition: 'all 0.2s', position: 'relative'
-                            }}
-                            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                            onMouseLeave={e => e.currentTarget.style.transform = 'none'}
-                            >
-                                <div style={{ textAlign: 'start' }}>
-                                    <p style={{ fontSize: '11px', fontWeight: 700, color: C.textSecondary, margin: '0 0 4px', fontFamily: CAIRO }}>{s.label}</p>
-                                    <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', fontWeight: 600, color: s.color, fontFamily: OUTFIT, direction: 'ltr' }}>
-                                        <span>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
-                                        {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontFamily: CAIRO, marginInlineStart: '2px' }}>{s.suffix}</span>}
-                                    </div>
-                                </div>
-                                <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
-                                    <s.icon size={20} />
+                        {label: t('إجمالي رأس المال العام'), val: totalCapital, color: C.blue, icon: <DollarSign size={18} />, suffix: cSymbol},
+                        {label: t('عدد المساهمين'), val: data.length, color: '#818cf8', icon: <Users size={18} />, suffix: t('شريك')},
+                        {label: t('آخر تحديث لرأس المال'), val: data.length > 0 ? new Date().toLocaleDateString(isRtl ? 'ar-EG-u-nu-latn' : 'en-GB') : '-', color: '#10b981', icon: <History size={18} />, suffix: ''},
+                    ].map((s, i) => (
+                        <div key={i} style={{
+                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
+                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            transition: 'all 0.2s', position: 'relative'
+                        }}
+                        onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                        onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
+                        >
+                            <div style={{ textAlign: 'start' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{typeof s.val === 'number' ? formatNumber(s.val) : s.val}</span>
+                                    {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{s.suffix}</span>}
                                 </div>
                             </div>
-                        ))}
-                    </div>
+                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                {s.icon}
+                            </div>
+                        </div>
+                    ))}
+                </div>
                 )}
 
                 {loading ? (
