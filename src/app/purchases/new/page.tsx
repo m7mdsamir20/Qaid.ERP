@@ -50,8 +50,8 @@ export default function NewPurchasePage() {
     const [newPartnerType, setNewPartnerType] = useState<'supplier' | 'customer'>('supplier');
 
     const itemSelectRef = useRef<any>(null);
-    const qtyRef = useRef<HTMLInputElement>(null);
-    const priceRef = useRef<HTMLInputElement>(null);
+    const qtyRef = useRef<any>(null);
+    const priceRef = useRef<any>(null);
     const [entryItemId, setEntryItemId] = useState('');
     const [entryQty, setEntryQty] = useState<number | ''>(1);
     const [entryPrice, setEntryPrice] = useState<number | ''>('');
@@ -497,13 +497,25 @@ export default function NewPurchasePage() {
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('الصنف')}</label>
-                                        {entryItemId && entryStock !== null && <span style={{ fontSize: '10px', fontWeight: 600, color: '#256af4' }}>{t('متاح:')} {entryStock}</span>}
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect ref={itemSelectRef} value={entryItemId}
-                                            onChange={v => { setEntryItemId(v); clearError('entryItemId'); }}
+                                            onChange={v => { 
+                                                setEntryItemId(v); 
+                                                clearError('entryItemId'); 
+                                                setTimeout(() => qtyRef.current?.focus(), 50);
+                                            }}
                                             onCreate={handleCreateItem}
-                                            icon={Search} placeholder={t("اختر الصنف...")} options={items.map(i => ({ value: i.id, label: i.name }))} />
+                                            icon={Search} placeholder={t("اختر الصنف...")} 
+                                            options={items.map(i => {
+                                                const s = i.stocks?.find((st: any) => st.warehouseId === form.warehouseId)?.quantity || 0;
+                                                return {
+                                                    value: i.id, 
+                                                    label: i.name,
+                                                    sub: `${t('متاح:')} ${s}`
+                                                };
+                                            })} 
+                                        />
                                         <InlineError field="entryItemId" />
                                     </div>
                                 </div>
@@ -511,10 +523,15 @@ export default function NewPurchasePage() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <PriceInput 
+                                            ref={qtyRef}
                                             value={entryQty} 
                                             onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
                                             disabled={!entryItemId}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1 }}
+                                            onFocus={e => e.target.select()}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter') priceRef.current?.focus();
+                                            }}
                                         />
                                         <InlineError field="entryQty" />
                                     </div>
@@ -523,10 +540,18 @@ export default function NewPurchasePage() {
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('التكلفة')}</label>
                                     <div style={{ position: 'relative' }}>
                                         <PriceInput 
+                                            ref={priceRef}
                                             value={entryPrice} 
                                             onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
                                             disabled={!entryItemId}
                                             style={{ height: '38px', opacity: !entryItemId ? 0.5 : 1, color: (entryPrice === '' || entryPrice === 0) ? C.textMuted : C.textPrimary }}
+                                            onFocus={e => e.target.select()}
+                                            onKeyDown={e => {
+                                                if (e.key === 'Enter') {
+                                                    addLine();
+                                                    setTimeout(() => itemSelectRef.current?.focus(), 50);
+                                                }
+                                            }}
                                         />
                                         <InlineError field="entryPrice" />
                                     </div>
@@ -612,8 +637,8 @@ export default function NewPurchasePage() {
                             <div style={{ ...STitleStyle, color: '#256af4' }}>{t('ملخص الفاتورة')}</div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '13px', padding: '4px 0' }}>
-                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
                                     <span style={{ color: C.textSecondary }}>{t('إجمالي الأصناف')}</span>
+                                    <span style={{ color: C.textPrimary, fontWeight: 700 }}>{fMoneyJSX(subtotal)}</span>
                                 </div>
                                 <div style={{ background: C.subtle, border: `1px solid ${C.border}`, borderRadius: '10px', padding: '8px 12px' }}>
                                     <div style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 700, marginBottom: '8px', display: 'flex', justifyContent: 'space-between' }}><span>{t('الخصم')}</span></div>
@@ -672,8 +697,8 @@ export default function NewPurchasePage() {
                                 )}
 
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'linear-gradient(135deg, rgba(37,106,244,0.12), rgba(37,106,244,0.05))', padding: '10px 14px', borderRadius: '12px', marginTop: '6px', border: `1px solid ${C.primaryBorder}`, boxShadow: '0 4px 12px rgba(37,106,244,0.08)' }}>
-                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>{fMoneyJSX(netTotal)}</span>
                                     <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي الفاتورة')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>{fMoneyJSX(netTotal)}</span>
                                 </div>
                             </div>
                         </div>
