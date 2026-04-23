@@ -12,6 +12,7 @@ import { CompanyInfo } from '@/lib/printInvoices';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import { useCurrency } from '@/hooks/useCurrency';
+import PriceInput from '@/components/PriceInput';
 
 interface Customer { id: string; name: string; phone?: string; balance: number; }
 interface Item { id: string; code: string; name: string; sellPrice: number; description?: string; unit: any; }
@@ -300,17 +301,24 @@ export default function NewQuotationPage() {
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
-                                    <input ref={qtyRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryQty === '' ? '1' : fmt(entryQty)} onChange={e => {
-                                        const v = e.target.value.replace(/,/g, '');
-                                        if (v === '' || !isNaN(Number(v)) || v === '.') setEntryQty(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && priceRef.current?.focus()} style={{ ...IS, height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
+                                    <PriceInput 
+                                        ref={qtyRef} 
+                                        disabled={!entryItemId} 
+                                        value={entryQty} 
+                                        onChange={val => { setEntryQty(val); }} 
+                                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => { focusIn(e); e.target.select(); }}
+                                        style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
+                                    />
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
-                                    <input ref={priceRef} type="text" inputMode="decimal" disabled={!entryItemId} value={entryPrice === '' ? '0' : fmt(entryPrice)} onChange={e => {
-                                        const v = e.target.value.replace(/,/g, '');
-                                        if (v === '' || !isNaN(Number(v)) || v === '.') setEntryPrice(v === '' ? '' : v as any);
-                                    }} onKeyDown={e => e.key === 'Enter' && addLine()} style={{ ...IS, height: '42px', fontFamily: OUTFIT, opacity: !entryItemId ? 0.5 : 1 }} onFocus={focusIn} onBlur={focusOut} />
+                                    <PriceInput 
+                                        ref={priceRef} 
+                                        disabled={!entryItemId} 
+                                        value={entryPrice} 
+                                        onChange={val => { setEntryPrice(val); }} 
+                                        style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
+                                    />
                                 </div>
                                 <button type="button" onClick={addLine} disabled={!entryItemId} style={{ height: '42px', width: '60px', borderRadius: '10px', background: !entryItemId ? 'rgba(37, 106, 244,0.3)' : C.primary, color: '#fff', border: 'none', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Plus size={22} />
@@ -373,8 +381,8 @@ export default function NewQuotationPage() {
 
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', color: C.textSecondary, fontSize: '13px', padding: '0 5px' }}>
-                                    <span style={{ color: '#64748b' }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
-                                    <span style={{ fontWeight: 600, fontFamily: OUTFIT, color: '#e2e8f0' }}><Currency amount={subtotal} /> </span>
+                                    <span style={{ color: '#64748b', fontWeight: 600 }}>{isServices ? t('إجمالي الخدمات') : t('إجمالي الأصناف')}</span>
+                                    <span style={{ fontWeight: 700, fontFamily: OUTFIT, color: '#e2e8f0' }}><Currency amount={subtotal} /> </span>
                                 </div>
 
                                 {/* Discount Section */}
@@ -459,10 +467,10 @@ export default function NewQuotationPage() {
                                     border: `1px solid ${C.primaryBorder}`,
                                     boxShadow: '0 4px 12px rgba(37,106,244,0.08)',
                                 }}>
-                                    <span style={{ color: C.primary, fontWeight: 600, fontSize: '17px', fontFamily: OUTFIT }}>
-                                        <Currency amount={finalTotal} />
+                                    <span style={{ color: C.textSecondary, fontWeight: 700, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
+                                    <span style={{ color: C.primary, fontWeight: 700, fontSize: '18px', fontFamily: OUTFIT }}>
+                                        <Currency amount={finalTotal} style={{ fontSize: '18px', fontWeight: 700 }} />
                                     </span>
-                                    <span style={{ color: C.textSecondary, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('صافي العرض')}</span>
                                 </div>
                             </div>
 
