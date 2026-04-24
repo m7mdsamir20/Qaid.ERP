@@ -98,7 +98,6 @@
   --c-text-muted: #64748b;
 
   --c-overlay: rgba(7, 13, 26, 0.75);
-  --c-shadow: rgba(0, 0, 0, 0.25);
   --c-shadow: rgba(0, 0, 0, 0.5);
 
   /* Auth Card Variables (Glass) */
@@ -134,6 +133,12 @@
   --danger-600: var(--c-danger);
   --warning-500: var(--c-warning);
   --warning-600: var(--c-warning);
+
+  --surface-700: rgba(255, 255, 255, 0.08);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --primary-light: rgba(37, 106, 244, 0.15);
+  --c-subtle: rgba(255, 255, 255, 0.02);
 }
 
 /* ════════════════════════════════════════════════════════
@@ -185,8 +190,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   --c-auth-card-blur: none;
 
   --c-overlay: rgba(240, 244, 255, 0.88);
-  --c-shadow: rgba(37, 106, 244, 0.05);
   --c-shadow: rgba(37, 106, 244, 0.08);
+
+  --surface-700: rgba(0, 0, 0, 0.06);
+  --primary-light: rgba(37, 106, 244, 0.12);
+  --c-subtle: rgba(37, 106, 244, 0.03);
 }
 
 /* ==================== Global Styles ==================== */
@@ -272,7 +280,7 @@ h6 {
 
 .page-subtitle {
   font-size: 11px;
-  color: #64748b;
+  color: var(--c-text-muted);
   margin: 0;
   margin-top: 1px;
 }
@@ -369,7 +377,7 @@ h6 {
 .nav-link.active {
   background: linear-gradient(135deg, var(--primary-600), var(--primary-800));
   color: white;
-  box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+  box-shadow: 0 4px 12px rgba(37, 106, 244, 0.3);
 }
 
 .nav-link svg {
@@ -389,7 +397,7 @@ h6 {
 
 .card:hover {
   border-color: var(--primary-600);
-  box-shadow: 0 8px 32px rgba(63, 81, 181, 0.1);
+  box-shadow: 0 8px 32px rgba(37, 106, 244, 0.1);
 }
 
 .stat-card {
@@ -423,22 +431,22 @@ h6 {
 }
 
 .stat-icon.primary {
-  background: rgba(63, 81, 181, 0.15);
+  background: var(--c-primary-bg);
   color: var(--primary-400);
 }
 
 .stat-icon.success {
-  background: rgba(16, 185, 129, 0.15);
+  background: var(--c-success-bg);
   color: var(--success-500);
 }
 
 .stat-icon.warning {
-  background: rgba(245, 158, 11, 0.15);
+  background: var(--c-warning-bg);
   color: var(--warning-500);
 }
 
 .stat-icon.danger {
-  background: rgba(239, 68, 68, 0.15);
+  background: var(--c-danger-bg);
   color: var(--danger-500);
 }
 
@@ -511,12 +519,12 @@ button:not(:disabled):active,
 .btn-primary {
   background: linear-gradient(135deg, var(--primary-500), var(--primary-700));
   color: white;
-  box-shadow: 0 4px 12px rgba(63, 81, 181, 0.3);
+  box-shadow: 0 4px 12px rgba(37, 106, 244, 0.3);
 }
 
 .btn-primary:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(63, 81, 181, 0.4);
+  box-shadow: 0 6px 20px rgba(37, 106, 244, 0.4);
 }
 
 .btn-success {
@@ -699,22 +707,22 @@ input[type="date"] {
 }
 
 .badge-success {
-  background: rgba(16, 185, 129, 0.15);
+  background: var(--c-success-bg);
   color: var(--success-500);
 }
 
 .badge-danger {
-  background: rgba(239, 68, 68, 0.15);
+  background: var(--c-danger-bg);
   color: var(--danger-500);
 }
 
 .badge-warning {
-  background: rgba(245, 158, 11, 0.15);
+  background: var(--c-warning-bg);
   color: var(--warning-500);
 }
 
 .badge-primary {
-  background: rgba(63, 81, 181, 0.15);
+  background: var(--c-primary-bg);
   color: var(--primary-400);
 }
 
@@ -885,7 +893,7 @@ select option {
 /* ==================== Responsive ==================== */
 @media (max-width: 768px) {
   .main-wrapper {
-    margin-right: 0;
+    margin-inline-end: 0;
   }
 
   .main-content {
@@ -1046,33 +1054,6 @@ input[type="number"]::-webkit-inner-spin-button {
 }
 
 input[type="number"] {
-  appearance: textfield;
-  -moz-appearance: textfield;
-}
-
-/* ==================== Autofill Styling (Universal Fix) ==================== */
-/* 
-   Chrome/Edge/Safari apply a yellow/white background to autofilled inputs.
-   This fix forces the theme's dark colors even when autofill is active.
-*/
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-input:-webkit-autofill:active,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
-  -webkit-text-fill-color: #e8edf5 !important;
-  -webkit-box-shadow: 0 0 0px 1000px #0e1628 inset !important;
-  box-shadow: 0 0 0px 1000px #0e1628 inset !important;
-  caret-color: #f8fafc !important;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-nput[type="number"] {
   appearance: textfield;
   -moz-appearance: textfield;
 }
