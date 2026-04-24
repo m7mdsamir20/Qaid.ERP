@@ -152,7 +152,7 @@ input[type="email"],
   background-color: var(--c-surface) !important;
   border-radius: 12px !important;
   border: 1px solid var(--c-border) !important;
-  padding-inline-start: 44px !important; /* Global offset for search icons */
+  padding-inline-start: 44px !important; /* Global offset for icons */
   padding-inline-end: 14px !important;
   color: var(--c-text-primary);
   font-size: 13.5px !important;
@@ -161,6 +161,32 @@ input[type="email"],
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Specific fix for Date Inputs Icon */
+input[type="date"] {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23256af4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 14px) center; /* Position at start for RTL */
+  cursor: pointer;
+}
+
+[dir='ltr'] input[type="date"] {
+  background-position: 14px center; /* Position at start for LTR */
+}
+
+/* Hide native browser icons that flicker on hover */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  background: transparent !important;
+  color: transparent !important;
+  opacity: 0 !important; /* This hides the native icon but keeps it clickable to open the picker */
 }
 
 input[type="date"]:hover,
