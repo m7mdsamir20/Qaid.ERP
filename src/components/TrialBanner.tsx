@@ -46,59 +46,65 @@ export default function TrialBanner() {
             background:   bgColor,
             border:       `1px solid ${borderColor}`,
             borderRadius: '10px',
-            padding:      '10px 16px',
+            padding:      '12px 16px',
             margin:       '0 0 16px',
             display:      'flex',
             alignItems:   'center',
+            justifyContent: 'space-between',
             gap:          '12px',
             direction: 'inherit',
+            flexWrap:     'wrap',
         }}>
-            <span style={{ fontSize: '18px' }}>{icon}</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1 1 300px' }}>
+                <span style={{ fontSize: '20px' }}>{icon}</span>
 
-            <div style={{ flex: 1 }}>
-                <span style={{ fontSize: '14px', fontWeight: 900, color: textColor }}>
-                    {isExpired 
-                        ? (subPlan === 'trial' ? 'انتهت الفترة التجريبية للنظام!' : 'انتهى اشتراك النظام الحالي!')
-                        : (daysLeft === 0 ? 'فترتك التجريبية تنتهي اليوم!' : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`)
-                    }
-                </span>
-                <span style={{ fontSize: '12px', color: isExpired ? '#ef4444' : '#64748b', marginInlineStart: '8px', opacity: isExpired ? 0.9 : 1 }}>
-                    {isExpired 
-                        ? 'يرجى تجديد الاشتراك فوراً لتتمكن من استخدام ميزات النظام والتحكم في البيانات.' 
-                        : 'قم بترقية اشتراكك للاستمرار في استخدام النظام'
-                    }
-                </span>
+                <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: '14px', fontWeight: 900, color: textColor, display: 'block', marginBottom: '4px' }}>
+                        {isExpired 
+                            ? (subPlan === 'trial' ? 'انتهت الفترة التجريبية للنظام!' : 'انتهى اشتراك النظام الحالي!')
+                            : (daysLeft === 0 ? 'فترتك التجريبية تنتهي اليوم!' : `فترتك التجريبية تنتهي بعد ${daysLeft} يوم`)
+                        }
+                    </span>
+                    <span style={{ fontSize: '12px', color: isExpired ? '#ef4444' : '#64748b', opacity: isExpired ? 0.9 : 1, display: 'block' }}>
+                        {isExpired 
+                            ? 'يرجى تجديد الاشتراك فوراً لتتمكن من استخدام ميزات النظام والتحكم في البيانات.' 
+                            : 'قم بترقية اشتراكك للاستمرار في استخدام النظام'
+                        }
+                    </span>
+                </div>
             </div>
 
-            {!isExpired && (
-                <>
-                    <div style={{ width: '100px', height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', overflow: 'hidden', flexShrink: 0 }}>
-                        <div style={{
-                            width:      `${Math.max(0, (daysLeft! / 14) * 100)}%`,
-                            height:     '100%',
-                            background: isUrgent ? '#ef4444' : isWarn ? '#f59e0b' : '#6366f1',
-                            transition: 'width 0.3s',
-                            borderRadius: '3px',
-                        }} />
-                    </div>
-                    <span style={{ fontSize: '11px', color: textColor, fontWeight: 800, flexShrink: 0 }}>
-                        {daysLeft}/14
-                    </span>
-                </>
-            )}
-
-            <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-                <Link href="/settings?tab=subscription"
-                    style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: 'none', background: textColor, color: '#fff', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none' }}>
-                    <Crown size={12} /> {isExpired ? 'تجديد الاشتراك الآن' : 'ترقية الآن'}
-                </Link>
-
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap', justifyContent: 'flex-end', flex: '1 1 auto' }}>
                 {!isExpired && (
-                    <button onClick={() => setDismissed(true)}
-                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex', alignItems: 'center', padding: 0 }}>
-                        <X size={14} />
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ width: '80px', height: '6px', background: 'rgba(255,255,255,0.08)', borderRadius: '3px', overflow: 'hidden', flexShrink: 0 }}>
+                            <div style={{
+                                width:      `${Math.max(0, (daysLeft! / 14) * 100)}%`,
+                                height:     '100%',
+                                background: isUrgent ? '#ef4444' : isWarn ? '#f59e0b' : '#6366f1',
+                                transition: 'width 0.3s',
+                                borderRadius: '3px',
+                            }} />
+                        </div>
+                        <span style={{ fontSize: '11px', color: textColor, fontWeight: 800, flexShrink: 0 }}>
+                            {daysLeft}/14
+                        </span>
+                    </div>
                 )}
+
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                    <Link href="/settings?tab=subscription"
+                        style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: 'none', background: textColor, color: '#fff', fontSize: '11px', fontWeight: 800, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', textDecoration: 'none', whiteSpace: 'nowrap' }}>
+                        <Crown size={12} /> {isExpired ? 'تجديد الاشتراك الآن' : 'ترقية الآن'}
+                    </Link>
+
+                    {!isExpired && (
+                        <button onClick={() => setDismissed(true)}
+                            style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex', alignItems: 'center', padding: '4px' }}>
+                            <X size={16} />
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
