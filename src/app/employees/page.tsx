@@ -144,15 +144,12 @@ export default function EmployeesPage() {
                 <div className="toolbar-responsive" style={{ 
                     display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px'
                 }}>
-                    <div style={{ flex: 1, position: 'relative' }}>
-                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
+                    <div className="search-input-wrapper">
+                        <Search size={16} className="search-icon" />
                         <input
                             type="text"
                             placeholder={t("ابحث باسم الموظف أو الكود أو المنصب الوظيفي...")}
-                            style={{
-                                ...IS, paddingInlineStart: '40px', height: '42px', fontSize: '13px',
-                                borderRadius: '12px'
-                            }}
+                            style={{ ...IS }}
                             onFocus={focusIn}
                             onBlur={focusOut}
                             value={searchTerm}
