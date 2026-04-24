@@ -370,20 +370,20 @@ export default function ComprehensiveSettlementPage() {
                                             <th style={TABLE_STYLE.th(false)}>{t('إلى حساب')}</th>
                                             <th style={TABLE_STYLE.th(false, true)}>{t('المبلغ')}</th>
                                             <th style={TABLE_STYLE.th(false)}>{t('التاريخ')}</th>
-                                            <th style={TABLE_STYLE.th(false, true)}>{t('الإجراءات')}</th>
+                                            <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الإجراءات')}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {filteredSettlements.map((s, idx) => (
                                             <tr key={s.id} style={TABLE_STYLE.row(idx === filteredSettlements.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                                <td style={{ ...TABLE_STYLE.td(true), color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>#{s.entryNumber}</td>
+                                                <td style={{ ...TABLE_STYLE.td(true), color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>JV-{String(s.entryNumber || '').replace(/\D/g, '').padStart(5, '0')}</td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.fromName}</div>
-                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t(s.fromType)}</div>
+                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.fromConfig?.name || '-'}</div>
+                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t(s.fromConfig?.type || '-')}</div>
                                                 </td>
                                                 <td style={TABLE_STYLE.td(false)}>
-                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.toName}</div>
-                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t(s.toType)}</div>
+                                                    <div style={{ color: C.textPrimary, fontWeight: 600, fontFamily: CAIRO }}>{s.toConfig?.name || '-'}</div>
+                                                    <div style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{t(s.toConfig?.type || '-')}</div>
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
                                                     {s.amount.toLocaleString()} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO }}>{currencySign}</span>
@@ -391,10 +391,12 @@ export default function ComprehensiveSettlementPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontFamily: OUTFIT }}>
                                                     {new Date(s.date).toLocaleDateString('ar-EG-u-nu-latn')}
                                                 </td>
-                                                <td style={TABLE_STYLE.td(false, true)}>
-                                                    <button onClick={() => setDetailsModal(s)} style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}10` }}>
-                                                        <FileText size={14} />
-                                                    </button>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                                                        <button onClick={() => setDetailsModal(s)} style={{ ...TABLE_STYLE.actionBtn(C.primary), background: `${C.primary}10` }}>
+                                                            <FileText size={14} />
+                                                        </button>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         ))}
