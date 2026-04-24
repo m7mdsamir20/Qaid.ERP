@@ -428,13 +428,14 @@ ${tableHtml}
                     <table style={{ ...TABLE_STYLE.table, tableLayout: 'fixed' }}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
-                                <th style={{ ...TABLE_STYLE.th(true), width: '115px', textAlign: 'center' }}>كود</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>الموظف</th>
-                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>الأساسي</th>
-                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>البدلات</th>
-                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>السلف</th>
-                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>خصومات</th>
-                                <th style={{ ...TABLE_STYLE.th(false), width: '120px', textAlign: 'center' }}>الصافي</th>
+                                <th style={{ ...TABLE_STYLE.th(true), width: '100px', textAlign: 'center' }}>كود</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '160px' }}>الموظف</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '140px' }}>المسمى الوظيفي</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>الأساسي</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>البدلات</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>السلف</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>خصومات</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '110px', textAlign: 'center' }}>الصافي</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -443,11 +444,11 @@ ${tableHtml}
                                     <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center', whiteSpace: 'nowrap' }}>
                                         <span style={{ fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>{line.employee.code}</span>
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), verticalAlign: 'middle' }}>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'nowrap' }}>
-                                            <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#fff', whiteSpace: 'nowrap' }}>{line.employee.name}</span>
-                                            <span style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', borderRight: `1px solid ${C.border}`, paddingRight: '8px' }}>{line.employee.position || 'موظف'}</span>
-                                        </div>
+                                    <td style={{ ...TABLE_STYLE.td(false), whiteSpace: 'nowrap' }}>
+                                        <span style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{line.employee.name}</span>
+                                    </td>
+                                    <td style={{ ...TABLE_STYLE.td(false), whiteSpace: 'nowrap' }}>
+                                        <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500 }}>{line.employee.position || 'موظف'}</span>
                                     </td>
                                     <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
                                         {formatNumber(line.basicSalary)}
