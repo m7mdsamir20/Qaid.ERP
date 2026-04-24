@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useRouter } from 'next/navigation';
 import { ArrowRightLeft, Plus, Search, ChevronDown, Loader2, UserCheck, UserMinus, UserPlus, CheckCircle2, ArrowRight, Info, History, DollarSign, Calendar, Building2, Banknote, Users, X, Wallet, RefreshCw, ShieldAlert, FileText, ArrowLeftRight, TrendingUp, TrendingDown } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
-import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE } from '@/constants/theme';
+import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, BTN_PRIMARY } from '@/constants/theme';
 
 
 
@@ -213,10 +213,11 @@ export default function ComprehensiveSettlementPage() {
                         onClick={() => setShowForm(true)}
                         style={{
                             display: 'flex', alignItems: 'center', gap: '6px',
-                            height: '42px', padding: '0 18px', borderRadius: '8px',
+                            height: '42px', padding: '0 18px', borderRadius: '12px',
                             background: C.primary, color: '#fff', border: 'none',
                             fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            transition: 'all 0.15s',
+                            transition: 'all 0.15s', fontFamily: CAIRO,
+                            boxShadow: '0 4px 12px rgba(37, 106, 244, 0.2)'
                         }}
                         onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
                         onMouseLeave={e => e.currentTarget.style.background = C.primary}
