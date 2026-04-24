@@ -96,8 +96,8 @@ function SearchBox() {
     return (
         <div ref={boxRef} className="search-box-container search-input-wrapper" style={{ 
             maxWidth: '340px',
-            background: 'transparent',
-            border: `1px solid ${focused ? C.primary : 'var(--c-border)'}`,
+            background: 'rgba(255, 255, 255, 0.03)',
+            border: `1px solid ${focused ? C.primary : 'rgba(255, 255, 255, 0.1)'}`,
             borderRadius: '12px',
             height: '40px',
             transition: 'all 0.2s',
@@ -522,9 +522,15 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
         <header className="main-header" style={{
             height: '64px', position: 'fixed', top: 0,
             zIndex: 800,
-            background: 'var(--c-overlay, rgba(7, 13, 26, 0.7))', backdropFilter: 'blur(12px)',
-            borderBottom: `1px solid ${C.border}`, display: 'flex',
-            alignItems: 'center', padding: '0 24px', transition: 'all 0.3s'
+            background: 'rgba(15, 21, 36, 0.65)',
+            backdropFilter: 'blur(20px) saturate(180%)',
+            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.15)',
+            display: 'flex',
+            alignItems: 'center', padding: '0 24px', transition: 'all 0.3s',
+            width: '100%',
+            left: 0
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 
             <MobileSearch isOpen={showMobSearch} onClose={() => setShowMobSearch(false)} />
