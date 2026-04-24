@@ -352,18 +352,18 @@ ${tableHtml}
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             transition: 'all 0.2s', position: 'relative'
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                        onMouseEnter={e => e.currentTarget.style.background = `${stat.color}15`}
+                        onMouseLeave={e => e.currentTarget.style.background = `${stat.color}08`}
                         >
                              <div style={{ textAlign: 'start' }}>
-                                <p style={{ fontSize: '11px', fontWeight: 700, color: '#94a3b8', margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600, color: stat.color, fontFamily: OUTFIT }} dir="ltr">
-                                    <span style={{ fontSize: '10px', opacity: 0.7, fontFamily: CAIRO }}>{formatCurrency(company?.currency)}</span>
-                                    <span>{formatNumber(stat.val)}</span>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{stat.label}</p>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{formatNumber(stat.val)}</span>
+                                    <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500 }}>{formatCurrency(company?.currency)}</span>
                                 </div>
                             </div>
                             <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${stat.color}15`, border: `1px solid ${stat.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: stat.color }}>
-                                <stat.icon size={20} />
+                                <stat.icon size={18} />
                             </div>
                         </div>
                     ))}
@@ -428,7 +428,7 @@ ${tableHtml}
                     <table style={{ ...TABLE_STYLE.table, tableLayout: 'fixed' }}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
-                                <th style={{ ...TABLE_STYLE.th(true), width: '80px', textAlign: 'center' }}>كود</th>
+                                <th style={{ ...TABLE_STYLE.th(true), width: '115px', textAlign: 'center' }}>كود</th>
                                 <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>الموظف</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>الأساسي</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>البدلات</th>
@@ -440,28 +440,28 @@ ${tableHtml}
                         <tbody>
                             {payroll.lines.map((line: any, idx: number) => (
                                 <tr key={line.id} style={TABLE_STYLE.row(idx === payroll.lines.length - 1)}>
-                                    <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center' }}>
-                                        <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>{line.employee.code}</span>
+                                    <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center', whiteSpace: 'nowrap' }}>
+                                        <span style={{ fontSize: '12px', color: C.primary, fontWeight: 700, fontFamily: OUTFIT }}>{line.employee.code}</span>
                                     </td>
-                                    <td style={TABLE_STYLE.td(false)}>
-                                        <div style={{ textAlign: 'start' }}>
-                                            <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{line.employee.name}</div>
-                                            <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{line.employee.position || 'موظف'}</div>
+                                    <td style={{ ...TABLE_STYLE.td(false), verticalAlign: 'middle' }}>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px', flexWrap: 'nowrap' }}>
+                                            <span style={{ fontSize: '13.5px', fontWeight: 600, color: '#fff', whiteSpace: 'nowrap' }}>{line.employee.name}</span>
+                                            <span style={{ fontSize: '11px', color: '#64748b', whiteSpace: 'nowrap', borderRight: `1px solid ${C.border}`, paddingRight: '8px' }}>{line.employee.position || 'موظف'}</span>
                                         </div>
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
                                         {formatNumber(line.basicSalary)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
                                         +{formatNumber(line.allowances)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
                                         -{formatNumber(line.advances)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
                                         -{formatNumber(line.discounts)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 600, color: C.success, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 600, color: C.success, fontFamily: OUTFIT, textAlign: 'center', whiteSpace: 'nowrap' }} dir="ltr">
                                         {formatNumber(line.netSalary)}
                                     </td>
                                 </tr>
