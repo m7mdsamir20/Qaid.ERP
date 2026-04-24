@@ -5,7 +5,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
 import CustomSelect from '@/components/CustomSelect';
 import { useEffect, useState } from 'react';
-import { FileDown, Calendar, Plus, Loader2, Filter, Trash2, X, Search, ClipboardList, PieChart, Banknote, ChevronDown } from 'lucide-react';
+import { FileDown, Calendar, Plus, Loader2, Filter, Trash2, X, Search, ClipboardList, PieChart, Banknote, ChevronDown, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { C, CAIRO, OUTFIT, TABLE_STYLE, SEARCH_STYLE, KPI_STYLE, KPI_ICON, focusIn, focusOut } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
@@ -82,6 +82,7 @@ export default function PayrollsPage() {
     const [company, setCompany] = useState<any>(null);
     const [deleteModal, setDeleteModal] = useState<{ open: boolean; id: string | null }>({ open: false, id: null });
     const [isDeleting, setIsDeleting] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
     const fetchAll = async () => {
         try {
@@ -108,10 +109,10 @@ export default function PayrollsPage() {
                 fetchAll();
             } else {
                 const data = await res.json();
-                alert(data.error || t('فشل الحذف'));
+                setErrorMsg(data.error || t('فشل الحذف'));
             }
         } catch (e) {
-            alert(t('حدث خطأ أثناء الحذف'));
+            setErrorMsg(t('حدث خطأ أثناء الحذف'));
         } finally {
             setIsDeleting(false);
         }
@@ -133,7 +134,7 @@ export default function PayrollsPage() {
                 fetchAll();
             } else {
                 const data = await res.json();
-                alert(data.error || t('فشل في توليد مسير الرواتب'));
+                setErrorMsg(data.error || t('فشل في توليد مسير الرواتب'));
             }
         } finally {
             setIsGenerating(false);
@@ -168,10 +169,23 @@ export default function PayrollsPage() {
                     icon={FileDown}
                     primaryButton={{
                         label: t("توليد مسير جديد"),
-                        onClick: () => setIsModalOpen(true),
+                        onClick: () => { setErrorMsg(''); setIsModalOpen(true); },
                         icon: Plus
                     }}
                 />
+
+                {errorMsg && (
+                    <div style={{ 
+                        padding: '12px 16px', background: 'rgba(239, 68, 68, 0.1)', 
+                        border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '12px', 
+                        color: '#ef4444', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px',
+                        animation: 'slideUp 0.3s ease-out'
+                    }}>
+                        <AlertCircle size={18} />
+                        <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{errorMsg}</span>
+                        <X size={14} style={{ marginInlineStart: 'auto', cursor: 'pointer', opacity: 0.7 }} onClick={() => setErrorMsg('')} />
+                    </div>
+                )}
 
                 {/* Main Content Area */}
                 {!loading && (
