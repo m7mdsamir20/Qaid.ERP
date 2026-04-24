@@ -116,6 +116,7 @@ export default function SalesPage() {
                     </div>
 
                     {/* Responsive Date Filters */}
+                    {/* Responsive Date Filters */}
                     <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
@@ -127,6 +128,7 @@ export default function SalesPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
+                    </div>
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -229,39 +231,7 @@ export default function SalesPage() {
                     )}
                 </div>
             </div>
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                @media (max-width: 768px) {
-                    .date-filter-row { width: 100%; gap: 8px !important; }
-                    .date-label-desktop { display: none !important; }
-                    .date-input-wrapper {
-                        flex: 1;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        background: rgba(255,255,255,0.03);
-                        padding: 4px 10px;
-                        border-radius: 10px;
-                        border: 1px solid ${C.border};
-                    }
-                    .date-label-mobile { 
-                        display: block !important; 
-                        color: ${C.textMuted}; 
-                        font-size: 11px; 
-                        font-weight: 600; 
-                        white-space: nowrap; 
-                        font-family: ${CAIRO};
-                    }
-                    .date-input-wrapper input {
-                        width: 100% !important;
-                        background: transparent !important;
-                        border: none !important;
-                        height: 34px !important;
-                        padding: 0 !important;
-                        font-size: 12px !important;
-                    }
-                }
-            ` }} />
+            
         </DashboardLayout>
     );
 }
