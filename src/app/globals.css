@@ -149,8 +149,14 @@ input[type="text"][placeholder*="اسم العميل"],
 .filter-input {
   height: 42px !important;
   background-color: var(--c-card) !important;
-  border-radius: 10px;
+  border-radius: 10px !important;
+  border: 1px solid var(--c-border) !important;
+  padding: 0 16px !important;
+  color: var(--c-text-primary);
+  font-size: 13.5px !important;
+  font-family: 'ERP-Numbers', 'Cairo', sans-serif !important;
   transition: all 0.2s ease-in-out;
+  outline: none !important;
 }
 
 [data-theme='light'] input[type="date"],
@@ -737,19 +743,33 @@ input[type="date"] {
   cursor: pointer;
 }
 
-/* Date/Datetime Calendar Icon - Standard Primary Blue */
+/* Date/Datetime Calendar Icon - Subdued Style */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator {
-  filter: invert(34%) sepia(91%) saturate(2366%) hue-rotate(212deg) brightness(98%) contrast(97%);
-  opacity: 1 !important;
+  /* Using filter to achieve var(--c-text-muted) #64748b approx */
+  filter: invert(48%) sepia(8%) saturate(1008%) hue-rotate(176deg) brightness(94%) contrast(88%);
+  opacity: 0.8 !important;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, opacity 0.2s;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   transform: scale(1.1);
+  opacity: 1 !important;
 }
+
+/* Target internal date field parts to remove bright white placeholder text */
+input[type="date"]::-webkit-datetime-edit-text,
+input[type="date"]::-webkit-datetime-edit-month-field,
+input[type="date"]::-webkit-datetime-edit-day-field,
+input[type="date"]::-webkit-datetime-edit-year-field {
+  color: var(--c-text-muted) !important;
+  font-family: inherit;
+}
+
+/* Change color to text-primary only when a value is selected (if possible) 
+   but for now we keep it muted as requested to avoid glare */
 
 /* Global Input Icon Visibility */
 .input-icon-primary {

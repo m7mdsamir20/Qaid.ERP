@@ -244,10 +244,8 @@ table{width:100%;border-collapse:collapse}
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t('التاريخ')}</span>
                             <input type="date" value={date} onChange={e => setDate(e.target.value)}
                                 style={{
-                                    width: '100%', height: '36px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
-                                    borderRadius: '8px', border: `1px solid ${C.border}`,
-                                    background: C.card, color: C.textSecondary, fontSize: '13px',
-                                    fontWeight: 500, outline: 'none', fontFamily: OUTFIT
+                                    width: '100%', textAlign: 'start', direction: 'inherit', 
+                                    outline: 'none', background: 'transparent'
                                 }}
                             />
                         </div>
