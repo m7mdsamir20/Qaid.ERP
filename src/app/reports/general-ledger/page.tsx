@@ -159,19 +159,18 @@ export default function GeneralLedgerPage() {
                         )}
                     </div>
 
-                    <div className="mobile-column mobile-gap-sm" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('من')}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={fromDate} onChange={e => { setLoading(true); setFromDate(e.target.value); }}
-                                style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }}
-                            />
+                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
+                        <div className="date-input-wrapper">
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
+                            <input type="date" value={fromDate} onChange={e => { setLoading(true); setFromDate(e.target.value); }} style={{ ...IS, width: '160px' }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '12px' }}>{t('إلى')}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={toDate} onChange={e => { setLoading(true); setToDate(e.target.value); }}
-                                style={{ ...IS, height: '36px', borderRadius: '6px', fontSize: '13px', fontFamily: OUTFIT, background: C.card, color: C.textSecondary }}
-                            />
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
+                        <div className="date-input-wrapper">
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
+                            <input type="date" value={toDate} onChange={e => { setLoading(true); setToDate(e.target.value); }} style={{ ...IS, width: '160px' }} />
                         </div>
+                    
                     </div>
                 </div>
 

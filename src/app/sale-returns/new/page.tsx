@@ -626,11 +626,11 @@ export default function NewReturnPage() {
                                 <div style={{ borderTop: `1px dashed ${C.border}`, paddingTop: '14px', marginTop: '14px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{t('إجمالي المرتجع')}</span>
-                                        <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{formatNumber(returnSubtotal)} {cSymbol}</span>
+                                        <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: CAIRO }}>{fMoneyJSX(returnSubtotal)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                         <span style={{ fontSize: '13px', color: C.textMuted }}>{t('خصم مسترد (-)')}</span>
-                                        <span style={{ fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{formatNumber(totalDiscountOnReturn)} {cSymbol}</span>
+                                        <span style={{ fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: CAIRO }}>{fMoneyJSX(totalDiscountOnReturn)}</span>
                                     </div>
                                 </div>
 

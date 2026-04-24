@@ -128,6 +128,7 @@ export default function SalesPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
+                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (

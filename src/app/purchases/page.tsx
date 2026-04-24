@@ -115,6 +115,7 @@ export default function PurchasesListPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
+                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -174,10 +175,10 @@ export default function PurchasesListPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{inv.supplier?.name || inv.customer?.name || '—'}</td>
-                                                <td style={{...TABLE_STYLE.td(false, true)}}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     {fMoneyJSX(inv.total)}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false, true)}}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     {fMoneyJSX(inv.paidAmount, '', { color: C.success })}
                                                 </td>
                                                 <td style={{...TABLE_STYLE.td(false, true)}}>

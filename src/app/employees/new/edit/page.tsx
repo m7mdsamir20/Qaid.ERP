@@ -382,7 +382,7 @@ export default function EditEmployeePage() {
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: '#64748b' }}>الأساسي:</span>
-                                        <span style={{ color: '#f1f5f9', fontWeight: 600 }}>{formatNumber(+form.basicSalary || 0)} {cSymbol}</span>
+                                        <span style={{ color: '#f1f5f9', fontWeight: 600 }}>{fMoneyJSX(+form.basicSalary || 0)}</span>
                                     </div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px' }}>
                                         <span style={{ color: '#10b981' }}>إجمالي البدلات:</span>

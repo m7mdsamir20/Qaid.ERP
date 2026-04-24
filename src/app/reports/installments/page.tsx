@@ -216,16 +216,16 @@ export default function InstallmentReportsPage() {
                             <>
                                 <div style={{ minWidth: '200px' }}>
                                     <label style={LS}>{t('من تاريخ')}</label>
-                                    <div style={{ position: 'relative' }}>
-                                        
-                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                                    <div className="date-input-wrapper">
+                                        <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
+                                        <input type="date" value={collectionForm.from} onChange={e => setCollectionForm(f => ({ ...f, from: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%' }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                                 <div style={{ minWidth: '200px' }}>
                                     <label style={LS}>{t('إلى تاريخ')}</label>
-                                    <div style={{ position: 'relative' }}>
-                                        
-                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%', colorScheme: 'dark', fontFamily: OUTFIT }} onFocus={focusIn} onBlur={focusOut} />
+                                    <div className="date-input-wrapper">
+                                        <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
+                                        <input type="date" value={collectionForm.to} onChange={e => setCollectionForm(f => ({ ...f, to: e.target.value }))} style={{ ...IS, paddingInlineEnd: '12px', width: '100%' }} onFocus={focusIn} onBlur={focusOut} />
                                     </div>
                                 </div>
                             </>

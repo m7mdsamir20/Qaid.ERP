@@ -16,7 +16,7 @@ import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABL
 export default function ExpensesPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { symbol: currencySign } = useCurrency();
+    const { symbol: currencySign, fMoneyJSX } = useCurrency();
     const { data: session } = useSession();
     const [entries, setEntries] = useState<any[]>([]);
     const [accounts, setAccounts] = useState<any[]>([]);
@@ -137,6 +137,7 @@ export default function ExpensesPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
+                    
                     </div>
 
                     {(searchQuery || dateFrom || dateTo) && (
@@ -213,8 +214,7 @@ export default function ExpensesPage() {
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true), textAlign: 'center'}}>
                                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {formatNumber(debitLine?.debit || 0)}
-                                                <small style={{ fontSize: '11px', marginInlineStart: '4px', fontWeight: 700, fontFamily: CAIRO, opacity: 0.7 }}>{currencySign}</small>
+                                                {fMoneyJSX(debitLine?.debit || 0)}
                                             </span>
                                         </td>
                                     </tr>

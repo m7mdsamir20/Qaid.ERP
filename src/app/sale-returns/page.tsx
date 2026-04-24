@@ -25,7 +25,7 @@ export default function SaleReturnsListPage() {
     const isRtl = lang === 'ar';
     const router = useRouter();
     const { data: session } = useSession();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [returns, setReturns] = useState<ReturnInvoice[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -104,6 +104,7 @@ export default function SaleReturnsListPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
+                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -162,14 +163,14 @@ export default function SaleReturnsListPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, fontSize: '13px', color: C.textPrimary, fontFamily: CAIRO }}>{r.customer?.name || '—'}</td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    {formatNumber(r.total)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
+                                                    {fMoneyJSX(r.total)}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, fontSize: '14px', color: C.success, fontFamily: OUTFIT }}>
-                                                    {formatNumber(r.paidAmount)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
+                                                    {fMoneyJSX(r.paidAmount, '', { color: C.success })}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), fontWeight: 700, fontSize: '14px', color: (r.remaining > 0) ? C.danger : C.textMuted, fontFamily: OUTFIT }}>
-                                                    {formatNumber(r.remaining)} <span style={{ fontSize: '10px', opacity: 0.6, fontFamily: CAIRO }}>{cSymbol}</span>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
+                                                    {fMoneyJSX(r.remaining, '', { color: (r.remaining > 0) ? C.danger : C.textMuted })}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{

@@ -135,6 +135,7 @@ export default function QuotationsPage() {
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
+                    
                     </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
@@ -196,7 +197,7 @@ export default function QuotationsPage() {
                                                 <td style={{ ...TABLE_STYLE.td(false, true), fontSize: '13px', fontFamily: OUTFIT, color: C.textSecondary, }}>
                                                     {new Date(quo.date).toLocaleDateString('en-GB')}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false, true)}}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     {fMoneyJSX(quo.total)}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>

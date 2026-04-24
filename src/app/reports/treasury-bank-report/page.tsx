@@ -135,14 +135,16 @@ export default function TreasuryBankReportPage() {
                         </div>
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('من')}</label>
-                            <div style={{ flex: 1 }}>
-                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start', colorScheme: 'dark' }} />
+                            <div className="date-input-wrapper" style={{ flex: 1 }}>
+                                <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
+                                <input type="date" value={from} onChange={(e) => setFrom(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start' }} />
                             </div>
                         </div>
                         <div style={{ flex: 1, minWidth: '220px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                             <label style={{ margin: 0, fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontFamily: CAIRO, display: 'flex', alignItems: 'center', whiteSpace: 'nowrap' }}>{t('إلى')}</label>
-                            <div style={{ flex: 1 }}>
-                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start', colorScheme: 'dark' }} />
+                            <div className="date-input-wrapper" style={{ flex: 1 }}>
+                                <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
+                                <input type="date" value={to} onChange={(e) => setTo(e.target.value)} style={{ width: '100%', height: '42px', padding: '0 15px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${C.border}`, color: '#fff', direction: 'ltr', textAlign: 'start' }} />
                             </div>
                         </div>
                         <button onClick={fetchReport} className="btn btn-primary" style={{ height: '42px', padding: '0 30px', fontWeight: 600, gap: '10px', borderRadius: '12px', fontFamily: CAIRO, display: 'flex', alignItems: 'center' }}>
@@ -167,7 +169,7 @@ export default function TreasuryBankReportPage() {
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '30px' }}>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid #64748b` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('رصيد أول المدة')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#fff' , fontFamily: CAIRO}}>{formatNumber(data.openingBalance)} {cSymbol}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#fff' , fontFamily: CAIRO}}>{fMoneyJSX(data.openingBalance)}</div>
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${SC}` }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('إجمالي المقبوضات (وارد)')}</div>
@@ -179,7 +181,7 @@ export default function TreasuryBankReportPage() {
                             </div>
                             <div className="card" style={{ padding: '20px', borderInlineEnd: `4px solid ${PC}`, background: 'rgba(79, 70, 229, 0.05)' }}>
                                 <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '5px' , fontFamily: CAIRO}}>{t('الرصيد الحالي')}</div>
-                                <div style={{ fontSize: '12px', fontWeight: 950, color: PC , fontFamily: CAIRO}}>{formatNumber(data.currentBalance)} {cSymbol}</div>
+                                <div style={{ fontSize: '12px', fontWeight: 950, color: PC , fontFamily: CAIRO}}>{fMoneyJSX(data.currentBalance)}</div>
                             </div>
                         </div>
 
@@ -238,7 +240,7 @@ export default function TreasuryBankReportPage() {
                                         <td colSpan={4} style={{ padding: '20px', }}>{t('إجماليات الحركات المحددة')}</td>
                                         <td style={{ padding: '20px',  color: SC }}>{fMoneyJSX(totalReceipts)}</td>
                                         <td style={{ padding: '20px',  color: DC }}>{fMoneyJSX(totalPayments)}</td>
-                                        <td style={{ padding: '20px',  color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{formatNumber(data.currentBalance)} {cSymbol}</td>
+                                        <td style={{ padding: '20px',  color: PC, fontSize: '12px' , fontFamily: CAIRO}}>{fMoneyJSX(data.currentBalance)}</td>
                                     </tr>
                                 </tfoot>
                             </table>
