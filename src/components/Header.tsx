@@ -52,6 +52,7 @@ function SearchBox() {
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [focused, setFocused] = useState(false);
     const [results, setResults] = useState<SearchResult[]>([]);
     const boxRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -65,7 +66,12 @@ function SearchBox() {
     }, []);
 
     useEffect(() => {
-        if (!query.trim()) { setResults([]); setOpen(false); return; }
+        if (!query.trim()) { 
+            setResults([]); 
+            setOpen(false); 
+            setLoading(false);
+            return; 
+        }
         setLoading(true);
         const t = setTimeout(async () => {
             try {
@@ -91,22 +97,27 @@ function SearchBox() {
         <div ref={boxRef} className="search-box-container search-input-wrapper" style={{ 
             maxWidth: '340px',
             background: 'var(--c-surface)',
-            border: '1px solid var(--c-border)',
+            border: `1px solid ${focused ? C.primary : 'var(--c-border)'}`,
             borderRadius: '12px',
             height: '40px',
             transition: 'all 0.2s',
-            position: 'relative'
+            position: 'relative',
+            boxShadow: focused ? '0 0 0 3px rgba(37, 106, 244, 0.15)' : 'none'
         }}>
             {loading
                 ? <Loader2 size={16} color={C.textMuted} className="search-icon" style={{ animation: 'spin 1s linear infinite' }} />
-                : <Search size={16} className="search-icon" />
+                : <Search size={16} color={focused ? C.primary : C.textMuted} className="search-icon" />
             }
             <input
                 id="global-search"
                 name="q"
                 value={query}
                 onChange={e => setQuery(e.target.value)}
-                onFocus={() => results.length && setOpen(true)}
+                onFocus={() => {
+                    setFocused(true);
+                    if (results.length > 0) setOpen(true);
+                }}
+                onBlur={() => setFocused(false)}
                 placeholder={t(isServices ? "ابحث هنا..." : "ابحث هنا...")}
                 style={{
                     flex: 1, background: 'transparent', border: 'none', outline: 'none',
