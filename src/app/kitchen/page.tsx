@@ -20,7 +20,7 @@ function elapsed(createdAt: string) {
 export default function KitchenPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { fmt } = useCurrency();
+    const { fMoney } = useCurrency();
 
     const [orders, setOrders]   = useState<any[]>([]);
     const [loading, setLoading] = useState(true);

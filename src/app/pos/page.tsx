@@ -30,7 +30,7 @@ interface CartItem {
 export default function POSPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
-    const { fmt } = useCurrency();
+    const { fMoney } = useCurrency();
 
     // Data
     const [categories, setCategories] = useState<any[]>([]);
@@ -206,7 +206,7 @@ export default function POSPage() {
                                                 {item.imageUrl ? <img src={item.imageUrl} style={{ width: 48, height: 48, borderRadius: '12px', objectFit: 'cover' }} /> : '🍽️'}
                                             </div>
                                             <p style={{ margin: '0 0 6px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>{item.name}</p>
-                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fmt(item.salePrice ?? item.price ?? 0)}</p>
+                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.salePrice ?? item.price ?? 0)}</p>
                                         </button>
                                     );
                                 })}
@@ -262,7 +262,7 @@ export default function POSPage() {
                                     <div key={item.itemId} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                         <div style={{ flex: 1 }}>
                                             <p style={{ margin: '0 0 2px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary }}>{item.itemName}</p>
-                                            <p style={{ margin: 0, fontSize: '12px', color: C.primary, fontFamily: OUTFIT }}>{fmt(item.unitPrice)} × {item.quantity} = {fmt(item.unitPrice * item.quantity)}</p>
+                                            <p style={{ margin: 0, fontSize: '12px', color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.unitPrice)} × {item.quantity} = {fMoney(item.unitPrice * item.quantity)}</p>
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                                             <button onClick={() => updateQty(item.itemId, -1)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={13} /></button>
@@ -291,17 +291,17 @@ export default function POSPage() {
                         <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.textSecondary }}>
                                 <span>{t('المجموع')}</span>
-                                <span style={{ fontFamily: OUTFIT }}>{fmt(subtotal)}</span>
+                                <span style={{ fontFamily: OUTFIT }}>{fMoney(subtotal)}</span>
                             </div>
                             {discount > 0 && (
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.danger }}>
                                     <span>{t('خصم')}</span>
-                                    <span style={{ fontFamily: OUTFIT }}>- {fmt(discount)}</span>
+                                    <span style={{ fontFamily: OUTFIT }}>- {fMoney(discount)}</span>
                                 </div>
                             )}
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: 700, color: C.textPrimary, borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px' }}>
                                 <span>{t('الإجمالي')}</span>
-                                <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fmt(total)}</span>
+                                <span style={{ fontFamily: OUTFIT, color: C.primary }}>{fMoney(total)}</span>
                             </div>
                         </div>
 
