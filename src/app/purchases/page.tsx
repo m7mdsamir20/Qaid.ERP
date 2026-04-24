@@ -116,7 +116,6 @@ export default function PurchasesListPage() {
                             <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
                     </div>
-                    </div>
 
                     {(searchTerm || dateFrom || dateTo) && (
                         <button
