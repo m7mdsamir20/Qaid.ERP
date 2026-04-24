@@ -29,6 +29,11 @@ const BUSINESS_TYPES = [
         label: "نشاط خدمات (استشارات، صيانة، إلخ)",
         modules: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports']
     },
+    {
+        value: "RESTAURANTS",
+        label: "مطاعم وكافيهات",
+        modules: ['pos', 'tables', 'kitchen', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
+    },
 ];
 
 const COUNTRIES = [
@@ -188,6 +193,23 @@ export default function EditCompanyPage() {
                     section.links = section.links.map((l: any) => {
                         if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'الخدمات والمشتريات' };
                         if (l.label === 'تقارير المخزون') return { ...l, label: 'تقارير الخدمات' };
+                        return l;
+                    });
+                }
+            }
+
+            if (form.businessType === 'RESTAURANTS') {
+                if (section.featureKey === 'inventory') {
+                    section.title = 'المنيو والمخزون';
+                    section.links = section.links.map((l: any) => {
+                        if (l.id === '/items') return { ...l, label: 'أصناف المنيو' };
+                        if (l.id === '/categories') return { ...l, label: 'تصنيفات المنيو' };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'reports') {
+                    section.links = section.links.map((l: any) => {
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'تقارير المبيعات والكاشير' };
                         return l;
                     });
                 }
