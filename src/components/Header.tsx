@@ -96,7 +96,7 @@ function SearchBox() {
     return (
         <div ref={boxRef} className="search-box-container search-input-wrapper" style={{ 
             maxWidth: '340px',
-            background: 'var(--c-surface)',
+            background: 'transparent',
             border: `1px solid ${focused ? C.primary : 'var(--c-border)'}`,
             borderRadius: '12px',
             height: '40px',
@@ -105,7 +105,7 @@ function SearchBox() {
             boxShadow: focused ? '0 0 0 3px rgba(37, 106, 244, 0.15)' : 'none'
         }}>
             {loading
-                ? <Loader2 size={16} color={C.textMuted} className="search-icon" style={{ animation: 'spin 1s linear infinite' }} />
+                ? <Loader2 size={16} color={C.textMuted} className="search-icon" style={{ animation: 'spin-centered 1s linear infinite' }} />
                 : <Search size={16} color={focused ? C.primary : C.textMuted} className="search-icon" />
             }
             <input
