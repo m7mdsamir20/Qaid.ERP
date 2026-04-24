@@ -428,22 +428,42 @@ export default function ClosingEntriesPage() {
     );
 }
 
-function StatCard({ label, value, color, icon: Icon, compact, currencySign }: any) {
+function StatCard({ label, value, color, icon: Icon, compact }: any) {
     return (
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: compact ? '20px' : '28px', position: 'relative', overflow: 'hidden', boxShadow: THEME.shadows.md }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
-                <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 600 }}>{label}</span>
-                {Icon && <div style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: `1px solid ${C.border}` }}><Icon size={16} style={{ color, opacity: 0.8 }} /></div>}
+        <div style={{ 
+            background: `${color}08`, 
+            border: `1px solid ${color}33`, 
+            borderRadius: '16px', 
+            padding: compact ? '16px 18px' : '24px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between',
+            transition: 'all 0.2s',
+            boxShadow: 'none',
+            position: 'relative',
+            overflow: 'hidden'
+        }}
+            onMouseEnter={e => e.currentTarget.style.background = `${color}15`}
+            onMouseLeave={e => e.currentTarget.style.background = `${color}08`}
+        >
+            <div style={{ textAlign: 'start' }}>
+                <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{label}</p>
+                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                    <Currency 
+                        amount={value} 
+                        style={{ fontSize: compact ? '22px' : '28px', color: C.textPrimary }}
+                    />
+                </div>
             </div>
-            <div style={{ display: 'flex', alignItems: 'baseline', textAlign: 'start' }}>
-                <Currency 
-                    amount={value} 
-                    style={{ fontSize: compact ? '24px' : '30px', color }}
-                />
-            </div>
-            <div style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.03, color }}>
-                {Icon && <Icon size={100} />}
-            </div>
+            {Icon && (
+                <div style={{ 
+                    width: '38px', height: '38px', borderRadius: '10px', 
+                    background: `${color}15`, border: `1px solid ${color}30`, 
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: color 
+                }}>
+                    <Icon size={18} />
+                </div>
+            )}
         </div>
     );
 }

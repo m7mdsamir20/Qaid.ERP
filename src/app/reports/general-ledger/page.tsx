@@ -192,27 +192,29 @@ export default function GeneralLedgerPage() {
                     <>
                         <div data-print-include style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                             {[
-                                { label: t('الرصيد الافتتاحي'), value: fmt(openingBalance), color: '#256af4', icon: <Wallet size={16} /> },
-                                { label: t('إجمالي مدين (+)'), value: fmt(totalDebit), color: '#10b981', icon: <ArrowUpRight size={16} /> },
-                                { label: t('إجمالي دائن (-)'), value: fmt(totalCredit), color: '#fb7185', icon: <ArrowDownRight size={16} /> },
-                                { label: t('الرصيد الختامي'), value: fmt(closingBalance), color: tColor, icon: <Activity size={16} /> },
+                                { label: t('الرصيد الافتتاحي'), value: openingBalance, color: '#256af4', icon: <Wallet size={18} /> },
+                                { label: t('إجمالي مدين (+)'), value: totalDebit, color: '#10b981', icon: <ArrowUpRight size={18} /> },
+                                { label: t('إجمالي دائن (-)'), value: totalCredit, color: '#fb7185', icon: <ArrowDownRight size={18} /> },
+                                { label: t('الرصيد الختامي'), value: closingBalance, color: tColor, icon: <Activity size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
                                     padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     transition: 'all 0.2s', position: 'relative'
                                 }}
-                                    onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                                    onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                                    onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                                    onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                                 >
-                                    <div style={{ textAlign: 'start', flex: 1 }}>
-                                        <p className="stat-label" style={{ fontSize: '10.5px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', justifyContent: 'center' }}>
-                                            <span className="stat-value" style={{ fontSize: '13.5px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            <span style={{ fontSize: '9px', color: C.textMuted, opacity: 0.7, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                    <div style={{ textAlign: 'start' }}>
+                                        <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <Currency 
+                                                amount={s.value} 
+                                                style={{ fontSize: '16px', color: C.textPrimary }}
+                                            />
                                         </div>
                                     </div>
-                                    <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
                                         {s.icon}
                                     </div>
                                 </div>
