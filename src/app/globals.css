@@ -757,14 +757,16 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   transform: scale(1.1);
 }
 
-/* Target internal date field parts to match search font size and color */
+/* Target internal date field parts to match search font size, weight and color */
 input[type="date"]::-webkit-datetime-edit-text,
 input[type="date"]::-webkit-datetime-edit-month-field,
 input[type="date"]::-webkit-datetime-edit-day-field,
 input[type="date"]::-webkit-datetime-edit-year-field {
   color: var(--c-text-muted) !important;
-  font-family: inherit;
+  font-family: 'ERP-Numbers', 'Cairo', sans-serif !important;
   font-size: 13.5px !important;
+  font-weight: 600 !important; /* Matches the boldness of the search placeholder */
+  text-transform: uppercase;
 }
 
 /* Global Input Icon Visibility */
