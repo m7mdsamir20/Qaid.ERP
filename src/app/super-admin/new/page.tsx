@@ -266,7 +266,7 @@ export default function NewCompanyPage() {
             <div style={{ maxWidth: '860px', margin: '0 auto', padding: '32px 24px' }}>
 
                 {/* Steps */}
-                <div style={{ display: 'flex', alignItems: 'center', marginBottom: '36px' }}>
+                <div className="steps-header" style={{ display: 'flex', alignItems: 'center', marginBottom: '36px' }}>
                     {steps.map((s, i) => (
                         <React.Fragment key={s.num}>
                             <div onClick={() => s.num < step && setStep(s.num)}
@@ -298,15 +298,15 @@ export default function NewCompanyPage() {
 
                 {/* ══ Step 1: بيانات الشركة ══ */}
                 {step === 1 && (
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
+                    <div className="step-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
                         <h2 style={{ margin: '0 0 28px', fontSize: '16px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
                                 <Building2 size={22} />
                             </div>
                             بيانات الشركة
                         </h2>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                            <div style={{ gridColumn: 'span 2' }}>
+                        <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div style={{ gridColumn: 'span 2' }} className="full-width-mobile">
                                 <label style={LS}>اسم الشركة (بالعربية) <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="text" placeholder="مثال: شركة النيل للتجارة"
                                     value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
@@ -377,15 +377,15 @@ export default function NewCompanyPage() {
 
                 {/* ══ Step 2: بيانات المدير ══ */}
                 {step === 2 && (
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
+                    <div className="step-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)' }}>
                         <h2 style={{ margin: '0 0 28px', fontSize: '16px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: CAIRO }}>
                             <div style={{ width: 42, height: 42, borderRadius: '12px', background: `${C.blue}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.blue }}>
                                 <User size={22} />
                             </div>
                             بيانات مدير الشركة
                         </h2>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                            <div style={{ gridColumn: 'span 2' }}>
+                        <div className="responsive-grid-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                            <div style={{ gridColumn: 'span 2' }} className="full-width-mobile">
                                 <label style={LS}>اسم المدير <span style={{ color: C.danger }}>*</span></label>
                                 <input required type="text" placeholder="مثال: أحمد محمد"
                                     value={form.adminName} onChange={e => setForm(f => ({ ...f, adminName: e.target.value }))}
@@ -447,7 +447,7 @@ export default function NewCompanyPage() {
 
                 {/* ══ Step 3: الاشتراك ══ */}
                 {step === 3 && (
-                    <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px' }}>
+                    <div className="step-container" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px' }}>
                         <h2 style={{ margin: '0 0 24px', fontSize: '17px', fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <CreditCard size={20} style={{ color: '#818cf8' }} /> بيانات الاشتراك
                         </h2>
@@ -455,7 +455,7 @@ export default function NewCompanyPage() {
                         {/* الباقة */}
                         <div style={{ marginBottom: '20px' }}>
                             <label style={LS}>الباقة</label>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px' }}>
+                            <div className="responsive-grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '10px' }}>
                                 {Object.entries(PLANS).map(([key, p]) => (
                                     <button key={key} type="button" onClick={() => updatePlan(key)}
                                         style={{ height: '52px', borderRadius: '10px', border: `1px solid ${form.plan === key ? p.color + '60' : 'rgba(255,255,255,0.08)'}`, background: form.plan === key ? p.color + '15' : 'rgba(255,255,255,0.03)', color: form.plan === key ? p.color : '#64748b', fontSize: '13px', fontWeight: 700, cursor: 'pointer', transition: 'all 0.15s', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '3px' }}>
@@ -466,7 +466,7 @@ export default function NewCompanyPage() {
                             </div>
                         </div>
 
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
+                        <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
                             <div>
                                 <label style={LS}>تاريخ البداية <span style={{ color: '#f87171' }}>*</span></label>
                                 <input type="date" value={form.startDate} onChange={e => setForm(f => ({ ...f, startDate: e.target.value }))}
@@ -492,7 +492,7 @@ export default function NewCompanyPage() {
                         {/* ملخص */}
                         <div style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '10px', padding: '14px 18px', marginBottom: '20px' }}>
                             <div style={{ fontSize: '11px', color: '#818cf8', fontWeight: 700, marginBottom: '8px' }}>ملخص الاشتراك</div>
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
+                            <div className="responsive-grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '12px' }}>
                                 {[
                                     { label: 'الباقة', value: PLANS[form.plan as keyof typeof PLANS]?.label },
                                     { label: 'مدة الاشتراك', value: `${Math.ceil((new Date(form.endDate).getTime() - new Date(form.startDate).getTime()) / (1000 * 60 * 60 * 24))} يوم` },
@@ -522,7 +522,7 @@ export default function NewCompanyPage() {
                 {/* ══ Step 4: الصلاحيات ══ */}
                 {step === 4 && (
                     <div>
-                        <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
+                        <div className="step-container" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
                                 <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
                                     <Shield size={20} style={{ color: '#818cf8' }} /> تحديد الصلاحيات
@@ -584,7 +584,7 @@ export default function NewCompanyPage() {
 
                                             {/* Pages */}
                                             {isExpanded && (
-                                                <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '8px 16px 12px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '6px' }}>
+                                                <div className="features-grid" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '8px 16px 12px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '6px' }}>
                                                     {section.links.map((link: any) => {
                                                         const active = (form.features[featureKey] || []).includes(link.id);
                                                         return (
@@ -650,6 +650,16 @@ export default function NewCompanyPage() {
                     border-color: ${C.primary} !important;
                     -webkit-box-shadow: 0 0 0 1000px ${C.card} inset, 0 0 0 1px ${C.primary}, 0 0 0 4px ${C.primary}20 !important;
                     box-shadow: 0 0 0 1000px ${C.card} inset, 0 0 0 1px ${C.primary}, 0 0 0 4px ${C.primary}20 !important;
+                }
+                
+                @media (max-width: 768px) {
+                    .responsive-grid-2 { grid-template-columns: 1fr !important; }
+                    .responsive-grid-3 { grid-template-columns: 1fr !important; }
+                    .responsive-grid-5 { grid-template-columns: repeat(2, 1fr) !important; }
+                    .features-grid { grid-template-columns: 1fr !important; }
+                    .step-container { padding: 20px 16px !important; }
+                    .steps-header { flex-wrap: wrap !important; gap: 12px; }
+                    .full-width-mobile { grid-column: span 1 !important; }
                 }
             `}</style>
         </div>
