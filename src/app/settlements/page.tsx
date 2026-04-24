@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowRightLeft, Plus, Search, ChevronDown, Loader2, UserCheck, UserMinus, UserPlus, CheckCircle2, ArrowRight, Info, History, DollarSign, Calendar, Building2, Banknote, Users, X, Wallet, RefreshCw, ShieldAlert, FileText, ArrowLeftRight, TrendingUp, TrendingDown } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, TABLE_STYLE, BTN_PRIMARY } from '@/constants/theme';
-
+import PageHeader from '@/components/PageHeader';
 
 
 
@@ -188,43 +188,16 @@ export default function ComprehensiveSettlementPage() {
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ fontFamily: CAIRO, paddingBottom: '60px', paddingTop: THEME.header.pt }}>
-                {/* ── Header ── */}
-                <div className="mobile-column" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: THEME.header.mb }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{
-                            padding: THEME.header.iconPadding,
-                            borderRadius: '10px',
-                            background: C.primaryBg,
-                            color: C.primary,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center'
-                        }}>
-                            <ArrowRightLeft size={THEME.header.iconSize} />
-                        </div>
-                        <div>
-                            <h1 style={{ fontSize: THEME.header.titleSize, fontWeight: 600, margin: 0, color: C.textPrimary, textAlign: 'start', fontFamily: CAIRO }}>{t('تسوية ديون')}</h1>
-                            <p style={{ fontSize: THEME.header.subSize, color: C.textMuted, margin: '2px 0 0', fontWeight: 400, textAlign: 'start', fontFamily: CAIRO }}>{t('إدارة ومراجعة التحويلات المالية وتسوية الأرصدة')}</p>
-                        </div>
-                    </div>
-
-                    <button
-                        className="mobile-full"
-                        onClick={() => setShowForm(true)}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '6px',
-                            height: '42px', padding: '0 18px', borderRadius: '12px',
-                            background: C.primary, color: '#fff', border: 'none',
-                            fontSize: '13.5px', fontWeight: 600, cursor: 'pointer',
-                            transition: 'all 0.15s', fontFamily: CAIRO,
-                            boxShadow: '0 4px 12px rgba(37, 106, 244, 0.2)'
-                        }}
-                        onMouseEnter={e => e.currentTarget.style.background = C.primaryHover}
-                        onMouseLeave={e => e.currentTarget.style.background = C.primary}
-                    >
-                        <Plus size={14} /> {t('تسجيل تسوية جديدة')}
-                    </button>
-                </div>
+                <PageHeader
+                    title={t('تسوية ديون')}
+                    subtitle={t('إدارة ومراجعة التحويلات المالية وتسوية الأرصدة')}
+                    icon={ArrowRightLeft}
+                    primaryButton={{
+                        label: t('تسجيل تسوية جديدة'),
+                        onClick: () => setShowForm(true),
+                        icon: Plus
+                    }}
+                />
 
                 {/* ── Search ── */}
                 <div className="mobile-full" style={{ position: 'relative', marginBottom: '14px' }}>
