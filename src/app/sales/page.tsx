@@ -120,12 +120,12 @@ export default function SalesPage() {
                         <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, width: '160px' }} />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '160px', background: 'transparent' }} />
                         </div>
                         <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '160px', background: 'transparent' }} />
                         </div>
                     </div>
                     

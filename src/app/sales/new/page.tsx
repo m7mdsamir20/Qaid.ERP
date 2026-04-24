@@ -638,7 +638,7 @@ function NewSalePageInner() {
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ ...IS, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }}
+                                            style={{ width: '100%', textAlign: 'end', direction: 'ltr', background: 'transparent', outline: 'none' }}
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
@@ -649,7 +649,7 @@ function NewSalePageInner() {
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.dueDate || ''}
                                             onChange={e => setForm((f: any) => ({ ...f, dueDate: e.target.value }))}
-                                            style={{ ...IS, color: '#fbbf24', textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
+                                            style={{ width: '100%', textAlign: 'end', direction: 'ltr', background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)', outline: 'none' }}
                                             onFocus={focusIn} onBlur={focusOut} className="gold-date-icon" />
                                     </div>
                                 </div>
