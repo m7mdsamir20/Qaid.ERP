@@ -443,7 +443,7 @@ export default function NewPurchasePage() {
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('اسم المورد')}</label>
-                                        <button onClick={() => setShowAddSup(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ {t('مورد جديد')}</button>
+                                        <button onClick={() => setShowAddSup(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>+ {t('مورد جديد')}</button>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect
@@ -760,7 +760,7 @@ export default function NewPurchasePage() {
                             <button onClick={() => handleSubmit(false)} disabled={submitting} className="btn btn-primary" style={{ width: '100%', height: '52px', fontSize: '13px', fontWeight: 600, gap: '12px', background: C.primary, boxShadow: '0 8px 25px -5px rgba(37,106,244,0.4)', border: 'none', borderRadius: '14px', opacity: submitting ? 0.5 : 1, cursor: submitting ? 'not-allowed' : 'pointer', fontFamily: CAIRO, color: '#fff' }}>
                                 {submitting ? <Loader2 size={24} style={{ animation: 'spin 1s linear infinite' }} /> : <>{t('حفظ الفاتورة')} <CheckCircle size={20} /></>}
                             </button>
-                            <button onClick={() => handleSubmit(true)} disabled={submitting} style={{ width: '100%', height: '42px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.06)', color: '#34d399', fontSize: '13px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: 'Cairo, sans-serif', opacity: submitting ? 0.5 : 1, transition: 'all 0.2s', }}>{t('حفظ وطباعة الفاتورة')} <Printer size={15} /></button>
+                            <button onClick={() => handleSubmit(true)} disabled={submitting} style={{ width: '100%', height: '42px', borderRadius: '12px', border: '1px solid rgba(16,185,129,0.3)', background: 'rgba(16,185,129,0.06)', color: '#34d399', fontSize: '13px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', fontFamily: CAIRO, opacity: submitting ? 0.5 : 1, transition: 'all 0.2s', }}>{t('حفظ وطباعة الفاتورة')} <Printer size={15} /></button>
                         </div>
                     </div>
                 </div>

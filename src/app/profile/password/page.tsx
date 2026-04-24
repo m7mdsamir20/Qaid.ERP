@@ -6,6 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { KeyRound, Lock, Eye, EyeOff, Save, Loader2, CheckCircle2, AlertCircle, ShieldCheck } from 'lucide-react';
 import { useTranslation } from '@/lib/i18n';
 import { useTheme } from '@/components/Providers';
+import { CAIRO } from '@/constants/theme';
 
 export default function ChangePasswordPage() {
     const { lang, t } = useTranslation();
@@ -73,7 +74,7 @@ export default function ChangePasswordPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ maxWidth: '600px', margin: '0 auto', padding: '20px 0', fontFamily: "'Cairo', sans-serif" }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ maxWidth: '600px', margin: '0 auto', padding: '20px 0', fontFamily: CAIRO }}>
 
                 {/* Header */}
                 <div style={{ marginBottom: '30px' }}>
@@ -234,7 +235,6 @@ export default function ChangePasswordPage() {
                 )}
 
                 <style>{`
-                    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
                     .animate-spin { animation: spin 1s linear infinite; }
                     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

@@ -8,7 +8,7 @@ interface PriceInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElemen
     value: number | string;
     onChange: (val: number) => void;
     decimals?: number;
-    textAlign?: 'left' | 'center' | 'right';
+    textAlign?: 'start' | 'center' | 'end';
 }
 
 export default React.forwardRef<HTMLInputElement, PriceInputProps>(function PriceInput({ 

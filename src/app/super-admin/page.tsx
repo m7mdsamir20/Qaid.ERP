@@ -207,7 +207,7 @@ export default function SuperAdminPage() {
                         <thead style={{ background: 'rgba(255,255,255,0.03)', borderBottom: `1px solid ${C.border}` }}>
                             <tr>
                                 {['معلومات الشركة', 'النشاط', 'الباقة والمستخدمين', 'تاريخ الانتهاء', 'حالة الحساب', 'إجراءات'].map((h, i) => (
-                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, textAlign: i === 0 ? 'right' : (i === 5 ? 'center' : 'start') }}>{h}</th>
+                                    <th key={i} style={{ ...TABLE_STYLE.th(i === 0, i === 5), padding: '16px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, textAlign: i === 5 ? 'center' : 'start' }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -228,7 +228,7 @@ export default function SuperAdminPage() {
                                                 <div style={{ width: 48, height: 48, borderRadius: '14px', background: `linear-gradient(135deg, ${C.primary}15, transparent)`, border: `1px solid ${C.primary}20`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontWeight: 600, fontSize: '18px', flexShrink: 0 }}>
                                                     {c.name.charAt(0)}
                                                 </div>
-                                                <div style={{ textAlign: 'right' }}>
+                                                <div style={{ textAlign: 'start' }}>
                                                     <div style={{ fontWeight: 600, color: C.textPrimary, fontSize: '15px', marginBottom: '4px' }}>{c.name}</div>
                                                     <div style={{ fontSize: '12px', color: C.textSecondary, fontFamily: OUTFIT }}>{c.email || '—'}</div>
                                                 </div>
