@@ -72,6 +72,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
     const [isApproving, setIsApproving] = useState(false);
     const [showApprovalModal, setShowApprovalModal] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -92,14 +93,15 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
     }, [params.id]);
 
     const handleApprove = async () => {
+        setErrorMsg('');
         if (!selectedTreasury) {
-            alert('الرجاء تحديد خزينة الصرف');
+            setErrorMsg('الرجاء تحديد خزينة الصرف');
             return;
         }
 
         const treasury = treasuries.find(t => t.id === selectedTreasury);
         if (treasury && treasury.balance < payroll.netTotal) {
-            alert(`رصيد الخزينة غير كافٍ. المتاح: ${treasury.balance.toLocaleString()} ج.م`);
+            setErrorMsg(`رصيد الخزينة غير كافٍ. المتاح: ${treasury.balance.toLocaleString()} ${formatCurrency(company?.currency)}`);
             return;
         }
 
@@ -116,7 +118,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                 window.location.reload(); 
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل في الاعتماد');
+                setErrorMsg(data.error || 'فشل في الاعتماد');
             }
         } finally {
             setIsApproving(false);
@@ -125,6 +127,7 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
 
     const handleSync = async () => {
         setIsSyncing(true);
+        setErrorMsg('');
         try {
             const res = await fetch(`/api/payrolls/${params.id}`, {
                 method: 'POST',
@@ -136,8 +139,10 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
                 window.location.reload(); 
             } else {
                 const data = await res.json();
-                alert(data.error || 'فشل في التحديث');
+                setErrorMsg(data.error || 'فشل في التحديث');
             }
+        } catch (e) {
+            setErrorMsg('حدث خطأ أثناء التحديث');
         } finally {
             setIsSyncing(false);
         }
@@ -256,7 +261,19 @@ ${tableHtml}
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ width: '100%' }}>
                 
-                {/* Header Standardized */}
+                {/* Global Error Message (Outside Modal) */}
+                {errorMsg && !showApprovalModal && (
+                    <div style={{ 
+                        padding: '12px 16px', background: 'rgba(239, 68, 68, 0.1)', 
+                        border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '12px', 
+                        color: '#ef4444', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px',
+                        animation: 'slideUp 0.3s ease-out', position: 'relative'
+                    }}>
+                        <AlertCircle size={18} />
+                        <span style={{ fontSize: '13px', fontWeight: 600 }}>{errorMsg}</span>
+                        <X size={14} style={{ marginInlineStart: 'auto', cursor: 'pointer', opacity: 0.7 }} onClick={() => setErrorMsg('')} />
+                    </div>
+                )}
                 <div className="print-hide">
                     <PageHeader
                         title={`تفاصيل مسير الرواتب ${months.find(m => m.value === payroll.month)?.label} ${payroll.year}`}
@@ -456,10 +473,23 @@ ${tableHtml}
                 {/* Approval Modal Standardized */}
                 <AppModal
                     show={showApprovalModal}
-                    onClose={() => setShowApprovalModal(false)}
+                    onClose={() => { setShowApprovalModal(false); setErrorMsg(''); }}
                     title="اعتماد وصرف المسير"
                     icon={Calculator}
                 >
+                    {errorMsg && (
+                        <div style={{ 
+                            padding: '12px 16px', background: 'rgba(239, 68, 68, 0.1)', 
+                            border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '12px', 
+                            color: '#ef4444', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px',
+                            animation: 'slideUp 0.3s ease-out'
+                        }}>
+                            <AlertCircle size={18} />
+                            <span style={{ fontSize: '13px', fontWeight: 600 }}>{errorMsg}</span>
+                            <X size={14} style={{ marginInlineStart: 'auto', cursor: 'pointer', opacity: 0.7 }} onClick={() => setErrorMsg('')} />
+                        </div>
+                    )}
+
                     <div style={{ fontSize: '12px', color: '#94a3b8', lineHeight: 1.6, marginBottom: '24px' }}>
                         سيتم إغلاق المسير وتوليد قيود محاسبية تلقائية، وخصم السلف المستحقة من أرصدة الموظفين.
                         <br/><br/>
