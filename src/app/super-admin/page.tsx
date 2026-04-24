@@ -128,7 +128,7 @@ export default function SuperAdminPage() {
     );
 
     return (
-        <div dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, padding: '24px', color: C.textPrimary, fontFamily: CAIRO }}>
+        <div className="super-admin-container" dir={isRtl ? 'rtl' : 'ltr'} style={{ minHeight: '100vh', background: C.bg, padding: '24px', color: C.textPrimary, fontFamily: CAIRO }}>
 
             <PageHeader
                 title="نظام الإدارة الشامل (Super Admin)"
@@ -347,6 +347,31 @@ export default function SuperAdminPage() {
             <style>{`
                 @keyframes spin { to { transform: rotate(360deg); } }
                 input:focus { outline: none; }
+                
+                @media (max-width: 1023px) {
+                    .super-admin-container { padding: 16px !important; }
+                    .mobile-column, .mobile-stack { flex-direction: column !important; align-items: stretch !important; gap: 12px !important; }
+                    .mobile-full { width: 100% !important; max-width: 100% !important; margin-left: 0 !important; margin-right: 0 !important; }
+                    .responsive-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+                    .scroll-table {
+                        width: 100% !important;
+                        overflow-x: auto !important;
+                        -webkit-overflow-scrolling: touch !important;
+                        border-radius: 12px;
+                        margin-bottom: 5px;
+                    }
+                    .scroll-table table { min-width: 750px !important; }
+                    button, input, select { min-height: 42px !important; font-size: 14px !important; }
+                    .page-title { font-size: 16px !important; }
+                    .page-subtitle { font-size: 11px !important; }
+                }
+                @media (max-width: 768px) {
+                    .super-admin-container { padding: 16px !important; }
+                    .mobile-column, .mobile-stack { gap: 10px !important; }
+                    .mobile-full { width: 100% !important; max-width: 100% !important; }
+                    button, input, select, textarea { min-height: 44px !important; }
+                    input, select, textarea { font-size: 16px !important; }
+                }
             `}</style>
         </div>
     );
