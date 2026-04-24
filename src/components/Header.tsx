@@ -6,6 +6,8 @@ import { useSession, signOut } from 'next-auth/react';
 import { Search, Bell, ChevronDown, User, Settings, KeyRound, LogOut, FileText, Package, Users, Receipt, Loader2, Globe, AlertTriangle, GitBranch, Menu, Sun, Moon, X } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
 import { Avatar } from '@/components/UserAvatar';
+import { useTranslation } from '@/lib/i18n';
+import { useTheme } from '@/components/Providers';
 
 /* ══════════════════════════════════════════
    TYPES & MOCK DATA
@@ -18,14 +20,12 @@ interface SearchResult {
     href: string;
 }
 
-// Search logic is handled via /api/search API for real-time results
-
 const typeIcon: Record<string, any> = {
-    invoice: Receipt, product: Package, customer: Users, supplier: FileText
+    invoice: Receipt,
+    product: Package,
+    customer: Users,
+    supplier: FileText
 };
-
-import { useTranslation } from '@/lib/i18n';
-import { useTheme } from '@/components/Providers';
 
 const getRoleLabel = (role: string, t: any) => {
     const roles: Record<string, string> = {
@@ -88,30 +88,32 @@ function SearchBox() {
     const isServices = businessType === 'SERVICES';
 
     return (
-        <div ref={boxRef} className="search-box-container" style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
-            <div style={{
-                display: 'flex', alignItems: 'center', gap: '10px',
-                background: C.inputBg, border: `1px solid ${C.border}`,
-                borderRadius: '12px', padding: '0 14px', transition: 'all 0.2s',
-                height: '40px'
-            }}>
-                {loading
-                    ? <Loader2 size={16} color={C.textMuted} style={{ animation: 'spin 1s linear infinite' }} />
-                    : <Search size={16} color={C.primary} />
-                }
-                <input
-                    id="global-search"
-                    name="q"
-                    value={query}
-                    onChange={e => setQuery(e.target.value)}
-                    onFocus={() => results.length && setOpen(true)}
-                    placeholder={t(isServices ? "ابحث هنا..." : "ابحث هنا...")}
-                    style={{
-                        flex: 1, background: 'none', border: 'none', outline: 'none',
-                        color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO
-                    }}
-                />
-            </div>
+        <div ref={boxRef} className="search-box-container search-input-wrapper" style={{ 
+            maxWidth: '340px',
+            background: 'var(--c-surface)',
+            border: '1px solid var(--c-border)',
+            borderRadius: '12px',
+            height: '40px',
+            transition: 'all 0.2s',
+            position: 'relative'
+        }}>
+            {loading
+                ? <Loader2 size={16} color={C.textMuted} className="search-icon" style={{ animation: 'spin 1s linear infinite' }} />
+                : <Search size={16} className="search-icon" />
+            }
+            <input
+                id="global-search"
+                name="q"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onFocus={() => results.length && setOpen(true)}
+                placeholder={t(isServices ? "ابحث هنا..." : "ابحث هنا...")}
+                style={{
+                    flex: 1, background: 'transparent', border: 'none', outline: 'none',
+                    color: C.textPrimary, fontSize: '13.5px', fontFamily: CAIRO,
+                    height: '100%', padding: '0'
+                }}
+            />
 
             {open && results.length > 0 && (
                 <div style={{
@@ -119,7 +121,7 @@ function SearchBox() {
                     minWidth: '280px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px',
                     boxShadow: '0 20px 40px rgba(0,0,0,0.3)', zIndex: 1000, overflow: 'hidden',
-                    animation: 'fadeDown 0.2s ease'
+                    animation: 'fadeDown 0.2s ease', borderTop: `1px solid ${C.primary}`
                 }}>
                     {results.map(r => {
                         const Icon = typeIcon[r.type] || Receipt;
