@@ -126,7 +126,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     border: `1px solid ${isOpen ? C.primary : C.border}`,
                     borderRadius: '12px',
                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    height: '42px',
+                    height: '40px',
                     cursor: disabled ? 'not-allowed' : 'pointer',
                     padding: Icon ? '0 16px 0 40px' : '0 16px 0 36px',
                     opacity: disabled ? 0.6 : 1,

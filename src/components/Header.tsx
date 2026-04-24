@@ -92,8 +92,8 @@ function SearchBox() {
             <div style={{
                 display: 'flex', alignItems: 'center', gap: '10px',
                 background: C.inputBg, border: `1px solid ${C.border}`,
-                borderRadius: '12px', padding: '0 12px', transition: 'all 0.2s',
-                height: '38px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
+                borderRadius: '12px', padding: '0 14px', transition: 'all 0.2s',
+                height: '40px'
             }}>
                 {loading
                     ? <Loader2 size={16} color={C.textMuted} style={{ animation: 'spin 1s linear infinite' }} />
