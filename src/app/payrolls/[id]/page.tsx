@@ -73,6 +73,53 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
     const [showApprovalModal, setShowApprovalModal] = useState(false);
     const [isSyncing, setIsSyncing] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    const clearError = (field: string) => {
+        if (fieldErrors[field]) setFieldErrors(prev => {
+            const next = { ...prev };
+            delete next[field];
+            return next;
+        });
+    };
+
+    const InlineError = ({ field }: { field: string }) => {
+        if (!fieldErrors[field]) return null;
+        return (
+            <div style={{
+                position: 'absolute',
+                top: '-32px',
+                insetInlineStart: '4px',
+                fontSize: '11px',
+                color: '#fff',
+                fontWeight: 600,
+                background: 'linear-gradient(135deg, #ef4444, #b91c1c)',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                pointerEvents: 'none',
+                zIndex: 100,
+                boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                whiteSpace: 'nowrap',
+                animation: 'inlineErrorPush 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }}>
+                <AlertCircle size={12} strokeWidth={3} />
+                {fieldErrors[field]}
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-4px',
+                    insetInlineStart: '12px',
+                    width: '8px',
+                    height: '8px',
+                    background: '#b91c1c',
+                    transform: 'rotate(45deg)',
+                    borderRadius: '1px'
+                }} />
+            </div>
+        );
+    };
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -94,14 +141,16 @@ export default function PayrollDetailsPage(props: { params: Promise<{ id: string
 
     const handleApprove = async () => {
         setErrorMsg('');
+        setFieldErrors({});
+
         if (!selectedTreasury) {
-            setErrorMsg('الرجاء تحديد خزينة الصرف');
+            setFieldErrors({ selectedTreasury: 'الرجاء تحديد خزينة الصرف' });
             return;
         }
 
         const treasury = treasuries.find(t => t.id === selectedTreasury);
-        if (treasury && treasury.balance < payroll.netTotal) {
-            setErrorMsg(`رصيد الخزينة غير كافٍ. المتاح: ${treasury.balance.toLocaleString()} ${formatCurrency(company?.currency)}`);
+        if (treasury && treasury.balance < (payroll?.netTotal || 0)) {
+            setFieldErrors({ selectedTreasury: 'رصيد الخزينة غير كافٍ للصرف' });
             return;
         }
 
@@ -428,9 +477,9 @@ ${tableHtml}
                     <table style={{ ...TABLE_STYLE.table, tableLayout: 'fixed' }}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
-                                <th style={{ ...TABLE_STYLE.th(true), width: '100px', textAlign: 'center' }}>كود</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '160px' }}>الموظف</th>
-                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '140px' }}>المسمى الوظيفي</th>
+                                <th style={{ ...TABLE_STYLE.th(true), width: '120px', textAlign: 'center' }}>كود</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '150px' }}>الموظف</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start', width: '120px' }}>المسمى الوظيفي</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>الأساسي</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>البدلات</th>
                                 <th style={{ ...TABLE_STYLE.th(false), width: '90px', textAlign: 'center' }}>السلف</th>
@@ -499,27 +548,18 @@ ${tableHtml}
 
                     <div style={{ marginBottom: '24px' }}>
                         <label style={{ display: 'block', fontSize: '11px', color: '#94a3b8', fontWeight: 700, marginBottom: '8px' }}>خزينة الصرف</label>
-                        <CustomSelect
-                            value={selectedTreasury}
-                            onChange={setSelectedTreasury}
-                            icon={Landmark}
-                            placeholder="اختر الخزينة..."
-                            hideSearch={true}
-                            openUp={true}
-                            options={treasuries.map(tr => ({ value: tr.id, label: `${tr.name} (${formatCurrency(company?.currency)} ${formatNumber(tr.balance)})` }))}
-                        />
-                        {(() => {
-                            const tr = treasuries.find(t => t.id === selectedTreasury);
-                            if (tr && tr.balance < payroll.netTotal) {
-                                return (
-                                    <div style={{ marginTop: '8px', padding: '8px 12px', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', borderRadius: '8px', color: '#ef4444', fontSize: '11px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                        <AlertCircle size={14} />
-                                        رصيد الخزينة غير كافٍ. المتوفر ({formatNumber(tr.balance)} ج.م)
-                                    </div>
-                                );
-                            }
-                            return null;
-                        })()}
+                        <div style={{ position: 'relative' }}>
+                            <CustomSelect
+                                value={selectedTreasury}
+                                onChange={(val: string) => { setSelectedTreasury(val); clearError('selectedTreasury'); }}
+                                icon={Landmark}
+                                placeholder="اختر الخزينة..."
+                                hideSearch={true}
+                                openUp={true}
+                                options={treasuries.map(tr => ({ value: tr.id, label: `${tr.name} (${formatCurrency(company?.currency)} ${formatNumber(tr.balance)})` }))}
+                            />
+                            <InlineError field="selectedTreasury" />
+                        </div>
                     </div>
 
                     <div style={{ display: 'flex', gap: '12px' }}>
@@ -542,6 +582,10 @@ ${tableHtml}
 
             <style jsx global>{`
                 @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+                @keyframes inlineErrorPush {
+                    0% { transform: translateY(10px) scale(0.9); opacity: 0; }
+                    100% { transform: translateY(0) scale(1); opacity: 1; }
+                }
 
                 @media print {
                     .print-only { 

@@ -40,6 +40,16 @@ export default function NewQuotationPage() {
     const [nextNum, setNextNum] = useState(1);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+    const clearError = (field: string) => {
+        if (fieldErrors[field]) setFieldErrors(prev => {
+            const next = { ...prev };
+            delete next[field];
+            return next;
+        });
+    };
 
     const itemSelectRef = useRef<any>(null);
     const qtyRef = useRef<HTMLInputElement>(null);
@@ -127,7 +137,14 @@ export default function NewQuotationPage() {
     const finalTotal = taxSettings?.isInclusive ? afterDisc : (afterDisc + taxAmount);
 
     const addLine = useCallback(() => {
-        if (!entryItemId) return;
+        setErrorMsg('');
+        setFieldErrors({});
+        
+        if (!entryItemId) {
+            setFieldErrors(prev => ({ ...prev, entryItemId: t('يرجى اختيار صنف أولاً') }));
+            return;
+        }
+
         const item = items.find(it => it.id === entryItemId);
         if (!item) return;
 
@@ -165,7 +182,7 @@ export default function NewQuotationPage() {
         setEntryQty(1);
         setEntryPrice(0);
         setTimeout(() => itemSelectRef.current?.focus(), 50);
-    }, [entryItemId, entryQty, entryPrice, entryDescription, items, form.taxRate]);
+    }, [entryItemId, entryQty, entryPrice, entryDescription, items, form.taxRate, t]);
 
     const removeLine = (idx: number) => setLines(lines.filter((_, i) => i !== idx));
     const editLine = (i: number) => {
@@ -180,8 +197,19 @@ export default function NewQuotationPage() {
 
     const handleSubmit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
-        if (lines.length === 0) return alert(t('يجب إضافة صنف واحد على الأقل'));
-        if (!form.customerId) return alert(t('برجاء اختيار عميل'));
+        setErrorMsg('');
+        setFieldErrors({});
+
+        if (lines.length === 0) {
+            setFieldErrors(prev => ({ ...prev, entryItemId: t('يجب إضافة صنف واحد على الأقل') }));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
+        if (!form.customerId) {
+            setFieldErrors(prev => ({ ...prev, customerId: t('برجاء اختيار العميل أولاً') }));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+        }
 
         setSubmitting(true);
         try {
@@ -208,13 +236,53 @@ export default function NewQuotationPage() {
                 router.push('/quotations');
             } else {
                 const err = await res.json();
-                alert(err.error || t('فشل حفظ عرض السعر'));
+                setErrorMsg(err.error || t('فشل حفظ عرض السعر'));
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
         } catch (error) {
-            alert(t('خطأ في الاتصال'));
+            setErrorMsg(t('خطأ في الاتصال'));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         } finally {
             setSubmitting(false);
         }
+    };
+
+    const InlineError = ({ field }: { field: string }) => {
+        if (!fieldErrors[field]) return null;
+        return (
+            <div style={{
+                position: 'absolute',
+                top: '-32px',
+                insetInlineStart: '4px',
+                fontSize: '11px',
+                color: '#fff',
+                fontWeight: 600,
+                background: 'linear-gradient(135deg, #ef4444, #b91c1c)',
+                padding: '4px 10px',
+                borderRadius: '8px',
+                pointerEvents: 'none',
+                zIndex: 100,
+                boxShadow: '0 10px 15px -3px rgba(185, 28, 28, 0.4)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                whiteSpace: 'nowrap',
+                animation: 'inlineErrorPush 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)'
+            }}>
+                <AlertCircle size={12} strokeWidth={3} />
+                {fieldErrors[field]}
+                <div style={{
+                    position: 'absolute',
+                    bottom: '-4px',
+                    insetInlineStart: '12px',
+                    width: '8px',
+                    height: '8px',
+                    background: '#b91c1c',
+                    transform: 'rotate(45deg)',
+                    borderRadius: '1px'
+                }} />
+            </div>
+        );
     };
 
     if (loading) return (
@@ -235,6 +303,19 @@ export default function NewQuotationPage() {
                     backUrl="/quotations"
                 />
 
+                {errorMsg && (
+                    <div style={{ 
+                        padding: '12px 16px', background: 'rgba(239, 68, 68, 0.1)', 
+                        border: '1px solid rgba(239, 68, 68, 0.2)', borderRadius: '12px', 
+                        color: '#ef4444', display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px',
+                        animation: 'slideUp 0.3s ease-out'
+                    }}>
+                        <AlertCircle size={18} />
+                        <span style={{ fontSize: '13.5px', fontWeight: 600 }}>{errorMsg}</span>
+                        <X size={14} style={{ marginInlineStart: 'auto', cursor: 'pointer', opacity: 0.7 }} onClick={() => setErrorMsg('')} />
+                    </div>
+                )}
+
                 <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: '1fr minmax(280px, 320px)', gap: '16px', alignItems: 'start' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
 
@@ -249,13 +330,16 @@ export default function NewQuotationPage() {
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('العميل')}</label>
-                                    <CustomSelect
-                                        options={customers.map(c => ({ value: c.id, label: c.name }))}
-                                        placeholder={t("اختر عميل...")}
-                                        value={form.customerId}
-                                        onChange={(val: any) => setForm({ ...form, customerId: val })}
-                                        icon={Search}
-                                    />
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect
+                                            options={customers.map(c => ({ value: c.id, label: c.name }))}
+                                            placeholder={t("اختر عميل...")}
+                                            value={form.customerId}
+                                            onChange={(val: any) => { setForm({ ...form, customerId: val }); clearError('customerId'); }}
+                                            icon={Search}
+                                        />
+                                        <InlineError field="customerId" />
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('تاريخ العرض')}</label>
@@ -270,66 +354,76 @@ export default function NewQuotationPage() {
                             <div className="item-entry-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 110px 110px 60px', gap: '12px', alignItems: 'flex-end' }}>
                                 <div style={{ flex: 1 }}>
                                     <label style={{ ...LS, fontSize: '11px' }}>{isServices ? t("اسم الخدمة") : t("اسم الصنف")}</label>
-                                    <CustomSelect
-                                        ref={itemSelectRef}
-                                        options={items.map(it => ({ 
-                                            value: it.id, 
-                                            label: it.name, 
-                                            sub: it.code ? `${t('كود:')} ${it.code}` : undefined 
-                                        }))}
-                                        placeholder={isServices ? t("ابحث باسم الخدمة...") : t("ابحث باسم الصنف أو الكود...")}
-                                        value={entryItemId}
-                                        onChange={(val: any) => {
-                                            setEntryItemId(val);
-                                            const item = items.find(it => it.id === val);
-                                            if (item) {
-                                                setEntryPrice(item.sellPrice);
-                                                setEntryDescription(item.description || '');
-                                            }
-                                            setTimeout(() => qtyRef.current?.focus(), 50);
-                                        }}
-                                        icon={Search}
-                                        onCreate={isServices ? (val) => {
-                                            fetch('/api/items', {
-                                                method: 'POST',
-                                                headers: { 'Content-Type': 'application/json' },
-                                                body: JSON.stringify({ name: val, sellPrice: 0 })
-                                            }).then(res => res.json()).then(newItem => {
-                                                if (newItem && newItem.id) {
-                                                    setItems(prev => [newItem, ...prev]);
-                                                    setEntryItemId(newItem.id);
+                                    <div style={{ position: 'relative' }}>
+                                        <CustomSelect
+                                            ref={itemSelectRef}
+                                            options={items.map(it => ({ 
+                                                value: it.id, 
+                                                label: it.name, 
+                                                sub: it.code ? `${t('كود:')} ${it.code}` : undefined 
+                                            }))}
+                                            placeholder={isServices ? t("ابحث باسم الخدمة...") : t("ابحث باسم الصنف أو الكود...")}
+                                            value={entryItemId}
+                                            onChange={(val: any) => {
+                                                setEntryItemId(val);
+                                                clearError('entryItemId');
+                                                const item = items.find(it => it.id === val);
+                                                if (item) {
+                                                    setEntryPrice(item.sellPrice);
+                                                    setEntryDescription(item.description || '');
                                                 }
-                                            });
-                                        } : undefined}
-                                    />
+                                                setTimeout(() => qtyRef.current?.focus(), 50);
+                                            }}
+                                            icon={Search}
+                                            onCreate={isServices ? (val) => {
+                                                fetch('/api/items', {
+                                                    method: 'POST',
+                                                    headers: { 'Content-Type': 'application/json' },
+                                                    body: JSON.stringify({ name: val, sellPrice: 0 })
+                                                }).then(res => res.json()).then(newItem => {
+                                                    if (newItem && newItem.id) {
+                                                        setItems(prev => [newItem, ...prev]);
+                                                        setEntryItemId(newItem.id);
+                                                    }
+                                                });
+                                            } : undefined}
+                                        />
+                                        <InlineError field="entryItemId" />
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
-                                    <PriceInput 
-                                        ref={qtyRef} 
-                                        disabled={!entryItemId} 
-                                        value={entryQty} 
-                                        onChange={val => { setEntryQty(val); }} 
-                                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => { focusIn(e); e.target.select(); }}
-                                        style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
-                                    />
+                                    <div style={{ position: 'relative' }}>
+                                        <PriceInput 
+                                            ref={qtyRef} 
+                                            disabled={!entryItemId} 
+                                            value={entryQty} 
+                                            onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
+                                            onFocus={(e: React.FocusEvent<HTMLInputElement>) => { focusIn(e); e.target.select(); }}
+                                            style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
+                                        />
+                                        <InlineError field="entryQty" />
+                                    </div>
                                 </div>
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
-                                    <PriceInput 
-                                        ref={priceRef} 
-                                        disabled={!entryItemId} 
-                                        value={entryPrice} 
-                                        onChange={val => { setEntryPrice(val); }} 
-                                        onFocus={(e: React.FocusEvent<HTMLInputElement>) => { focusIn(e); e.target.select(); }}
-                                        onKeyDown={(e) => { 
-                                            if (e.key === 'Enter') {
-                                                addLine();
-                                                setTimeout(() => itemSelectRef.current?.focus(), 50);
-                                            }
-                                        }}
-                                        style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
-                                    />
+                                    <div style={{ position: 'relative' }}>
+                                        <PriceInput 
+                                            ref={priceRef} 
+                                            disabled={!entryItemId} 
+                                            value={entryPrice} 
+                                            onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
+                                            onFocus={(e: React.FocusEvent<HTMLInputElement>) => { focusIn(e); e.target.select(); }}
+                                            onKeyDown={(e) => { 
+                                                if (e.key === 'Enter') {
+                                                    addLine();
+                                                    setTimeout(() => itemSelectRef.current?.focus(), 50);
+                                                }
+                                            }}
+                                            style={{ height: '42px', opacity: !entryItemId ? 0.5 : 1 }} 
+                                        />
+                                        <InlineError field="entryPrice" />
+                                    </div>
                                 </div>
                                 <button type="button" onClick={addLine} disabled={!entryItemId} style={{ height: '42px', width: '60px', borderRadius: '10px', background: !entryItemId ? 'rgba(37, 106, 244,0.3)' : C.primary, color: '#fff', border: 'none', cursor: !entryItemId ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <Plus size={22} />
@@ -492,7 +586,12 @@ export default function NewQuotationPage() {
                     </div>
                 </div>
             </div>
-            <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; } `}</style>
+            <style jsx global>{` @keyframes spin { to { transform:rotate(360deg); } } .animate-spin { animation: spin 1s linear infinite; } 
+                @keyframes inlineErrorPush {
+                    0% { transform: translateY(10px) scale(0.9); opacity: 0; }
+                    100% { transform: translateY(0) scale(1); opacity: 1; }
+                }
+            `}</style>
         </DashboardLayout>
     );
 }
