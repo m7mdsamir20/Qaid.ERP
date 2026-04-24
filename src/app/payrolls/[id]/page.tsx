@@ -264,23 +264,24 @@ ${tableHtml}
                         icon={FileText}
                         backUrl="/payrolls"
                         actions={[
-                            <button 
-                                key="print"
-                                onClick={openPayrollPrint}
-                                className="print-hide"
-                                style={{ 
-                                    height: '40px', padding: '0 20px', borderRadius: '12px', 
-                                    border: `1px solid ${C.border}`, 
-                                    background: 'rgba(255,255,255,0.03)', 
-                                    color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', 
-                                    display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
-                                    transition: 'all 0.2s', whiteSpace: 'nowrap'
-                                }}
-                                onMouseEnter={e => e.currentTarget.style.background = 'rgba(255,255,255,0.06)'}
-                                onMouseLeave={e => e.currentTarget.style.background = 'rgba(255,255,255,0.03)'}
-                            >
-                                <Printer size={16} /> طباعة
-                            </button>,
+                             <button 
+                                 key="print"
+                                 onClick={openPayrollPrint}
+                                 className="print-hide"
+                                 style={{ 
+                                     height: '40px', padding: '0 20px', borderRadius: '12px', 
+                                     border: 'none', 
+                                     background: C.primary, 
+                                     color: '#fff', fontSize: '13px', fontWeight: 700, cursor: 'pointer', 
+                                     display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO,
+                                     transition: 'all 0.2s', whiteSpace: 'nowrap',
+                                     boxShadow: '0 4px 10px rgba(37, 106, 244, 0.2)'
+                                 }}
+                                 onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-1px)'}
+                                 onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                             >
+                                 <Printer size={16} /> طباعة
+                             </button>,
                             payroll.status === 'draft' ? (
                                 <button 
                                     key="sync"
@@ -407,22 +408,22 @@ ${tableHtml}
                 <div style={TABLE_STYLE.container}>
 
 
-                    <table style={TABLE_STYLE.table}>
+                    <table style={{ ...TABLE_STYLE.table, tableLayout: 'fixed' }}>
                         <thead>
                             <tr style={TABLE_STYLE.thead}>
-                                <th style={TABLE_STYLE.th(true)}>كود</th>
-                                <th style={TABLE_STYLE.th(false)}>الموظف</th>
-                                <th style={TABLE_STYLE.th(false)}>الأساسي</th>
-                                <th style={TABLE_STYLE.th(false)}>البدلات</th>
-                                <th style={TABLE_STYLE.th(false)}>السلف</th>
-                                <th style={TABLE_STYLE.th(false)}>خصومات</th>
-                                <th style={TABLE_STYLE.th(false)}>الصافي</th>
+                                <th style={{ ...TABLE_STYLE.th(true), width: '80px', textAlign: 'center' }}>كود</th>
+                                <th style={{ ...TABLE_STYLE.th(false), textAlign: 'start' }}>الموظف</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>الأساسي</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>البدلات</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>السلف</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '100px', textAlign: 'center' }}>خصومات</th>
+                                <th style={{ ...TABLE_STYLE.th(false), width: '120px', textAlign: 'center' }}>الصافي</th>
                             </tr>
                         </thead>
                         <tbody>
                             {payroll.lines.map((line: any, idx: number) => (
                                 <tr key={line.id} style={TABLE_STYLE.row(idx === payroll.lines.length - 1)}>
-                                    <td style={TABLE_STYLE.td(true)}>
+                                    <td style={{ ...TABLE_STYLE.td(true), textAlign: 'center' }}>
                                         <span style={{ fontSize: '12px', color: C.primary, fontWeight: 600, fontFamily: OUTFIT }}>{line.employee.code}</span>
                                     </td>
                                     <td style={TABLE_STYLE.td(false)}>
@@ -431,19 +432,19 @@ ${tableHtml}
                                             <div style={{ fontSize: '11px', color: '#64748b', marginTop: '2px' }}>{line.employee.position || 'موظف'}</div>
                                         </div>
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
                                         {formatNumber(line.basicSalary)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.success, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
                                         +{formatNumber(line.allowances)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
                                         -{formatNumber(line.advances)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '13px', fontWeight: 700, color: C.danger, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
                                         -{formatNumber(line.discounts)}
                                     </td>
-                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 600, color: C.success, fontFamily: OUTFIT }} dir="ltr">
+                                    <td style={{ ...TABLE_STYLE.td(false), fontSize: '15px', fontWeight: 600, color: C.success, fontFamily: OUTFIT, textAlign: 'center' }} dir="ltr">
                                         {formatNumber(line.netSalary)}
                                     </td>
                                 </tr>
