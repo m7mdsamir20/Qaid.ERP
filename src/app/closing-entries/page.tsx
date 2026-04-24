@@ -9,6 +9,7 @@ import { BookMarked, Loader2, CheckCircle2, AlertTriangle, ArrowUpRight, ArrowDo
 import PageHeader from '@/components/PageHeader';
 import { THEME, C, CAIRO, OUTFIT, TABLE_STYLE, PAGE_BASE, SC } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
+import Currency from '@/components/Currency';
 
 /* ── Types ── */
 interface FinancialYear { id: string; name: string; isOpen: boolean; startDate: string; endDate: string; }
@@ -434,9 +435,11 @@ function StatCard({ label, value, color, icon: Icon, compact, currencySign }: an
                 <span style={{ fontSize: '13px', color: C.textMuted, fontWeight: 600 }}>{label}</span>
                 {Icon && <div style={{ padding: '8px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', border: `1px solid ${C.border}` }}><Icon size={16} style={{ color, opacity: 0.8 }} /></div>}
             </div>
-            <div style={{ fontSize: compact ? '24px' : '30px', fontWeight: 600, color, fontFamily: OUTFIT, direction: 'ltr', textAlign: 'start', display: 'flex', alignItems: 'baseline', gap: '6px' }}>
-                {fmt(value)}
-                <span style={{ fontSize: '12px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</span>
+            <div style={{ display: 'flex', alignItems: 'baseline', textAlign: 'start' }}>
+                <Currency 
+                    amount={value} 
+                    style={{ fontSize: compact ? '24px' : '30px', color }}
+                />
             </div>
             <div style={{ position: 'absolute', right: -10, bottom: -10, opacity: 0.03, color }}>
                 {Icon && <Icon size={100} />}
@@ -465,10 +468,10 @@ function DetailTable({ title, accounts, color, t, currencySign }: any) {
                                     <div style={{ fontSize: '11px', color: C.textMuted, fontFamily: OUTFIT, fontWeight: 600, opacity: 0.6, textAlign: 'start' }}>{acc.code}</div>
                                 </td>
                                 <td style={{ padding: '14px 20px', textAlign: 'end' }}>
-                                    <div style={{ fontSize: '15px', fontWeight: 600, color, direction: 'ltr', fontFamily: OUTFIT, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '4px' }}>
-                                        {fmt(acc.balance)}
-                                        <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 700, fontFamily: CAIRO }}>{currencySign}</span>
-                                    </div>
+                                    <Currency 
+                                        amount={acc.balance}
+                                        style={{ fontSize: '15px', color, justifyContent: 'flex-end' }}
+                                    />
                                 </td>
                             </tr>
                         )) : (
