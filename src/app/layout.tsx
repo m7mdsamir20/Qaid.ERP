@@ -72,7 +72,7 @@ export default function RootLayout({
               try {
                 var lang = localStorage.getItem('erp_lang') || 'ar';
                 var theme = localStorage.getItem('erp-theme') || 'dark';
-                document.documentElement.lang = lang;
+                document.documentElement.lang = lang === 'en' ? 'en-GB' : lang;
                 document.documentElement.dir = (lang === 'en' ? 'ltr' : 'rtl');
                 if (theme === 'light') {
                   document.documentElement.setAttribute('data-theme', 'light');
