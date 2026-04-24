@@ -187,4 +187,43 @@ export const navSections = [
             { id: '/settings/database', href: '/settings', label: 'قواعد البيانات' },
         ],
     },
+    // ═══════════════════════════════════════════════════════
+    // 🍽️  أقسام المطاعم والكافيهات (تظهر فقط لنشاط RESTAURANTS)
+    // ═══════════════════════════════════════════════════════
+    {
+        title: 'نقطة البيع (POS)',
+        icon: Receipt,
+        featureKey: 'pos',
+        isStandalone: true,
+        href: '/pos',
+        links: [
+            { id: '/pos', href: '/pos', label: 'شاشة الكاشير' },
+            { id: '/pos/orders', href: '/pos/orders', label: 'الطلبات الحالية' },
+            { id: '/pos/online-orders', href: '/pos/online-orders', label: 'طلبات الأونلاين' },
+            { id: '/pos/history', href: '/pos/history', label: 'سجل الطلبات' },
+        ],
+    },
+    {
+        title: 'الطاولات والصالة',
+        icon: Layers,
+        featureKey: 'tables',
+        isStandalone: true,
+        href: '/tables',
+        links: [
+            { id: '/tables', href: '/tables', label: 'خريطة الطاولات' },
+            { id: '/shifts', href: '/shifts', label: 'الورديات' },
+        ],
+    },
+    {
+        title: 'المطبخ والوصفات',
+        icon: ClipboardList,
+        featureKey: 'kitchen',
+        isStandalone: true,
+        href: '/kitchen',
+        links: [
+            { id: '/kitchen', href: '/kitchen', label: 'شاشة المطبخ (KDS)' },
+            { id: '/recipes', href: '/recipes', label: 'وصفات الطبخ' },
+            { id: '/modifiers', href: '/modifiers', label: 'الإضافات والتعديلات' },
+        ],
+    },
 ];

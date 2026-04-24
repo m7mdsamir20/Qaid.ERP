@@ -30,8 +30,9 @@ const COUNTRIES = [
 ];
 
 const BUSINESS_TYPES = (t: any) => [
-    { value: "TRADING", label: t('نشاط تجاري (جملة وتجزئة)') },
-    { value: "SERVICES", label: t('نشاط خدمات (استشارات، صيانة، إلخ)') },
+    { value: "TRADING",     label: t('نشاط تجاري (جملة وتجزئة)') },
+    { value: "SERVICES",    label: t('نشاط خدمات (استشارات، صيانة، إلخ)') },
+    { value: "RESTAURANTS", label: t('مطاعم وكافيهات') },
 ];
 
 export default function RegisterPage() {
