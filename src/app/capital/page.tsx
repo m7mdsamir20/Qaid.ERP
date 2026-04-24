@@ -29,7 +29,7 @@ interface Partner {
 
 export default function CapitalPage() {
     const { lang, t } = useTranslation();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const isRtl = lang === 'ar';
     const [data, setData] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
@@ -281,7 +281,7 @@ export default function CapitalPage() {
                         <div style={{ background: 'rgba(255,255,255,0.02)', border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', marginBottom: '20px' }}>
                             <div style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, marginBottom: '8px', fontFamily: CAIRO }}>{t('القيمة الرأسمالية الحالية')}</div>
                             <div style={{ fontSize: '24px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                {formatNumber(showModal?.capital || 0)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
+                                {fMoneyJSX(showModal?.capital || 0)}
                             </div>
                         </div>
 

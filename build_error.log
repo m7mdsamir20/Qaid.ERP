@@ -1,0 +1,290 @@
+
+> erp-app@0.1.0 build
+> prisma generate && next build
+
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+
+✔ Generated Prisma Client (v5.10.2) to .\node_modules\@prisma\client in 748ms
+
+Start using Prisma Client in Node.js (See: https://pris.ly/d/client)
+```
+import { PrismaClient } from '@prisma/client'
+const prisma = new PrismaClient()
+```
+or start using Prisma Client at the edge (See: https://pris.ly/d/accelerate)
+```
+import { PrismaClient } from '@prisma/client/edge'
+const prisma = new PrismaClient()
+```
+
+See other ways of importing Prisma Client: http://pris.ly/d/importing-client
+
+┌─────────────────────────────────────────────────────────────┐
+│  Deploying your app to serverless or edge functions?        │
+│  Try Prisma Accelerate for connection pooling and caching.  │
+│  https://pris.ly/cli/accelerate                             │
+└─────────────────────────────────────────────────────────────┘
+
+▲ Next.js 16.1.6 (Turbopack)
+- Environments: .env
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 40s
+  Running TypeScript ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/167) ...
+⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+  Generating static pages using 3 workers (41/167) 
+⚠ metadataBase property in metadata export is not set for resolving social open graph or twitter images, using "http://localhost:3000". See https://nextjs.org/docs/app/api-reference/functions/generate-metadata#metadatabase
+  Generating static pages using 3 workers (83/167) 
+  Generating static pages using 3 workers (125/167) 
+✓ Generating static pages using 3 workers (167/167) in 4.4s
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /accounts
+├ ○ /accounts/new
+├ ○ /advances
+├ ƒ /advances/[id]
+├ ƒ /api/accounts
+├ ƒ /api/accounts/[id]
+├ ƒ /api/accounts/seed
+├ ƒ /api/admin/fix-branches
+├ ƒ /api/admin/reorder-vouchers
+├ ƒ /api/advances
+├ ƒ /api/advances/[id]
+├ ƒ /api/auth/[...nextauth]
+├ ƒ /api/auth/register
+├ ƒ /api/auth/send-otp
+├ ƒ /api/auth/verify-otp
+├ ƒ /api/branches
+├ ƒ /api/capital
+├ ƒ /api/categories
+├ ƒ /api/closing-entries
+├ ƒ /api/closing-entries/preview
+├ ƒ /api/company
+├ ƒ /api/cost-centers
+├ ƒ /api/cost-centers/[id]
+├ ƒ /api/customers
+├ ƒ /api/customers/[id]/ledger
+├ ƒ /api/database
+├ ƒ /api/debt-settlement
+├ ƒ /api/deductions
+├ ƒ /api/deductions/[id]
+├ ƒ /api/departments
+├ ƒ /api/departments/[id]
+├ ƒ /api/depreciation/check
+├ ƒ /api/depreciation/register
+├ ƒ /api/employees
+├ ƒ /api/employees/[id]
+├ ƒ /api/employees/next-code
+├ ƒ /api/expenses
+├ ƒ /api/financial-years
+├ ƒ /api/financial-years/check
+├ ƒ /api/fixed-assets
+├ ƒ /api/fixed-assets/disposals
+├ ƒ /api/general-ledger
+├ ƒ /api/installments
+├ ƒ /api/installments/[id]
+├ ƒ /api/installments/cancel
+├ ƒ /api/installments/collect
+├ ƒ /api/installments/due
+├ ƒ /api/installments/overdue
+├ ƒ /api/installments/reports
+├ ƒ /api/installments/settle
+├ ƒ /api/items
+├ ƒ /api/journal-entries
+├ ƒ /api/notifications
+├ ƒ /api/notifications/generate
+├ ƒ /api/opening-balances
+├ ƒ /api/opening-balances/carry-forward
+├ ƒ /api/other-income
+├ ƒ /api/partner-transactions
+├ ƒ /api/partners
+├ ƒ /api/payrolls
+├ ƒ /api/payrolls/[id]
+├ ƒ /api/print/invoice/[id]
+├ ƒ /api/print/quotation/[id]
+├ ƒ /api/print/voucher/[id]
+├ ƒ /api/profile/change-password
+├ ƒ /api/profile/update
+├ ƒ /api/profit-distributions
+├ ƒ /api/purchase-payments
+├ ƒ /api/purchase-returns
+├ ƒ /api/purchases
+├ ƒ /api/quotations
+├ ƒ /api/quotations/convert
+├ ƒ /api/reports/aging-report
+├ ƒ /api/reports/balance-sheet
+├ ƒ /api/reports/balances
+├ ƒ /api/reports/cash-flow
+├ ƒ /api/reports/customer-statement
+├ ƒ /api/reports/daily-report
+├ ƒ /api/reports/expenses-report
+├ ƒ /api/reports/hr
+├ ƒ /api/reports/income-statement
+├ ƒ /api/reports/inventory-report
+├ ƒ /api/reports/item-movement
+├ ƒ /api/reports/low-stock-items
+├ ƒ /api/reports/purchases-report
+├ ƒ /api/reports/reconciliation-snapshots
+├ ƒ /api/reports/returns-report
+├ ƒ /api/reports/revenues-report
+├ ƒ /api/reports/sales-report
+├ ƒ /api/reports/supplier-statement
+├ ƒ /api/reports/top-selling-items
+├ ƒ /api/reports/treasury-bank-report
+├ ƒ /api/reports/trial-balance
+├ ƒ /api/sale-returns
+├ ƒ /api/sale-returns/[id]
+├ ƒ /api/sales
+├ ƒ /api/sales/[id]
+├ ƒ /api/search
+├ ƒ /api/settings
+├ ƒ /api/settings/backup
+├ ƒ /api/stats
+├ ƒ /api/stock-movements
+├ ƒ /api/stocks
+├ ƒ /api/stocktakings
+├ ƒ /api/stocktakings/[id]
+├ ƒ /api/super-admin/check
+├ ƒ /api/super-admin/companies
+├ ƒ /api/super-admin/companies/[id]
+├ ƒ /api/super-admin/stats
+├ ƒ /api/suppliers
+├ ƒ /api/treasuries
+├ ƒ /api/treasuries/[id]
+├ ƒ /api/treasuries/[id]/transactions
+├ ƒ /api/units
+├ ƒ /api/upload
+├ ƒ /api/vouchers
+├ ƒ /api/vouchers/fix
+├ ƒ /api/warehouse-transfers
+├ ƒ /api/warehouses
+├ ○ /capital
+├ ○ /categories
+├ ○ /closing-entries
+├ ○ /cost-centers
+├ ƒ /cost-centers/[id]
+├ ○ /customers
+├ ƒ /customers/[id]
+├ ○ /deductions
+├ ƒ /deductions/[id]
+├ ○ /departments
+├ ○ /due-installments
+├ ○ /employees
+├ ƒ /employees/[id]
+├ ƒ /employees/[id]/edit
+├ ○ /employees/new
+├ ○ /employees/new/edit
+├ ○ /expenses
+├ ○ /financial-years
+├ ○ /fixed-assets
+├ ○ /fixed-assets/depreciation
+├ ○ /fixed-assets/disposals
+├ ○ /fixed-assets/new
+├ ○ /general-ledger
+├ ○ /icon.png
+├ ○ /installments
+├ ƒ /installments/[id]
+├ ○ /items
+├ ○ /journal-entries
+├ ○ /login
+├ ○ /opening-balances
+├ ○ /other-income
+├ ○ /overdue-installments
+├ ○ /partner-accounts
+├ ○ /partners
+├ ○ /payments
+├ ○ /payments/new
+├ ○ /payrolls
+├ ƒ /payrolls/[id]
+├ ○ /print/installment-receipt
+├ ƒ /print/installment/[id]
+├ ƒ /print/invoice/[id]
+├ ƒ /print/quotation/[id]
+├ ○ /print/report
+├ ƒ /print/voucher/[id]
+├ ○ /profile
+├ ○ /profile/password
+├ ○ /profit-distribution
+├ ○ /purchase-payments
+├ ○ /purchase-payments/new
+├ ○ /purchase-returns
+├ ○ /purchase-returns/new
+├ ○ /purchases
+├ ƒ /purchases/[id]
+├ ○ /purchases/new
+├ ○ /quotations
+├ ƒ /quotations/[id]
+├ ○ /quotations/new
+├ ○ /receipts
+├ ○ /receipts/new
+├ ○ /register
+├ ƒ /reports
+├ ƒ /reports/aging-report
+├ ƒ /reports/balance-sheet
+├ ƒ /reports/bank-statement
+├ ƒ /reports/cash-flow
+├ ƒ /reports/cash-statement
+├ ƒ /reports/clients-suppliers-balances
+├ ƒ /reports/customer-statement
+├ ƒ /reports/daily-report
+├ ƒ /reports/detailed-balance-sheet
+├ ƒ /reports/employees-advances
+├ ƒ /reports/employees-catalog
+├ ƒ /reports/employees-deductions
+├ ƒ /reports/expenses-report
+├ ƒ /reports/fixed-assets
+├ ƒ /reports/general-ledger
+├ ƒ /reports/income-statement
+├ ƒ /reports/installments
+├ ƒ /reports/installments/collection
+├ ƒ /reports/installments/customer-statement
+├ ƒ /reports/installments/overdue
+├ ƒ /reports/inventory-report
+├ ƒ /reports/item-movement
+├ ƒ /reports/low-stock-items
+├ ƒ /reports/payroll-statement
+├ ƒ /reports/purchases-report
+├ ƒ /reports/returns-report
+├ ƒ /reports/revenues-report
+├ ƒ /reports/sales-report
+├ ƒ /reports/supplier-statement
+├ ƒ /reports/top-selling-items
+├ ƒ /reports/treasury-bank-report
+├ ƒ /reports/treasury-reconciliation
+├ ƒ /reports/trial-balance
+├ ○ /sale-returns
+├ ƒ /sale-returns/[id]
+├ ○ /sale-returns/new
+├ ○ /sales
+├ ƒ /sales/[id]
+├ ○ /sales/new
+├ ○ /settings
+├ ○ /settlements
+├ ○ /stock-movements
+├ ○ /stocktakings
+├ ○ /stocktakings/new
+├ ○ /super-admin
+├ ƒ /super-admin/edit/[id]
+├ ○ /super-admin/new
+├ ○ /suppliers
+├ ○ /treasuries
+├ ○ /units
+├ ○ /verify
+├ ○ /warehouse-transfers
+├ ○ /warehouse-transfers/new
+└ ○ /warehouses
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

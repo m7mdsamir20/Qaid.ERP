@@ -166,10 +166,14 @@ export default function InventoryReportPage() {
                                                             {formatNumber(st.quantity)}
                                                         </span>
                                                     </td>
-                                                    <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(st.item?.costPrice || 0)}</td>
+                                                    <td style={{ ...TABLE_STYLE.td(false) }}>
+                                                    {fMoneyJSX(st.item?.costPrice || 0)}
+                                                </td>
                                                 </>
                                             )}
-                                            <td style={{...TABLE_STYLE.td(false)}}>{fMoneyJSX(st.item?.sellPrice || 0)}</td>
+                                            <td style={{ ...TABLE_STYLE.td(false) }}>
+                                                    {fMoneyJSX(st.item?.sellPrice || 0)}
+                                                </td>
                                             {!isServices && (
                                                 <td style={{...TABLE_STYLE.td(false)}}>
                                                     {fMoneyJSX(st.quantity * (st.item?.costPrice || 0), '', { fontWeight: 600, color: C.primary })}

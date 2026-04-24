@@ -178,28 +178,16 @@ export default function BankStatementPage() {
                         />
                     </div>
                     
-                    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('من:')}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={from} onChange={e => setFrom(e.target.value)}
-                                style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
-                                    borderRadius: '12px', border: `1px solid ${C.border}`,
-                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
-                                }}
-                            />
+                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
+                        <div className="date-input-wrapper">
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
+                            <input type="date" value={from} onChange={e => setFrom(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
-                        <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>{t('إلى:')}</span>
-                        <div style={{ width: '160px' }}>
-                            <input type="date" value={to} onChange={e => setTo(e.target.value)}
-                                style={{ 
-                                    ...IS, width: '100%', height: '42px', padding: '0 12px', textAlign: 'start', direction: 'inherit',
-                                    borderRadius: '12px', border: `1px solid ${C.border}`,
-                                    background: C.card, color: C.textPrimary, fontSize: '13.5px',
-                                    fontWeight: 600, outline: 'none', fontFamily: OUTFIT
-                                }}
-                            />
+                        <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
+                        <div className="date-input-wrapper">
+                            <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
+                            <input type="date" value={to} onChange={e => setTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
                         <button onClick={() => fetchReport()} disabled={loading} style={{ 
                             height: '42px', padding: '0 24px', borderRadius: '12px', 

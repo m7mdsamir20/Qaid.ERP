@@ -25,7 +25,7 @@ const TX_LABELS: Record<string, { label: string; color: string; bg: string; icon
 
 export default function PartnerAccountsPage() {
     const { lang, t } = useTranslation();
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const isRtl = lang === 'ar';
     const [partners, setPartners] = useState<Partner[]>([]);
     const [treasuries, setTreasuries] = useState<any[]>([]);
@@ -271,7 +271,7 @@ export default function PartnerAccountsPage() {
                             }}>
                                 <div style={{ fontSize: '11px', color: C.textMuted, fontWeight: 700, marginBottom: '4px', fontFamily: CAIRO }}>{t('الرصيد الجاري حالياً')}</div>
                                 <div style={{ fontSize: '20px', fontWeight: 950, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                    {formatNumber(showModal.balance)} <span style={{ fontSize: '12px', fontFamily: CAIRO, opacity: 0.7 }}>{cSymbol}</span>
+                                    {fMoneyJSX(showModal.balance)}
                                 </div>
                             </div>
 

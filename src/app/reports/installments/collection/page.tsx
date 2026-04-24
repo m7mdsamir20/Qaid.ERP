@@ -97,24 +97,30 @@ export default function CollectionReportPage() {
                 />
 
                 <div className="no-print" style={{ display: 'flex', gap: '10px', marginBottom: '24px', alignItems: 'center', flexWrap: 'wrap' }}>
-                    <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
-                    <input type="date" value={form.from}
-                        onChange={e => setForm(f => ({ ...f, from: e.target.value }))}
-                        style={{
-                            height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
-                            background: C.card, color: C.textPrimary, fontSize: '13px',
-                            fontWeight: 600, outline: 'none', fontFamily: OUTFIT, width: '170px'
-                        }}
-                    />
-                    <span style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
-                    <input type="date" value={form.to}
-                        onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
-                        style={{
-                            height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
-                            background: C.card, color: C.textPrimary, fontSize: '13px',
-                            fontWeight: 600, outline: 'none', fontFamily: OUTFIT, width: '170px'
-                        }}
-                    />
+                    <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>من:</span>
+                    <div className="date-input-wrapper" style={{ width: '170px' }}>
+                        <span className="date-label-mobile" style={{ display: 'none' }}>من:</span>
+                        <input type="date" value={form.from}
+                            onChange={e => setForm(f => ({ ...f, from: e.target.value }))}
+                            style={{
+                                height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
+                                background: C.card, color: C.textPrimary, fontSize: '13px',
+                                fontWeight: 600, outline: 'none', fontFamily: OUTFIT, width: '100%'
+                            }}
+                        />
+                    </div>
+                    <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>إلى:</span>
+                    <div className="date-input-wrapper" style={{ width: '170px' }}>
+                        <span className="date-label-mobile" style={{ display: 'none' }}>إلى:</span>
+                        <input type="date" value={form.to}
+                            onChange={e => setForm(f => ({ ...f, to: e.target.value }))}
+                            style={{
+                                height: '42px', padding: '0 12px', borderRadius: '12px', border: `1px solid ${C.border}`,
+                                background: C.card, color: C.textPrimary, fontSize: '13px',
+                                fontWeight: 600, outline: 'none', fontFamily: OUTFIT, width: '100%'
+                            }}
+                        />
+                    </div>
                     <button onClick={fetchReport} disabled={loading} style={{
                         height: '42px', padding: '0 24px', borderRadius: '12px',
                         background: C.primary, color: '#fff', border: 'none',

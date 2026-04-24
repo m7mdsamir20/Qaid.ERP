@@ -16,7 +16,7 @@ import { C, CAIRO, OUTFIT, PAGE_BASE, SC, IS, LS, THEME, focusIn, focusOut, TABL
 export default function OtherIncomePage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
-    const { symbol: currencySign } = useCurrency();
+    const { symbol: currencySign, fMoneyJSX } = useCurrency();
     const { data: session } = useSession();
     const [entries, setEntries] = useState<any[]>([]);
     const [accounts, setAccounts] = useState<any[]>([]);
@@ -175,8 +175,7 @@ export default function OtherIncomePage() {
                                         </td>
                                         <td style={{...TABLE_STYLE.td(false, true)}}>
                                             <span style={{ fontSize: '13px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                {formatNumber(creditLine?.credit || 0)}
-                                                <small style={{ fontSize: '11px', marginInlineStart: '6px', fontWeight: 700, fontFamily: CAIRO, opacity: 0.7 }}>{currencySign}</small>
+                                                {fMoneyJSX(creditLine?.credit || 0)}
                                             </span>
                                         </td>
                                     </tr>

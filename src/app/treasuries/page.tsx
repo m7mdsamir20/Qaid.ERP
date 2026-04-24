@@ -383,6 +383,7 @@ export default function TreasuriesPage() {
 /* ── Treasury Card ── */
 function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDelete }: { item: Treasury; currencySymbol: string; canEdit?: boolean; canDelete?: boolean; onEdit: () => void; onDelete: () => void; }) {
     const { t } = useTranslation();
+    const { fMoneyJSX } = useCurrency();
     const isCash = item.type === 'cash';
     const accentColor = isCash ? C.success : C.primary;
     const Icon = isCash ? Banknote : Building2;
@@ -442,8 +443,7 @@ function TreasuryCard({ item, currencySymbol, canEdit, canDelete, onEdit, onDele
                 </div>
                 <div style={{ position: 'relative', zIndex: 1 }}>
                     <div style={{ fontSize: '22px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT, display: 'flex', alignItems: 'baseline', justifyContent: 'center', gap: '8px' }}>
-                        {formatNumber(item.balance)}
-                        <span style={{ fontSize: '11px', color: accentColor, fontWeight: 600, fontFamily: CAIRO }}>{currencySymbol}</span>
+                        {fMoneyJSX(item.balance)}
                     </div>
                 </div>
             </div>

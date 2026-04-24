@@ -344,8 +344,8 @@ export default function SaleDetailPage(props: { params: Promise<{ id: string }> 
                                                 <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>
                                                     {new Date(ret.date).toLocaleDateString(isRtl ? 'ar-EG' : 'en-US')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 600, color: C.danger }}>
-                                                    {fMoneyJSX(ret.total)}
+                                                <td style={{ ...TABLE_STYLE.td(false) }}>
+                                                    {fMoneyJSX(ret.total, '', { color: C.danger })}
                                                 </td>
                                             </tr>
                                         ))}

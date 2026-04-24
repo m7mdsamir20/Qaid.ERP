@@ -14,7 +14,7 @@ import PageHeader from '@/components/PageHeader';
 import { useTranslation } from '@/lib/i18n';
 
 export default function CostCenterDetails() {
-    const { symbol: cSymbol } = useCurrency();
+    const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const { t } = useTranslation();
     const { id } = useParams();
     const router = useRouter();
@@ -223,9 +223,9 @@ export default function CostCenterDetails() {
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{line.description || line.journalEntry.description || '—'}</div>
                                             </td>
-                                            <td style={{ ...TABLE_STYLE.td(false),  fontSize: '15px', fontWeight: 600, color: C.danger, fontFamily: OUTFIT }}>
-                                                {formatNumber(line.debit)} <span style={{ fontSize: '11px', color: C.textMuted, marginInlineEnd: '4px' }}>{cSymbol}</span>
-                                            </td>
+                                            <td style={{ ...TABLE_STYLE.td(false) }}>
+                                                    {fMoneyJSX(line.debit, '', { color: C.danger })}
+                                                </td>
                                             <td style={TABLE_STYLE.td(false)}>
                                                 <div style={{ display: 'inline-flex', padding: '3px 10px', borderRadius: '6px', background: C.inputBg, border: `1px solid ${C.border}`, fontSize: '11px', color: C.textSecondary, fontFamily: CAIRO }}>
                                                     {line.journalEntry.referenceType === 'invoice' ? t('فاتورة') :
