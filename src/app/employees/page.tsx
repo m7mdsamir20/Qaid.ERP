@@ -52,7 +52,7 @@ export default function EmployeesPage() {
             setLoading(true);
             const urlParams = new URLSearchParams(window.location.search);
             const branchId = urlParams.get('branchId') || 'all';
-            
+
             const [eRes, dRes] = await Promise.all([
                 fetch(`/api/employees?branchId=${branchId}`),
                 fetch('/api/departments')
@@ -70,11 +70,11 @@ export default function EmployeesPage() {
         const matchesSearch = emp.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             emp.code.toLowerCase().includes(searchTerm.toLowerCase()) ||
             emp.position?.toLowerCase().includes(searchTerm.toLowerCase());
-        
+
         const matchesDept = selectedDept === 'all' || emp.department?.id === selectedDept;
-        const matchesStatus = selectedStatus === 'all' || 
+        const matchesStatus = selectedStatus === 'all' ||
             (emp.status && emp.status.toLowerCase() === selectedStatus.toLowerCase());
-        
+
         return matchesSearch && matchesDept && matchesStatus;
     });
 
@@ -104,9 +104,9 @@ export default function EmployeesPage() {
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, fontFamily: CAIRO }}>
 
                 {/* Header Section */}
-                <PageHeader 
-                    title={t("الموظفين")} 
-                    subtitle={t("إدارة شؤون العاملين، العقود، والأقسام الإدارية")} 
+                <PageHeader
+                    title={t("الموظفين")}
+                    subtitle={t("إدارة شؤون العاملين، العقود، والأقسام الإدارية")}
                     icon={UsersIcon}
                     primaryButton={{
                         label: t('إضافة موظف'),
@@ -123,10 +123,10 @@ export default function EmployeesPage() {
                             padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                             transition: 'all 0.2s', position: 'relative'
                         }}
-                        onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
-                        onMouseLeave={e => e.currentTarget.style.transform = 'none'}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'none'}
                         >
-                             <div style={{ textAlign: 'start' }}>
+                            <div style={{ textAlign: 'start' }}>
                                 <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
                                 <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
                                     <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
@@ -141,24 +141,27 @@ export default function EmployeesPage() {
                 </div>
 
                 {/* Toolbar - Search & Filters */}
-                <div className="toolbar-responsive" style={{ 
+                <div className="toolbar-responsive" style={{
                     display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '16px'
                 }}>
-                    <div className="search-input-wrapper">
-                        <Search size={16} className="search-icon" />
+                    <div style={{ flex: 1, position: 'relative' }}>
+                        <Search size={16} style={{ position: 'absolute', insetInlineStart: '14px', top: '50%', transform: 'translateY(-50%)', color: C.primary, pointerEvents: 'none' }} />
                         <input
                             type="text"
                             placeholder={t("ابحث باسم الموظف أو الكود أو المنصب الوظيفي...")}
-                            style={{ ...IS }}
+                            style={{
+                                ...IS, paddingInlineStart: '40px', height: '42px', fontSize: '13px',
+                                borderRadius: '12px'
+                            }}
                             onFocus={focusIn}
                             onBlur={focusOut}
                             value={searchTerm}
                             onChange={e => setSearchTerm(e.target.value)}
                         />
                     </div>
-                    
+
                     <div className="select-container-responsive" style={{ width: '220px' }}>
-                        <CustomSelect 
+                        <CustomSelect
                             value={selectedDept}
                             onChange={setSelectedDept}
                             placeholder={t("كل الأقسام")}
@@ -170,9 +173,9 @@ export default function EmployeesPage() {
                             ]}
                         />
                     </div>
-                    
+
                     <div className="select-container-responsive" style={{ width: '180px' }}>
-                        <CustomSelect 
+                        <CustomSelect
                             value={selectedStatus}
                             onChange={setSelectedStatus}
                             placeholder={t("كل الحالات")}
@@ -220,8 +223,8 @@ export default function EmployeesPage() {
                                     {filteredEmployees.map((emp, i) => {
                                         const empNet = emp.basicSalary + (emp.housingAllowance || 0) + (emp.transportAllowance || 0) + (emp.foodAllowance || 0) - (emp.insuranceDeduction || 0) - (emp.taxDeduction || 0);
                                         return (
-                                            <tr 
-                                                key={emp.id} 
+                                            <tr
+                                                key={emp.id}
                                                 style={TABLE_STYLE.row(i === filteredEmployees.length - 1)}
                                                 onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                                 onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
@@ -263,19 +266,19 @@ export default function EmployeesPage() {
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
                                                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                                                        <button 
+                                                        <button
                                                             onClick={() => router.push(`/employees/${emp.id}`)}
                                                             style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                                         >
                                                             <Eye size={14} />
                                                         </button>
-                                                        <button 
+                                                        <button
                                                             onClick={() => router.push(`/employees/${emp.id}/edit`)}
                                                             style={{ width: '30px', height: '30px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                                                         >
                                                             <Pencil size={14} />
                                                         </button>
-                                                        <button 
+                                                        <button
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
                                                                 setEmployeeToDelete(emp);
@@ -295,7 +298,8 @@ export default function EmployeesPage() {
                     )}
                 </div>
 
-                <style dangerouslySetInnerHTML={{ __html: `
+                <style dangerouslySetInnerHTML={{
+                    __html: `
                     @keyframes slideUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
                     @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
                     

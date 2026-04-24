@@ -105,39 +105,38 @@ export default function SalesPage() {
 
                 {/* Filters Section */}
                 <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
-                    <div style={{ ...SEARCH_STYLE.wrapper, order: 1, minWidth: '200px' }}>
+                    <div style={SEARCH_STYLE.wrapper}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
-                        <input 
+                        <input
                             placeholder={t("رقم الفاتورة أو اسم العميل...")}
                             value={searchTerm} onChange={e => setSearchTerm(e.target.value)}
-                            style={SEARCH_STYLE.input} 
+                            style={SEARCH_STYLE.input}
                             onFocus={focusIn} onBlur={focusOut}
                         />
                     </div>
-                    
+
                     {/* Responsive Date Filters */}
-                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', order: 2 }}>
+                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                         <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '155px' }} />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
                         <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '155px' }} />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ ...IS, width: '160px' }} />
                         </div>
                     </div>
-                    
+
                     {(searchTerm || dateFrom || dateTo) && (
-                        <button 
+                        <button
                             className="mobile-full"
                             onClick={() => { setSearchTerm(''); setDateFrom(''); setDateTo(''); }}
-                            style={{ 
+                            style={{
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
-                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
-                                borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s',
-                                order: 3
+                                background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger,
+                                borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s'
                             }}
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
@@ -165,10 +164,10 @@ export default function SalesPage() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t("رقم الفاتورة")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("التاريخ")}</th>
-                                        <th style={{...TABLE_STYLE.th(false)}}>{t("العميل")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false) }}>{t("العميل")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("الإجمالي")}</th>
-                                        <th style={{...TABLE_STYLE.th(false, true)}}>{t("المدفوع")}</th>
-                                        <th style={{...TABLE_STYLE.th(false, true)}}>{t("المتبقي")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("المدفوع")}</th>
+                                        <th style={{ ...TABLE_STYLE.th(false, true) }}>{t("المتبقي")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("الحالة")}</th>
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراءات")}</th>
                                     </tr>
@@ -185,20 +184,20 @@ export default function SalesPage() {
                                                 <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
                                                     {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textMuted, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{inv.customer ? inv.customer.name : t("عميل نقدي")}</td>
-                                                <td style={{...TABLE_STYLE.td(false, true)}}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     {fMoneyJSX(inv.total)}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false, true)}}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     {fMoneyJSX(inv.paidAmount, '', { color: C.success })}
                                                 </td>
-                                                <td style={{...TABLE_STYLE.td(false, true)}}>
+                                                <td style={{ ...TABLE_STYLE.td(false, true) }}>
                                                     {fMoneyJSX(inv.remaining, '', { color: (inv.remaining > 0) ? C.danger : C.textMuted })}
                                                 </td>
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
-                                                    <div style={{ 
-                                                        display: 'inline-flex', alignItems: 'center', gap: '5px', 
+                                                    <div style={{
+                                                        display: 'inline-flex', alignItems: 'center', gap: '5px',
                                                         padding: '3px 10px', borderRadius: '30px', fontSize: '11px', fontWeight: 700,
                                                         background: st.bg, color: st.color, border: `1px solid ${st.color}30`, fontFamily: CAIRO
                                                     }}>
@@ -220,7 +219,7 @@ export default function SalesPage() {
                                     })}
                                 </tbody>
                             </table>
-                            <Pagination 
+                            <Pagination
                                 total={filteredAll.length}
                                 pageSize={pageSize}
                                 currentPage={currentPage}
@@ -230,7 +229,8 @@ export default function SalesPage() {
                     )}
                 </div>
             </div>
-            <style dangerouslySetInnerHTML={{ __html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 @media (max-width: 768px) {
                     .date-filter-row { width: 100%; gap: 8px !important; }
                     .date-label-desktop { display: none !important; }

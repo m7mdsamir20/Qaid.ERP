@@ -6,8 +6,6 @@ import { useSession, signOut } from 'next-auth/react';
 import { Search, Bell, ChevronDown, User, Settings, KeyRound, LogOut, FileText, Package, Users, Receipt, Loader2, Globe, AlertTriangle, GitBranch, Menu, Sun, Moon, X } from 'lucide-react';
 import { C, CAIRO } from '@/constants/theme';
 import { Avatar } from '@/components/UserAvatar';
-import { useTranslation } from '@/lib/i18n';
-import { useTheme } from '@/components/Providers';
 
 /* ══════════════════════════════════════════
    TYPES & MOCK DATA
@@ -20,12 +18,14 @@ interface SearchResult {
     href: string;
 }
 
+// Search logic is handled via /api/search API for real-time results
+
 const typeIcon: Record<string, any> = {
-    invoice: Receipt,
-    product: Package,
-    customer: Users,
-    supplier: FileText
+    invoice: Receipt, product: Package, customer: Users, supplier: FileText
 };
+
+import { useTranslation } from '@/lib/i18n';
+import { useTheme } from '@/components/Providers';
 
 const getRoleLabel = (role: string, t: any) => {
     const roles: Record<string, string> = {
@@ -52,7 +52,6 @@ function SearchBox() {
     const [query, setQuery] = useState('');
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [focused, setFocused] = useState(false);
     const [results, setResults] = useState<SearchResult[]>([]);
     const boxRef = useRef<HTMLDivElement>(null);
     const router = useRouter();
@@ -66,12 +65,7 @@ function SearchBox() {
     }, []);
 
     useEffect(() => {
-        if (!query.trim()) { 
-            setResults([]); 
-            setOpen(false); 
-            setLoading(false);
-            return; 
-        }
+        if (!query.trim()) { setResults([]); setOpen(false); return; }
         setLoading(true);
         const t = setTimeout(async () => {
             try {
@@ -94,37 +88,30 @@ function SearchBox() {
     const isServices = businessType === 'SERVICES';
 
     return (
-        <div ref={boxRef} className="search-box-container search-input-wrapper" style={{ 
-            maxWidth: '340px',
-            background: 'rgba(255, 255, 255, 0.03)',
-            border: `1px solid ${focused ? C.primary : 'rgba(255, 255, 255, 0.1)'}`,
-            borderRadius: '12px',
-            height: '40px',
-            transition: 'all 0.2s',
-            position: 'relative',
-            boxShadow: focused ? '0 0 0 3px rgba(37, 106, 244, 0.15)' : 'none'
-        }}>
-            {loading
-                ? <Loader2 size={16} color={C.textMuted} className="search-icon" style={{ animation: 'spin-centered 1s linear infinite' }} />
-                : <Search size={16} color={focused ? C.primary : C.textMuted} className="search-icon" />
-            }
-            <input
-                id="global-search"
-                name="q"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-                onFocus={() => {
-                    setFocused(true);
-                    if (results.length > 0) setOpen(true);
-                }}
-                onBlur={() => setFocused(false)}
-                placeholder={t(isServices ? "ابحث هنا..." : "ابحث هنا...")}
-                style={{
-                    flex: 1, background: 'transparent', border: 'none', outline: 'none',
-                    color: C.textPrimary, fontSize: '13.5px', fontFamily: CAIRO,
-                    height: '100%', padding: '0'
-                }}
-            />
+        <div ref={boxRef} className="search-box-container" style={{ position: 'relative', width: '100%', maxWidth: '340px' }}>
+            <div style={{
+                display: 'flex', alignItems: 'center', gap: '10px',
+                background: C.inputBg, border: `1px solid ${C.border}`,
+                borderRadius: '12px', padding: '0 12px', transition: 'all 0.2s',
+                height: '38px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
+            }}>
+                {loading
+                    ? <Loader2 size={16} color={C.textMuted} style={{ animation: 'spin 1s linear infinite' }} />
+                    : <Search size={16} color={C.primary} />
+                }
+                <input
+                    id="global-search"
+                    name="q"
+                    value={query}
+                    onChange={e => setQuery(e.target.value)}
+                    onFocus={() => results.length && setOpen(true)}
+                    placeholder={t(isServices ? "ابحث هنا..." : "ابحث هنا...")}
+                    style={{
+                        flex: 1, background: 'none', border: 'none', outline: 'none',
+                        color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO
+                    }}
+                />
+            </div>
 
             {open && results.length > 0 && (
                 <div style={{
@@ -132,7 +119,7 @@ function SearchBox() {
                     minWidth: '280px',
                     background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px',
                     boxShadow: '0 20px 40px rgba(0,0,0,0.3)', zIndex: 1000, overflow: 'hidden',
-                    animation: 'fadeDown 0.2s ease', borderTop: `1px solid ${C.primary}`
+                    animation: 'fadeDown 0.2s ease'
                 }}>
                     {results.map(r => {
                         const Icon = typeIcon[r.type] || Receipt;
@@ -199,8 +186,8 @@ function Actions() {
         const fetchNotifs = async () => {
             try {
                 // Generate new notifications first (background check)
-                await fetch('/api/notifications/generate', { method: 'POST' }).catch(() => {});
-                
+                await fetch('/api/notifications/generate', { method: 'POST' }).catch(() => { });
+
                 const res = await fetch('/api/notifications?limit=8');
                 const data = await res.json();
                 if (Array.isArray(data)) {
@@ -522,15 +509,9 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
         <header className="main-header" style={{
             height: '64px', position: 'fixed', top: 0,
             zIndex: 800,
-            background: 'rgba(15, 21, 36, 0.65)',
-            backdropFilter: 'blur(20px) saturate(180%)',
-            WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-            boxShadow: '0 4px 30px rgba(0, 0, 0, 0.15)',
-            display: 'flex',
-            alignItems: 'center', padding: '0 24px', transition: 'all 0.3s',
-            width: '100%',
-            left: 0
+            background: 'var(--c-overlay, rgba(7, 13, 26, 0.7))', backdropFilter: 'blur(12px)',
+            borderBottom: `1px solid ${C.border}`, display: 'flex',
+            alignItems: 'center', padding: '0 24px', transition: 'all 0.3s'
         }} dir={isRtl ? 'rtl' : 'ltr'}>
 
             <MobileSearch isOpen={showMobSearch} onClose={() => setShowMobSearch(false)} />
@@ -588,3 +569,7 @@ export default function Header({ onMenuToggle }: { onMenuToggle?: () => void }) 
         </header>
     );
 }
+
+
+
+
