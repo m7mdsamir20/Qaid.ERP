@@ -121,7 +121,7 @@ export const SC: React.CSSProperties = {
 export const STitle: React.CSSProperties = {
     fontSize: '13px',
     fontWeight: 800,
-    color: '#256af4', // Bright Azure Blue
+    color: C.primary,
     marginBottom: '16px',
     display: 'flex',
     alignItems: 'center',
@@ -155,9 +155,9 @@ export const BTN_PRIMARY = (disabled: boolean, submitting: boolean): React.CSSPr
 /** Success/Print Button Style (أزرار الطباعة والنجاح) */
 export const BTN_SUCCESS = (disabled: boolean, submitting: boolean): React.CSSProperties => ({
     width: '100%', height: '48px', borderRadius: '14px',
-    border: '1px solid rgba(16,185,129,0.4)',
-    background: 'rgba(16,185,129,0.1)',
-    color: '#10b981', fontWeight: 700, fontSize: '14px',
+    border: `1px solid ${C.successBorder}`,
+    background: C.successBg,
+    color: C.success, fontWeight: 700, fontSize: '14px',
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
     cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
     opacity: (disabled || submitting) ? 0.6 : 1
@@ -219,7 +219,7 @@ export const TABLE_STYLE = {
         background: C.subtle,
         borderBottom: `1px solid ${C.border}`
     },
-    th: (isFirst: boolean, centered?: boolean) => ({
+    th: (_isFirst: boolean, centered?: boolean) => ({
         padding: '16px 20px',
         textAlign: (centered ? 'center' : 'start') as any,
         fontSize: '12px',
@@ -235,7 +235,7 @@ export const TABLE_STYLE = {
         transition: 'all 0.2s',
         cursor: 'default' as 'default'
     }),
-    td: (isFirst: boolean, centered?: boolean) => ({
+    td: (_isFirst: boolean, centered?: boolean) => ({
         padding: '16px 20px',
         textAlign: (centered ? 'center' : 'start') as any,
         verticalAlign: 'middle' as 'middle'
