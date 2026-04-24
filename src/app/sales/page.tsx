@@ -184,7 +184,7 @@ export default function SalesPage() {
                                                 <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, fontSize: '11px', color: C.primary, opacity: 0.65, fontFamily: OUTFIT, width: '120px', }}>
                                                     {isServices ? 'SRV' : 'SAL'}-{String(inv.invoiceNumber).padStart(5, '0')}
                                                 </td>
-                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textSecondary, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
+                                                <td style={{ ...TABLE_STYLE.td(false, true), color: C.textMuted, fontSize: '13px', fontFamily: OUTFIT, }}>{dateStr}</td>
                                                 <td style={{ ...TABLE_STYLE.td(false), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO, }}>{inv.customer ? inv.customer.name : t("عميل نقدي")}</td>
                                                 <td style={{...TABLE_STYLE.td(false, true)}}>
                                                     {fMoneyJSX(inv.total)}
