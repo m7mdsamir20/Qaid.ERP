@@ -26,7 +26,7 @@ export const THEME = {
         card: 'var(--c-card, #0e172a)',
         hover: 'var(--c-hover, rgba(255,255,255,0.04))',
         border: 'var(--c-border, rgba(255,255,255,0.15))',
-        inputBg: 'var(--c-surface, rgba(14, 23, 41, 0.4))',
+        inputBg: 'var(--c-input-bg, rgba(14, 23, 41, 0.4))',
         subtle: 'var(--c-subtle, rgba(255,255,255,0.02))',
 
         textPrimary: 'var(--c-text-primary, #f8fafc)',
@@ -82,10 +82,10 @@ export const CAIRO = THEME.fonts.cairo;
 export const C = THEME.colors;
 
 export const IS: React.CSSProperties = {
-    width: '100%', height: '40px', paddingInlineStart: '44px', paddingInlineEnd: '14px',
+    width: '100%', height: THEME.input.height, padding: '0 16px',
     textAlign: 'start',
-    borderRadius: '12px', border: `1px solid ${C.border}`,
-    background: C.inputBg, color: C.textPrimary, fontSize: '13.5px',
+    borderRadius: THEME.input.radius, border: `1px solid ${C.border}`,
+    background: C.card, color: C.textPrimary, fontSize: THEME.input.fontSize,
     fontWeight: 500, outline: 'none', transition: 'all 0.15s', boxSizing: 'border-box',
     fontFamily: CAIRO,
 };
@@ -182,8 +182,8 @@ export const SEARCH_STYLE = {
     container: { marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center' },
     wrapper: { flex: 1, position: 'relative' as 'relative' },
     input: {
-        ...IS, width: '100%', height: '40px',
-        borderRadius: '12px', background: C.inputBg,
+        ...IS, width: '100%', paddingInlineStart: '42px', paddingInlineEnd: '16px', paddingRight: undefined, paddingLeft: undefined, height: '42px',
+        borderRadius: '10px', background: C.card, fontSize: '13.5px',
         border: `1px solid ${C.border}`, transition: 'all 0.2s ease-in-out'
     },
     icon: (color: string = C.primary): React.CSSProperties => ({

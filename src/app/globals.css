@@ -91,8 +91,7 @@
   --c-card: #0e172a;
   --c-hover: rgba(255, 255, 255, 0.04);
   --c-border: rgba(255, 255, 255, 0.12);
-  --c-surface: #0f182b;
-  --c-input-bg: var(--c-surface);
+  --c-input-bg: rgba(14, 23, 41, 0.4);
 
   --c-text-primary: #f8fafc;
   --c-text-secondary: #94a3b8;
@@ -142,97 +141,24 @@
    Ensures 42px height and consistent background globally.
    ════════════════════════════════════════════════════════ */
 input[type="date"],
-input[type="text"],
-input[type="number"],
-input[type="password"],
-input[type="email"],
+input[type="text"][placeholder*="ابحث"],
+input[type="text"][placeholder*="Search"],
+input[type="text"][placeholder*="رقم الفاتورة"],
+input[type="text"][placeholder*="اسم العميل"],
 .search-input,
 .filter-input {
-  height: 40px !important;
-  background-color: var(--c-surface) !important;
-  border-radius: 12px !important;
-  border: 1px solid var(--c-border) !important;
-  padding-inline-start: 44px !important; /* Global offset for icons */
-  padding-inline-end: 14px !important;
-  color: var(--c-text-primary);
-  font-size: 13.5px !important;
-  font-family: 'ERP-Numbers', 'Cairo', sans-serif !important;
-  font-weight: 500 !important;
-  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
-  outline: none !important;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  height: 42px !important;
+  background-color: var(--c-card) !important;
+  border-radius: 10px;
+  transition: all 0.2s ease-in-out;
 }
 
-/* Specific fix for Date Inputs Icon */
-input[type="date"] {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23256af4' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2' ry='2'%3E%3C/rect%3E%3Cline x1='16' y1='2' x2='16' y2='6'%3E%3C/line%3E%3Cline x1='8' y1='2' x2='8' y2='6'%3E%3C/line%3E%3Cline x1='3' y1='10' x2='21' y2='10'%3E%3C/line%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: calc(100% - 14px) center; /* Position at start for RTL */
-  cursor: pointer;
+[data-theme='light'] input[type="date"],
+[data-theme='light'] input[type="text"][placeholder*="ابحث"],
+[data-theme='light'] input[type="text"][placeholder*="Search"],
+[data-theme='light'] .search-input {
+  background-color: var(--c-input-bg) !important;
 }
-
-[dir='ltr'] input[type="date"] {
-  background-position: 14px center; /* Position at start for LTR */
-}
-
-/* Hide native browser icons that flicker on hover */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  cursor: pointer;
-  background: transparent !important;
-  color: transparent !important;
-  opacity: 0 !important; /* This hides the native icon but keeps it clickable to open the picker */
-}
-
-input[type="date"]:hover,
-input[type="text"]:focus,
-input[type="date"]:focus {
-  border-color: var(--c-primary) !important;
-  background-color: var(--c-surface) !important;
-  box-shadow: 0 0 0 3px rgba(37, 106, 244, 0.15);
-}
-
-/* Disable background animation for date to prevent text flicker */
-input[type="date"] {
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-
-
-@keyframes spin-centered {
-  from { transform: translateY(-50%) rotate(0deg); }
-  to { transform: translateY(-50%) rotate(360deg); }
-}
-
-/* Global Icon-in-Input Fix */
-.search-input-wrapper {
-  position: relative;
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
-.search-input-wrapper .search-icon {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  pointer-events: none;
-  color: var(--c-primary);
-  /* Consistent positioning from the start edge */
-  inset-inline-start: 14px;
-}
-
-.search-input-wrapper input {
-  padding-inline-start: 44px !important; /* Forces text to start after the icon */
-}
-
-
 
 /* Chrome/Safari date icon alignment */
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -245,8 +171,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   --c-card: #ffffff;
   --c-hover: #f1f5fe;
   --c-border: #d0daf0;
-  --c-surface: #ffffff;
-  --c-input-bg: var(--c-surface);
+  --c-input-bg: #ffffff;
 
   --c-text-primary: #1e293b;
   --c-text-secondary: #475569;
@@ -826,23 +751,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   transform: scale(1.1);
 }
 
-@keyframes spin-centered {
-  from { transform: translateY(-50%) rotate(0deg); }
-  to { transform: translateY(-50%) rotate(360deg); }
-}
-
-/* Target internal date field parts to match search font size, weight and color */
-input[type="date"]::-webkit-datetime-edit-text,
-input[type="date"]::-webkit-datetime-edit-month-field,
-input[type="date"]::-webkit-datetime-edit-day-field,
-input[type="date"]::-webkit-datetime-edit-year-field {
-  color: var(--c-text-muted) !important;
-  font-family: 'ERP-Numbers', 'Cairo', sans-serif !important;
-  font-size: 13.5px !important;
-  font-weight: 600 !important; /* Matches the boldness of the search placeholder */
-  text-transform: uppercase;
-}
-
 /* Global Input Icon Visibility */
 .input-icon-primary {
   color: var(--c-primary) !important;
@@ -1194,6 +1102,7 @@ select:-webkit-autofill:focus {
 /* ==================== Responsive Hardening Layer (Mobile Safe) ==================== */
 /* Desktop remains unchanged. All overrides are inside breakpoints only. */
 @media (max-width: 992px) {
+
   .main-content,
   .page-container,
   .card,
@@ -1256,9 +1165,9 @@ select:-webkit-autofill:focus {
     gap: 10px !important;
   }
 
-  form [style*="display: flex"] > *:not(svg):not([style*="width:"]),
-  [style*="display: flex"][style*="align-items: flex-end"] > *:not(svg):not([style*="width:"]),
-  [style*="display: flex"][style*="align-items:flex-end"] > *:not(svg):not([style*="width:"]) {
+  form [style*="display: flex"]>*:not(svg):not([style*="width:"]),
+  [style*="display: flex"][style*="align-items: flex-end"]>*:not(svg):not([style*="width:"]),
+  [style*="display: flex"][style*="align-items:flex-end"]>*:not(svg):not([style*="width:"]) {
     flex: 1 1 100% !important;
     min-width: 0 !important;
   }
@@ -1268,7 +1177,8 @@ select:-webkit-autofill:focus {
     flex-wrap: nowrap !important;
     align-items: center !important;
   }
-  .mobile-flex-row > * {
+
+  .mobile-flex-row>* {
     flex: 1 !important;
     width: auto !important;
   }
@@ -1318,12 +1228,12 @@ select:-webkit-autofill:focus {
     -webkit-overflow-scrolling: touch !important;
   }
 
-  .table-container > table,
-  .scroll-table > table,
-  .table-scroll-wrap > table,
-  .print-table-container > table,
-  [class*="table-container"] > table,
-  main :is(div, section, article):has(> table) > table,
+  .table-container>table,
+  .scroll-table>table,
+  .table-scroll-wrap>table,
+  .print-table-container>table,
+  [class*="table-container"]>table,
+  main :is(div, section, article):has(> table)>table,
   .table {
     width: max-content !important;
     min-width: 100% !important;
@@ -1335,7 +1245,7 @@ select:-webkit-autofill:focus {
     align-items: stretch !important;
   }
 
-  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"] > * {
+  main [style*="margin-bottom: 20px"][style*="display: flex"][style*="gap: 12px"][style*="align-items: center"]>* {
     width: 100% !important;
     max-width: 100% !important;
   }
@@ -1365,6 +1275,7 @@ select:-webkit-autofill:focus {
 }
 
 @media (max-width: 560px) {
+
   .stats-grid,
   .cards-grid,
   .quick-actions {

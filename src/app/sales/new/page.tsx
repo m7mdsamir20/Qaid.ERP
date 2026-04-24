@@ -638,7 +638,7 @@ function NewSalePageInner() {
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.date}
                                             onChange={e => setForm((f: any) => ({ ...f, date: e.target.value }))}
-                                            style={{ width: '100%', textAlign: 'end', direction: 'ltr', background: 'transparent', outline: 'none' }}
+                                            style={{ ...IS, color: C.textSecondary, textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT }}
                                             onFocus={focusIn} onBlur={focusOut} className="blue-date-icon" />
                                     </div>
                                 </div>
@@ -649,7 +649,7 @@ function NewSalePageInner() {
                                     <div style={{ position: 'relative' }}>
                                         <input type="date" value={form.dueDate || ''}
                                             onChange={e => setForm((f: any) => ({ ...f, dueDate: e.target.value }))}
-                                            style={{ width: '100%', textAlign: 'end', direction: 'ltr', background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)', outline: 'none' }}
+                                            style={{ ...IS, color: '#fbbf24', textAlign: 'end', direction: 'ltr', fontSize: '13px', fontFamily: OUTFIT, background: 'rgba(251,191,36,0.05)', borderColor: 'rgba(251,191,36,0.3)' }}
                                             onFocus={focusIn} onBlur={focusOut} className="gold-date-icon" />
                                     </div>
                                 </div>
@@ -676,9 +676,9 @@ function NewSalePageInner() {
                                         <CustomSelect
                                             ref={itemSelectRef}
                                             value={entryItemId}
-                                            onChange={v => { 
-                                                setEntryItemId(v); 
-                                                clearError('entryItemId'); 
+                                            onChange={v => {
+                                                setEntryItemId(v);
+                                                clearError('entryItemId');
                                                 setTimeout(() => qtyRef.current?.focus(), 50);
                                             }}
                                             icon={Search}
@@ -712,10 +712,10 @@ function NewSalePageInner() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('الكمية')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <PriceInput 
+                                        <PriceInput
                                             ref={qtyRef}
-                                            value={entryQty} 
-                                            onChange={val => { setEntryQty(val); clearError('entryQty'); }} 
+                                            value={entryQty}
+                                            onChange={val => { setEntryQty(val); clearError('entryQty'); }}
                                             disabled={!entryItemId}
                                             onFocus={(e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.select(); }}
                                             decimals={2}
@@ -727,13 +727,13 @@ function NewSalePageInner() {
                                 <div>
                                     <label style={{ ...LS, fontSize: '11px' }}>{t('السعر')}</label>
                                     <div style={{ position: 'relative' }}>
-                                        <PriceInput 
+                                        <PriceInput
                                             ref={priceRef}
-                                            value={entryPrice} 
-                                            onChange={val => { setEntryPrice(val); clearError('entryPrice'); }} 
+                                            value={entryPrice}
+                                            onChange={val => { setEntryPrice(val); clearError('entryPrice'); }}
                                             disabled={!entryItemId}
                                             onFocus={(e: React.FocusEvent<HTMLInputElement>) => { e.currentTarget.select(); }}
-                                            onKeyDown={(e) => { 
+                                            onKeyDown={(e) => {
                                                 if (e.key === 'Enter') {
                                                     addLine();
                                                     setTimeout(() => itemSelectRef.current?.focus(), 50);
@@ -776,16 +776,16 @@ function NewSalePageInner() {
                                         <tr style={{ background: C.subtle, borderBottom: `1px solid ${C.border}` }}>
                                             {isServices ? (
                                                 [t('الخدمة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ 
-                                                        textAlign: i === 0 ? 'start' : (i === 4 ? 'center' : 'center'), 
-                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO 
+                                                    <th key={i} style={{
+                                                        textAlign: i === 0 ? 'start' : (i === 4 ? 'center' : 'center'),
+                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO
                                                     }}>{h}</th>
                                                 ))
                                             ) : (
                                                 [t('الصنف'), t('الوحدة'), t('الكمية'), t('السعر'), t('الإجمالي'), ''].map((h, i) => (
-                                                    <th key={i} style={{ 
-                                                        textAlign: i === 0 ? 'start' : (i === 5 ? 'center' : 'center'), 
-                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO 
+                                                    <th key={i} style={{
+                                                        textAlign: i === 0 ? 'start' : (i === 5 ? 'center' : 'center'),
+                                                        padding: '12px', fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: CAIRO
                                                     }}>{h}</th>
                                                 ))
                                             )}
@@ -817,7 +817,7 @@ function NewSalePageInner() {
                                             </tr>
                                         ))}
                                         {lines.length === 0 && (
-                                            <tr><td colSpan={isServices ? 5 : 6} style={{ padding: '40px',  color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>
+                                            <tr><td colSpan={isServices ? 5 : 6} style={{ padding: '40px', color: 'var(--text-muted)', fontSize: '12px' }}>{t('لا توجد بنود مضافة')}</td></tr>
                                         )}
                                     </tbody>
                                     {lines.length > 0 && (
@@ -826,7 +826,7 @@ function NewSalePageInner() {
                                                 <td colSpan={isServices ? 3 : 4} style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.textSecondary, fontFamily: CAIRO }}>
                                                     {t('إجمالي')} {isServices ? t('الخدمات') : t('الأصناف')}
                                                 </td>
-                                                <td style={{ padding: '12px',  fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>
+                                                <td style={{ padding: '12px', fontSize: '13px', fontWeight: 600, color: C.primary, fontFamily: OUTFIT }}>
                                                     {fMoneyJSX(subtotal)}
                                                 </td>
                                                 <td />
@@ -927,7 +927,7 @@ function NewSalePageInner() {
                                     </div>
                                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                                         <div style={{ position: 'relative' }}>
-                                            <PriceInput 
+                                            <PriceInput
                                                 value={form.discountAmt || 0}
                                                 onChange={val => {
                                                     setForm((f: any) => ({
@@ -974,7 +974,7 @@ function NewSalePageInner() {
                                                 <span style={{ position: 'absolute', insetInlineEnd: '6px', top: '50%', transform: 'translateY(-50%)', fontSize: '12px', color: '#60a5fa', fontWeight: 600 }}>%</span>
                                             </div>
                                             <div style={{ position: 'relative' }}>
-                                                <PriceInput 
+                                                <PriceInput
                                                     value={form.taxAmount}
                                                     onChange={val => {
                                                         const afterDisc = subtotal - (form.discountAmt || 0);
@@ -1027,7 +1027,7 @@ function NewSalePageInner() {
                                     <div>
                                         <label style={{ ...LS, fontSize: '11px' }}>{t('المبلغ المدفوع')}</label>
                                         <div style={{ position: 'relative' }}>
-                                            <PriceInput 
+                                            <PriceInput
                                                 value={form.paidAmount}
                                                 onChange={val => { setForm((f: any) => ({ ...f, paidAmount: val })); clearError('paidAmount'); }}
                                                 style={{ height: '44px', fontSize: '16px', fontWeight: 600, color: (form.paidAmount === '' || form.paidAmount === 0) ? C.textMuted : C.textPrimary }}
