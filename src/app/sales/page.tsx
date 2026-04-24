@@ -105,7 +105,7 @@ export default function SalesPage() {
 
                 {/* Filters Section */}
                 <div className="mobile-column" style={{ ...SEARCH_STYLE.container, alignItems: 'stretch' }}>
-                    <div style={{ ...SEARCH_STYLE.wrapper, order: isRtl ? 1 : 1 }}>
+                    <div style={{ ...SEARCH_STYLE.wrapper, order: 1, minWidth: '200px' }}>
                         <Search size={16} style={SEARCH_STYLE.icon(C.primary)} />
                         <input 
                             placeholder={t("رقم الفاتورة أو اسم العميل...")}
@@ -116,16 +116,16 @@ export default function SalesPage() {
                     </div>
                     
                     {/* Responsive Date Filters */}
-                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', order: isRtl ? 2 : 2 }}>
+                    <div className="mobile-flex-row mobile-gap-sm date-filter-row" style={{ display: 'flex', gap: '8px', alignItems: 'center', order: 2 }}>
                         <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("من")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("من")}</span>
-                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '160px', background: 'transparent' }} />
+                            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)} style={{ width: '155px' }} />
                         </div>
                         <span className="date-label-desktop" style={{ color: C.textMuted, fontSize: '12px' }}>{t("إلى")}</span>
                         <div className="date-input-wrapper">
                             <span className="date-label-mobile" style={{ display: 'none' }}>{t("إلى")}</span>
-                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '160px', background: 'transparent' }} />
+                            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)} style={{ width: '155px' }} />
                         </div>
                     </div>
                     
@@ -137,7 +137,7 @@ export default function SalesPage() {
                                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', padding: '0 12px', height: '36px',
                                 background: 'transparent', border: `1px solid ${C.danger}40`, color: C.danger, 
                                 borderRadius: '6px', fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: '0.2s',
-                                order: isRtl ? 3 : 3
+                                order: 3
                             }}
                             onMouseEnter={e => e.currentTarget.style.background = `${C.danger}10`}
                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
