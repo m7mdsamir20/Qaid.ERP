@@ -46,6 +46,7 @@ export default function EmployeesPage() {
     const [showStatusFilter, setShowStatusFilter] = useState(false);
     const [employeeToDelete, setEmployeeToDelete] = useState<Employee | null>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState('');
 
     const fetchAll = async () => {
         try {
@@ -88,12 +89,19 @@ export default function EmployeesPage() {
     const handleConfirmDelete = async () => {
         if (!employeeToDelete) return;
         setIsDeleting(true);
+        setDeleteError('');
         try {
             const res = await fetch(`/api/employees/${employeeToDelete.id}`, { method: 'DELETE' });
             if (res.ok) {
                 await fetchAll();
                 setEmployeeToDelete(null);
+                setSearchTerm('');
+            } else {
+                const errorData = await res.json();
+                setDeleteError(errorData.error || t('فشل في حذف الموظف'));
             }
+        } catch (error) {
+            setDeleteError(t('خطأ في الاتصال بالسيرفر'));
         } finally {
             setIsDeleting(false);
         }
@@ -314,12 +322,13 @@ export default function EmployeesPage() {
 
             <AppModal
                 show={!!employeeToDelete}
-                onClose={() => setEmployeeToDelete(null)}
+                onClose={() => { setEmployeeToDelete(null); setDeleteError(''); }}
                 onConfirm={handleConfirmDelete}
                 title={t("تأكيد حذف الموظف")}
                 itemName={employeeToDelete?.name || ''}
                 isDelete={true}
                 isSubmitting={isDeleting}
+                error={deleteError}
             />
         </DashboardLayout>
     );
