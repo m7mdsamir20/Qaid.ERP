@@ -139,6 +139,13 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --primary-light: rgba(37, 106, 244, 0.15);
   --c-subtle: rgba(255, 255, 255, 0.02);
+
+  /* Animation Tokens */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+  --transition-slow: 0.3s ease;
+  --transition-smooth: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-premium: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 /* ════════════════════════════════════════════════════════
@@ -155,7 +162,7 @@ input[type="text"][placeholder*="اسم العميل"],
   height: 42px !important;
   background-color: var(--c-card) !important;
   border-radius: 10px;
-  transition: all 0.2s ease-in-out;
+  transition: all var(--transition-normal);
 }
 
 [data-theme='light'] input[type="date"],
@@ -209,7 +216,7 @@ html {
 }
 
 body {
-  font-family: 'ERP-Numbers', 'Cairo', 'Segoe UI', sans-serif;
+  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif;
   background: var(--surface-900);
   color: var(--text-primary);
   min-height: 100vh;
@@ -365,7 +372,7 @@ h6 {
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
   margin-bottom: 2px;
 }
 
@@ -392,7 +399,7 @@ h6 {
   border: 1px solid var(--border-color);
   border-radius: 16px;
   padding: 24px;
-  transition: all 0.3s ease;
+  transition: all var(--transition-slow);
 }
 
 .card:hover {
@@ -408,7 +415,7 @@ h6 {
   display: flex;
   align-items: flex-start;
   gap: 16px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-premium);
   position: relative;
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -485,7 +492,7 @@ h6 {
 button:not(:disabled),
 .btn,
 .action-btn {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-smooth);
 }
 
 button:not(:disabled):hover,
@@ -502,6 +509,23 @@ button:not(:disabled):active,
   filter: brightness(0.95);
 }
 
+button:focus-visible,
+.btn:focus-visible,
+.action-btn:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--c-primary);
+  outline-offset: 2px;
+}
+
+button:disabled,
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+  filter: none !important;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -513,7 +537,7 @@ button:not(:disabled):active,
   font-weight: 600;
   border: none;
   cursor: pointer;
-  font-family: 'ERP-Numbers', 'Cairo', sans-serif;
+  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif;
 }
 
 .btn-primary {
@@ -578,8 +602,8 @@ select.input,
   border-radius: 10px;
   color: var(--text-primary);
   font-size: 14px;
-  font-family: 'ERP-Numbers', 'Cairo', sans-serif;
-  transition: all 0.2s ease;
+  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif;
+  transition: all var(--transition-normal);
   outline: none;
 }
 
@@ -621,7 +645,7 @@ input[type="date"] {
   background: var(--surface-800);
   border: 1px solid var(--border-color);
   border-radius: 16px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .table {
@@ -639,6 +663,9 @@ input[type="date"] {
   color: var(--text-muted);
   background: var(--surface-850);
   border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
 .table td {
@@ -729,7 +756,7 @@ input[type="date"] {
 /* ==================== Tree View ==================== */
 .tree-item {
   border-inline-start: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
 }
 
 .tree-item:hover {
@@ -751,7 +778,7 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
   filter: invert(34%) sepia(91%) saturate(2366%) hue-rotate(212deg) brightness(98%) contrast(97%);
   opacity: 1 !important;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform var(--transition-normal);
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator:hover,
@@ -788,7 +815,7 @@ select {
   color: var(--text-primary);
   border: 1px solid var(--border-color);
   border-radius: 10px;
-  font-family: 'ERP-Numbers', 'Cairo', sans-serif;
+  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif;
   font-size: 14px;
   appearance: none;
   -webkit-appearance: none;
@@ -798,7 +825,7 @@ select {
   padding-inline-start: 32px;
   outline: none;
   cursor: pointer;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color var(--transition-normal), box-shadow var(--transition-normal);
 }
 
 select:focus {
@@ -815,7 +842,7 @@ select option {
   background-color: var(--surface-900);
   color: var(--text-primary);
   padding: 10px 14px;
-  font-family: 'ERP-Numbers', 'Cairo', sans-serif;
+  font-family: 'ERP-Numbers', var(--font-cairo), sans-serif;
 }
 
 [data-theme='light'] select {
@@ -840,7 +867,7 @@ select option {
   align-items: center;
   justify-content: center;
   color: var(--text-muted);
-  transition: transform 0.2s ease;
+  transition: transform var(--transition-normal);
 }
 
 .tree-toggle.open {
@@ -1038,7 +1065,7 @@ select option {
   gap: 14px;
   text-decoration: none;
   color: var(--text-secondary);
-  transition: all 0.2s ease;
+  transition: all var(--transition-normal);
 }
 
 .quick-action-card:hover {
