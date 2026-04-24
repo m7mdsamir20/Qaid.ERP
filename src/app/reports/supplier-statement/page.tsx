@@ -306,43 +306,7 @@ export default function SupplierStatementPage() {
                     </>
                 )}
             </div>
-            <style dangerouslySetInnerHTML={{ __html: `
-                @media (max-width: 768px) {
-                    .report-filter-bar { flex-direction: column; align-items: stretch !important; gap: 10px !important; }
-                    .account-select-wrapper { width: 100% !important; min-width: 100% !important; }
-                    .date-filter-row { width: 100%; gap: 8px !important; flex-wrap: wrap; }
-                    .date-label-desktop { display: none !important; }
-                    .date-input-wrapper {
-                        flex: 1;
-                        display: flex;
-                        align-items: center;
-                        gap: 8px;
-                        background: rgba(255,255,255,0.03);
-                        padding: 4px 10px;
-                        border-radius: 10px;
-                        border: 1px solid ${C.border};
-                        min-width: 45%;
-                    }
-                    .date-label-mobile { 
-                        display: block !important; 
-                        color: ${C.textMuted}; 
-                        font-size: 11px; 
-                        font-weight: 600; 
-                        white-space: nowrap; 
-                        font-family: ${CAIRO};
-                    }
-                    .date-input-wrapper input {
-                        width: 100% !important;
-                        background: transparent !important;
-                        border: none !important;
-                        height: 34px !important;
-                        padding: 0 !important;
-                        font-size: 12px !important;
-                    }
-                    .update-btn { width: 100%; justify-content: center; margin-top: 5px; }
-                    .stats-grid { grid-template-columns: 1fr 1fr !important; }
-                }
-            ` }} />
+            
         </DashboardLayout>
     );
 }

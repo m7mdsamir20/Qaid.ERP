@@ -174,7 +174,6 @@ export default function EmployeesPage() {
                             onChange={setSelectedDept}
                             placeholder={t("كل الأقسام")}
                             icon={Filter}
-                            style={{ height: '40px', borderRadius: '12px' }}
                             options={[
                                 { value: 'all', label: t('كل الأقسام'), icon: Building2 },
                                 ...departments.map(d => ({ value: d.id, label: d.name, icon: Building2 }))
@@ -188,7 +187,6 @@ export default function EmployeesPage() {
                             onChange={setSelectedStatus}
                             placeholder={t("كل الحالات")}
                             icon={UserPlus}
-                            style={{ height: '40px', borderRadius: '12px' }}
                             options={[
                                 { value: 'all', label: t('كل الحالات') },
                                 { value: 'active', label: t('نشط'), style: { color: '#10b981' } },
