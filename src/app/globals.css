@@ -759,17 +759,6 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   transform: scale(1.1);
 }
 
-/* ── Date format: force dd/mm/yyyy field order (Chrome/Edge) ── */
-input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-  display: flex;
-  align-items: center;
-}
-input[type="date"]::-webkit-datetime-edit-day-field   { order: 1; }
-input[type="date"]::-webkit-datetime-edit-text:first-of-type { order: 2; }
-input[type="date"]::-webkit-datetime-edit-month-field { order: 3; }
-input[type="date"]::-webkit-datetime-edit-text:last-of-type  { order: 4; }
-input[type="date"]::-webkit-datetime-edit-year-field  { order: 5; }
-
 /* ── Date placeholder color: match search input (muted when empty) ── */
 input[type="date"]::-webkit-datetime-edit-day-field,
 input[type="date"]::-webkit-datetime-edit-month-field,
