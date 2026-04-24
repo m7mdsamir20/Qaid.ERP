@@ -164,8 +164,7 @@ input[type="email"],
 
 input[type="date"]:hover,
 input[type="text"]:focus,
-input[type="date"]:focus,
-#global-search:focus {
+input[type="date"]:focus {
   border-color: var(--c-primary) !important;
   background-color: var(--c-card) !important;
   box-shadow: 0 0 0 3px rgba(37, 106, 244, 0.1);
