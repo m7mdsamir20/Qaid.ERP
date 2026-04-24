@@ -290,23 +290,27 @@ table{width:100%;border-collapse:collapse}
                         {/* Summary Cards */}
                         <div data-print-include className="stats-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                             {[
-                                { label: t('إجمالي مبيعات اليوم'), value: fmt(data.totalSales), color: '#256af4', icon: <ShoppingCart size={18} /> },
-                                { label: t('إجمالي المقبوضات'), value: fmt(data.receipts), color: '#10b981', icon: <ArrowDownRight size={18} /> },
-                                { label: t('إجمالي المدفوعات'), value: fmt(data.payments), color: '#fb7185', icon: <ArrowUpRight size={18} /> },
-                                { label: t('صافي التدفق اليومي'), value: fmt(data.receipts - data.payments), color: (data.receipts - data.payments) >= 0 ? '#10b981' : '#fb7185', icon: <Activity size={18} /> },
+                                { label: t('إجمالي مبيعات اليوم'), value: data.totalSales, color: '#256af4', icon: <ShoppingCart size={18} /> },
+                                { label: t('إجمالي المقبوضات'), value: data.receipts, color: '#10b981', icon: <ArrowDownRight size={18} /> },
+                                { label: t('إجمالي المدفوعات'), value: data.payments, color: '#fb7185', icon: <ArrowUpRight size={18} /> },
+                                { label: t('صافي التدفق اليومي'), value: data.receipts - data.payments, color: (data.receipts - data.payments) >= 0 ? '#10b981' : '#fb7185', icon: <Activity size={18} /> },
                             ].map((s, i) => (
                                 <div key={i} style={{
                                     background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '12px',
-                                    padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                    padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
                                     transition: 'all 0.2s', position: 'relative'
                                 }}
+                                    onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                                    onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
                                 >
                                     <div style={{ textAlign: 'start'}}>
                                         <p style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, margin: '0 0 6px', whiteSpace: 'nowrap', fontFamily: CAIRO }}>{s.label}</p>
-                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', justifyContent: 'center' }}>
-                                            <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.value}</span>
-                                            <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500, fontFamily: CAIRO }}>{getCurrencyName(currency)}</span>
+                                        <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                            <Currency amount={s.value} style={{ fontSize: '16px', color: C.textPrimary }} />
                                         </div>
+                                    </div>
+                                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                        {s.icon}
                                     </div>
                                 </div>
                             ))}
