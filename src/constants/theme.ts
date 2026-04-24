@@ -26,7 +26,7 @@ export const THEME = {
         card: 'var(--c-card, #0e172a)',
         hover: 'var(--c-hover, rgba(255,255,255,0.04))',
         border: 'var(--c-border, rgba(255,255,255,0.15))',
-        inputBg: 'var(--c-input-bg, rgba(14, 23, 41, 0.4))',
+        inputBg: 'var(--c-surface, rgba(14, 23, 41, 0.4))',
         subtle: 'var(--c-subtle, rgba(255,255,255,0.02))',
 
         textPrimary: 'var(--c-text-primary, #f8fafc)',
@@ -84,8 +84,8 @@ export const C = THEME.colors;
 export const IS: React.CSSProperties = {
     width: '100%', height: THEME.input.height, padding: '0 16px',
     textAlign: 'start',
-    borderRadius: THEME.input.radius, border: `1px solid ${C.border}`,
-    background: C.card, color: C.textPrimary, fontSize: THEME.input.fontSize,
+    borderRadius: '12px', border: `1px solid ${C.border}`,
+    background: C.inputBg, color: C.textPrimary, fontSize: THEME.input.fontSize,
     fontWeight: 500, outline: 'none', transition: 'all 0.15s', boxSizing: 'border-box',
     fontFamily: CAIRO,
 };

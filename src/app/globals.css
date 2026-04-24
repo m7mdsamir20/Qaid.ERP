@@ -91,7 +91,8 @@
   --c-card: #0e172a;
   --c-hover: rgba(255, 255, 255, 0.04);
   --c-border: rgba(255, 255, 255, 0.12);
-  --c-input-bg: rgba(14, 23, 41, 0.4);
+  --c-surface: #0f182b;
+  --c-input-bg: var(--c-surface);
 
   --c-text-primary: #f8fafc;
   --c-text-secondary: #94a3b8;
@@ -141,30 +142,44 @@
    Ensures 42px height and consistent background globally.
    ════════════════════════════════════════════════════════ */
 input[type="date"],
-input[type="text"][placeholder*="ابحث"],
-input[type="text"][placeholder*="Search"],
-input[type="text"][placeholder*="رقم الفاتورة"],
-input[type="text"][placeholder*="اسم العميل"],
+input[type="text"],
+input[type="number"],
+input[type="password"],
+input[type="email"],
+#global-search,
 .search-input,
 .filter-input {
-  height: 42px !important;
-  background-color: var(--c-card) !important;
-  border-radius: 10px !important;
+  height: 40px !important;
+  background-color: var(--c-surface) !important;
+  border-radius: 12px !important;
   border: 1px solid var(--c-border) !important;
-  padding: 0 16px !important;
+  padding: 0 14px !important;
   color: var(--c-text-primary);
   font-size: 13.5px !important;
   font-family: 'ERP-Numbers', 'Cairo', sans-serif !important;
-  transition: all 0.2s ease-in-out;
+  font-weight: 500 !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
 
-[data-theme='light'] input[type="date"],
-[data-theme='light'] input[type="text"][placeholder*="ابحث"],
-[data-theme='light'] input[type="text"][placeholder*="Search"],
-[data-theme='light'] .search-input {
-  background-color: var(--c-input-bg) !important;
+input[type="date"]:hover,
+input[type="text"]:focus,
+input[type="date"]:focus,
+#global-search:focus {
+  border-color: var(--c-primary) !important;
+  background-color: var(--c-card) !important;
+  box-shadow: 0 0 0 3px rgba(37, 106, 244, 0.1);
 }
+
+/* Syncing Date Picker Icon position with Search Icon style */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  margin-right: -4px;
+  margin-left: 8px;
+  padding: 2px;
+}
+
+
 
 /* Chrome/Safari date icon alignment */
 input[type="date"]::-webkit-calendar-picker-indicator {
@@ -177,7 +192,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   --c-card: #ffffff;
   --c-hover: #f1f5fe;
   --c-border: #d0daf0;
-  --c-input-bg: #ffffff;
+  --c-surface: #f1f5f9;
+  --c-input-bg: var(--c-surface);
 
   --c-text-primary: #1e293b;
   --c-text-secondary: #475569;
