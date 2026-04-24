@@ -152,7 +152,8 @@ input[type="email"],
   background-color: var(--c-surface) !important;
   border-radius: 12px !important;
   border: 1px solid var(--c-border) !important;
-  padding: 0 14px !important;
+  padding-inline-start: 44px !important; /* Global offset for search icons */
+  padding-inline-end: 14px !important;
   color: var(--c-text-primary);
   font-size: 13.5px !important;
   font-family: 'ERP-Numbers', 'Cairo', sans-serif !important;
@@ -175,6 +176,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin-right: -4px;
   margin-left: 8px;
   padding: 2px;
+}
+
+@keyframes spin-centered {
+  from { transform: translateY(-50%) rotate(0deg); }
+  to { transform: translateY(-50%) rotate(360deg); }
 }
 
 /* Global Icon-in-Input Fix */
@@ -213,7 +219,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   --c-card: #ffffff;
   --c-hover: #f1f5fe;
   --c-border: #d0daf0;
-  --c-surface: #f1f5f9;
+  --c-surface: #ffffff;
   --c-input-bg: var(--c-surface);
 
   --c-text-primary: #1e293b;
@@ -792,6 +798,11 @@ input[type="datetime-local"]::-webkit-calendar-picker-indicator {
 input[type="date"]::-webkit-calendar-picker-indicator:hover,
 input[type="datetime-local"]::-webkit-calendar-picker-indicator:hover {
   transform: scale(1.1);
+}
+
+@keyframes spin-centered {
+  from { transform: translateY(-50%) rotate(0deg); }
+  to { transform: translateY(-50%) rotate(360deg); }
 }
 
 /* Target internal date field parts to match search font size, weight and color */
