@@ -572,7 +572,7 @@ export default function DashboardPage() {
                   <thead>
                     <tr style={{ borderBottom: `1px solid ${C.border}` }}>
                       {[t('التاريخ والطرف'), t('القيمة'), t('النوع'), t('رقم')].map((h, i) => (
-                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 0 ? (isRtl ? 'right' : 'left') : 'center', fontFamily: CAIRO }}>{h}</th>
+                        <th key={i} style={{ padding: '14px 16px', fontSize: '12px', color: C.textMuted, fontWeight: 600, textAlign: i === 0 ? 'start' : 'center', fontFamily: CAIRO }}>{h}</th>
                       ))}
                     </tr>
                   </thead>

@@ -591,7 +591,7 @@ function NewSalePageInner() {
                                 <div>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', height: '20px', marginBottom: '6px' }}>
                                         <label style={{ ...LS, fontSize: '11px', marginBottom: 0 }}>{t('اسم العميل')}</label>
-                                        <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: 'Cairo, sans-serif' }}>+ {t('عميل جديد')}</button>
+                                        <button onClick={() => setShowAddCust(true)} style={{ background: 'none', border: 'none', color: '#10b981', fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>+ {t('عميل جديد')}</button>
                                     </div>
                                     <div style={{ position: 'relative' }}>
                                         <CustomSelect
@@ -1128,7 +1128,7 @@ function NewSalePageInner() {
                                     color: '#34d399', fontSize: '13px', fontWeight: 700,
                                     cursor: submitting ? 'not-allowed' : 'pointer',
                                     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-                                    fontFamily: 'Cairo, sans-serif',
+                                    fontFamily: CAIRO,
                                     opacity: submitting ? 0.5 : 1,
                                     transition: 'all 0.2s',
                                 }}

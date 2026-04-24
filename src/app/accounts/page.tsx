@@ -278,8 +278,7 @@ export default function AccountsPage() {
                         borderBottom: `1px solid ${C.border}30`,
                         background: effectiveDepth === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
                         cursor: (hasChildren && !isTableMode) ? 'pointer' : 'default', transition: '0.15s',
-                        marginLeft: (!isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
-                        marginRight: (isRtl && !isTableMode) ? `${effectiveDepth * 28}px` : '0',
+                        marginInlineStart: !isTableMode ? `${effectiveDepth * 28}px` : '0',
                         borderRadius: '8px', marginBottom: '2px'
                     }} className="account-row-hover account-row-responsive">
 

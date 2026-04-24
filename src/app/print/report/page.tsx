@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { Printer, Download, X, Loader2 } from 'lucide-react';
 import { getStoredLang } from '@/lib/i18n';
+import { CAIRO } from '@/constants/theme';
 
 export default function PrintReportPage() {
     const [html, setHtml] = useState('');
@@ -97,19 +98,19 @@ export default function PrintReportPage() {
     const btnBase: React.CSSProperties = {
         display: 'flex', alignItems: 'center', gap: '6px',
         padding: '7px 16px', borderRadius: '8px', cursor: 'pointer',
-        fontFamily: 'Cairo, sans-serif', fontSize: '13px', fontWeight: 700,
+        fontFamily: CAIRO, fontSize: '13px', fontWeight: 700,
         border: 'none',
     };
 
     if (loading) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', gap: '12px', color: '#fff', fontFamily: 'Cairo, sans-serif' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', gap: '12px', color: '#fff', fontFamily: CAIRO }}>
             <Loader2 size={24} className="animate-spin" />
             <span>{ui.loading}</span>
         </div>
     );
 
     if (!html) return (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', color: '#fb7185', fontFamily: 'Cairo, sans-serif', fontSize: '13px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100vh', background: '#1e1e2e', color: '#fb7185', fontFamily: CAIRO, fontSize: '13px' }}>
             {ui.empty}
         </div>
     );
@@ -117,7 +118,7 @@ export default function PrintReportPage() {
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: '#1e1e2e' }}>
             <div style={toolbarStyle}>
-                <span style={{ fontFamily: 'Cairo, sans-serif', color: '#fff', fontWeight: 700, fontSize: '13px', flex: 1 }}>
+                <span style={{ fontFamily: CAIRO, color: '#fff', fontWeight: 700, fontSize: '13px', flex: 1 }}>
                     {title}
                 </span>
                 <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>

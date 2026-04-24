@@ -169,7 +169,7 @@ export default function CustomerLedgerPage({ params }: { params: Promise<{ id: s
                             <thead>
                                 <tr style={{ background: 'var(--surface-100)', borderBottom: '2px solid var(--border-subtle)' }}>
                                     {[t('تاريخ العملية'), t('نوع الحركة'), t('المـرجع'), t('تفاصيل البيان التوضيحي'), t('مديـن (+)'), t('دائـن (-)'), t('الرصيد')].map((h, i) => (
-                                        <th key={i} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)', textAlign: (i === 3 || i === 4 || i === 5 || i === 6) ? (isRtl ? 'right' : 'left') : 'center' }}>{h}</th>
+                                        <th key={i} style={{ padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: 'var(--text-secondary)', textAlign: (i === 3 || i === 4 || i === 5 || i === 6) ? 'start' : 'center' }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>

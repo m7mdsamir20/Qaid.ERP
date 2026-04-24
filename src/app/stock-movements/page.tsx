@@ -126,7 +126,7 @@ export default function StockMovementsPage() {
                                         {[t('التاريخ والوقت'), t('نوع الحركة'), t('المرجع'), t('الصنف'), t('المخزن'), t('الكمية')].map((h, i) => (
                                             <th key={i} style={{ 
                                                 padding: '16px 20px', fontSize: '12px', color: C.textSecondary, 
-                                                textAlign: i === 5 ? 'center' : 'right', 
+                                                textAlign: i === 5 ? 'center' : 'start',
                                                 fontWeight: 600, fontFamily: CAIRO 
                                             }}>{h}</th>
                                         ))}

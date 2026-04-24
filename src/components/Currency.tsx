@@ -2,7 +2,7 @@ import React from 'react';
 import { getCurrencySymbol, formatNumber } from '@/lib/currency';
 import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
-import { C } from '@/constants/theme';
+import { C, CAIRO } from '@/constants/theme';
 
 interface CurrencyProps {
     amount: number;
@@ -40,7 +40,7 @@ export function Currency({ amount, code: propCode, lang: propLang, className = '
 
     const symbolEl = showSymbol ? (
         <span style={{ 
-            fontFamily: "'Cairo', sans-serif", 
+            fontFamily: CAIRO, 
             fontSize: '11px', 
             fontWeight: 600,
             color: C.textSecondary,
