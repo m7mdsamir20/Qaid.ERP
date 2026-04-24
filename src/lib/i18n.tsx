@@ -2173,9 +2173,8 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     const setLanguage = (newLang: Language) => {
-        setLang(newLang);
         localStorage.setItem('erp_lang', newLang);
-        applyLangToDOM(newLang);
+        window.location.reload();
     };
 
     const toggleLang = () => setLanguage(lang === 'ar' ? 'en' : 'ar');

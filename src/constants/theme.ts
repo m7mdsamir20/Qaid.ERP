@@ -35,8 +35,8 @@ export const THEME = {
     },
     fonts: {
         /* ERP-Numbers أول → يطبق Outfit على الأرقام، Cairo للحروف */
-        cairo: "'ERP-Numbers', 'Cairo', sans-serif",
-        outfit: "'ERP-Numbers', 'Outfit', sans-serif",
+        cairo: "'ERP-Numbers', var(--font-cairo), sans-serif",
+        outfit: "'ERP-Numbers', var(--font-cairo), sans-serif",
     },
     shadows: {
         sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
@@ -63,7 +63,7 @@ export const THEME = {
         subSize: '12px',
     },
     button: {
-        height: '40px',
+        height: '48px',
         fontSize: '14px',
         radius: '10px',
     },
@@ -86,7 +86,7 @@ export const IS: React.CSSProperties = {
     textAlign: 'start',
     borderRadius: THEME.input.radius, border: `1px solid ${C.border}`,
     background: C.card, color: C.textPrimary, fontSize: THEME.input.fontSize,
-    fontWeight: 500, outline: 'none', transition: 'all 0.15s', boxSizing: 'border-box',
+    fontWeight: 500, outline: 'none', transition: 'all var(--transition-fast)', boxSizing: 'border-box',
     fontFamily: CAIRO,
 };
 
@@ -144,11 +144,11 @@ export const PAGE_BASE: React.CSSProperties = {
 
 /** Primary Action Button Style (أزرار الحفظ الأساسية) */
 export const BTN_PRIMARY = (disabled: boolean, submitting: boolean): React.CSSProperties => ({
-    width: '100%', height: '52px', borderRadius: '14px', border: 'none',
+    width: '100%', height: THEME.button.height, borderRadius: '14px', border: 'none',
     background: (disabled || submitting) ? 'rgba(37, 106, 244,0.18)' : C.primary,
     color: (disabled || submitting) ? C.textMuted : '#fff', fontWeight: 800, fontSize: '15px',
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-    cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+    cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all var(--transition-normal)', fontFamily: CAIRO,
     boxShadow: (disabled || submitting) ? 'none' : '0 8px 16px -4px rgba(37,106,244,0.3)'
 });
 
@@ -159,17 +159,17 @@ export const BTN_SUCCESS = (disabled: boolean, submitting: boolean): React.CSSPr
     background: C.successBg,
     color: C.success, fontWeight: 700, fontSize: '14px',
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-    cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+    cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all var(--transition-normal)', fontFamily: CAIRO,
     opacity: (disabled || submitting) ? 0.6 : 1
 });
 
 /** Danger Button Style (أزرار الحذف والصرف) */
 export const BTN_DANGER = (disabled: boolean, submitting: boolean): React.CSSProperties => ({
-    width: '100%', height: '52px', borderRadius: '14px', border: 'none',
+    width: '100%', height: THEME.button.height, borderRadius: '14px', border: 'none',
     background: (disabled || submitting) ? 'rgba(239,68,68,0.18)' : C.danger,
     color: (disabled || submitting) ? C.textMuted : '#fff', fontWeight: 800, fontSize: '15px',
     display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px',
-    cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all 0.2s', fontFamily: CAIRO,
+    cursor: (disabled || submitting) ? 'not-allowed' : 'pointer', transition: 'all var(--transition-normal)', fontFamily: CAIRO,
     boxShadow: (disabled || submitting) ? 'none' : '0 8px 16px -4px rgba(239,68,68,0.3)'
 });
 
@@ -182,9 +182,9 @@ export const SEARCH_STYLE = {
     container: { marginBottom: '20px', display: 'flex', gap: '12px', alignItems: 'center' },
     wrapper: { flex: 1, position: 'relative' as 'relative' },
     input: {
-        ...IS, width: '100%', paddingInlineStart: '42px', paddingInlineEnd: '16px', paddingRight: undefined, paddingLeft: undefined, height: '42px',
+        ...IS, width: '100%', paddingInlineStart: '42px', paddingInlineEnd: '16px', height: '42px',
         borderRadius: '10px', background: C.card, fontSize: '13.5px',
-        border: `1px solid ${C.border}`, transition: 'all 0.2s ease-in-out'
+        border: `1px solid ${C.border}`, transition: 'all var(--transition-normal)'
     },
     icon: (color: string = C.primary): React.CSSProperties => ({
         position: 'absolute' as 'absolute', insetInlineStart: '14px', top: '50%', right: undefined, left: undefined,
@@ -203,7 +203,7 @@ export const TABLE_STYLE = {
         border: `1px solid ${C.border}`,
         borderRadius: '14px',
         overflowX: 'auto' as 'auto',
-        overflowY: 'hidden' as 'hidden',
+        overflowY: 'auto' as 'auto',
         WebkitOverflowScrolling: 'touch' as any,
         boxShadow: '0 4px 20px -8px rgba(0,0,0,0.5)'
     },
@@ -232,7 +232,7 @@ export const TABLE_STYLE = {
     row: (isLast: boolean) => ({
         background: 'transparent',
         borderBottom: isLast ? 'none' : `1px solid ${C.border}`,
-        transition: 'all 0.2s',
+        transition: 'all var(--transition-normal)',
         cursor: 'default' as 'default'
     }),
     td: (_isFirst: boolean, centered?: boolean) => ({
@@ -245,7 +245,7 @@ export const TABLE_STYLE = {
         width: '30px', height: '30px', borderRadius: '8px',
         border: `1px solid ${C.border}`, background: C.subtle,
         color: color, cursor: 'pointer', display: 'flex',
-        alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s'
+        alignItems: 'center', justifyContent: 'center', transition: 'all var(--transition-normal)'
     }),
     actionIconSize: 14
 };

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Cairo, Outfit } from 'next/font/google';
+import { Cairo } from 'next/font/google';
 import { Providers } from '@/components/Providers';
 import "./globals.css";
 
@@ -10,12 +10,6 @@ const cairo = Cairo({
   display: "swap",
 });
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800", "900"],
-  variable: "--font-outfit",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "قيد - QAID | نظام إدارة موارد المؤسسات",
@@ -53,7 +47,6 @@ export const metadata: Metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  maximumScale: 1,
 };
 
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -64,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning className={`${cairo.variable} ${outfit.variable}`}>
+    <html lang="ar" dir="rtl" suppressHydrationWarning className={cairo.variable}>
       <head>
         <script
           dangerouslySetInnerHTML={{
