@@ -10,7 +10,8 @@ export const GET = withProtection(async (request, session) => {
         const shifts = await prisma.shift.findMany({
             where: { companyId, ...(status ? { status } : {}) },
             include: { 
-                _count: { select: { orders: true } }
+                _count: { select: { orders: true } },
+                user: { select: { name: true, username: true } }
             },
             orderBy: { openedAt: 'desc' },
             take: 30,

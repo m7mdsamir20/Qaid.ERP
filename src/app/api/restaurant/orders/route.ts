@@ -200,6 +200,63 @@ export const POST = withProtection(async (request, session, body) => {
         }
 
         // ════════════════════════════════════════════════════
+        // JOURNAL ENTRIES: Auto-create accounting entries
+        // ════════════════════════════════════════════════════
+        if (activeYear && total > 0) {
+            try {
+                // Find Cash account (parent code 1201 or name contains خزنة/نقدية) and Sales Revenue (4101 or إيرادات)
+                const cashAccount = await prisma.account.findFirst({
+                    where: { companyId, OR: [{ code: '1201' }, { code: '1200' }, { name: { contains: 'نقدية' } }, { name: { contains: 'خزنة' } }, { name: { contains: 'صندوق' } }] }
+                });
+                const salesAccount = await prisma.account.findFirst({
+                    where: { companyId, OR: [{ code: '4101' }, { code: '4100' }, { name: { contains: 'إيرادات' } }, { name: { contains: 'مبيعات' } }] }
+                });
+
+                if (cashAccount && salesAccount) {
+                    const lastEntry = await prisma.journalEntry.findFirst({
+                        where: { companyId },
+                        orderBy: { entryNumber: 'desc' }
+                    });
+                    const entryNumber = (lastEntry?.entryNumber ?? 0) + 1;
+
+                    const lines: { accountId: string; debit: number; credit: number; description: string }[] = [
+                        { accountId: cashAccount.id, debit: total, credit: 0, description: `تحصيل طلب كاشير #${orderNumber}` },
+                        { accountId: salesAccount.id, debit: 0, credit: total, description: `إيرادات مبيعات - طلب #${orderNumber}` },
+                    ];
+
+                    // If there's tax, add tax liability entry
+                    if (taxAmount > 0) {
+                        const taxAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '2201' }, { name: { contains: 'ضريبة' } }] }
+                        });
+                        if (taxAccount) {
+                            // Adjust: Sales credit is subtotal only, tax goes to liability
+                            lines[1].credit = subtotal - discount; // Net sales
+                            lines.push({ accountId: taxAccount.id, debit: 0, credit: taxAmount, description: `ضريبة قيمة مضافة - طلب #${orderNumber}` });
+                        }
+                    }
+
+                    await prisma.journalEntry.create({
+                        data: {
+                            entryNumber,
+                            date: new Date(),
+                            description: `قيد مبيعات كاشير - طلب #${orderNumber}`,
+                            reference: `POS-${orderNumber}`,
+                            referenceType: 'pos_order',
+                            referenceId: order.id,
+                            financialYearId: activeYear.id,
+                            companyId,
+                            isPosted: true,
+                            lines: { create: lines }
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error('Journal entry creation error (non-blocking):', e);
+            }
+        }
+
+        // ════════════════════════════════════════════════════
         // INVENTORY: Auto-Deduction Logic
         // ════════════════════════════════════════════════════
         if (defaultWarehouse) {

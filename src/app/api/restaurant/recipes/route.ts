@@ -8,8 +8,10 @@ export const GET = withProtection(async (request, session) => {
         const recipes = await prisma.recipe.findMany({
             where: { companyId },
             include: {
-                item: { select: { id: true, name: true, sellPrice: true } },
-                items: true,
+                item: { select: { id: true, name: true, sellPrice: true, imageUrl: true } },
+                items: {
+                    include: { item: { select: { id: true, name: true, costPrice: true, unit: { select: { name: true } } } } }
+                },
             },
             orderBy: { createdAt: 'desc' },
         });

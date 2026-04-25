@@ -219,7 +219,7 @@ export const navSections = [
             { id: 'reports-treasury-bank', href: '/reports', label: 'الخزن والبنوك' },
             { id: 'reports-hr', href: '/reports', label: 'تقارير الموظفين' },
             { id: 'reports-installments', href: '/reports/installments', label: 'تقارير الأقساط' },
-            { id: 'reports-restaurant', href: '/reports', label: 'تقارير المطعم' },
+            { id: 'reports-restaurant', href: '/restaurant/reports', label: 'تقارير المطعم' },
         ],
     },
     {

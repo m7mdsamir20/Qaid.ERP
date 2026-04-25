@@ -159,6 +159,7 @@ model User {
   company         Company? @relation(fields: [companyId], references: [id], onDelete: Cascade)
   customRole      Role?    @relation(fields: [roleId], references: [id])
   branch          Branch?  @relation(fields: [branchId], references: [id])
+  shifts          Shift[]
 }
 
 model Notification {
@@ -416,6 +417,7 @@ model Item {
   transferLines    WarehouseTransferLine[]
   recipe           Recipe? // وصفة المطعم إذا كان الصنف وجبة
   ModifierOption   ModifierOption[]
+  recipeItems      RecipeItem[] // المواد الخام التي يُستخدم فيها هذا الصنف
 
   @@unique([code, companyId])
 }
@@ -949,6 +951,7 @@ model Shift {
   branchId        String?
   createdAt       DateTime   @default(now())
   company         Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  user            User?      @relation(fields: [userId], references: [id])
   orders          PosOrder[]
 
   @@index([companyId, status])
@@ -998,6 +1001,7 @@ model RecipeItem {
   quantity Float // الكمية المستهلكة عند صنع الوجبة
   unit     String? // الوحدة (جرام، مل، حبة...)
   recipe   Recipe  @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  item     Item    @relation(fields: [itemId], references: [id])
 }
 
 /// طلبات الكاشير (POS Orders)
