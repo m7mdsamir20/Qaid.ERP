@@ -125,32 +125,59 @@ export const DELETE = withProtection(async (request, session, body, context) => 
         // حذف تسلسلي مع timeout كافي
         await prisma.$transaction(async (tx) => {
             // Delete in dependency order (leaf tables first)
+
+            // ── Restaurant / POS tables ──
+            await (tx as any).posPayment.deleteMany({ where: { order: { companyId: id } } });
+            await (tx as any).posOrderLine.deleteMany({ where: { order: { companyId: id } } });
+            await (tx as any).posOrder.deleteMany({ where: { companyId: id } });
+            await (tx as any).shift.deleteMany({ where: { companyId: id } });
+            await (tx as any).modifierOption.deleteMany({ where: { modifier: { companyId: id } } });
+            await (tx as any).modifier.deleteMany({ where: { companyId: id } });
+            await (tx as any).recipeItem.deleteMany({ where: { recipe: { companyId: id } } });
+            await (tx as any).recipe.deleteMany({ where: { companyId: id } });
+            await (tx as any).restaurantTable.deleteMany({ where: { companyId: id } });
+            await (tx as any).driver.deleteMany({ where: { companyId: id } });
+            await (tx as any).apiKey.deleteMany({ where: { companyId: id } });
+
+            // ── Inventory & Transfers ──
             await tx.stocktakingLine.deleteMany({ where: { stocktaking: { companyId: id } } });
             await tx.stocktaking.deleteMany({ where: { companyId: id } });
             await tx.warehouseTransferLine.deleteMany({ where: { transfer: { companyId: id } } });
             await tx.warehouseTransfer.deleteMany({ where: { companyId: id } });
             await tx.stockMovement.deleteMany({ where: { companyId: id } });
             await tx.stock.deleteMany({ where: { warehouse: { companyId: id } } });
+
+            // ── Sales & Purchases ──
             await tx.invoiceLine.deleteMany({ where: { invoice: { companyId: id } } });
             await tx.invoice.deleteMany({ where: { companyId: id } });
             await tx.installment.deleteMany({ where: { company: { id } } });
             await tx.installmentPlan.deleteMany({ where: { companyId: id } });
             await tx.voucher.deleteMany({ where: { companyId: id } });
+            await (tx as any).quotationLine.deleteMany({ where: { quotation: { companyId: id } } });
+            await (tx as any).quotation.deleteMany({ where: { companyId: id } });
+
+            // ── Accounting ──
             await tx.journalEntryLine.deleteMany({ where: { journalEntry: { companyId: id } } });
             await tx.journalEntry.deleteMany({ where: { companyId: id } });
             await tx.openingBalance.deleteMany({ where: { companyId: id } });
             await tx.fixedAssetDisposal.deleteMany({ where: { companyId: id } });
             await tx.fixedAsset.deleteMany({ where: { companyId: id } });
+            await (tx as any).reconciliationSnapshot.deleteMany({ where: { companyId: id } });
+
+            // ── HR ──
             await tx.payrollLine.deleteMany({ where: { payroll: { companyId: id } } });
             await tx.payroll.deleteMany({ where: { companyId: id } });
             await tx.advance.deleteMany({ where: { companyId: id } });
             await tx.deduction.deleteMany({ where: { companyId: id } });
             await tx.employee.deleteMany({ where: { companyId: id } });
+
+            // ── Partners & Contacts ──
             await tx.partnerTransaction.deleteMany({ where: { companyId: id } });
             await tx.partner.deleteMany({ where: { companyId: id } });
-            await (tx as any).quotation.deleteMany({ where: { companyId: id } });
             await tx.customer.deleteMany({ where: { companyId: id } });
             await tx.supplier.deleteMany({ where: { companyId: id } });
+
+            // ── Finance & Config ──
             await tx.treasury.deleteMany({ where: { companyId: id } });
             await tx.account.deleteMany({ where: { companyId: id } });
             await tx.costCenter.deleteMany({ where: { companyId: id } });
