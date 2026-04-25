@@ -194,10 +194,11 @@ export async function GET(request: Request) {
         const companyId = keyRecord.companyId;
 
         const items = await prisma.item.findMany({
-            where: { companyId },
+            where: { companyId, status: 'active', isPosEligible: true },
             select: {
                 id: true,
                 name: true,
+                description: true,
                 sellPrice: true,
                 category: { select: { id: true, name: true } },
                 imageUrl: true,
