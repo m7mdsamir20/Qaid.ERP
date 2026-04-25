@@ -1,4 +1,4 @@
-﻿import { AuthOptions } from "next-auth";
+import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
@@ -125,8 +125,8 @@ export const authOptions: AuthOptions = {
                 if (u.countryCode) token.countryCode = u.countryCode;
             }
 
-            // sync مع قاعدة البيانات كل 5 دقائق فقط لتحسين الأداء
-            const SYNC_INTERVAL = 5 * 60 * 1000; // 5 دقائق
+            // sync مع قاعدة البيانات باستمرار عند كل عملية تحديث أو تحميل للصفحة لتطبيق الصلاحيات فوراً
+            const SYNC_INTERVAL = 0; // 0 دقائق (تحديث فوري)
             const shouldSync = !user && token.id && (trigger === "update" || !token.lastSync || Date.now() - (token.lastSync as number) > SYNC_INTERVAL);
 
             if (shouldSync) {
