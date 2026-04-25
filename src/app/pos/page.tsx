@@ -163,6 +163,57 @@ export default function POSPage() {
     const total = Math.max(0, subtotal - discount);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
+    const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
+        const printWin = window.open('', '_blank');
+        if (!printWin) return;
+        
+        const html = `
+            <html dir="rtl">
+            <head>
+                <title>فاتورة كاشير</title>
+                <style>
+                    body { font-family: sans-serif; width: 300px; margin: 0 auto; padding: 20px; font-size: 14px; }
+                    .header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
+                    .line { display: flex; justify-content: space-between; margin-bottom: 5px; }
+                    .total { border-top: 1px dashed #000; padding-top: 10px; margin-top: 10px; font-weight: bold; font-size: 16px; }
+                    .footer { text-align: center; margin-top: 20px; font-size: 12px; }
+                </style>
+            </head>
+            <body>
+                <div class="header">
+                    <h2>فاتورة مطعم</h2>
+                    <p>نوع الطلب: ${orderType === 'dine-in' ? 'صالة' : orderType === 'takeaway' ? 'تيك أواي' : 'توصيل'}</p>
+                    <p>التاريخ: ${new Date().toLocaleString('ar-EG')}</p>
+                </div>
+                <div class="items">
+                    ${lines.map(l => `
+                        <div class="line">
+                            <span>${l.itemName} (x${l.quantity})</span>
+                            <span>${l.unitPrice * l.quantity}</span>
+                        </div>
+                        ${l.modifiers ? Object.values(l.modifiers).flat().map((m: any) => `
+                            <div class="line" style="font-size: 12px; color: #555;">
+                                <span>- ${m.name}</span>
+                                <span>${m.price || 0}</span>
+                            </div>
+                        `).join('') : ''}
+                    `).join('')}
+                </div>
+                <div class="total">
+                    ${finalDiscount > 0 ? `<div class="line"><span>خصم:</span><span>${finalDiscount}</span></div>` : ''}
+                    <div class="line"><span>الإجمالي:</span><span>${finalTotal}</span></div>
+                </div>
+                <div class="footer">
+                    <p>شكراً لزيارتكم!</p>
+                </div>
+                <script>window.print(); setTimeout(() => window.close(), 500);</script>
+            </body>
+            </html>
+        `;
+        printWin.document.write(html);
+        printWin.document.close();
+    };
+
     const handleInitialSubmit = () => {
         if (cart.length === 0) { setErrorMsg('السلة فارغة'); return; }
         if (orderType === 'dine-in' && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
@@ -199,6 +250,10 @@ export default function POSPage() {
                 }),
             });
             if (!res.ok) { const d = await res.json(); setErrorMsg(d.error || 'فشل'); setSubmitting(false); return; }
+            
+            // Print Receipt
+            printReceipt(await res.json(), cart, total, discount);
+
             setSuccessMsg('✅ تم حفظ الطلب وإرساله للمطبخ');
             clearCart();
             setShowSplitPayment(false);
