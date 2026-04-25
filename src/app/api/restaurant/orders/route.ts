@@ -63,9 +63,11 @@ export const POST = withProtection(async (request, session, body) => {
                 discount,
                 taxAmount,
                 total,
+                paidAmount: body.paidAmount || 0,
                 paymentMethod: body.paymentMethod,
                 source: body.source ?? 'pos',
                 externalRef: body.externalRef,
+                driverId: body.driverId || null,
                 companyId,
                 lines: {
                     create: (body.lines as any[]).map((l: any) => ({
@@ -79,6 +81,15 @@ export const POST = withProtection(async (request, session, body) => {
                         modifiers: l.modifiers ? JSON.stringify(l.modifiers) : null,
                     })),
                 },
+                ...(body.payments && body.payments.length > 0 && {
+                    payments: {
+                        create: body.payments.map((p: any) => ({
+                            amount: p.amount,
+                            paymentMethod: p.paymentMethod,
+                            treasuryId: p.treasuryId || null
+                        }))
+                    }
+                })
             },
             include: { lines: true, table: true },
         });
@@ -155,6 +166,35 @@ export const POST = withProtection(async (request, session, body) => {
                             companyId
                         }
                     });
+                }
+                
+                // 3. Deduct Modifiers Inventory
+                if (line.modifiers) {
+                    try {
+                        const mods = typeof line.modifiers === 'string' ? JSON.parse(line.modifiers) : line.modifiers;
+                        for (const mod of mods) {
+                            if (mod.itemId) {
+                                const deductionQty = line.quantity; // 1 mod per item sold
+                                await prisma.stock.upsert({
+                                    where: { itemId_warehouseId: { itemId: mod.itemId, warehouseId: defaultWarehouse.id } },
+                                    create: { itemId: mod.itemId, warehouseId: defaultWarehouse.id, quantity: -deductionQty },
+                                    update: { quantity: { decrement: deductionQty } }
+                                });
+                                await prisma.stockMovement.create({
+                                    data: {
+                                        type: 'out',
+                                        date: new Date(),
+                                        itemId: mod.itemId,
+                                        warehouseId: defaultWarehouse.id,
+                                        quantity: deductionQty,
+                                        reference: `POS-${order.orderNumber}-MOD`,
+                                        notes: `استهلاك إضافة (${mod.name}) لطلب الكاشير`,
+                                        companyId
+                                    }
+                                });
+                            }
+                        }
+                    } catch(e) {}
                 }
             }
         }

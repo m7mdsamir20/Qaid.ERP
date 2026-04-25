@@ -78,6 +78,7 @@ model Company {
   modifiers               Modifier[]
   recipes                 Recipe[]
   posOrders               PosOrder[]
+  Driver                  Driver[]
 }
 
 model Branch {
@@ -397,6 +398,7 @@ model Item {
   stocktakingLines StocktakingLine[]
   transferLines    WarehouseTransferLine[]
   recipe           Recipe? // وصفة المطعم إذا كان الصنف وجبة
+  ModifierOption   ModifierOption[]
 
   @@unique([code, companyId])
 }
@@ -549,21 +551,22 @@ model Supplier {
 }
 
 model Treasury {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String
   type          String
   bankName      String?
   accountNumber String?
-  balance       Float     @default(0)
+  balance       Float        @default(0)
   accountId     String?
   companyId     String
   branchId      String?
-  createdAt     DateTime  @default(now())
+  createdAt     DateTime     @default(now())
   advances      Advance[]
-  account       Account?  @relation(fields: [accountId], references: [id])
-  company       Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  branch        Branch?   @relation(fields: [branchId], references: [id])
+  account       Account?     @relation(fields: [accountId], references: [id])
+  company       Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  branch        Branch?      @relation(fields: [branchId], references: [id])
   vouchers      Voucher[]
+  PosPayment    PosPayment[]
 }
 
 model ReconciliationSnapshot {
@@ -619,6 +622,7 @@ model Invoice {
   customer            Customer?       @relation(fields: [customerId], references: [id])
   lines               InvoiceLine[]
   stockMovements      StockMovement[]
+  PosOrder            PosOrder[]
 
   @@index([companyId, type, date])
   @@index([companyId, date])
@@ -952,7 +956,9 @@ model ModifierOption {
   modifierId String
   name       String // مثال: بدون بصل، جبنة إضافية
   extraPrice Float    @default(0) // سعر الإضافة (0 = مجانية)
+  itemId     String? // اختياري: لربط الإضافة بصنف خام لخصم الجرد
   modifier   Modifier @relation(fields: [modifierId], references: [id], onDelete: Cascade)
+  item       Item?    @relation(fields: [itemId], references: [id])
 }
 
 /// وصفات الطبخ (Recipes) - لربط الوجبة بمكوناتها الخام
@@ -999,6 +1005,8 @@ model PosOrder {
   source          String           @default("pos") // pos | qr | api (للطلبات الخارجية)
   externalRef     String? // مرجع الطلب الخارجي (من الويب سايت أو تطبيق التوصيل)
   kitchenPrinted  Boolean          @default(false) // هل تمت طباعة بون المطبخ؟
+  driverId        String?
+  invoiceId       String? // للربط مع المحاسبة (اختياري)
   companyId       String
   branchId        String?
   createdAt       DateTime         @default(now())
@@ -1006,7 +1014,10 @@ model PosOrder {
   company         Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
   table           RestaurantTable? @relation(fields: [tableId], references: [id])
   shift           Shift?           @relation(fields: [shiftId], references: [id])
+  driver          Driver?          @relation(fields: [driverId], references: [id])
+  invoice         Invoice?         @relation(fields: [invoiceId], references: [id])
   lines           PosOrderLine[]
+  payments        PosPayment[]
 
   @@index([companyId, status])
   @@index([companyId, orderNumber])
@@ -1027,4 +1038,29 @@ model PosOrderLine {
   modifiers   String? // JSON: الإضافات المختارة مع أسعارها
   kitchenDone Boolean  @default(false) // هل أنهى المطبخ تجهيز هذا البند؟
   order       PosOrder @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+/// السائقين لطلبات التوصيل
+model Driver {
+  id        String     @id @default(cuid())
+  name      String
+  phone     String?
+  status    String     @default("available") // available | busy | offline
+  companyId String
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  company   Company    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  orders    PosOrder[]
+}
+
+/// مدفوعات طلبات الكاشير (للدفع المختلط وتوجيه الإيرادات للخزائن)
+model PosPayment {
+  id            String    @id @default(cuid())
+  orderId       String
+  amount        Float
+  paymentMethod String // cash | card | bank_transfer
+  treasuryId    String? // الخزنة التي تم التوريد لها
+  createdAt     DateTime  @default(now())
+  order         PosOrder  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  treasury      Treasury? @relation(fields: [treasuryId], references: [id])
 }

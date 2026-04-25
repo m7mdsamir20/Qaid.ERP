@@ -7,13 +7,14 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
 import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, Settings2 } from 'lucide-react';
 
-interface Option { name: string; extraPrice: number; }
+interface Option { id?: string; name: string; extraPrice: number; itemId?: string | null; }
 
 export default function ModifiersPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
 
     const [modifiers, setModifiers] = useState<any[]>([]);
+    const [items, setItems] = useState<any[]>([]);
     const [loading, setLoading]     = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editItem, setEditItem]   = useState<any>(null);
@@ -23,18 +24,25 @@ export default function ModifiersPage() {
 
     const load = useCallback(async () => {
         setLoading(true);
-        try { const r = await fetch('/api/restaurant/modifiers'); setModifiers(await r.json()); }
+        try { 
+            const [r, i] = await Promise.all([
+                fetch('/api/restaurant/modifiers'),
+                fetch('/api/items')
+            ]);
+            setModifiers(await r.json());
+            setItems(await i.json());
+        }
         finally { setLoading(false); }
     }, []);
     useEffect(() => { load(); }, [load]);
 
     const openModal = (item?: any) => {
         setEditItem(item ?? null);
-        setForm(item ? { name: item.name, required: item.required, multiSelect: item.multiSelect, options: item.options.map((o: any) => ({ name: o.name, extraPrice: o.extraPrice })) } : { name: '', required: false, multiSelect: false, options: [] });
+        setForm(item ? { name: item.name, required: item.required, multiSelect: item.multiSelect, options: item.options.map((o: any) => ({ id: o.id, name: o.name, extraPrice: o.extraPrice, itemId: o.itemId })) } : { name: '', required: false, multiSelect: false, options: [] });
         setError(''); setShowModal(true);
     };
 
-    const addOption    = () => setForm(f => ({ ...f, options: [...f.options, { name: '', extraPrice: 0 }] }));
+    const addOption    = () => setForm(f => ({ ...f, options: [...f.options, { name: '', extraPrice: 0, itemId: null }] }));
     const removeOption = (i: number) => setForm(f => ({ ...f, options: f.options.filter((_, idx) => idx !== i) }));
     const updateOption = (i: number, field: keyof Option, value: any) => setForm(f => ({ ...f, options: f.options.map((o, idx) => idx === i ? { ...o, [field]: value } : o) }));
 
@@ -97,6 +105,7 @@ export default function ModifiersPage() {
                                         <div key={opt.id} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '6px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '5px' }}>
                                             <span style={{ fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>{opt.name}</span>
                                             {opt.extraPrice > 0 && <span style={{ fontSize: '11px', fontFamily: OUTFIT, fontWeight: 700, color: '#10b981' }}>+{opt.extraPrice}</span>}
+                                            {opt.item && <span style={{ fontSize: '10px', color: C.primary, borderInlineStart: `1px solid ${C.border}`, paddingInlineStart: '5px' }}>📦 {opt.item.name}</span>}
                                         </div>
                                     ))}
                                 </div>
@@ -134,6 +143,10 @@ export default function ModifiersPage() {
                                         <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                                             <input value={opt.name} onChange={e => updateOption(i, 'name', e.target.value)} placeholder="اسم الخيار" style={{ ...IS, flex: 1, height: '38px', fontSize: '12.5px' }} />
                                             <input type="number" min="0" value={opt.extraPrice || ''} onChange={e => updateOption(i, 'extraPrice', Number(e.target.value))} placeholder="+سعر" style={{ ...IS, width: '75px', height: '38px', fontSize: '12.5px', fontFamily: OUTFIT }} />
+                                            <select value={opt.itemId || ''} onChange={e => updateOption(i, 'itemId', e.target.value || null)} style={{ ...IS, width: '120px', height: '38px', fontSize: '12px', padding: '0 8px' }}>
+                                                <option value="">-- بدون ربط مخزني --</option>
+                                                {items.map(it => <option key={it.id} value={it.id}>{it.name}</option>)}
+                                            </select>
                                             <button onClick={() => removeOption(i)} style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><X size={12} /></button>
                                         </div>
                                     ))}

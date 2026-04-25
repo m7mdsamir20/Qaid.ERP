@@ -59,7 +59,7 @@ export const PUT = withProtection(async (request, session, body) => {
         // Calculate total sales from orders in this shift
         const agg = await prisma.posOrder.aggregate({
             where: { shiftId: body.id, companyId, status: { not: 'cancelled' } },
-            _sum: { total: true },
+            _sum: { total: true, taxAmount: true },
             _count: { id: true },
         });
 
@@ -82,6 +82,61 @@ export const PUT = withProtection(async (request, session, body) => {
                 notes: body.notes,
             },
         });
+
+        // ----------------------------------------------------
+        // ACCOUNTING INTEGRATION: Create Journal Entry for Shift
+        // ----------------------------------------------------
+        if (totalSales > 0) {
+            const financialYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
+            if (financialYear) {
+                const salesAccount = await prisma.account.findFirst({
+                    where: { companyId, accountCategory: 'detail', OR: [{ code: '4100' }, { type: 'revenue', name: { contains: 'مبيعات' } }] }
+                });
+                const cashAccount = await prisma.account.findFirst({
+                    where: { companyId, accountCategory: 'detail', OR: [{ code: '1111' }, { type: 'asset', name: { contains: 'صندوق' } }, { type: 'asset', name: { contains: 'نقدية' } }] }
+                });
+                const taxAccount = await prisma.account.findFirst({
+                    where: { companyId, accountCategory: 'detail', OR: [{ code: '2114' }, { type: 'liability', name: { contains: 'ضريبة' } }] }
+                });
+
+                if (salesAccount && cashAccount) {
+                    const lastEntry = await prisma.journalEntry.findFirst({
+                        where: { companyId, financialYearId: financialYear.id },
+                        orderBy: { entryNumber: 'desc' },
+                    });
+                    const entryNumber = (lastEntry?.entryNumber || 0) + 1;
+
+                    const taxAmount = agg._sum.taxAmount ?? 0;
+                    const netSales = totalSales - taxAmount;
+
+                    const journalLines: any[] = [];
+                    // Debit Cash/Treasury
+                    journalLines.push({ accountId: cashAccount.id, debit: totalSales, credit: 0, description: `إيرادات وردية رقم ${body.id.slice(-5)}` });
+                    // Credit Sales
+                    journalLines.push({ accountId: salesAccount.id, debit: 0, credit: netSales, description: `مبيعات وردية رقم ${body.id.slice(-5)}` });
+                    // Credit Tax
+                    if (taxAmount > 0 && taxAccount) {
+                        journalLines.push({ accountId: taxAccount.id, debit: 0, credit: taxAmount, description: `ضريبة وردية رقم ${body.id.slice(-5)}` });
+                    }
+
+                    await prisma.journalEntry.create({
+                        data: {
+                            entryNumber,
+                            date: new Date(),
+                            description: `قيد مبيعات وردية رقم ${body.id.slice(-5)}`,
+                            reference: `SHIFT-${body.id.slice(-5)}`,
+                            referenceType: 'shift',
+                            referenceId: body.id,
+                            financialYearId: financialYear.id,
+                            companyId,
+                            isPosted: true,
+                            lines: { create: journalLines },
+                        }
+                    });
+                }
+            }
+        }
+
         return NextResponse.json({ success: true, totalSales, totalOrders, difference });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
