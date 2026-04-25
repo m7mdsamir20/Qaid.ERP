@@ -30,6 +30,8 @@ interface Item {
     unit?: { name: string };
     minLimit?: number;
     status: string;
+    type?: string;
+    isPosEligible?: boolean;
 }
 
 export default function ItemsPage() {
@@ -90,7 +92,7 @@ export default function ItemsPage() {
     }, []);
 
     const [form, setForm] = useState({
-        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active'
+        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true
     });
 
     useEffect(() => {
@@ -111,7 +113,7 @@ export default function ItemsPage() {
             setForm({
                 id: item.id, code: item.code, barcode: item.barcode || '', imageUrl: item.imageUrl || '', name: item.name, description: item.description || '', categoryId: item.categoryId || '',
                 unitId: item.unitId || '', costPrice: item.costPrice, sellPrice: item.sellPrice,
-                minLimit: item.minLimit || 0, warehouseId: '', initialQuantity: 0, status: item.status || 'active'
+                minLimit: item.minLimit || 0, warehouseId: '', initialQuantity: 0, status: item.status || 'active', type: item.type || 'product', isPosEligible: item.isPosEligible ?? true
             });
             setEditingId(item.id);
         } else {
@@ -129,7 +131,7 @@ export default function ItemsPage() {
                 id: '', code: nextCode, barcode: '', imageUrl: '', name: '', description: '', categoryId: '',
                 unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0,
                 warehouseId: localStorage.getItem('last_warehouse_id') || '',
-                initialQuantity: 0, status: 'active'
+                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true
             });
             setEditingId(null);
         }
@@ -484,6 +486,34 @@ export default function ItemsPage() {
                                 <input type="text" required autoFocus placeholder={companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
+
+                        {companyBusinessType === 'RESTAURANTS' && (
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                                <div>
+                                    <label style={LS}>{t('نوع الصنف')}</label>
+                                    <CustomSelect
+                                        value={form.type}
+                                        onChange={v => setForm({ ...form, type: v })}
+                                        options={[
+                                            { value: 'product', label: t('منتج تام (يباع للعميل)'), icon: Package },
+                                            { value: 'raw', label: t('مادة خام (لا تباع للعميل)'), icon: Boxes },
+                                            { value: 'semi_finished', label: t('نصف مصنع'), icon: TrendingUp }
+                                        ]}
+                                    />
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', paddingTop: '20px' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
+                                        <div style={{ position: 'relative', width: '22px', height: '22px' }}>
+                                            <input type="checkbox" checked={form.isPosEligible} onChange={e => setForm({ ...form, isPosEligible: e.target.checked })} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
+                                            <div style={{ position: 'absolute', inset: 0, background: form.isPosEligible ? C.primary : 'transparent', border: `2px solid ${form.isPosEligible ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                                                {form.isPosEligible && <Check size={14} color="#fff" strokeWidth={3} />}
+                                            </div>
+                                        </div>
+                                        {t('إظهار الصنف في شاشة الكاشير (POS)')}
+                                    </label>
+                                </div>
+                            </div>
+                        )}
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                             <div>
