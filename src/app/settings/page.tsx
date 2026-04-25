@@ -56,7 +56,8 @@ function SettingsContent() {
     const searchParams = useSearchParams();
     const { data: session, status, update } = useSession();
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
-    const isServices = businessType === 'SERVICES';
+    const isServices    = businessType === 'SERVICES';
+    const isRestaurants = businessType === 'RESTAURANTS';
 
     const [loading, setLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
@@ -426,6 +427,9 @@ function SettingsContent() {
     // Build the permission hierarchy based on user's actual permissions and subscription
     const permissionHierarchy = navSections
         .filter(sectionOrigin => {
+            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+            if (restaurantFeatures.includes(sectionOrigin.featureKey || '') && !isRestaurants) return false;
+            if (isRestaurants && ['sales', 'installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
             return sectionOrigin.links.some(link => hasPage(sectionOrigin.featureKey || '', link.id));
         })
         .map(sectionOrigin => {
@@ -449,8 +453,26 @@ function SettingsContent() {
                         { id: '/warehouses', href: '/warehouses', label: t('الفروع / مواقع العمل') }
                     ];
                 }
+            // Apply restaurants terminology
+            if (isRestaurants) {
+                if (section.featureKey === 'inventory') {
+                    section.title = t('المنيو والمخزون');
+                    section.links = section.links?.map((l: any) => {
+                        if (l.id === '/categories') return { ...l, label: t('تصنيفات المنيو') };
+                        if (l.id === '/items')      return { ...l, label: t('أصناف المنيو') };
+                        if (l.id === '/warehouses') return { ...l, label: t('المخازن والمستودعات') };
+                        return l;
+                    });
+                }
+                if (section.featureKey === 'purchases') section.title = t('المشتريات والموردين');
+                if (section.featureKey === 'reports') {
+                    section.links = section.links?.map((l: any) => {
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: t('تقارير الكاشير والمبيعات') };
+                        if (l.label === 'تقارير المخزون')      return { ...l, label: t('تقارير المخزون والمنيو') };
+                        return l;
+                    });
+                }
             }
-
             const filteredLinks = section.links?.filter((link: any) => hasPage(section.featureKey || '', link.id)) || [];
             return {
                 title: section.title,
