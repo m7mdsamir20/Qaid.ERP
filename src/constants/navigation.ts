@@ -73,7 +73,7 @@ export const navSections = [
         icon: ClipboardList,
         featureKey: 'kitchen',
         links: [
-            { id: '/kitchen', href: '/kitchen', label: 'شاشة المطبخ (KDS)' },
+            { id: '/kds', href: '/kds', label: 'شاشة المطبخ (KDS)' },
             { id: '/recipes', href: '/recipes', label: 'وصفات الطبخ' },
             { id: '/modifiers', href: '/modifiers', label: 'الإضافات والتعديلات' },
         ],
@@ -232,6 +232,7 @@ export const navSections = [
             { id: '/settings/notifications', href: '/settings', label: 'الإشعارات' },
             { id: '/settings/users', href: '/settings', label: 'المستخدمين والصلاحيات' },
             { id: '/settings/subscription', href: '/settings', label: 'الاشتراك والخطة' },
+            { id: '/settings/api-keys', href: '/settings/api-keys', label: 'الربط البرمجي (API)' },
             { id: '/settings/database', href: '/settings', label: 'قواعد البيانات' },
         ],
     },
