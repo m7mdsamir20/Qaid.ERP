@@ -47,6 +47,53 @@ export const navSections = [
             { id: '/', href: '/', label: 'لوحة التحكم' }
         ],
     },
+    // ═══════════════════════════════════════════════════════
+    // 🍽️  أقسام المطاعم والكافيهات (تظهر فقط لنشاط RESTAURANTS)
+    // ═══════════════════════════════════════════════════════
+    {
+        title: 'نقطة البيع (POS)',
+        icon: Receipt,
+        featureKey: 'pos',
+        links: [
+            { id: '/pos', href: '/pos', label: 'شاشة الكاشير' },
+            { id: '/pos/history', href: '/pos/history', label: 'سجل الطلبات' },
+        ],
+    },
+    {
+        title: 'الطاولات والصالة',
+        icon: Layers,
+        featureKey: 'tables',
+        links: [
+            { id: '/tables', href: '/tables', label: 'خريطة الطاولات' },
+            { id: '/shifts', href: '/shifts', label: 'الورديات' },
+        ],
+    },
+    {
+        title: 'المطبخ والوصفات',
+        icon: ClipboardList,
+        featureKey: 'kitchen',
+        links: [
+            { id: '/kitchen', href: '/kitchen', label: 'شاشة المطبخ (KDS)' },
+            { id: '/recipes', href: '/recipes', label: 'وصفات الطبخ' },
+            { id: '/modifiers', href: '/modifiers', label: 'الإضافات والتعديلات' },
+        ],
+    },
+    {
+        title: 'التوصيل',
+        icon: Truck,
+        featureKey: 'delivery',
+        links: [
+            { id: '/delivery', href: '/delivery', label: 'طلبات التوصيل' },
+        ],
+    },
+    {
+        title: 'باركود وQR الطاولات',
+        icon: QrCode,
+        featureKey: 'barcode',
+        links: [
+            { id: '/barcode', href: '/barcode', label: 'QR الطاولات' },
+        ],
+    },
     {
         title: 'المبيعات',
         icon: Receipt,
@@ -188,51 +235,5 @@ export const navSections = [
             { id: '/settings/database', href: '/settings', label: 'قواعد البيانات' },
         ],
     },
-    // ═══════════════════════════════════════════════════════
-    // 🍽️  أقسام المطاعم والكافيهات (تظهر فقط لنشاط RESTAURANTS)
-    // ═══════════════════════════════════════════════════════
-    {
-        title: 'نقطة البيع (POS)',
-        icon: Receipt,
-        featureKey: 'pos',
-        links: [
-            { id: '/pos', href: '/pos', label: 'شاشة الكاشير' },
-            { id: '/pos/history', href: '/pos/history', label: 'سجل الطلبات' },
-        ],
-    },
-    {
-        title: 'الطاولات والصالة',
-        icon: Layers,
-        featureKey: 'tables',
-        links: [
-            { id: '/tables', href: '/tables', label: 'خريطة الطاولات' },
-            { id: '/shifts', href: '/shifts', label: 'الورديات' },
-        ],
-    },
-    {
-        title: 'المطبخ والوصفات',
-        icon: ClipboardList,
-        featureKey: 'kitchen',
-        links: [
-            { id: '/kitchen', href: '/kitchen', label: 'شاشة المطبخ (KDS)' },
-            { id: '/recipes', href: '/recipes', label: 'وصفات الطبخ' },
-            { id: '/modifiers', href: '/modifiers', label: 'الإضافات والتعديلات' },
-        ],
-    },
-    {
-        title: 'التوصيل',
-        icon: Truck,
-        featureKey: 'delivery',
-        links: [
-            { id: '/delivery', href: '/delivery', label: 'طلبات التوصيل' },
-        ],
-    },
-    {
-        title: 'باركود وQR الطاولات',
-        icon: QrCode,
-        featureKey: 'barcode',
-        links: [
-            { id: '/barcode', href: '/barcode', label: 'QR الطاولات' },
-        ],
-    },
+
 ];
