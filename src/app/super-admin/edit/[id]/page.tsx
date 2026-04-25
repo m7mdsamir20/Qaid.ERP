@@ -32,7 +32,7 @@ const BUSINESS_TYPES = [
     {
         value: "RESTAURANTS",
         label: "مطاعم وكافيهات",
-        modules: ['pos', 'tables', 'kitchen', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
+        modules: ['pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
 ];
 
@@ -165,13 +165,20 @@ export default function EditCompanyPage() {
 
     const uniqueSections = (() => {
         const map = new Map<string, any>();
+        const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+        const isRestaurants = form.businessType === 'RESTAURANTS';
+
         navSections.forEach(s => {
             if (!s.featureKey) return;
             if (!s.links || s.links.length === 0) return;
 
+            // فلترة حسب نوع النشاط
+            if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
+            if (isRestaurants && ['sales', 'installments', 'partners'].includes(s.featureKey)) return;
+
             let section = { ...s };
 
-            // ✅ تعديلات ديناميكية للمسميات بناءً على نوع النشاط
+            // تعديلات ديناميكية للمسميات بناءً على نوع النشاط
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';
@@ -207,9 +214,10 @@ export default function EditCompanyPage() {
                         return l;
                     });
                 }
+                if (section.featureKey === 'purchases') section.title = 'المشتريات والموردين';
                 if (section.featureKey === 'reports') {
                     section.links = section.links.map((l: any) => {
-                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'تقارير المبيعات والكاشير' };
+                        if (l.label === 'المبيعات والمشتريات') return { ...l, label: 'تقارير الكاشير والمبيعات' };
                         return l;
                     });
                 }
