@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
+import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, BTN_PRIMARY } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import { RefreshCw, Loader2, Check, Clock, UtensilsCrossed, Table2, Package, Truck, Wifi, ChefHat } from 'lucide-react';
@@ -62,22 +63,18 @@ export default function KitchenPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '24px', fontFamily: CAIRO, minHeight: '100vh', background: C.bg }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 {/* Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <div style={{ width: 44, height: 44, borderRadius: '14px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
-                            <ChefHat size={24} />
-                        </div>
-                        <div>
-                            <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.textPrimary }}>{t('شاشة المطبخ (KDS)')}</h1>
-                            <p style={{ margin: 0, fontSize: '12px', color: C.textMuted }}>{t('تحديث تلقائي كل 15 ثانية')} • {orders.length} {t('طلب نشط')}</p>
-                        </div>
-                    </div>
-                    <button onClick={load} style={{ height: '40px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
-                        <RefreshCw size={14} /> {t('تحديث')}
-                    </button>
-                </div>
+                <PageHeader
+                    title={t('شاشة المطبخ (KDS)')}
+                    subtitle={`${t('تحديث تلقائي كل 15 ثانية')} • ${orders.length} ${t('طلب نشط')}`}
+                    icon={ChefHat}
+                    actions={[
+                        <button key="refresh" onClick={load} style={{ height: '42px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>
+                            <RefreshCw size={14} /> {t('تحديث')}
+                        </button>
+                    ]}
+                />
 
                 {/* Legend */}
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '20px', flexWrap: 'wrap' }}>

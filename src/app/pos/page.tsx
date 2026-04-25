@@ -2,13 +2,12 @@
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from '@/lib/i18n';
-import DashboardLayout from '@/components/DashboardLayout';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight
+    AlertCircle, Clock, ChevronsRight, LogOut
 } from 'lucide-react';
 
 const ORDER_TYPES = [
@@ -279,8 +278,8 @@ export default function POSPage() {
     };
 
     return (
-        <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', height: 'calc(100vh - 64px)', overflow: 'hidden', fontFamily: CAIRO, background: C.bg }}>
+        <>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', height: '100vh', width: '100vw', overflow: 'hidden', fontFamily: CAIRO, background: C.bg }}>
 
                 {/* ══ الجانب الأيسر: المنيو ══ */}
                 <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden', borderInlineEnd: `1px solid ${C.border}` }}>
@@ -300,6 +299,9 @@ export default function POSPage() {
                         <button onClick={load} style={{ width: 40, height: 40, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <RefreshCw size={15} />
                         </button>
+                        <a href="/" style={{ height: 40, padding: '0 16px', borderRadius: '10px', border: '1px solid #ef444430', background: '#ef444410', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', fontWeight: 600, textDecoration: 'none' }}>
+                            <LogOut size={15} /> {t('خروج')}
+                        </a>
                     </div>
 
                     {/* التصنيفات */}
@@ -602,6 +604,6 @@ export default function POSPage() {
             )}
 
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        </DashboardLayout>
+        </>
     );
 }

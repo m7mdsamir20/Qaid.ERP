@@ -3,9 +3,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
+import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, BTN_PRIMARY } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
-import { RefreshCw, Loader2, Table2, Package, Truck, Wifi, ChevronDown, History } from 'lucide-react';
+import { RefreshCw, Loader2, Table2, Package, Truck, Wifi, ChevronDown, History, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
 
 const TYPE_LABELS: Record<string, string> = { 'dine-in': 'صالة', 'takeaway': 'تيك أواي', 'delivery': 'توصيل', 'online': 'أونلاين' };
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> = {
@@ -55,15 +56,44 @@ export default function OrdersHistoryPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '32px', maxWidth: '1100px', margin: '0 auto', fontFamily: CAIRO }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <History size={24} color={C.primary} /> {t('سجل الطلبات')}
-                        </h1>
-                        <p style={{ margin: '4px 0 0', fontSize: '13px', color: C.textMuted }}>{t('عرض وتتبع جميع الطلبات')}</p>
-                    </div>
-                    <button onClick={load} style={{ height: '40px', width: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+                <PageHeader
+                    title={t('سجل الطلبات')}
+                    subtitle={t('عرض وتتبع جميع الطلبات')}
+                    icon={History}
+                    actions={[
+                        <button key="refresh" onClick={load} style={{ height: '42px', width: '42px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
+                    ]}
+                />
+
+                {/* KPI Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                    {[
+                        { label: 'إجمالي الطلبات', count: orders.length, color: C.primary, icon: <Package size={18} />, suffix: 'طلب' },
+                        { label: 'الطلبات المكتملة', count: orders.filter(o => o.status === 'delivered').length, color: '#10b981', icon: <CheckCircle2 size={18} />, suffix: 'طلب' },
+                        { label: 'الطلبات الملغية', count: orders.filter(o => o.status === 'cancelled').length, color: '#ef4444', icon: <XCircle size={18} />, suffix: 'طلب' },
+                        { label: 'إجمالي المبيعات', count: fMoney(orders.filter(o => o.status !== 'cancelled').reduce((sum, o) => sum + o.total, 0)), color: '#f59e0b', icon: <TrendingUp size={18} />, suffix: '' },
+                    ].map((s, i) => (
+                        <div key={i} style={{
+                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
+                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            transition: 'all 0.2s', position: 'relative'
+                        }}
+                            onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                            onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
+                        >
+                            <div style={{ textAlign: 'start' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.count}</span>
+                                    {s.suffix && <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>{s.suffix}</span>}
+                                </div>
+                            </div>
+                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                {s.icon}
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
                 {/* فلتر الحالة */}

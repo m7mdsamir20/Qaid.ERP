@@ -142,6 +142,8 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             }
 
             if (businessType === 'RESTAURANTS') {
+                if (section.featureKey === 'installments') return null;
+                
                 if (section.featureKey === 'sales') {
                     section.title = 'إدارة العملاء';
                     section.links = section.links?.filter((l: any) => l.id === '/customers');
