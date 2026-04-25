@@ -83,7 +83,7 @@ const AppModal: React.FC<AppModalProps> = ({
                     boxShadow: '0 25px 50px rgba(0,0,0,0.3)',
                     transform: show ? 'scale(1)' : 'scale(0.95)',
                     transition: 'transform 0.2s ease',
-                    overflow: 'hidden',
+                    overflow: 'visible',
                     maxHeight: '92vh', display: 'flex', flexDirection: 'column'
                 }}
                 onClick={e => e.stopPropagation()}
@@ -134,8 +134,7 @@ const AppModal: React.FC<AppModalProps> = ({
 
                 {/* Body */}
                 <div style={{ 
-                    padding: isDelete ? '18px 22px' : '20px 24px', 
-                    overflowY: 'auto',
+                    padding: isDelete ? '18px 22px' : '20px 24px',
                     flex: 1
                 }}>
                     {isDelete ? (

@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
 import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, Settings2 } from 'lucide-react';
 
@@ -138,10 +139,14 @@ export default function ModifiersPage() {
                                 <div key={i} style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
                                     <input value={opt.name} onChange={e => updateOption(i, 'name', e.target.value)} placeholder="اسم الخيار" style={{ ...IS, flex: 1, height: '38px', fontSize: '12.5px' }} />
                                     <input type="number" min="0" value={opt.extraPrice || ''} onChange={e => updateOption(i, 'extraPrice', Number(e.target.value))} placeholder="+سعر" style={{ ...IS, width: '75px', height: '38px', fontSize: '12.5px', fontFamily: OUTFIT }} />
-                                    <select value={opt.itemId || ''} onChange={e => updateOption(i, 'itemId', e.target.value || null)} style={{ ...IS, width: '120px', height: '38px', fontSize: '12px', padding: '0 8px' }}>
-                                        <option value="">-- بدون ربط مخزني --</option>
-                                        {items.map(it => <option key={it.id} value={it.id}>{it.name}</option>)}
-                                    </select>
+                                    <div style={{ width: '150px' }}>
+                                        <CustomSelect
+                                            value={opt.itemId || ''}
+                                            onChange={v => updateOption(i, 'itemId', v || null)}
+                                            options={items.map(it => ({ value: it.id, label: it.name }))}
+                                            placeholder="-- بدون ربط مخزني --"
+                                        />
+                                    </div>
                                     <button onClick={() => removeOption(i)} style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><X size={12} /></button>
                                 </div>
                             ))}

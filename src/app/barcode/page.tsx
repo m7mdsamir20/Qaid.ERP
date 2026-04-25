@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { C, CAIRO, OUTFIT, BTN_PRIMARY } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_PRIMARY } from '@/constants/theme';
 import { QrCode, Printer, Download, RefreshCw, Loader2, Table2 } from 'lucide-react';
 
 export default function BarcodePage() {
@@ -87,25 +88,23 @@ export default function BarcodePage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '32px', maxWidth: '1000px', margin: '0 auto', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
 
-                {/* Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <QrCode size={24} color={C.primary} /> {t('باركود وQR الطاولات')}
-                        </h1>
-                        <p style={{ margin: '4px 0 0', fontSize: '13px', color: C.textMuted }}>{t('توليد QR لكل طاولة — يمكن العميل من الطلب مباشرة عبر هاتفه')}</p>
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                        <button onClick={load} style={{ height: '40px', width: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
-                        {selected.size > 0 && (
-                            <button onClick={handlePrint} style={{ ...BTN_PRIMARY(false, false), height: '40px', padding: '0 20px', borderRadius: '10px', gap: '6px', fontSize: '13px' }}>
-                                <Printer size={15} /> {t('طباعة')} ({selected.size})
+                <PageHeader
+                    title={t('باركود وQR الطاولات')}
+                    subtitle={t('توليد QR لكل طاولة — يمكن العميل من الطلب مباشرة عبر هاتفه')}
+                    icon={QrCode}
+                    actions={[
+                        <button key="refresh" onClick={load} style={{ height: '42px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, fontWeight: 600, transition: 'all 0.2s' }}>
+                            <RefreshCw size={16} /> تحديث
+                        </button>,
+                        selected.size > 0 ? (
+                            <button key="print" onClick={handlePrint} style={{ ...BTN_PRIMARY(false, false), height: '42px', padding: '0 20px', borderRadius: '10px', gap: '8px', fontSize: '14px', width: 'auto' }}>
+                                <Printer size={16} /> {t('طباعة المحددة')} ({selected.size})
                             </button>
-                        )}
-                    </div>
-                </div>
+                        ) : null
+                    ].filter(Boolean)}
+                />
 
                 {/* Select controls */}
                 {tables.length > 0 && (
