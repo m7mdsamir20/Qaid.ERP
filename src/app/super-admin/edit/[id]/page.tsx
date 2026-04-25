@@ -174,7 +174,7 @@ export default function EditCompanyPage() {
 
             // فلترة حسب نوع النشاط
             if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
-            if (isRestaurants && ['sales', 'installments', 'partners'].includes(s.featureKey)) return;
+            if (isRestaurants && ['installments', 'partners'].includes(s.featureKey)) return;
 
             let section = { ...s };
 
@@ -206,6 +206,10 @@ export default function EditCompanyPage() {
             }
 
             if (form.businessType === 'RESTAURANTS') {
+                if (section.featureKey === 'sales') {
+                    section.title = 'إدارة العملاء';
+                    section.links = section.links.filter((l: any) => l.id === '/customers');
+                }
                 if (section.featureKey === 'inventory') {
                     section.title = 'المنيو والمخزون';
                     section.links = section.links.map((l: any) => {

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -429,7 +429,7 @@ function SettingsContent() {
         .filter(sectionOrigin => {
             const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
             if (restaurantFeatures.includes(sectionOrigin.featureKey || '') && !isRestaurants) return false;
-            if (isRestaurants && ['sales', 'installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
+            if (isRestaurants && ['installments', 'partners'].includes(sectionOrigin.featureKey || '')) return false;
             return sectionOrigin.links.some(link => hasPage(sectionOrigin.featureKey || '', link.id));
         })
         .map(sectionOrigin => {
@@ -456,6 +456,10 @@ function SettingsContent() {
             }
             // Apply restaurants terminology
             if (isRestaurants) {
+                if (section.featureKey === 'sales') {
+                    section.title = t('إدارة العملاء');
+                    section.links = section.links?.filter((l: any) => l.id === '/customers');
+                }
                 if (section.featureKey === 'inventory') {
                     section.title = t('المنيو والمخزون');
                     section.links = section.links?.map((l: any) => {
