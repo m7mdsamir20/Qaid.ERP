@@ -33,6 +33,7 @@ import {
     Tag,
     Clock,
     AlertTriangle,
+    QrCode,
 } from 'lucide-react';
 
 export const navSections = [
@@ -216,6 +217,22 @@ export const navSections = [
             { id: '/kitchen', href: '/kitchen', label: 'شاشة المطبخ (KDS)' },
             { id: '/recipes', href: '/recipes', label: 'وصفات الطبخ' },
             { id: '/modifiers', href: '/modifiers', label: 'الإضافات والتعديلات' },
+        ],
+    },
+    {
+        title: 'التوصيل',
+        icon: Truck,
+        featureKey: 'delivery',
+        links: [
+            { id: '/delivery', href: '/delivery', label: 'طلبات التوصيل' },
+        ],
+    },
+    {
+        title: 'باركود وQR الطاولات',
+        icon: QrCode,
+        featureKey: 'barcode',
+        links: [
+            { id: '/barcode', href: '/barcode', label: 'QR الطاولات' },
         ],
     },
 ];
