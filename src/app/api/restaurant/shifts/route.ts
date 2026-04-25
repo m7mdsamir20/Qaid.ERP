@@ -9,7 +9,9 @@ export const GET = withProtection(async (request, session) => {
         const status = new URL(request.url).searchParams.get('status');
         const shifts = await prisma.shift.findMany({
             where: { companyId, ...(status ? { status } : {}) },
-            include: { _count: { select: { orders: true } } },
+            include: { 
+                _count: { select: { orders: true } }
+            },
             orderBy: { openedAt: 'desc' },
             take: 30,
         });
@@ -68,6 +70,11 @@ export const PUT = withProtection(async (request, session, body) => {
         const closingBalance = (body.closingBalance ?? 0);
         const expectedBalance = (body.openingBalance ?? 0) + totalSales;
         const difference = closingBalance - expectedBalance;
+
+        // Count cancelled orders
+        const cancelledCount = await prisma.posOrder.count({
+            where: { shiftId: body.id, companyId, status: 'cancelled' }
+        });
 
         await prisma.shift.updateMany({
             where: { id: body.id, companyId },
@@ -137,7 +144,7 @@ export const PUT = withProtection(async (request, session, body) => {
             }
         }
 
-        return NextResponse.json({ success: true, totalSales, totalOrders, difference });
+        return NextResponse.json({ success: true, totalSales, totalOrders, difference, cancelledCount });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

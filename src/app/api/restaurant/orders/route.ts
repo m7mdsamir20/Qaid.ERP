@@ -47,6 +47,15 @@ export const POST = withProtection(async (request, session, body) => {
         const discount = body.discount ?? 0;
         const total = subtotal - discount + taxAmount;
 
+        // Prepare payments with treasuryId
+        const paymentsData = body.payments && body.payments.length > 0
+            ? body.payments.map((p: any) => ({
+                amount: p.amount,
+                paymentMethod: p.paymentMethod,
+                treasuryId: p.treasuryId || null
+            }))
+            : [];
+
         const order = await prisma.posOrder.create({
             data: {
                 orderNumber,
@@ -81,13 +90,9 @@ export const POST = withProtection(async (request, session, body) => {
                         modifiers: l.modifiers ? JSON.stringify(l.modifiers) : null,
                     })),
                 },
-                ...(body.payments && body.payments.length > 0 && {
+                ...(paymentsData.length > 0 && {
                     payments: {
-                        create: body.payments.map((p: any) => ({
-                            amount: p.amount,
-                            paymentMethod: p.paymentMethod,
-                            treasuryId: p.treasuryId || null
-                        }))
+                        create: paymentsData
                     }
                 })
             },
@@ -113,8 +118,90 @@ export const POST = withProtection(async (request, session, body) => {
             });
         }
 
-        // Auto-Deduction Logic (الخصم التلقائي من المخزون للمطاعم)
+        // ════════════════════════════════════════════════════
+        // ACCOUNTING INTEGRATION: Create Invoice from POS Order
+        // ════════════════════════════════════════════════════
+        const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
         const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
+
+        if (activeYear) {
+            try {
+                const lastInvoice = await prisma.invoice.findFirst({
+                    where: { companyId, type: 'sale' },
+                    orderBy: { invoiceNumber: 'desc' }
+                });
+                const invoiceNumber = (lastInvoice?.invoiceNumber ?? 0) + 1;
+
+                const invoice = await prisma.invoice.create({
+                    data: {
+                        invoiceNumber,
+                        type: 'sale',
+                        date: new Date(),
+                        customerId: body.customerId || null,
+                        subtotal,
+                        discount,
+                        taxEnabled: taxAmount > 0,
+                        taxRate: body.taxRate || 0,
+                        taxAmount,
+                        total,
+                        paidAmount: total,
+                        remaining: 0,
+                        paymentMethod: body.paymentMethod || 'cash',
+                        warehouseId: defaultWarehouse?.id ?? null,
+                        companyId,
+                        notes: `فاتورة كاشير - طلب رقم #${orderNumber}`,
+                        lines: {
+                            create: (body.lines as any[]).map((l: any) => ({
+                                itemId: l.itemId,
+                                quantity: l.quantity,
+                                price: l.unitPrice,
+                                discount: l.discount ?? 0,
+                                total: l.quantity * l.unitPrice - (l.discount ?? 0),
+                                unit: '',
+                            }))
+                        }
+                    }
+                });
+
+                // Link Invoice to POS Order
+                await prisma.posOrder.update({
+                    where: { id: order.id },
+                    data: { invoiceId: invoice.id }
+                });
+
+                // Update customer balance if applicable
+                if (body.customerId) {
+                    await prisma.customer.updateMany({
+                        where: { id: body.customerId, companyId },
+                        data: { balance: { decrement: total } }
+                    });
+                }
+            } catch (e) {
+                console.error('POS Invoice creation error (non-blocking):', e);
+            }
+        }
+
+        // ════════════════════════════════════════════════════
+        // TREASURY: Update treasury balances
+        // ════════════════════════════════════════════════════
+        if (paymentsData.length > 0) {
+            for (const payment of paymentsData) {
+                if (payment.treasuryId) {
+                    try {
+                        await prisma.treasury.update({
+                            where: { id: payment.treasuryId },
+                            data: { balance: { increment: payment.amount } }
+                        });
+                    } catch (e) {
+                        console.error('Treasury update error (non-blocking):', e);
+                    }
+                }
+            }
+        }
+
+        // ════════════════════════════════════════════════════
+        // INVENTORY: Auto-Deduction Logic
+        // ════════════════════════════════════════════════════
         if (defaultWarehouse) {
             for (const line of body.lines as any[]) {
                 const item = await prisma.item.findUnique({
@@ -174,7 +261,7 @@ export const POST = withProtection(async (request, session, body) => {
                         const mods = typeof line.modifiers === 'string' ? JSON.parse(line.modifiers) : line.modifiers;
                         for (const mod of mods) {
                             if (mod.itemId) {
-                                const deductionQty = line.quantity; // 1 mod per item sold
+                                const deductionQty = line.quantity;
                                 await prisma.stock.upsert({
                                     where: { itemId_warehouseId: { itemId: mod.itemId, warehouseId: defaultWarehouse.id } },
                                     create: { itemId: mod.itemId, warehouseId: defaultWarehouse.id, quantity: -deductionQty },

@@ -43,14 +43,32 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
     const [availablePrinters, setAvailablePrinters] = useState<string[]>([]);
 
     useEffect(() => {
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                const parsed = { ...DEFAULTS, ...JSON.parse(stored) };
-                setForm(parsed);
-                setSaved(parsed);
-            }
-        } catch { /* ignore */ }
+        // Load from DB first, fall back to localStorage for migration
+        const loadSettings = async () => {
+            try {
+                const res = await fetch('/api/settings');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.restaurantSettings) {
+                        const parsed = { ...DEFAULTS, ...data.restaurantSettings };
+                        setForm(parsed);
+                        setSaved(parsed);
+                        return;
+                    }
+                }
+            } catch { /* fallback to localStorage */ }
+            
+            // Fallback: migrate from localStorage if exists
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    const parsed = { ...DEFAULTS, ...JSON.parse(stored) };
+                    setForm(parsed);
+                    setSaved(parsed);
+                }
+            } catch { /* ignore */ }
+        };
+        loadSettings();
 
         if ('navigator' in window && (navigator as any).printing) {
             (navigator as any).printing?.getPrinters?.().then((p: any[]) => {
@@ -65,12 +83,22 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
     const handleSave = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         setSaving(true);
-        await new Promise(r => setTimeout(r, 300));
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(form));
-            setSaved({ ...form });
-            setIsEditMode(false);
-            showToast(t('تم حفظ إعدادات المطعم ✓'));
+            // Save to database
+            const res = await fetch('/api/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action: 'update_restaurant', data: form })
+            });
+            if (res.ok) {
+                // Also keep localStorage as cache for quick load
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(form));
+                setSaved({ ...form });
+                setIsEditMode(false);
+                showToast(t('تم حفظ إعدادات المطعم ✓'));
+            } else {
+                showToast(t('فشل حفظ الإعدادات'), 'error');
+            }
         } catch {
             showToast(t('فشل حفظ الإعدادات'), 'error');
         }

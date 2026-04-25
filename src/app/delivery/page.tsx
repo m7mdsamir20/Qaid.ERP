@@ -25,25 +25,23 @@ export default function DeliveryPage() {
     const { fMoney } = useCurrency();
 
     const [orders,   setOrders]   = useState<any[]>([]);
-    const [drivers,  setDrivers]  = useState<string[]>([]);
+    const [drivers,  setDrivers]  = useState<any[]>([]);
     const [loading,  setLoading]  = useState(true);
     const [expanded, setExpanded] = useState<string | null>(null);
     const [filterStatus, setFilterStatus] = useState('');
-    const [showAddDriver, setShowAddDriver] = useState(false);
-    const [newDriver, setNewDriver] = useState('');
 
-    // Load drivers from localStorage
-    useEffect(() => {
+    // Load drivers from API (not localStorage)
+    const loadDrivers = useCallback(async () => {
         try {
-            const d = JSON.parse(localStorage.getItem('delivery_drivers') || '[]');
-            setDrivers(Array.isArray(d) ? d : []);
+            const res = await fetch('/api/drivers');
+            if (res.ok) {
+                const data = await res.json();
+                setDrivers(Array.isArray(data) ? data : []);
+            }
         } catch { }
     }, []);
 
-    const saveDrivers = (list: string[]) => {
-        setDrivers(list);
-        localStorage.setItem('delivery_drivers', JSON.stringify(list));
-    };
+    useEffect(() => { loadDrivers(); }, [loadDrivers]);
 
     const load = useCallback(async () => {
         setLoading(true);
@@ -116,20 +114,18 @@ export default function DeliveryPage() {
                             </div>
                         </div>
                     ))}
-                    {/* إدارة المناديب */}
+                    {/* إدارة المناديب (من API) */}
                     <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px 20px' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
                             <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, fontWeight: 600 }}>المناديب</p>
-                            <button onClick={() => setShowAddDriver(true)} style={{ background: 'none', border: 'none', color: C.primary, cursor: 'pointer', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO }}>+ إضافة</button>
+                            <a href="/restaurant/drivers" style={{ color: C.primary, cursor: 'pointer', fontSize: '11px', fontWeight: 700, fontFamily: CAIRO, textDecoration: 'none' }}>إدارة ←</a>
                         </div>
                         <p style={{ margin: 0, fontSize: '24px', fontWeight: 800, color: C.textPrimary, fontFamily: OUTFIT }}>{drivers.length}</p>
-                        {showAddDriver && (
-                            <div style={{ marginTop: '8px', display: 'flex', gap: '6px' }}>
-                                <input value={newDriver} onChange={e => setNewDriver(e.target.value)} placeholder="اسم المندوب" style={{ ...IS, height: '32px', fontSize: '12px', flex: 1 }} />
-                                <button onClick={() => { if (newDriver.trim()) { saveDrivers([...drivers, newDriver.trim()]); setNewDriver(''); setShowAddDriver(false); } }} style={{ width: 32, height: 32, borderRadius: '8px', border: 'none', background: C.primary, color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Check size={13} /></button>
-                                <button onClick={() => { setShowAddDriver(false); setNewDriver(''); }} style={{ width: 32, height: 32, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={13} /></button>
-                            </div>
-                        )}
+                        <div style={{ marginTop: '6px', display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
+                            {drivers.slice(0, 3).map(d => (
+                                <span key={d.id} style={{ fontSize: '10px', padding: '2px 8px', borderRadius: '6px', background: d.status === 'available' ? '#10b98112' : '#f59e0b12', color: d.status === 'available' ? '#10b981' : '#f59e0b', border: `1px solid ${d.status === 'available' ? '#10b98130' : '#f59e0b30'}` }}>{d.name}</span>
+                            ))}
+                        </div>
                     </div>
                 </div>
 
@@ -167,9 +163,19 @@ export default function DeliveryPage() {
                                                 <MapPin size={12} /> {order.deliveryAddress}
                                             </span>
                                         )}
-                                        {order.deliveryDriver && (
+                                        {order.deliveryName && (
                                             <span style={{ fontSize: '12px', color: C.textSecondary, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                <User size={12} /> {order.deliveryDriver}
+                                                <User size={12} /> {order.deliveryName}
+                                            </span>
+                                        )}
+                                        {order.deliveryPhone && (
+                                            <span style={{ fontSize: '12px', color: C.textSecondary, display: 'flex', alignItems: 'center', gap: '4px', fontFamily: OUTFIT }}>
+                                                <Phone size={12} /> {order.deliveryPhone}
+                                            </span>
+                                        )}
+                                        {order.driver && (
+                                            <span style={{ fontSize: '12px', color: '#6366f1', display: 'flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                                                🏍️ {order.driver.name}
                                             </span>
                                         )}
                                         <span style={{ fontSize: '12px', color: C.textMuted, display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -196,12 +202,12 @@ export default function DeliveryPage() {
                                             {order.status !== 'delivered' && order.status !== 'cancelled' && (
                                                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', borderTop: `1px solid ${C.border}`, paddingTop: '12px', alignItems: 'center' }}>
                                                     <span style={{ fontSize: '12px', color: C.textMuted }}>تعيين مندوب:</span>
-                                                    {drivers.length > 0 ? drivers.map(d => (
-                                                        <button key={d} onClick={() => updateStatus(order.id, 'assigned', d)}
-                                                            style={{ padding: '5px 12px', borderRadius: '8px', border: `1px solid ${order.deliveryDriver === d ? C.primary : C.border}`, background: order.deliveryDriver === d ? `${C.primary}15` : 'transparent', color: order.deliveryDriver === d ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
-                                                            🏍️ {d}
+                                                    {drivers.filter(d => d.status === 'available').length > 0 ? drivers.filter(d => d.status === 'available').map(d => (
+                                                        <button key={d.id} onClick={() => updateStatus(order.id, 'assigned', d.name)}
+                                                            style={{ padding: '5px 12px', borderRadius: '8px', border: `1px solid ${order.driverId === d.id ? C.primary : C.border}`, background: order.driverId === d.id ? `${C.primary}15` : 'transparent', color: order.driverId === d.id ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>
+                                                            🏍️ {d.name}
                                                         </button>
-                                                    )) : <span style={{ fontSize: '12px', color: C.textMuted }}>أضف مندوبين أولاً</span>}
+                                                    )) : <a href="/restaurant/drivers" style={{ fontSize: '12px', color: C.primary, textDecoration: 'none' }}>أضف مندوبين من إدارة السائقين ←</a>}
                                                 </div>
                                             )}
 

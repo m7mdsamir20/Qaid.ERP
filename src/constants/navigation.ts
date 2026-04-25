@@ -84,7 +84,7 @@ export const navSections = [
         featureKey: 'delivery',
         links: [
             { id: '/delivery', href: '/delivery', label: 'طلبات التوصيل' },
-            { id: '/drivers', href: '/restaurant/drivers', label: 'إدارة السائقين' },
+            { id: '/restaurant/drivers', href: '/restaurant/drivers', label: 'إدارة السائقين' },
         ],
     },
     {
@@ -219,6 +219,7 @@ export const navSections = [
             { id: 'reports-treasury-bank', href: '/reports', label: 'الخزن والبنوك' },
             { id: 'reports-hr', href: '/reports', label: 'تقارير الموظفين' },
             { id: 'reports-installments', href: '/reports/installments', label: 'تقارير الأقساط' },
+            { id: 'reports-restaurant', href: '/reports', label: 'تقارير المطعم' },
         ],
     },
     {

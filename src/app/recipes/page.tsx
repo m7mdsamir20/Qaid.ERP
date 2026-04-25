@@ -7,13 +7,15 @@ import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
 import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY, PAGE_BASE } from '@/constants/theme';
-import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, BookOpen } from 'lucide-react';
+import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, BookOpen, DollarSign } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface RecipeIngredient { itemId: string; itemName: string; quantity: number; unit: string; }
 
 export default function RecipesPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
+    const { fMoney } = useCurrency();
 
     const [recipes, setRecipes]     = useState<any[]>([]);
     const [items, setItems]         = useState<any[]>([]);
@@ -77,6 +79,16 @@ export default function RecipesPage() {
 
     const getItemName = (id: string) => items.find(i => i.id === id)?.name ?? id;
 
+    // Calculate estimated recipe cost from ingredient buyPrices
+    const calcRecipeCost = (recipe: any) => {
+        if (!recipe.items || recipe.items.length === 0) return 0;
+        return recipe.items.reduce((sum: number, ri: any) => {
+            const ingredientItem = items.find(it => it.id === ri.itemId);
+            const ingredientPrice = ingredientItem?.buyPrice ?? ingredientItem?.costPrice ?? 0;
+            return sum + (ingredientPrice * ri.quantity);
+        }, 0);
+    };
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
@@ -107,15 +119,31 @@ export default function RecipesPage() {
                                         <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textMuted }}>{recipe.items?.length} مكون</p>
                                         {recipe.notes && <p style={{ margin: '4px 0 0', fontSize: '12px', color: C.textSecondary }}>📝 {recipe.notes}</p>}
                                     </div>
-                                    <div style={{ display: 'flex', gap: '8px' }}>
-                                        <button onClick={() => openModal(recipe)} style={{ width: 34, height: 34, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.bg, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Edit3 size={14} /></button>
-                                        <button onClick={() => handleDelete(recipe.id)} style={{ width: 34, height: 34, borderRadius: '10px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={14} /></button>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                        {/* التكلفة التقديرية */}
+                                        {(() => {
+                                            const cost = calcRecipeCost(recipe);
+                                            const sell = recipe.item?.sellPrice ?? 0;
+                                            const profit = sell - cost;
+                                            const profitPct = sell > 0 ? Math.round((profit / sell) * 100) : 0;
+                                            return cost > 0 ? (
+                                                <div style={{ background: `${profit >= 0 ? '#10b981' : '#ef4444'}08`, border: `1px solid ${profit >= 0 ? '#10b981' : '#ef4444'}30`, borderRadius: '10px', padding: '6px 12px', textAlign: 'center' }}>
+                                                    <p style={{ margin: 0, fontSize: '10px', color: C.textMuted }}>التكلفة</p>
+                                                    <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>{fMoney(cost)}</p>
+                                                    {sell > 0 && <p style={{ margin: 0, fontSize: '10px', fontWeight: 700, color: profit >= 0 ? '#10b981' : '#ef4444' }}>هامش {profitPct}%</p>}
+                                                </div>
+                                            ) : null;
+                                        })()}
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button onClick={() => openModal(recipe)} style={{ width: 34, height: 34, borderRadius: '10px', border: `1px solid ${C.border}`, background: C.bg, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Edit3 size={14} /></button>
+                                            <button onClick={() => handleDelete(recipe.id)} style={{ width: 34, height: 34, borderRadius: '10px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Trash2 size={14} /></button>
+                                        </div>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
                                     {recipe.items?.map((ri: any, i: number) => (
                                         <div key={i} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '8px', padding: '5px 12px', fontSize: '12px', color: C.textSecondary }}>
-                                            {getItemName(ri.itemId)} — <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{ri.quantity}</span> {ri.unit}
+                                            {ri.item?.name || getItemName(ri.itemId)} — <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{ri.quantity}</span> {ri.unit}
                                         </div>
                                     ))}
                                 </div>
