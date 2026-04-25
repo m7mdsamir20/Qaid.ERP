@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
@@ -551,75 +551,64 @@ export default function NewCompanyPage() {
                 {/* ══ Step 4: الصلاحيات ══ */}
                 {step === 4 && (
                     <div>
-                        <div className="step-container" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: '16px', padding: '28px', marginBottom: '16px' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-                                <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 600, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                    <Shield size={20} style={{ color: '#818cf8' }} /> تحديد الصلاحيات
+                        <div className="step-container" style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '36px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', marginBottom: '24px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '32px' }}>
+                                <h2 style={{ margin: 0, fontSize: '19px', fontWeight: 600, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                    <div style={{ width: 44, height: 44, borderRadius: '12px', background: `${C.primary}12`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
+                                        <Shield size={24} />
+                                    </div>
+                                    تحديد الصلاحيات والمزايا
                                 </h2>
-                                <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button onClick={() => {
-                                        setForm(f => ({ ...f, features: buildAllFeatures() }));
-                                    }} style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: '1px solid rgba(52,211,153,0.3)', background: 'rgba(52,211,153,0.08)', color: '#34d399', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
+                                <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button onClick={() => setForm(f => ({ ...f, features: buildAllFeatures() }))}
+                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.success}30`, background: `${C.success}10`, color: C.success, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
                                         تحديد الكل
                                     </button>
-                                    <button onClick={() => setForm(f => ({ ...f, features: {} }))} style={{ height: '32px', padding: '0 14px', borderRadius: '8px', border: '1px solid rgba(239,68,68,0.3)', background: 'rgba(239,68,68,0.08)', color: '#f87171', fontSize: '12px', fontWeight: 700, cursor: 'pointer' }}>
+                                    <button onClick={() => setForm(f => ({ ...f, features: {} }))}
+                                        style={{ height: '36px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.danger}30`, background: `${C.danger}10`, color: C.danger, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer' }}>
                                         إلغاء الكل
                                     </button>
                                 </div>
                             </div>
 
-                            {/* القوائم */}
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                 {uniqueSections.map(section => {
-                                    const featureKey = section.featureKey!;
-                                    const isActive = isSectionActive(featureKey, section.links);
-                                    const isPartial = isSectionPartial(featureKey, section.links);
-                                    const isExpanded = expandedSections[featureKey];
+                                    const fk = section.featureKey!;
+                                    const isActive = isSectionActive(fk, section.links);
+                                    const isPartial = isSectionPartial(fk, section.links);
+                                    const isExpanded = expandedSections[fk];
                                     const SectionIcon = section.icon;
 
                                     return (
-                                        <div key={featureKey} style={{ border: `1px solid ${isActive ? 'rgba(99,102,241,0.2)' : isPartial ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.06)'}`, borderRadius: '12px', overflow: 'hidden', background: isActive ? 'rgba(99,102,241,0.04)' : 'rgba(255,255,255,0.01)' }}>
-
-                                            {/* Section Header */}
-                                            <div style={{ display: 'flex', alignItems: 'center', padding: '12px 16px', gap: '12px' }}>
-                                                {/* Checkbox */}
-                                                <button type="button" onClick={() => toggleSection(featureKey, section.links)}
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: isActive ? '#818cf8' : isPartial ? '#f59e0b' : '#475569', display: 'flex', alignItems: 'center' }}>
-                                                    {isActive
-                                                        ? <CheckSquare size={20} />
-                                                        : isPartial
-                                                            ? <CheckSquare size={20} style={{ opacity: 0.6 }} />
-                                                            : <Square size={20} />
-                                                    }
+                                        <div key={fk} style={{ border: `1px solid ${isActive ? `${C.primary}30` : isPartial ? `${C.warning}30` : C.border}`, borderRadius: '16px', overflow: 'hidden', background: isActive ? `${C.primary}05` : 'transparent', transition: 'all 0.2s' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', padding: '16px 20px', gap: '16px' }}>
+                                                <button type="button" onClick={() => toggleSection(fk, section.links)}
+                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, color: isActive ? C.primary : isPartial ? C.warning : C.textMuted, display: 'flex' }}>
+                                                    {isActive ? <CheckSquare size={22} /> : isPartial ? <CheckSquare size={22} style={{ opacity: 0.6 }} /> : <Square size={22} />}
                                                 </button>
-
-                                                {/* Icon + Title */}
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1 }}>
-                                                    <SectionIcon size={16} style={{ color: isActive ? '#818cf8' : '#475569' }} />
-                                                    <span style={{ fontWeight: 700, fontSize: '13px', color: isActive ? '#e2e8f0' : '#94a3b8' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}>
+                                                    <div style={{ color: isActive ? C.primary : C.textMuted }}><SectionIcon size={18} /></div>
+                                                    <span style={{ fontWeight: 600, fontSize: '15px', color: isActive ? C.textPrimary : C.textSecondary }}>
                                                         {section.title}
                                                     </span>
-                                                    <span style={{ fontSize: '11px', color: '#475569' }}>
-                                                        ({(form.features[featureKey] || []).length}/{section.links.length} صفحة)
-                                                    </span>
+                                                    <div style={{ fontSize: '11px', color: C.textMuted, background: 'rgba(255,255,255,0.03)', padding: '2px 8px', borderRadius: '6px' }}>
+                                                        {(form.features[fk] || []).length} / {section.links.length}
+                                                    </div>
                                                 </div>
-
-                                                {/* Expand */}
-                                                <button type="button" onClick={() => setExpandedSections(prev => ({ ...prev, [featureKey]: !isExpanded }))}
-                                                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#475569', display: 'flex', alignItems: 'center' }}>
-                                                    {isExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                                                <button type="button" onClick={() => setExpandedSections(prev => ({ ...prev, [fk]: !isExpanded }))}
+                                                    style={{ border: 'none', cursor: 'pointer', color: C.textMuted, height: '32px', width: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', background: 'rgba(255,255,255,0.02)' }}>
+                                                    {isExpanded ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
                                                 </button>
                                             </div>
 
-                                            {/* Pages */}
                                             {isExpanded && (
-                                                <div className="features-grid" style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '8px 16px 12px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '6px' }}>
+                                                <div className="features-grid" style={{ borderTop: `1px solid ${C.border}`, padding: '16px 20px', display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '10px', background: 'rgba(255,255,255,0.02)' }}>
                                                     {section.links.map((link: any) => {
-                                                        const active = (form.features[featureKey] || []).includes(link.id);
+                                                        const active = (form.features[fk] || []).includes(link.id);
                                                         return (
-                                                            <button key={link.id} type="button" onClick={() => togglePage(featureKey, link.id)}
-                                                                style={{ height: '36px', borderRadius: '8px', border: `1px solid ${active ? 'rgba(99,102,241,0.3)' : 'rgba(255,255,255,0.06)'}`, background: active ? 'rgba(99,102,241,0.1)' : 'rgba(255,255,255,0.02)', color: active ? '#818cf8' : '#475569', fontSize: '12px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', padding: '0 10px', transition: 'all 0.1s' }}>
-                                                                {active ? <Check size={12} /> : <div style={{ width: 12, height: 12, borderRadius: '3px', border: '1px solid rgba(255,255,255,0.15)' }} />}
+                                                            <button key={link.id} type="button" onClick={() => togglePage(fk, link.id)}
+                                                                style={{ height: '38px', borderRadius: '10px', border: `1px solid ${active ? `${C.primary}30` : C.border}`, background: active ? `${C.primary}10` : 'transparent', color: active ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 700, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', padding: '0 12px', transition: 'all 0.1s' }}>
+                                                                {active ? <Check size={14} /> : <div style={{ width: 14, height: 14, borderRadius: '4px', border: `1px solid ${C.border}` }} />}
                                                                 {link.label}
                                                             </button>
                                                         );
@@ -632,29 +621,37 @@ export default function NewCompanyPage() {
                             </div>
                         </div>
 
-                        {/* ملخص الصلاحيات */}
-                        <div style={{ background: 'rgba(99,102,241,0.06)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: '12px', padding: '16px 20px', marginBottom: '20px' }}>
-                            <div style={{ fontSize: '12px', color: '#818cf8', fontWeight: 700, marginBottom: '10px' }}>ملخص الصلاحيات المختارة</div>
-                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {/* ملخص سفلي للاختيارات */}
+                        <div style={{ background: `${C.primary}05`, border: `1px solid ${C.primary}15`, borderRadius: '16px', padding: '20px 24px', marginBottom: '32px' }}>
+                            <div style={{ fontSize: '13px', color: C.primary, fontWeight: 600, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                <Activity size={16} /> الموديولات المفعلة حالياً
+                            </div>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                 {Object.entries(form.features).map(([key, pages]) => {
                                     if (!pages || pages.length === 0) return null;
                                     const section = uniqueSections.find(s => s.featureKey === key);
                                     return (
-                                        <span key={key} style={{ fontSize: '11px', padding: '3px 10px', borderRadius: '20px', background: 'rgba(99,102,241,0.12)', color: '#818cf8', border: '1px solid rgba(99,102,241,0.2)', fontWeight: 600 }}>
-                                            {section?.title} ({pages.length})
+                                        <span key={key} style={{ fontSize: '11px', padding: '4px 12px', borderRadius: '20px', background: `${C.primary}10`, color: C.primary, border: `1px solid ${C.primary}20`, fontWeight: 600 }}>
+                                            {section?.title} <span style={{ opacity: 0.6, marginInlineEnd: '4px' }}>({pages.length})</span>
                                         </span>
                                     );
                                 })}
+                                {Object.values(form.features).flat().length === 0 && (
+                                    <span style={{ fontSize: '12px', color: C.textMuted }}>لم يتم اختيار أي صلاحيات بعد</span>
+                                )}
                             </div>
                         </div>
 
-                        <div style={{ display: 'flex', gap: '12px', justifyContent: 'flex-start' }}>
-                            <button onClick={() => setStep(3)} style={{ height: '44px', padding: '0 24px', borderRadius: '10px', border: '1px solid rgba(255,255,255,0.08)', background: 'transparent', color: '#94a3b8', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
+                        <div style={{ display: 'flex', gap: '16px', justifyContent: 'flex-start' }}>
+                            <button onClick={() => setStep(3)} style={{ height: '50px', padding: '0 28px', borderRadius: '14px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer' }}>
                                 السابق
                             </button>
                             <button onClick={handleSubmit} disabled={submitting}
-                                style={{ height: '44px', padding: '0 40px', borderRadius: '10px', border: 'none', background: submitting ? 'rgba(99,102,241,0.4)' : 'linear-gradient(135deg,#6366f1,#4f46e5)', color: '#fff', fontSize: '13px', fontWeight: 700, cursor: submitting ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 4px 14px rgba(99,102,241,0.3)' }}>
-                                {submitting ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> جاري الإنشاء...</> : <><Check size={16} /> إنشاء الحساب</>}
+                                style={{ ...BTN_PRIMARY(false, false), width: 'auto', padding: '0 48px', height: '52px', borderRadius: '16px', boxShadow: submitting ? 'none' : `0 10px 25px -5px ${C.primary}50` }}>
+                                {submitting
+                                    ? <><Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> جاري الإنشاء...</>
+                                    : <><Check size={18} /> إنشاء الحساب</>
+                                }
                             </button>
                         </div>
                     </div>
