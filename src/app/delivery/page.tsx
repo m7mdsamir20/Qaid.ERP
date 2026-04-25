@@ -3,11 +3,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
+import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import {
     Truck, Plus, RefreshCw, Loader2, X, Check, MapPin,
-    Phone, Clock, User, ChevronDown, AlertCircle, Package
+    Phone, Clock, User, ChevronDown, AlertCircle, Package, CheckCircle2
 } from 'lucide-react';
 
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string; emoji: string }> = {
@@ -76,29 +77,43 @@ export default function DeliveryPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '32px', maxWidth: '1100px', margin: '0 auto', fontFamily: CAIRO }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
 
                 {/* Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <Truck size={24} color={C.primary} /> {t('إدارة التوصيل')}
-                        </h1>
-                        <p style={{ margin: '4px 0 0', fontSize: '13px', color: C.textMuted }}>{t('تتبع وإدارة طلبات التوصيل والمناديب')}</p>
-                    </div>
-                    <button onClick={load} style={{ height: '40px', width: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
-                </div>
+                <PageHeader
+                    title={t('إدارة التوصيل')}
+                    subtitle={t('تتبع وإدارة طلبات التوصيل والمناديب')}
+                    icon={Truck}
+                    actions={[
+                        <button key="refresh" onClick={load} style={{ height: '42px', width: '42px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
+                    ]}
+                />
 
                 {/* Stats */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: '12px', marginBottom: '24px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
                     {[
-                        { label: 'في الانتظار', value: pending, color: '#f59e0b', bg: '#f59e0b12' },
-                        { label: 'في الطريق', value: onTheWay, color: '#3b82f6', bg: '#3b82f612' },
-                        { label: 'تم التسليم اليوم', value: delivered, color: '#10b981', bg: '#10b98112' },
-                    ].map(s => (
-                        <div key={s.label} style={{ background: s.bg, border: `1px solid ${s.color}30`, borderRadius: '16px', padding: '16px 20px' }}>
-                            <p style={{ margin: 0, fontSize: '12px', color: s.color, fontWeight: 600 }}>{s.label}</p>
-                            <p style={{ margin: '4px 0 0', fontSize: '28px', fontWeight: 800, color: s.color, fontFamily: OUTFIT }}>{s.value}</p>
+                        { label: 'في الانتظار', count: pending, color: '#f59e0b', icon: <Clock size={18} /> },
+                        { label: 'في الطريق', count: onTheWay, color: '#3b82f6', icon: <Truck size={18} /> },
+                        { label: 'تم التسليم اليوم', count: delivered, color: '#10b981', icon: <CheckCircle2 size={18} /> },
+                    ].map((s, i) => (
+                        <div key={i} style={{
+                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
+                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            transition: 'all 0.2s', position: 'relative'
+                        }}
+                            onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                            onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
+                        >
+                            <div style={{ textAlign: 'start' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.count}</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>طلب</span>
+                                </div>
+                            </div>
+                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                {s.icon}
+                            </div>
                         </div>
                     ))}
                     {/* إدارة المناديب */}
