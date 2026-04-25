@@ -1,12 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, IS } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
-import {
-    Printer, Monitor, ToggleLeft, ToggleRight, Save, Loader2, Check,
-    AlertCircle, UtensilsCrossed, Wifi, ChefHat, Receipt
-} from 'lucide-react';
+import { Printer, Monitor, UtensilsCrossed, ChefHat } from 'lucide-react';
+import { TabHeader, Toggle } from './shared';
 
 interface RestaurantSettings {
     enableKds: boolean;
@@ -36,28 +34,14 @@ const DEFAULTS: RestaurantSettings = {
 
 const STORAGE_KEY = 'restaurant_settings';
 
-function Toggle({ value, onChange, disabled }: { value: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
-    return (
-        <button
-            onClick={() => !disabled && onChange(!value)}
-            style={{ background: 'none', border: 'none', cursor: disabled ? 'not-allowed' : 'pointer', padding: 0, opacity: disabled ? 0.5 : 1 }}
-        >
-            {value
-                ? <ToggleRight size={36} color={C.primary} />
-                : <ToggleLeft size={36} color={C.textMuted} />
-            }
-        </button>
-    );
-}
-
 export default function RestaurantTab({ showToast }: { showToast: (msg: string, type?: 'success' | 'error') => void }) {
     const { t } = useTranslation();
+    const [isEditMode, setIsEditMode] = useState(false);
     const [form, setForm] = useState<RestaurantSettings>(DEFAULTS);
     const [saved, setSaved] = useState<RestaurantSettings>(DEFAULTS);
     const [saving, setSaving] = useState(false);
     const [availablePrinters, setAvailablePrinters] = useState<string[]>([]);
 
-    // Load from localStorage on mount
     useEffect(() => {
         try {
             const stored = localStorage.getItem(STORAGE_KEY);
@@ -68,7 +52,6 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
             }
         } catch { /* ignore */ }
 
-        // Try to enumerate printers if browser supports it
         if ('navigator' in window && (navigator as any).printing) {
             (navigator as any).printing?.getPrinters?.().then((p: any[]) => {
                 setAvailablePrinters(p.map((pr: any) => pr.name ?? pr));
@@ -79,158 +62,184 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
     const set = (key: keyof RestaurantSettings, value: any) =>
         setForm(f => ({ ...f, [key]: value }));
 
-    const handleSave = async () => {
+    const handleSave = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         setSaving(true);
-        await new Promise(r => setTimeout(r, 300)); // simulate async
+        await new Promise(r => setTimeout(r, 300));
         try {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(form));
             setSaved({ ...form });
-            showToast('تم حفظ إعدادات المطعم ✓');
+            setIsEditMode(false);
+            showToast(t('تم حفظ إعدادات المطعم ✓'));
         } catch {
-            showToast('فشل حفظ الإعدادات', 'error');
+            showToast(t('فشل حفظ الإعدادات'), 'error');
         }
         setSaving(false);
     };
 
-    const hasChanges = JSON.stringify(form) !== JSON.stringify(saved);
+    const handleCancel = () => {
+        setForm({ ...saved });
+        setIsEditMode(false);
+    };
 
-    const Section = ({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) => (
-        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', overflow: 'hidden', marginBottom: '16px' }}>
-            <div style={{ padding: '16px 20px', borderBottom: `1px solid ${C.border}`, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <div style={{ color: C.primary }}>{icon}</div>
-                <span style={{ fontSize: '14px', fontWeight: 700, color: C.textPrimary }}>{title}</span>
-            </div>
-            <div style={{ padding: '20px' }}>{children}</div>
-        </div>
-    );
-
-    const Row = ({ label, sublabel, children }: { label: string; sublabel?: string; children: React.ReactNode }) => (
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px', paddingBlock: '10px', borderBottom: `1px solid ${C.border}` }}>
-            <div>
-                <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.textPrimary }}>{label}</p>
-                {sublabel && <p style={{ margin: '2px 0 0', fontSize: '12px', color: C.textMuted }}>{sublabel}</p>}
-            </div>
-            <div style={{ flexShrink: 0 }}>{children}</div>
-        </div>
-    );
+    const orderTypeMap: Record<string, string> = {
+        'dine-in': '🪑 صالة',
+        'takeaway': '📦 تيك أواي',
+        'delivery': '🚚 توصيل',
+        'online': '🌐 أونلاين'
+    };
 
     return (
-        <div dir="rtl" style={{ fontFamily: CAIRO, maxWidth: '700px' }}>
+        <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', boxShadow: '0 10px 40px -15px rgba(0,0,0,0.5)', minHeight: '600px' }}>
+            <TabHeader
+                title={t("إعدادات المطعم")}
+                sub={t("إدارة الشاشات الجانبية وأجهزة الطباعة والمطبخ")}
+                isEdit={isEditMode}
+                onEdit={() => setIsEditMode(true)}
+                onCancel={handleCancel}
+                form="restaurantForm"
+                isSaving={saving}
+                t={t}
+            />
 
-            {/* شاشة المطبخ KDS */}
-            <Section title="شاشة المطبخ (KDS)" icon={<ChefHat size={18} />}>
-                <Row label="تفعيل شاشة المطبخ" sublabel="تظهر الطلبات على شاشة المطبخ تلقائياً">
-                    <Toggle value={form.enableKds} onChange={v => set('enableKds', v)} />
-                </Row>
-                <Row label="إرسال تلقائي للمطبخ" sublabel="عند حفظ الطلب يرسل للمطبخ فوراً بدون تدخل">
-                    <Toggle value={form.autoSendToKitchen} onChange={v => set('autoSendToKitchen', v)} disabled={!form.enableKds} />
-                </Row>
-                <Row label="عدد نسخ ورقة المطبخ" sublabel="عدد النسخ المطبوعة لكل طلب في المطبخ">
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <button onClick={() => set('kitchenCopyCount', Math.max(1, form.kitchenCopyCount - 1))} style={{ width: 30, height: 30, borderRadius: '8px', border: `1px solid ${C.border}`, background: C.bg, color: C.textSecondary, cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-                        <span style={{ minWidth: 24, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{form.kitchenCopyCount}</span>
-                        <button onClick={() => set('kitchenCopyCount', Math.min(5, form.kitchenCopyCount + 1))} style={{ width: 30, height: 30, borderRadius: '8px', border: `1px solid ${C.border}`, background: C.bg, color: C.textSecondary, cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+            <form id="restaurantForm" onSubmit={handleSave}>
+                {/* ══ شاشة المطبخ (KDS) ══ */}
+                <div style={{ marginBottom: '24px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <ChefHat size={14} /> {t('شاشة المطبخ (KDS)')}
                     </div>
-                </Row>
-            </Section>
-
-            {/* الطباعة */}
-            <Section title="إعدادات الطباعة" icon={<Printer size={18} />}>
-                <Row label="طابعة المطبخ" sublabel="الطابعة المستخدمة لطباعة أوامر التحضير">
-                    <div style={{ minWidth: '200px' }}>
-                        {availablePrinters.length > 0 ? (
-                            <select value={form.kitchenPrinterName} onChange={e => set('kitchenPrinterName', e.target.value)}
-                                style={{ ...IS, height: '36px', fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>
-                                <option value="">— بدون طابعة —</option>
-                                {availablePrinters.map(p => <option key={p} value={p}>{p}</option>)}
-                            </select>
-                        ) : (
-                            <input
-                                value={form.kitchenPrinterName}
-                                onChange={e => set('kitchenPrinterName', e.target.value)}
-                                placeholder="اسم الطابعة (مثال: Kitchen_Printer)"
-                                style={{ ...IS, height: '36px', fontSize: '12px' }}
-                            />
-                        )}
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                        {[
+                            { label: t('تفعيل شاشة المطبخ'), key: 'enableKds', type: 'toggle' },
+                            { label: t('إرسال تلقائي للمطبخ'), key: 'autoSendToKitchen', type: 'toggle', disabled: !form.enableKds },
+                            { label: t('عدد نسخ ورقة المطبخ'), key: 'kitchenCopyCount', type: 'number' },
+                        ].map((f, i, arr) => (
+                            <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                                <div style={{ width: '220px', flexShrink: 0, padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{f.label}</span>
+                                </div>
+                                <div style={{ flex: 1, padding: '0 20px' }}>
+                                    {f.type === 'toggle' ? (
+                                        <div style={{ padding: '14px 0' }}>
+                                            <Toggle checked={(form as any)[f.key]} onChange={v => set(f.key as any, v)} disabled={!isEditMode || f.disabled} />
+                                        </div>
+                                    ) : (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '14px 0' }}>
+                                            {isEditMode ? (
+                                                <>
+                                                    <button type="button" onClick={() => set('kitchenCopyCount', Math.max(1, form.kitchenCopyCount - 1))} style={{ width: 30, height: 30, borderRadius: '8px', border: `1px solid ${C.border}`, background: C.bg, color: C.textSecondary, cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                                                    <span style={{ minWidth: 24, textAlign: 'center', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{form.kitchenCopyCount}</span>
+                                                    <button type="button" onClick={() => set('kitchenCopyCount', Math.min(5, form.kitchenCopyCount + 1))} style={{ width: 30, height: 30, borderRadius: '8px', border: `1px solid ${C.border}`, background: C.bg, color: C.textSecondary, cursor: 'pointer', fontSize: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                                                </>
+                                            ) : (
+                                                <span style={{ fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>{form.kitchenCopyCount}</span>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                </Row>
-                <Row label="طابعة الفاتورة" sublabel="الطابعة المستخدمة لطباعة فاتورة العميل">
-                    <div style={{ minWidth: '200px' }}>
-                        {availablePrinters.length > 0 ? (
-                            <select value={form.receiptPrinterName} onChange={e => set('receiptPrinterName', e.target.value)}
-                                style={{ ...IS, height: '36px', fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO }}>
-                                <option value="">— الطابعة الافتراضية —</option>
-                                {availablePrinters.map(p => <option key={p} value={p}>{p}</option>)}
-                            </select>
-                        ) : (
-                            <input
-                                value={form.receiptPrinterName}
-                                onChange={e => set('receiptPrinterName', e.target.value)}
-                                placeholder="اسم الطابعة (مثال: Receipt_Printer)"
-                                style={{ ...IS, height: '36px', fontSize: '12px' }}
-                            />
-                        )}
-                    </div>
-                </Row>
-                <div style={{ paddingTop: '14px' }}>
-                    <label style={LS}>نص ذيل الفاتورة (يظهر أسفل كل فاتورة)</label>
-                    <input value={form.receiptFooter} onChange={e => set('receiptFooter', e.target.value)}
-                        placeholder="شكراً لزيارتكم" style={{ ...IS, height: '40px' }} />
                 </div>
-                <div style={{ marginTop: '10px', padding: '12px', background: `${C.primary}06`, border: `1px solid ${C.primary}15`, borderRadius: '12px', display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                    <AlertCircle size={14} color={C.primary} style={{ marginTop: '2px', flexShrink: 0 }} />
-                    <p style={{ margin: 0, fontSize: '11.5px', color: C.textSecondary, lineHeight: 1.6 }}>
-                        لربط الطابعة، اكتب اسمها بالضبط كما يظهر في إعدادات الطباعة على جهازك
-                        (<strong>Control Panel → Devices and Printers</strong>). في حال التطبيق على شبكة، استخدم اسم الطابعة الشبكية.
-                    </p>
-                </div>
-            </Section>
 
-            {/* شاشة العميل */}
-            <Section title="شاشة العميل (Customer Display)" icon={<Monitor size={18} />}>
-                <Row label="تفعيل شاشة العميل" sublabel="تعرض الطلب للعميل أثناء الإدخال على شاشة منفصلة">
-                    <Toggle value={form.enableCustomerDisplay} onChange={v => set('enableCustomerDisplay', v)} />
-                </Row>
-                {form.enableCustomerDisplay && (
-                    <div style={{ padding: '12px', background: '#10b98110', border: '1px solid #10b98130', borderRadius: '12px', marginTop: '8px', fontSize: '12.5px', color: '#10b981' }}>
-                        💡 افتح الرابط <strong>/customer-display</strong> على شاشة العميل وصمّمه كملء شاشة (Kiosk Mode).
+                {/* ══ إعدادات الطباعة ══ */}
+                <div style={{ marginBottom: '24px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <Printer size={14} /> {t('إعدادات الطباعة')}
                     </div>
-                )}
-            </Section>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                        {[
+                            { label: t('طابعة المطبخ'), key: 'kitchenPrinterName' },
+                            { label: t('طابعة الفاتورة'), key: 'receiptPrinterName' },
+                            { label: t('نص ذيل الفاتورة'), key: 'receiptFooter' },
+                        ].map((f, i, arr) => (
+                            <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                                <div style={{ width: '220px', flexShrink: 0, padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{f.label}</span>
+                                </div>
+                                <div style={{ flex: 1, padding: '0 20px' }}>
+                                    {isEditMode ? (
+                                        f.key === 'receiptFooter' ? (
+                                            <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={t('نص الذيل')} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)} />
+                                        ) : availablePrinters.length > 0 ? (
+                                            <select style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)}>
+                                                <option value="">{t('— الطابعة الافتراضية —')}</option>
+                                                {availablePrinters.map(p => <option key={p} value={p}>{p}</option>)}
+                                            </select>
+                                        ) : (
+                                            <input style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO }} placeholder={t('اسم الطابعة')} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)} />
+                                        )
+                                    ) : (
+                                        <div style={{ fontSize: '13px', fontWeight: 700, color: (form as any)[f.key] ? C.textPrimary : C.textMuted, padding: '14px 0', fontStyle: (form as any)[f.key] ? 'normal' : 'italic', fontFamily: CAIRO }}>{(form as any)[f.key] || t('الافتراضية')}</div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
 
-            {/* سلوك النظام */}
-            <Section title="سلوك الكاشير" icon={<UtensilsCrossed size={18} />}>
-                <Row label="إلزامية اختيار الطاولة" sublabel="لا يمكن إتمام طلب صالة بدون اختيار طاولة">
-                    <Toggle value={form.requireTableForDineIn} onChange={v => set('requireTableForDineIn', v)} />
-                </Row>
-                <Row label="السماح بتقسيم الفاتورة" sublabel="تقسيم الطلب بين أكثر من طريقة دفع">
-                    <Toggle value={form.allowSplitBill} onChange={v => set('allowSplitBill', v)} />
-                </Row>
-                <Row label="نوع الطلب الافتراضي" sublabel="النوع الذي يظهر محدداً عند فتح الكاشير">
-                    <select value={form.defaultOrderType} onChange={e => set('defaultOrderType', e.target.value)}
-                        style={{ ...IS, height: '36px', fontSize: '12px', cursor: 'pointer', fontFamily: CAIRO, minWidth: '130px' }}>
-                        <option value="dine-in">🪑 صالة</option>
-                        <option value="takeaway">📦 تيك أواي</option>
-                        <option value="delivery">🚚 توصيل</option>
-                        <option value="online">🌐 أونلاين</option>
-                    </select>
-                </Row>
-            </Section>
+                {/* ══ شاشة العميل (Customer Display) ══ */}
+                <div style={{ marginBottom: '24px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <Monitor size={14} /> {t('شاشة العميل')}
+                    </div>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                            <div style={{ width: '220px', flexShrink: 0, padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تفعيل شاشة العميل')}</span>
+                            </div>
+                            <div style={{ flex: 1, padding: '0 20px' }}>
+                                <div style={{ padding: '14px 0' }}>
+                                    <Toggle checked={form.enableCustomerDisplay} onChange={v => set('enableCustomerDisplay', v)} disabled={!isEditMode} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {form.enableCustomerDisplay && (
+                        <div style={{ padding: '12px', background: '#10b98110', border: '1px solid #10b98130', borderRadius: '12px', marginTop: '12px', fontSize: '12.5px', color: '#10b981', fontFamily: CAIRO }}>
+                            💡 {t('افتح الرابط')} <strong>/customer-display</strong> {t('على شاشة العميل وصمّمه كملء شاشة')}
+                        </div>
+                    )}
+                </div>
 
-            {/* زر الحفظ */}
-            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', paddingTop: '8px' }}>
-                {hasChanges && (
-                    <span style={{ alignSelf: 'center', fontSize: '12px', color: C.textMuted, display: 'flex', alignItems: 'center', gap: '6px' }}>
-                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b' }} />
-                        يوجد تغييرات غير محفوظة
-                    </span>
-                )}
-                <button onClick={handleSave} disabled={saving || !hasChanges}
-                    style={{ ...BTN_PRIMARY(saving || !hasChanges, false), height: '44px', padding: '0 24px', borderRadius: '12px', gap: '8px' }}>
-                    {saving ? <><Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> جاري الحفظ...</> : <><Save size={15} /> حفظ الإعدادات</>}
-                </button>
-            </div>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+                {/* ══ سلوك الكاشير ══ */}
+                <div style={{ marginBottom: '24px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 600, color: C.primary, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                        <UtensilsCrossed size={14} /> {t('سلوك الكاشير')}
+                    </div>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', overflow: 'hidden', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.3)' }}>
+                        {[
+                            { label: t('إلزامية اختيار الطاولة'), key: 'requireTableForDineIn', type: 'toggle' },
+                            { label: t('السماح بتقسيم الفاتورة'), key: 'allowSplitBill', type: 'toggle' },
+                            { label: t('نوع الطلب الافتراضي'), key: 'defaultOrderType', type: 'select' },
+                        ].map((f, i, arr) => (
+                            <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
+                                <div style={{ width: '220px', flexShrink: 0, padding: '16px 20px', color: C.textSecondary, borderInlineStart: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.01)' }}>
+                                    <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{f.label}</span>
+                                </div>
+                                <div style={{ flex: 1, padding: '0 20px' }}>
+                                    {f.type === 'toggle' ? (
+                                        <div style={{ padding: '14px 0' }}>
+                                            <Toggle checked={(form as any)[f.key]} onChange={v => set(f.key as any, v)} disabled={!isEditMode} />
+                                        </div>
+                                    ) : (
+                                        isEditMode ? (
+                                            <select style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)}>
+                                                <option value="dine-in">🪑 صالة</option>
+                                                <option value="takeaway">📦 تيك أواي</option>
+                                                <option value="delivery">🚚 توصيل</option>
+                                                <option value="online">🌐 أونلاين</option>
+                                            </select>
+                                        ) : (
+                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '14px 0', fontFamily: CAIRO }}>{orderTypeMap[(form as any)[f.key]] || ''}</div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </form>
         </div>
     );
 }

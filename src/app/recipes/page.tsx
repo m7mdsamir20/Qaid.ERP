@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY } from '@/constants/theme';
+import PageHeader from '@/components/PageHeader';
+import AppModal from '@/components/AppModal';
+import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY, PAGE_BASE } from '@/constants/theme';
 import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, BookOpen } from 'lucide-react';
 
 interface RecipeIngredient { itemId: string; itemName: string; quantity: number; unit: string; }
@@ -76,21 +78,16 @@ export default function RecipesPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '32px', maxWidth: '900px', margin: '0 auto', fontFamily: CAIRO }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <BookOpen size={24} color={C.primary} /> {t('وصفات الطبخ')}
-                        </h1>
-                        <p style={{ margin: '4px 0 0', fontSize: '13px', color: C.textMuted }}>{t('ربط كل وجبة بمكوناتها الخام لتتبع المخزون')}</p>
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <button onClick={load} style={{ height: '40px', width: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
-                        <button onClick={() => openModal()} style={{ ...BTN_PRIMARY(false, false), height: '40px', padding: '0 20px', borderRadius: '10px', gap: '6px', fontSize: '13px' }}>
-                            <Plus size={15} /> {t('وصفة جديدة')}
-                        </button>
-                    </div>
-                </div>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+                <PageHeader
+                    title={t('وصفات الطبخ')}
+                    subtitle={t('ربط كل وجبة بمكوناتها الخام لتتبع المخزون')}
+                    icon={BookOpen}
+                    actions={[
+                        <button key="refresh" onClick={load} style={{ height: '42px', width: '42px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
+                    ]}
+                    primaryButton={{ label: t('وصفة جديدة'), onClick: () => openModal(), icon: Plus }}
+                />
 
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '60px', color: C.textMuted }}><Loader2 size={28} style={{ animation: 'spin 1s linear infinite' }} /></div>
@@ -127,69 +124,60 @@ export default function RecipesPage() {
                 )}
             </div>
 
-            {showModal && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '40px 20px', overflowY: 'auto' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '560px', boxShadow: '0 25px 60px rgba(0,0,0,0.5)' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                            <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: C.textPrimary }}>{editItem ? 'تعديل الوصفة' : 'وصفة جديدة'}</h2>
-                            <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={20} /></button>
-                        </div>
+            <AppModal show={showModal} onClose={() => setShowModal(false)} title={editItem ? 'تعديل الوصفة' : 'وصفة جديدة'} maxWidth="560px">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div>
+                        <label style={LS}>الوجبة <span style={{ color: C.danger }}>*</span></label>
+                        <select value={form.itemId} onChange={e => setForm(f => ({ ...f, itemId: e.target.value }))} style={{ ...IS, cursor: 'pointer', fontFamily: CAIRO }}>
+                            <option value="">— اختر الوجبة —</option>
+                            {(editItem ? items : availableItems).map(it => (
+                                <option key={it.id} value={it.id}>{it.name}</option>
+                            ))}
+                        </select>
+                    </div>
 
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                            <div>
-                                <label style={LS}>الوجبة <span style={{ color: C.danger }}>*</span></label>
-                                <select value={form.itemId} onChange={e => setForm(f => ({ ...f, itemId: e.target.value }))} style={{ ...IS, cursor: 'pointer', fontFamily: CAIRO }}>
-                                    <option value="">— اختر الوجبة —</option>
-                                    {(editItem ? items : availableItems).map(it => (
-                                        <option key={it.id} value={it.id}>{it.name}</option>
-                                    ))}
-                                </select>
-                            </div>
+                    <div>
+                        <label style={LS}>ملاحظات الوصفة</label>
+                        <input value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="تعليمات الطبخ..." style={IS} />
+                    </div>
 
-                            <div>
-                                <label style={LS}>ملاحظات الوصفة</label>
-                                <input value={form.notes} onChange={e => setForm(f => ({ ...f, notes: e.target.value }))} placeholder="تعليمات الطبخ..." style={IS} />
-                            </div>
-
-                            <div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                                    <label style={LS}>المكونات <span style={{ color: C.danger }}>*</span></label>
-                                    <button onClick={addIngredient} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO }}>
-                                        <PlusCircle size={14} /> إضافة مكون
-                                    </button>
-                                </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    {form.ingredients.length === 0 && (
-                                        <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, textAlign: 'center', padding: '16px', background: C.bg, borderRadius: '10px', border: `1px dashed ${C.border}` }}>
-                                            اضغط "إضافة مكون" لإضافة المواد الخام
-                                        </p>
-                                    )}
-                                    {form.ingredients.map((ing, i) => (
-                                        <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                            <select value={ing.itemId} onChange={e => updateIng(i, 'itemId', e.target.value)} style={{ ...IS, flex: 1, height: '38px', fontSize: '12px', fontFamily: CAIRO, cursor: 'pointer' }}>
-                                                <option value="">— المادة الخام —</option>
-                                                {items.map(it => <option key={it.id} value={it.id}>{it.name}</option>)}
-                                            </select>
-                                            <input type="number" min="0.01" step="0.01" value={ing.quantity || ''} onChange={e => updateIng(i, 'quantity', Number(e.target.value))} placeholder="الكمية" style={{ ...IS, width: '75px', height: '38px', fontSize: '12px', fontFamily: OUTFIT }} />
-                                            <input value={ing.unit} onChange={e => updateIng(i, 'unit', e.target.value)} placeholder="جرام" style={{ ...IS, width: '70px', height: '38px', fontSize: '12px' }} />
-                                            <button onClick={() => removeIng(i)} style={{ width: 34, height: 34, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><X size={13} /></button>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '10px 14px', color: C.danger, fontSize: '12.5px', display: 'flex', gap: '8px', alignItems: 'center' }}><AlertCircle size={14} />{error}</div>}
-                        </div>
-
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
-                            <button onClick={() => setShowModal(false)} style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
-                            <button onClick={handleSave} disabled={saving} style={{ ...BTN_PRIMARY(saving, false), flex: 2, height: '46px', borderRadius: '12px', gap: '8px' }}>
-                                {saving ? <><Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> جاري الحفظ...</> : <><Check size={15} /> حفظ الوصفة</>}
+                    <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
+                            <label style={LS}>المكونات <span style={{ color: C.danger }}>*</span></label>
+                            <button onClick={addIngredient} style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', color: C.primary, background: 'none', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO }}>
+                                <PlusCircle size={14} /> إضافة مكون
                             </button>
                         </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                            {form.ingredients.length === 0 && (
+                                <p style={{ margin: 0, fontSize: '12px', color: C.textMuted, textAlign: 'center', padding: '16px', background: C.bg, borderRadius: '10px', border: `1px dashed ${C.border}` }}>
+                                    اضغط "إضافة مكون" لإضافة المواد الخام
+                                </p>
+                            )}
+                            {form.ingredients.map((ing, i) => (
+                                <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <select value={ing.itemId} onChange={e => updateIng(i, 'itemId', e.target.value)} style={{ ...IS, flex: 1, height: '38px', fontSize: '12px', fontFamily: CAIRO, cursor: 'pointer' }}>
+                                        <option value="">— المادة الخام —</option>
+                                        {items.map(it => <option key={it.id} value={it.id}>{it.name}</option>)}
+                                    </select>
+                                    <input type="number" min="0.01" step="0.01" value={ing.quantity || ''} onChange={e => updateIng(i, 'quantity', Number(e.target.value))} placeholder="الكمية" style={{ ...IS, width: '75px', height: '38px', fontSize: '12px', fontFamily: OUTFIT }} />
+                                    <input value={ing.unit} onChange={e => updateIng(i, 'unit', e.target.value)} placeholder="جرام" style={{ ...IS, width: '70px', height: '38px', fontSize: '12px' }} />
+                                    <button onClick={() => removeIng(i)} style={{ width: 34, height: 34, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><X size={13} /></button>
+                                </div>
+                            ))}
+                        </div>
                     </div>
+
+                    {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '10px 14px', color: C.danger, fontSize: '12.5px', display: 'flex', gap: '8px', alignItems: 'center' }}><AlertCircle size={14} />{error}</div>}
                 </div>
-            )}
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
+                    <button onClick={handleSave} disabled={saving} style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: saving ? 'not-allowed' : 'pointer' }}>
+                        {saving ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : 'حفظ الوصفة'}
+                    </button>
+                    <button onClick={() => setShowModal(false)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
+                </div>
+            </AppModal>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </DashboardLayout>
     );

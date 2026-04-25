@@ -4,7 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { Truck, Plus, Edit2, Trash2, Loader2, CheckCircle2 } from 'lucide-react';
-import { C, CAIRO, PAGE_BASE, BTN_DANGER } from '@/constants/theme';
+import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_DANGER, IS, LS, BTN_PRIMARY, TABLE_STYLE } from '@/constants/theme';
 import AppModal from '@/components/AppModal';
 
 export default function DriversPage() {
@@ -73,7 +73,7 @@ export default function DriversPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
                     title={t("إدارة السائقين")}
                     subtitle={t("إدارة سائقي التوصيل الخاصين بالمطعم وتتبع حالاتهم")}
@@ -88,39 +88,50 @@ export default function DriversPage() {
                 {loading ? (
                     <div style={{ display: 'flex', justifyContent: 'center', padding: '40px' }}><Loader2 className="spin" /></div>
                 ) : (
-                    <div className="table-card">
-                        <table className="app-table">
+                    <div style={TABLE_STYLE.container}>
+                        <table style={TABLE_STYLE.table}>
                             <thead>
-                                <tr>
-                                    <th>{t('اسم السائق')}</th>
-                                    <th>{t('رقم الهاتف')}</th>
-                                    <th>{t('الحالة')}</th>
-                                    <th>{t('الطلبات الموصلة')}</th>
-                                    <th style={{ width: '100px' }}>{t('إجراءات')}</th>
+                                <tr style={TABLE_STYLE.thead}>
+                                    <th style={TABLE_STYLE.th(true)}>{t('اسم السائق')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('رقم الهاتف')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('الحالة')}</th>
+                                    <th style={TABLE_STYLE.th(false)}>{t('الطلبات الموصلة')}</th>
+                                    <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t('إجراءات')}</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {drivers.map(d => (
-                                    <tr key={d.id}>
-                                        <td style={{ fontWeight: 600 }}>{d.name}</td>
-                                        <td>{d.phone || '-'}</td>
-                                        <td>
+                                {drivers.map((d, i) => (
+                                    <tr key={d.id} style={TABLE_STYLE.row(i === drivers.length - 1)}
+                                        onMouseEnter={e => e.currentTarget.style.background = C.hover}
+                                        onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+                                    >
+                                        <td style={{ ...TABLE_STYLE.td(true), fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+                                                <div style={{ width: '30px', height: '30px', borderRadius: '50%', background: C.primaryBg, border: `1px solid ${C.primaryBorder}`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary, fontSize: '12px', fontWeight: 700, fontFamily: OUTFIT }}>
+                                                    {d.name.charAt(0)}
+                                                </div>
+                                                {d.name}
+                                            </div>
+                                        </td>
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, color: C.textSecondary, fontSize: '13px' }}>{d.phone || '—'}</td>
+                                        <td style={TABLE_STYLE.td(false)}>
                                             <span style={{
-                                                padding: '4px 10px', borderRadius: '20px', fontSize: '12px', fontWeight: 700,
-                                                background: d.status === 'available' ? '#10b98120' : d.status === 'busy' ? '#f59e0b20' : '#ef444420',
-                                                color: d.status === 'available' ? '#10b981' : d.status === 'busy' ? '#f59e0b' : '#ef4444'
+                                                display: 'inline-flex', padding: '3px 12px', borderRadius: '30px', fontSize: '11px', fontWeight: 600, fontFamily: CAIRO,
+                                                background: d.status === 'available' ? 'rgba(74,222,128,0.12)' : d.status === 'busy' ? 'rgba(245,158,11,0.12)' : 'rgba(239, 68, 68, 0.12)',
+                                                color: d.status === 'available' ? '#4ade80' : d.status === 'busy' ? '#f59e0b' : '#fb7185',
+                                                border: `1px solid ${d.status === 'available' ? 'rgba(74,222,128,0.22)' : d.status === 'busy' ? 'rgba(245,158,11,0.22)' : 'rgba(239, 68, 68, 0.22)'}`
                                             }}>
                                                 {d.status === 'available' ? t('متاح') : d.status === 'busy' ? t('مشغول') : t('غير متصل')}
                                             </span>
                                         </td>
-                                        <td>{d._count?.orders || 0}</td>
-                                        <td>
-                                            <div style={{ display: 'flex', gap: '8px' }}>
-                                                <button className="icon-btn edit-btn" onClick={() => setFormModal({ show: true, isEdit: true, data: d })}>
-                                                    <Edit2 size={16} />
+                                        <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{d._count?.orders || 0}</td>
+                                        <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
+                                            <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+                                                <button onClick={() => setFormModal({ show: true, isEdit: true, data: d })} style={TABLE_STYLE.actionBtn()}>
+                                                    <Edit2 size={TABLE_STYLE.actionIconSize} />
                                                 </button>
-                                                <button className="icon-btn delete-btn" onClick={() => handleDelete(d.id)}>
-                                                    <Trash2 size={16} />
+                                                <button onClick={() => handleDelete(d.id)} style={TABLE_STYLE.actionBtn(C.danger)}>
+                                                    <Trash2 size={TABLE_STYLE.actionIconSize} />
                                                 </button>
                                             </div>
                                         </td>
@@ -128,7 +139,10 @@ export default function DriversPage() {
                                 ))}
                                 {drivers.length === 0 && (
                                     <tr>
-                                        <td colSpan={5} style={{ textAlign: 'center', padding: '30px' }}>{t('لا يوجد سائقين')}</td>
+                                        <td colSpan={5} style={{ textAlign: 'center', padding: '60px' }}>
+                                            <Truck size={36} style={{ color: C.textMuted, opacity: 0.3, margin: '0 auto 10px' }} />
+                                            <p style={{ fontSize: '15px', fontWeight: 500, color: C.textSecondary, margin: 0, fontFamily: CAIRO }}>{t('لا يوجد سائقين مضافين حالياً')}</p>
+                                        </td>
                                     </tr>
                                 )}
                             </tbody>
@@ -137,29 +151,29 @@ export default function DriversPage() {
                 )}
 
                 {/* Modal */}
-                <AppModal show={formModal.show} onClose={() => setFormModal(p => ({ ...p, show: false }))} title={formModal.isEdit ? t('تعديل سائق') : t('إضافة سائق')}>
+                <AppModal show={formModal.show} onClose={() => setFormModal(p => ({ ...p, show: false }))} title={formModal.isEdit ? t('تعديل سائق') : t('إضافة سائق')} maxWidth="520px">
                     <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600 }}>{t('اسم السائق')}</label>
-                            <input required type="text" value={formModal.data.name || ''} onChange={e => setFormModal(p => ({ ...p, data: { ...p.data, name: e.target.value } }))} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textPrimary }} />
+                            <label style={LS}>{t('اسم السائق')} <span style={{ color: C.danger }}>*</span></label>
+                            <input required type="text" value={formModal.data.name || ''} onChange={e => setFormModal(p => ({ ...p, data: { ...p.data, name: e.target.value } }))} placeholder={t('مثال: أحمد محمد')} style={IS} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600 }}>{t('رقم الهاتف')}</label>
-                            <input type="text" value={formModal.data.phone || ''} onChange={e => setFormModal(p => ({ ...p, data: { ...p.data, phone: e.target.value } }))} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textPrimary }} />
+                            <label style={LS}>{t('رقم الهاتف')}</label>
+                            <input type="text" value={formModal.data.phone || ''} onChange={e => setFormModal(p => ({ ...p, data: { ...p.data, phone: e.target.value } }))} placeholder="05xxxxxxxx" style={IS} />
                         </div>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '8px', fontSize: '13px', fontWeight: 600 }}>{t('الحالة')}</label>
-                            <select value={formModal.data.status || 'available'} onChange={e => setFormModal(p => ({ ...p, data: { ...p.data, status: e.target.value } }))} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textPrimary }}>
-                                <option value="available" style={{ color: '#000' }}>{t('متاح')}</option>
-                                <option value="busy" style={{ color: '#000' }}>{t('مشغول')}</option>
-                                <option value="offline" style={{ color: '#000' }}>{t('غير متصل')}</option>
+                            <label style={LS}>{t('الحالة')}</label>
+                            <select value={formModal.data.status || 'available'} onChange={e => setFormModal(p => ({ ...p, data: { ...p.data, status: e.target.value } }))} style={IS}>
+                                <option value="available">{t('متاح')}</option>
+                                <option value="busy">{t('مشغول')}</option>
+                                <option value="offline">{t('غير متصل')}</option>
                             </select>
                         </div>
-                        <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
-                            <button type="button" onClick={() => setFormModal(p => ({ ...p, show: false }))} style={{ flex: 1, padding: '12px', borderRadius: '8px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, cursor: 'pointer' }}>{t('إلغاء')}</button>
-                            <button type="submit" disabled={isSaving} style={{ flex: 1, padding: '12px', borderRadius: '8px', background: C.primary, border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
+                            <button type="submit" disabled={isSaving} style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: isSaving ? 'not-allowed' : 'pointer' }}>
                                 {isSaving ? <Loader2 className="spin" size={18} /> : t('حفظ البيانات')}
                             </button>
+                            <button type="button" onClick={() => setFormModal(p => ({ ...p, show: false }))} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>{t('إلغاء')}</button>
                         </div>
                     </form>
                 </AppModal>
