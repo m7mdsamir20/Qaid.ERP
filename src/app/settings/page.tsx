@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import DashboardLayout from '@/components/DashboardLayout';
 import { useTranslation } from '@/lib/i18n';
@@ -22,9 +22,9 @@ import BranchesTab from './_tabs/BranchesTab';
 import DatabaseTab from './_tabs/DatabaseTab';
 import RestaurantTab from './_tabs/RestaurantTab';
 
-/* ══════════════════════════════════════════
+/* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
    MAIN PAGE
-══════════════════════════════════════════ */
+â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */
 export default function SettingsPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
@@ -32,7 +32,7 @@ export default function SettingsPage() {
         <Suspense fallback={
             <DashboardLayout>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
-                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
+                    <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('ط¬ط§ط±ظٹ طھط­ظ…ظٹظ„ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ...')}
                 </div>
             </DashboardLayout>
         }>
@@ -137,7 +137,7 @@ function SettingsContent() {
         if (role === 'admin') {
             navSections.forEach(s => grant(s.links.map(l => l.id)));
         } else if (role === 'accountant') {
-            // محاسب: حسابات + خزن + قيود + تقارير مالية
+            // ظ…ط­ط§ط³ط¨: ط­ط³ط§ط¨ط§طھ + ط®ط²ظ† + ظ‚ظٹظˆط¯ + طھظ‚ط§ط±ظٹط± ظ…ط§ظ„ظٹط©
             grant([
                 '/', '/accounts', '/opening-balances', '/journal-entries', '/cost-centers', '/closing-entries',
                 '/treasuries', '/other-income', '/expenses',
@@ -145,28 +145,28 @@ function SettingsContent() {
                 '/financial-years',
             ], ['reports-financial', 'reports-treasury-bank']);
         } else if (role === 'sales') {
-            // مندوب مبيعات / خدمات: مبيعات + عملاء
+            // ظ…ظ†ط¯ظˆط¨ ظ…ط¨ظٹط¹ط§طھ / ط®ط¯ظ…ط§طھ: ظ…ط¨ظٹط¹ط§طھ + ط¹ظ…ظ„ط§ط،
             const salesPages = isServices ? ['/', '/sales', '/customers', '/receipts'] : ['/', '/sales', '/sale-returns', '/receipts', '/customers', '/installments'];
             grant(salesPages, ['reports-sales-purchases']);
         } else if (role === 'procurement') {
-            // مسؤول مشتريات: مشتريات + موردين
+            // ظ…ط³ط¤ظˆظ„ ظ…ط´طھط±ظٹط§طھ: ظ…ط´طھط±ظٹط§طھ + ظ…ظˆط±ط¯ظٹظ†
             grant([
                 '/', '/purchases', '/purchase-returns', '/purchase-payments', '/suppliers',
             ], ['reports-sales-purchases']);
         } else if (role === 'storekeeper') {
-            // أمين مستودع / مسؤول خدمات: قائمة الخدمات + الفروع
+            // ط£ظ…ظٹظ† ظ…ط³طھظˆط¯ط¹ / ظ…ط³ط¤ظˆظ„ ط®ط¯ظ…ط§طھ: ظ‚ط§ط¦ظ…ط© ط§ظ„ط®ط¯ظ…ط§طھ + ط§ظ„ظپط±ظˆط¹
             const invPages = isServices ? ['/', '/categories', '/items', '/warehouses'] : ['/', '/units', '/items', '/warehouses', '/stocktakings', '/warehouse-transfers'];
             grant(invPages, ['reports-inventory']);
         } else if (role === 'hr') {
-            // موارد بشرية: موظفين + رواتب + سلف + خصومات + أقسام
+            // ظ…ظˆط§ط±ط¯ ط¨ط´ط±ظٹط©: ظ…ظˆط¸ظپظٹظ† + ط±ظˆط§طھط¨ + ط³ظ„ظپ + ط®طµظˆظ…ط§طھ + ط£ظ‚ط³ط§ظ…
             grant([
                 '/', '/employees', '/payrolls', '/advances', '/deductions', '/departments',
             ], ['reports-hr']);
         } else if (role === 'cashier') {
-            // كاشير
+            // ظƒط§ط´ظٹط±
             grant(['/', '/sales', '/receipts'], ['/customers', '/treasuries']);
         } else if (role === 'manager') {
-            // مدير فرع: كل شيء عدا الإعدادات
+            // ظ…ط¯ظٹط± ظپط±ط¹: ظƒظ„ ط´ظٹط، ط¹ط¯ط§ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ
             permissionHierarchy
                 .filter(s => s.featureKey !== 'settings')
                 .forEach(s => grant(s.links.map(l => l.id)));
@@ -251,7 +251,7 @@ function SettingsContent() {
             let payload: any = {};
 
             if (importType === 'customers' || importType === 'suppliers') {
-                // ── Smart name detection: any keyword ──
+                // â”€â”€ Smart name detection: any keyword â”€â”€
                 const findT = (keywords: string[]) => {
                     const k = Object.keys(row).find(c => keywords.some(kw => c.toLowerCase().includes(kw.toLowerCase())));
                     return k ? String(row[k] || '').trim() : '';
@@ -262,10 +262,10 @@ function SettingsContent() {
                 };
 
                 const name = findT([
-                    'اسم', 'الاسم', 'اسماء', 'الاسماء', 'الأسماء', 'بيان', 'البيان',
-                    'عميل', 'العميل', 'عملاء', 'العملاء',
-                    'مورد', 'المورد', 'موردين', 'الموردين',
-                    'شركة', 'الشركة', 'جهة', 'الجهة',
+                    'ط§ط³ظ…', 'ط§ظ„ط§ط³ظ…', 'ط§ط³ظ…ط§ط،', 'ط§ظ„ط§ط³ظ…ط§ط،', 'ط§ظ„ط£ط³ظ…ط§ط،', 'ط¨ظٹط§ظ†', 'ط§ظ„ط¨ظٹط§ظ†',
+                    'ط¹ظ…ظٹظ„', 'ط§ظ„ط¹ظ…ظٹظ„', 'ط¹ظ…ظ„ط§ط،', 'ط§ظ„ط¹ظ…ظ„ط§ط،',
+                    'ظ…ظˆط±ط¯', 'ط§ظ„ظ…ظˆط±ط¯', 'ظ…ظˆط±ط¯ظٹظ†', 'ط§ظ„ظ…ظˆط±ط¯ظٹظ†',
+                    'ط´ط±ظƒط©', 'ط§ظ„ط´ط±ظƒط©', 'ط¬ظ‡ط©', 'ط§ظ„ط¬ظ‡ط©',
                     'name', 'client', 'supplier', 'customer', 'party'
                 ]) || String(Object.values(row)[0] || '');
                 if (!String(name).trim()) { failCount++; continue; }
@@ -274,12 +274,12 @@ function SettingsContent() {
                 let balanceType: 'debit' | 'credit' = importType === 'suppliers' ? 'credit' : 'debit';
 
                 // Case 1: Two explicit columns (debit / credit)
-                const debitVal = findV(['مدين', 'عليه', 'علية', 'debit', ' dr']);
-                const creditVal = findV(['دائن', 'له', 'لة', 'credit', ' cr']);
+                const debitVal = findV(['ظ…ط¯ظٹظ†', 'ط¹ظ„ظٹظ‡', 'ط¹ظ„ظٹط©', 'debit', ' dr']);
+                const creditVal = findV(['ط¯ط§ط¦ظ†', 'ظ„ظ‡', 'ظ„ط©', 'credit', ' cr']);
 
                 // Case 2: One balance column + optional type column
-                const genericBal = findV(['رصيد', 'balance', 'bal', 'افتتاحي', 'opening']);
-                const typeStr = findT(['نوع', 'type', 'حالة', 'status']);
+                const genericBal = findV(['ط±طµظٹط¯', 'balance', 'bal', 'ط§ظپطھطھط§ط­ظٹ', 'opening']);
+                const typeStr = findT(['ظ†ظˆط¹', 'type', 'ط­ط§ظ„ط©', 'status']);
 
                 if (debitVal > 0 || creditVal > 0) {
                     // Two-column format
@@ -294,7 +294,7 @@ function SettingsContent() {
                     // One-column format
                     openingBalance = Math.abs(genericBal);
                     if (typeStr) {
-                        const isCredit = ['دائن', 'له', 'لة', 'credit', 'cr'].some(kw => typeStr.toLowerCase().includes(kw));
+                        const isCredit = ['ط¯ط§ط¦ظ†', 'ظ„ظ‡', 'ظ„ط©', 'credit', 'cr'].some(kw => typeStr.toLowerCase().includes(kw));
                         balanceType = isCredit ? 'credit' : 'debit';
                     } else {
                         // Infer from sign or entity type
@@ -307,11 +307,11 @@ function SettingsContent() {
 
                 payload = {
                     name: String(name).trim(),
-                    phone: findT(['هاتف', 'جوال', 'موبايل', 'phone', 'mobile', 'tel']),
-                    address: findT(['عنوان', 'address', 'مقره', 'location']),
+                    phone: findT(['ظ‡ط§طھظپ', 'ط¬ظˆط§ظ„', 'ظ…ظˆط¨ط§ظٹظ„', 'phone', 'mobile', 'tel']),
+                    address: findT(['ط¹ظ†ظˆط§ظ†', 'address', 'ظ…ظ‚ط±ظ‡', 'location']),
                     openingBalance,
                     balanceType,
-                    ...(importType === 'customers' ? { creditLimit: findV(['حد', 'limit', 'ائتمان']) } : {})
+                    ...(importType === 'customers' ? { creditLimit: findV(['ط­ط¯', 'limit', 'ط§ط¦طھظ…ط§ظ†']) } : {})
                 };
             } else if (importType === 'items') {
                 const findT = (keywords: string[]) => {
@@ -323,28 +323,28 @@ function SettingsContent() {
                     return k ? (parseFloat(String(row[k]).replace(/,/g, '')) || 0) : 0;
                 };
                 const name = findT([
-                    'اسم الصنف', 'اسماء الصنف', 'الصنف', 'الصنف / الخدمة',
-                    'البضاعة', 'البضائع', 'السلعة', 'السلع',
-                    'المادة', 'الخامة', 'المنتج', 'الخدمة',
-                    'الوصف', 'البيان', 'البند', 'المقال',
-                    'اسم', 'الاسم', 'اسماء', 'الاسماء',
+                    'ط§ط³ظ… ط§ظ„طµظ†ظپ', 'ط§ط³ظ…ط§ط، ط§ظ„طµظ†ظپ', 'ط§ظ„طµظ†ظپ', 'ط§ظ„طµظ†ظپ / ط§ظ„ط®ط¯ظ…ط©',
+                    'ط§ظ„ط¨ط¶ط§ط¹ط©', 'ط§ظ„ط¨ط¶ط§ط¦ط¹', 'ط§ظ„ط³ظ„ط¹ط©', 'ط§ظ„ط³ظ„ط¹',
+                    'ط§ظ„ظ…ط§ط¯ط©', 'ط§ظ„ط®ط§ظ…ط©', 'ط§ظ„ظ…ظ†طھط¬', 'ط§ظ„ط®ط¯ظ…ط©',
+                    'ط§ظ„ظˆطµظپ', 'ط§ظ„ط¨ظٹط§ظ†', 'ط§ظ„ط¨ظ†ط¯', 'ط§ظ„ظ…ظ‚ط§ظ„',
+                    'ط§ط³ظ…', 'ط§ظ„ط§ط³ظ…', 'ط§ط³ظ…ط§ط،', 'ط§ظ„ط§ط³ظ…ط§ط،',
                     'item', 'item name', 'product', 'product name',
                     'article', 'goods', 'material', 'service', 'description', 'name'
                 ]) || String(Object.values(row)[0] || '');
                 if (!String(name).trim()) { failCount++; continue; }
 
-                const qty = findV(['كمية افتتاحية', 'كمية حالية', 'الكمية', 'كمية', 'stock', 'qty', 'quantity', 'opening qty']);
-                const cost = findV(['تكلفة', 'cost', 'شراء']);
+                const qty = findV(['ظƒظ…ظٹط© ط§ظپطھطھط§ط­ظٹط©', 'ظƒظ…ظٹط© ط­ط§ظ„ظٹط©', 'ط§ظ„ظƒظ…ظٹط©', 'ظƒظ…ظٹط©', 'stock', 'qty', 'quantity', 'opening qty']);
+                const cost = findV(['طھظƒظ„ظپط©', 'cost', 'ط´ط±ط§ط،']);
 
                 payload = {
                     name: String(name).trim(),
-                    category: findT(['تصنيف', 'قسم', 'category', 'group']),
-                    unit: findT(['وحدة القياس', 'الوحدة', 'وحده', 'القياس', 'unit', 'measure', 'uom']),
+                    category: findT(['طھطµظ†ظٹظپ', 'ظ‚ط³ظ…', 'category', 'group']),
+                    unit: findT(['ظˆط­ط¯ط© ط§ظ„ظ‚ظٹط§ط³', 'ط§ظ„ظˆط­ط¯ط©', 'ظˆط­ط¯ظ‡', 'ط§ظ„ظ‚ظٹط§ط³', 'unit', 'measure', 'uom']),
                     costPrice: cost,
-                    sellPrice: findV(['بيع', 'price', 'sale']),
-                    initialQuantity: qty,          // الاسم اللي يتوقعه الـ API
-                    warehouseId: defaultWarehouseId, // لازم عشان يسجل حركة المخزون
-                    minLimit: findV(['حد أدنى', 'min', 'الطلب']),
+                    sellPrice: findV(['ط¨ظٹط¹', 'price', 'sale']),
+                    initialQuantity: qty,          // ط§ظ„ط§ط³ظ… ط§ظ„ظ„ظٹ ظٹطھظˆظ‚ط¹ظ‡ ط§ظ„ظ€ API
+                    warehouseId: defaultWarehouseId, // ظ„ط§ط²ظ… ط¹ط´ط§ظ† ظٹط³ط¬ظ„ ط­ط±ظƒط© ط§ظ„ظ…ط®ط²ظˆظ†
+                    minLimit: findV(['ط­ط¯ ط£ط¯ظ†ظ‰', 'min', 'ط§ظ„ط·ظ„ط¨']),
                 };
             }
 
@@ -360,7 +360,7 @@ function SettingsContent() {
         }
 
         setImportLoading(false);
-        alert(`${t('تم الانتهاء من الاستيراد.')}\n${t('تمت إضافة')}: ${successCount}\n${t('فشل')}: ${failCount}`);
+        alert(`${t('طھظ… ط§ظ„ط§ظ†طھظ‡ط§ط، ظ…ظ† ط§ظ„ط§ط³طھظٹط±ط§ط¯.')}\n${t('طھظ…طھ ط¥ط¶ط§ظپط©')}: ${successCount}\n${t('ظپط´ظ„')}: ${failCount}`);
         setShowImportModal(false);
         setImportData([]);
         setImportStep(1);
@@ -373,7 +373,7 @@ function SettingsContent() {
         setTimeout(() => setToastMsg(''), 3500);
     };
 
-    /* ── PERMISSION HIERARCHY (filtered by user & subscription) ── */
+    /* â”€â”€ PERMISSION HIERARCHY (filtered by user & subscription) â”€â”€ */
     const isAdmin = session?.user?.role === 'admin';
     const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
 
@@ -453,6 +453,7 @@ function SettingsContent() {
                         { id: '/warehouses', href: '/warehouses', label: t('الفروع / مواقع العمل') }
                     ];
                 }
+            }
             // Apply restaurants terminology
             if (isRestaurants) {
                 if (section.featureKey === 'inventory') {
@@ -515,7 +516,7 @@ function SettingsContent() {
         setNewUserForm(prev => ({ ...prev, roleId, customPermissions: perms }));
     };
 
-    /* ── Fetch ── */
+    /* â”€â”€ Fetch â”€â”€ */
     const fetchData = async () => {
         try {
             const res = await fetch('/api/settings', { cache: 'no-store' });
@@ -562,7 +563,7 @@ function SettingsContent() {
         } catch (error) {
             console.error('Fetch error:', error);
             // Only show error toast if it's not a background refresh
-            if (loading) showToast(t('حدث خطأ في تحميل البيانات'), 'error');
+            if (loading) showToast(t('ط­ط¯ط« ط®ط·ط£ ظپظٹ طھط­ظ…ظٹظ„ ط§ظ„ط¨ظٹط§ظ†ط§طھ'), 'error');
         } finally {
             setLoading(false);
         }
@@ -595,7 +596,7 @@ function SettingsContent() {
         try {
             const res = await fetch('/api/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action, data }) });
             if (res.ok) {
-                showToast(t('تم الحفظ بنجاح ✓'));
+                showToast(t('طھظ… ط§ظ„ط­ظپط¸ ط¨ظ†ط¬ط§ط­ âœ“'));
                 await fetchData(); 
                 setIsEditMode(false);
                 // Force session update with latest currency metadata
@@ -611,7 +612,7 @@ function SettingsContent() {
                     });
                 }
             }
-            else { const e = await res.json(); showToast(e.error || t('فشل الحفظ'), 'error'); }
+            else { const e = await res.json(); showToast(e.error || t('ظپط´ظ„ ط§ظ„ط­ظپط¸'), 'error'); }
         } finally { setIsSaving(false); }
     };
 
@@ -630,7 +631,7 @@ function SettingsContent() {
             });
 
             if (res.ok) {
-                showToast(editingUserId ? t('تم تحديث بيانات المستخدم ✓') : t('تم إضافة المستخدم ✓'));
+                showToast(editingUserId ? t('طھظ… طھط­ط¯ظٹط« ط¨ظٹط§ظ†ط§طھ ط§ظ„ظ…ط³طھط®ط¯ظ… âœ“') : t('طھظ… ط¥ط¶ط§ظپط© ط§ظ„ظ…ط³طھط®ط¯ظ… âœ“'));
                 fetchData();
                 setEditingUserId(null);
                 setNewUserForm({
@@ -639,7 +640,7 @@ function SettingsContent() {
                     customPermissions: {}
                 });
             }
-            else { const e = await res.json(); showToast(e.error || t('فشل'), 'error'); }
+            else { const e = await res.json(); showToast(e.error || t('ظپط´ظ„'), 'error'); }
         } finally { setIsSaving(false); }
     };
 
@@ -682,10 +683,10 @@ function SettingsContent() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'delete_user', data: { userId } })
             });
-            if (res.ok) { showToast(t('تم حذف المستخدم بنجاح')); fetchData(); }
-            else { const e = await res.json(); showToast(e.error || t('فشل الحذف'), 'error'); }
+            if (res.ok) { showToast(t('طھظ… ط­ط°ظپ ط§ظ„ظ…ط³طھط®ط¯ظ… ط¨ظ†ط¬ط§ط­')); fetchData(); }
+            else { const e = await res.json(); showToast(e.error || t('ظپط´ظ„ ط§ظ„ط­ط°ظپ'), 'error'); }
         } catch (err) {
-            showToast(t('خطأ في الاتصال بالسيرفر'), 'error');
+            showToast(t('ط®ط·ط£ ظپظٹ ط§ظ„ط§طھطµط§ظ„ ط¨ط§ظ„ط³ظٹط±ظپط±'), 'error');
         } finally {
             setIsDeleting(false);
             setConfirmDelete(null);
@@ -701,15 +702,15 @@ function SettingsContent() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ action: 'update_user_status', data: { userId, status: nextStatus } })
             });
-            if (res.ok) { showToast(t('تم تحديث حالة المستخدم ✓')); fetchData(); }
-            else { const e = await res.json(); showToast(e.error || t('فشل التحديث'), 'error'); }
+            if (res.ok) { showToast(t('طھظ… طھط­ط¯ظٹط« ط­ط§ظ„ط© ط§ظ„ظ…ط³طھط®ط¯ظ… âœ“')); fetchData(); }
+            else { const e = await res.json(); showToast(e.error || t('ظپط´ظ„ ط§ظ„طھط­ط¯ظٹط«'), 'error'); }
         } finally { setIsSaving(false); }
     };
 
     if (loading) return (
         <DashboardLayout>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '12px', color: '#64748b' }}>
-                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري تحميل الإعدادات...')}
+                <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} /> {t('ط¬ط§ط±ظٹ طھط­ظ…ظٹظ„ ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ...')}
             </div>
                 <style jsx>{`
                     @media (max-width: 1023px) {
@@ -736,27 +737,27 @@ function SettingsContent() {
 
     // Filter tabs based on permissionHierarchy
     const filteredTabs = [
-        { id: 'company', icon: Building2, label: t('بيانات الشركة'), featureKey: 'settings', pageId: '/settings/company' },
-        { id: 'general', icon: Globe, label: t('الإعدادات العامة'), featureKey: 'settings', pageId: '/settings/general' },
-        { id: 'branches', icon: Store, label: t('الفروع'), featureKey: 'settings', pageId: '/settings/branches' },
-        { id: 'notifications', icon: Bell, label: t('الإشعارات'), featureKey: 'settings', pageId: '/settings/notifications' },
-        { id: 'tax', icon: Percent, label: t('الضريبة'), featureKey: 'settings', pageId: '/settings/tax' },
-        { id: 'users', icon: Shield, label: t('المستخدمين والصلاحيات'), featureKey: 'settings', pageId: '/settings/users' },
-        { id: 'subscription', icon: CreditCard, label: t('الاشتراك والخطة'), featureKey: 'settings', pageId: '/settings/subscription' },
-        { id: 'database', icon: Database, label: t('قواعد البيانات'), featureKey: 'settings', pageId: '/settings/database' },
-        ...(businessType === 'RESTAURANTS' ? [{ id: 'restaurant', icon: UtensilsCrossed, label: t('إعدادات المطعم'), featureKey: 'settings', pageId: '/settings/restaurant' }] : []),
+        { id: 'company', icon: Building2, label: t('ط¨ظٹط§ظ†ط§طھ ط§ظ„ط´ط±ظƒط©'), featureKey: 'settings', pageId: '/settings/company' },
+        { id: 'general', icon: Globe, label: t('ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط¹ط§ظ…ط©'), featureKey: 'settings', pageId: '/settings/general' },
+        { id: 'branches', icon: Store, label: t('ط§ظ„ظپط±ظˆط¹'), featureKey: 'settings', pageId: '/settings/branches' },
+        { id: 'notifications', icon: Bell, label: t('ط§ظ„ط¥ط´ط¹ط§ط±ط§طھ'), featureKey: 'settings', pageId: '/settings/notifications' },
+        { id: 'tax', icon: Percent, label: t('ط§ظ„ط¶ط±ظٹط¨ط©'), featureKey: 'settings', pageId: '/settings/tax' },
+        { id: 'users', icon: Shield, label: t('ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ† ظˆط§ظ„طµظ„ط§ط­ظٹط§طھ'), featureKey: 'settings', pageId: '/settings/users' },
+        { id: 'subscription', icon: CreditCard, label: t('ط§ظ„ط§ط´طھط±ط§ظƒ ظˆط§ظ„ط®ط·ط©'), featureKey: 'settings', pageId: '/settings/subscription' },
+        { id: 'database', icon: Database, label: t('ظ‚ظˆط§ط¹ط¯ ط§ظ„ط¨ظٹط§ظ†ط§طھ'), featureKey: 'settings', pageId: '/settings/database' },
+        ...(businessType === 'RESTAURANTS' ? [{ id: 'restaurant', icon: UtensilsCrossed, label: t('ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ظ…ط·ط¹ظ…'), featureKey: 'settings', pageId: '/settings/restaurant' }] : []),
     ].filter(tab => hasPage(tab.featureKey, tab.pageId));
 
 
-    /* ══════════════════════════════════════════
+    /* â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ
        RENDER
-    ══════════════════════════════════════════ */
+    â•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گâ•گ */
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={PAGE_BASE}>
                 <PageHeader
-                    title={t("الإعدادات الشاملة للمؤسسة")}
-                    subtitle={t("إدارة بيانات المنشأة، المستخدمين ونظام الصلاحيات العام وفترات العمل المالية")}
+                    title={t("ط§ظ„ط¥ط¹ط¯ط§ط¯ط§طھ ط§ظ„ط´ط§ظ…ظ„ط© ظ„ظ„ظ…ط¤ط³ط³ط©")}
+                    subtitle={t("ط¥ط¯ط§ط±ط© ط¨ظٹط§ظ†ط§طھ ط§ظ„ظ…ظ†ط´ط£ط©طŒ ط§ظ„ظ…ط³طھط®ط¯ظ…ظٹظ† ظˆظ†ط¸ط§ظ… ط§ظ„طµظ„ط§ط­ظٹط§طھ ط§ظ„ط¹ط§ظ… ظˆظپطھط±ط§طھ ط§ظ„ط¹ظ…ظ„ ط§ظ„ظ…ط§ظ„ظٹط©")}
                     icon={SettingsIcon}
                 />
 
@@ -768,7 +769,7 @@ function SettingsContent() {
                 )}
 
                 <div className="mobile-column" style={{ display: 'flex', gap: '24px', alignItems: 'flex-start' }}>
-                    {/* ── Sidebar ── */}
+                    {/* â”€â”€ Sidebar â”€â”€ */}
                     <div className="settings-sidebar mobile-full" style={{
                         padding: '8px', width: '280px', flexShrink: 0,
                         background: C.card, borderRadius: '20px', border: `1px solid ${C.border}`,
@@ -821,7 +822,7 @@ function SettingsContent() {
                         </div>
                     </div>
 
-                    {/* ── Content ── */}
+                    {/* â”€â”€ Content â”€â”€ */}
                     <div style={{ flexGrow: 1, minWidth: 0 }}>
 
                         {activeTab === 'company' && (
@@ -1000,21 +1001,21 @@ function SettingsContent() {
                     isSubmitting={isDeleting}
                     isDelete={true}
                     title={
-                        confirmDelete?.type === 'user' ? t('حذف المستخدم') :
-                            confirmDelete?.type === 'branch' ? t('حذف الفرع') :
-                                confirmDelete?.type === 'closeYear' ? t('إغلاق السنة المالية') : t('تأكيد')
+                        confirmDelete?.type === 'user' ? t('ط­ط°ظپ ط§ظ„ظ…ط³طھط®ط¯ظ…') :
+                            confirmDelete?.type === 'branch' ? t('ط­ط°ظپ ط§ظ„ظپط±ط¹') :
+                                confirmDelete?.type === 'closeYear' ? t('ط¥ط؛ظ„ط§ظ‚ ط§ظ„ط³ظ†ط© ط§ظ„ظ…ط§ظ„ظٹط©') : t('طھط£ظƒظٹط¯')
                     }
                     description={
                         confirmDelete?.type === 'user'
-                            ? t('هل أنت متأكد من حذف المستخدم') + ` "${confirmDelete?.name}"؟ ` + t('لا يمكن التراجع عن هذا الإجراء.')
+                            ? t('ظ‡ظ„ ط£ظ†طھ ظ…طھط£ظƒط¯ ظ…ظ† ط­ط°ظپ ط§ظ„ظ…ط³طھط®ط¯ظ…') + ` "${confirmDelete?.name}"طں ` + t('ظ„ط§ ظٹظ…ظƒظ† ط§ظ„طھط±ط§ط¬ط¹ ط¹ظ† ظ‡ط°ط§ ط§ظ„ط¥ط¬ط±ط§ط،.')
                             : confirmDelete?.type === 'branch'
-                                ? t('هل أنت متأكد من حذف الفرع') + ` "${confirmDelete?.name}"؟ ` + t('يجب أن يكون الفرع فارغاً من المخازن والموظفين والفواتير.')
+                                ? t('ظ‡ظ„ ط£ظ†طھ ظ…طھط£ظƒط¯ ظ…ظ† ط­ط°ظپ ط§ظ„ظپط±ط¹') + ` "${confirmDelete?.name}"طں ` + t('ظٹط¬ط¨ ط£ظ† ظٹظƒظˆظ† ط§ظ„ظپط±ط¹ ظپط§ط±ط؛ط§ظ‹ ظ…ظ† ط§ظ„ظ…ط®ط§ط²ظ† ظˆط§ظ„ظ…ظˆط¸ظپظٹظ† ظˆط§ظ„ظپظˆط§طھظٹط±.')
                                 : confirmDelete?.type === 'closeYear'
-                                    ? t('هل أنت متأكد من إغلاق') + ` "${confirmDelete?.name}"؟ ` + t('سيتم تجميد كافة العمليات في هذه الفترة وفتح سنة جديدة تلقائياً.')
-                                    : t('هل أنت متأكد؟')
+                                    ? t('ظ‡ظ„ ط£ظ†طھ ظ…طھط£ظƒط¯ ظ…ظ† ط¥ط؛ظ„ط§ظ‚') + ` "${confirmDelete?.name}"طں ` + t('ط³ظٹطھظ… طھط¬ظ…ظٹط¯ ظƒط§ظپط© ط§ظ„ط¹ظ…ظ„ظٹط§طھ ظپظٹ ظ‡ط°ظ‡ ط§ظ„ظپطھط±ط© ظˆظپطھط­ ط³ظ†ط© ط¬ط¯ظٹط¯ط© طھظ„ظ‚ط§ط¦ظٹط§ظ‹.')
+                                    : t('ظ‡ظ„ ط£ظ†طھ ظ…طھط£ظƒط¯طں')
                     }
                     confirmText={
-                        confirmDelete?.type === 'closeYear' ? t('نعم، أغلق السنة') : t('نعم، احذف الآن')
+                        confirmDelete?.type === 'closeYear' ? t('ظ†ط¹ظ…طŒ ط£ط؛ظ„ظ‚ ط§ظ„ط³ظ†ط©') : t('ظ†ط¹ظ…طŒ ط§ط­ط°ظپ ط§ظ„ط¢ظ†')
                     }
                     onConfirm={async () => {
                         if (confirmDelete?.type === 'user') {
@@ -1023,8 +1024,8 @@ function SettingsContent() {
                             setIsDeleting(true);
                             try {
                                 const res = await fetch(`/api/branches?id=${confirmDelete.id}`, { method: 'DELETE' });
-                                if (res.ok) { showToast(t('تم حذف الفرع ✓')); fetchBranches(); }
-                                else { const d = await res.json(); showToast(d.error || t('فشل الحذف'), 'error'); }
+                                if (res.ok) { showToast(t('طھظ… ط­ط°ظپ ط§ظ„ظپط±ط¹ âœ“')); fetchBranches(); }
+                                else { const d = await res.json(); showToast(d.error || t('ظپط´ظ„ ط§ظ„ط­ط°ظپ'), 'error'); }
                             } finally { setIsDeleting(true); setConfirmDelete(null); }
                         } else if (confirmDelete?.type === 'closeYear') {
                             setIsDeleting(true);
