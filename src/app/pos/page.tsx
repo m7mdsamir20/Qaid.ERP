@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Landmark, Phone, MapPin, Receipt
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -43,6 +43,8 @@ export default function POSPage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [modifiers, setModifiers] = useState<any[]>([]);
     const [drivers, setDrivers] = useState<any[]>([]);
+    const [customers, setCustomers] = useState<any[]>([]);
+    const [treasuries, setTreasuries] = useState<any[]>([]);
     
     // Modifiers Modal
     const [activeModifierCartIndex, setActiveModifierCartIndex] = useState<number | null>(null);
@@ -61,9 +63,15 @@ export default function POSPage() {
     const [orderType, setOrderType] = useState('dine-in');
     const [selectedTable, setSelectedTable] = useState('');
     const [selectedDriver, setSelectedDriver] = useState('');
+    const [selectedCustomer, setSelectedCustomer] = useState('');
+    const [selectedTreasury, setSelectedTreasury] = useState('');
+    const [deliveryName, setDeliveryName] = useState('');
+    const [deliveryPhone, setDeliveryPhone] = useState('');
+    const [deliveryAddress, setDeliveryAddress] = useState('');
     const [orderNotes, setOrderNotes] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const [discount, setDiscount] = useState(0);
+    const [taxRate, setTaxRate] = useState(0);
     const [step, setStep] = useState<'cart' | 'payment'>('cart');
 
     const searchRef = useRef<HTMLInputElement>(null);
@@ -71,19 +79,23 @@ export default function POSPage() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const [catRes, itemRes, tableRes, modRes, driverRes] = await Promise.all([
+            const [catRes, itemRes, tableRes, modRes, driverRes, custRes, treasRes] = await Promise.all([
                 fetch('/api/categories'),
                 fetch('/api/items'),
                 fetch('/api/restaurant/tables'),
                 fetch('/api/restaurant/modifiers'),
-                fetch('/api/drivers')
+                fetch('/api/drivers'),
+                fetch('/api/customers'),
+                fetch('/api/treasuries')
             ]);
-            const [cats, itms, tbls, mods, drvs] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json()]);
+            const [cats, itms, tbls, mods, drvs, custs, treas] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json(), custRes.json(), treasRes.json()]);
             setCategories(Array.isArray(cats) ? cats : []);
             setItems(Array.isArray(itms) ? itms : []);
             setTables(Array.isArray(tbls) ? tbls : []);
             setModifiers(Array.isArray(mods) ? mods : []);
             setDrivers(Array.isArray(drvs) ? drvs.filter((d: any) => d.status === 'available') : []);
+            setCustomers(Array.isArray(custs) ? custs : []);
+            setTreasuries(Array.isArray(treas) ? treas : []);
         } finally {
             setLoading(false);
         }
@@ -122,7 +134,7 @@ export default function POSPage() {
     };
 
     const removeFromCart = (itemId: string) => setCart(prev => prev.filter(c => c.itemId !== itemId));
-    const clearCart = () => { setCart([]); setStep('cart'); setSelectedTable(''); setOrderNotes(''); setDiscount(0); };
+    const clearCart = () => { setCart([]); setStep('cart'); setSelectedTable(''); setSelectedCustomer(''); setDeliveryName(''); setDeliveryPhone(''); setDeliveryAddress(''); setOrderNotes(''); setDiscount(0); setTaxRate(0); };
 
     const openModifiersModal = (index: number) => {
         setActiveModifierCartIndex(index);
@@ -164,7 +176,8 @@ export default function POSPage() {
     };
 
     const subtotal = cart.reduce((s, c) => s + calculateCartItemTotal(c), 0);
-    const total = Math.max(0, subtotal - discount);
+    const taxAmount = taxRate > 0 ? Math.round((subtotal - discount) * taxRate / 100) : 0;
+    const total = Math.max(0, subtotal - discount + taxAmount);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
@@ -241,12 +254,12 @@ export default function POSPage() {
         }
 
         try {
-            const paymentsArray = [];
+            const paymentsArray: any[] = [];
             if (isSplit) {
-                if (splitAmounts.cash > 0) paymentsArray.push({ amount: splitAmounts.cash, paymentMethod: 'cash' });
-                if (splitAmounts.card > 0) paymentsArray.push({ amount: splitAmounts.card, paymentMethod: 'card' });
+                if (splitAmounts.cash > 0) paymentsArray.push({ amount: splitAmounts.cash, paymentMethod: 'cash', treasuryId: selectedTreasury || null });
+                if (splitAmounts.card > 0) paymentsArray.push({ amount: splitAmounts.card, paymentMethod: 'card', treasuryId: selectedTreasury || null });
             } else if (total > 0) {
-                paymentsArray.push({ amount: total, paymentMethod });
+                paymentsArray.push({ amount: total, paymentMethod, treasuryId: selectedTreasury || null });
             }
 
             const res = await fetch('/api/restaurant/orders', {
@@ -256,10 +269,16 @@ export default function POSPage() {
                     type: orderType,
                     tableId: selectedTable || null,
                     driverId: selectedDriver || null,
+                    customerId: selectedCustomer || null,
+                    deliveryName: deliveryName || null,
+                    deliveryPhone: deliveryPhone || null,
+                    deliveryAddress: deliveryAddress || null,
                     notes: finalNotes.trim(),
                     paymentMethod,
                     paidAmount: total,
                     discount,
+                    taxAmount,
+                    taxRate,
                     payments: paymentsArray,
                     lines: cart.map(c => ({ ...c })),
                 }),
@@ -387,17 +406,41 @@ export default function POSPage() {
                             </div>
                         )}
 
-                        {/* اختيار السائق للتوصيل */}
+                        {/* اختيار السائق وبيانات التوصيل */}
                         {orderType === 'delivery' && (
-                            <div style={{ marginTop: '10px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '10px' }}>
                                 <CustomSelect
                                     value={selectedDriver}
                                     onChange={v => setSelectedDriver(v)}
                                     options={drivers.map(drv => ({ value: drv.id, label: drv.name }))}
                                     placeholder={t('— اختر السائق —')}
                                 />
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '6px' }}>
+                                    <div style={{ position: 'relative' }}>
+                                        <User size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                        <input value={deliveryName} onChange={e => setDeliveryName(e.target.value)} placeholder={t('اسم العميل')} style={{ ...IS, height: '36px', fontSize: '12px', paddingInlineStart: '30px' }} />
+                                    </div>
+                                    <div style={{ position: 'relative' }}>
+                                        <Phone size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                        <input value={deliveryPhone} onChange={e => setDeliveryPhone(e.target.value)} placeholder={t('رقم الهاتف')} style={{ ...IS, height: '36px', fontSize: '12px', paddingInlineStart: '30px', fontFamily: OUTFIT }} />
+                                    </div>
+                                </div>
+                                <div style={{ position: 'relative' }}>
+                                    <MapPin size={13} style={{ position: 'absolute', insetInlineStart: '10px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
+                                    <input value={deliveryAddress} onChange={e => setDeliveryAddress(e.target.value)} placeholder={t('عنوان التوصيل')} style={{ ...IS, height: '36px', fontSize: '12px', paddingInlineStart: '30px' }} />
+                                </div>
                             </div>
                         )}
+
+                        {/* اختيار العميل (اختياري) */}
+                        <div style={{ marginTop: '10px' }}>
+                            <CustomSelect
+                                value={selectedCustomer}
+                                onChange={v => setSelectedCustomer(v)}
+                                options={customers.map(c => ({ value: c.id, label: c.name + (c.phone ? ` (${c.phone})` : '') }))}
+                                placeholder={t('👤 عميل (اختياري)')}
+                            />
+                        </div>
                     </div>
 
                     {/* السلة */}
@@ -448,11 +491,21 @@ export default function POSPage() {
                         {/* ملاحظات */}
                         <input value={orderNotes} onChange={e => setOrderNotes(e.target.value)} placeholder={t('ملاحظات الطلب...')} style={{ ...IS, height: '36px', fontSize: '12px' }} />
 
-                        {/* خصم */}
+                        {/* خصم + ضريبة */}
                         <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                             <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, whiteSpace: 'nowrap' }}>{t('خصم')}</label>
                             <input type="number" min="0" value={discount || ''} onChange={e => setDiscount(Number(e.target.value))} placeholder="0" style={{ ...IS, height: '36px', fontSize: '12px', fontFamily: OUTFIT, flex: 1 }} />
+                            <label style={{ fontSize: '12px', color: C.textSecondary, fontWeight: 600, whiteSpace: 'nowrap' }}>{t('ضريبة %')}</label>
+                            <input type="number" min="0" max="100" value={taxRate || ''} onChange={e => setTaxRate(Number(e.target.value))} placeholder="0" style={{ ...IS, height: '36px', fontSize: '12px', fontFamily: OUTFIT, width: '60px' }} />
                         </div>
+
+                        {/* اختيار الخزنة */}
+                        <CustomSelect
+                            value={selectedTreasury}
+                            onChange={v => setSelectedTreasury(v)}
+                            options={treasuries.map(t => ({ value: t.id, label: t.name, icon: Landmark }))}
+                            placeholder={t('🏦 اختر الخزنة')}
+                        />
 
                         {/* الإجمالي */}
                         <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -464,6 +517,12 @@ export default function POSPage() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: C.danger }}>
                                     <span>{t('خصم')}</span>
                                     <span style={{ fontFamily: OUTFIT }}>- {fMoney(discount)}</span>
+                                </div>
+                            )}
+                            {taxAmount > 0 && (
+                                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', color: '#f59e0b' }}>
+                                    <span>{t('ضريبة')} ({taxRate}%)</span>
+                                    <span style={{ fontFamily: OUTFIT }}>+ {fMoney(taxAmount)}</span>
                                 </div>
                             )}
                             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px', fontWeight: 700, color: C.textPrimary, borderTop: `1px solid ${C.border}`, paddingTop: '6px', marginTop: '2px' }}>
