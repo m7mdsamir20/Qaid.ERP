@@ -14,11 +14,18 @@ export default function DashboardLayout({
 }: {
     children: React.ReactNode;
 }) {
-    const { data: session, status } = useSession();
+    const { data: session, status, update } = useSession();
     const pathname = usePathname();
     const router = useRouter();
-    const [noFY, setNoFY] = useState(false);
+    const [noFY, setNoFY]       = useState(false);
     const [loadingFY, setLoadingFY] = useState(false);
+
+    // تحديث الـ session تلقائيًا كل 5 دقائق لضمان مزامنة businessType والصلاحيات مع قاعدة البيانات
+    useEffect(() => {
+        if (status !== 'authenticated') return;
+        const interval = setInterval(() => { update(); }, 5 * 60 * 1000);
+        return () => clearInterval(interval);
+    }, [status, update]);
 
     useEffect(() => {
         if (status === 'loading' || !session) return;
