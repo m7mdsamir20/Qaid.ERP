@@ -223,12 +223,87 @@ export const PUT = withProtection(async (request, session, body) => {
 
         // If delivered/cancelled, free the table
         if (body.status === 'delivered' || body.status === 'cancelled') {
-            const order = await prisma.posOrder.findUnique({ where: { id: body.id }, select: { tableId: true } });
+            const order = await prisma.posOrder.findUnique({ 
+                where: { id: body.id }, 
+                include: { lines: true } 
+            });
             if (order?.tableId) {
                 await prisma.restaurantTable.updateMany({
                     where: { id: order.tableId, companyId },
                     data: { status: 'available' },
                 });
+            }
+
+            // Inventory Reversion for Cancellation
+            if (body.status === 'cancelled' && body.revertInventory && order) {
+                const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
+                if (defaultWarehouse) {
+                    for (const line of order.lines) {
+                        const item = await prisma.item.findUnique({
+                            where: { id: line.itemId },
+                            include: { recipe: { include: { items: true } } }
+                        });
+                        if (!item) continue;
+
+                        // 1. Return Recipe Ingredients
+                        if (item.recipe && item.recipe.items.length > 0) {
+                            for (const ri of item.recipe.items) {
+                                const qty = ri.quantity * line.quantity;
+                                await prisma.stock.upsert({
+                                    where: { itemId_warehouseId: { itemId: ri.itemId, warehouseId: defaultWarehouse.id } },
+                                    create: { itemId: ri.itemId, warehouseId: defaultWarehouse.id, quantity: qty },
+                                    update: { quantity: { increment: qty } }
+                                });
+                                await prisma.stockMovement.create({
+                                    data: {
+                                        type: 'in', date: new Date(), itemId: ri.itemId, warehouseId: defaultWarehouse.id,
+                                        quantity: qty, reference: `CANCEL-${order.orderNumber}`,
+                                        notes: `مرتجع استهلاك مكونات لإلغاء طلب`, companyId
+                                    }
+                                });
+                            }
+                        } else if (item.type !== 'service') {
+                            // 2. Return Standard Product
+                            const qty = line.quantity;
+                            await prisma.stock.upsert({
+                                where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } },
+                                create: { itemId: item.id, warehouseId: defaultWarehouse.id, quantity: qty },
+                                update: { quantity: { increment: qty } }
+                            });
+                            await prisma.stockMovement.create({
+                                data: {
+                                    type: 'in', date: new Date(), itemId: item.id, warehouseId: defaultWarehouse.id,
+                                    quantity: qty, reference: `CANCEL-${order.orderNumber}`,
+                                    notes: `مرتجع كاشير (بدون وصفة)`, companyId
+                                }
+                            });
+                        }
+
+                        // 3. Return Modifiers
+                        if (line.modifiers) {
+                            try {
+                                const mods = typeof line.modifiers === 'string' ? JSON.parse(line.modifiers) : line.modifiers;
+                                for (const mod of mods) {
+                                    if (mod.itemId) {
+                                        const qty = line.quantity;
+                                        await prisma.stock.upsert({
+                                            where: { itemId_warehouseId: { itemId: mod.itemId, warehouseId: defaultWarehouse.id } },
+                                            create: { itemId: mod.itemId, warehouseId: defaultWarehouse.id, quantity: qty },
+                                            update: { quantity: { increment: qty } }
+                                        });
+                                        await prisma.stockMovement.create({
+                                            data: {
+                                                type: 'in', date: new Date(), itemId: mod.itemId, warehouseId: defaultWarehouse.id,
+                                                quantity: qty, reference: `CANCEL-${order.orderNumber}-MOD`,
+                                                notes: `مرتجع إضافة (${mod.name}) لإلغاء طلب`, companyId
+                                            }
+                                        });
+                                    }
+                                }
+                            } catch(e) {}
+                        }
+                    }
+                }
             }
         }
 

@@ -40,10 +40,15 @@ export default function OrdersHistoryPage() {
     const formatDate = (d: string) => new Date(d).toLocaleString('ar-EG', { dateStyle: 'short', timeStyle: 'short' });
 
     const updateStatus = async (id: string, status: string) => {
+        let revertInventory = false;
+        if (status === 'cancelled') {
+            if (!confirm(t('هل أنت متأكد من إلغاء هذا الطلب؟'))) return;
+            revertInventory = confirm(t('هل تريد إرجاع مكونات هذا الطلب إلى المخزن (إلغاء الاستهلاك)؟\n\n- اضغط OK (موافق) للإرجاع.\n- اضغط Cancel (إلغاء) لاعتباره هالك (Waste).'));
+        }
         await fetch('/api/restaurant/orders', {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id, status }),
+            body: JSON.stringify({ id, status, revertInventory }),
         });
         load();
     };
