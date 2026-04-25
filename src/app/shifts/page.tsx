@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
+import AppModal from '@/components/AppModal';
 import { C, CAIRO, OUTFIT, IS, LS, PAGE_BASE, TABLE_STYLE, BTN_PRIMARY } from '@/constants/theme';
 import { Clock, Plus, Loader2, X, Check, AlertCircle, RefreshCw, TrendingUp, Package, DollarSign } from 'lucide-react';
 import { useCurrency } from '@/hooks/useCurrency';
@@ -53,7 +54,7 @@ export default function ShiftsPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ ...PAGE_BASE, padding: '0 24px 30px' }}>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
                     title={t('الورديات')}
                     subtitle={t('إدارة ورديات الكاشير وتسوية العهدة')}
@@ -126,58 +127,42 @@ export default function ShiftsPage() {
             </div>
 
             {/* Modal فتح وردية */}
-            {showOpen && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '400px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>فتح وردية جديدة</h2>
-                            <button onClick={() => setShowOpen(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <div><label style={LS}>عهدة الفتح</label><input type="number" min="0" value={openForm.openingBalance} onChange={e => setOpenForm(f => ({ ...f, openingBalance: e.target.value }))} placeholder="0" style={{ ...IS, fontFamily: OUTFIT }} /></div>
-                            <div><label style={LS}>ملاحظات</label><input value={openForm.notes} onChange={e => setOpenForm(f => ({ ...f, notes: e.target.value }))} style={IS} /></div>
-                            {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '8px', padding: '8px 12px', color: C.danger, fontSize: '12px', display: 'flex', gap: '6px', alignItems: 'center', fontFamily: CAIRO }}><AlertCircle size={13} />{error}</div>}
-                        </div>
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '20px' }}>
-                            <button onClick={() => setShowOpen(false)} style={{ flex: 1, height: '42px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, fontSize: '13px' }}>إلغاء</button>
-                            <button onClick={handleOpen} disabled={saving} style={{ ...BTN_PRIMARY(saving, false), flex: 2, height: '42px', borderRadius: '10px', fontSize: '13px' }}>
-                                {saving ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> جاري...</> : <><Check size={14} /> فتح الوردية</>}
-                            </button>
-                        </div>
-                    </div>
+            <AppModal show={showOpen} onClose={() => setShowOpen(false)} title="فتح وردية جديدة" maxWidth="520px">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <div><label style={LS}>عهدة الفتح</label><input type="number" min="0" value={openForm.openingBalance} onChange={e => setOpenForm(f => ({ ...f, openingBalance: e.target.value }))} placeholder="0" style={{ ...IS, fontFamily: OUTFIT }} /></div>
+                    <div><label style={LS}>ملاحظات</label><input value={openForm.notes} onChange={e => setOpenForm(f => ({ ...f, notes: e.target.value }))} style={IS} /></div>
+                    {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '10px 14px', color: C.danger, fontSize: '12.5px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}><AlertCircle size={14} />{error}</div>}
                 </div>
-            )}
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
+                    <button onClick={handleOpen} disabled={saving} style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: saving ? 'not-allowed' : 'pointer' }}>
+                        {saving ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : 'فتح الوردية'}
+                    </button>
+                    <button onClick={() => setShowOpen(false)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
+                </div>
+            </AppModal>
 
             {/* Modal إغلاق وردية */}
-            {showClose && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '28px', width: '100%', maxWidth: '420px' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>إغلاق الوردية #{showClose.shiftNumber}</h2>
-                            <button onClick={() => setShowClose(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+            <AppModal show={!!showClose} onClose={() => setShowClose(null)} title={`إغلاق الوردية #${showClose?.shiftNumber}`} maxWidth="520px">
+                <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '10px', padding: '12px', marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    {showClose && [{ label: 'عهدة الفتح', value: fMoney(showClose.openingBalance) }, { label: 'إجمالي المبيعات', value: fMoney(showClose.totalSales) }, { label: 'المتوقع في الدرج', value: fMoney(showClose.openingBalance + showClose.totalSales) }].map(r => (
+                        <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }}>
+                            <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{r.label}</span>
+                            <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{r.value}</span>
                         </div>
-                        <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '10px', padding: '12px', marginBottom: '14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                            {[{ label: 'عهدة الفتح', value: fMoney(showClose.openingBalance) }, { label: 'إجمالي المبيعات', value: fMoney(showClose.totalSales) }, { label: 'المتوقع في الدرج', value: fMoney(showClose.openingBalance + showClose.totalSales) }].map(r => (
-                                <div key={r.label} style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12.5px' }}>
-                                    <span style={{ color: C.textSecondary, fontFamily: CAIRO }}>{r.label}</span>
-                                    <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary }}>{r.value}</span>
-                                </div>
-                            ))}
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                            <div><label style={LS}>المبلغ الفعلي في الدرج <span style={{ color: C.danger }}>*</span></label><input type="number" min="0" value={closeForm.closingBalance} onChange={e => setCloseForm(f => ({ ...f, closingBalance: e.target.value }))} placeholder="0.00" style={{ ...IS, fontFamily: OUTFIT }} /></div>
-                            <div><label style={LS}>ملاحظات</label><input value={closeForm.notes} onChange={e => setCloseForm(f => ({ ...f, notes: e.target.value }))} style={IS} /></div>
-                            {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '8px', padding: '8px 12px', color: C.danger, fontSize: '12px', display: 'flex', gap: '6px', alignItems: 'center', fontFamily: CAIRO }}><AlertCircle size={13} />{error}</div>}
-                        </div>
-                        <div style={{ display: 'flex', gap: '8px', marginTop: '20px' }}>
-                            <button onClick={() => setShowClose(null)} style={{ flex: 1, height: '42px', borderRadius: '10px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO, fontSize: '13px' }}>إلغاء</button>
-                            <button onClick={handleClose} disabled={saving} style={{ flex: 2, height: '42px', borderRadius: '10px', border: '1px solid #ef444440', background: '#ef444420', color: '#ef4444', fontWeight: 700, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px', fontFamily: CAIRO, fontSize: '13px', opacity: saving ? 0.7 : 1 }}>
-                                {saving ? <><Loader2 size={14} style={{ animation: 'spin 1s linear infinite' }} /> جاري...</> : <>🔒 إغلاق وتسوية</>}
-                            </button>
-                        </div>
-                    </div>
+                    ))}
                 </div>
-            )}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <div><label style={LS}>المبلغ الفعلي في الدرج <span style={{ color: C.danger }}>*</span></label><input type="number" min="0" value={closeForm.closingBalance} onChange={e => setCloseForm(f => ({ ...f, closingBalance: e.target.value }))} placeholder="0.00" style={{ ...IS, fontFamily: OUTFIT }} /></div>
+                    <div><label style={LS}>ملاحظات</label><input value={closeForm.notes} onChange={e => setCloseForm(f => ({ ...f, notes: e.target.value }))} style={IS} /></div>
+                    {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '10px 14px', color: C.danger, fontSize: '12.5px', fontWeight: 600, display: 'flex', gap: '8px', alignItems: 'center' }}><AlertCircle size={14} />{error}</div>}
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
+                    <button onClick={handleClose} disabled={saving} style={{ height: '44px', borderRadius: '10px', background: C.danger, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: saving ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                        {saving ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : <>🔒 إغلاق وتسوية</>}
+                    </button>
+                    <button onClick={() => setShowClose(null)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>إلغاء</button>
+                </div>
+            </AppModal>
             <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
         </DashboardLayout>
     );

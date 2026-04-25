@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
-import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY } from '@/constants/theme';
-import { Plus, RefreshCw, Loader2, X, Check, Users, Table2, Edit3, Trash2, AlertCircle } from 'lucide-react';
+import PageHeader from '@/components/PageHeader';
+import AppModal from '@/components/AppModal';
+import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY, PAGE_BASE } from '@/constants/theme';
+import { Plus, RefreshCw, Loader2, X, Check, Users, Table2, Edit3, Trash2, AlertCircle, CheckCircle2, Receipt } from 'lucide-react';
 
 const TABLE_STATUSES = [
     { value: 'available',    label: 'متاحة',        color: '#10b981', bg: '#10b98112' },
@@ -67,27 +69,42 @@ export default function TablesPage() {
 
     return (
         <DashboardLayout>
-            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ padding: '32px', maxWidth: '1200px', margin: '0 auto', fontFamily: CAIRO }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '28px', flexWrap: 'wrap', gap: '12px' }}>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '22px', fontWeight: 700, color: C.textPrimary, display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <Table2 size={24} color={C.primary} /> {t('خريطة الطاولات')}
-                        </h1>
-                        <p style={{ margin: '4px 0 0', fontSize: '13px', color: C.textMuted }}>{t('إدارة طاولات المطعم وحالتها')}</p>
-                    </div>
-                    <div style={{ display: 'flex', gap: '10px' }}>
-                        <button onClick={load} style={{ height: '40px', width: '40px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
-                        <button onClick={() => openModal()} style={{ ...BTN_PRIMARY(false, false), height: '40px', padding: '0 20px', borderRadius: '10px', gap: '6px', fontSize: '13px' }}>
-                            <Plus size={15} /> {t('طاولة جديدة')}
-                        </button>
-                    </div>
-                </div>
+            <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '60px', background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
+                <PageHeader
+                    title={t('خريطة الطاولات')}
+                    subtitle={t('إدارة طاولات المطعم وحالتها')}
+                    icon={Table2}
+                    actions={[
+                        <button key="refresh" onClick={load} style={{ height: '42px', width: '42px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textMuted, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><RefreshCw size={15} /></button>
+                    ]}
+                    primaryButton={{ label: t('طاولة جديدة'), onClick: () => openModal(), icon: Plus }}
+                />
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '12px', marginBottom: '24px' }}>
-                    {[{ label: 'الكل', count: counts.all, color: C.primary }, { label: 'متاحة', count: counts.available, color: '#10b981' }, { label: 'مشغولة', count: counts.occupied, color: '#f59e0b' }, { label: 'تنتظر حساب', count: counts.waiting_bill, color: '#ef4444' }].map(s => (
-                        <div key={s.label} style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '16px', padding: '16px', textAlign: 'center' }}>
-                            <p style={{ margin: '0 0 4px', fontSize: '26px', fontWeight: 700, color: s.color, fontFamily: OUTFIT }}>{s.count}</p>
-                            <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary }}>{s.label}</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '24px' }}>
+                    {[
+                        { label: 'إجمالي الطاولات', count: counts.all, color: C.primary, icon: <Table2 size={18} /> },
+                        { label: 'الطاولات المتاحة', count: counts.available, color: '#10b981', icon: <CheckCircle2 size={18} /> },
+                        { label: 'الطاولات المشغولة', count: counts.occupied, color: '#f59e0b', icon: <Users size={18} /> },
+                        { label: 'تنتظر حساب', count: counts.waiting_bill, color: '#ef4444', icon: <Receipt size={18} /> }
+                    ].map((s, i) => (
+                        <div key={i} style={{
+                            background: `${s.color}08`, border: `1px solid ${s.color}33`, borderRadius: '10px',
+                            padding: '16px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                            transition: 'all 0.2s', position: 'relative'
+                        }}
+                            onMouseEnter={e => e.currentTarget.style.background = `${s.color}15`}
+                            onMouseLeave={e => e.currentTarget.style.background = `${s.color}08`}
+                        >
+                            <div style={{ textAlign: 'start' }}>
+                                <p style={{ fontSize: '11px', fontWeight: 500, color: C.textMuted, margin: '0 0 4px', whiteSpace: 'nowrap' }}>{s.label}</p>
+                                <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
+                                    <span style={{ fontSize: '16px', fontWeight: 600, color: C.textPrimary, fontFamily: OUTFIT }}>{s.count}</span>
+                                    <span style={{ fontSize: '11px', color: C.textMuted, fontWeight: 500 }}>طاولة</span>
+                                </div>
+                            </div>
+                            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: `${s.color}15`, border: `1px solid ${s.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: s.color }}>
+                                {s.icon}
+                            </div>
                         </div>
                     ))}
                 </div>
@@ -136,28 +153,20 @@ export default function TablesPage() {
                 )}
             </div>
 
-            {showModal && (
-                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '32px', width: '100%', maxWidth: '440px', boxShadow: '0 25px 60px rgba(0,0,0,0.5)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-                            <h2 style={{ margin: 0, fontSize: '17px', fontWeight: 700, color: C.textPrimary }}>{editItem ? t('تعديل الطاولة') : t('إضافة طاولة')}</h2>
-                            <button onClick={() => setShowModal(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={20} /></button>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                            <div><label style={LS}>{t('اسم الطاولة')} <span style={{ color: C.danger }}>*</span></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t('مثال: طاولة 1')} style={IS} /></div>
-                            <div><label style={LS}>{t('السعة')}</label><input type="number" min="1" value={form.capacity} onChange={e => setForm(f => ({ ...f, capacity: Number(e.target.value) }))} style={{ ...IS, fontFamily: OUTFIT }} /></div>
-                            <div><label style={LS}>{t('القسم (اختياري)')}</label><input value={form.section} onChange={e => setForm(f => ({ ...f, section: e.target.value }))} placeholder={t('مثال: تراس، صالة داخلية')} style={IS} /></div>
-                            {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '10px 14px', color: C.danger, fontSize: '12.5px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}><AlertCircle size={14} />{error}</div>}
-                        </div>
-                        <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
-                            <button onClick={() => setShowModal(false)} style={{ flex: 1, height: '46px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
-                            <button onClick={handleSave} disabled={saving} style={{ ...BTN_PRIMARY(saving, false), flex: 2, height: '46px', borderRadius: '12px', gap: '8px' }}>
-                                {saving ? <><Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الحفظ...')}</> : <><Check size={15} /> {t('حفظ')}</>}
-                            </button>
-                        </div>
-                    </div>
+            <AppModal show={showModal} onClose={() => setShowModal(false)} title={editItem ? t('تعديل الطاولة') : t('إضافة طاولة')} maxWidth="520px">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <div><label style={LS}>{t('اسم الطاولة')} <span style={{ color: C.danger }}>*</span></label><input value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={t('مثال: طاولة 1')} style={IS} /></div>
+                    <div><label style={LS}>{t('السعة')}</label><input type="number" min="1" value={form.capacity} onChange={e => setForm(f => ({ ...f, capacity: Number(e.target.value) }))} style={{ ...IS, fontFamily: OUTFIT }} /></div>
+                    <div><label style={LS}>{t('القسم (اختياري)')}</label><input value={form.section} onChange={e => setForm(f => ({ ...f, section: e.target.value }))} placeholder={t('مثال: تراس، صالة داخلية')} style={IS} /></div>
+                    {error && <div style={{ background: C.dangerBg, border: `1px solid ${C.dangerBorder}`, borderRadius: '10px', padding: '10px 14px', color: C.danger, fontSize: '12.5px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}><AlertCircle size={14} />{error}</div>}
                 </div>
-            )}
+                <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
+                    <button onClick={handleSave} disabled={saving} style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: saving ? 'not-allowed' : 'pointer' }}>
+                        {saving ? <Loader2 size={15} style={{ animation: 'spin 1s linear infinite' }} /> : t('حفظ')}
+                    </button>
+                    <button onClick={() => setShowModal(false)} style={{ height: '44px', borderRadius: '10px', background: 'transparent', border: `1px solid ${C.border}`, color: C.textSecondary, fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }}>{t('إلغاء')}</button>
+                </div>
+            </AppModal>
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </DashboardLayout>
     );
