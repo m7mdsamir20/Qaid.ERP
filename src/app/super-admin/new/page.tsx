@@ -207,9 +207,16 @@ export default function NewCompanyPage() {
             if (!s.featureKey) return;
             if (!s.links || s.links.length === 0) return;
 
+            // فلترة حسب نوع النشاط
+            const restaurantFeatures = ['pos', 'tables', 'kitchen', 'delivery', 'barcode'];
+            const isRestaurants = form.businessType === 'RESTAURANTS';
+            if (restaurantFeatures.includes(s.featureKey) && !isRestaurants) return;
+            if (isRestaurants && ['sales', 'installments', 'partners'].includes(s.featureKey)) return;
+
             let section = { ...s };
 
-            // ✅ تعديلات ديناميكية للمسميات بناءً على نوع النشاط
+            // تعديلات ديناميكية للمسميات بناءً على نوع النشاط
+
             if (form.businessType === 'SERVICES') {
                 if (section.featureKey === 'sales') {
                     section.title = 'فواتير الخدمات';
