@@ -4,7 +4,7 @@ import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import { Boxes, Package, PackageX, TrendingUp, AlertTriangle, Search, Pencil, Trash2, MapPin, Plus, Loader2, ShieldCheck, Printer, Check, X } from 'lucide-react';
+import { Boxes, Package, PackageX, TrendingUp, AlertTriangle, Search, Pencil, Trash2, MapPin, Plus, Loader2, ShieldCheck, Printer, Check, X, ImagePlus } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, KPI_STYLE, KPI_ICON, STitle } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import PageHeader from '@/components/PageHeader';
@@ -260,6 +260,7 @@ export default function ItemsPage() {
     }).length;
     
     const usesBarcode = ['SUPERMARKET', 'DISTRIBUTION', 'MANUFACTURING', 'MAINTENANCE', 'RESTAURANT'].includes(companyBusinessType);
+    const isRestaurant = companyBusinessType === 'RESTAURANTS';
 
     if (!isMounted) return null;
 
@@ -267,11 +268,11 @@ export default function ItemsPage() {
         <DashboardLayout>
             <div dir={isRtl ? "rtl" : "ltr"} style={{ ...PAGE_BASE, background: C.bg, minHeight: '100%', fontFamily: CAIRO }}>
                 <PageHeader
-                    title={companyBusinessType === 'SERVICES' ? t("الخدمات") : t("الأصناف")}
-                    subtitle={companyBusinessType === 'SERVICES' ? t("تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها") : t("إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع")}
-                    icon={companyBusinessType === 'SERVICES' ? Package : Boxes}
+                    title={isRestaurant ? t("أصناف المنيو") : companyBusinessType === 'SERVICES' ? t("الخدمات") : t("الأصناف")}
+                    subtitle={isRestaurant ? t("إدارة قائمة الأصناف والوجبات المعروضة في المنيو") : companyBusinessType === 'SERVICES' ? t("تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها") : t("إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع")}
+                    icon={isRestaurant ? Package : companyBusinessType === 'SERVICES' ? Package : Boxes}
                     primaryButton={{
-                        label: companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : t("إضافة صنف جديد"),
+                        label: isRestaurant ? t("إضافة صنف للمنيو") : companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : t("إضافة صنف جديد"),
                         onClick: () => handleOpenModal(),
                         icon: Plus
                     }}
@@ -280,7 +281,7 @@ export default function ItemsPage() {
                 {companyBusinessType?.toUpperCase() !== 'SERVICES' && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { id: 'all', label: t('إجمالي الأصناف'), val: items.length, icon: Package, color: C.blue, unit: t('صنف') },
+                            { id: 'all', label: isRestaurant ? t('إجمالي أصناف المنيو') : t('إجمالي الأصناف'), val: items.length, icon: Package, color: C.blue, unit: t('صنف') },
                             { 
                                 id: 'cost', 
                                 label: t('إجمالي التكلفة'), 
@@ -398,7 +399,7 @@ export default function ItemsPage() {
                                     <tr style={TABLE_STYLE.thead}>
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
                                         {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
-                                        <th style={{...TABLE_STYLE.th(false)}}>{companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
+                                        <th style={{...TABLE_STYLE.th(false)}}>{isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
                                         {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
                                         {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
@@ -421,7 +422,14 @@ export default function ItemsPage() {
                                                 {companyBusinessType !== 'SERVICES' && usesBarcode && (
                                                     <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 600, color: C.textSecondary, fontSize: '12px', fontFamily: OUTFIT, letterSpacing: '1px' }}>{item.barcode || '—'}</div></td>
                                                 )}
-                                                <td style={{...TABLE_STYLE.td(false)}}><div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div></td>
+                                                <td style={{...TABLE_STYLE.td(false)}}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                        {isRestaurant && item.imageUrl && (
+                                                            <img src={item.imageUrl} alt={item.name} style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', border: `1px solid ${C.border}` }} />
+                                                        )}
+                                                        <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div>
+                                                    </div>
+                                                </td>
                                                 {companyBusinessType !== 'SERVICES' && (
                                                     <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
@@ -459,7 +467,7 @@ export default function ItemsPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title={companyBusinessType === 'SERVICES' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
+                    title={isRestaurant ? (form.id ? t('تعديل صنف المنيو') : t('إضافة صنف للمنيو')) : companyBusinessType === 'SERVICES' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
                     icon={form.id ? Pencil : Plus}
                     maxWidth="640px"
                 >
@@ -482,10 +490,57 @@ export default function ItemsPage() {
                             )}
 
                             <div>
-                                <label style={LS}>{companyBusinessType === 'SERVICES' ? t('اسم الخدمة') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
-                                <input type="text" required autoFocus placeholder={companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
+                                <label style={LS}>{isRestaurant ? t('اسم الصنف في المنيو') : companyBusinessType === 'SERVICES' ? t('اسم الخدمة') : t('اسم الصنف')} <span style={{ color: C.danger }}>*</span></label>
+                                <input type="text" required autoFocus placeholder={isRestaurant ? t("مثال: برجر كلاسيك، عصير برتقال...") : companyBusinessType === 'SERVICES' ? t("مثال: استشارة قانونية") : (usesBarcode ? t("مثال: زيت موتر 5 لتر") : t("اسم المنتج"))} value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} style={IS} onFocus={focusIn} onBlur={focusOut} />
                             </div>
                         </div>
+
+                        {/* Restaurant-only: Image Upload + Description */}
+                        {isRestaurant && (
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                                <div>
+                                    <label style={LS}>{t('صورة الصنف')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500 }}>({t('اختياري')})</span></label>
+                                    <div style={{ position: 'relative' }}>
+                                        {form.imageUrl ? (
+                                            <div style={{ position: 'relative', borderRadius: '12px', overflow: 'hidden', border: `1px solid ${C.border}`, height: '100px' }}>
+                                                <img src={form.imageUrl} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                                <button type="button" onClick={() => setForm({ ...form, imageUrl: '' })} style={{ position: 'absolute', top: '6px', insetInlineEnd: '6px', width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(0,0,0,0.6)', border: 'none', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <X size={14} />
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px', height: '100px', borderRadius: '12px', border: `2px dashed ${C.border}`, background: C.inputBg, cursor: 'pointer', transition: '0.2s', color: C.textMuted, fontSize: '12px', fontWeight: 600 }}>
+                                                <ImagePlus size={24} style={{ opacity: 0.4 }} />
+                                                {t('اضغط لرفع صورة')}
+                                                <input type="file" accept="image/*" style={{ display: 'none' }} onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+                                                    const fd = new FormData();
+                                                    fd.append('file', file);
+                                                    try {
+                                                        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+                                                        if (res.ok) {
+                                                            const data = await res.json();
+                                                            setForm(prev => ({ ...prev, imageUrl: data.url || data.path || '' }));
+                                                        }
+                                                    } catch { }
+                                                }} />
+                                            </label>
+                                        )}
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style={LS}>{t('وصف الصنف')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500 }}>({t('يظهر في المنيو')})</span></label>
+                                    <textarea
+                                        value={form.description}
+                                        onChange={e => setForm({ ...form, description: e.target.value })}
+                                        placeholder={t("وصف مختصر للوجبة يظهر في المنيو...")}
+                                        style={{ ...IS, height: '100px', padding: '10px', resize: 'none', fontSize: '12px' }}
+                                        onFocus={focusIn} onBlur={focusOut}
+                                    />
+                                </div>
+                            </div>
+                        )}
 
                         {companyBusinessType === 'RESTAURANTS' && (
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>

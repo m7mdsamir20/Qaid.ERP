@@ -95,13 +95,13 @@ export default function ShiftsPage() {
                     <div style={TABLE_STYLE.container}>
                         <table style={TABLE_STYLE.table}>
                             <thead style={TABLE_STYLE.thead}>
-                                <tr>{['#', 'وقت الفتح', 'وقت الإغلاق', 'عهدة الفتح', 'مبيعات', 'طلبات', 'الفرق', 'الحالة'].map(h => (
+                                <tr>{['#', 'الكاشير', 'وقت الفتح', 'وقت الإغلاق', 'عهدة الفتح', 'مبيعات', 'طلبات', 'الفرق', 'الحالة'].map(h => (
                                     <th key={h} style={TABLE_STYLE.th(false)}>{h}</th>
                                 ))}</tr>
                             </thead>
                             <tbody>
                                 {shifts.length === 0 ? (
-                                    <tr><td colSpan={8} style={{ textAlign: 'center', padding: '48px', color: C.textMuted, fontFamily: CAIRO }}>
+                                    <tr><td colSpan={9} style={{ textAlign: 'center', padding: '48px', color: C.textMuted, fontFamily: CAIRO }}>
                                         <Clock size={36} style={{ opacity: 0.2, display: 'block', margin: '0 auto 10px' }} />لا توجد ورديات بعد
                                     </td></tr>
                                 ) : shifts.map((shift, i) => {
@@ -110,6 +110,7 @@ export default function ShiftsPage() {
                                     return (
                                         <tr key={shift.id} style={TABLE_STYLE.row(i === shifts.length - 1)} onMouseEnter={e => e.currentTarget.style.background = C.hover} onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
                                             <td style={TABLE_STYLE.td(false)}><span style={{ fontWeight: 700, fontFamily: OUTFIT, color: C.primary }}>#{shift.shiftNumber}</span></td>
+                                            <td style={{ ...TABLE_STYLE.td(false), fontSize: '12px', color: C.textSecondary }}>{shift.user?.name || shift.user?.username || '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{formatDate(shift.openedAt)}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px' }}>{shift.closedAt ? formatDate(shift.closedAt) : '—'}</td>
                                             <td style={{ ...TABLE_STYLE.td(false), fontFamily: OUTFIT }}>{fMoney(shift.openingBalance)}</td>

@@ -204,7 +204,7 @@ export default function CustomersPage() {
 
                 <PageHeader
                     title={t("العملاء")}
-                    subtitle={t("إدارة بيانات العملاء والشركات والمستحقات")}
+                    subtitle={businessType === 'RESTAURANTS' ? t("إدارة بيانات العملاء وحسابات التوصيل") : t("إدارة بيانات العملاء والشركات والمستحقات")}
                     icon={Users}
                     primaryButton={{
                         label: t("إضافة عميل"),
