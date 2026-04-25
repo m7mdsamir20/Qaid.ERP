@@ -42,6 +42,7 @@ export default function POSPage() {
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
     const [modifiers, setModifiers] = useState<any[]>([]);
+    const [drivers, setDrivers] = useState<any[]>([]);
     
     // Modifiers Modal
     const [activeModifierCartIndex, setActiveModifierCartIndex] = useState<number | null>(null);
@@ -59,6 +60,7 @@ export default function POSPage() {
     const [cart, setCart] = useState<CartItem[]>([]);
     const [orderType, setOrderType] = useState('dine-in');
     const [selectedTable, setSelectedTable] = useState('');
+    const [selectedDriver, setSelectedDriver] = useState('');
     const [orderNotes, setOrderNotes] = useState('');
     const [paymentMethod, setPaymentMethod] = useState('cash');
     const [discount, setDiscount] = useState(0);
@@ -69,17 +71,19 @@ export default function POSPage() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const [catRes, itemRes, tableRes, modRes] = await Promise.all([
+            const [catRes, itemRes, tableRes, modRes, driverRes] = await Promise.all([
                 fetch('/api/categories'),
                 fetch('/api/items'),
                 fetch('/api/restaurant/tables'),
                 fetch('/api/restaurant/modifiers'),
+                fetch('/api/drivers')
             ]);
-            const [cats, itms, tbls, mods] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json()]);
+            const [cats, itms, tbls, mods, drvs] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json()]);
             setCategories(Array.isArray(cats) ? cats : []);
             setItems(Array.isArray(itms) ? itms : []);
             setTables(Array.isArray(tbls) ? tbls : []);
             setModifiers(Array.isArray(mods) ? mods : []);
+            setDrivers(Array.isArray(drvs) ? drvs.filter((d: any) => d.status === 'available') : []);
         } finally {
             setLoading(false);
         }
@@ -237,15 +241,26 @@ export default function POSPage() {
         }
 
         try {
+            const paymentsArray = [];
+            if (isSplit) {
+                if (splitAmounts.cash > 0) paymentsArray.push({ amount: splitAmounts.cash, paymentMethod: 'cash' });
+                if (splitAmounts.card > 0) paymentsArray.push({ amount: splitAmounts.card, paymentMethod: 'card' });
+            } else if (total > 0) {
+                paymentsArray.push({ amount: total, paymentMethod });
+            }
+
             const res = await fetch('/api/restaurant/orders', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     type: orderType,
                     tableId: selectedTable || null,
+                    driverId: selectedDriver || null,
                     notes: finalNotes.trim(),
                     paymentMethod,
+                    paidAmount: total,
                     discount,
+                    payments: paymentsArray,
                     lines: cart.map(c => ({ ...c })),
                 }),
             });
@@ -367,6 +382,21 @@ export default function POSPage() {
                                     <option value="">{t('— اختر الطاولة —')}</option>
                                     {tables.filter(t => t.status === 'available' || t.id === selectedTable).map(tbl => (
                                         <option key={tbl.id} value={tbl.id}>{tbl.name} ({tbl.capacity} أشخاص)</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
+
+                        {/* اختيار السائق للتوصيل */}
+                        {orderType === 'delivery' && (
+                            <div style={{ marginTop: '10px' }}>
+                                <select
+                                    value={selectedDriver}
+                                    onChange={e => setSelectedDriver(e.target.value)}
+                                    style={{ ...IS, height: '40px', fontSize: '13px', cursor: 'pointer' }}>
+                                    <option value="">{t('— اختر السائق —')}</option>
+                                    {drivers.map(drv => (
+                                        <option key={drv.id} value={drv.id}>{drv.name}</option>
                                     ))}
                                 </select>
                             </div>
