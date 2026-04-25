@@ -217,7 +217,7 @@ const AppModal: React.FC<AppModalProps> = ({
 
                 {/* Footer if exists */}
                 {footer && !isDelete && (
-                    <div style={{ padding: '16px 22px', borderTop: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)' }}>
+                    <div style={{ padding: '16px 22px', borderTop: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.02)', borderBottomLeftRadius: '16px', borderBottomRightRadius: '16px' }}>
                         {footer}
                     </div>
                 )}
