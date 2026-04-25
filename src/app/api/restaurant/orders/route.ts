@@ -102,6 +102,63 @@ export const POST = withProtection(async (request, session, body) => {
             });
         }
 
+        // Auto-Deduction Logic (الخصم التلقائي من المخزون للمطاعم)
+        const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
+        if (defaultWarehouse) {
+            for (const line of body.lines as any[]) {
+                const item = await prisma.item.findUnique({
+                    where: { id: line.itemId },
+                    include: { recipe: { include: { items: true } } }
+                });
+
+                if (!item) continue;
+
+                // 1. If it has a recipe, deduct recipe ingredients
+                if (item.recipe && item.recipe.items.length > 0) {
+                    for (const ri of item.recipe.items) {
+                        const deductionQty = ri.quantity * line.quantity;
+                        await prisma.stock.upsert({
+                            where: { itemId_warehouseId: { itemId: ri.itemId, warehouseId: defaultWarehouse.id } },
+                            create: { itemId: ri.itemId, warehouseId: defaultWarehouse.id, quantity: -deductionQty },
+                            update: { quantity: { decrement: deductionQty } }
+                        });
+                        await prisma.stockMovement.create({
+                            data: {
+                                type: 'out',
+                                date: new Date(),
+                                itemId: ri.itemId,
+                                warehouseId: defaultWarehouse.id,
+                                quantity: deductionQty,
+                                reference: `POS-${order.orderNumber}`,
+                                notes: `استهلاك مكونات لوجبة ${item.name}`,
+                                companyId
+                            }
+                        });
+                    }
+                } else if (item.type !== 'service') {
+                    // 2. No recipe, just a standard product, deduct directly
+                    const deductionQty = line.quantity;
+                    await prisma.stock.upsert({
+                        where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } },
+                        create: { itemId: item.id, warehouseId: defaultWarehouse.id, quantity: -deductionQty },
+                        update: { quantity: { decrement: deductionQty } }
+                    });
+                    await prisma.stockMovement.create({
+                        data: {
+                            type: 'out',
+                            date: new Date(),
+                            itemId: item.id,
+                            warehouseId: defaultWarehouse.id,
+                            quantity: deductionQty,
+                            reference: `POS-${order.orderNumber}`,
+                            notes: `مبيعات كاشير (بدون وصفة)`,
+                            companyId
+                        }
+                    });
+                }
+            }
+        }
+
         return NextResponse.json(order, { status: 201 });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
