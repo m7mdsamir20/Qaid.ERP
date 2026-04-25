@@ -14,6 +14,7 @@ export const POST = withProtection(async (request, session, body) => {
         const MODULES_MAP: Record<string, string[]> = {
             TRADING: ['sales', 'purchases', 'inventory', 'installments', 'financials', 'reports'],
             SERVICES: ['sales', 'installments', 'inventory', 'accounting', 'treasury', 'reports'],
+            RESTAURANTS: ['pos', 'tables', 'kitchen', 'sales', 'inventory', 'reports'], // Trial features (Delivery, Barcode, Purchases are locked)
         };
 
         const activeModules = MODULES_MAP[businessType] || MODULES_MAP['TRADING'];
