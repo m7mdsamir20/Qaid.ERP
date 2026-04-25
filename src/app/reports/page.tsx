@@ -205,6 +205,7 @@ function ReportsHubPageInner() {
     ];
 
     const hasModuleAccess = (tab: ModuleTab) => {
+        if (businessType === 'RESTAURANTS' && tab.key === 'installments') return false;
         if (isSuperAdmin) return true;
 
         // 1. تحقق من صلاحية التبويب في موديول التقارير الإحصائية (للموظفين فقط)

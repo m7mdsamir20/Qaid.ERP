@@ -4,6 +4,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { Truck, Plus, Edit2, Trash2, Loader2, CheckCircle2 } from 'lucide-react';
+import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, PAGE_BASE, BTN_DANGER, IS, LS, BTN_PRIMARY, TABLE_STYLE } from '@/constants/theme';
 import AppModal from '@/components/AppModal';
 
@@ -163,11 +164,16 @@ export default function DriversPage() {
                         </div>
                         <div>
                             <label style={LS}>{t('الحالة')}</label>
-                            <select value={formModal.data.status || 'available'} onChange={e => setFormModal(p => ({ ...p, data: { ...p.data, status: e.target.value } }))} style={IS}>
-                                <option value="available">{t('متاح')}</option>
-                                <option value="busy">{t('مشغول')}</option>
-                                <option value="offline">{t('غير متصل')}</option>
-                            </select>
+                            <CustomSelect
+                                value={formModal.data.status || 'available'}
+                                onChange={(v) => setFormModal(p => ({ ...p, data: { ...p.data, status: v } }))}
+                                hideSearch
+                                options={[
+                                    { value: 'available', label: t('متاح') },
+                                    { value: 'busy', label: t('مشغول') },
+                                    { value: 'offline', label: t('غير متصل') }
+                                ]}
+                            />
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '12px', marginTop: '28px' }}>
                             <button type="submit" disabled={isSaving} style={{ height: '44px', borderRadius: '10px', background: C.primary, color: '#fff', border: 'none', fontWeight: 600, fontSize: '13px', fontFamily: CAIRO, cursor: isSaving ? 'not-allowed' : 'pointer' }}>

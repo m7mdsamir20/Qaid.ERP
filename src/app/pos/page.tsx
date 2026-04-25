@@ -9,6 +9,7 @@ import {
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
     AlertCircle, Clock, ChevronsRight, LogOut
 } from 'lucide-react';
+import CustomSelect from '@/components/CustomSelect';
 
 const ORDER_TYPES = [
     { value: 'dine-in',  label: 'صالة',    icon: Table2,   color: '#6366f1' },
@@ -377,30 +378,24 @@ export default function POSPage() {
                         {/* اختيار الطاولة */}
                         {orderType === 'dine-in' && (
                             <div style={{ marginTop: '10px' }}>
-                                <select
+                                <CustomSelect
                                     value={selectedTable}
-                                    onChange={e => setSelectedTable(e.target.value)}
-                                    style={{ ...IS, height: '40px', fontSize: '13px', cursor: 'pointer' }}>
-                                    <option value="">{t('— اختر الطاولة —')}</option>
-                                    {tables.filter(t => t.status === 'available' || t.id === selectedTable).map(tbl => (
-                                        <option key={tbl.id} value={tbl.id}>{tbl.name} ({tbl.capacity} أشخاص)</option>
-                                    ))}
-                                </select>
+                                    onChange={v => setSelectedTable(v)}
+                                    options={tables.filter(t => t.status === 'available' || t.id === selectedTable).map(tbl => ({ value: tbl.id, label: `${tbl.name} (${tbl.capacity} أشخاص)` }))}
+                                    placeholder={t('— اختر الطاولة —')}
+                                />
                             </div>
                         )}
 
                         {/* اختيار السائق للتوصيل */}
                         {orderType === 'delivery' && (
                             <div style={{ marginTop: '10px' }}>
-                                <select
+                                <CustomSelect
                                     value={selectedDriver}
-                                    onChange={e => setSelectedDriver(e.target.value)}
-                                    style={{ ...IS, height: '40px', fontSize: '13px', cursor: 'pointer' }}>
-                                    <option value="">{t('— اختر السائق —')}</option>
-                                    {drivers.map(drv => (
-                                        <option key={drv.id} value={drv.id}>{drv.name}</option>
-                                    ))}
-                                </select>
+                                    onChange={v => setSelectedDriver(v)}
+                                    options={drivers.map(drv => ({ value: drv.id, label: drv.name }))}
+                                    placeholder={t('— اختر السائق —')}
+                                />
                             </div>
                         )}
                     </div>

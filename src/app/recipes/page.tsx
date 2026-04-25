@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY, PAGE_BASE } from '@/constants/theme';
 import { Plus, RefreshCw, Loader2, X, Check, Trash2, Edit3, AlertCircle, PlusCircle, BookOpen } from 'lucide-react';
 
@@ -128,12 +129,12 @@ export default function RecipesPage() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     <div>
                         <label style={LS}>الوجبة <span style={{ color: C.danger }}>*</span></label>
-                        <select value={form.itemId} onChange={e => setForm(f => ({ ...f, itemId: e.target.value }))} style={{ ...IS, cursor: 'pointer', fontFamily: CAIRO }}>
-                            <option value="">— اختر الوجبة —</option>
-                            {(editItem ? items : availableItems).map(it => (
-                                <option key={it.id} value={it.id}>{it.name}</option>
-                            ))}
-                        </select>
+                        <CustomSelect
+                            value={form.itemId}
+                            onChange={v => setForm(f => ({ ...f, itemId: v }))}
+                            options={(editItem ? items : availableItems).map(it => ({ value: it.id, label: it.name }))}
+                            placeholder="— اختر الوجبة —"
+                        />
                     </div>
 
                     <div>
@@ -156,10 +157,14 @@ export default function RecipesPage() {
                             )}
                             {form.ingredients.map((ing, i) => (
                                 <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                                    <select value={ing.itemId} onChange={e => updateIng(i, 'itemId', e.target.value)} style={{ ...IS, flex: 1, height: '38px', fontSize: '12px', fontFamily: CAIRO, cursor: 'pointer' }}>
-                                        <option value="">— المادة الخام —</option>
-                                        {items.map(it => <option key={it.id} value={it.id}>{it.name}</option>)}
-                                    </select>
+                                    <div style={{ flex: 1 }}>
+                                        <CustomSelect
+                                            value={ing.itemId}
+                                            onChange={v => updateIng(i, 'itemId', v)}
+                                            options={items.map(it => ({ value: it.id, label: it.name }))}
+                                            placeholder="— المادة الخام —"
+                                        />
+                                    </div>
                                     <input type="number" min="0.01" step="0.01" value={ing.quantity || ''} onChange={e => updateIng(i, 'quantity', Number(e.target.value))} placeholder="الكمية" style={{ ...IS, width: '75px', height: '38px', fontSize: '12px', fontFamily: OUTFIT }} />
                                     <input value={ing.unit} onChange={e => updateIng(i, 'unit', e.target.value)} placeholder="جرام" style={{ ...IS, width: '70px', height: '38px', fontSize: '12px' }} />
                                     <button onClick={() => removeIng(i)} style={{ width: 34, height: 34, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}><X size={13} /></button>

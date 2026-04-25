@@ -5,6 +5,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
+import CustomSelect from '@/components/CustomSelect';
 import { C, CAIRO, OUTFIT, IS, LS, BTN_PRIMARY, PAGE_BASE } from '@/constants/theme';
 import { Plus, RefreshCw, Loader2, X, Check, Users, Table2, Edit3, Trash2, AlertCircle, CheckCircle2, Receipt } from 'lucide-react';
 
@@ -137,9 +138,11 @@ export default function TablesPage() {
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: C.textSecondary, fontSize: '12px' }}><Users size={12} /> {table.capacity} أشخاص</div>
                                     </div>
                                     <div style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '8px', padding: '4px 10px', fontSize: '11.5px', fontWeight: 700, color: st.color, textAlign: 'center' }}>{st.label}</div>
-                                    <select value={table.status} onChange={e => handleStatus(table.id, e.target.value)} style={{ ...IS, height: '32px', fontSize: '11px', cursor: 'pointer', fontFamily: CAIRO }}>
-                                        {TABLE_STATUSES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                                    </select>
+                                    <CustomSelect
+                                        value={table.status}
+                                        onChange={(v) => handleStatus(table.id, v)}
+                                        options={TABLE_STATUSES}
+                                    />
                                 </div>
                             );
                         })}

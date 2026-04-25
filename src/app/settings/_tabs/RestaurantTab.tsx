@@ -120,7 +120,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {f.type === 'toggle' ? (
-                                        <div style={{ padding: '14px 0' }}>
+                                        <div style={{ padding: '14px 0', display: 'flex', justifyContent: 'flex-end' }}>
                                             <Toggle checked={(form as any)[f.key]} onChange={v => set(f.key as any, v)} disabled={!isEditMode || f.disabled} />
                                         </div>
                                     ) : (
@@ -189,7 +189,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                 <span style={{ fontSize: '12px', fontWeight: 700, color: C.textSecondary, fontFamily: CAIRO }}>{t('تفعيل شاشة العميل')}</span>
                             </div>
                             <div style={{ flex: 1, padding: '0 20px' }}>
-                                <div style={{ padding: '14px 0' }}>
+                                <div style={{ padding: '14px 0', display: 'flex', justifyContent: 'flex-end' }}>
                                     <Toggle checked={form.enableCustomerDisplay} onChange={v => set('enableCustomerDisplay', v)} disabled={!isEditMode} />
                                 </div>
                             </div>
@@ -219,17 +219,39 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                 </div>
                                 <div style={{ flex: 1, padding: '0 20px' }}>
                                     {f.type === 'toggle' ? (
-                                        <div style={{ padding: '14px 0' }}>
+                                        <div style={{ padding: '14px 0', display: 'flex', justifyContent: 'flex-end' }}>
                                             <Toggle checked={(form as any)[f.key]} onChange={v => set(f.key as any, v)} disabled={!isEditMode} />
                                         </div>
                                     ) : (
                                         isEditMode ? (
-                                            <select style={{ width: '100%', background: 'transparent', border: 'none', outline: 'none', fontSize: '13px', color: C.textPrimary, padding: '14px 0', boxSizing: 'border-box', fontWeight: 700, fontFamily: CAIRO, cursor: 'pointer' }} value={(form as any)[f.key]} onChange={e => set(f.key as any, e.target.value)}>
-                                                <option value="dine-in">🪑 صالة</option>
-                                                <option value="takeaway">📦 تيك أواي</option>
-                                                <option value="delivery">🚚 توصيل</option>
-                                                <option value="online">🌐 أونلاين</option>
-                                            </select>
+                                            <div style={{ display: 'flex', gap: '8px', padding: '14px 0', flexWrap: 'wrap' }}>
+                                                {[
+                                                    { v: 'dine-in', l: '🪑 صالة' },
+                                                    { v: 'takeaway', l: '📦 تيك أواي' },
+                                                    { v: 'delivery', l: '🚚 توصيل' },
+                                                    { v: 'online', l: '🌐 أونلاين' },
+                                                ].map(opt => (
+                                                    <button
+                                                        key={opt.v}
+                                                        type="button"
+                                                        onClick={() => set(f.key as any, opt.v)}
+                                                        style={{
+                                                            padding: '8px 16px',
+                                                            borderRadius: '10px',
+                                                            border: `1px solid ${(form as any)[f.key] === opt.v ? C.primary : C.border}`,
+                                                            background: (form as any)[f.key] === opt.v ? `${C.primary}15` : 'transparent',
+                                                            color: (form as any)[f.key] === opt.v ? C.primary : C.textSecondary,
+                                                            fontSize: '12px',
+                                                            fontWeight: 700,
+                                                            cursor: 'pointer',
+                                                            fontFamily: CAIRO,
+                                                            transition: 'all 0.2s'
+                                                        }}
+                                                    >
+                                                        {opt.l}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         ) : (
                                             <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '14px 0', fontFamily: CAIRO }}>{orderTypeMap[(form as any)[f.key]] || ''}</div>
                                         )

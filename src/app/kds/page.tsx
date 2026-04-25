@@ -5,6 +5,8 @@ import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';
 import { Clock, CheckCircle2, Loader2, RefreshCw, AlertCircle, ChefHat, LogOut } from 'lucide-react';
 
+import PageHeader from '@/components/PageHeader';
+
 export default function KDSPage() {
     const { t, lang } = useTranslation();
     const isRtl = lang === 'ar';
@@ -15,7 +17,6 @@ export default function KDSPage() {
 
     const load = useCallback(async () => {
         try {
-            // Fetch pending and preparing orders
             const res = await fetch('/api/restaurant/orders?limit=100');
             const data = await res.json();
             if (Array.isArray(data)) {
@@ -28,7 +29,6 @@ export default function KDSPage() {
 
     useEffect(() => {
         load();
-        // Auto-refresh every 15 seconds
         const interval = setInterval(load, 15000);
         return () => clearInterval(interval);
     }, [load]);
@@ -73,28 +73,26 @@ export default function KDSPage() {
     return (
         <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', height: '100vh', background: C.bg, fontFamily: CAIRO, color: C.textPrimary }}>
             {/* Header */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px', background: C.card, borderBottom: `1px solid ${C.border}`, boxShadow: '0 2px 10px rgba(0,0,0,0.02)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <div style={{ width: 44, height: 44, borderRadius: '14px', background: `${C.primary}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.primary }}>
-                        <ChefHat size={24} />
-                    </div>
-                    <div>
-                        <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 700, color: C.textPrimary }}>شاشة المطبخ (KDS)</h1>
-                        <p style={{ margin: 0, fontSize: '13px', color: C.textMuted }}>إدارة الطلبات الحية</p>
-                    </div>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <button onClick={load} style={{ height: '44px', padding: '0 16px', borderRadius: '10px', border: `1px solid ${C.border}`, background: C.card, color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, fontWeight: 600 }}>
-                        <RefreshCw size={16} /> تحديث الطلبات
-                    </button>
-                    <a href="/" style={{ height: '44px', padding: '0 16px', borderRadius: '10px', border: '1px solid #ef444430', background: '#ef444410', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textDecoration: 'none', fontWeight: 600 }}>
-                        <LogOut size={16} /> خروج
-                    </a>
-                </div>
+            <div style={{ padding: '24px 32px 0 32px' }}>
+                <PageHeader
+                    title="شاشة المطبخ (KDS)"
+                    subtitle="إدارة الطلبات الحية ومتابعة التحضير"
+                    icon={ChefHat}
+                    actions={[
+                        <div key="actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                            <button onClick={load} style={{ height: '42px', padding: '0 20px', borderRadius: '12px', border: `1px solid ${C.primary}40`, background: `${C.primary}15`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, fontWeight: 700, transition: '0.2s', whiteSpace: 'nowrap' }}>
+                                <RefreshCw size={16} /> تحديث الطلبات
+                            </button>
+                            <a href="/" style={{ height: '42px', padding: '0 20px', borderRadius: '12px', border: '1px solid #ef444440', background: '#ef444415', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', fontFamily: CAIRO, textDecoration: 'none', fontWeight: 700, transition: '0.2s', whiteSpace: 'nowrap' }}>
+                                <LogOut size={16} /> خروج
+                            </a>
+                        </div>
+                    ]}
+                />
             </div>
 
             {/* Content */}
-            <div style={{ flex: 1, overflowY: 'auto', padding: '24px' }}>
+            <div style={{ flex: 1, overflowY: 'auto', padding: '0 32px 32px 32px' }}>
                 {loading && orders.length === 0 ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: C.textMuted }}>
                         <Loader2 size={32} style={{ animation: 'spin 1s linear infinite' }} />
