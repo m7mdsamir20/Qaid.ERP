@@ -84,6 +84,7 @@ export const navSections = [
         featureKey: 'delivery',
         links: [
             { id: '/delivery', href: '/delivery', label: 'طلبات التوصيل' },
+            { id: '/drivers', href: '/restaurant/drivers', label: 'إدارة السائقين' },
         ],
     },
     {

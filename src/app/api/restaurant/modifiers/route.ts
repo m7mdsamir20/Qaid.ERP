@@ -7,7 +7,7 @@ export const GET = withProtection(async (request, session) => {
         const companyId = (session.user as any).companyId;
         const modifiers = await prisma.modifier.findMany({
             where: { companyId },
-            include: { options: true },
+            include: { options: { include: { item: { select: { name: true } } } } },
             orderBy: { createdAt: 'desc' },
         });
         return NextResponse.json(modifiers);
@@ -29,6 +29,7 @@ export const POST = withProtection(async (request, session, body) => {
                     create: (body.options ?? []).map((o: any) => ({
                         name: o.name,
                         extraPrice: o.extraPrice ?? 0,
+                        itemId: o.itemId || null
                     })),
                 },
             },
@@ -59,6 +60,7 @@ export const PUT = withProtection(async (request, session, body) => {
                     modifierId: body.id,
                     name: o.name,
                     extraPrice: o.extraPrice ?? 0,
+                    itemId: o.itemId || null
                 })),
             });
         }
