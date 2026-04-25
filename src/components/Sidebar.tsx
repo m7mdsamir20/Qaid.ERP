@@ -145,6 +145,10 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
             if (!hasFeature(section.featureKey)) return null;
             if (!section.isStandalone && visibleLinks.length === 0) return null;
 
+            // أقسام المطاعم تظهر فقط لنشاط RESTAURANTS
+            const restaurantFeatures = ['pos', 'tables', 'kitchen'];
+            if (restaurantFeatures.includes(section.featureKey || '') && businessType !== 'RESTAURANTS') return null;
+
             const SectionIcon = section.icon;
             if (section.isStandalone && section.href) {
                 const isActive = section.href === '/' ? pathname === '/' : pathname === section.href || pathname.startsWith(section.href + '/');
