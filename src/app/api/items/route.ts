@@ -75,6 +75,8 @@ export const POST = withProtection(async (request, session, body) => {
                     minLimit: parseFloat(body.minLimit) || 0,
                     categoryId: body.categoryId || null,
                     description: body.description || null,
+                    type: body.type || 'product',
+                    isPosEligible: body.isPosEligible ?? true,
                     status: body.status || 'active',
                     companyId,
                 },
@@ -187,6 +189,8 @@ export const PUT = withProtection(async (request, session, body) => {
                 averageCost: parseFloat(body.averageCost) || parseFloat(body.costPrice) || 0,
                 minLimit: parseFloat(body.minLimit) || 0,
                 categoryId: body.categoryId || null,
+                type: body.type || 'product',
+                isPosEligible: body.isPosEligible ?? true,
             },
         });
         return NextResponse.json(item);

@@ -383,6 +383,8 @@ model Item {
   categoryId       String?
   companyId        String
   description      String?
+  type             String                  @default("product") // product | raw | semi_finished | service
+  isPosEligible    Boolean                 @default(true) // هل يظهر في نقطة البيع؟
   status           String                  @default("active")
   createdAt        DateTime                @default(now())
   invoiceLines     InvoiceLine[]
