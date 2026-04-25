@@ -25,6 +25,7 @@ interface CartItem {
     quantity: number;
     discount: number;
     notes: string;
+    modifiers?: any; // To store selected modifiers
 }
 
 export default function POSPage() {
@@ -40,6 +41,11 @@ export default function POSPage() {
     const [submitting, setSubmitting] = useState(false);
     const [successMsg, setSuccessMsg] = useState('');
     const [errorMsg, setErrorMsg] = useState('');
+    const [modifiers, setModifiers] = useState<any[]>([]);
+    
+    // Modifiers Modal
+    const [activeModifierCartIndex, setActiveModifierCartIndex] = useState<number | null>(null);
+    const [tempModifiers, setTempModifiers] = useState<any>({});
 
     // Filters
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -59,15 +65,17 @@ export default function POSPage() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const [catRes, itemRes, tableRes] = await Promise.all([
+            const [catRes, itemRes, tableRes, modRes] = await Promise.all([
                 fetch('/api/categories'),
                 fetch('/api/items'),
                 fetch('/api/restaurant/tables'),
+                fetch('/api/restaurant/modifiers'),
             ]);
-            const [cats, itms, tbls] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json()]);
+            const [cats, itms, tbls, mods] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json()]);
             setCategories(Array.isArray(cats) ? cats : []);
             setItems(Array.isArray(itms) ? itms : []);
             setTables(Array.isArray(tbls) ? tbls : []);
+            setModifiers(Array.isArray(mods) ? mods : []);
         } finally {
             setLoading(false);
         }
@@ -90,7 +98,7 @@ export default function POSPage() {
             return [...prev, {
                 itemId: item.id,
                 itemName: item.name,
-                unitPrice: item.salePrice ?? item.price ?? 0,
+                unitPrice: item.sellPrice ?? item.price ?? 0,
                 quantity: 1,
                 discount: 0,
                 notes: '',
@@ -108,7 +116,46 @@ export default function POSPage() {
     const removeFromCart = (itemId: string) => setCart(prev => prev.filter(c => c.itemId !== itemId));
     const clearCart = () => { setCart([]); setStep('cart'); setSelectedTable(''); setOrderNotes(''); setDiscount(0); };
 
-    const subtotal = cart.reduce((s, c) => s + c.unitPrice * c.quantity, 0);
+    const openModifiersModal = (index: number) => {
+        setActiveModifierCartIndex(index);
+        setTempModifiers(cart[index].modifiers || {});
+    };
+
+    const handleModifierToggle = (modName: string, optName: string, extraPrice: number, isMulti: boolean) => {
+        setTempModifiers((prev: any) => {
+            const next = { ...prev };
+            if (!next[modName]) next[modName] = [];
+            
+            const existingIdx = next[modName].findIndex((o: any) => o.name === optName);
+            if (existingIdx >= 0) {
+                next[modName] = next[modName].filter((o: any) => o.name !== optName);
+                if (next[modName].length === 0) delete next[modName];
+            } else {
+                if (!isMulti) next[modName] = [{ name: optName, price: extraPrice }];
+                else next[modName].push({ name: optName, price: extraPrice });
+            }
+            return next;
+        });
+    };
+
+    const saveModifiers = () => {
+        if (activeModifierCartIndex !== null) {
+            setCart(prev => prev.map((c, i) => i === activeModifierCartIndex ? { ...c, modifiers: tempModifiers } : c));
+        }
+        setActiveModifierCartIndex(null);
+    };
+
+    const calculateCartItemTotal = (item: CartItem) => {
+        let modsTotal = 0;
+        if (item.modifiers) {
+            Object.values(item.modifiers).forEach((arr: any) => {
+                arr.forEach((o: any) => modsTotal += (o.price || 0));
+            });
+        }
+        return (item.unitPrice + modsTotal) * item.quantity;
+    };
+
+    const subtotal = cart.reduce((s, c) => s + calculateCartItemTotal(c), 0);
     const total = Math.max(0, subtotal - discount);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
@@ -206,7 +253,7 @@ export default function POSPage() {
                                                 {item.imageUrl ? <img src={item.imageUrl} style={{ width: 48, height: 48, borderRadius: '12px', objectFit: 'cover' }} /> : '🍽️'}
                                             </div>
                                             <p style={{ margin: '0 0 6px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>{item.name}</p>
-                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.salePrice ?? item.price ?? 0)}</p>
+                                            <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.sellPrice ?? item.price ?? 0)}</p>
                                         </button>
                                     );
                                 })}
@@ -258,18 +305,34 @@ export default function POSPage() {
                             </div>
                         ) : (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                {cart.map(item => (
-                                    <div key={item.itemId} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <div style={{ flex: 1 }}>
-                                            <p style={{ margin: '0 0 2px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary }}>{item.itemName}</p>
-                                            <p style={{ margin: 0, fontSize: '12px', color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.unitPrice)} × {item.quantity} = {fMoney(item.unitPrice * item.quantity)}</p>
+                                {cart.map((item, idx) => (
+                                    <div key={idx} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: '12px', padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                            <div style={{ flex: 1 }}>
+                                                <p style={{ margin: '0 0 2px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary }}>{item.itemName}</p>
+                                                <p style={{ margin: 0, fontSize: '12px', color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.unitPrice)} × {item.quantity} = {fMoney(calculateCartItemTotal(item))}</p>
+                                            </div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                <button onClick={() => updateQty(item.itemId, -1)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={13} /></button>
+                                                <span style={{ minWidth: '20px', textAlign: 'center', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>{item.quantity}</span>
+                                                <button onClick={() => updateQty(item.itemId, 1)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.border}`, background: `${C.primary}10`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={13} /></button>
+                                                <button onClick={() => removeFromCart(item.itemId)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={13} /></button>
+                                            </div>
                                         </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                            <button onClick={() => updateQty(item.itemId, -1)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Minus size={13} /></button>
-                                            <span style={{ minWidth: '20px', textAlign: 'center', fontSize: '13px', fontWeight: 700, fontFamily: OUTFIT, color: C.textPrimary }}>{item.quantity}</span>
-                                            <button onClick={() => updateQty(item.itemId, 1)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.border}`, background: `${C.primary}10`, color: C.primary, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Plus size={13} /></button>
-                                            <button onClick={() => removeFromCart(item.itemId)} style={{ width: 28, height: 28, borderRadius: '8px', border: `1px solid ${C.dangerBorder}`, background: C.dangerBg, color: C.danger, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><X size={13} /></button>
-                                        </div>
+                                        {modifiers.length > 0 && (
+                                            <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', borderTop: `1px dashed ${C.border}`, paddingTop: '8px' }}>
+                                                <button onClick={() => openModifiersModal(idx)} style={{ padding: '4px 8px', borderRadius: '6px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontSize: '11px', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                                    <Plus size={12} /> {t('إضافات وتعديلات')}
+                                                </button>
+                                                {item.modifiers && Object.entries(item.modifiers).map(([modName, opts]: any) => (
+                                                    opts.map((o: any, i: number) => (
+                                                        <div key={`${modName}-${i}`} style={{ background: `${C.primary}10`, border: `1px solid ${C.primary}30`, borderRadius: '6px', padding: '2px 6px', fontSize: '10px', color: C.primary, fontFamily: CAIRO }}>
+                                                            {o.name} {o.price > 0 && `(+${o.price})`}
+                                                        </div>
+                                                    ))
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -345,6 +408,45 @@ export default function POSPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Modifiers Modal */}
+            {activeModifierCartIndex !== null && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '460px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الإضافات والتعديلات')}</h2>
+                            <button onClick={() => setActiveModifierCartIndex(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+                        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', paddingRight: '10px' }}>
+                            {modifiers.map(mod => (
+                                <div key={mod.id}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+                                        <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{mod.name}</h3>
+                                        {mod.required && <span style={{ fontSize: '10px', color: C.danger, background: C.dangerBg, padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>{t('إجباري')}</span>}
+                                        {mod.multiSelect && <span style={{ fontSize: '10px', color: C.primary, background: `${C.primary}15`, padding: '2px 6px', borderRadius: '4px', fontWeight: 700 }}>{t('متعدد')}</span>}
+                                    </div>
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                        {mod.options?.map((opt: any) => {
+                                            const isSelected = tempModifiers[mod.name]?.some((o: any) => o.name === opt.name);
+                                            return (
+                                                <button key={opt.id} onClick={() => handleModifierToggle(mod.name, opt.name, opt.extraPrice, mod.multiSelect)}
+                                                    style={{ padding: '10px 12px', borderRadius: '10px', border: `1px solid ${isSelected ? C.primary : C.border}`, background: isSelected ? `${C.primary}10` : C.bg, color: isSelected ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontFamily: CAIRO }}>
+                                                    <span>{opt.name}</span>
+                                                    {opt.extraPrice > 0 && <span style={{ fontFamily: OUTFIT, fontWeight: 700, fontSize: '11px' }}>+{fMoney(opt.extraPrice)}</span>}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '20px', paddingTop: '20px', borderTop: `1px solid ${C.border}` }}>
+                            <button onClick={saveModifiers} style={{ ...BTN_PRIMARY(false, false), flex: 1, height: '44px', borderRadius: '12px' }}>{t('تأكيد الإضافات')}</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </DashboardLayout>
     );
