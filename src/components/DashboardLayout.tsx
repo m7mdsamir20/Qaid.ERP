@@ -1,6 +1,6 @@
 'use client';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import { Calendar, AlertTriangle, Loader2 } from 'lucide-react';
 import Sidebar from '@/components/Sidebar';
@@ -20,9 +20,18 @@ export default function DashboardLayout({
     const [noFY, setNoFY]       = useState(false);
     const [loadingFY, setLoadingFY] = useState(false);
 
+    const syncAttempted = useRef(false);
+
     // تحديث الـ session تلقائيًا كل 5 دقائق لضمان مزامنة businessType والصلاحيات مع قاعدة البيانات
     useEffect(() => {
         if (status !== 'authenticated') return;
+        
+        // تحديث إجباري مرة واحدة عند فتح الموقع لمزامنة أي تغييرات حصلت من السوبر أدمن
+        if (!syncAttempted.current) {
+            syncAttempted.current = true;
+            update();
+        }
+
         const interval = setInterval(() => { update(); }, 5 * 60 * 1000);
         return () => clearInterval(interval);
     }, [status, update]);

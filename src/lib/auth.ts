@@ -1,4 +1,4 @@
-import { AuthOptions } from "next-auth";
+﻿import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "./prisma";
@@ -127,7 +127,7 @@ export const authOptions: AuthOptions = {
 
             // sync مع قاعدة البيانات كل 5 دقائق فقط لتحسين الأداء
             const SYNC_INTERVAL = 5 * 60 * 1000; // 5 دقائق
-            const shouldSync = !user && token.id && (!token.lastSync || Date.now() - (token.lastSync as number) > SYNC_INTERVAL);
+            const shouldSync = !user && token.id && (trigger === "update" || !token.lastSync || Date.now() - (token.lastSync as number) > SYNC_INTERVAL);
 
             if (shouldSync) {
                 try {
