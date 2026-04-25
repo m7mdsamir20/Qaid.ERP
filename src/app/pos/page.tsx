@@ -47,6 +47,10 @@ export default function POSPage() {
     const [activeModifierCartIndex, setActiveModifierCartIndex] = useState<number | null>(null);
     const [tempModifiers, setTempModifiers] = useState<any>({});
 
+    // Split Payment Modal
+    const [showSplitPayment, setShowSplitPayment] = useState(false);
+    const [splitAmounts, setSplitAmounts] = useState({ cash: 0, card: 0 });
+
     // Filters
     const [selectedCategory, setSelectedCategory] = useState('');
     const [search, setSearch] = useState('');
@@ -159,11 +163,28 @@ export default function POSPage() {
     const total = Math.max(0, subtotal - discount);
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
-    const handleSubmit = async () => {
+    const handleInitialSubmit = () => {
         if (cart.length === 0) { setErrorMsg('السلة فارغة'); return; }
         if (orderType === 'dine-in' && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
+        
+        if (paymentMethod === 'mixed') {
+            setSplitAmounts({ cash: total / 2, card: total / 2 });
+            setShowSplitPayment(true);
+        } else {
+            handleSubmit();
+        }
+    };
+
+    const handleSubmit = async (isSplit = false) => {
         setSubmitting(true);
         setErrorMsg('');
+        
+        // append split details to notes if split payment
+        let finalNotes = orderNotes;
+        if (isSplit) {
+            finalNotes += `\n[تقسيم الفاتورة: نقدي ${splitAmounts.cash} | شبكة ${splitAmounts.card}]`;
+        }
+
         try {
             const res = await fetch('/api/restaurant/orders', {
                 method: 'POST',
@@ -171,7 +192,7 @@ export default function POSPage() {
                 body: JSON.stringify({
                     type: orderType,
                     tableId: selectedTable || null,
-                    notes: orderNotes,
+                    notes: finalNotes.trim(),
                     paymentMethod,
                     discount,
                     lines: cart.map(c => ({ ...c })),
@@ -180,6 +201,7 @@ export default function POSPage() {
             if (!res.ok) { const d = await res.json(); setErrorMsg(d.error || 'فشل'); setSubmitting(false); return; }
             setSuccessMsg('✅ تم حفظ الطلب وإرساله للمطبخ');
             clearCart();
+            setShowSplitPayment(false);
             load();
             setTimeout(() => setSuccessMsg(''), 3000);
         } catch { setErrorMsg('حدث خطأ'); }
@@ -397,7 +419,7 @@ export default function POSPage() {
                                     {t('مسح')}
                                 </button>
                             )}
-                            <button onClick={handleSubmit} disabled={submitting || cart.length === 0}
+                            <button onClick={handleInitialSubmit} disabled={submitting || cart.length === 0}
                                 style={{ ...BTN_PRIMARY(submitting || cart.length === 0, false), flex: 1, height: '48px', borderRadius: '12px', fontSize: '14px', gap: '8px' }}>
                                 {submitting
                                     ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الحفظ...')}</>
@@ -442,6 +464,53 @@ export default function POSPage() {
                         </div>
                         <div style={{ display: 'flex', gap: '10px', marginTop: '20px', paddingTop: '20px', borderTop: `1px solid ${C.border}` }}>
                             <button onClick={saveModifiers} style={{ ...BTN_PRIMARY(false, false), flex: 1, height: '44px', borderRadius: '12px' }}>{t('تأكيد الإضافات')}</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Split Payment Modal */}
+            {showSplitPayment && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('تقسيم الفاتورة (الدفع المتعدد)')}</h2>
+                            <button onClick={() => setShowSplitPayment(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            <div style={{ background: `${C.primary}10`, padding: '12px', borderRadius: '10px', textAlign: 'center' }}>
+                                <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, fontFamily: CAIRO }}>المبلغ المطلوب</p>
+                                <p style={{ margin: '4px 0 0', fontSize: '20px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(total)}</p>
+                            </div>
+                            
+                            <div>
+                                <label style={LS}>المبلغ المدفوع (نقدي) 💵</label>
+                                <input type="number" min="0" value={splitAmounts.cash || ''} 
+                                    onChange={e => setSplitAmounts({ cash: Number(e.target.value), card: total - Number(e.target.value) })}
+                                    style={{ ...IS, fontFamily: OUTFIT, fontSize: '16px', fontWeight: 700 }} 
+                                />
+                            </div>
+
+                            <div>
+                                <label style={LS}>المبلغ المدفوع (شبكة) 💳</label>
+                                <input type="number" min="0" value={splitAmounts.card || ''} 
+                                    onChange={e => setSplitAmounts({ card: Number(e.target.value), cash: total - Number(e.target.value) })}
+                                    style={{ ...IS, fontFamily: OUTFIT, fontSize: '16px', fontWeight: 700 }} 
+                                />
+                            </div>
+
+                            {splitAmounts.cash + splitAmounts.card !== total && (
+                                <div style={{ color: C.danger, fontSize: '12px', textAlign: 'center', fontFamily: CAIRO, fontWeight: 600 }}>
+                                    مجموع المبالغ لا يساوي إجمالي الفاتورة!
+                                </div>
+                            )}
+                        </div>
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
+                            <button onClick={() => setShowSplitPayment(false)} style={{ flex: 1, height: '44px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>إلغاء</button>
+                            <button onClick={() => handleSubmit(true)} disabled={submitting || (splitAmounts.cash + splitAmounts.card !== total)} 
+                                style={{ ...BTN_PRIMARY(submitting || (splitAmounts.cash + splitAmounts.card !== total), false), flex: 2, height: '44px', borderRadius: '12px' }}>
+                                {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'تأكيد الدفع وطباعة'}
+                            </button>
                         </div>
                     </div>
                 </div>
