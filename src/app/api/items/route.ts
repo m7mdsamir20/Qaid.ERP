@@ -189,6 +189,7 @@ export const PUT = withProtection(async (request, session, body) => {
                 averageCost: parseFloat(body.averageCost) || parseFloat(body.costPrice) || 0,
                 minLimit: parseFloat(body.minLimit) || 0,
                 categoryId: body.categoryId || null,
+                description: body.description || null,
                 type: body.type || 'product',
                 isPosEligible: body.isPosEligible ?? true,
             },

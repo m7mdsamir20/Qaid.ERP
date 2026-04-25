@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { C, CAIRO, OUTFIT } from '@/constants/theme';
-import { Clock, CheckCircle2, Loader2, RefreshCw, AlertCircle, ChefHat, LogOut } from 'lucide-react';
+import { Clock, CheckCircle2, Loader2, RefreshCw, AlertCircle, ChefHat, LogOut, Globe, XCircle, Phone, MapPin, User } from 'lucide-react';
 
 import PageHeader from '@/components/PageHeader';
 
@@ -65,6 +65,40 @@ export default function KDSPage() {
         }
     };
 
+    // Accept external order
+    const acceptOrder = async (orderId: string) => {
+        setUpdatingId(orderId);
+        try {
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: orderId, status: 'preparing' }),
+            });
+            if (res.ok) {
+                setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'preparing' } : o));
+            }
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
+    // Reject external order
+    const rejectOrder = async (orderId: string) => {
+        setUpdatingId(orderId);
+        try {
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: orderId, status: 'cancelled' }),
+            });
+            if (res.ok) {
+                setOrders(prev => prev.filter(o => o.id !== orderId));
+            }
+        } finally {
+            setUpdatingId(null);
+        }
+    };
+
     const getElapsedTime = (dateString: string) => {
         const diff = Math.floor((new Date().getTime() - new Date(dateString).getTime()) / 60000);
         return diff;
@@ -109,17 +143,29 @@ export default function KDSPage() {
                             const elapsed = getElapsedTime(order.createdAt);
                             const isLate = elapsed > 20;
                             const isPreparing = order.status === 'preparing';
+                            const isExternal = order.source && order.source !== 'pos';
+                            const sourceLabel = order.source === 'website' ? 'طلب موقع' : order.source === 'qr' ? 'طلب QR' : order.source === 'api' ? 'طلب خارجي' : '';
+                            const isPendingExternal = isExternal && order.status === 'pending';
 
                             return (
-                                <div key={order.id} style={{ background: C.card, border: `2px solid ${isLate ? '#ef444450' : isPreparing ? C.primary : C.border}`, borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.1)' }}>
+                                <div key={order.id} style={{ background: C.card, border: `2px solid ${isPendingExternal ? '#f59e0b50' : isLate ? '#ef444450' : isPreparing ? C.primary : C.border}`, borderRadius: '16px', overflow: 'hidden', display: 'flex', flexDirection: 'column', boxShadow: '0 4px 20px -10px rgba(0,0,0,0.1)' }}>
                                     
+                                    {/* External Order Banner */}
+                                    {isExternal && (
+                                        <div style={{ padding: '8px 16px', background: isPendingExternal ? 'rgba(245,158,11,0.12)' : 'rgba(59,130,246,0.08)', borderBottom: `1px solid ${isPendingExternal ? '#f59e0b30' : '#3b82f630'}`, display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 700, color: isPendingExternal ? '#f59e0b' : '#3b82f6' }}>
+                                            <Globe size={14} />
+                                            🌐 {sourceLabel}
+                                            {isPendingExternal && <span style={{ marginInlineStart: 'auto', fontSize: '11px', padding: '2px 10px', borderRadius: '20px', background: '#f59e0b20', border: '1px solid #f59e0b40', animation: 'pulse 2s infinite' }}>بانتظار الموافقة</span>}
+                                        </div>
+                                    )}
+
                                     {/* Order Header */}
                                     <div style={{ padding: '16px', background: isLate ? '#ef444415' : isPreparing ? `${C.primary}15` : C.bg, display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: `1px solid ${C.border}` }}>
                                         <div>
                                             <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800, fontFamily: OUTFIT, display: 'flex', alignItems: 'center', gap: '8px', color: C.textPrimary }}>
                                                 #{order.orderNumber}
                                                 <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '12px', background: '#00000010', fontFamily: CAIRO, color: C.textSecondary }}>
-                                                    {order.type === 'dine-in' ? 'صالة' : order.type === 'takeaway' ? 'تيك أواي' : 'توصيل'}
+                                                    {order.type === 'dine-in' ? 'صالة' : order.type === 'takeaway' ? 'تيك أواي' : order.type === 'delivery' ? 'توصيل' : 'أونلاين'}
                                                 </span>
                                             </h3>
                                             {order.table && <p style={{ margin: '4px 0 0', fontSize: '13px', fontWeight: 600, color: C.textSecondary }}>الطاولة: <span style={{ color: C.primary }}>{order.table.name}</span></p>}
@@ -130,6 +176,15 @@ export default function KDSPage() {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {/* External Customer Info */}
+                                    {isExternal && (order.deliveryName || order.deliveryPhone || order.deliveryAddress) && (
+                                        <div style={{ padding: '10px 16px', background: 'rgba(59,130,246,0.04)', borderBottom: `1px solid ${C.border}`, display: 'flex', flexWrap: 'wrap', gap: '12px', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
+                                            {order.deliveryName && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><User size={12} style={{ color: '#3b82f6' }} /> {order.deliveryName}</span>}
+                                            {order.deliveryPhone && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Phone size={12} style={{ color: '#10b981' }} /> <span dir="ltr">{order.deliveryPhone}</span></span>}
+                                            {order.deliveryAddress && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} style={{ color: '#f59e0b' }} /> {order.deliveryAddress}</span>}
+                                        </div>
+                                    )}
 
                                     {/* Order Lines */}
                                     <div style={{ padding: '16px', flex: 1 }}>
@@ -163,7 +218,17 @@ export default function KDSPage() {
 
                                     {/* Actions */}
                                     <div style={{ padding: '16px', display: 'flex', gap: '12px', background: C.bg, borderTop: `1px solid ${C.border}` }}>
-                                        {isPreparing ? (
+                                        {isPendingExternal ? (
+                                            /* Accept/Reject for external pending orders */
+                                            <>
+                                                <button onClick={() => acceptOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '44px', borderRadius: '12px', background: '#10b981', border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 4px 10px rgba(16,185,129,0.3)' }}>
+                                                    {updatingId === order.id ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={18} /> قبول الطلب</>}
+                                                </button>
+                                                <button onClick={() => rejectOrder(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '44px', borderRadius: '12px', background: '#ef4444', border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 4px 10px rgba(239,68,68,0.3)' }}>
+                                                    {updatingId === order.id ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><XCircle size={18} /> رفض</>}
+                                                </button>
+                                            </>
+                                        ) : isPreparing ? (
                                             <button onClick={() => markAsReady(order.id)} disabled={updatingId === order.id} style={{ flex: 1, height: '44px', borderRadius: '12px', background: '#10b981', border: 'none', color: '#fff', fontSize: '14px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', boxShadow: '0 4px 10px rgba(16,185,129,0.3)' }}>
                                                 {updatingId === order.id ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><CheckCircle2 size={18} /> جاهز للتسليم</>}
                                             </button>
@@ -179,7 +244,7 @@ export default function KDSPage() {
                     </div>
                 )}
             </div>
-            <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            <style>{`@keyframes spin { to { transform: rotate(360deg); } } @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }`}</style>
         </div>
     );
 }

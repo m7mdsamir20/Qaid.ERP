@@ -6,7 +6,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, OUTFIT, IS, BTN_PRIMARY } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
-import { RefreshCw, Loader2, Table2, Package, Truck, Wifi, ChevronDown, History, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
+import { RefreshCw, Loader2, Table2, Package, Truck, Wifi, ChevronDown, History, CheckCircle2, XCircle, TrendingUp, Globe, Phone, MapPin, User } from 'lucide-react';
 
 const TYPE_LABELS: Record<string, string> = { 'dine-in': 'صالة', 'takeaway': 'تيك أواي', 'delivery': 'توصيل', 'online': 'أونلاين' };
 const STATUS_INFO: Record<string, { label: string; color: string; bg: string }> = {
@@ -126,6 +126,11 @@ export default function OrdersHistoryPage() {
                                         style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 18px', cursor: 'pointer', flexWrap: 'wrap' }}>
                                         <span style={{ fontFamily: OUTFIT, fontWeight: 700, color: C.primary, fontSize: '14px', minWidth: '50px' }}>#{order.orderNumber}</span>
                                         <span style={{ fontSize: '12.5px', color: C.textSecondary }}>{TYPE_LABELS[order.type] ?? order.type}{order.table ? ` • ${order.table.name}` : ''}</span>
+                                        {order.source && order.source !== 'pos' && (
+                                            <span style={{ fontSize: '10px', fontWeight: 700, padding: '2px 8px', borderRadius: '10px', background: 'rgba(59,130,246,0.1)', color: '#3b82f6', border: '1px solid rgba(59,130,246,0.2)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                                                <Globe size={10} /> {order.source === 'website' ? 'موقع' : order.source === 'qr' ? 'QR' : 'خارجي'}
+                                            </span>
+                                        )}
                                         <span style={{ fontSize: '12px', color: C.textMuted }}>{formatDate(order.createdAt)}</span>
                                         <span style={{ background: st.bg, border: `1px solid ${st.color}40`, borderRadius: '6px', padding: '3px 10px', fontSize: '11.5px', fontWeight: 700, color: st.color }}>{st.label}</span>
                                         <span style={{ marginInlineStart: 'auto', fontFamily: OUTFIT, fontWeight: 700, color: C.textPrimary, fontSize: '14px' }}>{fMoney(order.total)}</span>
@@ -144,6 +149,15 @@ export default function OrdersHistoryPage() {
                                                 ))}
                                             </div>
                                             {order.notes && <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary }}>📝 {order.notes}</p>}
+
+                                            {/* External customer info */}
+                                            {order.source && order.source !== 'pos' && (order.deliveryName || order.deliveryPhone || order.deliveryAddress) && (
+                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '14px', padding: '10px 14px', borderRadius: '10px', background: 'rgba(59,130,246,0.04)', border: '1px solid rgba(59,130,246,0.1)', fontSize: '12px', color: C.textSecondary, fontWeight: 600 }}>
+                                                    {order.deliveryName && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><User size={12} style={{ color: '#3b82f6' }} /> {order.deliveryName}</span>}
+                                                    {order.deliveryPhone && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><Phone size={12} style={{ color: '#10b981' }} /> <span dir="ltr">{order.deliveryPhone}</span></span>}
+                                                    {order.deliveryAddress && <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><MapPin size={12} style={{ color: '#f59e0b' }} /> {order.deliveryAddress}</span>}
+                                                </div>
+                                            )}
 
                                             {/* تغيير الحالة */}
                                             <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', borderTop: `1px solid ${C.border}`, paddingTop: '12px' }}>

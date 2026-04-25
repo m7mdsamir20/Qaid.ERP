@@ -427,10 +427,10 @@ export default function ApiTab() {
     {
       "id": "clx...",
       "name": "بيتزا مارجريتا",
-      "nameEn": "Margherita Pizza",
-      "sellingPrice": 85.00,
+      "description": "بيتزا إيطالية بصوص الطماطم وجبنة الموتزاريلا",
+      "sellPrice": 85.00,
       "category": { "id": "...", "name": "بيتزا" },
-      "imageUrl": null
+      "imageUrl": "/uploads/pizza.jpg"
     }
   ]
 }`}</pre>
