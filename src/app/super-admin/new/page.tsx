@@ -33,7 +33,7 @@ const BUSINESS_TYPES = [
     {
         value: "RESTAURANTS",
         label: "مطاعم وكافيهات",
-        modules: ['pos', 'tables', 'kitchen', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
+        modules: ['pos', 'tables', 'kitchen', 'delivery', 'barcode', 'purchases', 'inventory', 'accounting', 'treasury', 'hr', 'reports']
     },
 ];
 
