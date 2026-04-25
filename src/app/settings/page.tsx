@@ -6,7 +6,7 @@ import { navSections } from '@/constants/navigation';
 import React, { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Settings as SettingsIcon, Building2, Globe, Bell, Shield, Database, AlertCircle, FileText, CreditCard, CheckCircle2, Percent, Loader2, Store } from 'lucide-react';
+import { Settings as SettingsIcon, Building2, Globe, Bell, Shield, Database, AlertCircle, FileText, CreditCard, CheckCircle2, Percent, Loader2, Store, UtensilsCrossed } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import PageHeader from '@/components/PageHeader';
 import AppModal from '@/components/AppModal';
@@ -20,6 +20,7 @@ import UsersTab from './_tabs/UsersTab';
 import SubscriptionTab from './_tabs/SubscriptionTab';
 import BranchesTab from './_tabs/BranchesTab';
 import DatabaseTab from './_tabs/DatabaseTab';
+import RestaurantTab from './_tabs/RestaurantTab';
 
 /* ══════════════════════════════════════════
    MAIN PAGE
@@ -721,6 +722,7 @@ function SettingsContent() {
         { id: 'users', icon: Shield, label: t('المستخدمين والصلاحيات'), featureKey: 'settings', pageId: '/settings/users' },
         { id: 'subscription', icon: CreditCard, label: t('الاشتراك والخطة'), featureKey: 'settings', pageId: '/settings/subscription' },
         { id: 'database', icon: Database, label: t('قواعد البيانات'), featureKey: 'settings', pageId: '/settings/database' },
+        ...(businessType === 'RESTAURANTS' ? [{ id: 'restaurant', icon: UtensilsCrossed, label: t('إعدادات المطعم'), featureKey: 'settings', pageId: '/settings/restaurant' }] : []),
     ].filter(tab => hasPage(tab.featureKey, tab.pageId));
 
 
@@ -931,7 +933,9 @@ function SettingsContent() {
                             />
                         )}
 
-
+                        {activeTab === 'restaurant' && (
+                            <RestaurantTab showToast={showToast} />
+                        )}
 
                     </div>
                 </div>
