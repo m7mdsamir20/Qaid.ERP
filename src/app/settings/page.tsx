@@ -453,6 +453,7 @@ function SettingsContent() {
                         { id: '/warehouses', href: '/warehouses', label: t('الفروع / مواقع العمل') }
                     ];
                 }
+            }
             // Apply restaurants terminology
             if (isRestaurants) {
                 if (section.featureKey === 'sales') {
