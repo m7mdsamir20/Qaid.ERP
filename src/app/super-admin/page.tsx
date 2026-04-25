@@ -21,6 +21,8 @@ const B_TYPES: Record<string, { label: string; color: string; bg: string }> = {
     SERVICES: { label: 'خدمات', color: '#8b5cf6', bg: 'rgba(139,92,246,0.1)' },
     trading: { label: 'تجارة', color: '#256af4', bg: 'rgba(37, 106, 244,0.1)' },
     RESTAURANT: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+    RESTAURANTS: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
+    restaurants: { label: 'مطعم', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
 };
 
 const fmt = (d: string) => new Date(d).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -82,7 +84,7 @@ export default function SuperAdminPage() {
 
     const handleToggle = async (id: string, isActive: boolean) => {
         await fetch(`/api/super-admin/companies/${id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ isActive: !isActive }),
         });

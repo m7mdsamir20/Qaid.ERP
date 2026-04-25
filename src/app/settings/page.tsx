@@ -164,8 +164,12 @@ function SettingsContent() {
                 '/', '/employees', '/payrolls', '/advances', '/deductions', '/departments',
             ], ['reports-hr']);
         } else if (role === 'cashier') {
-            // كاشير
-            grant(['/', '/sales', '/receipts'], ['/customers', '/treasuries']);
+            // كاشير: نقاط البيع + سندات القبض + صفحات المطاعم
+            const cashierPages = ['/', '/sales', '/receipts'];
+            if (isRestaurants) {
+                cashierPages.push('/pos', '/pos/history', '/kds', '/shifts', '/tables');
+            }
+            grant(cashierPages, ['/customers', '/treasuries']);
         } else if (role === 'manager') {
             // مدير فرع: كل شيء عدا الإعدادات
             permissionHierarchy
