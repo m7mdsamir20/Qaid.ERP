@@ -32,6 +32,7 @@ interface Item {
     status: string;
     type?: string;
     isPosEligible?: boolean;
+    variants?: any[];
 }
 
 export default function ItemsPage() {
@@ -92,7 +93,7 @@ export default function ItemsPage() {
     }, []);
 
     const [form, setForm] = useState({
-        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true
+        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: [] as any[]
     });
 
     useEffect(() => {
@@ -113,7 +114,8 @@ export default function ItemsPage() {
             setForm({
                 id: item.id, code: item.code, barcode: item.barcode || '', imageUrl: item.imageUrl || '', name: item.name, description: item.description || '', categoryId: item.categoryId || '',
                 unitId: item.unitId || '', costPrice: item.costPrice, sellPrice: item.sellPrice,
-                minLimit: item.minLimit || 0, warehouseId: '', initialQuantity: 0, status: item.status || 'active', type: item.type || 'product', isPosEligible: item.isPosEligible ?? true
+                minLimit: item.minLimit || 0, warehouseId: '', initialQuantity: 0, status: item.status || 'active', type: item.type || 'product', isPosEligible: item.isPosEligible ?? true,
+                variants: item.variants || []
             });
             setEditingId(item.id);
         } else {
@@ -131,7 +133,7 @@ export default function ItemsPage() {
                 id: '', code: nextCode, barcode: '', imageUrl: '', name: '', description: '', categoryId: '',
                 unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0,
                 warehouseId: localStorage.getItem('last_warehouse_id') || '',
-                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true
+                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: []
             });
             setEditingId(null);
         }
@@ -230,6 +232,7 @@ export default function ItemsPage() {
     };
 
     const filteredAll = items.filter(u => {
+        if (u.parentId) return false; // إخفاء المقاسات (Variants) من الجدول الرئيسي
         const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
             u.code.toLowerCase().includes(search.toLowerCase());
         if (!matchesSearch) return false;
@@ -252,10 +255,12 @@ export default function ItemsPage() {
     const fmt = (num: number) => formatNumber(num);
 
     const itemsLowStock = items.filter(i => {
+        if (i.parentId) return false;
         const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
         return (i.minLimit || 0) > 0 && q <= (i.minLimit || 0);
     }).length;
     const itemsOutOfStock = items.filter(i => {
+        if (i.parentId) return false;
         const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
         return q === 0;
     }).length;
@@ -552,8 +557,7 @@ export default function ItemsPage() {
                                         onChange={v => setForm({ ...form, type: v })}
                                         options={[
                                             { value: 'product', label: t('منتج تام (يباع للعميل)'), icon: Package },
-                                            { value: 'raw', label: t('مادة خام (لا تباع للعميل)'), icon: Boxes },
-                                            { value: 'semi_finished', label: t('نصف مصنع'), icon: TrendingUp }
+                                            { value: 'raw', label: t('مادة خام (لا تباع للعميل)'), icon: Boxes }
                                         ]}
                                     />
                                 </div>
@@ -633,14 +637,16 @@ export default function ItemsPage() {
                             </div>
                         ) : (
                             <>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    <div>
-                                        <label style={LS}>{t('سعر التكلفة')}</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'RESTAURANTS' && form.type === 'product') ? '1fr' : '1fr 1fr', gap: '10px' }}>
+                                    {!(companyBusinessType === 'RESTAURANTS' && form.type === 'product') && (
+                                        <div>
+                                            <label style={LS}>{t('سعر التكلفة')}</label>
+                                            <div style={{ position: 'relative' }}>
+                                                <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.costPrice === 0 ? '' : form.costPrice)} onChange={e => setForm({ ...form, costPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                                <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                     {form.type === 'product' && (
                                         <div>
                                             <label style={LS}>{t('سعر البيع')}</label>
@@ -652,22 +658,66 @@ export default function ItemsPage() {
                                     )}
                                 </div>
 
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
-                                    <div>
-                                        <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
-                                        <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
-                                            {!form.minLimit && (
-                                                <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
-                                                    0
-                                                </div>
-                                            )}
-                                            <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <AlertTriangle size={12} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.warning, opacity: 0.6 }} />
+                                {!(companyBusinessType === 'RESTAURANTS' && form.type === 'product') && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                                        <div>
+                                            <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
+                                            <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
+                                                {!form.minLimit && (
+                                                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '15px', fontWeight: 600, color: 'rgba(255,255,255,0.45)', pointerEvents: 'none', fontFamily: OUTFIT }}>
+                                                        0
+                                                    </div>
+                                                )}
+                                                <input type="text" inputMode="decimal" value={form.minLimit === 0 ? '' : form.minLimit} onChange={e => setForm({ ...form, minLimit: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, border: 'none', background: 'transparent', textAlign: 'center', fontFamily: OUTFIT, fontWeight: 600 }} onFocus={focusIn} onBlur={focusOut} />
+                                                <AlertTriangle size={12} style={{ position: 'absolute', insetInlineStart: '12px', top: '50%', transform: 'translateY(-50%)', color: C.warning, opacity: 0.6 }} />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                )}
+                                
+                                {form.type === 'product' && (
+                                    <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
+                                        <div style={{ ...STitle, marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span><Boxes size={14} style={{ marginInlineEnd: '6px' }}/> {t('أنواع ومقاسات الصنف (اختياري)')}</span>
+                                            <button type="button" onClick={() => setForm({...form, variants: [...form.variants, { id: '', name: '', sellPrice: 0, costPrice: 0, barcode: '' }]})} style={{ ...BTN_PRIMARY(false, false), height: '28px', fontSize: '11px', padding: '0 10px', borderRadius: '6px', gap: '4px' }}><Plus size={12}/> {t('إضافة مقاس')}</button>
+                                        </div>
+                                        
+                                        {form.variants.length > 0 ? (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                {form.variants.map((v, i) => (
+                                                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr auto', gap: '8px', alignItems: 'end', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
+                                                        <div>
+                                                            <label style={{ ...LS, fontSize: '10px' }}>{t('المقاس')} <span style={{ color: C.danger }}>*</span></label>
+                                                            <input value={v.name} onChange={e => {
+                                                                const newV = [...form.variants];
+                                                                newV[i].name = e.target.value;
+                                                                setForm({...form, variants: newV});
+                                                            }} placeholder="مثال: وسط، كبير..." style={{ ...IS, height: '32px', fontSize: '12px' }} required />
+                                                        </div>
+                                                        <div>
+                                                            <label style={{ ...LS, fontSize: '10px' }}>{t('سعر البيع')} <span style={{ color: C.danger }}>*</span></label>
+                                                            <input type="number" min="0" value={v.sellPrice === 0 ? '' : v.sellPrice} onChange={e => {
+                                                                const newV = [...form.variants];
+                                                                newV[i].sellPrice = Number(e.target.value);
+                                                                setForm({...form, variants: newV});
+                                                            }} placeholder="0.00" style={{ ...IS, height: '32px', fontSize: '12px', fontFamily: OUTFIT }} required />
+                                                        </div>
+                                                        <button type="button" onClick={() => {
+                                                            const newV = form.variants.filter((_, idx) => idx !== i);
+                                                            setForm({...form, variants: newV});
+                                                        }} style={{ width: '32px', height: '32px', borderRadius: '8px', border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p style={{ fontSize: '11px', color: C.textMuted, margin: 0, textAlign: 'center', padding: '10px' }}>{t('لا توجد مقاسات مضافة. الصنف يباع بحجم واحد فقط.')}</p>
+                                        )}
+                                    </div>
+                                )}
 
-                                {!form.id && (
+                                {!form.id && !(companyBusinessType === 'RESTAURANTS' && form.type === 'product') && (
                                     <div style={{ padding: '10px 14px', borderRadius: '12px', background: 'rgba(37, 106, 244,0.03)', border: `1px solid rgba(37, 106, 244,0.15)`, marginTop: '0px' }}>
                                         <div style={{ ...STitle, marginBottom: '6px', color: C.primary }}><MapPin size={14} /> {t('الرصيد الافتتاحي')}</div>
                                         <p style={{ fontSize: '10px', color: C.textMuted, margin: '0 0 6px', fontWeight: 500 }}>{t('اختياري — يمكن إضافة الكمية لاحقاً من فاتورة مشتريات')}</p>

@@ -101,6 +101,12 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
     }, []);
 
     useEffect(() => {
+        const handleScrollOrResize = () => {
+            if (isOpen) {
+                requestAnimationFrame(calcPortalPos);
+            }
+        };
+
         if (isOpen) {
             setSearch('');
             setActiveIndex(0);
@@ -108,9 +114,16 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                 calcPortalPos();
                 setTimeout(() => searchInputRef.current?.focus(), 50);
             });
+            window.addEventListener('scroll', handleScrollOrResize, true);
+            window.addEventListener('resize', handleScrollOrResize);
         } else {
             setPortalPos(null);
         }
+
+        return () => {
+            window.removeEventListener('scroll', handleScrollOrResize, true);
+            window.removeEventListener('resize', handleScrollOrResize);
+        };
     }, [isOpen]);
 
     useEffect(() => {

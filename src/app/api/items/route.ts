@@ -27,7 +27,7 @@ export const GET = withProtection(async (request, session) => {
             const items = await prisma.item.findMany({
                 where,
                 orderBy: { name: 'asc' },
-                include: { category: true, unit: true, stocks: true },
+                include: { category: true, unit: true, stocks: true, variants: true },
             });
             return NextResponse.json(items);
         }
@@ -38,7 +38,7 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'asc' },
                 skip,
                 take: limit,
-                include: { category: true, unit: true, stocks: true },
+                include: { category: true, unit: true, stocks: true, variants: true },
             }),
             prisma.item.count({ where }),
         ]);
@@ -165,6 +165,25 @@ export const POST = withProtection(async (request, session, body) => {
                     }
                 }
             }
+            if (body.variants && Array.isArray(body.variants)) {
+                for (let i = 0; i < body.variants.length; i++) {
+                    const v = body.variants[i];
+                    await tx.item.create({
+                        data: {
+                            code: `${nextCode}-V${i + 1}`,
+                            barcode: v.barcode || Math.floor(1000000000 + Math.random() * 9000000000).toString(),
+                            name: v.name,
+                            sellPrice: parseFloat(v.sellPrice) || 0,
+                            costPrice: parseFloat(v.costPrice) || parseFloat(body.costPrice) || 0,
+                            companyId,
+                            parentId: newItem.id,
+                            isPosEligible: true,
+                            type: body.type || 'product',
+                            categoryId: body.categoryId || null,
+                        }
+                    });
+                }
+            }
 
             return newItem;
         });
@@ -194,8 +213,41 @@ export const PUT = withProtection(async (request, session, body) => {
                 isPosEligible: body.isPosEligible ?? true,
             },
         });
+
+        if (body.variants && Array.isArray(body.variants)) {
+            const companyId = (session.user as any).companyId;
+            for (const v of body.variants) {
+                if (v.id) {
+                    await prisma.item.update({
+                        where: { id: v.id },
+                        data: {
+                            name: v.name,
+                            sellPrice: parseFloat(v.sellPrice) || 0,
+                            costPrice: parseFloat(v.costPrice) || 0,
+                            barcode: v.barcode,
+                        }
+                    });
+                } else {
+                    await prisma.item.create({
+                        data: {
+                            code: `VAR-${Math.floor(1000 + Math.random() * 9000)}`,
+                            name: v.name,
+                            sellPrice: parseFloat(v.sellPrice) || 0,
+                            costPrice: parseFloat(v.costPrice) || parseFloat(body.costPrice) || 0,
+                            barcode: v.barcode || Math.floor(1000000000 + Math.random() * 9000000000).toString(),
+                            companyId,
+                            parentId: item.id,
+                            isPosEligible: true,
+                            type: item.type,
+                            categoryId: item.categoryId,
+                        }
+                    });
+                }
+            }
+        }
+
         return NextResponse.json(item);
-    } catch {
+    } catch (error) {
         return NextResponse.json({ error: 'فشل في تعديل الصنف' }, { status: 500 });
     }
 });

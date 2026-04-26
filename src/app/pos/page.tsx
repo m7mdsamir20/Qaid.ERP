@@ -123,14 +123,26 @@ export default function POSPage() {
         }
     }, []);
 
+    // Variants Modal
+    const [activeVariantItem, setActiveVariantItem] = useState<any>(null);
+
     useEffect(() => { load(); }, [load]);
 
     const filteredItems = items.filter(item => {
         if (item.isPosEligible === false) return false;
+        if (item.parentId) return false; // Hide variants from main grid
         const matchCat = !selectedCategory || item.categoryId === selectedCategory;
         const matchSearch = !search || item.name?.toLowerCase().includes(search.toLowerCase());
         return matchCat && matchSearch;
     });
+
+    const handleItemClick = (item: any) => {
+        if (item.variants && item.variants.length > 0) {
+            setActiveVariantItem(item);
+        } else {
+            addToCart(item);
+        }
+    };
 
     const addToCart = (item: any) => {
         playBeep();
@@ -389,7 +401,7 @@ export default function POSPage() {
                                 {filteredItems.map(item => {
                                     const inCart = cart.find(c => c.itemId === item.id);
                                     return (
-                                        <button key={item.id} onClick={() => addToCart(item)}
+                                        <button key={item.id} onClick={() => handleItemClick(item)}
                                             style={{ background: inCart ? `${C.primary}10` : C.card, border: `1px solid ${inCart ? C.primary + '40' : C.border}`, borderRadius: '16px', padding: '16px 12px', cursor: 'pointer', textAlign: 'center', transition: 'all 0.2s', position: 'relative', fontFamily: CAIRO }}
                                             onMouseEnter={e => { if (!inCart) e.currentTarget.style.borderColor = C.primary + '60'; }}
                                             onMouseLeave={e => { if (!inCart) e.currentTarget.style.borderColor = C.border; }}>
@@ -606,6 +618,35 @@ export default function POSPage() {
                     </div>
                 </div>
             </div>
+
+            {/* Variants Selection Modal */}
+            {activeVariantItem !== null && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('اختر المقاس / النوع')} - {activeVariantItem.name}</h2>
+                            <button onClick={() => setActiveVariantItem(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {activeVariantItem.variants.map((v: any) => (
+                                <button key={v.id} onClick={() => {
+                                    addToCart({
+                                        id: v.id,
+                                        name: `${activeVariantItem.name} - ${v.name}`,
+                                        sellPrice: v.sellPrice,
+                                        price: v.sellPrice
+                                    });
+                                    setActiveVariantItem(null);
+                                }}
+                                style={{ padding: '16px', borderRadius: '12px', border: `1px solid ${C.border}`, background: C.inputBg, display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
+                                    <span style={{ fontSize: '14px', fontWeight: 600, color: C.textPrimary }}>{v.name}</span>
+                                    <span style={{ fontSize: '14px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(v.sellPrice)}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Modifiers Modal */}
             {activeModifierCartIndex !== null && (
