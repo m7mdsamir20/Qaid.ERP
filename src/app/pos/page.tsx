@@ -18,6 +18,28 @@ const ORDER_TYPES = [
     { value: 'online',   label: 'أونلاين',  icon: Wifi,     color: '#3b82f6' },
 ];
 
+const playBeep = () => {
+    try {
+        const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gainNode = ctx.createGain();
+        osc.connect(gainNode);
+        gainNode.connect(ctx.destination);
+        osc.type = 'sine';
+        
+        osc.frequency.setValueAtTime(1000, ctx.currentTime); // High pitch like a scanner
+        gainNode.gain.setValueAtTime(0.2, ctx.currentTime); // Medium volume as requested
+        gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+        
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {
+        // ignore if audio is not supported or blocked by browser policy
+    }
+};
+
 interface CartItem {
     itemId: string;
     itemName: string;
@@ -111,6 +133,7 @@ export default function POSPage() {
     });
 
     const addToCart = (item: any) => {
+        playBeep();
         setCart(prev => {
             const existing = prev.find(c => c.itemId === item.id);
             if (existing) {
