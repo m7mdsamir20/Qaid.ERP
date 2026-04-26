@@ -419,6 +419,10 @@ model Item {
   ModifierOption   ModifierOption[]
   recipeItems      RecipeItem[] // المواد الخام التي يُستخدم فيها هذا الصنف
 
+  parentId         String?
+  parent           Item?                   @relation("ItemVariants", fields: [parentId], references: [id])
+  variants         Item[]                  @relation("ItemVariants")
+
   @@unique([code, companyId])
 }
 

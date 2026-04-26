@@ -30,17 +30,19 @@ export default function RecipesPage() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const [rr, ir] = await Promise.all([fetch('/api/restaurant/recipes'), fetch('/api/items')]);
+            const [rr, ir] = await Promise.all([fetch('/api/restaurant/recipes'), fetch('/api/items?all=true')]);
             const [r, i]   = await Promise.all([rr.json(), ir.json()]);
             setRecipes(Array.isArray(r) ? r : []);
-            setItems(Array.isArray(i) ? i : []);
+            setItems(Array.isArray(i) ? i : (i.items || []));
         } finally { setLoading(false); }
     }, []);
 
     useEffect(() => { load(); }, [load]);
 
     // Items that don't have a recipe yet (for new recipe)
-    const availableItems = items.filter(it => !recipes.some(r => r.itemId === it.id && (!editItem || r.id !== editItem.id)));
+    const productItems = items.filter(it => it.type === 'product' && (!it.variants || it.variants.length === 0));
+    const availableItems = productItems.filter(it => !recipes.some(r => r.itemId === it.id && (!editItem || r.id !== editItem.id)));
+    const rawItems = items.filter(it => it.type === 'raw');
 
     const openModal = (recipe?: any) => {
         setEditItem(recipe ?? null);
@@ -160,7 +162,7 @@ export default function RecipesPage() {
                         <CustomSelect
                             value={form.itemId}
                             onChange={v => setForm(f => ({ ...f, itemId: v }))}
-                            options={(editItem ? items : availableItems).map(it => ({ value: it.id, label: it.name }))}
+                            options={(editItem ? productItems : availableItems).map(it => ({ value: it.id, label: it.name }))}
                             placeholder="— اختر الوجبة —"
                         />
                     </div>
@@ -189,7 +191,7 @@ export default function RecipesPage() {
                                         <CustomSelect
                                             value={ing.itemId}
                                             onChange={v => updateIng(i, 'itemId', v)}
-                                            options={items.map(it => ({ value: it.id, label: it.name }))}
+                                            options={rawItems.map(it => ({ value: it.id, label: it.name }))}
                                             placeholder="— المادة الخام —"
                                         />
                                     </div>
