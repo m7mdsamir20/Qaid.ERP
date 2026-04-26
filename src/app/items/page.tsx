@@ -62,6 +62,7 @@ export default function ItemsPage() {
     const [printBarcodeItem, setPrintBarcodeItem] = useState<Item | null>(null);
     const [barcodeCopies, setBarcodeCopies] = useState(1);
     const pageSize = 15;
+    const [itemTypeTab, setItemTypeTab] = useState<'all' | 'product' | 'raw'>('all');
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -83,7 +84,9 @@ export default function ItemsPage() {
             if (uRes.ok) setUnitsData(await uRes.json());
             if (setRes.ok) {
                 const sData = await setRes.json();
-                setCompanyBusinessType(sData.company?.businessType?.toUpperCase() || '');
+                const bType = sData.company?.businessType?.toUpperCase() || '';
+                setCompanyBusinessType(bType);
+                if (bType === 'RESTAURANTS') setItemTypeTab('product');
             }
         } catch (error) {
             console.error("Fetch Items Error:", error);
@@ -233,6 +236,7 @@ export default function ItemsPage() {
 
     const filteredAll = items.filter(u => {
         if (u.parentId) return false; // إخفاء المقاسات (Variants) من الجدول الرئيسي
+        if (itemTypeTab !== 'all' && u.type !== itemTypeTab) return false;
         const matchesSearch = u.name.toLowerCase().includes(search.toLowerCase()) ||
             u.code.toLowerCase().includes(search.toLowerCase());
         if (!matchesSearch) return false;
@@ -256,11 +260,13 @@ export default function ItemsPage() {
 
     const itemsLowStock = items.filter(i => {
         if (i.parentId) return false;
+        if (itemTypeTab !== 'all' && i.type !== itemTypeTab) return false;
         const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
         return (i.minLimit || 0) > 0 && q <= (i.minLimit || 0);
     }).length;
     const itemsOutOfStock = items.filter(i => {
         if (i.parentId) return false;
+        if (itemTypeTab !== 'all' && i.type !== itemTypeTab) return false;
         const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
         return q === 0;
     }).length;
@@ -278,8 +284,13 @@ export default function ItemsPage() {
                     subtitle={isRestaurant ? t("إدارة قائمة الأصناف والوجبات المعروضة في المنيو") : companyBusinessType === 'SERVICES' ? t("تعريف الخدمات التي تقدمها المؤسسة وتحديد أسعارها") : t("إدارة قائمة المنتجات، تكود الأصناف، ومتابعة الأسعار والمخزون في كافة الفروع")}
                     icon={isRestaurant ? Package : companyBusinessType === 'SERVICES' ? Package : Boxes}
                     primaryButton={{
-                        label: isRestaurant ? t("إضافة صنف للمنيو") : companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : t("إضافة صنف جديد"),
-                        onClick: () => handleOpenModal(),
+                        label: isRestaurant ? (itemTypeTab === 'raw' ? t("إضافة مادة خام") : t("إضافة صنف للمنيو")) : companyBusinessType === 'SERVICES' ? t("إضافة خدمة جديدة") : t("إضافة صنف جديد"),
+                        onClick: () => {
+                            handleOpenModal();
+                            if (isRestaurant) {
+                                setForm(prev => ({ ...prev, type: itemTypeTab === 'raw' ? 'raw' : 'product' }));
+                            }
+                        },
                         icon: Plus
                     }}
                 />
@@ -287,11 +298,11 @@ export default function ItemsPage() {
                 {companyBusinessType?.toUpperCase() !== 'SERVICES' && (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '14px', marginBottom: '20px' }}>
                         {[
-                            { id: 'all', label: isRestaurant ? t('إجمالي أصناف المنيو') : t('إجمالي الأصناف'), val: items.length, icon: Package, color: C.blue, unit: t('صنف') },
+                            { id: 'all', label: isRestaurant ? (itemTypeTab === 'raw' ? t('إجمالي المواد الخام') : t('إجمالي أصناف المنيو')) : t('إجمالي الأصناف'), val: items.filter(i => !i.parentId && (itemTypeTab === 'all' || i.type === itemTypeTab)).length, icon: Package, color: C.blue, unit: t('صنف') },
                             { 
                                 id: 'cost', 
                                 label: t('إجمالي التكلفة'), 
-                                val: items.reduce((s, i) => {
+                                val: items.filter(i => !i.parentId && (itemTypeTab === 'all' || i.type === itemTypeTab)).reduce((s, i) => {
                                     const q = i.stocks?.reduce((sum, st) => (warehouseFilter === 'all' || st.warehouseId === warehouseFilter) ? sum + st.quantity : sum, 0) || 0;
                                     return s + (q * (i.costPrice || 0));
                                 }, 0), 
@@ -386,6 +397,13 @@ export default function ItemsPage() {
                         </div>
                     )}
                 </div>
+
+                {isRestaurant && (
+                    <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: C.inputBg, padding: '6px', borderRadius: '12px', width: 'fit-content', border: `1px solid ${C.border}` }}>
+                        <button onClick={() => setItemTypeTab('product')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'product' ? C.primary : 'transparent', color: itemTypeTab === 'product' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>الوجبات (المنيو)</button>
+                        <button onClick={() => setItemTypeTab('raw')} style={{ padding: '8px 20px', borderRadius: '8px', background: itemTypeTab === 'raw' ? C.primary : 'transparent', color: itemTypeTab === 'raw' ? '#fff' : C.textSecondary, border: 'none', cursor: 'pointer', fontFamily: CAIRO, fontWeight: 700, fontSize: '13px', transition: 'all 0.2s' }}>المواد الخام (المخزون)</button>
+                    </div>
+                )}
 
                 {loading ? (
                     <div style={{ padding: '100px', color: C.textMuted }}>
