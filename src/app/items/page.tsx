@@ -4,7 +4,7 @@ import { formatNumber } from '@/lib/currency';
 import React, { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
-import { Boxes, Package, PackageX, TrendingUp, AlertTriangle, Search, Pencil, Trash2, MapPin, Plus, Loader2, ShieldCheck, Printer, Check, X, ImagePlus } from 'lucide-react';
+import { Boxes, Package, PackageX, TrendingUp, AlertTriangle, Search, Pencil, Trash2, MapPin, Plus, Loader2, ShieldCheck, Printer, Check, X, ImagePlus, UtensilsCrossed } from 'lucide-react';
 import { THEME, C, CAIRO, OUTFIT, IS, LS, focusIn, focusOut, PAGE_BASE, BTN_PRIMARY, SEARCH_STYLE, TABLE_STYLE, KPI_STYLE, KPI_ICON, STitle } from '@/constants/theme';
 import { useCurrency } from '@/hooks/useCurrency';
 import PageHeader from '@/components/PageHeader';
@@ -32,6 +32,7 @@ interface Item {
     status: string;
     type?: string;
     isPosEligible?: boolean;
+    parentId?: string;
     variants?: any[];
 }
 
@@ -96,7 +97,7 @@ export default function ItemsPage() {
     }, []);
 
     const [form, setForm] = useState({
-        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: [] as any[]
+        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: [] as any[], recipeItems: [] as { itemId: string, quantity: number, unit: string }[]
     });
 
     useEffect(() => {
@@ -118,7 +119,12 @@ export default function ItemsPage() {
                 id: item.id, code: item.code, barcode: item.barcode || '', imageUrl: item.imageUrl || '', name: item.name, description: item.description || '', categoryId: item.categoryId || '',
                 unitId: item.unitId || '', costPrice: item.costPrice, sellPrice: item.sellPrice,
                 minLimit: item.minLimit || 0, warehouseId: '', initialQuantity: 0, status: item.status || 'active', type: item.type || 'product', isPosEligible: item.isPosEligible ?? true,
-                variants: item.variants || []
+                variants: item.variants?.map((v: any) => ({
+                    id: v.id, name: v.name, sellPrice: v.sellPrice, costPrice: v.costPrice, barcode: v.barcode || '',
+                    recipeItems: v.recipe?.items?.map((ri: any) => ({ itemId: ri.itemId, quantity: ri.quantity, unit: ri.unit || '' })) || [],
+                    showRecipe: false
+                })) || [],
+                recipeItems: (item as any).recipe?.items?.map((ri: any) => ({ itemId: ri.itemId, quantity: ri.quantity, unit: ri.unit || '' })) || []
             });
             setEditingId(item.id);
         } else {
@@ -136,7 +142,7 @@ export default function ItemsPage() {
                 id: '', code: nextCode, barcode: '', imageUrl: '', name: '', description: '', categoryId: '',
                 unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0,
                 warehouseId: localStorage.getItem('last_warehouse_id') || '',
-                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: []
+                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: [], recipeItems: []
             });
             setEditingId(null);
         }
@@ -697,40 +703,170 @@ export default function ItemsPage() {
                                     <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
                                         <div style={{ ...STitle, marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                             <span><Boxes size={14} style={{ marginInlineEnd: '6px' }}/> {t('أنواع ومقاسات الصنف (اختياري)')}</span>
-                                            <button type="button" onClick={() => setForm({...form, variants: [...form.variants, { id: '', name: '', sellPrice: 0, costPrice: 0, barcode: '' }]})} style={{ ...BTN_PRIMARY(false, false), height: '28px', fontSize: '11px', padding: '0 10px', borderRadius: '6px', gap: '4px' }}><Plus size={12}/> {t('إضافة مقاس')}</button>
+                                            <button type="button" onClick={() => setForm({...form, variants: [...form.variants, { id: '', name: '', sellPrice: 0, costPrice: 0, barcode: '', recipeItems: [], showRecipe: false }]})} style={{ ...BTN_PRIMARY(false, false), height: '28px', fontSize: '11px', padding: '0 10px', borderRadius: '6px', gap: '4px' }}><Plus size={12}/> {t('إضافة مقاس')}</button>
                                         </div>
                                         
                                         {form.variants.length > 0 ? (
                                             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                                 {form.variants.map((v, i) => (
-                                                    <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr auto', gap: '8px', alignItems: 'end', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
-                                                        <div>
-                                                            <label style={{ ...LS, fontSize: '10px' }}>{t('المقاس')} <span style={{ color: C.danger }}>*</span></label>
-                                                            <input value={v.name} onChange={e => {
-                                                                const newV = [...form.variants];
-                                                                newV[i].name = e.target.value;
+                                                    <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
+                                                        <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr auto', gap: '8px', alignItems: 'end' }}>
+                                                            <div>
+                                                                <label style={{ ...LS, fontSize: '10px' }}>{t('المقاس')} <span style={{ color: C.danger }}>*</span></label>
+                                                                <input value={v.name} onChange={e => {
+                                                                    const newV = [...form.variants];
+                                                                    newV[i].name = e.target.value;
+                                                                    setForm({...form, variants: newV});
+                                                                }} placeholder="مثال: وسط، كبير..." style={{ ...IS, height: '32px', fontSize: '12px' }} required />
+                                                            </div>
+                                                            <div>
+                                                                <label style={{ ...LS, fontSize: '10px' }}>{t('سعر البيع')} <span style={{ color: C.danger }}>*</span></label>
+                                                                <input type="number" min="0" value={v.sellPrice === 0 ? '' : v.sellPrice} onChange={e => {
+                                                                    const newV = [...form.variants];
+                                                                    newV[i].sellPrice = Number(e.target.value);
+                                                                    setForm({...form, variants: newV});
+                                                                }} placeholder="0.00" style={{ ...IS, height: '32px', fontSize: '12px', fontFamily: OUTFIT }} required />
+                                                            </div>
+                                                            <button type="button" onClick={() => {
+                                                                const newV = form.variants.filter((_, idx) => idx !== i);
                                                                 setForm({...form, variants: newV});
-                                                            }} placeholder="مثال: وسط، كبير..." style={{ ...IS, height: '32px', fontSize: '12px' }} required />
+                                                            }} style={{ width: '32px', height: '32px', borderRadius: '8px', border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                <Trash2 size={14} />
+                                                            </button>
                                                         </div>
-                                                        <div>
-                                                            <label style={{ ...LS, fontSize: '10px' }}>{t('سعر البيع')} <span style={{ color: C.danger }}>*</span></label>
-                                                            <input type="number" min="0" value={v.sellPrice === 0 ? '' : v.sellPrice} onChange={e => {
-                                                                const newV = [...form.variants];
-                                                                newV[i].sellPrice = Number(e.target.value);
-                                                                setForm({...form, variants: newV});
-                                                            }} placeholder="0.00" style={{ ...IS, height: '32px', fontSize: '12px', fontFamily: OUTFIT }} required />
+
+                                                        {companyBusinessType === 'RESTAURANTS' && (
+                                                            <div>
+                                                                <button type="button" onClick={() => {
+                                                                    const newV = [...form.variants];
+                                                                    newV[i].showRecipe = !newV[i].showRecipe;
+                                                                    setForm({...form, variants: newV});
+                                                                }} style={{ background: 'transparent', border: 'none', color: C.primary, fontSize: '11px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', padding: 0 }}>
+                                                                    <UtensilsCrossed size={12}/> {v.showRecipe ? t('إخفاء المكونات') : t('المكونات (الوصفة)')} {v.recipeItems?.length > 0 ? `(${v.recipeItems.length})` : ''}
+                                                                </button>
+                                                                
+                                                                {v.showRecipe && (
+                                                                    <div style={{ marginTop: '8px', padding: '8px', background: 'rgba(0,0,0,0.02)', borderRadius: '8px', border: `1px dashed ${C.border}` }}>
+                                                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                                            <span style={{ fontSize: '10px', fontWeight: 600, color: C.textSecondary }}>{t('مكونات هذا المقاس:')}</span>
+                                                                            <button type="button" onClick={() => {
+                                                                                const newV = [...form.variants];
+                                                                                newV[i].recipeItems = [...(newV[i].recipeItems || []), { itemId: '', quantity: 1, unit: '' }];
+                                                                                setForm({...form, variants: newV});
+                                                                            }} style={{ background: 'transparent', border: 'none', color: C.primary, fontSize: '10px', fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', padding: 0 }}>
+                                                                                <Plus size={10}/> {t('إضافة مكون')}
+                                                                            </button>
+                                                                        </div>
+                                                                        
+                                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                                                                            {v.recipeItems?.map((ri: any, riIdx: number) => (
+                                                                                <div key={riIdx} style={{ display: 'flex', gap: '6px', alignItems: 'flex-end' }}>
+                                                                                    <div style={{ flex: 1 }}>
+                                                                                        <CustomSelect
+                                                                                            value={ri.itemId}
+                                                                                            onChange={val => {
+                                                                                                const newV = [...form.variants];
+                                                                                                newV[i].recipeItems[riIdx].itemId = val;
+                                                                                                setForm({...form, variants: newV});
+                                                                                            }}
+                                                                                            options={items.filter(it => it.type === 'raw').map(it => ({ value: it.id, label: it.name }))}
+                                                                                            placeholder={t("المادة الخام")}
+                                                                                            maxHeight="150px"
+                                                                                            openUp={true}
+                                                                                        />
+                                                                                    </div>
+                                                                                    <div style={{ width: '60px' }}>
+                                                                                        <input type="number" min="0.01" step="0.01" value={ri.quantity === 0 ? '' : ri.quantity} onChange={e => {
+                                                                                            const newV = [...form.variants];
+                                                                                            newV[i].recipeItems[riIdx].quantity = Number(e.target.value);
+                                                                                            setForm({...form, variants: newV});
+                                                                                        }} placeholder="الكمية" style={{ ...IS, height: '36px', fontSize: '11px', fontFamily: OUTFIT }} required />
+                                                                                    </div>
+                                                                                    <div style={{ width: '50px' }}>
+                                                                                        <input value={ri.unit} onChange={e => {
+                                                                                            const newV = [...form.variants];
+                                                                                            newV[i].recipeItems[riIdx].unit = e.target.value;
+                                                                                            setForm({...form, variants: newV});
+                                                                                        }} placeholder="الوحدة" style={{ ...IS, height: '36px', fontSize: '11px' }} />
+                                                                                    </div>
+                                                                                    <button type="button" onClick={() => {
+                                                                                        const newV = [...form.variants];
+                                                                                        newV[i].recipeItems = newV[i].recipeItems.filter((_: any, idx: number) => idx !== riIdx);
+                                                                                        setForm({...form, variants: newV});
+                                                                                    }} style={{ width: '36px', height: '36px', borderRadius: '8px', border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                                                        <Trash2 size={12} />
+                                                                                    </button>
+                                                                                </div>
+                                                                            ))}
+                                                                            {(!v.recipeItems || v.recipeItems.length === 0) && (
+                                                                                <p style={{ fontSize: '10px', color: C.textMuted, margin: 0, textAlign: 'center', padding: '4px' }}>{t('لا توجد مكونات مضافة.')}</p>
+                                                                            )}
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            <p style={{ fontSize: '11px', color: C.textMuted, margin: 0, textAlign: 'center', padding: '10px' }}>{t('لا توجد مقاسات مضافة. الصنف يباع بحجم واحد فقط.')}</p>
+                                        )}
+                                    </div>
+                                )}
+
+                                {companyBusinessType === 'RESTAURANTS' && form.type === 'product' && form.variants.length === 0 && (
+                                    <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
+                                        <div style={{ ...STitle, marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                            <span><UtensilsCrossed size={14} style={{ marginInlineEnd: '6px' }}/> {t('مكونات الوجبة (الوصفة)')}</span>
+                                            <button type="button" onClick={() => setForm({...form, recipeItems: [...form.recipeItems, { itemId: '', quantity: 1, unit: '' }]})} style={{ ...BTN_PRIMARY(false, false), height: '28px', fontSize: '11px', padding: '0 10px', borderRadius: '6px', gap: '4px' }}><Plus size={12}/> {t('إضافة مكون')}</button>
+                                        </div>
+                                        {form.recipeItems.length > 0 ? (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                                {form.recipeItems.map((ri, i) => (
+                                                    <div key={i} style={{ display: 'flex', gap: '8px', alignItems: 'flex-end', background: C.bg, padding: '8px', borderRadius: '8px', border: `1px solid ${C.border}` }}>
+                                                        <div style={{ flex: 1 }}>
+                                                            <label style={{ ...LS, fontSize: '10px' }}>{t('المادة الخام')} <span style={{ color: C.danger }}>*</span></label>
+                                                            <CustomSelect
+                                                                value={ri.itemId}
+                                                                onChange={v => {
+                                                                    const newRI = [...form.recipeItems];
+                                                                    newRI[i].itemId = v;
+                                                                    setForm({...form, recipeItems: newRI});
+                                                                }}
+                                                                options={items.filter(it => it.type === 'raw').map(it => ({ value: it.id, label: it.name }))}
+                                                                placeholder={t("اختر المادة الخام")}
+                                                                maxHeight="150px"
+                                                                openUp={true}
+                                                            />
+                                                        </div>
+                                                        <div style={{ width: '70px' }}>
+                                                            <label style={{ ...LS, fontSize: '10px' }}>{t('الكمية')} <span style={{ color: C.danger }}>*</span></label>
+                                                            <input type="number" min="0.01" step="0.01" value={ri.quantity === 0 ? '' : ri.quantity} onChange={e => {
+                                                                const newRI = [...form.recipeItems];
+                                                                newRI[i].quantity = Number(e.target.value);
+                                                                setForm({...form, recipeItems: newRI});
+                                                            }} placeholder="1" style={{ ...IS, height: '38px', fontSize: '12px', fontFamily: OUTFIT }} required />
+                                                        </div>
+                                                        <div style={{ width: '60px' }}>
+                                                            <label style={{ ...LS, fontSize: '10px' }}>{t('الوحدة')}</label>
+                                                            <input value={ri.unit} onChange={e => {
+                                                                const newRI = [...form.recipeItems];
+                                                                newRI[i].unit = e.target.value;
+                                                                setForm({...form, recipeItems: newRI});
+                                                            }} placeholder="جم" style={{ ...IS, height: '38px', fontSize: '12px' }} />
                                                         </div>
                                                         <button type="button" onClick={() => {
-                                                            const newV = form.variants.filter((_, idx) => idx !== i);
-                                                            setForm({...form, variants: newV});
-                                                        }} style={{ width: '32px', height: '32px', borderRadius: '8px', border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                            const newRI = form.recipeItems.filter((_, idx) => idx !== i);
+                                                            setForm({...form, recipeItems: newRI});
+                                                        }} style={{ width: '38px', height: '38px', borderRadius: '10px', border: 'none', background: 'rgba(239,68,68,0.1)', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                             <Trash2 size={14} />
                                                         </button>
                                                     </div>
                                                 ))}
                                             </div>
                                         ) : (
-                                            <p style={{ fontSize: '11px', color: C.textMuted, margin: 0, textAlign: 'center', padding: '10px' }}>{t('لا توجد مقاسات مضافة. الصنف يباع بحجم واحد فقط.')}</p>
+                                            <p style={{ fontSize: '11px', color: C.textMuted, margin: 0, textAlign: 'center', padding: '10px' }}>{t('اختياري: يمكنك إضافة المكونات الخام لتخصم من المخزون آلياً عند البيع.')}</p>
                                         )}
                                     </div>
                                 )}
