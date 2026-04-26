@@ -7,6 +7,7 @@ export const GET = withProtection(async (request, session) => {
     try {
         const companyId = (session.user as any).companyId;
         const url = new URL(request.url);
+        const type = url.searchParams.get('type');
         const status = url.searchParams.get('status');
         const shiftId = url.searchParams.get('shiftId');
         const limit = parseInt(url.searchParams.get('limit') ?? '50');
@@ -14,6 +15,7 @@ export const GET = withProtection(async (request, session) => {
         const orders = await prisma.posOrder.findMany({
             where: {
                 companyId,
+                ...(type ? { type } : {}),
                 ...(status ? { status } : {}),
                 ...(shiftId ? { shiftId } : {}),
             },

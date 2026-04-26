@@ -146,7 +146,8 @@ export default function ItemsPage() {
             const cleanForm = {
                 ...form,
                 costPrice: parseFloat(form.costPrice.toString().replace(/,/g, '')) || 0,
-                sellPrice: parseFloat(form.sellPrice.toString().replace(/,/g, '')) || 0,
+                sellPrice: form.type === 'product' ? (parseFloat(form.sellPrice.toString().replace(/,/g, '')) || 0) : 0,
+                isPosEligible: form.type === 'product' ? form.isPosEligible : false,
                 minLimit: parseFloat(form.minLimit.toString().replace(/,/g, '')) || 0,
                 initialQuantity: parseFloat(form.initialQuantity.toString().replace(/,/g, '')) || 0
             };
@@ -556,17 +557,19 @@ export default function ItemsPage() {
                                         ]}
                                     />
                                 </div>
-                                <div style={{ display: 'flex', alignItems: 'center', paddingTop: '20px' }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
-                                        <div style={{ position: 'relative', width: '22px', height: '22px' }}>
-                                            <input type="checkbox" checked={form.isPosEligible} onChange={e => setForm({ ...form, isPosEligible: e.target.checked })} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
-                                            <div style={{ position: 'absolute', inset: 0, background: form.isPosEligible ? C.primary : 'transparent', border: `2px solid ${form.isPosEligible ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-                                                {form.isPosEligible && <Check size={14} color="#fff" strokeWidth={3} />}
+                                {form.type === 'product' && (
+                                    <div style={{ display: 'flex', alignItems: 'center', paddingTop: '20px' }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
+                                            <div style={{ position: 'relative', width: '22px', height: '22px' }}>
+                                                <input type="checkbox" checked={form.isPosEligible} onChange={e => setForm({ ...form, isPosEligible: e.target.checked })} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
+                                                <div style={{ position: 'absolute', inset: 0, background: form.isPosEligible ? C.primary : 'transparent', border: `2px solid ${form.isPosEligible ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                                                    {form.isPosEligible && <Check size={14} color="#fff" strokeWidth={3} />}
+                                                </div>
                                             </div>
-                                        </div>
-                                        {t('إظهار الصنف في شاشة الكاشير (POS)')}
-                                    </label>
-                                </div>
+                                            {t('إظهار الصنف في شاشة الكاشير (POS)')}
+                                        </label>
+                                    </div>
+                                )}
                             </div>
                         )}
 
@@ -638,13 +641,15 @@ export default function ItemsPage() {
                                             <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                         </div>
                                     </div>
-                                    <div>
-                                        <label style={LS}>{t('سعر البيع')}</label>
-                                        <div style={{ position: 'relative' }}>
-                                            <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                            <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                    {form.type === 'product' && (
+                                        <div>
+                                            <label style={LS}>{t('سعر البيع')}</label>
+                                            <div style={{ position: 'relative' }}>
+                                                <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                                <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
 
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>

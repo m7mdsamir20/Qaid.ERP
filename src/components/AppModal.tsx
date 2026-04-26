@@ -135,7 +135,8 @@ const AppModal: React.FC<AppModalProps> = ({
                 {/* Body */}
                 <div style={{ 
                     padding: isDelete ? '18px 22px' : '20px 24px',
-                    flex: 1
+                    flex: 1,
+                    overflowY: 'auto'
                 }}>
                     {isDelete ? (
                         <div style={{ textAlign: 'center', padding: '16px 0', fontFamily: CAIRO }}>

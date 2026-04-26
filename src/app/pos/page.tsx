@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Landmark, Phone, MapPin, Receipt
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Phone, MapPin, Receipt
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -81,7 +81,7 @@ export default function POSPage() {
         try {
             const [catRes, itemRes, tableRes, modRes, driverRes, custRes, treasRes] = await Promise.all([
                 fetch('/api/categories'),
-                fetch('/api/items'),
+                fetch('/api/items?all=true'),
                 fetch('/api/restaurant/tables'),
                 fetch('/api/restaurant/modifiers'),
                 fetch('/api/drivers'),
@@ -90,7 +90,7 @@ export default function POSPage() {
             ]);
             const [cats, itms, tbls, mods, drvs, custs, treas] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json(), custRes.json(), treasRes.json()]);
             setCategories(Array.isArray(cats) ? cats : []);
-            setItems(Array.isArray(itms) ? itms : []);
+            setItems(Array.isArray(itms) ? itms : (itms.items || []));
             setTables(Array.isArray(tbls) ? tbls : []);
             setModifiers(Array.isArray(mods) ? mods : []);
             setDrivers(Array.isArray(drvs) ? drvs.filter((d: any) => d.status === 'available') : []);
@@ -104,6 +104,7 @@ export default function POSPage() {
     useEffect(() => { load(); }, [load]);
 
     const filteredItems = items.filter(item => {
+        if (item.isPosEligible === false) return false;
         const matchCat = !selectedCategory || item.categoryId === selectedCategory;
         const matchSearch = !search || item.name?.toLowerCase().includes(search.toLowerCase());
         return matchCat && matchSearch;
@@ -181,9 +182,6 @@ export default function POSPage() {
     const cartCount = cart.reduce((s, c) => s + c.quantity, 0);
 
     const printReceipt = (orderData: any, lines: CartItem[], finalTotal: number, finalDiscount: number) => {
-        const printWin = window.open('', '_blank');
-        if (!printWin) return;
-        
         const html = `
             <html dir="rtl">
             <head>
@@ -223,17 +221,31 @@ export default function POSPage() {
                 <div class="footer">
                     <p>شكراً لزيارتكم!</p>
                 </div>
-                <script>window.print(); setTimeout(() => window.close(), 500);</script>
             </body>
             </html>
         `;
-        printWin.document.write(html);
-        printWin.document.close();
+
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'fixed';
+        iframe.style.right = '-10000px';
+        iframe.style.bottom = '-10000px';
+        document.body.appendChild(iframe);
+        
+        iframe.contentDocument?.open();
+        iframe.contentDocument?.write(html);
+        iframe.contentDocument?.close();
+        
+        setTimeout(() => {
+            iframe.contentWindow?.focus();
+            iframe.contentWindow?.print();
+            setTimeout(() => document.body.removeChild(iframe), 1000);
+        }, 500);
     };
 
     const handleInitialSubmit = () => {
         if (cart.length === 0) { setErrorMsg('السلة فارغة'); return; }
         if (orderType === 'dine-in' && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
+        if (!selectedTreasury) { setErrorMsg('اختر الخزنة أولاً'); return; }
         
         if (paymentMethod === 'mixed') {
             setSplitAmounts({ cash: total / 2, card: total / 2 });
@@ -438,7 +450,7 @@ export default function POSPage() {
                                 value={selectedCustomer}
                                 onChange={v => setSelectedCustomer(v)}
                                 options={customers.map(c => ({ value: c.id, label: c.name + (c.phone ? ` (${c.phone})` : '') }))}
-                                placeholder={t('👤 عميل (اختياري)')}
+                                placeholder={t('عميل (اختياري)')}
                             />
                         </div>
                     </div>
@@ -503,8 +515,8 @@ export default function POSPage() {
                         <CustomSelect
                             value={selectedTreasury}
                             onChange={v => setSelectedTreasury(v)}
-                            options={treasuries.map(t => ({ value: t.id, label: t.name, icon: Landmark }))}
-                            placeholder={t('🏦 اختر الخزنة')}
+                            options={treasuries.map(t => ({ value: t.id, label: t.name }))}
+                            placeholder={t('اختر الخزنة')}
                         />
 
                         {/* الإجمالي */}
