@@ -27,7 +27,7 @@ export const GET = withProtection(async (request, session) => {
             const items = await prisma.item.findMany({
                 where,
                 orderBy: { name: 'asc' },
-                include: { category: true, unit: true, stocks: true, variants: true },
+                include: { category: true, unit: true, stocks: true, variants: { include: { recipe: { include: { items: true } } } }, recipe: { include: { items: true } } },
             });
             return NextResponse.json(items);
         }
@@ -38,7 +38,7 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'asc' },
                 skip,
                 take: limit,
-                include: { category: true, unit: true, stocks: true, variants: true },
+                include: { category: true, unit: true, stocks: true, variants: { include: { recipe: { include: { items: true } } } }, recipe: { include: { items: true } } },
             }),
             prisma.item.count({ where }),
         ]);
@@ -168,7 +168,7 @@ export const POST = withProtection(async (request, session, body) => {
             if (body.variants && Array.isArray(body.variants)) {
                 for (let i = 0; i < body.variants.length; i++) {
                     const v = body.variants[i];
-                    await tx.item.create({
+                    const createdVariant = await tx.item.create({
                         data: {
                             code: `${nextCode}-V${i + 1}`,
                             barcode: v.barcode || Math.floor(1000000000 + Math.random() * 9000000000).toString(),
@@ -182,7 +182,39 @@ export const POST = withProtection(async (request, session, body) => {
                             categoryId: body.categoryId || null,
                         }
                     });
+                    
+                    if (v.recipeItems && Array.isArray(v.recipeItems) && v.recipeItems.length > 0) {
+                        await tx.recipe.create({
+                            data: {
+                                itemId: createdVariant.id,
+                                companyId,
+                                items: {
+                                    create: v.recipeItems.map((ri: any) => ({
+                                        itemId: ri.itemId,
+                                        quantity: parseFloat(ri.quantity) || 0,
+                                        unit: ri.unit || '',
+                                    })),
+                                },
+                            },
+                        });
+                    }
                 }
+            }
+
+            if (body.recipeItems && Array.isArray(body.recipeItems) && body.recipeItems.length > 0) {
+                await tx.recipe.create({
+                    data: {
+                        itemId: newItem.id,
+                        companyId,
+                        items: {
+                            create: body.recipeItems.map((i: any) => ({
+                                itemId: i.itemId,
+                                quantity: parseFloat(i.quantity) || 0,
+                                unit: i.unit || '',
+                            })),
+                        },
+                    },
+                });
             }
 
             return newItem;
@@ -217,9 +249,10 @@ export const PUT = withProtection(async (request, session, body) => {
         if (body.variants && Array.isArray(body.variants)) {
             const companyId = (session.user as any).companyId;
             for (const v of body.variants) {
-                if (v.id) {
+                let variantId = v.id;
+                if (variantId) {
                     await prisma.item.update({
-                        where: { id: v.id },
+                        where: { id: variantId },
                         data: {
                             name: v.name,
                             sellPrice: parseFloat(v.sellPrice) || 0,
@@ -228,7 +261,7 @@ export const PUT = withProtection(async (request, session, body) => {
                         }
                     });
                 } else {
-                    await prisma.item.create({
+                    const createdVariant = await prisma.item.create({
                         data: {
                             code: `VAR-${Math.floor(1000 + Math.random() * 9000)}`,
                             name: v.name,
@@ -242,7 +275,47 @@ export const PUT = withProtection(async (request, session, body) => {
                             categoryId: item.categoryId,
                         }
                     });
+                    variantId = createdVariant.id;
                 }
+
+                if (v.recipeItems && Array.isArray(v.recipeItems)) {
+                    await prisma.recipe.deleteMany({ where: { itemId: variantId } });
+                    if (v.recipeItems.length > 0) {
+                        await prisma.recipe.create({
+                            data: {
+                                itemId: variantId,
+                                companyId,
+                                items: {
+                                    create: v.recipeItems.map((ri: any) => ({
+                                        itemId: ri.itemId,
+                                        quantity: parseFloat(ri.quantity) || 0,
+                                        unit: ri.unit || '',
+                                    })),
+                                },
+                            },
+                        });
+                    }
+                }
+            }
+        }
+
+        if (body.recipeItems && Array.isArray(body.recipeItems)) {
+            const companyId = (session.user as any).companyId;
+            await prisma.recipe.deleteMany({ where: { itemId: item.id } });
+            if (body.recipeItems.length > 0) {
+                await prisma.recipe.create({
+                    data: {
+                        itemId: item.id,
+                        companyId,
+                        items: {
+                            create: body.recipeItems.map((i: any) => ({
+                                itemId: i.itemId,
+                                quantity: parseFloat(i.quantity) || 0,
+                                unit: i.unit || '',
+                            })),
+                        },
+                    },
+                });
             }
         }
 
