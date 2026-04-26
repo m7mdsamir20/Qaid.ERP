@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { createPortal } from 'react-dom';
 import { ChevronDown, LucideIcon, Plus } from 'lucide-react';
 import { C } from '@/constants/theme';
 
@@ -47,8 +48,11 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
     const [isOpen, setIsOpen] = useState(false);
     const [search, setSearch] = useState('');
     const [activeIndex, setActiveIndex] = useState(0);
+    const [portalPos, setPortalPos] = useState<{ top?: number; bottom?: number; left: number; width: number; isUp: boolean } | null>(null);
     const lastInteraction = useRef<'mouse' | 'keyboard'>('keyboard');
     const containerRef = useRef<HTMLDivElement>(null);
+    const triggerRef = useRef<HTMLDivElement>(null);
+    const portalRef = useRef<HTMLDivElement>(null);
     const optionsListRef = useRef<HTMLDivElement>(null);
     const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -67,9 +71,28 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
 
     const selectedOption = options.find(opt => opt.value === value);
 
+    const calcPortalPos = () => {
+        const el = containerRef.current;
+        if (!el) return;
+        const rect = el.getBoundingClientRect();
+        const dropH = Math.min(parseInt(maxHeight) || 240, 280);
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const goUp = openUp || spaceBelow < dropH + 16;
+        setPortalPos({
+            isUp: goUp,
+            top: goUp ? undefined : rect.bottom + 6,
+            bottom: goUp ? window.innerHeight - rect.top + 6 : undefined,
+            left: rect.left,
+            width: rect.width,
+        });
+    };
+
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+            const target = event.target as Node;
+            const inContainer = containerRef.current?.contains(target);
+            const inPortal = portalRef.current?.contains(target);
+            if (!inContainer && !inPortal) {
                 setIsOpen(false);
             }
         };
@@ -81,7 +104,12 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
         if (isOpen) {
             setSearch('');
             setActiveIndex(0);
-            setTimeout(() => searchInputRef.current?.focus(), 100);
+            requestAnimationFrame(() => {
+                calcPortalPos();
+                setTimeout(() => searchInputRef.current?.focus(), 50);
+            });
+        } else {
+            setPortalPos(null);
         }
     }, [isOpen]);
 
@@ -111,12 +139,22 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
 
     // Split incoming style into layout vs appearance if needed
     const { width, height, margin, padding, position, top, right, bottom, left, flex, ...appearanceStyle } = style;
-    const layoutStyle = { width, height, margin, padding, position: position || 'relative', top, right, bottom, left, flex };
+    const layoutStyle: React.CSSProperties = { position: position || 'relative' };
+    if (width !== undefined) layoutStyle.width = width;
+    if (height !== undefined) layoutStyle.height = height;
+    if (margin !== undefined) layoutStyle.margin = margin;
+    if (padding !== undefined) layoutStyle.padding = padding;
+    if (top !== undefined) layoutStyle.top = top;
+    if (right !== undefined) layoutStyle.right = right;
+    if (bottom !== undefined) layoutStyle.bottom = bottom;
+    if (left !== undefined) layoutStyle.left = left;
+    if (flex !== undefined) layoutStyle.flex = flex;
 
     return (
         <div ref={containerRef} style={{ minWidth, ...layoutStyle, zIndex: isOpen ? 10000 : 10 }}>
             {/* Trigger Container */}
             <div
+                ref={triggerRef}
                 onClick={() => !disabled && setIsOpen(!isOpen)}
                 style={{
                     position: 'relative',
@@ -126,7 +164,7 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     border: `1px solid ${isOpen ? C.primary : C.border}`,
                     borderRadius: '10px',
                     transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                    height: '42px',
+                    height: height || '42px',
                     cursor: disabled ? 'not-allowed' : 'pointer',
                     padding: Icon ? '0 16px 0 40px' : '0 16px 0 36px',
                     opacity: disabled ? 0.6 : 1,
@@ -176,13 +214,14 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                 />
             </div>
 
-            {/* Dropdown Menu */}
-            {isOpen && (
-                <div style={{
-                    position: 'absolute',
-                    [openUp ? 'bottom' : 'top']: 'calc(100% + 8px)',
-                    insetInlineEnd: 0,
-                    width: '100%',
+            {/* Dropdown Menu via Portal */}
+            {isOpen && portalPos && typeof document !== 'undefined' && createPortal(
+                <div ref={portalRef} style={{
+                    position: 'fixed',
+                    top: portalPos.top !== undefined ? `${portalPos.top}px` : undefined,
+                    bottom: portalPos.bottom !== undefined ? `${portalPos.bottom}px` : undefined,
+                    left: `${portalPos.left}px`,
+                    width: `${portalPos.width}px`,
                     background: C.card,
                     border: `1px solid ${C.border}`,
                     borderRadius: '14px',
@@ -191,11 +230,11 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '2px',
-                    zIndex: 100000,
+                    zIndex: 999999,
                     maxHeight: maxHeight,
                     overflow: 'hidden',
                     boxSizing: 'border-box',
-                    animation: openUp ? 'dropdownInUp 0.2s ease-out' : 'dropdownIn 0.2s ease-out'
+                    animation: portalPos.isUp ? 'dropdownInUp 0.15s ease-out' : 'dropdownIn 0.15s ease-out'
                 }}
                     tabIndex={-1}
                 >
@@ -340,7 +379,8 @@ const CustomSelect = forwardRef((props: CustomSelectProps, ref) => {
                             لم يتم العثور على نتائج
                         </div>
                     )}
-                </div>
+                </div>,
+                document.body
             )}
             <style>{`
                 @keyframes dropdownIn {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { TrendingUp, TrendingDown, Package, AlertTriangle, Users, CreditCard, ArrowUpRight, ArrowDownRight, Bell, ChevronDown, BarChart2, ShoppingCart, Wallet, RefreshCw, Calendar, Store, Eye, LayoutDashboard, Receipt, Clock, Filter, MapPin, FileText, ArrowRight, Truck, Loader2, Shield, Landmark, Briefcase, DollarSign } from 'lucide-react';
+import { TrendingUp, TrendingDown, Package, AlertTriangle, Users, CreditCard, ArrowUpRight, ArrowDownRight, Bell, ChevronDown, BarChart2, ShoppingCart, Wallet, RefreshCw, Calendar, Store, Eye, LayoutDashboard, Receipt, Clock, Filter, MapPin, FileText, ArrowRight, Truck, Loader2, Shield, Landmark, Briefcase, DollarSign, UtensilsCrossed } from 'lucide-react';
 import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
@@ -176,6 +176,7 @@ export default function DashboardPage() {
   const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
   const businessType = (session?.user as any)?.businessType?.toUpperCase();
   const isServices = businessType === 'SERVICES';
+  const isRestaurants = businessType === 'RESTAURANTS';
   const isUserAdmin = userRole === 'admin';
 
   // Get subscription features for admin checks
@@ -349,7 +350,18 @@ export default function DashboardPage() {
       { id: '/accounts', featureKey: 'accounting', href: '/accounts', label: t('شجرة الحسابات'), icon: Landmark, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
     ];
 
-    const currentActions = isServices ? serviceActions : tradingActions;
+    const restaurantActions = [
+      { id: '/pos', featureKey: 'sales', href: '/pos', label: t('نقطة البيع (الكاشير)'), icon: Store, color: C.primaryBg, iconColor: C.primary },
+      { id: '/sales', featureKey: 'sales', href: '/sales', label: t('فواتير المبيعات'), icon: Receipt, color: C.successBg, iconColor: C.success },
+      { id: '/purchases', featureKey: 'purchases', href: '/purchases/new', label: t('مشتريات المطعم'), icon: ShoppingCart, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
+      { id: '/items', featureKey: 'inventory', href: '/items', label: t('أصناف المنيو'), icon: UtensilsCrossed, color: 'rgba(244, 63, 94, 0.12)', iconColor: '#f43f5e' },
+      { id: '/expenses', featureKey: 'treasury', href: '/expenses', label: t('المصروفات'), icon: TrendingDown, color: C.dangerBg, iconColor: C.danger },
+      { id: '/treasuries', featureKey: 'treasury', href: '/treasuries', label: t('الخزائن (الدرج)'), icon: Wallet, color: 'rgba(16, 185, 129, 0.12)', iconColor: '#10b981' },
+      { id: '/reports', featureKey: 'dashboard', href: '/reports', label: t('التقارير الإحصائية'), icon: BarChart2, color: 'rgba(234, 179, 8, 0.12)', iconColor: '#eab308' },
+      { id: '/settings', featureKey: 'dashboard', href: '/settings', label: t('إعدادات النظام'), icon: LayoutDashboard, color: 'rgba(75, 85, 99, 0.2)', iconColor: '#4b5563' },
+    ];
+
+    const currentActions = isRestaurants ? restaurantActions : isServices ? serviceActions : tradingActions;
 
     return currentActions
       .filter(action => hasPage(action.id, action.featureKey))
@@ -401,11 +413,26 @@ export default function DashboardPage() {
         {/* ── KPI Cards Grid (Dynamic) ── */}
         <div className="kpi-grid" style={{
           display: 'grid',
-          gridTemplateColumns: isServices ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)',
+          gridTemplateColumns: isServices || isRestaurants ? 'repeat(3, 1fr)' : 'repeat(4, 1fr)',
           gap: '18px',
           marginBottom: '28px'
         }}>
-          {isServices ? (
+          {isRestaurants ? (
+            <>
+              {hasPage('/sales', 'sales') && <KpiCard label="مبيعات الكاشير اليوم" value={fMoneyJSX(stats.salesTodayTotal)} sub={t("إجمالي أوردرات اليوم")} color={C.primary} icon={Store} delay={0} />}
+              {hasPage('/items', 'inventory') && <KpiCard label="أصناف المنيو" value={stats.items} sub={t("إجمالي الوجبات والأصناف")} color={C.blue} icon={UtensilsCrossed} delay={60} />}
+              {hasPage('/purchases', 'purchases') && <KpiCard label="مشتريات المطعم" value={fMoneyJSX(stats.purchasesTotal)} sub={periodLabel[period]} trend={`↓ ${t('مباشر')}`} trendUp={false} color={C.warning} icon={ShoppingCart} delay={120} />}
+              <KpiCard label="المصروفات" value={fMoneyJSX(stats.expensesTotal || 0)} sub={t("إجمالي مدفوعات المصاريف")} color={C.danger} icon={TrendingDown} delay={180} />
+              {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
+                <KpiCard label="صافي الربح" value={fMoneyJSX(stats.netProfit)} sub={`${t('هامش')} ${(stats.salesTotal ? (stats.netProfit / stats.salesTotal * 100).toFixed(0) : 0)}%`}
+                  trend={stats.netProfit >= 0 ? `↑ ${t('نمو')}` : `↓ ${t('تراجع')}`}
+                  trendUp={stats.netProfit >= 0}
+                  color={stats.netProfit >= 0 ? C.success : C.danger}
+                  icon={BarChart2} delay={240} />
+              )}
+              {hasPage('/treasuries', 'treasury') && <KpiCard label="رصيد الدرج / الخزينة" value={fMoneyJSX(stats.treasuriesBalance)} sub={t("إجمالي النقدية المتاحة")} color={C.success} icon={Wallet} delay={300} />}
+            </>
+          ) : isServices ? (
             <>
               <KpiCard label="إيرادات اليوم" value={fMoneyJSX(stats.salesTodayTotal)} sub={t("إجمالي مبيعات الخدمات اليوم")} color={C.primary} icon={Receipt} delay={0} />
               <KpiCard label="عدد الخدمات" value={stats.items} sub={t("إجمالي الخدمات المسجلة")} color={C.blue} icon={Package} delay={60} />
@@ -478,10 +505,10 @@ export default function DashboardPage() {
         }}>
 
           {(hasPage('/sales', 'sales') || hasPage('/purchases', 'purchases')) && (
-            <SectionCard title={isServices ? t("إيرادات الخدمات مقابل المصروفات") : t("المبيعات مقابل المشتريات")} icon={BarChart2}
+            <SectionCard title={isRestaurants ? t("إيرادات المطعم مقابل المنصرفات") : isServices ? t("إيرادات الخدمات مقابل المصروفات") : t("المبيعات مقابل المشتريات")} icon={BarChart2}
               action={<div style={{ fontSize: '11px', color: C.textSecondary, display: 'flex', gap: '15px' }}>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isServices ? 'إيرادات' : 'مبيعات')}</span>
-                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isServices ? C.danger : C.warning }} />{t(isServices ? 'مصروفات' : 'مشتريات')}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: C.primary }} />{t(isRestaurants || isServices ? 'إيرادات' : 'مبيعات')}</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: '5px' }}><div style={{ width: '8px', height: '8px', borderRadius: '50%', background: isRestaurants || isServices ? C.danger : C.warning }} />{t(isRestaurants ? 'منصرفات' : isServices ? 'مصروفات' : 'مشتريات')}</span>
               </div>}>
               <div style={{ padding: '20px 10px 10px', height: '260px', minWidth: 0 }}>
                 <ResponsiveContainer width="100%" height="100%">
@@ -504,9 +531,9 @@ export default function DashboardPage() {
                     <XAxis dataKey="label" tick={{ fill: C.textMuted, fontSize: 11, fontFamily: OUTFIT }} axisLine={false} tickLine={false} />
                     <YAxis tick={{ fill: C.textMuted, fontSize: 10, fontFamily: OUTFIT }} axisLine={false} tickLine={false} tickFormatter={v => Number(v).toLocaleString()} width={40} />
                     <Tooltip content={<ChartTooltip fMoneyJSX={fMoneyJSX} t={t} />} />
-                    {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
-                    {isServices
-                      ? <Area type="monotone" dataKey="expenses" name={t("مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
+                    {hasPage('/sales', 'sales') && <Area type="monotone" dataKey="sales" name={t(isRestaurants || isServices ? "إيرادات" : "مبيعات")} stroke={C.primary} strokeWidth={3} fill="url(#gSales)" dot={false} />}
+                    {isRestaurants || isServices
+                      ? <Area type="monotone" dataKey="expenses" name={t(isRestaurants ? "منصرفات" : "مصروفات")} stroke={C.danger} strokeWidth={2} fill="url(#gDanger)" dot={false} />
                       : (hasPage('/purchases', 'purchases') && <Area type="monotone" dataKey="purchases" name={t("مشتريات")} stroke={C.warning} strokeWidth={2} fill="url(#gPurch)" dot={false} />)
                     }
                   </AreaChart>
