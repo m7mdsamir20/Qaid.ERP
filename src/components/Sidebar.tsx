@@ -145,6 +145,9 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                         return l;
                     });
                 }
+                if (section.featureKey === 'installments') {
+                    return null;
+                }
             }
 
             const visibleLinks = section.links?.filter((l: any) => hasPage(section.featureKey || '', l.id)) || [];
