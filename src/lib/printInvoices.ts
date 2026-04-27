@@ -353,6 +353,7 @@ tbody tr:nth-child(even){background: #fff;}
             ${!isServicesLine ? `<th style="width:10%">${bl('الوحدة', 'Unit')}</th>` : ''}
             <th style="width:10%">${bl('الكمية', 'Qty')}</th>
             <th style="width:10%">${bl('السعر', 'Price')}</th>
+            ${isSaudi ? `<th style="width:12%">${bl('المبلغ الخاضع للضريبة', 'Taxable Amount')}</th>` : ''}
             ${invoiceTaxRate > 0 ? `
                 <th style="width:8%">${bl('نسبة الضريبة', 'Tax %')}</th>
             ` : ''}
@@ -384,6 +385,7 @@ tbody tr:nth-child(even){background: #fff;}
                 ${!isServicesLine ? `<td>${unit}</td>` : ''}
                 <td><strong>${qty.toLocaleString('en-US')}</strong></td>
                 <td>${price.toLocaleString('en-US')} ${sym}</td>
+                ${isSaudi ? `<td>${lineBase.toLocaleString('en-US')} ${sym}</td>` : ''}
                 ${invoiceTaxRate > 0 ? `
                     <td>${lineTaxRate}%</td>
                 ` : ''}
