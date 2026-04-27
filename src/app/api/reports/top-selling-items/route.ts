@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -20,12 +21,15 @@ export const GET = withProtection(async (request, session) => {
             totalProfit: number;
         }
 
+        const branchFilter = getBranchFilter(session);
+
         // Fetch invoice lines from 'sale' invoices
         const invoiceLines = await prisma.invoiceLine.findMany({
             where: {
                 invoice: { 
                     companyId, 
-                    type: 'sale' 
+                    type: 'sale',
+                    ...(branchFilter.branchId ? { branchId: branchFilter.branchId } : {})
                 }
             },
             include: {

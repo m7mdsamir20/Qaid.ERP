@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -10,7 +11,12 @@ export const GET = withProtection(async (request, session) => {
         }
 
         const branchId = request.nextUrl.searchParams.get('branchId');
-        const warehouseFilter = branchId && branchId !== 'all' ? { branchId } : {};
+        const warehouseFilter = (() => {
+            if (branchId && branchId !== 'all') return { branchId };
+            const bf = getBranchFilter(session);
+            if (bf.branchId) return { branchId: bf.branchId };
+            return {};
+        })();
 
         const stocks = await prisma.stock.findMany({
             where: { item: { companyId }, warehouse: { companyId, ...warehouseFilter } },

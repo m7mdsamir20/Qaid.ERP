@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -20,7 +21,12 @@ export const GET = withProtection(async (request, session) => {
         const endOfDay = new Date(targetDate);
         endOfDay.setHours(23, 59, 59, 999);
 
-        const branchFilter = branchId && branchId !== 'all' ? { branchId } : {};
+        const branchFilter = (() => {
+            if (branchId && branchId !== 'all') return { branchId };
+            const bf = getBranchFilter(session);
+            if (bf.branchId) return { branchId: bf.branchId };
+            return {};
+        })();
 
         const whereToday = {
             companyId,
