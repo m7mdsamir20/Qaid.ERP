@@ -3,6 +3,20 @@ import { notFound } from 'next/navigation';
 import { getCurrencySymbol } from '@/lib/currency';
 import MenuClient from './MenuClient';
 
+import { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ companyId: string }> }): Promise<Metadata> {
+    const { companyId } = await params;
+    const company = await prisma.company.findUnique({
+        where: { id: companyId },
+        select: { name: true }
+    });
+    return {
+        title: company ? `${company.name} — المنيو الرقمي` : 'المنيو الرقمي',
+        viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
+    };
+}
+
 export default async function PublicMenuPage({ params, searchParams }: { params: Promise<{ companyId: string }>, searchParams: Promise<{ table?: string }> }) {
     const { companyId } = await params;
     const { table } = await searchParams;
@@ -39,13 +53,8 @@ export default async function PublicMenuPage({ params, searchParams }: { params:
     const currency = getCurrencySymbol(currencyCode, 'ar');
 
     return (
-        <html lang="ar" dir="rtl">
-            <head>
-                <meta charSet="utf-8" />
-                <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-                <title>{company.name} — المنيو الرقمي</title>
-                <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet" />
-                <style>{`
+        <>
+            <style>{`
                     * { margin: 0; padding: 0; box-sizing: border-box; }
                     body { font-family: 'Cairo', sans-serif; background: #0b0f19; color: #f1f5f9; min-height: 100vh; -webkit-font-smoothing: antialiased; padding-bottom: 90px; }
                     
@@ -127,10 +136,7 @@ export default async function PublicMenuPage({ params, searchParams }: { params:
                     .order-success h2 { font-size: 24px; font-weight: 800; color: #fff; margin-bottom: 8px; }
                     .order-success p { color: #94a3b8; font-size: 15px; }
                 `}</style>
-            </head>
-            <body>
-                <MenuClient company={company} categories={activeCategories as any} currency={currency} tableId={table} />
-            </body>
-        </html>
+            <MenuClient company={company} categories={activeCategories as any} currency={currency} tableId={table} />
+        </>
     );
 }
