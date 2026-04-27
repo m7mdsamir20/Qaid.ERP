@@ -44,6 +44,35 @@ export const POST = withProtection(async (request, session, body) => {
         // Get active shift
         const activeShift = await prisma.shift.findFirst({ where: { companyId, status: 'open' } });
 
+        const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
+
+        // ════════════════════════════════════════════════════
+        // PRE-CHECK INVENTORY (Warning when materials run out)
+        // ════════════════════════════════════════════════════
+        if (defaultWarehouse) {
+            for (const line of body.lines as any[]) {
+                const item = await prisma.item.findUnique({
+                    where: { id: line.itemId },
+                    include: { recipe: { include: { items: { include: { item: true } } } } }
+                });
+
+                if (item?.recipe && item.recipe.items.length > 0) {
+                    for (const ri of item.recipe.items) {
+                        const requiredQty = ri.quantity * line.quantity;
+                        const stock = await prisma.stock.findUnique({
+                            where: { itemId_warehouseId: { itemId: ri.itemId, warehouseId: defaultWarehouse.id } }
+                        });
+                        const available = stock?.quantity || 0;
+                        if (available < requiredQty) {
+                            return NextResponse.json({ 
+                                error: `المواد الخام غير كافية لعمل "${item.name}". المتاح من "${ri.item.name}" هو ${available} فقط.` 
+                            }, { status: 400 });
+                        }
+                    }
+                }
+            }
+        }
+
         const subtotal = (body.lines as any[]).reduce((s: number, l: any) => s + (l.quantity * l.unitPrice - (l.discount ?? 0)), 0);
         const taxAmount = body.taxAmount ?? 0;
         const discount = body.discount ?? 0;
@@ -124,7 +153,7 @@ export const POST = withProtection(async (request, session, body) => {
         // ACCOUNTING INTEGRATION: Create Invoice from POS Order
         // ════════════════════════════════════════════════════
         const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
-        const defaultWarehouse = await prisma.warehouse.findFirst({ where: { companyId }, orderBy: { createdAt: 'asc' } });
+        // defaultWarehouse is already defined at the top
 
         if (activeYear) {
             try {
@@ -293,25 +322,8 @@ export const POST = withProtection(async (request, session, body) => {
                         });
                     }
                 } else if (item.type !== 'service') {
-                    // 2. No recipe, just a standard product, deduct directly
-                    const deductionQty = line.quantity;
-                    await prisma.stock.upsert({
-                        where: { itemId_warehouseId: { itemId: item.id, warehouseId: defaultWarehouse.id } },
-                        create: { itemId: item.id, warehouseId: defaultWarehouse.id, quantity: -deductionQty },
-                        update: { quantity: { decrement: deductionQty } }
-                    });
-                    await prisma.stockMovement.create({
-                        data: {
-                            type: 'out',
-                            date: new Date(),
-                            itemId: item.id,
-                            warehouseId: defaultWarehouse.id,
-                            quantity: deductionQty,
-                            reference: `POS-${order.orderNumber}`,
-                            notes: `مبيعات كاشير (بدون وصفة)`,
-                            companyId
-                        }
-                    });
+                    // بناءً على طلب المستخدم: المنتج التام لا يسحب بالسالب ولا يتم خصمه من المخزون إلا إذا كان له وصفة (مواد خام)
+                    // لذلك قمنا بتعطيل الخصم المباشر للمنتج التام الذي ليس له وصفة
                 }
                 
                 // 3. Deduct Modifiers Inventory

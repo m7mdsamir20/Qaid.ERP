@@ -123,7 +123,11 @@ export default function NewPurchasePage() {
             const whs = await whR.json();
             const trs = await trR.json();
             const its = await itemR.json();
-            if (coR.ok) setCompany(await coR.json());
+            let companyData: any = {};
+            if (coR.ok) {
+                companyData = await coR.json();
+                setCompany(companyData);
+            }
 
             const taxRes = await fetch('/api/settings');
             if (taxRes.ok) {
@@ -141,7 +145,12 @@ export default function NewPurchasePage() {
             setCustomers(Array.isArray(cus) ? cus : []);
             setWarehouses(Array.isArray(whs) ? whs : []);
             setTreasuries(Array.isArray(trs) ? trs : []);
-            setItems(Array.isArray(its) ? its : (its.items || []));
+            
+            let fetchedItems = Array.isArray(its) ? its : (its.items || []);
+            if (companyData?.businessType?.toUpperCase() === 'RESTAURANTS') {
+                fetchedItems = fetchedItems.filter((i: any) => i.type === 'raw');
+            }
+            setItems(fetchedItems);
 
             if (Array.isArray(whs) && whs.length > 0) {
                 const lastWh = localStorage.getItem('last_warehouse_id');
