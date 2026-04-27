@@ -81,7 +81,7 @@ export const POST = withProtection(async (request, session, body) => {
                     categoryId: body.categoryId || null,
                     description: body.description || null,
                     type: body.type || 'product',
-                    isPosEligible: body.isPosEligible ?? true,
+                    isPosEligible: body.type === 'raw' ? false : (body.isPosEligible ?? true),
                     isPriceVariable: body.isPriceVariable ?? false,
                     status: body.status || 'active',
                     companyId,
@@ -248,7 +248,7 @@ export const PUT = withProtection(async (request, session, body) => {
                 categoryId: body.categoryId || null,
                 description: body.description || null,
                 type: body.type || 'product',
-                isPosEligible: body.isPosEligible ?? true,
+                isPosEligible: body.type === 'raw' ? false : (body.isPosEligible ?? true),
                 isPriceVariable: body.isPriceVariable ?? false,
             },
         });

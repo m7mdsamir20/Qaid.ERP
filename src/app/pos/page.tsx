@@ -75,6 +75,7 @@ export default function POSPage() {
     // Split Payment Modal
     const [showSplitPayment, setShowSplitPayment] = useState(false);
     const [splitAmounts, setSplitAmounts] = useState({ cash: 0, card: 0 });
+    const [showAddCustomer, setShowAddCustomer] = useState(false);
 
     // Filters
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -130,6 +131,7 @@ export default function POSPage() {
 
     const filteredItems = items.filter(item => {
         if (item.isPosEligible === false) return false;
+        if (item.type === 'raw') return false;
         if (item.parentId) return false; // Hide variants from main grid
         const matchCat = !selectedCategory || item.categoryId === selectedCategory;
         const matchSearch = !search || item.name?.toLowerCase().includes(search.toLowerCase());
@@ -377,7 +379,7 @@ export default function POSPage() {
                             style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${!selectedCategory ? C.primary : C.border}`, background: !selectedCategory ? `${C.primary}15` : 'transparent', color: !selectedCategory ? C.primary : C.textSecondary, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s', fontFamily: CAIRO }}>
                             الكل
                         </button>
-                        {categories.map(cat => (
+                        {categories.filter(cat => items.some(item => item.categoryId === cat.id && item.isPosEligible !== false && item.type !== 'raw' && !item.parentId)).map(cat => (
                             <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}
                                 style={{ padding: '6px 16px', borderRadius: '20px', border: `1px solid ${selectedCategory === cat.id ? C.primary : C.border}`, background: selectedCategory === cat.id ? `${C.primary}15` : 'transparent', color: selectedCategory === cat.id ? C.primary : C.textSecondary, fontSize: '12.5px', fontWeight: 600, cursor: 'pointer', whiteSpace: 'nowrap', transition: 'all 0.2s', fontFamily: CAIRO }}>
                                 {cat.name}
@@ -410,8 +412,8 @@ export default function POSPage() {
                                                     {inCart.quantity}
                                                 </div>
                                             )}
-                                            <div style={{ fontSize: '28px', marginBottom: '8px' }}>
-                                                {item.imageUrl ? <img src={item.imageUrl} style={{ width: 48, height: 48, borderRadius: '12px', objectFit: 'cover' }} /> : '🍽️'}
+                                            <div style={{ fontSize: '36px', marginBottom: '10px', display: 'flex', justifyContent: 'center', width: '100%' }}>
+                                                {item.imageUrl ? <img src={item.imageUrl} style={{ width: '100%', height: 80, borderRadius: '12px', objectFit: 'cover' }} /> : '🍽️'}
                                             </div>
                                             <p style={{ margin: '0 0 6px', fontSize: '12.5px', fontWeight: 700, color: C.textPrimary, lineHeight: 1.3 }}>{item.name}</p>
                                             <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>{fMoney(item.sellPrice ?? item.price ?? 0)}</p>
@@ -441,17 +443,35 @@ export default function POSPage() {
                             })}
                         </div>
 
-                        {/* اختيار الطاولة */}
-                        {orderType === 'dine-in' && (
-                            <div style={{ marginTop: '10px' }}>
+                        {/* الطاولة والعميل */}
+                        <div style={{ display: 'grid', gridTemplateColumns: orderType === 'dine-in' ? '1fr 1fr' : '1fr', gap: '8px', marginTop: '10px' }}>
+                            {/* اختيار الطاولة */}
+                            {orderType === 'dine-in' && (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                    <label style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t('الطاولة')}</label>
+                                    <CustomSelect
+                                        value={selectedTable}
+                                        onChange={v => setSelectedTable(v)}
+                                        options={tables.filter(t => t.status === 'available' || t.id === selectedTable).map(tbl => ({ value: tbl.id, label: `${tbl.name} (${tbl.capacity})` }))}
+                                        placeholder={t('— اختر الطاولة —')}
+                                    />
+                                </div>
+                            )}
+
+                            {/* اختيار العميل (اختياري) */}
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                    <label style={{ fontSize: '11px', color: C.textSecondary, fontWeight: 600 }}>{t('العميل (اختياري)')}</label>
+                                    <button onClick={() => setShowAddCustomer(true)} style={{ background: 'none', border: 'none', color: C.primary, fontSize: '11px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO }}>+ {t('جديد')}</button>
+                                </div>
                                 <CustomSelect
-                                    value={selectedTable}
-                                    onChange={v => setSelectedTable(v)}
-                                    options={tables.filter(t => t.status === 'available' || t.id === selectedTable).map(tbl => ({ value: tbl.id, label: `${tbl.name} (${tbl.capacity} أشخاص)` }))}
-                                    placeholder={t('— اختر الطاولة —')}
+                                    value={selectedCustomer}
+                                    onChange={v => setSelectedCustomer(v)}
+                                    options={customers.map(c => ({ value: c.id, label: c.name + (c.phone ? ` (${c.phone})` : '') }))}
+                                    placeholder={t('— اختر العميل —')}
                                 />
                             </div>
-                        )}
+                        </div>
 
                         {/* اختيار السائق وبيانات التوصيل */}
                         {orderType === 'delivery' && (
@@ -478,16 +498,6 @@ export default function POSPage() {
                                 </div>
                             </div>
                         )}
-
-                        {/* اختيار العميل (اختياري) */}
-                        <div style={{ marginTop: '10px' }}>
-                            <CustomSelect
-                                value={selectedCustomer}
-                                onChange={v => setSelectedCustomer(v)}
-                                options={customers.map(c => ({ value: c.id, label: c.name + (c.phone ? ` (${c.phone})` : '') }))}
-                                placeholder={t('عميل (اختياري)')}
-                            />
-                        </div>
                     </div>
 
                     {/* السلة */}
@@ -729,6 +739,52 @@ export default function POSPage() {
                                 {submitting ? <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> : 'تأكيد الدفع وطباعة'}
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Add Customer Modal */}
+            {showAddCustomer && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('إضافة عميل جديد')}</h2>
+                            <button onClick={() => setShowAddCustomer(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+                        <form onSubmit={async (e) => {
+                            e.preventDefault();
+                            const name = (e.currentTarget.elements.namedItem('cName') as HTMLInputElement).value;
+                            const phone = (e.currentTarget.elements.namedItem('cPhone') as HTMLInputElement).value;
+                            if (!name) return;
+                            setSubmitting(true);
+                            try {
+                                const res = await fetch('/api/customers', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, phone }) });
+                                if (res.ok) {
+                                    const newCust = await res.json();
+                                    setCustomers(prev => [...prev, newCust]);
+                                    setSelectedCustomer(newCust.id);
+                                    setShowAddCustomer(false);
+                                }
+                            } catch {}
+                            finally { setSubmitting(false); }
+                        }}>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                <div>
+                                    <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
+                                    <input name="cName" required style={{ ...IS, height: '42px' }} autoFocus />
+                                </div>
+                                <div>
+                                    <label style={LS}>{t('رقم الهاتف')}</label>
+                                    <input name="cPhone" style={{ ...IS, height: '42px', direction: 'ltr', textAlign: 'end' }} />
+                                </div>
+                            </div>
+                            <div style={{ display: 'flex', gap: '10px', marginTop: '24px' }}>
+                                <button type="button" onClick={() => setShowAddCustomer(false)} style={{ flex: 1, height: '44px', borderRadius: '12px', border: `1px solid ${C.border}`, background: 'transparent', color: C.textSecondary, fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>{t('إلغاء')}</button>
+                                <button type="submit" disabled={submitting} style={{ ...BTN_PRIMARY(submitting, false), flex: 2, height: '44px', borderRadius: '12px' }}>
+                                    {submitting ? <Loader2 size={16} className="animate-spin" /> : t('حفظ العميل')}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
