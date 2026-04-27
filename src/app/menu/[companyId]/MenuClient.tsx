@@ -14,6 +14,7 @@ interface CartItem {
     price: number;
     quantity: number;
     imageUrl?: string | null;
+    notes?: string;
 }
 
 export default function MenuClient({ company, categories, currency, tableId }: { company: any, categories: Category[], currency: string, tableId?: string | null }) {
@@ -27,6 +28,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
     const [activeItem, setActiveItem] = useState<MenuItem | null>(null);
     const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
     const [itemQty, setItemQty] = useState(1);
+    const [itemNotes, setItemNotes] = useState('');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -69,12 +71,14 @@ export default function MenuClient({ company, categories, currency, tableId }: {
         setActiveItem(item);
         setSelectedVariant(item.variants && item.variants.length > 0 ? item.variants[0] : null);
         setItemQty(1);
+        setItemNotes('');
     };
 
     const handleAddToCartFromModal = () => {
         if (!activeItem) return;
         setCart(prev => {
-            const id = selectedVariant ? `${activeItem.id}-${selectedVariant.id}` : activeItem.id;
+            const baseId = selectedVariant ? `${activeItem.id}-${selectedVariant.id}` : activeItem.id;
+            const id = itemNotes.trim() ? `${baseId}-${itemNotes.trim()}` : baseId;
             const existing = prev.find(i => i.id === id);
             if (existing) {
                 return prev.map(i => i.id === id ? { ...i, quantity: i.quantity + itemQty } : i);
@@ -86,7 +90,8 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                 name: selectedVariant ? `${activeItem.name} - ${selectedVariant.name}` : activeItem.name,
                 price: selectedVariant ? selectedVariant.sellPrice : activeItem.sellPrice,
                 quantity: itemQty,
-                imageUrl: activeItem.imageUrl
+                imageUrl: activeItem.imageUrl,
+                notes: itemNotes.trim()
             }];
         });
         setActiveItem(null);
@@ -106,7 +111,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                 body: JSON.stringify({
                     companyId: company.id,
                     tableId,
-                    items: cart.map(i => ({ itemId: i.variantId || i.itemId, itemName: i.name, quantity: i.quantity, price: i.price }))
+                    items: cart.map(i => ({ itemId: i.variantId || i.itemId, itemName: i.name, quantity: i.quantity, price: i.price, notes: i.notes }))
                 })
             });
             if (res.ok) {
@@ -216,11 +221,12 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                             </div>
                         ) : (
                             <>
-                                <div className="cart-items">
+                                <div className="cart-items custom-scroll">
                                     {cart.map(item => (
                                         <div key={item.id} className="cart-item">
                                             <div className="cart-item-info">
                                                 <div className="cart-item-name">{item.name}</div>
+                                                {item.notes && <div style={{ fontSize: '13px', color: '#64748b', marginBottom: '8px', fontWeight: 600 }}>📝 {item.notes}</div>}
                                                 <div className="cart-item-price">{item.price} <span style={{ fontFamily: 'Cairo' }}>{currency}</span></div>
                                             </div>
                                             <div className="cart-item-actions">
@@ -300,7 +306,7 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                                                         <div style={{ fontSize: '15px', fontWeight: 700, color: '#0f172a' }}>{v.name}</div>
                                                     </div>
                                                 </div>
-                                                <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', fontFamily: 'Outfit' }}>
+                                                <div style={{ fontSize: '16px', fontWeight: 800, color: '#0f172a', fontFamily: "'ERP-Numbers', 'Cairo', sans-serif" }}>
                                                     {v.sellPrice} <span style={{ fontSize: '12px', color: '#64748b', fontFamily: 'Cairo', fontWeight: 600 }}>{currency}</span>
                                                 </div>
                                             </div>
@@ -308,20 +314,36 @@ export default function MenuClient({ company, categories, currency, tableId }: {
                                     </div>
                                 </div>
                             )}
+
+                            <div style={{ marginTop: activeItem.variants && activeItem.variants.length > 0 ? '24px' : '0' }}>
+                                <div style={{ fontSize: '14px', fontWeight: 800, color: '#0f172a', marginBottom: '12px' }}>ملاحظات خاصة (اختياري)</div>
+                                <textarea 
+                                    value={itemNotes}
+                                    onChange={e => setItemNotes(e.target.value)}
+                                    placeholder="بدون ملح، صوص جانبي، مقرمش، إلخ..."
+                                    style={{ 
+                                        width: '100%', padding: '14px', borderRadius: '16px', border: '1px solid rgba(0,0,0,0.08)', 
+                                        background: '#f8fafc', fontSize: '14px', fontFamily: 'Cairo', resize: 'none', 
+                                        minHeight: '80px', outline: 'none', transition: '0.2s' 
+                                    }}
+                                    onFocus={e => e.target.style.borderColor = '#256af4'}
+                                    onBlur={e => e.target.style.borderColor = 'rgba(0,0,0,0.08)'}
+                                />
+                            </div>
                         </div>
 
                         <div className="cart-footer" style={{ padding: '24px', background: '#fff', borderTop: '1px solid rgba(0,0,0,0.05)' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
                                 <div>
                                     <div style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, marginBottom: '4px' }}>الإجمالي</div>
-                                    <div style={{ fontSize: '22px', fontWeight: 800, color: '#0f172a', fontFamily: 'Outfit' }}>
+                                    <div style={{ fontSize: '22px', fontWeight: 800, color: '#0f172a', fontFamily: "'ERP-Numbers', 'Cairo', sans-serif" }}>
                                         {((selectedVariant ? selectedVariant.sellPrice : activeItem.sellPrice) * itemQty).toLocaleString('en-US', { minimumFractionDigits: 0 })}
                                         <span style={{ fontSize: '14px', color: '#64748b', fontFamily: 'Cairo', marginInlineStart: '4px' }}>{currency}</span>
                                     </div>
                                 </div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', background: '#f8fafc', padding: '6px', borderRadius: '14px', border: '1px solid rgba(0,0,0,0.04)' }}>
                                     <button onClick={() => setItemQty(Math.max(1, itemQty - 1))} style={{ width: '36px', height: '36px', borderRadius: '10px', border: 'none', background: '#fff', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}><Minus size={18} /></button>
-                                    <span style={{ fontSize: '18px', fontWeight: 800, fontFamily: 'Outfit', width: '24px', textAlign: 'center' }}>{itemQty}</span>
+                                    <span style={{ fontSize: '18px', fontWeight: 800, fontFamily: "'ERP-Numbers', 'Cairo', sans-serif", width: '24px', textAlign: 'center' }}>{itemQty}</span>
                                     <button onClick={() => setItemQty(itemQty + 1)} style={{ width: '36px', height: '36px', borderRadius: '10px', border: 'none', background: '#fff', color: '#0f172a', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}><Plus size={18} /></button>
                                 </div>
                             </div>

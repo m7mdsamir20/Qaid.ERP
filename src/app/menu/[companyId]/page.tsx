@@ -89,7 +89,7 @@ export default async function PublicMenuPage({ params, searchParams }: { params:
                     
                     /* Standard Add button & Price */
                     .item-footer { display: flex; align-items: center; justify-content: flex-end; gap: 16px; margin-top: auto; }
-                    .item-price { font-family: 'Outfit', sans-serif; font-size: 16px; font-weight: 800; color: #256af4; }
+                    .item-price { font-family: 'ERP-Numbers', 'Cairo', sans-serif; font-size: 16px; font-weight: 800; color: #256af4; }
                     .item-currency { font-size: 12px; color: #64748b; font-family: 'Cairo', sans-serif !important; margin-inline-start: 4px; font-weight: 700; }
                     .add-btn { width: 36px; height: 36px; border-radius: 12px; background: #f1f5f9; color: #256af4; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
                     .add-btn:active, .add-btn:hover { transform: scale(0.95); background: #256af4; color: #fff; box-shadow: 0 4px 12px rgba(37,106,244,0.3); }
@@ -99,15 +99,15 @@ export default async function PublicMenuPage({ params, searchParams }: { params:
                     .variant-btn { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: 1px solid rgba(0,0,0,0.04); padding: 10px 12px; border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: start; color: #334155; font-family: 'Cairo', sans-serif; box-shadow: 0 2px 5px rgba(0,0,0,0.01); }
                     .variant-btn:active, .variant-btn:hover { background: #eff6ff; border-color: rgba(37,106,244,0.2); transform: scale(0.98); }
                     .v-name { font-size: 13px; font-weight: 800; flex: 1; }
-                    .v-price { font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; color: #256af4; display: flex; gap: 4px; align-items: center; }
+                    .v-price { font-family: 'ERP-Numbers', 'Cairo', sans-serif; font-size: 14px; font-weight: 800; color: #256af4; display: flex; gap: 4px; align-items: center; }
                     .v-icon { color: #256af4; margin-inline-start: 8px; }
                     
                     /* Floating Cart */
                     .floating-cart { position: fixed; bottom: 24px; left: 24px; right: 24px; max-width: 400px; margin: 0 auto; background: #0f172a; color: #fff; border-radius: 20px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; box-shadow: 0 15px 35px rgba(15,23,42,0.3); z-index: 50; animation: slideUp 0.3s ease-out; }
                     @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-                    .cart-badge { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; font-family: 'Outfit', sans-serif; box-shadow: 0 4px 10px rgba(239,68,68,0.4); border: 2px solid #fff; }
+                    .cart-badge { position: absolute; top: -8px; right: -8px; background: #ef4444; color: white; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; font-family: 'ERP-Numbers', 'Cairo', sans-serif; box-shadow: 0 4px 10px rgba(239,68,68,0.4); border: 2px solid #fff; }
                     .cart-info { display: flex; align-items: center; }
-                    .cart-total { font-family: 'Outfit', sans-serif; font-size: 19px; font-weight: 800; color: #10b981; }
+                    .cart-total { font-family: 'ERP-Numbers', 'Cairo', sans-serif; font-size: 19px; font-weight: 800; color: #10b981; }
                     
                     /* Cart Modal */
                     .cart-overlay { position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(8px); z-index: 100; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.2s ease-out; padding: 20px; }
@@ -125,14 +125,14 @@ export default async function PublicMenuPage({ params, searchParams }: { params:
                     .cart-items { flex: 1; overflow-y: auto; padding: 24px; }
                     .cart-item { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #f8fafc; padding: 16px; border-radius: 16px; border: 1px solid rgba(0,0,0,0.03); }
                     .cart-item-name { font-size: 16px; font-weight: 800; color: #0f172a; margin-bottom: 6px; }
-                    .cart-item-price { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800; color: #256af4; }
+                    .cart-item-price { font-family: 'ERP-Numbers', 'Cairo', sans-serif; font-size: 15px; font-weight: 800; color: #256af4; }
                     .cart-item-actions { display: flex; align-items: center; gap: 14px; background: #ffffff; padding: 6px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); }
                     .cart-item-actions button { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f1f5f9; color: #334155; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.2s; }
                     .cart-item-actions button:hover { background: #256af4; color: #fff; }
-                    .cart-item-actions span { font-family: 'Outfit', sans-serif; font-weight: 800; width: 24px; text-align: center; color: #0f172a; }
+                    .cart-item-actions span { font-family: 'ERP-Numbers', 'Cairo', sans-serif; font-weight: 800; width: 24px; text-align: center; color: #0f172a; }
                     .cart-footer { padding: 24px; border-top: 1px solid rgba(0,0,0,0.05); background: #ffffff; border-radius: 0 0 0 0; }
                     .cart-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #64748b; }
-                    .summary-total { font-family: 'Outfit', sans-serif; color: #0f172a; font-size: 24px; }
+                    .summary-total { font-family: 'ERP-Numbers', 'Cairo', sans-serif; color: #0f172a; font-size: 24px; }
                     .checkout-btn { width: 100%; padding: 18px; border-radius: 16px; background: #256af4; color: #fff; font-size: 17px; font-weight: 800; border: none; cursor: pointer; display: flex; justify-content: center; align-items: center; font-family: 'Cairo', sans-serif; box-shadow: 0 8px 20px rgba(37,106,244,0.3); transition: 0.2s; }
                     .checkout-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(37,106,244,0.4); }
                     .checkout-btn:disabled { opacity: 0.7; cursor: not-allowed; transform: none; }

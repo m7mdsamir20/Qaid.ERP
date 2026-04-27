@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { ClipboardList, ListChecks, Loader2, Printer, Building2, ArrowRight, Save, CheckCircle2, FileText, AlertTriangle } from 'lucide-react';
@@ -22,6 +23,9 @@ export default function NewStocktakingPage() {
 
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    const { data: session } = useSession();
+    const isRestaurants = (session?.user as any)?.businessType?.toUpperCase() === 'RESTAURANTS';
 
     const [form, setForm] = useState({
         date: new Date().toISOString().split('T')[0],
@@ -35,8 +39,9 @@ export default function NewStocktakingPage() {
     const fetchData = useCallback(async () => {
         setLoading(true);
         try {
+            const itemsUrl = isRestaurants ? '/api/items?all=true&type=raw_material' : '/api/items?all=true';
             const [whRes, itemsRes, stocksRes] = await Promise.all([
-                fetch('/api/warehouses'), fetch('/api/items?all=true'), fetch('/api/stocks')
+                fetch('/api/warehouses'), fetch(itemsUrl), fetch('/api/stocks')
             ]);
             let whData = [];
             let itData: any = [];

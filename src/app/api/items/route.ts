@@ -12,6 +12,7 @@ export const GET = withProtection(async (request, session) => {
         const limit = Math.min(parseInt(url.searchParams.get('limit') || '100'), 200);
         const skip = (page - 1) * limit;
         const all = url.searchParams.get('all') === 'true'; // لصفحات الفواتير تحتاج كل الأصناف
+        const typeFilter = url.searchParams.get('type'); // تصفية بنوع الصنف
 
         const where: any = { companyId };
         if (search) {
@@ -20,6 +21,10 @@ export const GET = withProtection(async (request, session) => {
                 { barcode: { contains: search } },
                 { code: { contains: search } },
             ];
+        }
+        
+        if (typeFilter) {
+            where.type = typeFilter;
         }
 
         if (all) {

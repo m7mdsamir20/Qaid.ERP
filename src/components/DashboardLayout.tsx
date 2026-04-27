@@ -8,6 +8,8 @@ import Header from '@/components/Header';
 import TrialBanner from '@/components/TrialBanner';
 import { THEME, C, CAIRO, OUTFIT } from '@/constants/theme';
 import { useTranslation } from '@/lib/i18n';
+import { navSections } from '@/constants/navigation';
+import { useMemo, useCallback } from 'react';
 
 export default function DashboardLayout({
     children,
@@ -64,13 +66,95 @@ export default function DashboardLayout({
             .finally(() => setLoadingFY(false));
     }, [status, session, pathname]);
 
+    const user = session?.user as any;
+    const isSuperAdmin = !!user?.isSuperAdmin;
+    const userRole = user?.role;
+    const featuresRaw = user?.subscription?.features;
+    const hasSubscription = !!user?.subscription;
+
+    const enabledFeatures = useMemo(() => {
+        if (status === 'loading') return {};
+        try {
+            if (!featuresRaw) {
+                const all: Record<string, string[]> = {};
+                navSections.forEach((s: any) => {
+                    if (s && s.featureKey && s.links) {
+                        all[s.featureKey] = s.links.map((l: any) => l.id);
+                    }
+                });
+                return all;
+            }
+            const parsed = typeof featuresRaw === 'string' ? JSON.parse(featuresRaw) : featuresRaw;
+            if (Array.isArray(parsed)) {
+                const obj: Record<string, string[]> = {};
+                parsed.forEach((key: string) => {
+                    const sections = navSections.filter(s => s.featureKey === key);
+                    sections.forEach(section => {
+                        if (section && section.links) {
+                            obj[key] = [...(obj[key] || []), ...section.links.map(l => l.id)];
+                        }
+                    });
+                });
+                return obj;
+            }
+            return parsed || {};
+        } catch (e) { return {}; }
+    }, [featuresRaw, status]);
+
+    const hasPage = useCallback((featureKey: string, pageId: string): boolean => {
+        try {
+            if (isSuperAdmin) return true;
+            if (!featureKey || featureKey === 'dashboard' || pageId === '/') return true;
+
+            const userPerms = user?.permissions || {};
+            const hasGranularPerms = Object.keys(userPerms).length > 0;
+
+            if (userRole === 'admin') {
+                if (featureKey === 'settings') return true;
+                if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+                    return (enabledFeatures[featureKey] || []).includes(pageId);
+                }
+                return true;
+            }
+            if (featureKey === 'settings') return !hasGranularPerms;
+            if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
+                if (!(featureKey in enabledFeatures)) return false;
+                if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
+            }
+            if (hasGranularPerms) return !!userPerms[pageId]?.view;
+            return true;
+        } catch { return true; }
+    }, [isSuperAdmin, userRole, hasSubscription, enabledFeatures, user]);
+
+    useEffect(() => {
+        if (status !== 'authenticated' || !user) return;
+        if (pathname === '/' || pathname.includes('/menu/') || pathname.includes('/barcode/')) return;
+
+        let foundFeatureKey = '';
+        let foundPageId = '';
+
+        for (const section of navSections) {
+            const link = section.links?.find(l => pathname === l.href || pathname.startsWith(l.href + '/'));
+            if (link) {
+                foundFeatureKey = section.featureKey;
+                foundPageId = link.id;
+                break;
+            }
+        }
+
+        if (foundFeatureKey && foundPageId) {
+            if (!hasPage(foundFeatureKey, foundPageId)) {
+                router.replace('/');
+            }
+        }
+    }, [pathname, status, user, hasPage, router]);
+
     const [showMobileMenu, setShowMobileMenu] = useState(false);
 
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
 
     const sub = (session?.user as any)?.subscription;
-    const isSuperAdmin = !!(session?.user as any)?.isSuperAdmin;
     const isExpired = sub ? (new Date(sub.endDate).getTime() < Date.now() || !sub.isActive) : false;
     const isLockoutActive = isExpired && !isSuperAdmin;
     const isAllowedTab = pathname === '/settings' && typeof window !== 'undefined' && window.location.search.includes('tab=subscription');

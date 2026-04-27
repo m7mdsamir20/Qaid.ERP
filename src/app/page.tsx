@@ -351,7 +351,7 @@ export default function DashboardPage() {
     ];
 
     const restaurantActions = [
-      { id: '/pos', featureKey: 'sales', href: '/pos', label: t('نقطة البيع (الكاشير)'), icon: Store, color: C.primaryBg, iconColor: C.primary },
+      { id: '/pos', featureKey: 'pos', href: '/pos', label: t('نقطة البيع (الكاشير)'), icon: Store, color: C.primaryBg, iconColor: C.primary },
       { id: '/sales', featureKey: 'sales', href: '/sales', label: t('فواتير المبيعات'), icon: Receipt, color: C.successBg, iconColor: C.success },
       { id: '/purchases', featureKey: 'purchases', href: '/purchases/new', label: t('مشتريات المطعم'), icon: ShoppingCart, color: 'rgba(56, 189, 248, 0.12)', iconColor: '#38bdf8' },
       { id: '/items', featureKey: 'inventory', href: '/items', label: t('أصناف المنيو'), icon: UtensilsCrossed, color: 'rgba(244, 63, 94, 0.12)', iconColor: '#f43f5e' },

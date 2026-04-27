@@ -295,70 +295,48 @@ export default function TreasuriesPage() {
                         <p style={{ margin: 0, color: C.textMuted, fontWeight: 600, fontSize: '13px', fontFamily: CAIRO }}>{t('ابدأ بإضافة أول خزينة أو حساب بنكي لتتبع أموالك.')}</p>
                     </div>
                 ) : (
-                    <div style={TABLE_STYLE.container}>
-                        <table style={TABLE_STYLE.table}>
-                            <thead>
-                                <tr style={TABLE_STYLE.thead}>
-                                    <th style={TABLE_STYLE.th(true)}>{t('الاسم')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('النوع')}</th>
-                                    <th style={TABLE_STYLE.th(false)}>{t('الفرع')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الرصيد الحالي')}</th>
-                                    <th style={{ ...TABLE_STYLE.th(false, true), textAlign: 'center' }}>{t('الإجراءات')}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {treasuries.map((tr, idx) => {
-                                    const isBank = tr.type === 'bank';
-                                    const color = isBank ? C.blue : C.success;
-                                    return (
-                                        <tr key={tr.id} style={TABLE_STYLE.row(idx === treasuries.length - 1)}
-                                            onMouseEnter={e => e.currentTarget.style.background = C.hover}
-                                            onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(true)}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                    <div style={{ width: 32, height: 32, borderRadius: '8px', background: `${color}15`, color: color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                                        {isBank ? <Building2 size={16} /> : <Banknote size={16} />}
-                                                    </div>
-                                                    <div style={{ fontWeight: 600, color: C.textPrimary, fontFamily: CAIRO }}>{tr.name}</div>
-                                                </div>
-                                            </td>
-                                            <td style={TABLE_STYLE.td(false)}>
-                                                <span style={{ 
-                                                    display: 'inline-flex', padding: '2px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 600, 
-                                                    background: `${color}10`, color: color, border: `1px solid ${color}20`, fontFamily: CAIRO 
-                                                }}>
-                                                    {isBank ? t('بنكي') : t('نقدي')}
-                                                </span>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false), color: C.textSecondary, fontSize: '12px', fontFamily: CAIRO }}>
-                                                {tr.branch?.name || '—'}
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ fontSize: '15px', fontWeight: 700, color: C.textPrimary, fontFamily: OUTFIT }}>
-                                                    <Currency amount={tr.balance} />
-                                                </div>
-                                            </td>
-                                            <td style={{ ...TABLE_STYLE.td(false, true), textAlign: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                                                    {canEdit && (
-                                                        <button onClick={() => { setEditItem(tr); setShowModal(true); }}
-                                                            style={TABLE_STYLE.actionBtn()} title={t("تعديل")}>
-                                                            <Pencil size={14} />
-                                                        </button>
-                                                    )}
-                                                    {canDelete && (
-                                                        <button onClick={() => setDeleteItem(tr)}
-                                                            style={TABLE_STYLE.actionBtn(C.danger)} title={t("حذف")}>
-                                                            <Trash2 size={14} />
-                                                        </button>
-                                                    )}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                        {cashList.length > 0 && (
+                            <div>
+                                <h3 style={{ fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                                    <Banknote size={18} style={{ color: C.success }} /> {t('النقدية')}
+                                </h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+                                    {cashList.map(tr => (
+                                        <TreasuryCard 
+                                            key={tr.id} 
+                                            item={tr} 
+                                            currencySymbol={cSymbol} 
+                                            canEdit={canEdit} 
+                                            canDelete={canDelete} 
+                                            onEdit={() => { setEditItem(tr); setShowModal(true); }} 
+                                            onDelete={() => setDeleteItem(tr)} 
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {bankList.length > 0 && (
+                            <div>
+                                <h3 style={{ fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                                    <Building2 size={18} style={{ color: C.blue }} /> {t('حسابات البنوك')}
+                                </h3>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>
+                                    {bankList.map(tr => (
+                                        <TreasuryCard 
+                                            key={tr.id} 
+                                            item={tr} 
+                                            currencySymbol={cSymbol} 
+                                            canEdit={canEdit} 
+                                            canDelete={canDelete} 
+                                            onEdit={() => { setEditItem(tr); setShowModal(true); }} 
+                                            onDelete={() => setDeleteItem(tr)} 
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
 
