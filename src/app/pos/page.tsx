@@ -7,7 +7,7 @@ import { useCurrency } from '@/hooks/useCurrency';
 import {
     ShoppingCart, Search, Plus, Minus, X, Printer, Check, ChevronRight,
     UtensilsCrossed, Truck, Package, Wifi, Table2, Loader2, RefreshCw,
-    AlertCircle, Clock, ChevronsRight, LogOut, User, Phone, MapPin, Receipt
+    AlertCircle, Clock, ChevronsRight, LogOut, User, Phone, MapPin, Receipt, ChefHat
 } from 'lucide-react';
 import CustomSelect from '@/components/CustomSelect';
 
@@ -81,6 +81,7 @@ export default function POSPage() {
     // Open Orders Modal
     const [showOpenOrders, setShowOpenOrders] = useState(false);
     const [openOrders, setOpenOrders] = useState<any[]>([]);
+    const [payingOrder, setPayingOrder] = useState<any>(null);
 
     // Filters
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -286,6 +287,23 @@ export default function POSPage() {
         }, 500);
     };
 
+    const printOpenOrderCheck = (order: any) => {
+        const linesForPrint = order.lines?.map((l: any) => {
+            const item = items.find(i => i.id === l.itemId);
+            let parsedMods = null;
+            if (l.modifiers) {
+                try { parsedMods = typeof l.modifiers === 'string' ? JSON.parse(l.modifiers) : l.modifiers; } catch(e){}
+            }
+            return {
+                itemName: item?.name || 'صنف غير معروف',
+                quantity: l.quantity,
+                unitPrice: l.price,
+                modifiers: parsedMods ? { main: parsedMods } : undefined
+            };
+        }) || [];
+        printReceipt({ ...order, type: order.type }, linesForPrint, order.total, order.discount);
+    };
+
     const fetchOpenOrders = async () => {
         try {
             const res = await fetch('/api/restaurant/orders');
@@ -298,7 +316,7 @@ export default function POSPage() {
 
     const payOpenOrder = async (order: any) => {
         if (!selectedTreasury) {
-            alert('يجب اختيار الخزنة من أسفل يمين الشاشة أولاً!');
+            alert('يجب اختيار الخزنة أولاً!');
             return;
         }
         try {
@@ -314,6 +332,7 @@ export default function POSPage() {
             });
             if (res.ok) {
                 setSuccessMsg('تم محاسبة الطاولة وإخلائها بنجاح');
+                setPayingOrder(null);
                 setShowOpenOrders(false);
                 load();
                 setTimeout(() => setSuccessMsg(''), 3000);
@@ -615,12 +634,14 @@ export default function POSPage() {
                         </div>
 
                         {/* اختيار الخزنة */}
-                        <CustomSelect
-                            value={selectedTreasury}
-                            onChange={v => setSelectedTreasury(v)}
-                            options={treasuries.map(t => ({ value: t.id, label: t.name }))}
-                            placeholder={t('اختر الخزنة')}
-                        />
+                        {!(orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') && (
+                            <CustomSelect
+                                value={selectedTreasury}
+                                onChange={v => setSelectedTreasury(v)}
+                                options={treasuries.map(t => ({ value: t.id, label: t.name }))}
+                                placeholder={t('اختر الخزنة')}
+                            />
+                        )}
 
                         {/* الإجمالي */}
                         <div style={{ background: `${C.primary}08`, border: `1px solid ${C.primary}20`, borderRadius: '12px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -647,14 +668,16 @@ export default function POSPage() {
                         </div>
 
                         {/* طريقة الدفع */}
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
-                            {(['cash', 'card', 'mixed'] as const).map(pm => (
-                                <button key={pm} onClick={() => setPaymentMethod(pm)}
-                                    style={{ height: '36px', borderRadius: '10px', border: `1px solid ${paymentMethod === pm ? C.primary + '50' : C.border}`, background: paymentMethod === pm ? `${C.primary}12` : 'transparent', color: paymentMethod === pm ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
-                                    {pm === 'cash' ? '💵 نقدي' : pm === 'card' ? '💳 شبكة' : '🔀 مختلط'}
-                                </button>
-                            ))}
-                        </div>
+                        {!(orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') && (
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '6px' }}>
+                                {(['cash', 'card', 'mixed'] as const).map(pm => (
+                                    <button key={pm} onClick={() => setPaymentMethod(pm)}
+                                        style={{ height: '36px', borderRadius: '10px', border: `1px solid ${paymentMethod === pm ? C.primary + '50' : C.border}`, background: paymentMethod === pm ? `${C.primary}12` : 'transparent', color: paymentMethod === pm ? C.primary : C.textSecondary, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>
+                                        {pm === 'cash' ? '💵 نقدي' : pm === 'card' ? '💳 شبكة' : '🔀 مختلط'}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
                         {/* رسائل */}
                         {errorMsg && (
@@ -717,15 +740,66 @@ export default function POSPage() {
                                         </div>
                                     </div>
                                     {o.total - o.paidAmount > 0 ? (
-                                        <button onClick={() => payOpenOrder(o)} style={{ padding: '8px 16px', borderRadius: '8px', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO }}>
-                                            محاسبة وإخلاء
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button onClick={() => printOpenOrderCheck(o)} style={{ padding: '8px 12px', borderRadius: '8px', border: `1px solid ${C.border}`, background: C.card, color: C.textPrimary, fontSize: '12px', fontWeight: 700, borderStyle: 'solid', cursor: 'pointer', fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                <Printer size={14} /> {t('طباعة الشيك')}
+                                            </button>
+                                            <button onClick={() => setPayingOrder(o)} style={{ padding: '8px 16px', borderRadius: '8px', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO }}>
+                                                {t('محاسبة وإخلاء')}
+                                            </button>
+                                        </div>
                                     ) : (
                                         <span style={{ fontSize: '12px', color: C.success, fontWeight: 700, background: `${C.success}20`, padding: '4px 8px', borderRadius: '6px' }}>تم الدفع</span>
                                     )}
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Pay Order Modal */}
+            {payingOrder && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '24px', padding: '24px', width: '100%', maxWidth: '400px', display: 'flex', flexDirection: 'column', gap: '20px', boxShadow: '0 20px 40px rgba(0,0,0,0.2)' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('دفع وإخلاء الطاولة')}</h2>
+                            <button onClick={() => setPayingOrder(null)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+                        
+                        <div style={{ textAlign: 'center', padding: '16px', background: `${C.primary}10`, borderRadius: '16px', border: `1px dashed ${C.primary}40` }}>
+                            <p style={{ margin: '0 0 4px', fontSize: '13px', color: C.textSecondary, fontWeight: 600 }}>{t('المبلغ المطلوب')}</p>
+                            <div style={{ fontSize: '28px', fontWeight: 700, color: C.primary, fontFamily: OUTFIT }}>
+                                {fMoney(payingOrder.total - payingOrder.paidAmount)}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label style={{ fontSize: '13px', color: C.textSecondary, marginBottom: '8px', display: 'block', fontWeight: 600 }}>{t('اختر الخزينة:')}</label>
+                            <CustomSelect
+                                value={selectedTreasury}
+                                onChange={v => setSelectedTreasury(v)}
+                                options={treasuries.map(t => ({ value: t.id, label: t.name }))}
+                                placeholder={t('— اختر الخزنة —')}
+                            />
+                        </div>
+
+                        <div>
+                            <label style={{ fontSize: '13px', color: C.textSecondary, marginBottom: '8px', display: 'block', fontWeight: 600 }}>{t('طريقة الدفع:')}</label>
+                            <div style={{ display: 'flex', gap: '8px' }}>
+                                {['cash', 'card'].map(m => (
+                                    <button key={m} onClick={() => setPaymentMethod(m)} style={{ flex: 1, padding: '12px', borderRadius: '12px', border: `1px solid ${paymentMethod === m ? C.primary : C.border}`, background: paymentMethod === m ? `${C.primary}15` : 'transparent', color: paymentMethod === m ? C.primary : C.textSecondary, fontSize: '13px', fontWeight: 700, cursor: 'pointer', fontFamily: CAIRO, transition: 'all 0.2s' }}>
+                                        {m === 'cash' ? t('نقدي') : t('شبكة')}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <button onClick={() => payOpenOrder(payingOrder)} style={{ padding: '14px', borderRadius: '16px', background: C.primary, color: '#fff', fontSize: '15px', fontWeight: 700, border: 'none', cursor: 'pointer', marginTop: '8px', fontFamily: CAIRO, boxShadow: `0 8px 16px ${C.primary}40`, transition: 'all 0.2s' }}
+                            onMouseEnter={e => e.currentTarget.style.transform = 'translateY(-2px)'}
+                            onMouseLeave={e => e.currentTarget.style.transform = 'translateY(0)'}>
+                            {t('تأكيد الدفع والإخلاء')}
+                        </button>
                     </div>
                 </div>
             )}
