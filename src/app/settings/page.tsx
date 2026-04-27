@@ -742,7 +742,10 @@ function SettingsContent() {
         { id: 'users', icon: Shield, label: t('المستخدمين والصلاحيات'), featureKey: 'settings', pageId: '/settings/users' },
         { id: 'subscription', icon: CreditCard, label: t('الاشتراك والخطة'), featureKey: 'settings', pageId: '/settings/subscription' },
         { id: 'database', icon: Database, label: t('قواعد البيانات'), featureKey: 'settings', pageId: '/settings/database' },
-    ].filter(tab => hasPage(tab.featureKey, tab.pageId));
+    ].filter(tab => hasPage(tab.featureKey, tab.pageId)).filter(tab => {
+        if (isServices && tab.id === 'notifications') return false;
+        return true;
+    });
 
 
     /* ══════════════════════════════════════════

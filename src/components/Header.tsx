@@ -224,6 +224,9 @@ function Actions() {
         } catch (error) { console.error('Mark read failed:', error); }
     };
 
+    const businessType = (session?.user as any)?.businessType?.toUpperCase();
+    const isServices = businessType === 'SERVICES';
+
     return (
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             {/* Language Switcher */}
@@ -260,6 +263,7 @@ function Actions() {
             </button>
 
             {/* Notifications */}
+            {!isServices && (
             <div ref={notifRef} style={{ position: 'relative' }}>
                 <button
                     onClick={() => setOpenNotif(!openNotif)}
@@ -319,6 +323,7 @@ function Actions() {
                     </div>
                 )}
             </div>
+            )}
 
             <div style={{ width: '1px', height: '24px', background: C.border, margin: '0 4px' }} />
 
