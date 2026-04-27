@@ -133,8 +133,8 @@ export const authOptions: AuthOptions = {
                 if (u.countryCode) token.countryCode = u.countryCode;
             }
 
-            // sync مع قاعدة البيانات كل 5 دقائق فقط لتحسين الأداء
-            const SYNC_INTERVAL = 5 * 60 * 1000; // 5 دقائق
+            // sync مع قاعدة البيانات كل 10 ثواني (بدلاً من 5 دقائق) عشان لو السوبر آدمن غير الصلاحيات، يسمع فوراً بمجرد ما المستخدم يعمل ريفريش
+            const SYNC_INTERVAL = 10 * 1000; // 10 ثواني
             const shouldSync = !user && token.id && (!token.lastSync || Date.now() - (token.lastSync as number) > SYNC_INTERVAL);
 
             if (shouldSync) {
