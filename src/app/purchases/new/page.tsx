@@ -103,8 +103,7 @@ export default function NewPurchasePage() {
     const overpaid = Math.max(0, (form.paidAmount || 0) - netTotal);
 
     const partners = [
-        ...(Array.isArray(suppliers) ? suppliers : []).map(s => ({ ...s, partnerType: 'supplier' })),
-        ...(Array.isArray(customers) ? customers : []).map(c => ({ ...c, partnerType: 'customer' }))
+        ...(Array.isArray(suppliers) ? suppliers : []).map(s => ({ ...s, partnerType: 'supplier' }))
     ];
     const selectedPartner = Array.isArray(partners) ? partners.find(p => p.id === form.supplierId) : null;
 
@@ -459,11 +458,11 @@ export default function NewPurchasePage() {
                                             value={form.supplierId}
                                             onChange={v => { setForm((f: any) => ({ ...f, supplierId: v })); clearError('supplierId'); }}
                                             icon={Search}
-                                            placeholder={t("ابحث واختر...")}
+                                            placeholder={t("ابحث واختر المورد...")}
                                             options={partners.map(p => ({
                                                 value: p.id,
                                                 label: p.name,
-                                                sub: p.partnerType === 'customer' ? t('عميل') : t('مورد')
+                                                sub: t('مورد')
                                             }))}
                                         />
                                         <InlineError field="supplierId" />

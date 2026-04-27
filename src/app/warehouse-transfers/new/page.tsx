@@ -3,6 +3,7 @@ import { useTranslation } from '@/lib/i18n';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import CustomSelect from '@/components/CustomSelect';
 import { ArrowRightLeft, Plus, Trash2, Lock, Loader2, Building2, Package, ArrowRight, Save, AlertCircle } from 'lucide-react';
@@ -23,6 +24,9 @@ export default function NewTransferPage() {
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const { data: session } = useSession();
+    const isRestaurants = (session?.user as any)?.businessType?.toUpperCase() === 'RESTAURANTS';
+
     const [form, setForm] = useState({
         code: '',
         date: new Date().toISOString().split('T')[0],
@@ -35,10 +39,11 @@ export default function NewTransferPage() {
 
     const fetchData = useCallback(async () => {
         try {
+            const itemsUrl = isRestaurants ? '/api/items?all=true&type=raw_material' : '/api/items?all=true';
             const [trRes, whRes, itemsRes, stockRes] = await Promise.all([
                 fetch('/api/warehouse-transfers'), 
                 fetch('/api/warehouses'), 
-                fetch('/api/items?all=true'),
+                fetch(itemsUrl),
                 fetch('/api/stocks')
             ]);
 
