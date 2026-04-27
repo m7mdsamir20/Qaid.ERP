@@ -33,8 +33,8 @@ export default function BarcodePage() {
     useEffect(() => { load(); }, [load]);
 
     // Draw QR on canvas using simple QR-like pattern (using data URL)
-    const getQrUrl = (tableId: string) => {
-        const url = `${baseUrl}/menu?table=${tableId}`;
+    const getQrUrl = (tableId: string, companyId: string) => {
+        const url = `${baseUrl}/menu/${companyId}?table=${tableId}`;
         return `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(url)}&bgcolor=ffffff&color=000000&qzone=2&format=png`;
     };
 
@@ -57,7 +57,7 @@ export default function BarcodePage() {
             <div style="display:inline-block; text-align:center; margin:20px; padding:20px; border:2px solid #e2e8f0; border-radius:16px; font-family:Arial,sans-serif; page-break-inside:avoid;">
                 <div style="font-size:14px; color:#64748b; margin-bottom:8px;">طاولة</div>
                 <div style="font-size:28px; font-weight:900; color:#1e293b; margin-bottom:12px;">${table.name}</div>
-                <img src="${getQrUrl(table.id)}" width="160" height="160" alt="QR" style="border-radius:8px;" />
+                <img src="${getQrUrl(table.id, table.companyId)}" width="160" height="160" alt="QR" style="border-radius:8px;" />
                 <div style="font-size:11px; color:#94a3b8; margin-top:10px;">امسح للطلب</div>
             </div>
         `).join('');
@@ -78,7 +78,7 @@ export default function BarcodePage() {
     };
 
     const handleDownload = async (table: any) => {
-        const url = getQrUrl(table.id);
+        const url = getQrUrl(table.id, table.companyId);
         const a = document.createElement('a');
         a.href = url;
         a.download = `QR-${table.name}.png`;
@@ -145,7 +145,7 @@ export default function BarcodePage() {
                                     {baseUrl && (
                                         <div style={{ position: 'relative', display: 'inline-block' }}>
                                             <img
-                                                src={getQrUrl(table.id)}
+                                                src={getQrUrl(table.id, table.companyId)}
                                                 alt={`QR ${table.name}`}
                                                 width={140}
                                                 height={140}
@@ -157,7 +157,7 @@ export default function BarcodePage() {
 
                                     {/* URL preview */}
                                     <p style={{ margin: '10px 0 0', fontSize: '10px', color: C.textMuted, wordBreak: 'break-all', direction: 'ltr', textAlign: 'center' }}>
-                                        /menu?table={table.id.slice(0, 12)}...
+                                        /menu/{table.companyId?.slice(0,8)}...?table={table.id.slice(0, 8)}...
                                     </p>
 
                                     {/* Actions */}
@@ -183,7 +183,7 @@ export default function BarcodePage() {
                     <div>
                         <p style={{ margin: 0, fontSize: '13px', fontWeight: 700, color: C.textPrimary, marginBottom: '4px' }}>كيف يعمل QR الطاولة؟</p>
                         <p style={{ margin: 0, fontSize: '12px', color: C.textSecondary, lineHeight: 1.7 }}>
-                            عند مسح الكود، يفتح العميل صفحة الطلب الذاتي على <strong>{baseUrl}/menu?table=...</strong><br />
+                            عند مسح الكود، يفتح العميل صفحة الطلب الذاتي على <strong>{baseUrl}/menu/[رقم_المطعم]?table=...</strong><br />
                             يمكنه تصفح المنيو واختيار الأصناف وإرسال الطلب مباشرة للمطبخ بدون تدخل النادل.
                         </p>
                     </div>
