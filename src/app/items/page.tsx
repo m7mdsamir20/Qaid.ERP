@@ -32,6 +32,7 @@ interface Item {
     status: string;
     type?: string;
     isPosEligible?: boolean;
+    isPriceVariable?: boolean;
     parentId?: string;
     variants?: any[];
 }
@@ -118,7 +119,7 @@ export default function ItemsPage() {
             setForm({
                 id: item.id, code: item.code, barcode: item.barcode || '', imageUrl: item.imageUrl || '', name: item.name, description: item.description || '', categoryId: item.categoryId || '',
                 unitId: item.unitId || '', costPrice: item.costPrice, sellPrice: item.sellPrice,
-                minLimit: item.minLimit || 0, warehouseId: '', initialQuantity: 0, status: item.status || 'active', type: item.type || 'product', isPosEligible: item.isPosEligible ?? true,
+                minLimit: item.minLimit || 0, warehouseId: '', initialQuantity: 0, status: item.status || 'active', type: item.type || 'product', isPosEligible: item.isPosEligible ?? true, isPriceVariable: item.isPriceVariable ?? false,
                 variants: item.variants?.map((v: any) => ({
                     id: v.id, name: v.name, sellPrice: v.sellPrice, costPrice: v.costPrice, barcode: v.barcode || '',
                     recipeItems: v.recipe?.items?.map((ri: any) => ({ itemId: ri.itemId, quantity: ri.quantity, unit: ri.unit || '' })) || [],
@@ -142,7 +143,7 @@ export default function ItemsPage() {
                 id: '', code: nextCode, barcode: '', imageUrl: '', name: '', description: '', categoryId: '',
                 unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0,
                 warehouseId: localStorage.getItem('last_warehouse_id') || '',
-                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: [], recipeItems: []
+                initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, isPriceVariable: false, variants: [], recipeItems: []
             });
             setEditingId(null);
         }
@@ -497,7 +498,7 @@ export default function ItemsPage() {
                 <AppModal
                     show={showModal}
                     onClose={() => setShowModal(false)}
-                    title={isRestaurant ? (form.id ? t('تعديل صنف المنيو') : t('إضافة صنف للمنيو')) : companyBusinessType === 'SERVICES' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
+                    title={isRestaurant ? (form.type === 'raw' ? (form.id ? t('تعديل مادة خام') : t('إضافة مادة خام')) : (form.id ? t('تعديل صنف المنيو') : t('إضافة صنف للمنيو'))) : companyBusinessType === 'SERVICES' ? (form.id ? t('تعديل بيانات الخدمة') : t('إضافة خدمة جديدة')) : (form.id ? t('تعديل بيانات الصنف') : t('إضافة صنف جديد'))}
                     icon={form.id ? Pencil : Plus}
                     maxWidth="640px"
                 >
@@ -526,7 +527,7 @@ export default function ItemsPage() {
                         </div>
 
                         {/* Restaurant-only: Image Upload + Description */}
-                        {isRestaurant && (
+                        {isRestaurant && form.type !== 'raw' && (
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                                 <div>
                                     <label style={LS}>{t('صورة الصنف')} <span style={{ fontSize: '10px', color: C.textMuted, fontWeight: 500 }}>({t('اختياري')})</span></label>
@@ -572,32 +573,19 @@ export default function ItemsPage() {
                             </div>
                         )}
 
-                        {companyBusinessType === 'RESTAURANTS' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
-                                <div>
-                                    <label style={LS}>{t('نوع الصنف')}</label>
-                                    <CustomSelect
-                                        value={form.type}
-                                        onChange={v => setForm({ ...form, type: v })}
-                                        options={[
-                                            { value: 'product', label: t('منتج تام (يباع للعميل)'), icon: Package },
-                                            { value: 'raw', label: t('مادة خام (لا تباع للعميل)'), icon: Boxes }
-                                        ]}
-                                    />
-                                </div>
-                                {form.type === 'product' && (
-                                    <div style={{ display: 'flex', alignItems: 'center', paddingTop: '20px' }}>
-                                        <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
-                                            <div style={{ position: 'relative', width: '22px', height: '22px' }}>
-                                                <input type="checkbox" checked={form.isPosEligible} onChange={e => setForm({ ...form, isPosEligible: e.target.checked })} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
-                                                <div style={{ position: 'absolute', inset: 0, background: form.isPosEligible ? C.primary : 'transparent', border: `2px solid ${form.isPosEligible ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
-                                                    {form.isPosEligible && <Check size={14} color="#fff" strokeWidth={3} />}
-                                                </div>
+                        {companyBusinessType === 'RESTAURANTS' && form.type !== 'raw' && (
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '14px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', paddingTop: '10px' }}>
+                                    <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
+                                        <div style={{ position: 'relative', width: '22px', height: '22px' }}>
+                                            <input type="checkbox" checked={form.isPosEligible} onChange={e => setForm({ ...form, isPosEligible: e.target.checked })} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
+                                            <div style={{ position: 'absolute', inset: 0, background: form.isPosEligible ? C.primary : 'transparent', border: `2px solid ${form.isPosEligible ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                                                {form.isPosEligible && <Check size={14} color="#fff" strokeWidth={3} />}
                                             </div>
-                                            {t('إظهار الصنف في شاشة الكاشير (POS)')}
-                                        </label>
-                                    </div>
-                                )}
+                                        </div>
+                                        {t('إظهار الصنف في شاشة الكاشير (POS)')}
+                                    </label>
+                                </div>
                             </div>
                         )}
 
@@ -661,8 +649,9 @@ export default function ItemsPage() {
                             </div>
                         ) : (
                             <>
-                                <div style={{ display: 'grid', gridTemplateColumns: (companyBusinessType === 'RESTAURANTS' && form.type === 'product') ? '1fr' : '1fr 1fr', gap: '10px' }}>
-                                    {!(companyBusinessType === 'RESTAURANTS' && form.type === 'product') && (
+                                {/* Row 1: Cost Price and Min Limit (only for raw materials or non-restaurants) */}
+                                {!(companyBusinessType === 'RESTAURANTS' && form.type === 'product') && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px' }}>
                                         <div>
                                             <label style={LS}>{t('سعر التكلفة')}</label>
                                             <div style={{ position: 'relative' }}>
@@ -670,20 +659,6 @@ export default function ItemsPage() {
                                                 <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
                                             </div>
                                         </div>
-                                    )}
-                                    {form.type === 'product' && (
-                                        <div>
-                                            <label style={LS}>{t('سعر البيع')}</label>
-                                            <div style={{ position: 'relative' }}>
-                                                <input type="text" inputMode="decimal" placeholder="0.00" value={formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
-                                                <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {!(companyBusinessType === 'RESTAURANTS' && form.type === 'product') && (
-                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                                         <div>
                                             <label style={LS}>{t('حد الطلب')} <span style={{ color: C.textMuted, fontWeight: 500 }}>({t('تنبيه نقص المخزون')})</span></label>
                                             <div style={{ position: 'relative', background: C.inputBg, borderRadius: THEME.input.radius, border: `1px solid ${C.border}`, overflow: 'hidden' }}>
@@ -698,6 +673,34 @@ export default function ItemsPage() {
                                         </div>
                                     </div>
                                 )}
+
+                                {/* Row 2: Sell Price and Variable Price Toggle (only for products) */}
+                                {form.type === 'product' && (
+                                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '10px', alignItems: 'start' }}>
+                                        <div>
+                                            <label style={LS}>{t('سعر البيع')}</label>
+                                            <div style={{ position: 'relative', opacity: form.isPriceVariable ? 0.5 : 1, transition: '0.2s' }}>
+                                                <input type="text" inputMode="decimal" placeholder="0.00" disabled={form.isPriceVariable} value={form.isPriceVariable ? '' : formatWithCommas(form.sellPrice === 0 ? '' : form.sellPrice)} onChange={e => setForm({ ...form, sellPrice: e.target.value.replace(/[^0-9.]/g, '') as any })} style={{ ...IS, textAlign: 'center', paddingInlineStart: '40px', paddingInlineEnd: '40px', fontFamily: OUTFIT, fontWeight: 700 }} onFocus={focusIn} onBlur={focusOut} />
+                                                <span style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', fontSize: '10px', color: C.textMuted, fontWeight: 700 }}>{currencySymbol}</span>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', height: '38px', marginTop: '18px' }}>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '10px', cursor: 'pointer', ...LS, margin: 0 }}>
+                                                <div style={{ position: 'relative', width: '22px', height: '22px' }}>
+                                                    <input type="checkbox" checked={form.isPriceVariable} onChange={e => {
+                                                        const isVar = e.target.checked;
+                                                        setForm({ ...form, isPriceVariable: isVar, sellPrice: isVar ? 0 : form.sellPrice });
+                                                    }} style={{ width: '100%', height: '100%', opacity: 0, position: 'absolute', inset: 0, zIndex: 2, cursor: 'pointer' }} />
+                                                    <div style={{ position: 'absolute', inset: 0, background: form.isPriceVariable ? C.primary : 'transparent', border: `2px solid ${form.isPriceVariable ? C.primary : C.border}`, borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}>
+                                                        {form.isPriceVariable && <Check size={14} color="#fff" strokeWidth={3} />}
+                                                    </div>
+                                                </div>
+                                                {t('سعر متغير (سعر مفتوح في الكاشير)')}
+                                            </label>
+                                        </div>
+                                    </div>
+                                )}
+                            </>
                                 
                                 {form.type === 'product' && (
                                     <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
