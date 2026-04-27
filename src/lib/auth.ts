@@ -63,6 +63,14 @@ export const authOptions: AuthOptions = {
                     if (user.allowedBranches) allowedBranches = JSON.parse(user.allowedBranches);
                 } catch {}
 
+                let initialBranchId = user.branchId;
+                if (!initialBranchId && allowedBranches && allowedBranches.length > 0) {
+                    initialBranchId = allowedBranches[0];
+                }
+                if (!initialBranchId) {
+                    initialBranchId = mainBranch?.id || null;
+                }
+
                 const sub = user.company?.subscription;
 
                 return {
@@ -74,9 +82,9 @@ export const authOptions: AuthOptions = {
                     companyId: user.companyId,
                     isSuperAdmin: !!user.isSuperAdmin,
                     branchId: user.branchId || null,
-                    activeBranchId: user.branchId || mainBranch?.id || null,
-                    activeBranchName: user.branchId
-                        ? branches.find((b: any) => b.id === user.branchId)?.name || 'الفرع الرئيسي'
+                    activeBranchId: initialBranchId,
+                    activeBranchName: initialBranchId
+                        ? branches.find((b: any) => b.id === initialBranchId)?.name || 'الفرع الرئيسي'
                         : mainBranch?.name || '',
                     branches: branches.map((b: any) => ({ id: b.id, name: b.name, isMain: b.isMain })),
                     allowedBranches,

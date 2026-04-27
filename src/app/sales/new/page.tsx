@@ -506,6 +506,29 @@ function NewSalePageInner() {
         );
     };
 
+    // Permission guard: block access if user lacks create permission
+    const userPerms = (session?.user as any)?.permissions || {};
+    const userRole = (session?.user as any)?.role;
+    const isSuperAdminUser = (session?.user as any)?.isSuperAdmin;
+    const hasGranularPerms = Object.keys(userPerms).length > 0;
+    const salesPerms = userPerms['/sales'] || {};
+    const canCreate = isSuperAdminUser || userRole === 'admin' || !hasGranularPerms || !!salesPerms.create;
+
+    if (!canCreate) {
+        return (
+            <DashboardLayout>
+                <div dir={isRtl ? 'rtl' : 'ltr'} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '16px', fontFamily: CAIRO }}>
+                    <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: C.danger }}>
+                        <AlertCircle size={40} />
+                    </div>
+                    <h2 style={{ fontSize: '18px', fontWeight: 700, color: C.textPrimary, margin: 0 }}>{t('ليس لديك صلاحية')}</h2>
+                    <p style={{ fontSize: '13px', color: C.textSecondary, margin: 0 }}>{t('لا تملك صلاحية إنشاء فواتير مبيعات جديدة. يرجى مراجعة مدير النظام.')}</p>
+                    <button onClick={() => router.push('/sales')} style={{ padding: '10px 24px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>{t('العودة للمبيعات')}</button>
+                </div>
+            </DashboardLayout>
+        );
+    }
+
     return (
         <DashboardLayout>
             <div dir={isRtl ? 'rtl' : 'ltr'} style={{ paddingBottom: '30px', paddingTop: THEME.header.pt }}>

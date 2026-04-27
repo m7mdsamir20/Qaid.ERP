@@ -435,8 +435,8 @@ export default function UsersTab({
                     <table style={{ width: '100%', borderCollapse: 'collapse', direction: 'inherit', fontSize: '13px' }}>
                         <thead>
                             <tr style={{ background: 'rgba(255,255,255,0.02)', borderBottom: `2px solid ${C.border}` }}>
-                                {[t('المستخدم'), t('المعرف'), t('الدور'), t('الحالة'), ''].map((h, i) => (
-                                    <th key={i} style={{ textAlign: (i === 2 || i === 3) ? 'center' : 'start', padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: C.textMuted,  fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
+                                {[t('المستخدم'), t('المعرف'), t('الدور'), ...(branches.length > 1 ? [t('الفرع')] : []), t('الحالة'), ''].map((h, i) => (
+                                    <th key={i} style={{ textAlign: (i >= 2) ? 'center' : 'start', padding: '16px 20px', fontSize: '11px', fontWeight: 600, color: C.textMuted,  fontFamily: CAIRO, textTransform: 'uppercase', letterSpacing: '0.5px' }}>{h}</th>
                                 ))}
                             </tr>
                         </thead>
@@ -455,6 +455,22 @@ export default function UsersTab({
                                             {roleLabels[u.role] || u.role}
                                         </span>
                                     </td>
+                                    {branches.length > 1 && (
+                                        <td style={{ padding: '14px 20px', textAlign: 'center' }}>
+                                            {(() => {
+                                                if (u.role === 'admin') {
+                                                    return <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontFamily: CAIRO }}>{t('كل الفروع')}</span>;
+                                                }
+                                                let userBranches: string[] = [];
+                                                try { if (u.allowedBranches) userBranches = JSON.parse(u.allowedBranches); } catch {}
+                                                if (userBranches.length === 0) {
+                                                    return <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(16,185,129,0.1)', color: '#10b981', border: '1px solid rgba(16,185,129,0.3)', fontWeight: 600, fontFamily: CAIRO }}>{t('كل الفروع')}</span>;
+                                                }
+                                                const branchNames = userBranches.map(id => branches.find((b: any) => b.id === id)?.name || '—').join(', ');
+                                                return <span style={{ fontSize: '10px', padding: '4px 12px', borderRadius: '20px', background: 'rgba(251,191,36,0.1)', color: '#fbbf24', border: '1px solid rgba(251,191,36,0.3)', fontWeight: 600, fontFamily: CAIRO }}>{branchNames}</span>;
+                                            })()}
+                                        </td>
+                                    )}
                                     <td style={{ padding: '14px 20px', }}>
                                         <div style={{ display: 'flex', justifyContent: 'center' }}>
                                             <button onClick={() => toggleUserStatus(u.id, u.status)}

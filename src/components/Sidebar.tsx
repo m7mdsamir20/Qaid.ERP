@@ -73,7 +73,13 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                 }
                 return true;
             }
-            if (featureKey === 'settings') return !hasGranularPerms;
+            if (featureKey === 'settings') {
+                // Non-admin: only show settings if they have explicit settings permissions
+                if (hasGranularPerms) {
+                    return !!userPerms[pageId]?.view;
+                }
+                return false; // No permissions defined = no settings access for non-admin
+            }
             if (hasSubscription && Object.keys(enabledFeatures).length > 0) {
                 if (!(featureKey in enabledFeatures)) return false;
                 if (!(enabledFeatures[featureKey] || []).includes(pageId)) return false;
