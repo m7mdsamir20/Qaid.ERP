@@ -112,6 +112,15 @@ export const POST = withProtection(async (request, session, body) => {
                 },
             });
 
+            // ✅ مخزن افتراضي للفرع الرئيسي
+            await tx.warehouse.create({
+                data: {
+                    name: 'مخزن الفرع الرئيسي',
+                    companyId: company.id,
+                    branchId: mainBranch.id,
+                }
+            });
+
             return { company, user, mainBranch };
         });
 

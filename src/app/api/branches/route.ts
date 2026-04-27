@@ -47,19 +47,34 @@ export const POST = withProtection(async (request, session, body) => {
         }, { status: 403 });
     }
 
-    const branch = await (prisma as any).branch.create({
-        data: {
-            name: body.name.trim(),
-            code: body.code?.trim() || null,
-            address: body.address?.trim() || null,
-            phone: body.phone?.trim() || null,
-            isMain: false,
-            isActive: true,
-            companyId,
-        }
+    const branchName = body.name.trim();
+
+    const result = await prisma.$transaction(async (tx: any) => {
+        const branch = await tx.branch.create({
+            data: {
+                name: branchName,
+                code: body.code?.trim() || null,
+                address: body.address?.trim() || null,
+                phone: body.phone?.trim() || null,
+                isMain: false,
+                isActive: true,
+                companyId,
+            }
+        });
+
+        // ✅ إنشاء مخزن افتراضي تلقائياً للفرع الجديد
+        await tx.warehouse.create({
+            data: {
+                name: `مخزن فرع ${branchName}`,
+                companyId,
+                branchId: branch.id,
+            }
+        });
+
+        return branch;
     });
 
-    return NextResponse.json(branch, { status: 201 });
+    return NextResponse.json(result, { status: 201 });
 }, { requireAdmin: true });
 
 // PUT - تعديل فرع
