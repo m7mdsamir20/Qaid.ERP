@@ -69,12 +69,11 @@ export const navSections = [
         ],
     },
     {
-        title: 'المطبخ والوصفات',
+        title: 'المطبخ',
         icon: ClipboardList,
         featureKey: 'kitchen',
         links: [
             { id: '/kds', href: '/kds', label: 'شاشة المطبخ (KDS)' },
-            { id: '/recipes', href: '/recipes', label: 'وصفات الطبخ' },
             { id: '/modifiers', href: '/modifiers', label: 'الإضافات والتعديلات' },
         ],
     },
