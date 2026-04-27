@@ -94,7 +94,7 @@ function VerifyContent() {
     };
 
     return (
-        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden' }}>
+        <div style={{ ...THEME.glass.card, borderRadius: '28px', padding: '48px 32px', boxShadow: THEME.shadows.premium, position: 'relative', overflow: 'hidden', textAlign: 'center' }}>
             {/* زخرفة داخلية */}
             <div style={{ position: 'absolute', top: '-20px', insetInlineEnd: '-20px', width: '100px', height: '100px', background: `${C.primary}10`, borderRadius: '50%', filter: 'blur(30px)' }} />
             
@@ -182,7 +182,7 @@ function VerifyContent() {
                         )}
                     </div>
                     
-                    <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', marginTop: '24px', color: C.textMuted, textDecoration: 'none', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }} onMouseEnter={e => e.currentTarget.style.color = C.textSecondary} onMouseLeave={e => e.currentTarget.style.color = C.textMuted}>
+                    <Link href="/register" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', marginTop: '24px', color: C.textMuted, textDecoration: 'none', fontSize: '12px', fontWeight: 700, fontFamily: CAIRO }} onMouseEnter={e => e.currentTarget.style.color = C.textSecondary} onMouseLeave={e => e.currentTarget.style.color = C.textMuted}>
                         {isRtl ? <ArrowRight size={14} /> : <ArrowLeft size={14} />} {t('العودة لإنشاء الحساب')}
                     </Link>
                 </div>
@@ -236,8 +236,8 @@ export default function VerifyPage() {
                 </Suspense>
 
                 {/* تذييل الصفحة */}
-                <div style={{ marginTop: '32px' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', opacity: 0.6 }}>
+                <div style={{ marginTop: '32px', textAlign: 'center' }}>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', opacity: 0.6, justifyContent: 'center' }}>
                         <div style={{ width: 24, height: 24, borderRadius: '6px', background: `linear-gradient(135deg, ${C.primary}, ${C.blue})`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 600, color: '#fff' }}>{t('ق')}</div>
                         <span style={{ fontSize: '13px', fontWeight: 600, color: C.textSecondary, letterSpacing: '0.5px' }}>{t('قيد ERP — النظام المحاسبي المتكامل')}</span>
                     </div>
