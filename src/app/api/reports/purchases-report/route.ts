@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -26,7 +27,12 @@ export const GET = withProtection(async (request, session) => {
         } = { companyId, type: 'purchase' };
         if (from)     where.date = { ...where.date, gte: new Date(from) };
         if (to)       where.date = { ...where.date, lte: new Date(to + 'T23:59:59') };
-        if (branchId && branchId !== 'all') where.branchId = branchId;
+        if (branchId && branchId !== 'all') {
+            where.branchId = branchId;
+        } else {
+            const bf = getBranchFilter(session);
+            if (bf.branchId) where.branchId = bf.branchId;
+        }
 
         const invoices = await prisma.invoice.findMany({
             where,

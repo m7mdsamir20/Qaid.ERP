@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -12,7 +13,12 @@ export const GET = withProtection(async (request, session) => {
         const branchId = searchParams.get('branchId');
         const from = searchParams.get('from');
         const to = searchParams.get('to');
-        const branchFilter = branchId && branchId !== 'all' ? { branchId } : {};
+        const branchFilter = (() => {
+            if (branchId && branchId !== 'all') return { branchId };
+            const bf = getBranchFilter(session);
+            if (bf.branchId) return { branchId: bf.branchId };
+            return {};
+        })();
 
         if (from && to && new Date(from) > new Date(to)) {
             return NextResponse.json({ error: "تاريخ البداية يجب أن يكون قبل تاريخ النهاية" }, { status: 400 });
