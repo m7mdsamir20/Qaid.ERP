@@ -37,7 +37,6 @@ export default function NewPurchasePage() {
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
-    const [customers, setCustomers] = useState<any[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [items, setItems] = useState<Item[]>([]);
@@ -47,7 +46,7 @@ export default function NewPurchasePage() {
     const [errorMsg, setErrorMsg] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [showAddSup, setShowAddSup] = useState(false);
-    const [newPartnerType, setNewPartnerType] = useState<'supplier' | 'customer'>('supplier');
+
 
     const itemSelectRef = useRef<any>(null);
     const qtyRef = useRef<any>(null);
@@ -102,16 +101,13 @@ export default function NewPurchasePage() {
     const remaining = Math.max(0, diff);
     const overpaid = Math.max(0, (form.paidAmount || 0) - netTotal);
 
-    const partners = [
-        ...(Array.isArray(suppliers) ? suppliers : []).map(s => ({ ...s, partnerType: 'supplier' })),
-        ...(Array.isArray(customers) ? customers : []).map(c => ({ ...c, partnerType: 'customer' }))
-    ];
+    const partners = Array.isArray(suppliers) ? suppliers.map(s => ({ ...s, partnerType: 'supplier' })) : [];
     const selectedPartner = Array.isArray(partners) ? partners.find(p => p.id === form.supplierId) : null;
 
     const loadData = useCallback(async () => {
         try {
-            const [invR, supR, custR, whR, trR, itemR, coR] = await Promise.all([
-                fetch('/api/purchases?justNextNum=true'), fetch('/api/suppliers'), fetch('/api/customers'),
+            const [invR, supR, whR, trR, itemR, coR] = await Promise.all([
+                fetch('/api/purchases?justNextNum=true'), fetch('/api/suppliers'),
                 fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items?all=true'),
                 fetch('/api/company'),
             ]);
@@ -119,7 +115,6 @@ export default function NewPurchasePage() {
             setNextNum(nextNumData.nextNum || 1);
 
             const sups = await supR.json();
-            const cus = await custR.json();
             const whs = await whR.json();
             const trs = await trR.json();
             const its = await itemR.json();
@@ -138,7 +133,6 @@ export default function NewPurchasePage() {
             }
 
             setSuppliers(Array.isArray(sups) ? sups : []);
-            setCustomers(Array.isArray(cus) ? cus : []);
             setWarehouses(Array.isArray(whs) ? whs : []);
             setTreasuries(Array.isArray(trs) ? trs : []);
             setItems(Array.isArray(its) ? its : (its.items || []));
@@ -315,8 +309,7 @@ export default function NewPurchasePage() {
                 body: JSON.stringify({
                     date: form.date,
                     warehouseId: form.warehouseId,
-                    supplierId: selectedPartner?.partnerType === 'supplier' ? form.supplierId : undefined,
-                    customerId: selectedPartner?.partnerType === 'customer' ? form.supplierId : undefined,
+                    supplierId: form.supplierId,
                     discount: Number(form.discountAmt || 0),
                     paidAmount: Number(form.paidAmount || 0),
                     paymentType: form.paymentType,
@@ -453,8 +446,7 @@ export default function NewPurchasePage() {
                                             placeholder={t("ابحث واختر...")}
                                             options={partners.map(p => ({
                                                 value: p.id,
-                                                label: p.name,
-                                                sub: p.partnerType === 'customer' ? t('عميل') : t('مورد')
+                                                label: p.name
                                             }))}
                                         />
                                         <InlineError field="supplierId" />
@@ -769,7 +761,7 @@ export default function NewPurchasePage() {
             <AppModal
                 show={showAddSup}
                 onClose={() => setShowAddSup(false)}
-                title={newPartnerType === 'supplier' ? t('إضافة مورد جديد') : t('إضافة عميل جديد')}
+                title={t('إضافة مورد جديد')}
                 icon={UserPlus}
                 maxWidth="440px"
             >
@@ -781,7 +773,7 @@ export default function NewPurchasePage() {
                     if (!name) return;
                     setSubmitting(true);
                     try {
-                        const targetApi = newPartnerType === 'supplier' ? '/api/suppliers' : '/api/customers';
+                        const targetApi = '/api/suppliers';
                         const res = await fetch(targetApi, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -789,24 +781,20 @@ export default function NewPurchasePage() {
                         });
                         if (res.ok) {
                             const newP = await res.json();
-                            if (newPartnerType === 'supplier') setSuppliers(prev => [...(Array.isArray(prev) ? prev : []), newP]);
-                            else setCustomers(prev => [...(Array.isArray(prev) ? prev : []), newP]);
+                            setSuppliers(prev => [...(Array.isArray(prev) ? prev : []), newP]);
 
                             setForm((f: any) => ({ ...f, supplierId: newP.id }));
                             setShowAddSup(false);
                         } else alert(t('فشل في الإضافة'));
                     } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                 }}>
-                    <div style={{ marginBottom: '16px', display: 'flex', background: C.subtle, borderRadius: '12px', padding: '4px' }}>
-                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
-                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
-                    </div>
+
 
                     <div style={{ marginBottom: '16px' }}>
                         <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
                         <div style={{ position: 'relative' }}>
                             <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                            <input name="pName" required placeholder={newPartnerType === 'supplier' ? t('اسم المورد...') : t('اسم العميل...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                            <input name="pName" required placeholder={t('اسم المورد...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                         </div>
                     </div>
 
