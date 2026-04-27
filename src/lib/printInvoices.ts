@@ -186,7 +186,7 @@ export function generateA4HTML(
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"/>
-<title>${title} - ${prefix}-${invoiceNum} (v2)</title>
+<title>${isServicesLine ? 'SRV' : prefix}-${invoiceNum}</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
