@@ -711,6 +711,27 @@ function SettingsContent() {
         </DashboardLayout>
     );
 
+    // Permission guard: block access for non-admin users without settings permissions
+    const userPerms = (session?.user as any)?.permissions || {};
+    const userRole = (session?.user as any)?.role;
+    const hasGranularPerms = Object.keys(userPerms).length > 0;
+    const hasAnySettingsPerm = !hasGranularPerms ? false : Object.keys(userPerms).some(key => key.startsWith('/settings') && userPerms[key]?.view);
+
+    if (!isSuperAdmin && !isAdmin && !hasAnySettingsPerm) {
+        return (
+            <DashboardLayout>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '60vh', gap: '16px', fontFamily: CAIRO }}>
+                    <div style={{ width: '80px', height: '80px', borderRadius: '24px', background: 'rgba(239,68,68,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#ef4444' }}>
+                        <Shield size={40} />
+                    </div>
+                    <h2 style={{ fontSize: '18px', fontWeight: 700, color: C.textPrimary, margin: 0 }}>{t('ليس لديك صلاحية')}</h2>
+                    <p style={{ fontSize: '13px', color: C.textSecondary, margin: 0 }}>{t('لا تملك صلاحية للوصول إلى صفحة الإعدادات. يرجى مراجعة مدير النظام.')}</p>
+                    <button onClick={() => window.location.href = '/'} style={{ padding: '10px 24px', borderRadius: '12px', border: 'none', background: C.primary, color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer', fontFamily: CAIRO }}>{t('العودة للرئيسية')}</button>
+                </div>
+            </DashboardLayout>
+        );
+    }
+
     // Filter tabs based on permissionHierarchy
     const filteredTabs = [
         { id: 'company', icon: Building2, label: t('بيانات الشركة'), featureKey: 'settings', pageId: '/settings/company' },

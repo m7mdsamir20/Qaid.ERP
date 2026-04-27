@@ -92,7 +92,6 @@ function ReportsHubPageInner() {
     };
 
     const userPermissions = session?.user?.permissions || {};
-    const reportsPerms = userPermissions['التقارير الإحصائية'] || {};
     const isAdmin = session?.user?.role === 'admin' || session?.user?.isSuperAdmin;
     const isSuperAdmin = session?.user?.isSuperAdmin;
     const featuresRaw = session?.user?.subscription?.features;
@@ -207,11 +206,23 @@ function ReportsHubPageInner() {
     const hasModuleAccess = (tab: ModuleTab) => {
         if (isSuperAdmin) return true;
 
-        // 1. تحقق من صلاحية التبويب في موديول التقارير الإحصائية (للموظفين فقط)
-        const perms = reportsPerms as Record<string, ViewPermission>;
-        if (!isAdmin && perms[`reports-${tab.key}`]?.view !== true) return false;
+        // Admin can see all report tabs
+        if (isAdmin) {
+            const targetFeatures = tab.requiredFeatures || [];
+            return targetFeatures.some((fKey: string) => hasFeatureAccess(fKey));
+        }
 
-        // 2. تحقق هل يملك صلاحية على الموارد الأصلية
+        // For non-admin: check if the user has the specific report permission
+        // Permissions are stored as flat keys like: userPermissions['reports-financial'] = { view: true }
+        const reportPermKey = `reports-${tab.key}`;
+        const hasGranularPerms = Object.keys(userPermissions).length > 0;
+        
+        if (hasGranularPerms) {
+            const reportPerm = (userPermissions as Record<string, ViewPermission>)[reportPermKey];
+            if (!reportPerm?.view) return false;
+        }
+
+        // Also check if the user has access to the underlying feature pages
         const targetFeatures = tab.requiredFeatures || [];
         return targetFeatures.some((fKey: string) => hasFeatureAccess(fKey));
     };
