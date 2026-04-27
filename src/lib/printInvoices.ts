@@ -449,6 +449,7 @@ tbody tr:nth-child(even){background: #fff;}
                     </td>
                     <td style="text-align:center; font-weight:950; font-size:14px; color:#111; border: 1px solid #ccc; padding: 8px;">${total.toLocaleString('en-US')} ${sym}</td>
                 </tr>
+                ${(isServicesLine && paid === 0) ? '' : `
                 <tr>
                     <td style="text-align:right; border: 1px solid #ccc; padding: 6px;">
                         <div style="font-weight:700;">المبلغ المدفوع</div>
@@ -463,6 +464,7 @@ tbody tr:nth-child(even){background: #fff;}
                     </td>
                     <td style="text-align:center; font-weight:900; color:#111; border: 1px solid #ccc; padding: 6px;">${remaining.toLocaleString('en-US')} ${sym}</td>
                 </tr>
+                `}
             </tbody>
         </table>
     </div>
