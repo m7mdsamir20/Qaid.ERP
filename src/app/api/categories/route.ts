@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { generateNextCode } from '@/lib/autoId';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -24,10 +25,19 @@ export const POST = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
 
+        let codeToUse = body.code;
+        if (!codeToUse) {
+            const lastCategory = await prisma.category.findFirst({
+                where: { companyId, code: { startsWith: 'CAT-' } },
+                orderBy: { code: 'desc' }
+            });
+            codeToUse = generateNextCode(lastCategory?.code, 'CAT-', 3);
+        }
+
         const category = await prisma.category.create({
             data: {
                 name: body.name,
-                code: body.code,
+                code: codeToUse,
                 companyId: companyId,
             },
         });
