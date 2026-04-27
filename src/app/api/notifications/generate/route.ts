@@ -34,7 +34,7 @@ export const POST = withProtection(async (request, session) => {
         // ① Low Stock Notifications
         if (settings.lowStock?.enabled) {
             const items = await prisma.item.findMany({
-                where: { companyId, minLimit: { gte: 0 } },
+                where: { companyId, minLimit: { gte: 0 }, type: 'raw' },
                 include: {
                     stocks: true,
                 },
