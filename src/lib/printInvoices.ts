@@ -556,7 +556,12 @@ export function printA4Invoice(
 ) {
     const html = generateA4HTML(invoice, type, company, options);
     const win = window.open('', '_blank');
-    if (win) { win.document.write(html); win.document.close(); }
+    if (win) { 
+        win.document.write(html); 
+        const match = html.match(/<title>(.*?)<\/title>/i);
+        if (match && match[1]) win.document.title = match[1].trim();
+        win.document.close(); 
+    }
 }
 
 
@@ -693,7 +698,12 @@ ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.pr
 export function printThermalVoucher(voucher: any, type: VoucherType, company: CompanyInfo = {}) {
     const html = generateThermalVoucherHTML(voucher, type, company);
     const win = window.open('', '_blank');
-    if (win) { win.document.write(html); win.document.close(); }
+    if (win) { 
+        win.document.write(html); 
+        const match = html.match(/<title>(.*?)<\/title>/i);
+        if (match && match[1]) win.document.title = match[1].trim();
+        win.document.close(); 
+    }
 }
 
 
@@ -964,6 +974,8 @@ export function printQuotation(
     const printWin = window.open('', '_blank');
     if (printWin) {
         printWin.document.write(html);
+        const match = html.match(/<title>(.*?)<\/title>/i);
+        if (match && match[1]) printWin.document.title = match[1].trim();
         printWin.document.close();
     }
 }
@@ -1316,5 +1328,10 @@ ${options.noAutoPrint ? '' : '<script>window.onload=()=>setTimeout(()=>window.pr
 export function printInstallmentPlan(plan: any, company: CompanyInfo = {}) {
     const html = generateInstallmentPlanHTML(plan, company);
     const win = window.open('', '_blank');
-    if (win) { win.document.write(html); win.document.close(); }
+    if (win) { 
+        win.document.write(html); 
+        const match = html.match(/<title>(.*?)<\/title>/i);
+        if (match && match[1]) win.document.title = match[1].trim();
+        win.document.close(); 
+    }
 }
