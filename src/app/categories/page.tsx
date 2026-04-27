@@ -156,7 +156,7 @@ export default function CategoriesPage() {
                                 <thead>
                                     <tr style={TABLE_STYLE.thead}>
                                         {[t('الكود'), t('اسم التصنيف'), isServices ? t('عدد الخدمات المرتبطة') : t('عدد الأصناف المرتبطة'), t('إجراء')].map((h, i) => (
-                                            <th key={i} style={TABLE_STYLE.th(i === 0, [0, 2, 3].includes(i))}>{h}</th>
+                                            <th key={i} style={TABLE_STYLE.th(i === 0, [2, 3].includes(i))}>{h}</th>
                                         ))}
                                     </tr>
                                 </thead>
