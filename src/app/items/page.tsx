@@ -12,6 +12,7 @@ import Pagination from '@/components/Pagination';
 import AppModal from '@/components/AppModal';
 import Barcode from 'react-barcode';
 import { useTranslation } from '@/lib/i18n';
+import { useSession } from 'next-auth/react';
 
 interface Item {
     id: string;
@@ -36,6 +37,8 @@ export default function ItemsPage() {
     const { symbol: currencySymbol, fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
+    const { data: session } = useSession();
+    const isAdmin = (session?.user as any)?.role === 'admin';
     const [items, setItems] = useState<Item[]>([]);
     const [warehouses, setWarehouses] = useState<{ id: string, name: string }[]>([]);
     const [loading, setLoading] = useState(true);
@@ -97,6 +100,13 @@ export default function ItemsPage() {
         setIsMounted(true);
         fetchData();
     }, [fetchData]);
+
+    // Auto-select single warehouse for branch employees
+    useEffect(() => {
+        if (!isAdmin && warehouses.length === 1) {
+            setWarehouseFilter(warehouses[0].id);
+        }
+    }, [warehouses, isAdmin]);
 
     const formatWithCommas = (val: string | number) => {
         if (val === undefined || val === null || val === '') return '';
@@ -363,7 +373,7 @@ export default function ItemsPage() {
                             </button>
                         )}
                     </div>
-                    {companyBusinessType?.toUpperCase() !== 'SERVICES' && (
+                    {companyBusinessType?.toUpperCase() !== 'SERVICES' && warehouses.length > 1 && (
                         <div style={{ width: '220px' }}>
                             <CustomSelect
                                 value={warehouseFilter}

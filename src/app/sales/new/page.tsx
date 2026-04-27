@@ -41,7 +41,6 @@ function NewSalePageInner() {
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
     const { symbol: cSymbol, fMoney, fMoneyJSX } = useCurrency();
     const [customers, setCustomers] = useState<Customer[]>([]);
-    const [suppliers, setSuppliers] = useState<any[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
     const [treasuries, setTreasuries] = useState<Treasury[]>([]);
     const [items, setItems] = useState<Item[]>([]);
@@ -54,7 +53,7 @@ function NewSalePageInner() {
     const searchParams = useSearchParams();
     const quotationId = searchParams.get('quotationId');
     const [fromQuotation, setFromQuotation] = useState<any>(null);
-    const [newPartnerType, setNewPartnerType] = useState<'customer' | 'supplier'>('customer');
+
 
     const itemSelectRef = useRef<any>(null);
     const qtyRef = useRef<HTMLInputElement>(null);
@@ -111,16 +110,13 @@ function NewSalePageInner() {
     const remaining = Math.max(0, diff);
     const overpaid = Math.max(0, (form.paidAmount || 0) - netTotal);
 
-    const partners = [
-        ...(Array.isArray(customers) ? customers.map(c => ({ ...c, partnerType: 'customer' })) : []),
-        ...(Array.isArray(suppliers) ? suppliers.map(s => ({ ...s, partnerType: 'supplier' })) : [])
-    ];
+    const partners = Array.isArray(customers) ? customers.map(c => ({ ...c, partnerType: 'customer' })) : [];
     const selectedPartner = partners.find(p => p.id === form.customerId);
 
     const loadData = useCallback(async () => {
         try {
-            const [invR, custR, supR, whR, trR, itemR, coR] = await Promise.all([
-                fetch('/api/sales?justNextNum=true'), fetch('/api/customers'), fetch('/api/suppliers'),
+            const [invR, custR, whR, trR, itemR, coR] = await Promise.all([
+                fetch('/api/sales?justNextNum=true'), fetch('/api/customers'),
                 fetch('/api/warehouses'), fetch('/api/treasuries'), fetch('/api/items?all=true'),
                 fetch('/api/company'),
             ]);
@@ -129,9 +125,6 @@ function NewSalePageInner() {
 
             const cusData = await custR.json();
             const cus = Array.isArray(cusData) ? cusData : [];
-
-            const supsData = await supR.json();
-            const sups = Array.isArray(supsData) ? supsData : [];
 
             const whsData = await whR.json();
             const whs = Array.isArray(whsData) ? whsData : [];
@@ -142,7 +135,7 @@ function NewSalePageInner() {
             const itsData = await itemR.json();
             const its = Array.isArray(itsData) ? itsData : (itsData.items || []);
 
-            setCustomers(cus); setSuppliers(sups);
+            setCustomers(cus);
             setWarehouses(whs); setTreasuries(trs);
             setItems(its);
             if (coR.ok) setCompany(await coR.json());
@@ -406,8 +399,7 @@ function NewSalePageInner() {
                 body: JSON.stringify({
                     date: form.date,
                     warehouseId: form.warehouseId,
-                    customerId: selectedPartner?.partnerType === 'customer' ? form.customerId : undefined,
-                    supplierId: selectedPartner?.partnerType === 'supplier' ? form.customerId : undefined,
+                    customerId: form.customerId,
                     discount: Number(form.discountAmt || 0),
                     paidAmount: Number(form.paidAmount || 0),
                     paymentType: form.paymentType,
@@ -624,8 +616,7 @@ function NewSalePageInner() {
                                             placeholder={t("ابحث واختر...")}
                                             options={partners.map(p => ({
                                                 value: p.id,
-                                                label: p.name,
-                                                sub: p.partnerType === 'supplier' ? t('مورد') : t('عميل')
+                                                label: p.name
                                             }))}
                                         />
                                         <InlineError field="customerId" />
@@ -1174,7 +1165,7 @@ function NewSalePageInner() {
             <AppModal
                 show={showAddCust}
                 onClose={() => setShowAddCust(false)}
-                title={newPartnerType === 'customer' ? t('إضافة عميل جديد') : t('إضافة مورد جديد')}
+                title={t('إضافة عميل جديد')}
                 icon={UserPlus}
                 maxWidth="440px"
             >
@@ -1186,7 +1177,7 @@ function NewSalePageInner() {
                     if (!name) return;
                     setSubmitting(true);
                     try {
-                        const targetApi = newPartnerType === 'customer' ? '/api/customers' : '/api/suppliers';
+                        const targetApi = '/api/customers';
                         const res = await fetch(targetApi, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
@@ -1194,24 +1185,20 @@ function NewSalePageInner() {
                         });
                         if (res.ok) {
                             const newP = await res.json();
-                            if (newPartnerType === 'customer') setCustomers(prev => [...prev, newP]);
-                            else setSuppliers(prev => [...prev, newP]);
+                            setCustomers(prev => [...prev, newP]);
 
                             setForm((f: any) => ({ ...f, customerId: newP.id }));
                             setShowAddCust(false);
                         } else alert(t('فشل في الإضافة'));
                     } catch { alert(t('خطأ في الاتصال')); } finally { setSubmitting(false); }
                 }}>
-                    <div style={{ marginBottom: '16px', display: 'flex', background: C.subtle, borderRadius: '12px', padding: '4px' }}>
-                        <button type="button" onClick={() => setNewPartnerType('customer')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'customer' ? C.primary : 'transparent', color: newPartnerType === 'customer' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('عميل')}</button>
-                        <button type="button" onClick={() => setNewPartnerType('supplier')} style={{ flex: 1, height: '36px', borderRadius: '10px', border: 'none', background: newPartnerType === 'supplier' ? C.primary : 'transparent', color: newPartnerType === 'supplier' ? '#fff' : C.textMuted, fontSize: '12px', fontWeight: 600, cursor: 'pointer', transition: 'all 0.2s', fontFamily: CAIRO }}>{t('مورد')}</button>
-                    </div>
+
 
                     <div style={{ marginBottom: '16px' }}>
                         <label style={LS}>{t('الاسم')} <span style={{ color: C.danger }}>*</span></label>
                         <div style={{ position: 'relative' }}>
                             <User size={16} style={{ position: 'absolute', insetInlineEnd: '12px', top: '50%', transform: 'translateY(-50%)', color: C.textMuted }} />
-                            <input name="pName" required placeholder={newPartnerType === 'customer' ? t('اسم العميل...') : t('اسم المورد...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
+                            <input name="pName" required placeholder={t('اسم العميل...')} style={{ ...IS, height: '42px', paddingInlineEnd: '40px' }} onFocus={focusIn} onBlur={focusOut} autoFocus />
                         </div>
                     </div>
 

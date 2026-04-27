@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateNextCode } from '@/lib/autoId';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -22,12 +23,27 @@ export const GET = withProtection(async (request, session) => {
             ];
         }
 
+        // Get branch-scoped warehouse IDs for stock filtering
+        const branchFilter = getBranchFilter(session);
+        let branchWarehouseIds: string[] | null = null;
+        if (branchFilter.branchId) {
+            const branchWarehouses = await prisma.warehouse.findMany({
+                where: { companyId, ...branchFilter },
+                select: { id: true }
+            });
+            branchWarehouseIds = branchWarehouses.map(w => w.id);
+        }
+
+        const stocksInclude = branchWarehouseIds
+            ? { where: { warehouseId: { in: branchWarehouseIds } } }
+            : true;
+
         if (all) {
             // بدون pagination للاستخدام في الفواتير - بس بدون stocks
             const items = await prisma.item.findMany({
                 where,
                 orderBy: { name: 'asc' },
-                include: { category: true, unit: true, stocks: true },
+                include: { category: true, unit: true, stocks: stocksInclude },
             });
             return NextResponse.json(items);
         }
@@ -38,7 +54,7 @@ export const GET = withProtection(async (request, session) => {
                 orderBy: { createdAt: 'asc' },
                 skip,
                 take: limit,
-                include: { category: true, unit: true, stocks: true },
+                include: { category: true, unit: true, stocks: stocksInclude },
             }),
             prisma.item.count({ where }),
         ]);
