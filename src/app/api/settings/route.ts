@@ -17,7 +17,8 @@ export const GET = withProtection(async (request, session) => {
             prisma.company.findUnique({ where: { id: companyId }, include: { subscription: true } }),
             (prisma as any).user.findMany({
                 where: { companyId },
-                select: { id: true, name: true, username: true, email: true, phone: true, role: true, status: true, gender: true, avatar: true, branchId: true, allowedBranches: true, customRole: { select: { id: true, name: true, permissions: true } } }
+                select: { id: true, name: true, username: true, email: true, phone: true, role: true, status: true, gender: true, avatar: true, branchId: true, allowedBranches: true, customRole: { select: { id: true, name: true, permissions: true } } },
+                orderBy: { createdAt: 'asc' }
             }),
             prisma.role.findMany({ where: { companyId } }),
             prisma.financialYear.findMany({ where: { companyId }, orderBy: { startDate: 'desc' } }),

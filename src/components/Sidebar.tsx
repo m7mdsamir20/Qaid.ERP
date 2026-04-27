@@ -93,7 +93,7 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
     const hasFeature = useCallback((featureKey?: string): boolean => {
         try {
             if (isSuperAdmin) return true;
-            if (!featureKey || featureKey === 'dashboard' || featureKey === 'settings') return true;
+            if (!featureKey || featureKey === 'dashboard') return true;
             const section = navSections.find(s => s.featureKey === featureKey);
             return section?.links?.some(l => hasPage(featureKey, l.id)) ?? true;
         } catch { return true; }
