@@ -6,7 +6,7 @@ import PageHeader from '@/components/PageHeader';
 import { C, CAIRO, PAGE_BASE } from '@/constants/theme';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { LucideIcon } from 'lucide-react';
-import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2 } from 'lucide-react';
+import { PieChart, Wallet, TrendingUp, TrendingDown, Landmark, Activity, ShoppingCart, Truck, FileBarChart2, ArrowRightLeft, ScrollText, AlertTriangle, Layers, Receipt, FileText, BarChart3, Package, Users, Briefcase, CreditCard, DollarSign, Loader2, BookOpen, Clock, PackageSearch, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { navSections } from '@/constants/navigation';
 
@@ -64,6 +64,12 @@ function ReportsHubPageInner() {
             { title: isServices ? t('تصنيفات الخدمات') : t('حركات المخزون'), description: isServices ? t('عرض الخدمات حسب التصنيفات') : t('سجل شامل لجميع عمليات الصرف والتوريد والتحويل المخزني'), href: isServices ? '/categories' : '/stock-movements', icon: isServices ? Layers : ArrowRightLeft, color: '#256af4', status: 'ready', requiredPages: ['/categories', '/stock-movements'] },
             { title: isServices ? t('إحصائيات الخدمات') : t('حركة صنف'), description: isServices ? t('تحليل حركة طلب خدمة معينة') : t('مراقبة الصادر والوارد لصنف معين ككارتة صنف'), href: '/reports/item-movement', icon: Activity, color: '#f59e0b', status: 'ready', requiredPages: ['/items', '/stock-movements'] },
             ...(!isServices ? [{ title: t('أصناف تحت الحد الأدنى'), description: t('تنبيهات الأصناف التي تجاوزت حد إعادة الطلب'), href: '/reports/low-stock-items', icon: AlertTriangle, color: '#ef4444', status: 'ready' as const, requiredPages: ['/items'] }] : []),
+        ],
+        'restaurant': [
+            { title: t('تقرير وصفات الطبخ (المنيو)'), description: t('عرض جميع الوجبات والمكونات وحساب التكلفة التقديرية وهامش الربح'), href: '/reports/recipes-report', icon: BookOpen, color: '#f43f5e', status: 'ready', requiredPages: ['/items'] },
+            { title: t('تقرير استهلاك المطبخ'), description: t('تحليل كميات المواد الخام المستهلكة فعلياً بناءً على الوجبات المباعة'), href: '/reports/kitchen-consumption', icon: PackageSearch, color: '#f59e0b', status: 'ready', requiredPages: ['/items'] },
+            { title: t('تقرير الهالك والتالف'), description: t('مراقبة المواد والوجبات التالفة وحساب قيمة الخسائر المادية'), href: '/reports/kitchen-waste', icon: Trash2, color: '#ef4444', status: 'ready', requiredPages: ['/items'] },
+            { title: t('التقرير المالي للورديات'), description: t('تحليل شامل لمبيعات الكاشير وعجز/زيادة الدرج لكل وردية'), href: '/reports/shift-sales', icon: Clock, color: '#10b981', status: 'ready', requiredPages: ['/sales'] },
         ],
         'partners': [
             { title: t('أرصدة العملاء والموردين'), description: t('تقرير إجمالي لجميع العملاء والموردين يعرض من عليه أموال ومن له مستحقات'), href: '/reports/clients-suppliers-balances', icon: Users, color: '#256af4', status: 'ready', requiredPages: ['/customers', '/suppliers'] },
@@ -202,6 +208,13 @@ function ReportsHubPageInner() {
             requiredFeatures: ['installments'],
             requiredPages: ['/installments']
         },
+        ...(businessType === 'RESTAURANTS' ? [{
+            key: 'restaurant',
+            label: t('تقارير المطعم والمطبخ'),
+            icon: BookOpen,
+            requiredFeatures: ['inventory'],
+            requiredPages: ['/items']
+        }] : []),
     ];
 
     const hasModuleAccess = (tab: ModuleTab) => {

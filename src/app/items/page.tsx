@@ -98,7 +98,7 @@ export default function ItemsPage() {
     }, []);
 
     const [form, setForm] = useState({
-        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, variants: [] as any[], recipeItems: [] as { itemId: string, quantity: number, unit: string }[]
+        id: '', code: '', barcode: '', imageUrl: '', name: '', description: '', categoryId: '', unitId: '', costPrice: 0, sellPrice: 0, minLimit: 0, warehouseId: '', initialQuantity: 0, status: 'active', type: 'product', isPosEligible: true, isPriceVariable: false, variants: [] as any[], recipeItems: [] as { itemId: string, quantity: number, unit: string }[]
     });
 
     useEffect(() => {
@@ -431,11 +431,11 @@ export default function ItemsPage() {
                                         <th style={{ ...TABLE_STYLE.th(true) }}>{t("الكود")}</th>
                                         {companyBusinessType !== 'SERVICES' && usesBarcode && <th style={{ ...TABLE_STYLE.th(false) }}>{t("الباركود")}</th>}
                                         <th style={{...TABLE_STYLE.th(false)}}>{isRestaurant ? t('الصنف') : companyBusinessType === 'SERVICES' ? t('الخدمة') : t('الصنف')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{...TABLE_STYLE.th(false, true)}}>{t("الكمية")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("سعر التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false, true), }}>{companyBusinessType === 'SERVICES' ? t('سعر الخدمة') : t('سعر البيع')}</th>
-                                        {companyBusinessType !== 'SERVICES' && <th style={{...TABLE_STYLE.th(false, true)}}>{t("متوسط التكلفة")}</th>}
-                                        {companyBusinessType !== 'SERVICES' && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{...TABLE_STYLE.th(false, true)}}>{t("متوسط التكلفة")}</th>}
+                                        {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && <th style={{ ...TABLE_STYLE.th(false, true), }}>{t("إجمالي التكلفة")}</th>}
                                         <th style={{ ...TABLE_STYLE.th(false), textAlign: 'center' }}>{t("إجراء")}</th>
                                     </tr>
                                 </thead>
@@ -461,17 +461,17 @@ export default function ItemsPage() {
                                                         <div style={{ fontWeight: 700, color: C.textPrimary, fontSize: '13px', fontFamily: CAIRO }}>{item.name}</div>
                                                     </div>
                                                 </td>
-                                                {companyBusinessType !== 'SERVICES' && (
+                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
                                                     <td style={{ ...TABLE_STYLE.td(false, true), fontFamily: OUTFIT, fontWeight: 600, color: C.textSecondary, }}>{fmt(totalQty)} <span style={{ fontSize: '10px', color: C.textMuted, fontFamily: CAIRO, fontWeight: 500 }}>{item.unit?.name || t('قطعة')}</span></td>
                                                 )}
-                                                {companyBusinessType !== 'SERVICES' && (
+                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
                                                     <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.costPrice)}</td>
                                                 )}
                                                 <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(item.sellPrice)}</td>
-                                                {companyBusinessType !== 'SERVICES' && (
+                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
                                                     <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(avgCost)}</td>
                                                 )}
-                                                {companyBusinessType !== 'SERVICES' && (
+                                                {companyBusinessType !== 'SERVICES' && !(isRestaurant && itemTypeTab === 'product') && (
                                                     <td style={TABLE_STYLE.td(false, true)}>{fMoneyJSX(totalCost)}</td>
                                                 )}
                                                 <td style={{ ...TABLE_STYLE.td(false), textAlign: 'center' }}>
@@ -700,7 +700,6 @@ export default function ItemsPage() {
                                         </div>
                                     </div>
                                 )}
-                            </>
                                 
                                 {form.type === 'product' && (
                                     <div style={{ padding: '14px', borderRadius: '12px', border: `1px solid ${C.border}`, marginTop: '10px', background: C.card }}>
