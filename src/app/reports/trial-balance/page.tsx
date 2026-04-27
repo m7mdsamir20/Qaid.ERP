@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
 import { FileBarChart2, Loader2, CheckCircle2, AlertCircle } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, OUTFIT } from '@/constants/theme';
@@ -34,10 +35,21 @@ export default function TrialBalancePage() {
 
     const [report, setReport] = useState<TrialBalanceLine[]>([]);
     const [loading, setLoading] = useState(true);
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => {});
+    }, []);
 
     const fetchData = async () => {
+        setLoading(true);
         try {
-            const res = await fetch('/api/reports/trial-balance');
+            const params = new URLSearchParams();
+            if (branchId && branchId !== 'all') params.set('branchId', branchId);
+            const res = await fetch(`/api/reports/trial-balance?${params}`);
             if (res.ok) {
                 setReport(await res.json());
             }
@@ -47,7 +59,7 @@ export default function TrialBalancePage() {
         }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(); }, [branchId]);
 
     const grandTotalDebit = report.reduce((s, l) => s + l.totalDebit, 0);
     const grandTotalCredit = report.reduce((s, l) => s + l.totalCredit, 0);
@@ -69,6 +81,24 @@ export default function TrialBalancePage() {
                     
                     printTitle={t("ميزان المراجعة (بالمجاميع والأرصدة)")}
                 />
+
+                {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                    <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
+                        <div style={{ minWidth: '220px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={(v: string) => setBranchId(v)}
+                                placeholder={t('كل الفروع')}
+                                hideSearch
+                                style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '16px' }}>

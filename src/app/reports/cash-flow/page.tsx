@@ -7,6 +7,7 @@ import { useTranslation } from '@/lib/i18n';
 import { useSession } from 'next-auth/react';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
 import { TrendingUp, TrendingDown, Activity, Search, Loader2, DollarSign } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE, IS } from '@/constants/theme';
 
@@ -40,9 +41,20 @@ export default function CashFlowReportPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [q, setQ] = useState('');
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
     useEffect(() => {
-        fetch('/api/reports/cash-flow')
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => {});
+    }, []);
+
+    const fetchData = () => {
+        setLoading(true);
+        const params = new URLSearchParams();
+        if (branchId && branchId !== 'all') params.set('branchId', branchId);
+        fetch(`/api/reports/cash-flow?${params}`)
             .then(res => { if (!res.ok) throw new Error(); return res.json(); })
             .then(d => {
                 if (d.error) throw new Error(d.error);
@@ -56,7 +68,9 @@ export default function CashFlowReportPage() {
             })
             .catch(() => setError(t('فشل تحميل بيانات التدفق النقدي')))
             .finally(() => setLoading(false));
-    }, []);
+    };
+
+    useEffect(() => { fetchData(); }, [branchId]);
 
     const filtered = data.filter(v => 
         (v.party || '').includes(q) || 
@@ -76,6 +90,24 @@ export default function CashFlowReportPage() {
                     backTab="financial"
                     
                 />
+
+                {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                    <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
+                        <div style={{ minWidth: '220px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={(v: string) => setBranchId(v)}
+                                placeholder={t('كل الفروع')}
+                                hideSearch
+                                style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 {error && (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '14px 18px', marginBottom: '16px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: '12px', color: '#f87171', fontSize: '13px', fontWeight: 600, fontFamily: CAIRO }}>

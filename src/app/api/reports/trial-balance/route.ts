@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -10,6 +11,13 @@ export const GET = withProtection(async (request, session) => {
         }
 
         const financialYearId = request.nextUrl.searchParams.get('financialYearId');
+        const urlBranchId = request.nextUrl.searchParams.get('branchId');
+        const branchFilter = (() => {
+            if (urlBranchId && urlBranchId !== 'all') return { branchId: urlBranchId };
+            const bf = getBranchFilter(session);
+            if (bf.branchId) return { branchId: bf.branchId };
+            return {};
+        })();
 
         // ① تحديد السنة المالية للحصول على نطاق التواريخ والأرصدة الافتتاحية
         let currentYear = null;
@@ -41,7 +49,8 @@ export const GET = withProtection(async (request, session) => {
                             date: {
                                 gte: currentYear.startDate,
                                 lte: currentYear.endDate
-                            }
+                            },
+                            ...branchFilter
                         }
                     }
                 }

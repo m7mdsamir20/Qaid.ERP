@@ -254,7 +254,7 @@ table{width:100%;border-collapse:collapse}
                     </div>
 
                     <div className="branch-filter-wrapper" style={{ display: 'flex', gap: '8px', alignItems: 'center', flex: 2, flexWrap: 'wrap' }}>
-                        {branches.length > 1 && (
+                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
                             <div style={{ flex: 1, minWidth: '150px' }}>
                                 <CustomSelect
                                     value={branchId}

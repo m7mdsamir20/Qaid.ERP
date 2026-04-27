@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
 import { Landmark, Scale, Sigma, TrendingUp, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE } from '@/constants/theme';
@@ -44,15 +45,20 @@ export default function BalanceSheetPage() {
     const [data, setData] = useState<BalanceSheetData | null>(null);
     const [loading, setLoading] = useState(true);
     const [company, setCompany] = useState<any>({});
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
 
     useEffect(() => {
         fetch('/api/company').then(r => r.json()).then(d => { if (d && !d.error) setCompany(d); }).catch(() => {});
+        fetch('/api/branches').then(r => r.json()).then(d => { if (Array.isArray(d)) setBranches(d); }).catch(() => {});
     }, []);
 
     const fetchData = async () => {
         setLoading(true);
         try {
-            const res = await fetch('/api/reports/balance-sheet');
+            const params = new URLSearchParams();
+            if (branchId && branchId !== 'all') params.set('branchId', branchId);
+            const res = await fetch(`/api/reports/balance-sheet?${params}`);
             if (res.ok) {
                 setData(await res.json());
             }
@@ -62,7 +68,7 @@ export default function BalanceSheetPage() {
         }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(); }, [branchId]);
 
     const sym = getCurrencyName(currency);
     const isBalanced = data ? Math.abs(data.totalAssets - data.totalLiabilitiesAndEquities) < 0.01 : false;
@@ -163,6 +169,24 @@ tfoot tr *,tr[style*="e8e8e8"] *{background:#e8e8e8!important}
                     backTab="financial"
                     onPrint={handlePrint}
                 />
+
+                {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                    <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
+                        <div style={{ minWidth: '220px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={(v: string) => setBranchId(v)}
+                                placeholder={t('كل الفروع')}
+                                hideSearch
+                                style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '16px' }}>

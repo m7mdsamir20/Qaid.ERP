@@ -6,6 +6,7 @@ import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
 import CustomSelect from '@/components/CustomSelect';
+import { useSession } from 'next-auth/react';
 import { Package, Activity, Search, Loader2, Warehouse } from 'lucide-react';
 import { C, CAIRO, PAGE_BASE, OUTFIT } from '@/constants/theme';
 
@@ -38,6 +39,7 @@ interface BranchOption {
 export default function ItemMovementReportPage() {
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
+    const { data: session } = useSession();
 
     const [items, setItems] = useState<{ id: string, name: string, code: string }[]>([]);
     const [selectedId, setSelectedId] = useState('');
@@ -154,7 +156,7 @@ export default function ItemMovementReportPage() {
                             }}
                         />
                     </div>
-                    {branches.length > 1 && (
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
                         <CustomSelect
                             value={branchId}
                             onChange={v => {

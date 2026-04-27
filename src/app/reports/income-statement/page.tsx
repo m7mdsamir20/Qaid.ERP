@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from '@/lib/i18n';
 import DashboardLayout from '@/components/DashboardLayout';
 import ReportHeader from '@/components/ReportHeader';
+import CustomSelect from '@/components/CustomSelect';
 import { useSession } from 'next-auth/react';
 import { PieChart, TrendingUp, TrendingDown, DollarSign, Loader2 } from 'lucide-react';
 import { C, CAIRO, OUTFIT, PAGE_BASE } from '@/constants/theme';
@@ -40,11 +41,21 @@ export default function IncomeStatementPage() {
 
     const [data, setData] = useState<IncomeStatementData | null>(null);
     const [loading, setLoading] = useState(true);
+    const [branchId, setBranchId] = useState('all');
+    const [branches, setBranches] = useState<{ id: string; name: string }[]>([]);
+
+    useEffect(() => {
+        fetch('/api/branches').then(r => r.json()).then(d => {
+            if (Array.isArray(d)) setBranches(d);
+        }).catch(() => {});
+    }, []);
 
     const fetchData = async () => {
         setLoading(true);
         try {
-            const res = await fetch('/api/reports/income-statement');
+            const params = new URLSearchParams();
+            if (branchId && branchId !== 'all') params.set('branchId', branchId);
+            const res = await fetch(`/api/reports/income-statement?${params}`);
             if (res.ok) {
                 setData(await res.json());
             }
@@ -54,7 +65,7 @@ export default function IncomeStatementPage() {
         }
     };
 
-    useEffect(() => { fetchData(); }, []);
+    useEffect(() => { fetchData(); }, [branchId]);
 
     const handlePrint = () => window.print();
     const exportToPDF = () => window.print();
@@ -69,6 +80,24 @@ export default function IncomeStatementPage() {
                     backTab="financial"
                     
                 />
+
+                {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
+                    <div className="no-print" style={{ display: 'flex', gap: '14px', marginBottom: '24px', alignItems: 'center' }}>
+                        <div style={{ minWidth: '220px' }}>
+                            <CustomSelect
+                                value={branchId}
+                                onChange={(v: string) => setBranchId(v)}
+                                placeholder={t('كل الفروع')}
+                                hideSearch
+                                style={{ background: C.card, border: `1px solid ${C.border}` }}
+                                options={[
+                                    { value: 'all', label: t('كل الفروع') },
+                                    ...branches.map((b) => ({ value: b.id, label: b.name }))
+                                ]}
+                            />
+                        </div>
+                    </div>
+                )}
 
                 {loading ? (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: '16px' }}>
