@@ -35,6 +35,7 @@ export default function NewPurchasePage() {
     const allowedBranches: string[] | null = (session?.user as any)?.allowedBranches || null;
     const userBranches = allowedBranches?.length ? allBranches.filter(b => allowedBranches.includes(b.id)) : allBranches;
     const isAllBranches = (!activeBranchId || activeBranchId === 'all') && userBranches.length > 1;
+    const isServices = (session?.user as any)?.businessType?.toUpperCase() === 'SERVICES';
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
@@ -196,7 +197,7 @@ export default function NewPurchasePage() {
         const stock = item.stocks?.find((s: any) => s.warehouseId === form.warehouseId)?.quantity || 0;
 
         setLines(prev => {
-            const idx = prev.findIndex(l => l.itemId === item.id);
+            const idx = isServices ? -1 : prev.findIndex(l => l.itemId === item.id);
             if (idx >= 0) {
                 const updated = [...prev];
                 const newQty = updated[idx].quantity + qty;

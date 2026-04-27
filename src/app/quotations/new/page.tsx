@@ -152,7 +152,7 @@ export default function NewQuotationPage() {
         const price = Number(entryPrice || 0);
 
         setLines(prev => {
-            const idx = prev.findIndex(l => l.itemId === item.id);
+            const idx = isServices ? -1 : prev.findIndex(l => l.itemId === item.id);
             if (idx >= 0) {
                 const updated = [...prev];
                 updated[idx] = {

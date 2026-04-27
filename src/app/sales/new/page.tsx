@@ -275,7 +275,7 @@ function NewSalePageInner() {
         const taxAmountValue = (qty * price) * (taxRate / 100);
 
         setLines(prev => {
-            const idx = prev.findIndex(l => l.itemId === entryItemId);
+            const idx = isServices ? -1 : prev.findIndex(l => l.itemId === entryItemId);
             if (idx >= 0) {
                 const updated = [...prev];
                 const newQty = updated[idx].quantity + qty;
