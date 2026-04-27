@@ -160,7 +160,7 @@ export default function LoginPage() {
                     ) : (
                         <div style={{ display: 'block', margin: '0 auto 12px', width: '220px', height: '80px' }} />
                     )}
-                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '13px', fontWeight: 600 }}>{t('مرحباً بعودتك لنظامك السحابي')}</p>
+                    <p style={{ marginTop: '16px', color: C.textSecondary, fontSize: '13px', fontWeight: 600, textAlign: 'center' }}>{t('مرحباً بعودتك لنظامك السحابي')}</p>
                 </div>
 
                 {/* كارت التسجيل */}
@@ -239,7 +239,7 @@ export default function LoginPage() {
                         </button>
                     </form>
 
-                    <p style={{ marginTop: '20px', fontSize: '13px', color: C.textSecondary }}>
+                    <p style={{ marginTop: '20px', fontSize: '13px', color: C.textSecondary, textAlign: 'center' }}>
                         {t('ليس لديك حساب؟')}{' '}
                         <Link href="/register" style={{ color: C.primary, fontWeight: 600, textDecoration: 'none' }}>{t('إنشاء حساب جديد')}</Link>
                     </p>

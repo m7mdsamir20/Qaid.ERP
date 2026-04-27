@@ -67,6 +67,7 @@ export default function POSPage() {
     const [drivers, setDrivers] = useState<any[]>([]);
     const [customers, setCustomers] = useState<any[]>([]);
     const [treasuries, setTreasuries] = useState<any[]>([]);
+    const [restaurantSettings, setRestaurantSettings] = useState<any>({});
     
     // Modifiers Modal
     const [activeModifierCartIndex, setActiveModifierCartIndex] = useState<number | null>(null);
@@ -76,6 +77,10 @@ export default function POSPage() {
     const [showSplitPayment, setShowSplitPayment] = useState(false);
     const [splitAmounts, setSplitAmounts] = useState({ cash: 0, card: 0 });
     const [showAddCustomer, setShowAddCustomer] = useState(false);
+
+    // Open Orders Modal
+    const [showOpenOrders, setShowOpenOrders] = useState(false);
+    const [openOrders, setOpenOrders] = useState<any[]>([]);
 
     // Filters
     const [selectedCategory, setSelectedCategory] = useState('');
@@ -102,16 +107,17 @@ export default function POSPage() {
     const load = useCallback(async () => {
         setLoading(true);
         try {
-            const [catRes, itemRes, tableRes, modRes, driverRes, custRes, treasRes] = await Promise.all([
+            const [catRes, itemRes, tableRes, modRes, driverRes, custRes, treasRes, settingsRes] = await Promise.all([
                 fetch('/api/categories'),
                 fetch('/api/items?all=true'),
                 fetch('/api/restaurant/tables'),
                 fetch('/api/restaurant/modifiers'),
                 fetch('/api/drivers'),
                 fetch('/api/customers'),
-                fetch('/api/treasuries')
+                fetch('/api/treasuries'),
+                fetch('/api/settings')
             ]);
-            const [cats, itms, tbls, mods, drvs, custs, treas] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json(), custRes.json(), treasRes.json()]);
+            const [cats, itms, tbls, mods, drvs, custs, treas, settings] = await Promise.all([catRes.json(), itemRes.json(), tableRes.json(), modRes.json(), driverRes.json(), custRes.json(), treasRes.json(), settingsRes.json()]);
             setCategories(Array.isArray(cats) ? cats : []);
             setItems(Array.isArray(itms) ? itms : (itms.items || []));
             setTables(Array.isArray(tbls) ? tbls : []);
@@ -119,6 +125,7 @@ export default function POSPage() {
             setDrivers(Array.isArray(drvs) ? drvs.filter((d: any) => d.status === 'available') : []);
             setCustomers(Array.isArray(custs) ? custs : []);
             setTreasuries(Array.isArray(treas) ? treas : []);
+            setRestaurantSettings(settings.restaurantSettings || {});
         } finally {
             setLoading(false);
         }
@@ -279,12 +286,53 @@ export default function POSPage() {
         }, 500);
     };
 
+    const fetchOpenOrders = async () => {
+        try {
+            const res = await fetch('/api/restaurant/orders');
+            if (res.ok) {
+                const data = await res.json();
+                setOpenOrders(data.filter((o: any) => o.status !== 'delivered' && o.status !== 'cancelled'));
+            }
+        } catch {}
+    };
+
+    const payOpenOrder = async (order: any) => {
+        if (!selectedTreasury) {
+            alert('يجب اختيار الخزنة من أسفل يمين الشاشة أولاً!');
+            return;
+        }
+        try {
+            const res = await fetch('/api/restaurant/orders', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: order.id,
+                    action: 'pay_and_close',
+                    paymentMethod,
+                    treasuryId: selectedTreasury
+                })
+            });
+            if (res.ok) {
+                setSuccessMsg('تم محاسبة الطاولة وإخلائها بنجاح');
+                setShowOpenOrders(false);
+                load();
+                setTimeout(() => setSuccessMsg(''), 3000);
+            } else {
+                const d = await res.json();
+                alert(d.error || 'فشل في المحاسبة');
+            }
+        } catch(e) {}
+    };
+
     const handleInitialSubmit = () => {
         if (cart.length === 0) { setErrorMsg('السلة فارغة'); return; }
-        if (orderType === 'dine-in' && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
-        if (!selectedTreasury) { setErrorMsg('اختر الخزنة أولاً'); return; }
         
-        if (paymentMethod === 'mixed') {
+        const isPostPay = orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay';
+        
+        if (orderType === 'dine-in' && !selectedTable) { setErrorMsg('اختر الطاولة أولاً'); return; }
+        if (!isPostPay && !selectedTreasury && paymentMethod !== 'mixed') { setErrorMsg('اختر الخزنة أولاً'); return; }
+        
+        if (!isPostPay && paymentMethod === 'mixed') {
             setSplitAmounts({ cash: total / 2, card: total / 2 });
             setShowSplitPayment(true);
         } else {
@@ -324,7 +372,7 @@ export default function POSPage() {
                     deliveryAddress: deliveryAddress || null,
                     notes: finalNotes.trim(),
                     paymentMethod,
-                    paidAmount: total,
+                    paidAmount: (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay') ? 0 : total,
                     discount,
                     taxAmount,
                     taxRate,
@@ -334,10 +382,14 @@ export default function POSPage() {
             });
             if (!res.ok) { const d = await res.json(); setErrorMsg(d.error || 'فشل'); setSubmitting(false); return; }
             
-            // Print Receipt
-            printReceipt(await res.json(), cart, total, discount);
+            const isPostPay = orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay';
+            
+            if (!isPostPay) {
+                // Print Receipt only if paid (pre-pay or other types)
+                printReceipt(await res.json(), cart, total, discount);
+            }
 
-            setSuccessMsg('✅ تم حفظ الطلب وإرساله للمطبخ');
+            setSuccessMsg(isPostPay ? '✅ تم إرسال الطلب للمطبخ (طاولة مفتوحة)' : '✅ تم حفظ الطلب وإرساله للمطبخ');
             clearCart();
             setShowSplitPayment(false);
             load();
@@ -430,6 +482,12 @@ export default function POSPage() {
 
                     {/* نوع الطلب */}
                     <div style={{ padding: '16px', borderBottom: `1px solid ${C.border}` }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                            <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 700, fontFamily: CAIRO }}>{t('الطلب الحالي')}</h3>
+                            <button onClick={() => { fetchOpenOrders(); setShowOpenOrders(true); }} style={{ padding: '6px 10px', borderRadius: '8px', background: `${C.primary}15`, color: C.primary, fontSize: '12px', border: 'none', cursor: 'pointer', fontWeight: 700, fontFamily: CAIRO, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <Clock size={14} /> {t('الطلبات المفتوحة')}
+                            </button>
+                        </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '6px' }}>
                             {ORDER_TYPES.map(ot => {
                                 const Icon = ot.icon;
@@ -621,13 +679,56 @@ export default function POSPage() {
                                 style={{ ...BTN_PRIMARY(submitting || cart.length === 0, false), flex: 1, height: '48px', borderRadius: '12px', fontSize: '14px', gap: '8px' }}>
                                 {submitting
                                     ? <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {t('جاري الحفظ...')}</>
-                                    : <><Printer size={16} /> {t('حفظ وطباعة')} {cartCount > 0 && `(${cartCount})`}</>
+                                    : (orderType === 'dine-in' && restaurantSettings.dineInPaymentPolicy === 'post-pay')
+                                        ? <><ChefHat size={16} /> {t('إرسال للمطبخ (دفع لاحق)')} {cartCount > 0 && `(${cartCount})`}</>
+                                        : orderType === 'delivery'
+                                            ? <><Truck size={16} /> {t('تأكيد وإرسال للتجهيز')} {cartCount > 0 && `(${cartCount})`}</>
+                                            : <><Printer size={16} /> {t('حفظ وطباعة')} {cartCount > 0 && `(${cartCount})`} </>
                                 }
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Open Orders Modal */}
+            {showOpenOrders && (
+                <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+                    <div style={{ background: C.card, border: `1px solid ${C.border}`, borderRadius: '20px', padding: '24px', width: '100%', maxWidth: '600px', maxHeight: '90vh', display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                            <h2 style={{ margin: 0, fontSize: '16px', fontWeight: 700, color: C.textPrimary, fontFamily: CAIRO }}>{t('الطلبات المفتوحة')} (طاولات مشغولة / قيد التجهيز)</h2>
+                            <button onClick={() => setShowOpenOrders(false)} style={{ background: 'none', border: 'none', color: C.textMuted, cursor: 'pointer' }}><X size={18} /></button>
+                        </div>
+                        <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {openOrders.length === 0 ? (
+                                <div style={{ textAlign: 'center', color: C.textMuted, padding: '40px', fontSize: '14px', fontFamily: CAIRO }}>
+                                    <Clock size={40} style={{ opacity: 0.3, marginBottom: '10px' }} />
+                                    <br/>لا توجد طلبات مفتوحة
+                                </div>
+                            ) : openOrders.map(o => (
+                                <div key={o.id} style={{ border: `1px solid ${C.border}`, borderRadius: '12px', padding: '16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: C.bg }}>
+                                    <div>
+                                        <div style={{ fontWeight: 700, fontSize: '14px', color: C.textPrimary, fontFamily: CAIRO }}>
+                                            {o.table?.name ? `طاولة: ${o.table.name}` : `طلب #${o.orderNumber}`} ({ORDER_TYPES.find(t=>t.value===o.type)?.label || o.type})
+                                        </div>
+                                        <div style={{ fontSize: '12px', color: C.textSecondary, marginTop: '4px', display: 'flex', gap: '12px' }}>
+                                            <span>الإجمالي: <b style={{ color: C.textPrimary, fontFamily: OUTFIT }}>{fMoney(o.total)}</b></span>
+                                            <span>المتبقي: <b style={{ color: C.danger, fontFamily: OUTFIT }}>{fMoney(o.total - o.paidAmount)}</b></span>
+                                        </div>
+                                    </div>
+                                    {o.total - o.paidAmount > 0 ? (
+                                        <button onClick={() => payOpenOrder(o)} style={{ padding: '8px 16px', borderRadius: '8px', background: C.primary, color: '#fff', fontSize: '12px', fontWeight: 700, border: 'none', cursor: 'pointer', fontFamily: CAIRO }}>
+                                            محاسبة وإخلاء
+                                        </button>
+                                    ) : (
+                                        <span style={{ fontSize: '12px', color: C.success, fontWeight: 700, background: `${C.success}20`, padding: '4px 8px', borderRadius: '6px' }}>تم الدفع</span>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Variants Selection Modal */}
             {activeVariantItem !== null && (
