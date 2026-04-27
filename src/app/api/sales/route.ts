@@ -77,7 +77,23 @@ export const GET = withProtection(async (request, session) => {
 
 export const POST = withProtection(async (request, session, body) => {
     try {
-        const companyId = (session.user as any).companyId;
+        const user = session.user as any;
+        const companyId = user.companyId;
+
+        // Server-side permission enforcement
+        if (!user.isSuperAdmin && user.role !== 'admin') {
+            let perms: any = {};
+            try {
+                const dbUser = await prisma.user.findUnique({
+                    where: { id: user.id },
+                    select: { customRole: { select: { permissions: true } } }
+                });
+                if (dbUser?.customRole?.permissions) perms = JSON.parse(dbUser.customRole.permissions);
+            } catch {}
+            if (Object.keys(perms).length > 0 && !perms['/sales']?.create) {
+                return NextResponse.json({ error: 'ليس لديك صلاحية إنشاء فواتير مبيعات' }, { status: 403 });
+            }
+        }
 
         const {
             date, customerId, supplierId, taxRate, taxInclusive, taxLabel,

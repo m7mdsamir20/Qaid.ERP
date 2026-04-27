@@ -33,6 +33,15 @@ export default function SalesPage() {
     const { symbol: cSymbol, fMoneyJSX } = useCurrency();
     const { lang, t } = useTranslation();
     const isRtl = lang === 'ar';
+
+    // Permission checks
+    const userPerms = (session?.user as any)?.permissions || {};
+    const userRole = (session?.user as any)?.role;
+    const isSuperAdmin = (session?.user as any)?.isSuperAdmin;
+    const hasGranularPerms = Object.keys(userPerms).length > 0;
+    const salesPerms = userPerms['/sales'] || {};
+    const canCreate = isSuperAdmin || userRole === 'admin' || !hasGranularPerms || !!salesPerms.create;
+    const canEditDelete = isSuperAdmin || userRole === 'admin' || !hasGranularPerms || !!salesPerms.editDelete;
     const [invoices, setInvoices] = useState<Invoice[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -96,11 +105,11 @@ export default function SalesPage() {
                     title={isServices ? t("فواتير الخدمات") : t("المبيعات")}
                     subtitle={isServices ? t("سجل الخدمات المقدمة للعملاء وتحصيل الرسوم") : t("سجل فواتير المبيعات وحالات التحصيل الفعلية")}
                     icon={Receipt}
-                    primaryButton={{
+                    primaryButton={canCreate ? {
                         label: isServices ? t("إصدار فاتورة خدمة") : t("إضافة فاتورة"),
                         onClick: () => router.push('/sales/new'),
                         icon: Plus
-                    }}
+                    } : undefined}
                 />
 
                 {/* Filters Section */}

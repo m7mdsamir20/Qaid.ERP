@@ -234,7 +234,7 @@ export default function RegisterPage() {
                     ) : (
                         <div style={{ display: 'block', margin: '0 auto 12px', width: '240px', height: '80px' }} />
                     )}
-                    <p style={{ marginTop: '14px', color: C.textSecondary, fontSize: '13px', fontWeight: 600 }}>{t('إنشاء حساب جديد')}</p>
+                    <p style={{ marginTop: '14px', color: C.textSecondary, fontSize: '13px', fontWeight: 600, textAlign: 'center' }}>{t('إنشاء حساب جديد')}</p>
                 </div>
 
                 {/* كارت التسجيل */}
@@ -412,7 +412,7 @@ export default function RegisterPage() {
                         </button>
                     </form>
 
-                    <p style={{ marginTop: '16px', fontSize: '13px', color: C.textSecondary }}>
+                    <p style={{ marginTop: '16px', fontSize: '13px', color: C.textSecondary, textAlign: 'center' }}>
                         {t('لديك حساب بالفعل؟')}{' '}
                         <Link href="/login" style={{ color: C.primary, fontWeight: 600, textDecoration: 'none' }}>{t('تسجيل الدخول')}</Link>
                     </p>

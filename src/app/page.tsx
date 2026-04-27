@@ -238,7 +238,8 @@ export default function DashboardPage() {
     if (showLoading) setLoading(true);
     setIsError(false);
     try {
-      const res = await fetch(`/api/stats?period=${period}`);
+      const activeBranchId = (session?.user as any)?.activeBranchId || 'all';
+      const res = await fetch(`/api/stats?period=${period}&b=${activeBranchId}&t=${Date.now()}`);
       const data = await res.json();
       if (data.error) setIsError(true);
       else {
