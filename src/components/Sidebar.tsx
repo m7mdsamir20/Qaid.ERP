@@ -138,10 +138,9 @@ export default function Sidebar({ onLinkClick }: { onLinkClick?: () => void }) {
                 }
                 if (section.featureKey === 'inventory') {
                     section.title = 'الخدمات';
-                    section.links = section.links?.map((l: any) => {
+                    section.links = section.links?.filter((l: any) => !['/warehouses', '/stocktakings', '/warehouse-transfers'].includes(l.id)).map((l: any) => {
                         if (l.id === '/categories') return { ...l, label: 'تصنيفات الخدمات' };
                         if (l.id === '/items') return { ...l, label: 'قائمة الخدمات' };
-                        if (l.id === '/warehouses') return { ...l, label: 'الفروع / مواقع العمل' };
                         return l;
                     });
                 }
