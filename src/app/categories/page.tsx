@@ -166,8 +166,8 @@ export default function CategoriesPage() {
                                             style={TABLE_STYLE.row(idx === filtered.length - 1)}
                                             onMouseEnter={e => e.currentTarget.style.background = C.hover}
                                             onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
-                                            <td style={TABLE_STYLE.td(true, true)}>
-                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '13px' }}>
+                                            <td style={TABLE_STYLE.td(true)}>
+                                                <div style={{ color: C.primary, fontWeight: 600, fontFamily: OUTFIT, fontSize: '11px', opacity: 0.7 }}>
                                                     {cat.code || `#${idx + 1}`}
                                                 </div>
                                             </td>
