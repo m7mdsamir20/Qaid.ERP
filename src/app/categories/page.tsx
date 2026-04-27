@@ -32,8 +32,8 @@ export default function CategoriesPage() {
     const [isDeleting, setIsDeleting] = useState(false);
 
     const userRole = (session?.user as any)?.role || 'admin';
-    const canCreate = userRole === 'admin' || userRole === 'storekeeper';
-    const canEdit = userRole === 'admin' || userRole === 'storekeeper';
+    const canCreate = true;
+    const canEdit = true;
 
     const businessType = (session?.user as any)?.businessType?.toUpperCase();
     const isServices = businessType === 'SERVICES';
