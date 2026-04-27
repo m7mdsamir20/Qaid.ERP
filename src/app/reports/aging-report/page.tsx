@@ -157,7 +157,7 @@ export default function AgingReportPage() {
                             }}
                         />
                     </div>
-                    {branches.length > 1 && (
+                    {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
                         <CustomSelect
                             value={branchId}
                             onChange={(v) => { setLoading(true); setBranchId(v); }}

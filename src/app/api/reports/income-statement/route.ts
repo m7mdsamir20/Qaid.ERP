@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -10,6 +11,13 @@ export const GET = withProtection(async (request, session) => {
         }
 
         const financialYearId = request.nextUrl.searchParams.get('financialYearId');
+        const urlBranchId = request.nextUrl.searchParams.get('branchId');
+        const branchFilter = (() => {
+            if (urlBranchId && urlBranchId !== 'all') return { branchId: urlBranchId };
+            const bf = getBranchFilter(session);
+            if (bf.branchId) return { branchId: bf.branchId };
+            return {};
+        })();
         let yearFilter: { financialYearId?: string } = {};
 
         if (financialYearId) {
@@ -27,6 +35,7 @@ export const GET = withProtection(async (request, session) => {
                     companyId, 
                     isPosted: true, 
                     ...yearFilter,
+                    ...branchFilter,
                     referenceType: { not: 'opening_balance' }
                 },
                 account: {

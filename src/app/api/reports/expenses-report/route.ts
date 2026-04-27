@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -35,8 +36,16 @@ export const GET = withProtection(async (request, session) => {
             }
         }
 
+        const urlBranchId = new URL(request.url).searchParams.get('branchId');
+        const branchFilter = (() => {
+            if (urlBranchId && urlBranchId !== 'all') return { branchId: urlBranchId };
+            const bf = getBranchFilter(session);
+            if (bf.branchId) return { branchId: bf.branchId };
+            return {};
+        })();
+
         const entries = await prisma.journalEntry.findMany({
-            where,
+            where: { ...where, ...branchFilter },
             include: {
                 lines: { include: { account: true } },
             },

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { withProtection } from '@/lib/apiHandler';
+import { getBranchFilter } from '@/lib/apiAuth';
 
 export const GET = withProtection(async (request, session) => {
     try {
@@ -9,8 +10,16 @@ export const GET = withProtection(async (request, session) => {
             return NextResponse.json({ error: "Company context is required" }, { status: 400 });
         }
 
+        const urlBranchId = request.nextUrl.searchParams.get('branchId');
+        const branchFilter = (() => {
+            if (urlBranchId && urlBranchId !== 'all') return { branchId: urlBranchId };
+            const bf = getBranchFilter(session);
+            if (bf.branchId) return { branchId: bf.branchId };
+            return {};
+        })();
+
         const vouchers = await prisma.voucher.findMany({
-            where: { companyId },
+            where: { companyId, ...branchFilter },
             include: {
                 treasury: { select: { name: true } },
                 customer: { select: { name: true } },

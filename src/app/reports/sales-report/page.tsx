@@ -112,7 +112,7 @@ export default function SalesReportPage() {
                     </div>
 
                     <div className="branch-filter-wrapper" style={{ display: 'flex', gap: '10px', alignItems: 'center', flex: 1 }}>
-                        {branches.length > 1 && (
+                        {branches.length > 1 && (session?.user as any)?.role === 'admin' && (
                             <div style={{ minWidth: '180px', flex: 1 }}>
                                 <CustomSelect
                                     value={branchId}
