@@ -1,1 +1,0 @@
-﻿                                {loading ? <Loader2 size={18} style={{ animation: 'spin 1s linear infinite' }} /> : <><Search size={18} /> {t('ط¹ط±ط¶ ط§ظ„ظ†طھط§ط¦ط¬')}</>}
