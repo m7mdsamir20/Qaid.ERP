@@ -17,6 +17,7 @@ interface RestaurantSettings {
     defaultOrderType: string;
     receiptFooter: string;
     kitchenCopyCount: number;
+    dineInPaymentPolicy: 'pre-pay' | 'post-pay';
 }
 
 const DEFAULTS: RestaurantSettings = {
@@ -30,6 +31,7 @@ const DEFAULTS: RestaurantSettings = {
     defaultOrderType: 'dine-in',
     receiptFooter: 'شكراً لزيارتكم - يسعدنا خدمتكم دائماً',
     kitchenCopyCount: 1,
+    dineInPaymentPolicy: 'pre-pay',
 };
 
 const STORAGE_KEY = 'restaurant_settings';
@@ -239,6 +241,7 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                         {[
                             { label: t('إلزامية اختيار الطاولة'), key: 'requireTableForDineIn', type: 'toggle' },
                             { label: t('السماح بتقسيم الفاتورة'), key: 'allowSplitBill', type: 'toggle' },
+                            { label: t('سياسة الدفع للصالة'), key: 'dineInPaymentPolicy', type: 'select-policy' },
                             { label: t('نوع الطلب الافتراضي'), key: 'defaultOrderType', type: 'select' },
                         ].map((f, i, arr) => (
                             <div key={f.key} style={{ display: 'flex', alignItems: 'center', borderBottom: i < arr.length - 1 ? `1px solid ${C.border}` : 'none' }}>
@@ -252,36 +255,69 @@ export default function RestaurantTab({ showToast }: { showToast: (msg: string, 
                                         </div>
                                     ) : (
                                         isEditMode ? (
-                                            <div style={{ display: 'flex', gap: '8px', padding: '14px 0', flexWrap: 'wrap' }}>
-                                                {[
-                                                    { v: 'dine-in', l: '🪑 صالة' },
-                                                    { v: 'takeaway', l: '📦 تيك أواي' },
-                                                    { v: 'delivery', l: '🚚 توصيل' },
-                                                    { v: 'online', l: '🌐 أونلاين' },
-                                                ].map(opt => (
-                                                    <button
-                                                        key={opt.v}
-                                                        type="button"
-                                                        onClick={() => set(f.key as any, opt.v)}
-                                                        style={{
-                                                            padding: '8px 16px',
-                                                            borderRadius: '10px',
-                                                            border: `1px solid ${(form as any)[f.key] === opt.v ? C.primary : C.border}`,
-                                                            background: (form as any)[f.key] === opt.v ? `${C.primary}15` : 'transparent',
-                                                            color: (form as any)[f.key] === opt.v ? C.primary : C.textSecondary,
-                                                            fontSize: '12px',
-                                                            fontWeight: 700,
-                                                            cursor: 'pointer',
-                                                            fontFamily: CAIRO,
-                                                            transition: 'all 0.2s'
-                                                        }}
-                                                    >
-                                                        {opt.l}
-                                                    </button>
-                                                ))}
-                                            </div>
+                                            f.type === 'select-policy' ? (
+                                                <div style={{ display: 'flex', gap: '8px', padding: '14px 0', flexWrap: 'wrap' }}>
+                                                    {[
+                                                        { v: 'pre-pay', l: 'الدفع مقدماً (فاست فود)' },
+                                                        { v: 'post-pay', l: 'الدفع بعد الأكل (مطعم كلاسيكي)' },
+                                                    ].map(opt => (
+                                                        <button
+                                                            key={opt.v}
+                                                            type="button"
+                                                            onClick={() => set(f.key as any, opt.v)}
+                                                            style={{
+                                                                padding: '8px 16px',
+                                                                borderRadius: '10px',
+                                                                border: `1px solid ${(form as any)[f.key] === opt.v ? C.primary : C.border}`,
+                                                                background: (form as any)[f.key] === opt.v ? `${C.primary}15` : 'transparent',
+                                                                color: (form as any)[f.key] === opt.v ? C.primary : C.textSecondary,
+                                                                fontSize: '12px',
+                                                                fontWeight: 700,
+                                                                cursor: 'pointer',
+                                                                fontFamily: CAIRO,
+                                                                transition: 'all 0.2s'
+                                                            }}
+                                                        >
+                                                            {opt.l}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div style={{ display: 'flex', gap: '8px', padding: '14px 0', flexWrap: 'wrap' }}>
+                                                    {[
+                                                        { v: 'dine-in', l: '🪑 صالة' },
+                                                        { v: 'takeaway', l: '📦 تيك أواي' },
+                                                        { v: 'delivery', l: '🚚 توصيل' },
+                                                        { v: 'online', l: '🌐 أونلاين' },
+                                                    ].map(opt => (
+                                                        <button
+                                                            key={opt.v}
+                                                            type="button"
+                                                            onClick={() => set(f.key as any, opt.v)}
+                                                            style={{
+                                                                padding: '8px 16px',
+                                                                borderRadius: '10px',
+                                                                border: `1px solid ${(form as any)[f.key] === opt.v ? C.primary : C.border}`,
+                                                                background: (form as any)[f.key] === opt.v ? `${C.primary}15` : 'transparent',
+                                                                color: (form as any)[f.key] === opt.v ? C.primary : C.textSecondary,
+                                                                fontSize: '12px',
+                                                                fontWeight: 700,
+                                                                cursor: 'pointer',
+                                                                fontFamily: CAIRO,
+                                                                transition: 'all 0.2s'
+                                                            }}
+                                                        >
+                                                            {opt.l}
+                                                        </button>
+                                                    ))}
+                                                </div>
+                                            )
                                         ) : (
-                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '14px 0', fontFamily: CAIRO }}>{orderTypeMap[(form as any)[f.key]] || ''}</div>
+                                            <div style={{ fontSize: '13px', fontWeight: 700, color: C.textPrimary, padding: '14px 0', fontFamily: CAIRO }}>
+                                                {f.type === 'select-policy' 
+                                                    ? ((form as any)[f.key] === 'pre-pay' ? 'الدفع مقدماً' : 'الدفع بعد الأكل')
+                                                    : orderTypeMap[(form as any)[f.key]] || ''}
+                                            </div>
                                         )
                                     )}
                                 </div>

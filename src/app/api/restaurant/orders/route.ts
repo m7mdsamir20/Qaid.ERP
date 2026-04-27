@@ -175,8 +175,8 @@ export const POST = withProtection(async (request, session, body) => {
                         taxRate: body.taxRate || 0,
                         taxAmount,
                         total,
-                        paidAmount: total,
-                        remaining: 0,
+                        paidAmount: body.paidAmount,
+                        remaining: total - body.paidAmount,
                         paymentMethod: body.paymentMethod || 'cash',
                         warehouseId: defaultWarehouse?.id ?? null,
                         companyId,
@@ -251,9 +251,22 @@ export const POST = withProtection(async (request, session, body) => {
                     const entryNumber = (lastEntry?.entryNumber ?? 0) + 1;
 
                     const lines: { accountId: string; debit: number; credit: number; description: string }[] = [
-                        { accountId: cashAccount.id, debit: total, credit: 0, description: `تحصيل طلب كاشير #${orderNumber}` },
                         { accountId: salesAccount.id, debit: 0, credit: total, description: `إيرادات مبيعات - طلب #${orderNumber}` },
                     ];
+
+                    if (body.paidAmount > 0) {
+                        lines.push({ accountId: cashAccount.id, debit: body.paidAmount, credit: 0, description: `تحصيل طلب كاشير #${orderNumber}` });
+                    }
+                    
+                    if (total - body.paidAmount > 0) {
+                        // Find receivables account
+                        const recAccount = await prisma.account.findFirst({
+                            where: { companyId, OR: [{ code: '1121' }, { name: { contains: 'ذمم' } }, { name: { contains: 'عملاء' } }] }
+                        });
+                        if (recAccount) {
+                            lines.push({ accountId: recAccount.id, debit: total - body.paidAmount, credit: 0, description: `ذمم (طاولة/عميل) - طلب #${orderNumber}` });
+                        }
+                    }
 
                     // If there's tax, add tax liability entry
                     if (taxAmount > 0) {
@@ -368,6 +381,82 @@ export const PUT = withProtection(async (request, session, body) => {
     try {
         const companyId = (session.user as any).companyId;
         if (!body.id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+
+        if (body.action === 'pay_and_close') {
+            const order = await prisma.posOrder.findUnique({ where: { id: body.id, companyId }, include: { invoice: true } });
+            if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+            
+            const paymentAmount = order.total - order.paidAmount;
+            
+            // Update POS Order
+            await prisma.posOrder.update({
+                where: { id: order.id },
+                data: { paidAmount: order.total, status: 'delivered', paymentMethod: body.paymentMethod || 'cash' }
+            });
+            
+            // Free the table
+            if (order.tableId) {
+                await prisma.restaurantTable.updateMany({
+                    where: { id: order.tableId, companyId },
+                    data: { status: 'available' }
+                });
+            }
+            
+            // Update Invoice & Treasury & Accounting if there was an unpaid amount
+            if (paymentAmount > 0) {
+                if (order.invoiceId) {
+                    await prisma.invoice.update({
+                        where: { id: order.invoiceId },
+                        data: {
+                            paidAmount: order.total,
+                            remaining: 0,
+                            paymentMethod: body.paymentMethod || 'cash'
+                        }
+                    });
+                }
+                
+                if (body.treasuryId) {
+                    await prisma.treasury.update({
+                        where: { id: body.treasuryId },
+                        data: { balance: { increment: paymentAmount } }
+                    });
+                }
+                
+                // Accounting Entry
+                const activeYear = await prisma.financialYear.findFirst({ where: { companyId, isOpen: true } });
+                if (activeYear) {
+                    const cashAccount = await prisma.account.findFirst({
+                        where: { companyId, OR: [{ code: '1201' }, { code: '1200' }, { name: { contains: 'نقدية' } }, { name: { contains: 'خزنة' } }] }
+                    });
+                    const recAccount = await prisma.account.findFirst({
+                        where: { companyId, OR: [{ code: '1121' }, { name: { contains: 'ذمم' } }, { name: { contains: 'عملاء' } }] }
+                    });
+                    
+                    if (cashAccount && recAccount) {
+                        const lastEntry = await prisma.journalEntry.findFirst({
+                            where: { companyId },
+                            orderBy: { entryNumber: 'desc' }
+                        });
+                        await prisma.journalEntry.create({
+                            data: {
+                                entryNumber: (lastEntry?.entryNumber ?? 0) + 1,
+                                date: new Date(),
+                                description: `تحصيل فاتورة آجل كاشير - طلب #${order.orderNumber}`,
+                                financialYearId: activeYear.id,
+                                companyId,
+                                lines: {
+                                    create: [
+                                        { accountId: cashAccount.id, debit: paymentAmount, credit: 0, description: `تحصيل نقدي` },
+                                        { accountId: recAccount.id, debit: 0, credit: paymentAmount, description: `إقفال ذمم` },
+                                    ]
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+            return NextResponse.json({ success: true, message: 'تم الدفع وإخلاء الطاولة' });
+        }
 
         await prisma.posOrder.updateMany({
             where: { id: body.id, companyId },
